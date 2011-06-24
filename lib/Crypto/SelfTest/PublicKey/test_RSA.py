@@ -362,6 +362,11 @@ class RSASlowMathTest(RSATest):
         """RSA (_slowmath implementation) constructed key (6-tuple)"""
         RSATest.test_construct_6tuple(self)
 
+    def test_export_ssh(self):
+        """RSA export ssh-rsa key."""
+        rsaObj = self.rsa.generate(1024)
+        ssh_key = rsaObj.exportKey('SSH')
+        self.assertTrue(ssh_key.startswith('ssh-key AAAA'))
 
 def get_tests(config={}):
     tests = []
