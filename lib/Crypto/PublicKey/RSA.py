@@ -185,7 +185,7 @@ class _RSAobj(pubkey.pubkey):
             return pem
         if format == 'SSH':
             # Create public key.
-            ssh_rsa = '00000007' + base64.b16encode('ssh_rsa')
+            ssh_rsa = '00000007' + base64.b16encode('ssh-rsa')
 
             # Exponent.
             exponent = '%x' % (self.key.e, )
