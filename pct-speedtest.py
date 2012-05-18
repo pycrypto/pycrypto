@@ -202,10 +202,10 @@ class Benchmark:
         for cipher_name, module, key_bytes in block_specs:
             self.test_key_setup(cipher_name, module, key_bytes, module.MODE_CBC)
             self.test_encryption("%s-CBC" % (cipher_name,), module, key_bytes, module.MODE_CBC)
-            self.test_encryption("%s-CFB" % (cipher_name,), module, key_bytes, module.MODE_CFB)
-            self.test_encryption("%s-PGP" % (cipher_name,), module, key_bytes, module.MODE_PGP)
+            self.test_encryption("%s-CFB-8" % (cipher_name,), module, key_bytes, module.MODE_CFB)
             self.test_encryption("%s-OFB" % (cipher_name,), module, key_bytes, module.MODE_OFB)
             self.test_encryption("%s-ECB" % (cipher_name,), module, key_bytes, module.MODE_ECB)
+            self.test_encryption("%s-OPENPGP" % (cipher_name,), module, key_bytes, module.MODE_OPENPGP)
 
         for cipher_name, module, key_bytes in stream_specs:
             self.test_key_setup(cipher_name, module, key_bytes, None)

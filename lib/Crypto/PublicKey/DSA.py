@@ -22,11 +22,64 @@
 # SOFTWARE.
 # ===================================================================
 
-"""DSA public-key signature algorithm."""
+"""DSA public-key signature algorithm.
+
+DSA_ is a widespread public-key signature algorithm. Its security is
+based on the discrete logarithm problem (DLP_). Given a cyclic
+group, a generator *g*, and an element *h*, it is hard
+to find an integer *x* such that *g^x = h*. The problem is believed
+to be difficult, and it has been proved such (and therefore secure) for
+more than 30 years.
+
+The group is actually a sub-group over the integers modulo *p*, with *p* prime.
+The sub-group order is *q*, which is prime too; it always holds that *(p-1)* is a multiple of *q*.
+The cryptographic strength is linked to the magnitude of *p* and *q*.
+The signer holds a value *x* (*0<x<q-1*) as private key, and its public
+key (*y* where *y=g^x mod p*) is distributed.
+
+In 2012, a sufficient size is deemed to be 2048 bits for *p* and 256 bits for *q*.
+For more information, see the most recent ECRYPT_ report.
+
+DSA is reasonably secure for new designs.
+
+The algorithm can only be used for authentication (digital signature).
+DSA cannot be used for confidentiality (encryption).
+
+The values *(p,q,g)* are called *domain parameters*;
+they are not sensitive but must be shared by both parties (the signer and the verifier).
+Different signers can share the same domain parameters with no security
+concerns.
+
+The DSA signature is twice as big as the size of *q* (64 bytes if *q* is 256 bit
+long).
+
+This module provides facilities for generating new DSA keys and for constructing
+them from known components. DSA keys allows you to perform basic signing and
+verification.
+
+    >>> from Crypto.Random import random
+    >>> from Crypto.PublicKey import DSA
+    >>> from Crypto.Hash import SHA
+    >>>
+    >>> message = "Hello"
+    >>> key = DSA.generate(1024)
+    >>> h = SHA.new(message).digest()
+    >>> k = random.StrongRandom().randint(1,key.q-1)
+    >>> sig = key.sign(h,k)
+    >>> ...
+    >>> if key.verify(h,sig):
+    >>>     print "OK"
+    >>> else:
+    >>>     print "Incorrect signature"
+
+.. _DSA: http://en.wikipedia.org/wiki/Digital_Signature_Algorithm
+.. _DLP: http://www.cosic.esat.kuleuven.be/publications/talk-78.pdf
+.. _ECRYPT: http://www.ecrypt.eu.org/documents/D.SPA.17.pdf
+"""
 
 __revision__ = "$Id$"
 
-__all__ = ['generate', 'construct', 'error']
+__all__ = ['generate', 'construct', 'error', 'DSAImplementation', '_DSAobj']
 
 import sys
 if sys.version_info[0] == 2 and sys.version_info[1] == 1:
@@ -41,6 +94,22 @@ except ImportError:
     _fastmath = None
 
 class _DSAobj(pubkey.pubkey):
+    """Class defining an actual DSA key.
+
+    :undocumented: __getstate__, __setstate__, __repr__, __getattr__
+    """
+    #: Dictionary of DSA parameters.
+    #:
+    #: A public key will only have the following entries:
+    #:
+    #:  - **y**, the public key.
+    #:  - **g**, the generator.
+    #:  - **p**, the modulus.
+    #:  - **q**, the order of the sub-group.
+    #:
+    #: A private key will also have:
+    #:
+    #:  - **x**, the private key.
     keydata = ['y', 'g', 'p', 'q', 'x']
 
     def __init__(self, implementation, key):
@@ -54,6 +123,50 @@ class _DSAobj(pubkey.pubkey):
             return getattr(self.key, attrname)
         else:
             raise AttributeError("%s object has no %r attribute" % (self.__class__.__name__, attrname,))
+
+    def sign(self, M, K):
+        """Sign a piece of data with DSA.
+
+        :Parameter M: The piece of data to sign with DSA. It may
+         not be longer in bit size than the sub-group order (*q*).
+        :Type M: byte string or long
+
+        :Parameter K: A secret number, chosen randomly in the closed
+         range *[1,q-1]*.
+        :Type K: long (recommended) or byte string (not recommended)
+
+        :attention: selection of *K* is crucial for security. Generating a
+         random number larger than *q* and taking the modulus by *q* is
+         **not** secure, since smaller values will occur more frequently.
+         Generating a random number systematically smaller than *q-1*
+         (e.g. *floor((q-1)/8)* random bytes) is also **not** secure. In general,
+         it shall not be possible for an attacker to know the value of `any
+         bit of K`__.
+
+        :attention: The number *K* shall not be reused for any other
+         operation and shall be discarded immediately.
+
+        :attention: M must be a digest cryptographic hash, otherwise
+         an attacker may mount an existential forgery attack.
+
+        :Return: A tuple with 2 longs.
+
+        .. __: http://www.di.ens.fr/~pnguyen/pub_NgSh00.htm
+        """
+        return pubkey.pubkey.sign(self, M, K)
+
+    def verify(self, M, signature):
+        """Verify the validity of a DSA signature.
+
+        :Parameter M: The expected message.
+        :Type M: byte string or long
+
+        :Parameter signature: The DSA signature to verify.
+        :Type signature: A tuple with 2 longs as return by `sign`
+
+        :Return: True if the signature is correct, False otherwise.
+        """
+        return pubkey.pubkey.verify(self, M, signature)
 
     def _encrypt(self, c, K):
         raise TypeError("DSA cannot encrypt")
@@ -124,11 +237,31 @@ class _DSAobj(pubkey.pubkey):
         return "<%s @0x%x %s>" % (self.__class__.__name__, id(self), ",".join(attrs))
 
 class DSAImplementation(object):
+    """
+    A DSA key factory.
+
+    This class is only internally used to implement the methods of the
+    `Crypto.PublicKey.DSA` module.
+    """
+ 
     def __init__(self, **kwargs):
-        # 'use_fast_math' parameter:
-        #   None (default) - Use fast math if available; Use slow math if not.
-        #   True - Use fast math, and raise RuntimeError if it's not available.
-        #   False - Use slow math.
+        """Create a new DSA key factory.
+
+        :Keywords:
+         use_fast_math : bool
+                                Specify which mathematic library to use:
+
+                                - *None* (default). Use fastest math available.
+                                - *True* . Use fast math.
+                                - *False* . Use slow math.
+         default_randfunc : callable
+                                Specify how to collect random data:
+
+                                - *None* (default). Use Random.new().read().
+                                - not *None* . Use the specified function directly.
+        :Raise RuntimeError:
+            When **use_fast_math** =True but fast math is not available.
+        """
         use_fast_math = kwargs.get('use_fast_math', None)
         if use_fast_math is None:   # Automatic
             if _fastmath is not None:
@@ -161,6 +294,36 @@ class DSAImplementation(object):
         return self._current_randfunc
 
     def generate(self, bits, randfunc=None, progress_func=None):
+        """Randomly generate a fresh, new DSA key.
+
+        :Parameters:
+         bits : int
+                            Key length, or size (in bits) of the DSA modulus
+                            *p*.
+                            It must be a multiple of 64, in the closed
+                            interval [512,1024].
+         randfunc : callable
+                            Random number generation function; it should accept
+                            a single integer N and return a string of random data
+                            N bytes long.
+                            If not specified, a new one will be instantiated
+                            from ``Crypto.Random``.
+         progress_func : callable
+                            Optional function that will be called with a short string
+                            containing the key parameter currently being generated;
+                            it's useful for interactive applications where a user is
+                            waiting for a key to be generated.
+
+        :attention: You should always use a cryptographically secure random number generator,
+            such as the one defined in the ``Crypto.Random`` module; **don't** just use the
+            current time and the ``random`` module.
+
+        :Return: A DSA key object (`_DSAobj`).
+
+        :Raise ValueError:
+            When **bits** is too little, too big, or not a multiple of 64.
+        """
+ 
         # Check against FIPS 186-2, which says that the size of the prime p
         # must be a multiple of 64 bits between 512 and 1024
         for i in (0, 1, 2, 3, 4, 5, 6, 7, 8):
@@ -180,6 +343,30 @@ class DSAImplementation(object):
         return _DSAobj(self, key)
 
     def construct(self, tup):
+        """Construct a DSA key from a tuple of valid DSA components.
+
+        The modulus *p* must be a prime.
+
+        The following equations must apply:
+
+        - p-1 = 0 mod q
+        - g^x = y mod p
+        - 0 < x < q
+        - 1 < g < p
+
+        :Parameters:
+         tup : tuple
+                    A tuple of long integers, with 4 or 5 items
+                    in the following order:
+
+                    1. Public key (*y*).
+                    2. Sub-group generator (*g*).
+                    3. Modulus, finite field order (*p*).
+                    4. Sub-group order (*q*).
+                    5. Private key (*x*). Optional.
+
+        :Return: A DSA key object (`_DSAobj`).
+        """
         key = self._math.dsa_construct(*tup)
         return _DSAobj(self, key)
 
