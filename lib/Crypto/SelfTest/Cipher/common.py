@@ -276,15 +276,36 @@ class IVLengthTest(unittest.TestCase):
 
     def runTest(self):
         self.assertRaises(ValueError, self.module.new, a2b_hex(self.key),
-                self.module.MODE_CBC, "")
+                self.module.MODE_CBC, "x")
         self.assertRaises(ValueError, self.module.new, a2b_hex(self.key),
-                self.module.MODE_CFB, "")
+                self.module.MODE_CFB, "x")
         self.assertRaises(ValueError, self.module.new, a2b_hex(self.key),
-                self.module.MODE_OFB, "")
+                self.module.MODE_OFB, "x")
         self.assertRaises(ValueError, self.module.new, a2b_hex(self.key),
-                self.module.MODE_OPENPGP, "")
-        self.module.new(a2b_hex(self.key), self.module.MODE_ECB, "")
-        self.module.new(a2b_hex(self.key), self.module.MODE_CTR, "", counter=self._dummy_counter)
+                self.module.MODE_OPENPGP, "x")
+        self.module.new(a2b_hex(self.key), self.module.MODE_ECB, "x")
+        self.module.new(a2b_hex(self.key), self.module.MODE_CTR, "x", counter=self._dummy_counter)
+
+    def _dummy_counter(self):
+        return "\0" * self.module.block_size
+
+class OptionalIVTest(unittest.TestCase):
+    def __init__(self, module, params):
+        unittest.TestCase.__init__(self)
+        self.module = module
+        self.key = b(params['key'])
+
+    def shortDescription(self):
+        return "Check that IVs are optional"
+
+    def runTest(self):
+        self.module.new(a2b_hex(self.key), self.module.MODE_CBC)
+        self.module.new(a2b_hex(self.key), self.module.MODE_CFB)
+        self.module.new(a2b_hex(self.key), self.module.MODE_OFB)
+        self.assertRaises(ValueError, self.module.new, a2b_hex(self.key),
+                self.module.MODE_OPENPGP)
+        self.module.new(a2b_hex(self.key), self.module.MODE_ECB)
+        self.module.new(a2b_hex(self.key), self.module.MODE_CTR, counter=self._dummy_counter)
 
     def _dummy_counter(self):
         return "\0" * self.module.block_size
@@ -336,6 +357,7 @@ def make_block_tests(module, module_name, test_data):
                 RoundtripTest(module, params),
                 PGPTest(module, params),
                 IVLengthTest(module, params),
+                OptionalIVTest(module, params),
             ]
             extra_tests_added = 1
 

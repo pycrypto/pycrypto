@@ -170,7 +170,7 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 				"Key cannot be the null string");
 		return NULL;
 	}
-	if (IVlen != BLOCK_SIZE && mode != MODE_ECB && mode != MODE_CTR)
+	if (IVlen != BLOCK_SIZE && mode != MODE_ECB && mode != MODE_CTR && IVlen != 0)
 	{
 		PyErr_Format(PyExc_ValueError,
 			     "IV must be %i bytes long", BLOCK_SIZE);
