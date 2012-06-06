@@ -77,7 +77,7 @@ from Crypto.Util.number import getRandomRange, bytes_to_long, long_to_bytes
 from Crypto.PublicKey import _RSA, _slowmath, pubkey
 from Crypto import Random
 
-from Crypto.Util.asn1 import DerObject, DerSequence, DerNull
+from Crypto.Util.asn1 import DerObject, DerSequence, DerNull, DerBitString, DerOctetString
 import binascii
 import struct
 
@@ -364,13 +364,12 @@ class _RSAobj(pubkey.pubkey):
                     derkey = der.encode()
                     der = DerSequence([0])
                     der.append(algorithmIdentifier)
-                    der.append(DerObject('OCTET STRING', derkey).encode())
+                    der.append(DerOctetString(derkey).encode())
         else:
                 keyType = "PUBLIC"
                 der.append(algorithmIdentifier)
-                bitmap = DerObject('BIT STRING')
                 derPK = DerSequence( [ self.n, self.e ] )
-                bitmap.payload = bchr(0x00) + derPK.encode()
+                bitmap = DerBitString(derPK.encode())
                 der.append(bitmap.encode())
         if format=='DER':
                 return der.encode()
@@ -545,7 +544,7 @@ class RSAImplementation(object):
         try:
 
             der = DerSequence()
-            der.decode(externKey, True)
+            der.decode(externKey)
 
             # Try PKCS#1 first, for a private key
             if len(der)==9 and der.hasOnlyInts() and der[0]==0:
@@ -557,32 +556,34 @@ class RSAImplementation(object):
 
             # Keep on trying PKCS#1, but now for a public key
             if len(der)==2:
-                # The DER object is an RSAPublicKey SEQUENCE with two elements
-                if der.hasOnlyInts():
-                    return self.construct(der[:])
-                # The DER object is a SubjectPublicKeyInfo SEQUENCE with two elements:
-                # an 'algorithm' (or 'algorithmIdentifier') SEQUENCE and a 'subjectPublicKey' BIT STRING.
-                # 'algorithm' takes the value given a few lines above.
-                # 'subjectPublicKey' encapsulates the actual ASN.1 RSAPublicKey element.
-                if der[0]==algorithmIdentifier:
-                        bitmap = DerObject()
-                        bitmap.decode(der[1], True)
-                        if bitmap.isType('BIT STRING') and bord(bitmap.payload[0])==0x00:
-                                der.decode(bitmap.payload[1:], True)
-                                if len(der)==2 and der.hasOnlyInts():
-                                        return self.construct(der[:])
+                try:
+                    # The DER object is an RSAPublicKey SEQUENCE with two elements
+                    if der.hasOnlyInts():
+                        return self.construct(der[:])
+                    # The DER object is a SubjectPublicKeyInfo SEQUENCE with two elements:
+                    # an 'algorithm' (or 'algorithmIdentifier') SEQUENCE and a 'subjectPublicKey' BIT STRING.
+                    # 'algorithm' takes the value given a few lines above.
+                    # 'subjectPublicKey' encapsulates the actual ASN.1 RSAPublicKey element.
+                    if der[0]==algorithmIdentifier:
+                        bitmap = DerBitString()
+                        bitmap.decode(der[1])
+                        rsaPub = DerSequence()
+                        rsaPub.decode(bitmap.value)
+                        if len(rsaPub)==2 and rsaPub.hasOnlyInts():
+                            return self.construct(rsaPub[:])
+                except (ValueError, EOFError):
+                    pass
 
             # Try unencrypted PKCS#8
             if der[0]==0:
                 # The second element in the SEQUENCE is algorithmIdentifier.
                 # It must say RSA (see above for description).
                 if der[1]==algorithmIdentifier:
-                    privateKey = DerObject()
-                    privateKey.decode(der[2], True)
-                    if privateKey.isType('OCTET STRING'):
-                        return self._importKeyDER(privateKey.payload)
+                    privateKey = DerOctetString()
+                    privateKey.decode(der[2])
+                    return self._importKeyDER(privateKey.payload)
 
-        except (ValueError, IndexError):
+        except (ValueError, EOFError):
             pass
 
         raise ValueError("RSA key format is not supported")
