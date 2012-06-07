@@ -63,7 +63,7 @@ class SHA384Hash(HashAlgo):
     #:  }
     #:
     #: This value uniquely identifies the SHA-384 algorithm.
-    oid = b('\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x02')
+    oid = "2.16.840.1.101.3.4.2.2"
 
     digest_size = 48
     block_size = 128

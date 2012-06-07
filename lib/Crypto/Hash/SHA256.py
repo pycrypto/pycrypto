@@ -63,7 +63,7 @@ class SHA256Hash(HashAlgo):
     #:  }
     #:
     #: This value uniquely identifies the SHA-256 algorithm.
-    oid = b('\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x01')
+    oid = "2.16.840.1.101.3.4.2.1"
 
     digest_size = 32
     block_size = 64

@@ -63,8 +63,8 @@ class SHA512Hash(HashAlgo):
     #:  }
     #:
     #: This value uniquely identifies the SHA-512 algorithm.
-    oid = b('\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x03')
-
+    oid = "2.16.840.1.101.3.4.2.3"
+    
     digest_size = 64
     block_size = 128
 

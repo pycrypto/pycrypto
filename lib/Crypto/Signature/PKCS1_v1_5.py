@@ -62,7 +62,7 @@ __all__ = [ 'new', 'PKCS115_SigScheme' ]
 
 import Crypto.Util.number
 from Crypto.Util.number import ceil_div
-from Crypto.Util.asn1 import DerSequence, DerNull, DerOctetString
+from Crypto.Util.asn1 import DerSequence, DerNull, DerOctetString, DerObjectId
 from Crypto.Util.py3compat import *
 
 class PKCS115_SigScheme:
@@ -208,7 +208,8 @@ def EMSA_PKCS1_V1_5_ENCODE(hash, emLen):
     #       { OID id-sha512 PARAMETERS NULL }
     #   }
     #
-    digestAlgo  = DerSequence([hash.oid, DerNull().encode()])
+    hashOID     = DerObjectId(hash.oid)
+    digestAlgo  = DerSequence([hashOID.encode(), DerNull().encode()])
     digest      = DerOctetString(hash.digest())
     digestInfo  = DerSequence([
                     digestAlgo.encode(),

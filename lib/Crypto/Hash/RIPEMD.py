@@ -62,7 +62,7 @@ class RIPEMD160Hash(HashAlgo):
     #:  }
     #:
     #: This value uniquely identifies the RIPMD-160 algorithm.
-    oid = b("\x06\x05\x2b\x24\x03\x02\x01")
+    oid = "1.3.36.3.2.1"
 
     digest_size = 20
     block_size = 64
