@@ -452,12 +452,39 @@ class DerSequenceTests(unittest.TestCase):
         self.assertRaises(ValueError, der.decode, b('\x30\x81\x03\x02\x01\x01'))
         self.assertRaises(ValueError, der.decode, b('\x30\x04\x02\x81\x01\x01'))
 
+class DerOctetStringTests(unittest.TestCase):
+
+    def testEncode1(self):
+        # Empty sequence
+        der = DerOctetString()
+        self.assertEquals(der.encode(), b('\x04\x00'))
+        # Small payload
+        der.payload = b('\x01\x02')
+        self.assertEquals(der.encode(), b('\x04\x02\x01\x02'))
+
+    ####
+
+    def testDecode1(self):
+        # Empty sequence
+        der = DerOctetString()
+        der.decode(b('\x04\x00'))
+        self.assertEquals(der.payload, b(''))
+        # Small payload
+        der.decode(b('\x04\x02\x01\x02'))
+        self.assertEquals(der.payload, b('\x01\x02'))
+
+    def testErrDecode1(self):
+        # No leftovers allowed
+        der = DerOctetString()
+        self.assertRaises(ValueError, der.decode, b('\x04\x01\x01\xff'))
+ 
 def get_tests(config={}):
     from Crypto.SelfTest.st_common import list_test_cases
     listTests = []
     listTests += list_test_cases(DerObjectTests)
     listTests += list_test_cases(DerIntegerTests)
     listTests += list_test_cases(DerSequenceTests)
+    listTests += list_test_cases(DerOctetStringTests)
     return listTests
 
 if __name__ == '__main__':
