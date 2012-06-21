@@ -23,6 +23,8 @@
 from Crypto.Util.number import long_to_bytes, bytes_to_long
 import sys
 from Crypto.Util.py3compat import *
+if sys.version_info[0] == 2 and sys.version_info[1] == 1:
+    from Crypto.Util.py21compat import *
 
 __all__ = [ 'DerObject', 'DerInteger', 'DerOctetString', 'DerNull', 'DerSequence', 'DerObjectId' ]
 
