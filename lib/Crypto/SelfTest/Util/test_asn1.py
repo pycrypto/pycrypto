@@ -490,6 +490,28 @@ class DerNullTests(unittest.TestCase):
         # Empty sequence
         der = DerNull()
         der.decode(b('\x05\x00'))
+
+class DerObjectIdTests(unittest.TestCase):
+
+    def testInit1(self):
+        der = newDerObjectId("1.1")
+        self.assertEquals(der.encode(), b('\x06\x01)'))
+
+    def testEncode1(self):
+        der = DerObjectId('1.2.840.113549.1.1.1')
+        self.assertEquals(der.encode(), b('\x06\x09\x2A\x86\x48\x86\xF7\x0D\x01\x01\x01'))
+        #
+        der = DerObjectId()
+        der.value = '1.2.840.113549.1.1.1'
+        self.assertEquals(der.encode(), b('\x06\x09\x2A\x86\x48\x86\xF7\x0D\x01\x01\x01'))
+
+    ####
+
+    def testDecode1(self):
+        # Empty sequence
+        der = DerObjectId()
+        der.decode(b('\x06\x09\x2A\x86\x48\x86\xF7\x0D\x01\x01\x01'))
+        self.assertEquals(der.value, '1.2.840.113549.1.1.1')
  
 def get_tests(config={}):
     from Crypto.SelfTest.st_common import list_test_cases
@@ -499,6 +521,7 @@ def get_tests(config={}):
     listTests += list_test_cases(DerSequenceTests)
     listTests += list_test_cases(DerOctetStringTests)
     listTests += list_test_cases(DerNullTests)
+    listTests += list_test_cases(DerObjectIdTests)
     return listTests
 
 if __name__ == '__main__':
