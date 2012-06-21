@@ -537,6 +537,75 @@ class DerBitStringTests(unittest.TestCase):
         # Small payload
         der.decode(b('\x03\x03\x00\x01\x02'))
         self.assertEquals(der.value, b('\x01\x02'))
+
+class DerSetOfTests(unittest.TestCase):
+
+    def testEncode1(self):
+        # Empty set
+        der = DerSetOf()
+        self.assertEquals(der.encode(), b('1\x00'))
+        # One single-byte integer (zero)
+        der.add(0)
+        self.assertEquals(der.encode(), b('1\x03\x02\x01\x00'))
+        # Invariant
+        self.assertEquals(der.encode(), b('1\x03\x02\x01\x00'))
+
+    def testEncode2(self):
+        # Two integers
+        der = DerSetOf()
+        der.add(0x180L)
+        der.add(0xFFL)
+        self.assertEquals(der.encode(), b('1\x08\x02\x02\x00\xff\x02\x02\x01\x80'))
+        # Initialize with integers
+        der = DerSetOf([0x180L, 0xFFL])
+        self.assertEquals(der.encode(), b('1\x08\x02\x02\x00\xff\x02\x02\x01\x80'))
+
+    def testEncode3(self):
+        # One integer and another type (no matter what it is)
+        der = DerSetOf()
+        der.add(0x180L)
+        self.assertRaises(ValueError, der.add, b('\x00\x02\x00\x00'))
+
+    def testEncode4(self):
+        # Only non integers
+        der = DerSetOf()
+        der.add(b('\x01\x00'))
+        der.add(b('\x01\x01\x01'))
+        self.assertEquals(der.encode(), b('1\x05\x01\x00\x01\x01\x01'))
+
+    ####
+
+    def testDecode1(self):
+        # Empty sequence
+        der = DerSetOf()
+        der.decode(b('1\x00'))
+        self.assertEquals(len(der),0)
+        # One single-byte integer (zero)
+        der.decode(b('1\x03\x02\x01\x00'))
+        self.assertEquals(len(der),1)
+        self.assertEquals(list(der),[0])
+
+    def testDecode2(self):
+        # Two integers
+        der = DerSetOf()
+        der.decode(b('1\x08\x02\x02\x01\x80\x02\x02\x00\xff'))
+        self.assertEquals(len(der),2)
+        l = list(der)
+        self.failUnless(0x180 in l)
+        self.failUnless(0xFF in l)
+
+    def testDecode3(self):
+        # One integer and 2 other types
+        der = DerSetOf()
+        #import pdb; pdb.set_trace()
+        self.assertRaises(ValueError, der.decode,
+            b('0\x0A\x02\x02\x01\x80\x24\x02\xb6\x63\x12\x00'))
+
+    def testErrDecode1(self):
+        # No leftovers allowed
+        der = DerSetOf()
+        self.assertRaises(ValueError, der.decode,
+            b('1\x08\x02\x02\x01\x80\x02\x02\x00\xff\xAA'))
  
 def get_tests(config={}):
     from Crypto.SelfTest.st_common import list_test_cases
@@ -548,6 +617,7 @@ def get_tests(config={}):
     listTests += list_test_cases(DerNullTests)
     listTests += list_test_cases(DerObjectIdTests)
     listTests += list_test_cases(DerBitStringTests)
+    listTests += list_test_cases(DerSetOfTests)
     return listTests
 
 if __name__ == '__main__':
