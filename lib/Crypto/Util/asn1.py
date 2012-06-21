@@ -38,7 +38,7 @@ if sys.version_info[0] == 2 and sys.version_info[1] == 1:
     from Crypto.Util.py21compat import *
 
 __all__ = [ 'DerObject', 'DerInteger', 'DerOctetString', 'DerNull',
-            'DerSequence', 'DerObjectId', 'DerBitString' ]
+            'DerSequence', 'DerObjectId', 'DerBitString', 'DerSetOf' ]
 
 def _isInt(x, onlyNonNegative=False):
     test = 0
@@ -683,4 +683,124 @@ class DerBitString(DerObject):
         # Remove padding count byte
         if self.payload:
             self.value = self.payload[1:]
+
+class DerSetOf(DerObject):
+    """Class to model a DER SET OF."""
+
+    def __init__(self, startSet=None, implicit=None):
+        """Initialize the DER object as a SET OF.
+        
+        :Parameters:
+          startSet : container
+            The initial set of integers or DER encoded objects.
+          implicit : integer
+            The IMPLICIT tag to use for the encoded object.
+            It overrides the universal tag for SET OF (17).
+        """ 
+        DerObject.__init__(self, 0x11, b(''), implicit, True)
+        self._seq = []
+        self._elemOctet = None
+        if startSet:
+            for e in startSet:
+                self.add(e)
+
+    def __getitem__(self, n):
+        return self._seq[n]
+
+    def __iter__(self):
+        return iter(self._seq)
+
+    def __len__(self):
+        return len(self._seq)
+
+    def add(self, elem):
+        """Add an element to the set.
+
+        :Parameters:
+            elem : byte string or integer
+              An element of the same type of objects already in the set.
+              It can be an integer or a DER encoded object.
+        """
+        if _isInt(elem):
+            eo = 0x02
+        else:
+            eo = bord(elem[0])
+        if self._elemOctet != eo:
+            if self._elemOctet:
+                raise ValueError("New element does not belong to the set")
+            self._elemOctet = eo
+        if not elem in self._seq:
+            self._seq.append(elem)
+
+    def decode(self, derEle):
+        """Decode a complete SET OF DER element, and re-initializes this
+        object with it.
+
+        DER INTEGERs are decoded into Python integers. Any other DER
+        element is not decoded. Its validity is not checked.
+
+        :Parameters:
+            derEle : byte string
+                A complete DER BIT STRING.
+
+        :Raise ValueError:
+            In case of parsing errors.
+        :Raise EOFError:
+            If the DER element is too short.
+        """
+        
+        DerObject.decode(self, derEle)
+
+    def _decodeFromStream(self, s):
+        """Decode a complete DER SET OF from a file."""
+
+        self._seq = []
+               
+        # Fill up self.payload
+        DerObject._decodeFromStream(self, s)
+
+        # Add one item at a time to self.seq, by scanning self.payload
+        p = BytesIO_EOF(self.payload)
+        setIdOctet = -1
+        while True:
+            try:
+                p.setRecord(True)
+                der = DerObject()
+                der._decodeFromStream(p)
+         
+                # Verify that all members are of the same type
+                if setIdOctet < 0:
+                    setIdOctet = der._idOctet
+                else:
+                    if setIdOctet != der._idOctet:
+                        raise ValueError("New element does not belong to the set")
+
+                # Parse INTEGERs differently
+                if setIdOctet != 0x02:
+                    self._seq.append(p._recording)
+                else:
+                    derInt = DerInteger()
+                    derInt.decode(p._recording)
+                    self._seq.append(derInt.value)
+                
+            except NoDerElementError:
+                break
+        # end
+
+    def encode(self):
+        """Return this SET OF DER element, fully encoded as a
+        binary string.
+        """
+
+        # Elements in the set must be ordered in lexicographic order
+        ordered = []
+        for item in self._seq:
+            if _isInt(item):
+                bys = DerInteger(item).encode()
+            else:
+                bys = item
+            ordered.append(bys)
+        ordered.sort()
+        self.payload = b('').join(ordered)
+        return DerObject.encode(self)
 
