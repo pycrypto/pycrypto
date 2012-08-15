@@ -65,7 +65,8 @@ it is recommended to use one of the standardized schemes instead (like
 
 __revision__ = "$Id$"
 
-__all__ = ['generate', 'construct', 'error', 'importKey', 'RSAImplementation', '_RSAobj']
+__all__ = ['generate', 'construct', 'error', 'importKey', 'RSAImplementation',
+    '_RSAobj', 'oid' , 'algorithmIdentifier' ]
 
 import sys
 if sys.version_info[0] == 2 and sys.version_info[1] == 1:
@@ -77,7 +78,9 @@ from Crypto.Util.number import getRandomRange, bytes_to_long, long_to_bytes
 from Crypto.PublicKey import _RSA, _slowmath, pubkey
 from Crypto import Random
 
-from Crypto.Util.asn1 import DerObject, DerSequence, DerNull, DerBitString, DerOctetString
+from Crypto.Util.asn1 import DerObject, DerSequence, DerNull, \
+        DerBitString, DerOctetString, DerObjectId
+
 import binascii
 import struct
 
@@ -561,8 +564,9 @@ class RSAImplementation(object):
                     if der.hasOnlyInts():
                         return self.construct(der[:])
                     # The DER object is a SubjectPublicKeyInfo SEQUENCE with two elements:
-                    # an 'algorithm' (or 'algorithmIdentifier') SEQUENCE and a 'subjectPublicKey' BIT STRING.
-                    # 'algorithm' takes the value given a few lines above.
+                    # an 'algorithmIdentifier' and a 'subjectPublicKey' BIT STRING.
+                    # 'algorithmIdentifier' takes the value given at the
+                    # module level.
                     # 'subjectPublicKey' encapsulates the actual ASN.1 RSAPublicKey element.
                     if der[0]==algorithmIdentifier:
                         bitmap = DerBitString()
@@ -682,17 +686,17 @@ class RSAImplementation(object):
         
         raise ValueError("RSA key format is not supported")
 
-#: This is the ASN.1 DER object that qualifies an algorithm as
-#: compliant to PKCS#1 (that is, the standard RSA).
-# It is found in all 'algorithm' fields (also called 'algorithmIdentifier').
-# It is a SEQUENCE with the oid assigned to RSA and with its parameters (none).
-#   0x06 0x09   OBJECT IDENTIFIER, 9 bytes of payload
-#     0x2A 0x86 0x48 0x86 0xF7 0x0D 0x01 0x01 0x01
-#               rsaEncryption (1 2 840 113549 1 1 1) (PKCS #1)
-#   0x05 0x00   NULL
+#: `Object ID`_ for the RSA encryption algorithm. This OID often indicates
+#: a generic RSA key, even when such key will be actually used for digital signatures.
+#:
+#: .. _`Object ID`: http://www.alvestrand.no/objectid/1.2.840.113549.1.1.1.html
+oid = "1.2.840.113549.1.1.1"
+
+#: This is the standard DER object that qualifies a cryptographic algorithm
+#: in ASN.1-based data structures (e.g. X.509 certificates).
 algorithmIdentifier = DerSequence(
-  [ b('\x06\x09\x2A\x86\x48\x86\xF7\x0D\x01\x01\x01'),
-  DerNull().encode() ]
+  [ DerObjectId(oid).encode(),      # algorithm field
+  DerNull().encode() ]              # parameters field
   ).encode()
  
 _impl = RSAImplementation()
