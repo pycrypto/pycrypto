@@ -264,6 +264,7 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 	}
 	if ( (len % BLOCK_SIZE) !=0 && 
 	     (self->mode!=MODE_CFB) &&
+	     (self->mode!=MODE_OFB) &&
 	     (self->mode!=MODE_CTR))
 	{
 		PyErr_Format(PyExc_ValueError, 
@@ -338,15 +339,18 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 		break;
 
 	case(MODE_OFB):
-		for(i=0; i<len; i+=BLOCK_SIZE) 
+		i = 0;
+		while(i < len)
 		{
+			/* Get a block of ciphered bytes. */
 			block_encrypt(&(self->st), self->IV, temp);
 			memcpy(self->IV, temp, BLOCK_SIZE);
-			for(j=0; j<BLOCK_SIZE; j++)
+			/* Encipher as many bytes as necessary/possible. */
+			for(j=0; (i < len) && (j < BLOCK_SIZE); ++j, ++i)
 			{
-				buffer[i+j] = str[i+j] ^ temp[j];
+				buffer[i] = str[i] ^ temp[j];
 			}
-		}      
+		}
 		break;
 
 	case(MODE_CTR):
@@ -498,7 +502,9 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 	{
 		return PyBytes_FromStringAndSize(NULL, 0);
 	}
-	if ( (len % BLOCK_SIZE) !=0 && (self->mode!=MODE_CFB))
+	if ( (len % BLOCK_SIZE) !=0 &&
+	     (self->mode!=MODE_CFB) &&
+	     (self->mode!=MODE_OFB))
 	{
 		PyErr_Format(PyExc_ValueError, 
 			     "Input strings must be "
@@ -572,13 +578,16 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 		break;
 
 	case (MODE_OFB):
-		for(i=0; i<len; i+=BLOCK_SIZE) 
+		i = 0;
+		while(i < len)
 		{
+			/* Get a block of ciphered bytes. */
 			block_encrypt(&(self->st), self->IV, temp);
 			memcpy(self->IV, temp, BLOCK_SIZE);
-			for(j=0; j<BLOCK_SIZE; j++)
+			/* Decipher as many bytes as necessary/possible. */
+			for(j=0; (i < len) && (j < BLOCK_SIZE); ++j, ++i)
 			{
-				buffer[i+j] = str[i+j] ^ self->IV[j];
+				buffer[i] = str[i] ^ temp[j];
 			}
 		}      
 		break;
