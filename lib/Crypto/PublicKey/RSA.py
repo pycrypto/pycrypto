@@ -76,6 +76,7 @@ from Crypto.Util.py3compat import *
 from Crypto.Util.number import getRandomRange, bytes_to_long, long_to_bytes
 
 from Crypto.PublicKey import _RSA, _slowmath, pubkey
+from Crypto.PublicKey import PKCS8
 from Crypto import Random
 
 from Crypto.Util.asn1 import DerObject, DerSequence, DerNull, \
@@ -83,8 +84,6 @@ from Crypto.Util.asn1 import DerObject, DerSequence, DerNull, \
 
 import binascii
 import struct
-
-from Crypto.Util.number import inverse
 
 from Crypto.Util.number import inverse
 
@@ -357,25 +356,25 @@ class _RSAobj(pubkey.pubkey):
 
         # DER format is always used, even in case of PEM, which simply
         # encodes it into BASE64.
-        der = DerSequence()
         if self.has_private():
                 keyType= { 1: 'RSA PRIVATE', 8: 'PRIVATE' }[pkcs]
-                der[:] = [ 0, self.n, self.e, self.d, self.p, self.q,
+                derseq = DerSequence()
+                derseq[:] = [ 0, self.n, self.e, self.d, self.p, self.q,
                            self.d % (self.p-1), self.d % (self.q-1),
                            inverse(self.q, self.p) ]
+                binaryKey = derseq.encode()
                 if pkcs==8:
-                    derkey = der.encode()
-                    der = DerSequence([0])
-                    der.append(algorithmIdentifier)
-                    der.append(DerOctetString(derkey).encode())
+                    binaryKey = PKCS8.encode(oid, binaryKey)
         else:
                 keyType = "PUBLIC"
-                der.append(algorithmIdentifier)
+                derseq = DerSequence()
+                derseq.append(algorithmIdentifier)
                 derPK = DerSequence( [ self.n, self.e ] )
                 bitmap = DerBitString(derPK.encode())
-                der.append(bitmap.encode())
+                derseq.append(bitmap.encode())
+                binaryKey = derseq.encode()
         if format=='DER':
-                return der.encode()
+                return binaryKey
         if format=='PEM':
                 pem = b("-----BEGIN " + keyType + " KEY-----\n")
                 objenc = None
@@ -391,7 +390,6 @@ class _RSAobj(pubkey.pubkey):
                     pem += b('Proc-Type: 4,ENCRYPTED\n')
                     pem += b('DEK-Info: DES-EDE3-CBC,') + binascii.b2a_hex(salt).upper() + b('\n\n')
                 
-                binaryKey = der.encode()
                 if objenc:
                     # Add PKCS#7-like padding
                     padding = objenc.block_size-len(binaryKey)%objenc.block_size
@@ -579,13 +577,9 @@ class RSAImplementation(object):
                     pass
 
             # Try unencrypted PKCS#8
-            if der[0]==0:
-                # The second element in the SEQUENCE is algorithmIdentifier.
-                # It must say RSA (see above for description).
-                if der[1]==algorithmIdentifier:
-                    privateKey = DerOctetString()
-                    privateKey.decode(der[2])
-                    return self._importKeyDER(privateKey.payload)
+            k = PKCS8.decode(externKey)
+            if k[0]==oid:
+                return self._importKeyDER(k[1])
 
         except (ValueError, EOFError):
             pass
