@@ -463,7 +463,7 @@ class DerSequence(DerObject):
                 # end
 
 class DerOctetString(DerObject):
-    """Class to model a DER OCTET STRING DER.
+    """Class to model a DER OCTET STRING.
     
     An example of encoding is:
 
@@ -508,12 +508,13 @@ class DerNull(DerObject):
 
     def __init__(self):
         """Initialize the DER object as a NULL."""
+
         DerObject.__init__(self, 0x05, b(''), False)
 
 class DerObjectId(DerObject):
     """Class to model a DER OBJECT ID.
     
-     An example of encoding is:
+    An example of encoding is:
 
     >>> from Crypto.Util.asn1 import DerObjectId
     >>> from binascii import hexlify, unhexlify
@@ -685,7 +686,31 @@ class DerBitString(DerObject):
             self.value = self.payload[1:]
 
 class DerSetOf(DerObject):
-    """Class to model a DER SET OF."""
+    """Class to model a DER SET OF.
+    
+    An example of encoding is:
+
+    >>> from Crypto.Util.asn1 import DerBitString
+    >>> from binascii import hexlify, unhexlify
+    >>> so_der = DerSetOf([4,5])
+    >>> so_der.add(6)
+    >>> print hexlify(so_der.encode())
+
+    which will show ``3109020104020105020106``, the DER encoding
+    of a SET OF with items 4,5, and 6.
+
+    For decoding:
+
+    >>> s = unhexlify(b'3109020104020105020106')
+    >>> try:
+    >>>   so_der = DerSetOf()
+    >>>   so_der.decode(s)
+    >>>   print [x for x in so_der]
+    >>> except (ValueError, EOFError):
+    >>>   print "Not a valid DER SET OF"
+
+    the output will be ``[4L, 5L, 6L]``.
+    """
 
     def __init__(self, startSet=None, implicit=None):
         """Initialize the DER object as a SET OF.
@@ -737,11 +762,11 @@ class DerSetOf(DerObject):
         object with it.
 
         DER INTEGERs are decoded into Python integers. Any other DER
-        element is not decoded. Its validity is not checked.
+        element is left undecoded; its validity is not checked.
 
         :Parameters:
             derEle : byte string
-                A complete DER BIT STRING.
+                A complete DER BIT SET OF.
 
         :Raise ValueError:
             In case of parsing errors.
@@ -773,7 +798,7 @@ class DerSetOf(DerObject):
                     setIdOctet = der._idOctet
                 else:
                     if setIdOctet != der._idOctet:
-                        raise ValueError("New element does not belong to the set")
+                        raise ValueError("Not all elements are of the same DER type")
 
                 # Parse INTEGERs differently
                 if setIdOctet != 0x02:
