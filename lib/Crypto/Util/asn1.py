@@ -369,8 +369,12 @@ class DerSequence(DerObject):
                 return self._seq[max(0, i):max(0, j)]
         def __len__(self):
                 return len(self._seq)
+        def __iadd__(self, item):
+                self._seq.append(item)
+                return self
         def append(self, item):
-                return self._seq.append(item)
+                self._seq.append(item)
+                return self
 
         def hasInts(self, onlyNonNegative=True):
                 """Return the number of items in this sequence that are

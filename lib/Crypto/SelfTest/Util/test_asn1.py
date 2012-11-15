@@ -320,6 +320,12 @@ class DerSequenceTests(unittest.TestCase):
         b('\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')+
         b('\x00\x00\x00\x00\x00\x00\x00\x00\x00'))
 
+    def testEncode5(self):
+        der = DerSequence()
+        der += 1
+        der += b('\x30\x00')
+        self.assertEquals(der.encode(), b('\x30\x05\x02\x01\x01\x30\x00'))
+
     def testEncode6(self):
         # Two positive integers
         der = DerSequence()
