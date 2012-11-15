@@ -130,6 +130,10 @@ class DerObjectTests(unittest.TestCase):
 
 class DerIntegerTests(unittest.TestCase):
 
+    def testInit1(self):
+        der = newDerInteger(1)
+        self.assertEquals(der.encode(), b('\x02\x01\x01'))
+
     def testEncode1(self):
         # Single-byte integers
         # Value 0
@@ -258,6 +262,10 @@ class DerIntegerTests(unittest.TestCase):
         self.assertRaises(ValueError, der.decode, b('\x02\x81\x01\x01'))
  
 class DerSequenceTests(unittest.TestCase):
+
+    def testInit1(self):
+        der = newDerSequence(1, DerInteger(2), '0\x00')
+        self.assertEquals(der.encode(), b('0\x08\x02\x01\x01\x02\x01\x020\x00'))
 
     def testEncode1(self):
         # Empty sequence
@@ -460,6 +468,10 @@ class DerSequenceTests(unittest.TestCase):
 
 class DerOctetStringTests(unittest.TestCase):
 
+    def testInit1(self):
+        der = newDerOctetString(b('\xFF'))
+        self.assertEquals(der.encode(), b('\x04\x01\xFF'))
+
     def testEncode1(self):
         # Empty sequence
         der = DerOctetString()
@@ -521,6 +533,10 @@ class DerObjectIdTests(unittest.TestCase):
 
 class DerBitStringTests(unittest.TestCase):
 
+    def testInit1(self):
+        der = newDerBitString(b("\xFF"))
+        self.assertEquals(der.encode(), b('\x03\x02\x00\xFF'))
+
     def testEncode1(self):
         # Empty sequence
         der = DerBitString()
@@ -545,6 +561,10 @@ class DerBitStringTests(unittest.TestCase):
         self.assertEquals(der.value, b('\x01\x02'))
 
 class DerSetOfTests(unittest.TestCase):
+
+    def testInit1(self):
+        der = newDerSetOf(DerInteger(1), DerInteger(2))
+        self.assertEquals(der.encode(), b('1\x06\x02\x01\x01\x02\x01\x02'))
 
     def testEncode1(self):
         # Empty set

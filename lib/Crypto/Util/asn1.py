@@ -38,7 +38,9 @@ if sys.version_info[0] == 2 and sys.version_info[1] == 1:
     from Crypto.Util.py21compat import *
 
 __all__ = [ 'DerObject', 'DerInteger', 'DerOctetString', 'DerNull',
-            'DerSequence', 'DerObjectId', 'DerBitString', 'DerSetOf' ]
+            'DerSequence', 'DerObjectId', 'DerBitString', 'DerSetOf',
+            'newDerInteger', 'newDerOctetString', 'newDerSequence',
+            'newDerObjectId', 'newDerBitString', 'newDerSetOf' ]
 
 def _isInt(x, onlyNonNegative=False):
     test = 0
@@ -291,6 +293,12 @@ class DerInteger(DerObject):
                 if self.payload and bord(self.payload[0]) & 0x80:
                     self.value -= bits
 
+def newDerInteger(number):
+    """Create a DerInteger object, already initialized with an integer."""
+
+    der = DerInteger(number)
+    return der
+
 class DerSequence(DerObject):
         """Class to model a DER SEQUENCE.
 
@@ -466,6 +474,18 @@ class DerSequence(DerObject):
                         break
                 # end
 
+def newDerSequence(*der_objs):
+    """Create a DerSequence object, already initialized with all objects
+    passed as parameters."""
+
+    der = DerSequence()
+    for obj in der_objs:
+        try:
+            der += obj.encode()
+        except:
+            der += obj
+    return der
+
 class DerOctetString(DerObject):
     """Class to model a DER OCTET STRING.
     
@@ -506,6 +526,13 @@ class DerOctetString(DerObject):
             It overrides the universal tag for OCTET STRING (4).
         """ 
         DerObject.__init__(self, 0x04, value, implicit, False)
+
+def newDerOctetString(binstring):
+    """Create a DerOctetString object, already initialized with the binary
+    string."""
+
+    der = DerOctetString(binstring)
+    return der
 
 class DerNull(DerObject):
     """Class to model a DER NULL element."""
@@ -609,6 +636,13 @@ class DerObjectId(DerObject):
             pass
         self.value = '.'.join(comps)
 
+def newDerObjectId(dottedstring):
+    """Create a DerObjectId object, already initialized with the given Object
+    Identifier (a dotted string)."""
+
+    der = DerObjectId(dottedstring)
+    return der
+
 class DerBitString(DerObject):
     """Class to model a DER BIT STRING.
     
@@ -688,6 +722,13 @@ class DerBitString(DerObject):
         # Remove padding count byte
         if self.payload:
             self.value = self.payload[1:]
+
+def newDerBitString(binstring):
+    """Create a DerStringString object, already initialized with the binary
+    string."""
+
+    der = DerBitString(binstring)
+    return der
 
 class DerSetOf(DerObject):
     """Class to model a DER SET OF.
@@ -833,3 +874,14 @@ class DerSetOf(DerObject):
         self.payload = b('').join(ordered)
         return DerObject.encode(self)
 
+def newDerSetOf(*der_objs):
+    """Create a DerSequence object, already initialized with all objects
+    passed as parameters."""
+
+    der = DerSetOf()
+    for obj in der_objs:
+        try:
+            der.add(obj.encode())
+        except:
+            der.add(obj)
+    return der
