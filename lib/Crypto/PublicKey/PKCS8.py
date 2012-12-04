@@ -20,50 +20,409 @@
 # SOFTWARE.
 # ===================================================================
 """
-Module for encoding and decoding private keys according to `PKCS#8`_.
+Module for handling private keys wrapped according to `PKCS#8`_.
+
+PKCS8 is a standard for storing private key information, that is,
+the actual secret material and any associated domain parameter.
+
+The wrapped key can either be clear or encrypted.
 
 .. _`PKCS#8`: http://www.ietf.org/rfc/rfc5208.txt
 
 """
+
+import sys
+
+if sys.version_info[0] == 2 and sys.version_info[1] == 1:
+    from Crypto.Util.py21compat import *
+from Crypto.Util.py3compat import *
+
+from Crypto import Random
 from Crypto.Util.asn1 import *
 
-def _isInt(x, onlyNonNegative=False):
+from Crypto.Cipher import DES3
+from Crypto.Protocol.KDF import PBKDF2
+
+__all__ = [ 'wrap', 'unwrap' ]
+
+def _isInt(x):
     test = 0
     try:
         test += x
     except TypeError:
         return False
-    return not onlyNonNegative or x>=0
+    return True
 
-def decode(key):
-    """Decode a PKCS#8 key into a private key
+def decode_der(obj_class, binstr):
+    """Instantiate a DER object class, decode a DER binary string in it, and
+    return the object."""
+    der = obj_class()
+    der.decode(binstr)
+    return der
+
+rsadsi = "1.2.840.113549"
+pkcs_5 = rsadsi + ".1.5"
+encryptionAlgorithm = rsadsi + ".3"
+id_PBKDF2 = pkcs_5 + ".12"
+id_PBES2  = pkcs_5 + ".13"
+id_DES_EDE3_CBC = encryptionAlgorithm + ".7"
+
+class _DES_EDE3_CBC:
+    """Cipher algorithm based on TDES in CBC mode with PKCS#7 padding"""
+
+    def __init__(self, iv):
+        self._iv = iv
+
+    def get_algorithm_id(self):
+        #
+        # AlgorithmIdentifier  ::=  SEQUENCE  {
+        #       algorithm   OBJECT IDENTIFIER,
+        #       parameters  ANY DEFINED BY algorithm OPTIONAL
+        # }
+        #
+        # SupportingAlgorithms ALGORITHM-IDENTIFIER ::=
+        #   {OCTET STRING (SIZE(8)) IDENTIFIED BY des-EDE3-CBC}
+        #
+        algo_id = newDerSequence (
+                DerObjectId(id_DES_EDE3_CBC),
+                DerOctetString(self._iv)
+                )
+        return algo_id
+ 
+    def encrypt(self, pt, key):
+        cipher = DES3.new(key, DES3.MODE_CBC, self._iv)
+        padding = cipher.block_size-len(pt)%cipher.block_size
+        ct = cipher.encrypt(pt+bchr(padding)*padding)
+        return ct
+
+    def key_size(self):
+        return 24
+
+    def decrypt(self, ct, key):
+        cipher = DES3.new( key, DES3.MODE_CBC, self._iv)
+        pt_padded = cipher.decrypt(ct)
+        padding_len = bord(pt_padded[-1])
+        if padding_len<1 or padding_len>cipher.block_size or\
+            pt_padded[-padding_len:]!=bchr(padding_len)*padding_len:
+                raise ValueError("Padding is incorrect.")
+        return pt_padded[:-padding_len]
+
+class _DES_EDE3_CBC_Factory:
+    """Factory for _DES_EDE3_CBC objects"""
+
+    def generate(self, algo_params, randfunc):
+        iv = randfunc(8)
+        return _DES_EDE3_CBC(iv)
+
+    def decode(params):
+        iv = decode_der(DerOctetString, params).payload
+        return _DES_EDE3_CBC(iv)
+    decode = staticmethod(decode)
+
+class _PBKDF2:
+    """Key derivation function from passwords (defined in RFC2898 or PKCS#5)"""
+
+    def __init__(self, salt, count):
+        self._salt = salt
+        self._count = count
+
+    def get_algorithm_id(self):
+        #
+        # AlgorithmIdentifier  ::=  SEQUENCE  {
+        #       algorithm   OBJECT IDENTIFIER,
+        #       parameters  ANY DEFINED BY algorithm OPTIONAL
+        # }
+        #
+        # PBKDF2-params ::= SEQUENCE {
+        #   salt CHOICE {
+        #       specified OCTET STRING,
+        #       otherSource AlgorithmIdentifier {{PBKDF2-SaltSources}}
+        #       },
+        #   iterationCount INTEGER (1..MAX),
+        #   keyLength INTEGER (1..MAX) OPTIONAL,
+        #   prf AlgorithmIdentifier {{PBKDF2-PRFs}} DEFAULT algid-hmacWithSHA1
+        #   }
+        #
+        algo_oid = newDerSequence(
+                    DerObjectId(id_PBKDF2),
+                    newDerSequence(
+                        DerOctetString(self._salt),
+                        DerInteger(self._count)
+                        )
+                    )
+        return algo_oid
+
+    def derive(self, passphrase, key_size):
+        return PBKDF2(passphrase, self._salt, key_size, self._count)
+
+class _PBKDF2_Factory:
+    """Factory for _PBKDF2 objects"""
+
+    def generate(self, algo_params, randfunc):
+        salt = randfunc(algo_params.get("salt_size", 8))
+        count = algo_params.get("iteration_count", 1000)
+        return _PBKDF2(salt, count)
+
+    def decode(params):
+        pbkdf2_params = decode_der(DerSequence, params)
+        salt = decode_der(DerOctetString, pbkdf2_params[0]).payload
+        count = pbkdf2_params[1]
+        return _PBKDF2(salt, count)
+    decode = staticmethod(decode)
+
+class _PBES2:
+    """Encryption scheme with password-based key derivation (defined in PKCS#5 or RFC2898)"""
+
+    def __init__(self, kdf, cipher):
+        self._kdf = kdf
+        self._cipher = cipher
+
+    def get_algorithm_id(self):
+        #
+        # AlgorithmIdentifier  ::=  SEQUENCE  {
+        #       algorithm   OBJECT IDENTIFIER,
+        #       parameters  ANY DEFINED BY algorithm OPTIONAL
+        # }
+        #
+        # PBES2-params ::= SEQUENCE {
+        #       keyDerivationFunc AlgorithmIdentifier {{PBES2-KDFs}},
+        #       encryptionScheme AlgorithmIdentifier {{PBES2-Encs}}
+        # }
+        #
+        algo_id = newDerSequence(
+                DerObjectId(id_PBES2),
+                newDerSequence(
+                        self._kdf.get_algorithm_id(),
+                        self._cipher.get_algorithm_id(),
+                    )
+                )
+        return algo_id
+
+    def encrypt(self, passphrase, pt):
+        key = self._kdf.derive(passphrase, self._cipher.key_size())
+        ct = self._cipher.encrypt(pt, key)
+        return ct
+
+    def decrypt(self, passphrase, ct):
+        key = self._kdf.derive(passphrase, self._cipher.key_size())
+        pt = self._cipher.decrypt(ct, key)
+        return pt
+
+#
+# Dictionary mapping a cipher OID to a cipher factory
+#
+cipher_dic = { id_DES_EDE3_CBC : _DES_EDE3_CBC_Factory }
+
+#
+# Dictionary mapping a key derivation function (KDF) OID to a KDF factory
+#
+kdf_dict = { id_PBKDF2 : _PBKDF2_Factory }
+
+class _PBES2_Factory:
+    """Factory for _PBES2 objects"""
+
+    def __init__(self, kdf_factory, cipher_factory):
+        self._kdf_factory = kdf_factory
+        self._cipher_factory = cipher_factory
+
+    def generate(self, algo_params, randfunc):
+        cipher = self._cipher_factory.generate(algo_params, randfunc)
+        kdf = self._kdf_factory.generate(algo_params, randfunc)
+        return _PBES2(kdf, cipher)
+
+    def decode(params):
+        #
+        # PBES2-params ::= SEQUENCE {
+        #       keyDerivationFunc AlgorithmIdentifier {{PBES2-KDFs}},
+        #       encryptionScheme AlgorithmIdentifier {{PBES2-Encs}}
+        # }
+        #
+        pbes2_params = decode_der(DerSequence, params)
+        keyDerivationFunc = decode_der(DerSequence, pbes2_params[0])
+        keyDerivationOid = decode_der(DerObjectId, keyDerivationFunc[0]).value
     
+        encryptionScheme = decode_der(DerSequence, pbes2_params[1])
+        encryptionOid = decode_der(DerObjectId, encryptionScheme[0]).value
+        
+        cipher_factory = cipher_dic[encryptionOid]
+        cipher = cipher_factory.decode(encryptionScheme[1])
+
+        kdf_factory = kdf_dict[keyDerivationOid]
+        kdf = kdf_factory.decode(keyDerivationFunc[1])
+
+        return _PBES2(kdf, cipher)
+    decode = staticmethod(decode)
+
+enc_dict = { id_PBES2 : _PBES2_Factory }
+
+#
+# Dictionary mapping a PKCS#8 encryption scheme to a scheme factory
+#
+# The generic pattern for a scheme string is:
+#
+# <kdf>With<digest>And<cipher>
+#
+
+algos = {
+        'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC' :
+            _PBES2_Factory(_PBKDF2_Factory(), _DES_EDE3_CBC_Factory())
+        }
+
+def wrap(private_key, key_oid, passphrase=b(''), wrap_algo=None,
+        wrap_params=None, key_params=None, randfunc=None):
+    """Wrap a private key into a PKCS#8 blob (clear or encrypted).
+
     :Parameters:
-      key : byte string
-        The private key encoded according to PKCS#8
+
+      private_key : byte string
+        The private key encoded in binary form. The actual encoding is
+        algorithm specific. In most cases, it is DER.
+
+      key_oid : string
+        The object identifier (OID) of the private key to wrap.
+        It is a dotted string, like "`1.2.840.113549.1.1.1`".
+
+      passphrase : binary string
+        The secret passphrase from which the wrapping key is derived.
+        It no encryption is required, a `None` value must be passed.
+
+      wrap_algo : string
+        The identifier of te wrapping algorithm to use. The default value is
+        '`PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC`'.
+
+      wrap_params : dictionary 
+        Parameters to use for wrapping. They are specific to the wrapping
+        algorithm.
+
+        +------------------+-----------------------------------------------+
+        | Key              | Description                                   |
+        +==================+===============================================+
+        | iteration_count  | The KDF algorithm is repeated several time to |
+        |                  | slow down brute force attacks on passwords.   |
+        |                  | The default value is 1000.                    |
+        +------------------+-----------------------------------------------+
+        | salt_size        | Salt is used to thwart dictionary and rainbow |
+        |                  | attacks on passwords. The default value is 8  |
+        |                  | bytes.                                        |
+        +------------------+-----------------------------------------------+
+
+      key_params : DER object
+        The algorithm parameters associated to the private key, if any is required.
+
+      randfunc : callable
+        Random number generation function; it should accept a single integer N and
+        return a string of random data N bytes long.
+        If not specified, a new RNG will be instantiated from ``Crypto.Random``.
+
     :Return:
-      A tuple containing the key algorithm identifier (OID, dotted string),
-      the private key (DER object, byte string), and the parameters
-      (either None or a DER object, byte string).
-    :Raises ValueError:
-      If decoding fails
+      The PKCS#8-wrapped private key (possibly encrypted), as a binary string.
     """
+
+    if key_params is None:
+        key_params = DerNull()
 
     #
     #   PrivateKeyInfo ::= SEQUENCE {
     #       version                 Version,
     #       privateKeyAlgorithm     PrivateKeyAlgorithmIdentifier,
     #       privateKey              PrivateKey,
-    #       attributes              [0]  IMPLICIT
-    #       Attributes OPTIONAL
+    #       attributes              [0]  IMPLICIT Attributes OPTIONAL
     #   }
     #
-    pkInfo = DerSequence()
-    pkInfo.decode(key)
-    if not 3 <= len(pkInfo) <= 4:
-        raise ValueError("Not a valid PrivateKeyInfo SEQUENCE")
-    # Version, must be 0
-    if not _isInt(pkInfo[0]) or pkInfo[0]!=0:
+    pk_info = newDerSequence(
+            0,
+            newDerSequence(
+                DerObjectId(key_oid),
+                key_params
+                ),
+            newDerOctetString(private_key)
+            )
+    pk_info_der = pk_info.encode()
+
+    if passphrase is None:
+        return pk_info_der
+
+    if len(passphrase) == 0:
+        raise ValueError("The PKCS#8 passphrase cannot be empty.")
+
+    #
+    # EncryptedPrivateKeyInfo ::= SEQUENCE {
+    #   encryptionAlgorithm  EncryptionAlgorithmIdentifier,
+    #   encryptedData        EncryptedData
+    # }
+    #
+    # EncryptedData ::= OCTET STRING
+    #
+
+    if wrap_algo is None:
+        wrap_algo = 'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC'
+    if wrap_params is None:
+        wrap_params = {}
+    if randfunc is None:
+        randfunc = Random.new().read
+    enc_obj = algos[wrap_algo].generate(wrap_params, randfunc)
+    encPkInfo = newDerSequence(
+            enc_obj.get_algorithm_id(),
+            newDerOctetString(enc_obj.encrypt(passphrase, pk_info_der))
+            )
+
+    return encPkInfo.encode()
+
+def unwrap(p8_private_key, passphrase=None):
+    """Unwrap a private key from a PKCS#8 blob (clear or encrypted).
+    
+    :Parameters:
+      p8_private_key : byte string
+        The private key wrapped into a PKCS#8 blob
+      passphrase : byte string
+        The passphrase to use to decrypt the blob (if it is encrypted).
+    :Return:
+      A tuple containing the algorithm identifier of the wrapped key
+      (OID, dotted string), the private key, and the associated parameters.
+
+      The private key is encoded in an algorithm-specific mannher;
+      in most cases it will be DER.
+
+      The associated parameters are either None or a DER object, the latter
+      encoded as a byte string.
+    :Raises ValueError:
+      If decoding fails
+    """
+
+    if passphrase:
+        #
+        # EncryptedPrivateKeyInfo ::= SEQUENCE {
+        #   encryptionAlgorithm  EncryptionAlgorithmIdentifier,
+        #   encryptedData        EncryptedData
+        # }
+        #
+        encPkInfo = decode_der(DerSequence, p8_private_key)
+        encAlgo = decode_der(DerSequence, encPkInfo[0])
+        ciphertext = decode_der(DerOctetString, encPkInfo[1]).payload
+        
+        #
+        #   AlgorithmIdentifier  ::=  SEQUENCE  {
+        #       algorithm               OBJECT IDENTIFIER,
+        #       parameters              ANY DEFINED BY algorithm OPTIONAL
+        #   }
+        #
+        algo = decode_der(DerObjectId, encAlgo[0]).value
+
+        decobj = enc_dict[algo].decode(encAlgo[1])
+        p8_private_key = decobj.decrypt(passphrase, ciphertext)
+
+    #
+    #   PrivateKeyInfo ::= SEQUENCE {
+    #       version                 Version,
+    #       privateKeyAlgorithm     PrivateKeyAlgorithmIdentifier,
+    #       privateKey              PrivateKey,
+    #       attributes              [0]  IMPLICIT Attributes OPTIONAL
+    #   }
+    #
+    pk_info = decode_der(DerSequence, p8_private_key)
+    if len(pk_info) == 2 and not passphrase:
+        raise ValueError("Not a valid clear PKCS#8 structure (maybe it is encrypted?)")
+    if not 3 <= len(pk_info) <= 4 or pk_info[0]!=0:
         raise ValueError("Not a valid PrivateKeyInfo SEQUENCE")
     #
     #   AlgorithmIdentifier  ::=  SEQUENCE  {
@@ -71,39 +430,15 @@ def decode(key):
     #       parameters              ANY DEFINED BY algorithm OPTIONAL
     #   }
     #
-    algoId = DerSequence()
-    algoId.decode(pkInfo[1])
-    if not 1 <= len(algoId) <= 2:
+    algo_id = decode_der(DerSequence, pk_info[1])
+    if not 1 <= len(algo_id) <= 2:
         raise ValueError("Not a valid AlgorithmIdentifier SEQUENCE")
-    algo = DerObjectId()
-    algo.decode(algoId[0])
-    params = None
-    if len(algoId)==2:
-        params = algoId[1]
-    # PrivateKey ::= OCTET STRING
-    privateKey = DerOctetString()
-    privateKey.decode(pkInfo[2])
-    return (algo.value, privateKey.payload, params)
+    algo = decode_der(DerObjectId, algo_id[0]).value
+    privateKey = decode_der(DerOctetString, pk_info[2]).payload
+    if len(algo_id)==2 and algo_id[1]!=b('\x05\x00'):
+        params = algo_id[1]
+    else:
+        params = None
+    return (algo, privateKey, params)
 
-def encode(algo_oid, privateKey, params=DerNull()):
-    """Encode a private key into PKCS#8 format.
-
-    :Parameters:
-      algo_oid : string
-        The object identifier (OID), as a dotted string
-      privateKey : byte string
-        The private key encoded in DER
-      params : DER object or None
-        The algorithm parameters
-    :Return:
-      The private key encoded according to PKCS#8
-    """
-    pkInfo = DerSequence()
-    pkInfo.append(0)
-    algoId = DerSequence()
-    algoId.append(DerObjectId(algo_oid).encode())
-    algoId.append(params.encode())
-    pkInfo.append(algoId.encode())
-    pkInfo.append(DerOctetString(privateKey).encode())
-    return pkInfo.encode()
 

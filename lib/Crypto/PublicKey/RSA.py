@@ -364,7 +364,7 @@ class _RSAobj(pubkey.pubkey):
                            inverse(self.q, self.p) ]
                 binaryKey = derseq.encode()
                 if pkcs==8:
-                    binaryKey = PKCS8.encode(oid, binaryKey)
+                    binaryKey = PKCS8.wrap(binaryKey, oid, None)
         else:
                 keyType = "PUBLIC"
                 derseq = DerSequence()
@@ -577,7 +577,7 @@ class RSAImplementation(object):
                     pass
 
             # Try unencrypted PKCS#8
-            k = PKCS8.decode(externKey)
+            k = PKCS8.unwrap(externKey)
             if k[0]==oid:
                 return self._importKeyDER(k[1])
 
