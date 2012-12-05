@@ -421,7 +421,7 @@ class DerSequence(DerObject):
                 for item in self._seq:
                     try:
                         self.payload += item
-                    except:
+                    except TypeError:
                         try:
                             self.payload += DerInteger(item).encode()
                         except TypeError:
@@ -480,9 +480,9 @@ def newDerSequence(*der_objs):
 
     der = DerSequence()
     for obj in der_objs:
-        try:
+        if isinstance(obj, DerObject):
             der += obj.encode()
-        except:
+        else:
             der += obj
     return der
 
@@ -531,7 +531,10 @@ def newDerOctetString(binstring):
     """Create a DerOctetString object, already initialized with the binary
     string."""
 
-    der = DerOctetString(binstring)
+    if isinstance(binstring, DerObject):
+        der = DerOctetString(binstring.encode())
+    else:
+        der = DerOctetString(binstring)
     return der
 
 class DerNull(DerObject):
@@ -727,7 +730,10 @@ def newDerBitString(binstring):
     """Create a DerStringString object, already initialized with the binary
     string."""
 
-    der = DerBitString(binstring)
+    if isinstance(binstring, DerObject):
+        der = DerBitString(binstring.encode())
+    else:
+        der = DerBitString(binstring)
     return der
 
 class DerSetOf(DerObject):
@@ -880,8 +886,8 @@ def newDerSetOf(*der_objs):
 
     der = DerSetOf()
     for obj in der_objs:
-        try:
+        if isinstance(obj, DerObject):
             der.add(obj.encode())
-        except:
+        else:
             der.add(obj)
     return der
