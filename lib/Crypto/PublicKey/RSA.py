@@ -72,15 +72,14 @@ import sys
 if sys.version_info[0] == 2 and sys.version_info[1] == 1:
     from Crypto.Util.py21compat import *
 from Crypto.Util.py3compat import *
-#from Crypto.Util.python_compat import *
+
 from Crypto.Util.number import getRandomRange, bytes_to_long, long_to_bytes
 
 from Crypto.PublicKey import _RSA, _slowmath, pubkey
 from Crypto.PublicKey import PKCS8
 from Crypto import Random
 
-from Crypto.Util.asn1 import DerObject, DerSequence, DerNull, \
-        DerBitString, DerOctetString, DerObjectId
+from Crypto.Util.asn1 import *
 
 import binascii
 import struct
@@ -91,6 +90,13 @@ try:
     from Crypto.PublicKey import _fastmath
 except ImportError:
     _fastmath = None
+
+def decode_der(obj_class, binstr):
+    """Instantiate a DER object class, decode a DER binary string in it, and
+    return the object."""
+    der = obj_class()
+    der.decode(binstr)
+    return der
 
 class _RSAobj(pubkey.pubkey):
     """Class defining an actual RSA key.
@@ -358,21 +364,27 @@ class _RSAobj(pubkey.pubkey):
         # encodes it into BASE64.
         if self.has_private():
                 keyType= { 1: 'RSA PRIVATE', 8: 'PRIVATE' }[pkcs]
-                derseq = DerSequence()
-                derseq[:] = [ 0, self.n, self.e, self.d, self.p, self.q,
-                           self.d % (self.p-1), self.d % (self.q-1),
-                           inverse(self.q, self.p) ]
-                binaryKey = derseq.encode()
+                binaryKey = newDerSequence(
+                        0,
+                        self.n,
+                        self.e,
+                        self.d,
+                        self.p,
+                        self.q,
+                        self.d % (self.p-1),
+                        self.d % (self.q-1),
+                        inverse(self.q, self.p)
+                    ).encode()
                 if pkcs==8:
                     binaryKey = PKCS8.wrap(binaryKey, oid, None)
         else:
                 keyType = "PUBLIC"
-                derseq = DerSequence()
-                derseq.append(algorithmIdentifier)
-                derPK = DerSequence( [ self.n, self.e ] )
-                bitmap = DerBitString(derPK.encode())
-                derseq.append(bitmap.encode())
-                binaryKey = derseq.encode()
+                binaryKey = newDerSequence(
+                    algorithmIdentifier,
+                    newDerBitString(
+                        newDerSequence( self.n, self.e )
+                        )
+                    ).encode()
         if format=='DER':
                 return binaryKey
         if format=='PEM':
@@ -544,8 +556,7 @@ class RSAImplementation(object):
 
         try:
 
-            der = DerSequence()
-            der.decode(externKey)
+            der = decode_der(DerSequence, externKey)
 
             # Try PKCS#1 first, for a private key
             if len(der)==9 and der.hasOnlyInts() and der[0]==0:
@@ -567,10 +578,8 @@ class RSAImplementation(object):
                     # module level.
                     # 'subjectPublicKey' encapsulates the actual ASN.1 RSAPublicKey element.
                     if der[0]==algorithmIdentifier:
-                        bitmap = DerBitString()
-                        bitmap.decode(der[1])
-                        rsaPub = DerSequence()
-                        rsaPub.decode(bitmap.value)
+                        bitmap = decode_der(DerBitString, der[1])
+                        rsaPub = decode_der(DerSequence, bitmap.value)
                         if len(rsaPub)==2 and rsaPub.hasOnlyInts():
                             return self.construct(rsaPub[:])
                 except (ValueError, EOFError):
