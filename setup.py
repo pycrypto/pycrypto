@@ -274,8 +274,7 @@ class PCTBuildConfigure(Command):
 
     def run(self):
         if not os.path.exists("config.status"):
-            if os.system("chmod 0755 configure") != 0:
-                raise RuntimeError("chmod error")
+            os.chmod("configure", 755)
             cmd = "sh configure"    # we use "sh" here so that it'll work on mingw32 with standard python.org binaries
             if self.verbose < 1:
                 cmd += " -q"
