@@ -314,19 +314,21 @@ class _RSAobj(pubkey.pubkey):
         # PY3K: This is meant to be text, do not change to bytes (data)
         return "<%s @0x%x %s>" % (self.__class__.__name__, id(self), ",".join(attrs))
 
-    def exportKey(self, format='PEM', passphrase=None, pkcs=1):
+    def exportKey(self, format='PEM', passphrase=None, pkcs=1, pkcs8enc=None):
         """Export this RSA key.
 
-        :Parameter format: The format to use for wrapping the key.
+        :Parameter format:
+            The format to use for wrapping the key:
 
-            - *'DER'*. Binary encoding, always unencrypted.
+            - *'DER'*. Binary encoding.
             - *'PEM'*. Textual encoding, done according to `RFC1421`_/`RFC1423`_.
-              Unencrypted (default) or encrypted.
             - *'OpenSSH'*. Textual encoding, done according to OpenSSH specification.
               Only suitable for public keys (not private keys).
         :Type format: string
 
-        :Parameter passphrase: In case of PEM, the pass phrase to derive the encryption key from.
+        :Parameter passphrase:
+            In case of a private key, the pass phrase to derive the encryption
+            key from. If empty or *None*, the key will be unprotected.
         :Type passphrase: string 
 
         :Parameter pkcs: The PKCS standard to follow for assembling the key.
@@ -341,9 +343,26 @@ class _RSAobj(pubkey.pubkey):
          PKCS standards are not relevant for the *OpenSSH* format.
         :Type pkcs: integer
 
+        :Parameter pkcs8enc: The encryption scheme to use for protecting the
+            PKCS#8 encoded private key. Only meaningful if a pass phrase is
+            present and if ``pkcs=8``.
+
+            The supported schemes are those listed in the
+            `Crypto.PublicKey.PKCS8` module (``wrap_algo`` parameter).
+
+            When ``None`` is specified, the behavior depends on ``format``:
+
+            - For ``DER``, the *'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC'*
+              scheme is used.
+
+            - For ``PEM``, the old and not recommended PEM encryption is used.
+              It is based on MD5 for key derivation, and Triple DES for encryption.
+
+        :Type pkcs8enc: string
+
         :Return: A byte string with the encoded public or private half.
         :Raise ValueError:
-            When the format is unknown.
+            When the format is unknown or when you try to protect a PKCS#1 key.
 
         .. _RFC1421:    http://www.ietf.org/rfc/rfc1421.txt
         .. _RFC1423:    http://www.ietf.org/rfc/rfc1423.txt
@@ -377,7 +396,11 @@ class _RSAobj(pubkey.pubkey):
                         inverse(self.q, self.p)
                     ).encode()
                 if pkcs==8:
-                    binaryKey = PKCS8.wrap(binaryKey, oid, None)
+                    if not pkcs8enc:
+                        pkcs8enc = 'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC'
+                    binaryKey = PKCS8.wrap(binaryKey, oid, passphrase, pkcs8enc)
+                elif format=='DER' and passphrase:
+                    raise ValueError("PKCS#1 private key cannot be encrypted")
         else:
                 keyType = "PUBLIC"
                 binaryKey = newDerSequence(
@@ -387,10 +410,12 @@ class _RSAobj(pubkey.pubkey):
                         )
                     ).encode()
         if format=='DER':
-                return binaryKey
+            return binaryKey
         if format=='PEM':
-                return tobytes(PEM.encode(binaryKey, keyType+" KEY", passphrase,
-                        self._randfunc))
+            if passphrase and pkcs==8:
+                passphrase = None
+            pem_str = PEM.encode(binaryKey, keyType+" KEY", passphrase, self._randfunc)
+            return tobytes(pem_str)
         raise ValueError("Unknown key format '%s'. Cannot export the RSA key." % format)
 
 class RSAImplementation(object):
@@ -530,7 +555,7 @@ class RSAImplementation(object):
         key = self._math.rsa_construct(*tup)
         return _RSAobj(self, key)
 
-    def _importKeyDER(self, externKey):
+    def _importKeyDER(self, externKey, passphrase=None):
         """Import an RSA key (public or private half), encoded in DER form."""
 
         try:
@@ -564,10 +589,10 @@ class RSAImplementation(object):
                 except (ValueError, EOFError):
                     pass
 
-            # Try unencrypted PKCS#8
-            k = PKCS8.unwrap(externKey)
+            # Try PKCS#8 (possibly encrypted)
+            k = PKCS8.unwrap(externKey, passphrase)
             if k[0]==oid:
-                return self._importKeyDER(k[1])
+                return self._importKeyDER(k[1], passphrase)
 
         except (ValueError, EOFError):
             pass
@@ -617,9 +642,11 @@ class RSAImplementation(object):
             passphrase = tobytes(passphrase)
 
         if externKey.startswith(b('-----')):
-            # This is probably a PEM encoded key
-            (der, marker) = PEM.decode(externKey.decode('latin-1'), passphrase)
-            return self._importKeyDER(der)
+            # This is probably a PEM encoded key.
+            (der, marker, enc_flag) = PEM.decode(externKey.decode('latin-1'), passphrase)
+            if enc_flag:
+                passphrase = None
+            return self._importKeyDER(der, passphrase)
 
         if externKey.startswith(b('ssh-rsa ')):
                 # This is probably an OpenSSH key
@@ -635,7 +662,7 @@ class RSAImplementation(object):
 
         if bord(externKey[0])==0x30:
                 # This is probably a DER encoded key
-                return self._importKeyDER(externKey)
+                return self._importKeyDER(externKey, passphrase)
         
         raise ValueError("RSA key format is not supported")
 

@@ -95,7 +95,8 @@ def decode(pem_data, passphrase=None):
         If given and the PEM block is encrypted,
         the key will be derived from the passphrase.
     :Returns:
-      A tuple with the binary data and the marker string.
+      A tuple with the binary data, the marker string, and a boolean to
+      indicate if decryption was performed.
     """
 
     # Verify Pre-Encapsulation Boundary
@@ -140,6 +141,7 @@ def decode(pem_data, passphrase=None):
     
     # Decode body
     data = a2b_base64(b(''.join(lines[1:-1])))
+    enc_flag = False
     if keyobj:
         data = keyobj.decrypt(data)
         padding = bord(data[-1])
@@ -147,6 +149,7 @@ def decode(pem_data, passphrase=None):
             if bord(data[x])!=padding:
                 raise ValueError("Padding incorrect")
         data = data[:-padding]
+        enc_flag = True
 
-    return (data, marker)
+    return (data, marker, enc_flag)
 
