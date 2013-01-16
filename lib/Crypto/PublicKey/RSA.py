@@ -80,6 +80,7 @@ from Crypto.PublicKey import PKCS8
 from Crypto import Random
 
 from Crypto.Util.asn1 import *
+from Crypto.Util import PEM
 
 import binascii
 import struct
@@ -388,30 +389,8 @@ class _RSAobj(pubkey.pubkey):
         if format=='DER':
                 return binaryKey
         if format=='PEM':
-                pem = b("-----BEGIN " + keyType + " KEY-----\n")
-                objenc = None
-                if passphrase and keyType.endswith('PRIVATE'):
-                    # We only support 3DES for encryption
-                    import Crypto.Hash.MD5
-                    from Crypto.Cipher import DES3
-                    from Crypto.Protocol.KDF import PBKDF1
-                    salt = self._randfunc(8)
-                    key =  PBKDF1(passphrase, salt, 16, 1, Crypto.Hash.MD5)
-                    key += PBKDF1(key+passphrase, salt, 8, 1, Crypto.Hash.MD5)
-                    objenc = DES3.new(key, Crypto.Cipher.DES3.MODE_CBC, salt)
-                    pem += b('Proc-Type: 4,ENCRYPTED\n')
-                    pem += b('DEK-Info: DES-EDE3-CBC,') + binascii.b2a_hex(salt).upper() + b('\n\n')
-                
-                if objenc:
-                    # Add PKCS#7-like padding
-                    padding = objenc.block_size-len(binaryKey)%objenc.block_size
-                    binaryKey = objenc.encrypt(binaryKey+bchr(padding)*padding)
-
-                # Each BASE64 line can take up to 64 characters (=48 bytes of data)
-                chunks = [ binascii.b2a_base64(binaryKey[i:i+48]) for i in range(0, len(binaryKey), 48) ]
-                pem += b('').join(chunks)
-                pem += b("-----END " + keyType + " KEY-----")
-                return pem
+                return tobytes(PEM.encode(binaryKey, keyType+" KEY", passphrase,
+                        self._randfunc))
         raise ValueError("Unknown key format '%s'. Cannot export the RSA key." % format)
 
 class RSAImplementation(object):
@@ -638,39 +617,9 @@ class RSAImplementation(object):
             passphrase = tobytes(passphrase)
 
         if externKey.startswith(b('-----')):
-                # This is probably a PEM encoded key
-                lines = externKey.replace(b(" "),b('')).split()
-                keyobj = None
-
-                # The encrypted PEM format
-                if lines[1].startswith(b('Proc-Type:4,ENCRYPTED')):
-                    DEK = lines[2].split(b(':'))
-                    if len(DEK)!=2 or DEK[0]!=b('DEK-Info') or not passphrase:
-                        raise ValueError("PEM encryption format not supported.")
-                    algo, salt = DEK[1].split(b(','))
-                    salt = binascii.a2b_hex(salt)
-                    import Crypto.Hash.MD5
-                    from Crypto.Cipher import DES, DES3
-                    from Crypto.Protocol.KDF import PBKDF1
-                    if algo==b("DES-CBC"):
-                        # This is EVP_BytesToKey in OpenSSL
-                        key = PBKDF1(passphrase, salt, 8, 1, Crypto.Hash.MD5)
-                        keyobj = DES.new(key, Crypto.Cipher.DES.MODE_CBC, salt)
-                    elif algo==b("DES-EDE3-CBC"):
-                        # Note that EVP_BytesToKey is note exactly the same as PBKDF1
-                        key =  PBKDF1(passphrase, salt, 16, 1, Crypto.Hash.MD5)
-                        key += PBKDF1(key+passphrase, salt, 8, 1, Crypto.Hash.MD5)
-                        keyobj = DES3.new(key, Crypto.Cipher.DES3.MODE_CBC, salt)
-                    else:
-                        raise ValueError("Unsupport PEM encryption algorithm.")
-                    lines = lines[2:]
-                
-                der = binascii.a2b_base64(b('').join(lines[1:-1]))
-                if keyobj:
-                    der = keyobj.decrypt(der)
-                    padding = bord(der[-1])
-                    der = der[:-padding]
-                return self._importKeyDER(der)
+            # This is probably a PEM encoded key
+            (der, marker) = PEM.decode(externKey.decode('latin-1'), passphrase)
+            return self._importKeyDER(der)
 
         if externKey.startswith(b('ssh-rsa ')):
                 # This is probably an OpenSSH key
@@ -683,6 +632,7 @@ class RSAImplementation(object):
                 e = bytes_to_long(keyparts[1])
                 n = bytes_to_long(keyparts[2])
                 return self.construct([n, e])
+
         if bord(externKey[0])==0x30:
                 # This is probably a DER encoded key
                 return self._importKeyDER(externKey)
