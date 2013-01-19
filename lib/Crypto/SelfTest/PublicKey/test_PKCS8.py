@@ -78,14 +78,30 @@ d09c87afd3022f3afc2a19e3b746672b635238956ee7e6dd62d5022d0cd88ed1
 a0fd3490111dcdbc4c
 """
 
+###
 #
-# Same key as above, encrypted with password "TestTest"
-# and pkcs5PBKDF2 / des-EDE3-CBC
+# The key above will now be encrypted with different algorithms.
+# The password is always 'TestTest'.
+#
+# Each item in the wrapped_enc_keys list contains:
+#  * wrap algorithm
+#  * iteration count
+#  * Salt
+#  * IV
+#  * Expected result
+###
+wrapped_enc_keys = []
+
 #
 # openssl pkcs8 -topk8 -passin pass:TestTest -inform DER -in key.der -outform DER -out keyenc.der -v2 des3
 # hexdump -v -e '32/1 "%02x" "\n"' keyenc.der
 #
-wrapped_enc_key="""
+wrapped_enc_keys.append((
+'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC',
+2048,
+"47EA7227D8B22E2F", # IV
+"E3F7A838AB911A4D", # Salt
+"""
 30820216304006092a864886f70d01050d3033301b06092a864886f70d01050c
 300e0408e3f7a838ab911a4d02020800301406082a864886f70d0307040847ea
 7227d8b22e2f048201d0ea388b374d2d0e4ceb7a5139f850fdff274884a6e6c0
@@ -104,18 +120,38 @@ f6fa48fc5aa4b75dd1c017ab79ac9d737233a6d668f5364ccf47786debd37334
 c8f7d9b94c3bb377d17a3fa204b601526317824b142ff6bc843fa7815ece89c0
 839573f234dac8d80cc571a045353d61db904a4398d8ef3df5ac
 """
+))
 
 def txt2bin(inputs):
     s = b('').join([b(x) for x in inputs if not (x in '\n\r\t ')])
     return unhexlify(s)
 
+class Rng:
+    def __init__(self, output):
+        self.output=output
+        self.idx=0
+    def __call__(self, n):
+        output = self.output[self.idx:self.idx+n]
+        self.idx += n
+        return output
+
 class PKCS8_Decrypt(unittest.TestCase):
 
     def setUp(self):
         self.oid_key = oid_key
-        self.wrapped_clear_key = txt2bin(wrapped_clear_key)
-        self.wrapped_enc_key = txt2bin(wrapped_enc_key)
         self.clear_key = txt2bin(clear_key)
+        self.wrapped_clear_key = txt2bin(wrapped_clear_key)
+        self.wrapped_enc_keys = []
+        for t in wrapped_enc_keys:
+            self.wrapped_enc_keys.append((
+                t[0],
+                t[1],
+                txt2bin(t[2]),
+                txt2bin(t[3]),
+                txt2bin(t[4])
+            ))
+
+    ### NO ENCRYTION
 
     def test1(self):
         """Verify unwrapping w/o encryption"""
@@ -130,19 +166,29 @@ class PKCS8_Decrypt(unittest.TestCase):
         self.assertEqual(res1, self.oid_key)
         self.assertEqual(res2, self.clear_key)
 
+    ## ENCRYPTION
+
     def test3(self):
         """Verify unwrapping with encryption"""
-        res1, res2, res3 = PKCS8.unwrap(self.wrapped_enc_key, b("TestTest"))
-        self.assertEqual(res1, self.oid_key)
-        self.assertEqual(res2, self.clear_key)
 
-    def test2(self):
+        for t in self.wrapped_enc_keys:
+            res1, res2, res3 = PKCS8.unwrap(t[4], b("TestTest"))
+            self.assertEqual(res1, self.oid_key)
+            self.assertEqual(res2, self.clear_key)
+
+    def test4(self):
         """Verify wrapping with encryption"""
-        wrapped = PKCS8.wrap(self.clear_key, self.oid_key, b("TestTest"))
-        res1, res2, res3 = PKCS8.unwrap(wrapped, b("TestTest"))
-        self.assertEqual(res1, self.oid_key)
-        self.assertEqual(res2, self.clear_key)
 
+        for t in self.wrapped_enc_keys:
+            rng = Rng(t[2]+t[3])
+            params = { 'iteration_count':t[1] }
+            wrapped = PKCS8.wrap(
+                    self.clear_key,
+                    self.oid_key,
+                    b("TestTest"),
+                    wrap_params=params,
+                    randfunc=rng)
+            self.assertEqual(wrapped, t[4])
 
 def get_tests(config={}):
     from Crypto.SelfTest.st_common import list_test_cases
