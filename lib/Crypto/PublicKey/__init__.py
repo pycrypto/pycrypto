@@ -31,11 +31,14 @@ Module                    Description
 Crypto.PublicKey.DSA      Digital Signature Algorithm (Signature only)
 Crypto.PublicKey.ElGamal  (Signing and encryption)
 Crypto.PublicKey.RSA      (Signing, encryption, and blinding)
+Crypto.PublicKey.PKCS8    Functions to wrap private keys according to `PKCS#8`_.
 ========================  =============================================
+
+.. _`PKCS#8`: http://www.ietf.org/rfc/rfc5208.txt
 
 :undocumented: _DSA, _RSA, _fastmath, _slowmath, pubkey
 """
 
-__all__ = ['RSA', 'DSA', 'ElGamal']
+__all__ = ['RSA', 'DSA', 'ElGamal','PKCS8']
 __revision__ = "$Id$"
 
