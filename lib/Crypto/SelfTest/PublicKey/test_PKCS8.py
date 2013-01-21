@@ -122,6 +122,35 @@ c8f7d9b94c3bb377d17a3fa204b601526317824b142ff6bc843fa7815ece89c0
 """
 ))
 
+#
+# openssl pkcs8 -topk8 -passin pass:TestTest -inform DER -in key.der -outform DER -out keyenc.der
+# hexdump -v -e '32/1 "%02x" "\n"' keyenc.der
+#
+wrapped_enc_keys.append((
+-1,                 # pbeWithMD5AndDES-CBC, only decoding is supported
+-1,
+"",
+"",
+"""
+308201f1301b06092a864886f70d010503300e0408f9b990c89af1d41b020208
+00048201d0c6267fe8592903891933d559e71a7ca68b2e39150f19daca0f7921
+52f97e249d72f670d5140e9150433310ed7c7ee51927693fd39884cb9551cea5
+a7b746f7edf199f8787d4787a35dad930d7db057b2118851211b645ac8b90fa6
+b0e7d49ac8567cbd5fff226e87aa9129a0f52c45e9307752e8575c3b0ff756b7
+31fda6942d15ecb6b27ea19370ccc79773f47891e80d22b440d81259c4c28eac
+e0ca839524116bcf52d8c566e49a95ddb0e5493437279a770a39fd333f3fca91
+55884fad0ba5aaf273121f893059d37dd417da7dcfd0d6fa7494968f13b2cc95
+65633f2c891340193e5ec00e4ee0b0e90b3b93da362a4906360845771ade1754
+9df79140be5993f3424c012598eadd3e7c7c0b4db2c72cf103d7943a5cf61420
+93370b9702386c3dd4eb0a47f34b579624a46a108b2d13921fa1b367495fe345
+6aa128aa70f8ca80ae13eb301e96c380724ce67c54380bbea2316c1faf4d058e
+b4ca2e23442047606b9bc4b3bf65b432cb271bea4eb35dd3eb360d3be8612a87
+a50e96a2264490aeabdc07c6e78e5dbf4fe3388726d0e2a228346bf3c2907d68
+2a6276b22ae883fb30fa611f4e4193e7a08480fcd7db48308bacbd72bf4807aa
+11fd394859f97d22982f7fe890b2e2a0f7e7ffb693
+"""
+))
+
 def txt2bin(inputs):
     s = b('').join([b(x) for x in inputs if not (x in '\n\r\t ')])
     return unhexlify(s)
@@ -180,6 +209,8 @@ class PKCS8_Decrypt(unittest.TestCase):
         """Verify wrapping with encryption"""
 
         for t in self.wrapped_enc_keys:
+            if t[0]==-1:
+                continue
             rng = Rng(t[2]+t[3])
             params = { 'iteration_count':t[1] }
             wrapped = PKCS8.wrap(

@@ -40,10 +40,11 @@ from Crypto.Util.py3compat import *
 from Crypto import Random
 from Crypto.Util.asn1 import *
 
-from Crypto.Cipher import DES3
-from Crypto.Protocol.KDF import PBKDF2
+from Crypto.Cipher import DES3, DES
+from Crypto.Hash import MD5
+from Crypto.Protocol.KDF import PBKDF2, PBKDF1
 
-__all__ = [ 'wrap', 'unwrap' ]
+__all__ = [ 'wrap', 'unwrap', 'unpad' ]
 
 def _isInt(x):
     test = 0
@@ -66,9 +67,40 @@ encryptionAlgorithm = rsadsi + ".3"
 id_PBKDF2 = pkcs_5 + ".12"
 id_PBES2  = pkcs_5 + ".13"
 id_DES_EDE3_CBC = encryptionAlgorithm + ".7"
+id_PBE_MD5_DES_CBC = pkcs_5 + ".3"
+
+def unpad(padded_data, block_size):
+    """Remove PKCS#7-style padding."""
+
+    padding_len = bord(padded_data[-1])
+    if padding_len<1 or padding_len>block_size or\
+        padded_data[-padding_len:]!=bchr(padding_len)*padding_len:
+            raise ValueError("Padding is incorrect.")
+    return padded_data[:-padding_len]
+
+class _DES_EDE_CBC:
+    """Cipher based on DES in CBC mode with PKCS#7 padding.
+    
+    Given the limited security of DES, this class only provides decryption for
+    backward compatibility reasons.
+    """
+    
+    key_size = 8
+    iv_size = 8
+
+    def __init__(self, iv):
+        self._iv = iv
+
+    def decrypt(self, ct, key):
+        cipher = DES.new( key, DES.MODE_CBC, self._iv)
+        pt_padded = cipher.decrypt(ct)
+        return unpad(pt_padded, cipher.block_size)
 
 class _DES_EDE3_CBC:
-    """Cipher algorithm based on TDES in CBC mode with PKCS#7 padding"""
+    """Cipher based on TDES in CBC mode with PKCS#7 padding"""
+
+    key_size = 24
+    iv_size = 8
 
     def __init__(self, iv):
         self._iv = iv
@@ -95,17 +127,10 @@ class _DES_EDE3_CBC:
         ct = cipher.encrypt(pt+bchr(padding)*padding)
         return ct
 
-    def key_size(self):
-        return 24
-
     def decrypt(self, ct, key):
         cipher = DES3.new( key, DES3.MODE_CBC, self._iv)
         pt_padded = cipher.decrypt(ct)
-        padding_len = bord(pt_padded[-1])
-        if padding_len<1 or padding_len>cipher.block_size or\
-            pt_padded[-padding_len:]!=bchr(padding_len)*padding_len:
-                raise ValueError("Padding is incorrect.")
-        return pt_padded[:-padding_len]
+        return unpad(pt_padded, cipher.block_size)
 
 class _DES_EDE3_CBC_Factory:
     """Factory for _DES_EDE3_CBC objects"""
@@ -119,8 +144,20 @@ class _DES_EDE3_CBC_Factory:
         return _DES_EDE3_CBC(iv)
     decode = staticmethod(decode)
 
+class _PBKDF1:
+    """Deprecated key derivation function defined in PKCS#5 v1.5."""
+
+    def __init__(self, salt, count, hashAlgo):
+        self._salt = salt
+        self._count = count
+        self._hashAlgo = hashAlgo
+
+    def derive(self, passphrase, key_size):
+        return PBKDF1(passphrase, self._salt, key_size, self._count,
+                self._hashAlgo)
+
 class _PBKDF2:
-    """Key derivation function from passwords (defined in RFC2898 or PKCS#5)"""
+    """Key derivation function from passwords (defined in PKCS#5 v2.0)."""
 
     def __init__(self, salt, count):
         self._salt = salt
@@ -170,8 +207,25 @@ class _PBKDF2_Factory:
         return _PBKDF2(salt, count)
     decode = staticmethod(decode)
 
+class _PBES1:
+    """Deprecated encryption scheme with password-based key derivation
+    (defined in PKCS#5 v1.5)."""
+
+    def __init__(self, pbkdf1, cipher):
+        self._pbkdf1 = pbkdf1
+        self._cipher = cipher
+
+    def decrypt(self, passphrase, ct):
+        key_size = self._cipher.key_size
+        iv_size = self._cipher.iv_size
+        d = self._pbkdf1.derive(passphrase, iv_size+key_size)
+        key,iv = d[:key_size], d[key_size:]
+        pt = self._cipher(iv).decrypt(ct, key)
+        return pt
+
 class _PBES2:
-    """Encryption scheme with password-based key derivation (defined in PKCS#5 or RFC2898)"""
+    """Encryption scheme with password-based key derivation
+    (defined in PKCS#5 v2.0)."""
 
     def __init__(self, kdf, cipher):
         self._kdf = kdf
@@ -199,12 +253,12 @@ class _PBES2:
         return algo_id
 
     def encrypt(self, passphrase, pt):
-        key = self._kdf.derive(passphrase, self._cipher.key_size())
+        key = self._kdf.derive(passphrase, self._cipher.key_size)
         ct = self._cipher.encrypt(pt, key)
         return ct
 
     def decrypt(self, passphrase, ct):
-        key = self._kdf.derive(passphrase, self._cipher.key_size())
+        key = self._kdf.derive(passphrase, self._cipher.key_size)
         pt = self._cipher.decrypt(ct, key)
         return pt
 
@@ -253,7 +307,33 @@ class _PBES2_Factory:
         return _PBES2(kdf, cipher)
     decode = staticmethod(decode)
 
-enc_dict = { id_PBES2 : _PBES2_Factory }
+class _PBES1_Factory:
+    """Factory for _PBES1 objects"""
+
+    def __init__(self, hashAlgo, cipherAlgo):
+        self._hashAlgo = hashAlgo
+        self._cipherAlgo = cipherAlgo
+
+    def decode(self, params):
+        #
+        # PBEParameter ::= SEQUENCE {
+        #   salt OCTET STRING (SIZE(8)),
+        #   iterationCount INTEGER
+        # }
+        #
+        pbes_params = decode_der(DerSequence, params)
+        salt = decode_der(DerOctetString, pbes_params[0]).payload
+        iterations = pbes_params[1]
+        kdf = _PBKDF1(salt, iterations, self._hashAlgo)
+        return _PBES1(kdf, self._cipherAlgo)
+
+#
+# Dictionary mapping an OID to a password-based decryption scheme.
+#
+enc_dict = {
+        id_PBES2 : _PBES2_Factory,
+        id_PBE_MD5_DES_CBC : _PBES1_Factory(MD5, _DES_EDE_CBC)
+        }
 
 #
 # Dictionary mapping a PKCS#8 encryption scheme to a scheme factory
