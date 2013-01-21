@@ -22,10 +22,25 @@
 """
 Module for handling private keys wrapped according to `PKCS#8`_.
 
-PKCS8 is a standard for storing private key information, that is,
-the actual secret material and any associated domain parameter.
-
+PKCS8 is a standard for storing private key information.
 The wrapped key can either be clear or encrypted.
+
+All encryption algorithms are based on passphrase-based key derivation.
+The following mechanisms are fully supported:
+
+* *PBKDF2WithHMAC-SHA1AndAES128-CBC*
+* *PBKDF2WithHMAC-SHA1AndAES192-CBC*
+* *PBKDF2WithHMAC-SHA1AndAES256-CBC*
+* *PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC*
+
+The following mechanisms are only supported for importing keys.
+They are much weaker than the ones listed above, and they are provided
+for backward compatibility only:
+
+* *pbeWithMD5AndRC2-CBC*
+* *pbeWithMD5AndDES-CBC*
+* *pbeWithSHA1AndRC2-CBC*
+* *pbeWithSHA1AndDES-CBC*
 
 .. _`PKCS#8`: http://www.ietf.org/rfc/rfc5208.txt
 
@@ -492,10 +507,10 @@ def wrap(private_key, key_oid, passphrase=b(''), wrap_algo=None,
 
       passphrase : binary string
         The secret passphrase from which the wrapping key is derived.
-        It no encryption is required, a `None` value must be passed.
+        If no encryption is required, the value `None` has to be passed.
 
       wrap_algo : string
-        The identifier of te wrapping algorithm to use. The default value is
+        The identifier of the wrapping algorithm to use. The default value is
         '`PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC`'.
 
       wrap_params : dictionary 
@@ -505,7 +520,7 @@ def wrap(private_key, key_oid, passphrase=b(''), wrap_algo=None,
         +------------------+-----------------------------------------------+
         | Key              | Description                                   |
         +==================+===============================================+
-        | iteration_count  | The KDF algorithm is repeated several time to |
+        | iteration_count  | The KDF algorithm is repeated several times to|
         |                  | slow down brute force attacks on passwords.   |
         |                  | The default value is 1000.                    |
         +------------------+-----------------------------------------------+
@@ -519,7 +534,7 @@ def wrap(private_key, key_oid, passphrase=b(''), wrap_algo=None,
 
       randfunc : callable
         Random number generation function; it should accept a single integer N and
-        return a string of random data N bytes long.
+        return a string of random data, N bytes long.
         If not specified, a new RNG will be instantiated from ``Crypto.Random``.
 
     :Return:
@@ -585,14 +600,12 @@ def unwrap(p8_private_key, passphrase=None):
       passphrase : byte string
         The passphrase to use to decrypt the blob (if it is encrypted).
     :Return:
-      A tuple containing the algorithm identifier of the wrapped key
-      (OID, dotted string), the private key, and the associated parameters.
+      A tuple containing:
 
-      The private key is encoded in an algorithm-specific mannher;
-      in most cases it will be DER.
+      #. the algorithm identifier of the wrapped key (OID, dotted string)
+      #. the private key (byte string, DER encoded)
+      #. the associated parameters (byte string, DER encoded) or None
 
-      The associated parameters are either None or a DER object, the latter
-      encoded as a byte string.
     :Raises ValueError:
       If decoding fails
     """
