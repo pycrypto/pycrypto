@@ -612,24 +612,26 @@ class RSAImplementation(object):
 
             An RSA public key can be in any of the following formats:
 
-            - X.509 `subjectPublicKeyInfo` DER SEQUENCE (binary or PEM encoding)
-            - `PKCS#1`_ `RSAPublicKey` DER SEQUENCE (binary or PEM encoding)
+            - X.509 ``subjectPublicKeyInfo`` DER SEQUENCE (binary or PEM encoding)
+            - `PKCS#1`_ ``RSAPublicKey`` DER SEQUENCE (binary or PEM encoding)
             - OpenSSH (textual public key only)
 
             An RSA private key can be in any of the following formats:
 
-            - PKCS#1 `RSAPrivateKey` DER SEQUENCE (binary or PEM encoding)
-            - `PKCS#8`_ `PrivateKeyInfo` DER SEQUENCE (binary or PEM encoding)
+            - PKCS#1 ``RSAPrivateKey`` DER SEQUENCE (binary or PEM encoding)
+            - `PKCS#8`_ ``PrivateKeyInfo`` or `EncryptedPrivateKeyInfo``
+              DER SEQUENCE (binary or PEM encoding)
             - OpenSSH (textual public key only)
 
             For details about the PEM encoding, see `RFC1421`_/`RFC1423`_.
             
-            In case of PEM encoding, the private key can be encrypted with DES or 3TDES according to a certain ``pass phrase``.
-            Only OpenSSL-compatible pass phrases are supported.
+            The private key may be encrypted by means of a certain pass phrase
+            either at the PEM level or at the PKCS#8 level.
         :Type externKey: string
 
         :Parameter passphrase:
-            In case of an encrypted PEM key, this is the pass phrase from which the encryption key is derived.
+            In case of an encrypted private key, this is the pass phrase from which
+            the decryption key is derived.
         :Type passphrase: string
         
         :Return: An RSA key object (`_RSAobj`).
