@@ -31,6 +31,10 @@ keys and certificates into text.
 
 __all__ = [ 'encode', 'decode' ]
 
+import sys
+if sys.version_info[0] == 2 and sys.version_info[1] == 1:
+    from Crypto.Util.py21compat import *
+
 import re
 from binascii import hexlify, unhexlify, a2b_base64, b2a_base64
 
@@ -72,14 +76,14 @@ def encode(data, marker, passphrase=None, randfunc=None):
         key += PBKDF1(key+passphrase, salt, 8, 1, MD5)
         objenc = DES3.new(key, DES3.MODE_CBC, salt)
         out += "Proc-Type: 4,ENCRYPTED\nDEK-Info: DES-EDE3-CBC,%s\n\n" %\
-            hexlify(salt).upper().decode('latin-1')
+            tostr(hexlify(salt).upper())
         # Add PKCS#7-like padding
         padding = objenc.block_size-len(data)%objenc.block_size
         data = objenc.encrypt(data+bchr(padding)*padding)
 
     # Each BASE64 line can take up to 64 characters (=48 bytes of data)
     # b2a_base64 adds a new line character!
-    chunks = [ b2a_base64(data[i:i+48]).decode('latin-1')
+    chunks = [ tostr(b2a_base64(data[i:i+48]))
                 for i in range(0, len(data), 48) ]
     out += "".join(chunks)
     out += "-----END %s-----" % marker

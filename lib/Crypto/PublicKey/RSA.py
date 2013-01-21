@@ -642,7 +642,7 @@ class RSAImplementation(object):
 
         if externKey.startswith(b('-----')):
             # This is probably a PEM encoded key.
-            (der, marker, enc_flag) = PEM.decode(externKey.decode('latin-1'), passphrase)
+            (der, marker, enc_flag) = PEM.decode(tostr(externKey), passphrase)
             if enc_flag:
                 passphrase = None
             return self._importKeyDER(der, passphrase)
