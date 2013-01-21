@@ -40,7 +40,7 @@ from Crypto.Util.py3compat import *
 from Crypto import Random
 from Crypto.Util.asn1 import *
 
-from Crypto.Cipher import DES3, DES, ARC2
+from Crypto.Cipher import DES3, DES, ARC2, AES
 from Crypto.Hash import MD5, SHA as SHA1
 from Crypto.Protocol.KDF import PBKDF2, PBKDF1
 
@@ -71,6 +71,7 @@ id_PBE_MD5_DES_CBC = pkcs_5 + ".3"
 id_PBE_SHA1_RC2_CBC = pkcs_5 + ".11"
 id_PBE_MD5_RC2_CBC = pkcs_5 + ".6"
 id_PBE_SHA1_DES_CBC = pkcs_5 + ".10"
+id_AES128_CBC = "2.16.840.1.101.3.4.1.2"
 
 def unpad(padded_data, block_size):
     """Remove PKCS#7-style padding."""
@@ -153,6 +154,33 @@ class _DES_EDE3_CBC:
         pt_padded = cipher.decrypt(ct)
         return unpad(pt_padded, cipher.block_size)
 
+class _AES128_CBC:
+    """Cipher based on AES128 in CBC mode with PKCS#7 padding"""
+
+    key_size = 16
+    iv_size = 16
+
+    def __init__(self, iv):
+        self._iv = iv
+
+    def get_algorithm_id(self):
+        algo_id = newDerSequence (
+                DerObjectId(id_AES128_CBC),
+                DerOctetString(self._iv)
+                )
+        return algo_id
+ 
+    def encrypt(self, pt, key):
+        cipher = AES.new(key, AES.MODE_CBC, self._iv)
+        padding = cipher.block_size-len(pt)%cipher.block_size
+        ct = cipher.encrypt(pt+bchr(padding)*padding)
+        return ct
+
+    def decrypt(self, ct, key):
+        cipher = AES.new( key, AES.MODE_CBC, self._iv)
+        pt_padded = cipher.decrypt(ct)
+        return unpad(pt_padded, cipher.block_size)
+
 class _DES_EDE3_CBC_Factory:
     """Factory for _DES_EDE3_CBC objects"""
 
@@ -163,6 +191,18 @@ class _DES_EDE3_CBC_Factory:
     def decode(params):
         iv = decode_der(DerOctetString, params).payload
         return _DES_EDE3_CBC(iv)
+    decode = staticmethod(decode)
+
+class _AES128_CBC_Factory:
+    """Factory for _AES128_CBC objects"""
+
+    def generate(self, algo_params, randfunc):
+        iv = randfunc(16)
+        return _AES128_CBC(iv)
+
+    def decode(params):
+        iv = decode_der(DerOctetString, params).payload
+        return _AES128_CBC(iv)
     decode = staticmethod(decode)
 
 class _PBKDF1:
@@ -286,7 +326,10 @@ class _PBES2:
 #
 # Dictionary mapping a cipher OID to a cipher factory
 #
-cipher_dic = { id_DES_EDE3_CBC : _DES_EDE3_CBC_Factory }
+cipher_dic = {
+        id_DES_EDE3_CBC : _DES_EDE3_CBC_Factory,
+        id_AES128_CBC   : _AES128_CBC_Factory
+        }
 
 #
 # Dictionary mapping a key derivation function (KDF) OID to a KDF factory
@@ -369,7 +412,9 @@ enc_dict = {
 
 algos = {
         'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC' :
-            _PBES2_Factory(_PBKDF2_Factory(), _DES_EDE3_CBC_Factory())
+            _PBES2_Factory(_PBKDF2_Factory(), _DES_EDE3_CBC_Factory()),
+        'PBKDF2WithHMAC-SHA1AndAES128-CBC' :
+            _PBES2_Factory(_PBKDF2_Factory(), _AES128_CBC_Factory())
         }
 
 def wrap(private_key, key_oid, passphrase=b(''), wrap_algo=None,

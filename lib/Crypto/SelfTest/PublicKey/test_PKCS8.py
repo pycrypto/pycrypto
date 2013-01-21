@@ -239,6 +239,37 @@ b0eb93d6ba387a80702dfd2db610757ba340f63230
 """
 ))
 
+#
+# openssl pkcs8 -topk8 -passin pass:TestTest -inform DER -in key.der
+#   -outform DER -out keyenc.der -v2 aes128
+# hexdump -v -e '32/1 "%02x" "\n"' keyenc.der
+#
+wrapped_enc_keys.append((
+'PBKDF2WithHMAC-SHA1AndAES128-CBC',
+2048,
+"4F66EE5D3BCD531FE6EBF4B4E73016B8", # IV
+"479F25156176C53A", # Salt
+"""
+3082021f304906092a864886f70d01050d303c301b06092a864886f70d01050c
+300e0408479f25156176c53a02020800301d060960864801650304010204104f
+66ee5d3bcd531fe6ebf4b4e73016b8048201d0e33cfa560423f589d097d21533
+3b880a5ebac5b2ac58b4e73b0d787aee7764f034fe34ca1d1bd845c0a7c3316f
+afbfb2129e03dcaf5a5031394206492828dacef1e04639bee5935e0f46114202
+10bc6c37182f4889be11c5d0486c398f4be952e5740f65de9d8edeb275e2b406
+e19bc29ad5ebb97fa536344fc3d84c7e755696f12b810898de4e6f069b8a81c8
+0aab0d45d7d062303aaa4a10c2ce84fdb5a03114039cfe138e38bb15b2ced717
+93549cdad85e730b14d9e2198b663dfdc8d04a4349eb3de59b076ad40b116d4a
+25ed917c576bc7c883c95ef0f1180e28fc9981bea069594c309f1aa1b253ceab
+a2f0313bb1372bcb51a745056be93d77a1f235a762a45e8856512d436b2ca0f7
+dd60fbed394ba28978d2a2b984b028529d0a58d93aba46c6bbd4ac1e4013cbaa
+63b00988bc5f11ccc40141c346762d2b28f64435d4be98ec17c1884985e3807e
+e550db606600993efccf6de0dfc2d2d70b5336a3b018fa415d6bdd59f5777118
+16806b7bc17c4c7e20ad7176ebfa5a1aa3f6bc10f04b77afd443944642ac9cca
+d740e082b4a3bbb8bafdd34a0b3c5f2f3c2aceccccdccd092b78994b845bfa61
+706c3b9df5165ed1dbcbf1244fe41fc9bf993f52f7658e2f87e1baaeacb0f562
+9d905c
+"""
+))
 
 def txt2bin(inputs):
     s = b('').join([b(x) for x in inputs if not (x in '\n\r\t ')])
@@ -306,6 +337,7 @@ class PKCS8_Decrypt(unittest.TestCase):
                     self.clear_key,
                     self.oid_key,
                     b("TestTest"),
+                    wrap_algo=t[0],
                     wrap_params=params,
                     randfunc=rng)
             self.assertEqual(wrapped, t[4])
