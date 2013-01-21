@@ -40,8 +40,8 @@ from Crypto.Util.py3compat import *
 from Crypto import Random
 from Crypto.Util.asn1 import *
 
-from Crypto.Cipher import DES3, DES
-from Crypto.Hash import MD5
+from Crypto.Cipher import DES3, DES, ARC2
+from Crypto.Hash import MD5, SHA as SHA1
 from Crypto.Protocol.KDF import PBKDF2, PBKDF1
 
 __all__ = [ 'wrap', 'unwrap', 'unpad' ]
@@ -68,6 +68,7 @@ id_PBKDF2 = pkcs_5 + ".12"
 id_PBES2  = pkcs_5 + ".13"
 id_DES_EDE3_CBC = encryptionAlgorithm + ".7"
 id_PBE_MD5_DES_CBC = pkcs_5 + ".3"
+id_PBE_SHA1_RC2_CBC = pkcs_5 + ".11"
 
 def unpad(padded_data, block_size):
     """Remove PKCS#7-style padding."""
@@ -93,6 +94,24 @@ class _DES_EDE_CBC:
 
     def decrypt(self, ct, key):
         cipher = DES.new( key, DES.MODE_CBC, self._iv)
+        pt_padded = cipher.decrypt(ct)
+        return unpad(pt_padded, cipher.block_size)
+
+class _RC2_CBC:
+    """Cipher based on RC2/64 in CBC mode with PKCS#7 padding.
+    
+    Given the limited security of RC2/64, this class only provides decryption for
+    backward compatibility reasons.
+    """
+    
+    key_size = 8
+    iv_size = 8
+
+    def __init__(self, iv):
+        self._iv = iv
+
+    def decrypt(self, ct, key):
+        cipher = ARC2.new( key, ARC2.MODE_CBC, self._iv, effective_keylen=64)
         pt_padded = cipher.decrypt(ct)
         return unpad(pt_padded, cipher.block_size)
 
@@ -332,7 +351,8 @@ class _PBES1_Factory:
 #
 enc_dict = {
         id_PBES2 : _PBES2_Factory,
-        id_PBE_MD5_DES_CBC : _PBES1_Factory(MD5, _DES_EDE_CBC)
+        id_PBE_MD5_DES_CBC : _PBES1_Factory(MD5, _DES_EDE_CBC),
+        id_PBE_SHA1_RC2_CBC : _PBES1_Factory(SHA1, _RC2_CBC)
         }
 
 #
