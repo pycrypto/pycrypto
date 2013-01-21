@@ -71,7 +71,9 @@ id_PBE_MD5_DES_CBC = pkcs_5 + ".3"
 id_PBE_SHA1_RC2_CBC = pkcs_5 + ".11"
 id_PBE_MD5_RC2_CBC = pkcs_5 + ".6"
 id_PBE_SHA1_DES_CBC = pkcs_5 + ".10"
-id_AES128_CBC = "2.16.840.1.101.3.4.1.2"
+id_AES = "2.16.840.1.101.3.4.1"
+id_AES128_CBC = id_AES + ".2"
+id_AES192_CBC = id_AES + ".22"
 
 def unpad(padded_data, block_size):
     """Remove PKCS#7-style padding."""
@@ -154,10 +156,9 @@ class _DES_EDE3_CBC:
         pt_padded = cipher.decrypt(ct)
         return unpad(pt_padded, cipher.block_size)
 
-class _AES128_CBC:
-    """Cipher based on AES128 in CBC mode with PKCS#7 padding"""
+class _AES_CBC:
+    """Base class for AES ciphers based in CBC mode with PKCS#7 padding"""
 
-    key_size = 16
     iv_size = 16
 
     def __init__(self, iv):
@@ -165,13 +166,13 @@ class _AES128_CBC:
 
     def get_algorithm_id(self):
         algo_id = newDerSequence (
-                DerObjectId(id_AES128_CBC),
+                DerObjectId(self._oid),
                 DerOctetString(self._iv)
                 )
         return algo_id
  
     def encrypt(self, pt, key):
-        cipher = AES.new(key, AES.MODE_CBC, self._iv)
+        cipher = AES.new( key, AES.MODE_CBC, self._iv)
         padding = cipher.block_size-len(pt)%cipher.block_size
         ct = cipher.encrypt(pt+bchr(padding)*padding)
         return ct
@@ -180,6 +181,24 @@ class _AES128_CBC:
         cipher = AES.new( key, AES.MODE_CBC, self._iv)
         pt_padded = cipher.decrypt(ct)
         return unpad(pt_padded, cipher.block_size)
+
+class _AES128_CBC(_AES_CBC):
+    """Cipher based on AES128 in CBC mode with PKCS#7 padding"""
+
+    key_size = 16
+
+    def __init__(self, iv):
+        _AES_CBC.__init__(self, iv)
+        self._oid = id_AES128_CBC
+
+class _AES192_CBC(_AES_CBC):
+    """Cipher based on AES192 in CBC mode with PKCS#7 padding"""
+
+    key_size = 24
+
+    def __init__(self, iv):
+        self._iv = iv
+        self._oid = id_AES192_CBC
 
 class _DES_EDE3_CBC_Factory:
     """Factory for _DES_EDE3_CBC objects"""
@@ -203,6 +222,18 @@ class _AES128_CBC_Factory:
     def decode(params):
         iv = decode_der(DerOctetString, params).payload
         return _AES128_CBC(iv)
+    decode = staticmethod(decode)
+
+class _AES192_CBC_Factory:
+    """Factory for _AES128_CBC objects"""
+
+    def generate(self, algo_params, randfunc):
+        iv = randfunc(16)
+        return _AES192_CBC(iv)
+
+    def decode(params):
+        iv = decode_der(DerOctetString, params).payload
+        return _AES192_CBC(iv)
     decode = staticmethod(decode)
 
 class _PBKDF1:
@@ -328,7 +359,8 @@ class _PBES2:
 #
 cipher_dic = {
         id_DES_EDE3_CBC : _DES_EDE3_CBC_Factory,
-        id_AES128_CBC   : _AES128_CBC_Factory
+        id_AES128_CBC   : _AES128_CBC_Factory,
+        id_AES192_CBC   : _AES192_CBC_Factory
         }
 
 #
@@ -414,7 +446,9 @@ algos = {
         'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC' :
             _PBES2_Factory(_PBKDF2_Factory(), _DES_EDE3_CBC_Factory()),
         'PBKDF2WithHMAC-SHA1AndAES128-CBC' :
-            _PBES2_Factory(_PBKDF2_Factory(), _AES128_CBC_Factory())
+            _PBES2_Factory(_PBKDF2_Factory(), _AES128_CBC_Factory()),
+        'PBKDF2WithHMAC-SHA1AndAES192-CBC' :
+            _PBES2_Factory(_PBKDF2_Factory(), _AES192_CBC_Factory())
         }
 
 def wrap(private_key, key_oid, passphrase=b(''), wrap_algo=None,
