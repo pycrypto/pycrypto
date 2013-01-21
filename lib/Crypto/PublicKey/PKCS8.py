@@ -508,7 +508,10 @@ def unwrap(p8_private_key, passphrase=None):
         #
         algo = decode_der(DerObjectId, encAlgo[0]).value
 
-        decobj = enc_dict[algo].decode(encAlgo[1])
+        try:
+            decobj = enc_dict[algo].decode(encAlgo[1])
+        except KeyError, e:
+            raise ValueError("Unsupported PKCS#5 Object ID " + str(e))
         p8_private_key = decobj.decrypt(passphrase, ciphertext)
 
     #
