@@ -54,6 +54,7 @@ def encode(data, marker, passphrase=None, randfunc=None):
       marker : string
         The marker for the PEM block (e.g. "PUBLIC KEY").
         Note that there is no official master list for all allowed markers.
+        Still, you can refer to the OpenSSL_ source code.
       passphrase : byte string
         If given, the PEM block will be encrypted. The key is derived from
         the passphrase.
@@ -63,6 +64,8 @@ def encode(data, marker, passphrase=None, randfunc=None):
         instantiated.
     :Returns:
       The PEM block, as a string.
+
+    .. _OpenSSL: http://cvs.openssl.org/fileview?f=openssl/crypto/pem/pem.h&v=1.66.2.1.4.2
     """
 
     if not randfunc:
@@ -101,6 +104,9 @@ def decode(pem_data, passphrase=None):
     :Returns:
       A tuple with the binary data, the marker string, and a boolean to
       indicate if decryption was performed.
+    :Raises ValueError:
+      If decoding fails, if the PEM file is encrypted and no passphrase has
+      been provided or if the passphrase is incorrect.
     """
 
     # Verify Pre-Encapsulation Boundary
