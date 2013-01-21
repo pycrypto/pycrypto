@@ -70,6 +70,7 @@ id_DES_EDE3_CBC = encryptionAlgorithm + ".7"
 id_PBE_MD5_DES_CBC = pkcs_5 + ".3"
 id_PBE_SHA1_RC2_CBC = pkcs_5 + ".11"
 id_PBE_MD5_RC2_CBC = pkcs_5 + ".6"
+id_PBE_SHA1_DES_CBC = pkcs_5 + ".10"
 
 def unpad(padded_data, block_size):
     """Remove PKCS#7-style padding."""
@@ -80,7 +81,7 @@ def unpad(padded_data, block_size):
             raise ValueError("Padding is incorrect.")
     return padded_data[:-padding_len]
 
-class _DES_EDE_CBC:
+class _DES_CBC:
     """Cipher based on DES in CBC mode with PKCS#7 padding.
     
     Given the limited security of DES, this class only provides decryption for
@@ -352,9 +353,10 @@ class _PBES1_Factory:
 #
 enc_dict = {
         id_PBES2 : _PBES2_Factory,
-        id_PBE_MD5_DES_CBC : _PBES1_Factory(MD5, _DES_EDE_CBC),
+        id_PBE_MD5_DES_CBC : _PBES1_Factory(MD5, _DES_CBC),
         id_PBE_SHA1_RC2_CBC : _PBES1_Factory(SHA1, _RC2_CBC),
-        id_PBE_MD5_RC2_CBC : _PBES1_Factory(MD5, _RC2_CBC)
+        id_PBE_MD5_RC2_CBC : _PBES1_Factory(MD5, _RC2_CBC),
+        id_PBE_SHA1_DES_CBC : _PBES1_Factory(SHA1, _DES_CBC)
         }
 
 #

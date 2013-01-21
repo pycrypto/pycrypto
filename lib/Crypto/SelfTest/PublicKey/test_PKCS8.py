@@ -209,6 +209,37 @@ b77d1db287b3a6264c466805be5a4fe85cfbca180699859280f2dd8e2c2c10b5
 3dc397b22ecab67ee38a552fec29a1d4ff8719c748"""
 ))
 
+#
+# openssl pkcs8 -topk8 -passin pass:TestTest -inform DER -in key.der
+#   -outform DER -out keyenc.der -v1 PBE-SHA1-DES
+# hexdump -v -e '32/1 "%02x" "\n"' keyenc.der
+#
+wrapped_enc_keys.append((
+-1,                 # pbeWithSHA1AndDES-CBC, only decoding is supported
+-1,
+"",
+"",
+"""
+308201f1301b06092a864886f70d01050a300e04089bacc9cf1e8f734e020208
+00048201d03e502f3ceafe8fd19ab2939576bfdded26d719b2441db1459688f5
+9673218b41ec1f739edf1e460bd927bc28470c87b2d4fc8ea02ba17b47a63c49
+c5c1bee40529dadfd3ef8b4472c730bc136678c78abfb34670ec9d7dcd17ee3f
+892f93f2629e6e0f4b24ecb9f954069bf722f466dece3913bb6abbd2c471d9a5
+c5eea89b14aaccda43d30b0dd0f6eb6e9850d9747aa8aa8414c383ad01c374ee
+26d3552abec9ba22669cc9622ccf2921e3d0c8ecd1a70e861956de0bec6104b5
+b649ac994970c83f8a9e84b14a7dff7843d4ca3dd4af87cea43b5657e15ae0b5
+a940ce5047f006ab3596506600724764f23757205fe374fee04911336d655acc
+03e159ec27789191d1517c4f3f9122f5242d44d25eab8f0658cafb928566ca0e
+8f6589aa0c0ab13ca7a618008ae3eafd4671ee8fe0b562e70b3623b0e2a16eee
+97fd388087d2e03530c9fe7db6e52eccc7c48fd701ede35e08922861a9508d12
+bc8bbf24f0c6bee6e63dbcb489b603d4c4a78ce45bf2eab1d5d10456c42a65a8
+3a606f4e4b9b46eb13b57f2624b651859d3d2d5192b45dbd5a2ead14ff20ca76
+48f321309aa56d8c0c4a192b580821cc6c70c75e6f19d1c5414da898ec4dd39d
+b0eb93d6ba387a80702dfd2db610757ba340f63230
+"""
+))
+
+
 def txt2bin(inputs):
     s = b('').join([b(x) for x in inputs if not (x in '\n\r\t ')])
     return unhexlify(s)
