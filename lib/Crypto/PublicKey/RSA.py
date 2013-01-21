@@ -361,7 +361,8 @@ class _RSAobj(pubkey.pubkey):
 
         :Return: A byte string with the encoded public or private half.
         :Raise ValueError:
-            When the format is unknown or when you try to protect a PKCS#1 key.
+            When the format is unknown or when you try to encrypt a private
+            key if it's encoded with *DER* and *PKCS#1*.
 
         .. _RFC1421:    http://www.ietf.org/rfc/rfc1421.txt
         .. _RFC1423:    http://www.ietf.org/rfc/rfc1423.txt
@@ -382,7 +383,6 @@ class _RSAobj(pubkey.pubkey):
         # DER format is always used, even in case of PEM, which simply
         # encodes it into BASE64.
         if self.has_private():
-                keyType= { 1: 'RSA PRIVATE', 8: 'PRIVATE' }[pkcs]
                 binaryKey = newDerSequence(
                         0,
                         self.n,
@@ -394,14 +394,22 @@ class _RSAobj(pubkey.pubkey):
                         self.d % (self.q-1),
                         inverse(self.q, self.p)
                     ).encode()
-                if pkcs==8:
-                    if not pkcs8enc:
-                        pkcs8enc = 'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC'
-                    binaryKey = PKCS8.wrap(binaryKey, oid, passphrase, pkcs8enc)
-                elif format=='DER' and passphrase:
-                    raise ValueError("PKCS#1 private key cannot be encrypted")
+                if pkcs==1:
+                    keyType = 'RSA PRIVATE'
+                    if format=='DER' and passphrase:
+                        raise ValueError("PKCS#1 private key cannot be encrypted")
+                else: # PKCS#8
+                    if format=='PEM' and pkcs8enc is None:
+                        keyType = 'PRIVATE'
+                        binaryKey = PKCS8.wrap(binaryKey, oid, None)
+                    else:
+                        keyType = 'ENCRYPTED PRIVATE'
+                        if not pkcs8enc:
+                            pkcs8enc = 'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC'
+                        binaryKey = PKCS8.wrap(binaryKey, oid, passphrase, pkcs8enc)
+                        passphrase = None
         else:
-                keyType = "PUBLIC"
+                keyType = "RSA PUBLIC"
                 binaryKey = newDerSequence(
                     algorithmIdentifier,
                     newDerBitString(
@@ -411,8 +419,6 @@ class _RSAobj(pubkey.pubkey):
         if format=='DER':
             return binaryKey
         if format=='PEM':
-            if passphrase and pkcs==8:
-                passphrase = None
             pem_str = PEM.encode(binaryKey, keyType+" KEY", passphrase, self._randfunc)
             return tobytes(pem_str)
         raise ValueError("Unknown key format '%s'. Cannot export the RSA key." % format)
