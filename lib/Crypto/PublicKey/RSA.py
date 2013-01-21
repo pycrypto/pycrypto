@@ -334,9 +334,8 @@ class _RSAobj(pubkey.pubkey):
         :Parameter pkcs: The PKCS standard to follow for assembling the key.
          You have two choices:
 
-          - with **1**, the public key is embedded into an X.509 `SubjectPublicKeyInfo` DER SEQUENCE.
+          - with **1** (default), the public key is embedded into an X.509 `SubjectPublicKeyInfo` DER SEQUENCE.
             The private key is embedded into a `PKCS#1`_ `RSAPrivateKey` DER SEQUENCE.
-            This mode is the default.
           - with **8**, the private key is embedded into a `PKCS#8`_ `PrivateKeyInfo` DER SEQUENCE.
             This mode is not available for public keys.
 
@@ -350,7 +349,7 @@ class _RSAobj(pubkey.pubkey):
             The supported schemes are those listed in the
             `Crypto.PublicKey.PKCS8` module (``wrap_algo`` parameter).
 
-            When ``None`` is specified, the behavior depends on ``format``:
+            When ``None`` is specified (default), the behavior depends on ``format``:
 
             - For ``DER``, the *'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC'*
               scheme is used.
