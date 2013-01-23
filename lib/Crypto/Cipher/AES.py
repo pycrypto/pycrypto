@@ -38,8 +38,39 @@ As an example, encryption can be done as follows:
     >>> cipher = AES.new(key, AES.MODE_CFB, iv)
     >>> msg = iv + cipher.encrypt(b'Attack at dawn')
 
+A more complicated example is based on CCM, (see `MODE_CCM`) an `AEAD`_ mode
+that provides both confidentiality and authentication for a message.
+It also allows message for the header to remain in the clear, whilst still
+being authenticated. The encryption is done as follows:
+
+    >>> from Crypto.Cipher import AES
+    >>> from Crypto import Random
+    >>>
+    >>>
+    >>> hdr = b'To your eyes only'
+    >>> plaintext = b'Attack at dawn'
+    >>> key = b'Sixteen byte key'
+    >>> iv = Random.new().read(11)
+    >>> cipher = AES.new(key, AES.MODE_CCM, iv)
+    >>> cipher.update(hdr)
+    >>> msg = iv, hdr, cipher.encrypt(secret), cipher.digest()
+
+We assume that the tuple ``msg`` is transmitted to the receiver:
+
+    >>> iv, hdr, ciphertext, mac = msg
+    >>> key = b'Sixteen byte key'
+    >>> cipher = AES.new(key, AES.MODE_CCM, iv)
+    >>> cipher.update(hdr)
+    >>> plaintext = cipher.decrypt(ciphertext)
+    >>> try:
+    >>>     cipher.verify(mac)
+    >>>     print "The message is authentic: hdr=%s, pt=%s" % (hdr, plaintext)
+    >>> except ValueError:
+    >>>     print "Key incorrect or message corrupted"
+
 .. __: http://en.wikipedia.org/wiki/Advanced_Encryption_Standard
 .. _NIST: http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf
+.. _AEAD: http://blog.cryptographyengineering.com/2012/05/how-to-choose-authenticated-encryption.html
 
 :undocumented: __revision__, __package__
 """
@@ -94,7 +125,7 @@ def new(key, *args, **kwargs):
         The chaining mode to use for encryption or decryption.
         Default is `MODE_ECB`.
       IV : byte string
-        The initialization vector to use for encryption or decryption.
+        The initialization vector or nonce to use for encryption or decryption.
         
         It is ignored for `MODE_ECB` and `MODE_CTR`.
 
@@ -102,6 +133,11 @@ def new(key, *args, **kwargs):
         and `block_size` +2 bytes for decryption (in the latter case, it is
         actually the *encrypted* IV which was prefixed to the ciphertext).
         It is mandatory.
+
+        For `MODE_CCM`, this is the *nonce*. Its length must be in the range
+        ``[7..13]``. 11 or 12 bytes are reasonable values in general. Bear in
+        mind that with CCM there is a trade-off between nonce length and
+        maximum message size.
        
         For all other modes, it must be `block_size` bytes longs.
       counter : callable
@@ -112,6 +148,15 @@ def new(key, *args, **kwargs):
         (*Only* `MODE_CFB`).The number of bits the plaintext and ciphertext
         are segmented in.
         It must be a multiple of 8. If 0 or not specified, it will be assumed to be 8.
+      mac_len : integer
+        (*Only* `MODE_CCM`). Length of the MAC, in bytes. It must be even and in
+        the range ``[4..16]``. The default is 16.
+      msg_len : integer
+        (*Only* `MODE_CCM`). Length of the message to (de)cipher.
+        If not specified, ``encrypt`` or ``decrypt`` may only be called once.
+      assoc_len : integer
+        (*Only* `MODE_CCM`). Length of the associated data.
+        If not specified, all data is internally buffered.
       use_aesni : boolean
         Use AES-NI if available.
 
@@ -133,6 +178,8 @@ MODE_OFB = 5
 MODE_CTR = 6
 #: OpenPGP Mode. See `blockalgo.MODE_OPENPGP`.
 MODE_OPENPGP = 7
+#: Counter with CBC-MAC (CCM) Mode. See `blockalgo.MODE_CCM`.
+MODE_CCM = 8
 #: Size of a data block (in bytes)
 block_size = 16
 #: Size of a key (in bytes)
