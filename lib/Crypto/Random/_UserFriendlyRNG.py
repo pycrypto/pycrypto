@@ -56,6 +56,12 @@ class _EntropyCollector(object):
         self._clock_es = _EntropySource(accumulator, 253)
 
     def reinit(self):
+        # re-open the OSRNG as its file descriptor might have been closed after forking
+        try:
+            self._osrng.close()
+        except IOError:
+            pass
+        self._osrng = OSRNG.new()
         # Add 256 bits to each of the 32 pools, twice.  (For a total of 16384
         # bits collected from the operating system.)
         for i in range(2):
