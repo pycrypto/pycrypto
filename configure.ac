@@ -9,6 +9,18 @@ AC_CONFIG_HEADERS([src/config.h])
 # Checks for programs.
 AC_PROG_CC
 
+# Checks for compiler flags.
+old_CFLAGS="$CFLAGS"
+CFLAGS=-maes
+AC_MSG_CHECKING([whether CC supports -maes])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([])], [
+  AC_MSG_RESULT([yes])
+  AC_DEFINE(HAVE_MAES, [1], [Define if CC supports -maes])
+  have_maes=yes
+  ], [AC_MSG_RESULT([no])]
+)
+CFLAGS="$old_cflags"
+
 # Checks for libraries.
 AC_ARG_WITH([gmp], AS_HELP_STRING([--without-gmp], [Build without gmp library (default: test)]))
 AS_IF([test "x$with_gmp" != "xno"], [
@@ -36,7 +48,13 @@ AC_CHECK_DECLS([mpz_powm_sec], [], [], [
 ]])
 
 # Checks for header files.
-AC_CHECK_HEADERS([inttypes.h limits.h stddef.h stdint.h stdlib.h string.h wchar.h])
+AC_CHECK_HEADERS([inttypes.h limits.h stddef.h stdint.h stdlib.h string.h wchar.h cpuid.h])
+old_CPPFLAGS="$CPPFLAGS"
+AS_IF([test "x$have_maes" = "xyes"], [
+    CPPFLAGS="$CPPFLAGS -maes"
+])
+AC_CHECK_HEADERS([wmmintrin.h])
+CPPFLAGS="$old_CPPFLAGS"
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
