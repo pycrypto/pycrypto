@@ -60,9 +60,14 @@ the RSA key:
 __revision__ = "$Id$"
 __all__ = [ 'new', 'PKCS115_SigScheme' ]
 
+import sys
+
 import Crypto.Util.number
 from Crypto.Util.number import ceil_div
 from Crypto.Util.asn1 import DerSequence, DerNull, DerOctetString, DerObjectId
+
+if sys.version_info[0] == 2 and sys.version_info[1] == 1:
+    from Crypto.Util.py21compat import *
 from Crypto.Util.py3compat import *
 
 class PKCS115_SigScheme:
@@ -150,7 +155,13 @@ class PKCS115_SigScheme:
         em1 = bchr(0x00)*(k-len(m)) + m
         # Step 3
         try:
-            em2 = EMSA_PKCS1_V1_5_ENCODE(mhash, k)
+            em2_with_params = EMSA_PKCS1_V1_5_ENCODE(mhash, k, True)
+            # MD hashes always require NULL params in AlgorithmIdentifier.
+            # For all others, it is optional.
+            if mhash.oid.startswith("1.2.840.113549.2."):
+                em2_without_params = em2_with_params
+            else:
+                em2_without_params = EMSA_PKCS1_V1_5_ENCODE(mhash, k, False)
         except ValueError:
             return 0
         # Step 4
@@ -158,9 +169,9 @@ class PKCS115_SigScheme:
         # of its components one at a time) we avoid attacks to the padding
         # scheme like Bleichenbacher's (see http://www.mail-archive.com/cryptography@metzdowd.com/msg06537).
         # 
-        return em1==em2
+        return em1==em2_with_params or em1==em2_without_params
     
-def EMSA_PKCS1_V1_5_ENCODE(hash, emLen):
+def EMSA_PKCS1_V1_5_ENCODE(hash, emLen, with_hash_parameters=True):
     """
     Implement the ``EMSA-PKCS1-V1_5-ENCODE`` function, as defined
     in PKCS#1 v2.1 (RFC3447, 9.2).
@@ -174,17 +185,15 @@ def EMSA_PKCS1_V1_5_ENCODE(hash, emLen):
             The hash object that holds the digest of the message being signed.
      emLen : int
             The length the final encoding must have, in bytes.
+     with_hash_parameters:
+            If True (default), include NULL parameters for the hash
+            algorithm in the ``digestAlgorithm`` SEQUENCE.
 
     :attention: the early standard (RFC2313) stated that ``DigestInfo``
         had to be BER-encoded. This means that old signatures
         might have length tags in indefinite form, which
         is not supported in DER. Such encoding cannot be
         reproduced by this function.
-
-    :attention: the same standard defined ``DigestAlgorithm`` to be
-        of ``AlgorithmIdentifier`` type, where the PARAMETERS
-        item is optional. Encodings for ``MD2/4/5`` without
-        ``PARAMETERS`` cannot be reproduced by this function.
 
     :Return: An ``emLen`` byte long string that encodes the hash.
     """
@@ -208,8 +217,14 @@ def EMSA_PKCS1_V1_5_ENCODE(hash, emLen):
     #       { OID id-sha512 PARAMETERS NULL }
     #   }
     #
+    # Appendix B.1 also says that for SHA-1/-2 algorithms, the parameters
+    # should be omitted. They may be present, but when they are, they shall
+    # have NULL value.
+
     hashOID     = DerObjectId(hash.oid)
-    digestAlgo  = DerSequence([hashOID.encode(), DerNull().encode()])
+    digestAlgo  = DerSequence([hashOID.encode()])
+    if with_hash_parameters:
+        digestAlgo += DerNull().encode()
     digest      = DerOctetString(hash.digest())
     digestInfo  = DerSequence([
                     digestAlgo.encode(),
