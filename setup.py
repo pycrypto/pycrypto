@@ -384,7 +384,7 @@ kw = {'name':"pycrypto",
       'ext_modules': plat_ext + [
             # _fastmath (uses GNU mp library)
             Extension("Crypto.PublicKey._fastmath",
-                      include_dirs=['src/','/usr/include/'],
+                      include_dirs=['src/','/usr/include/','/usr/local/include/'],
                       libraries=['gmp'],
                       sources=["src/_fastmath.c"]),
 
