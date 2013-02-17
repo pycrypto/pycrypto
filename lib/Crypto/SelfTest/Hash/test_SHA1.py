@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#  SelfTest/Hash/SHA.py: Self-test for the SHA-1 hash function
+#  SelfTest/Hash/SHA1.py: Self-test for the SHA-1 hash function
 #
 # Written in 2008 by Dwayne C. Litzenberger <dlitz@dlitz.net>
 #
@@ -50,9 +50,9 @@ test_data = [
 ]
 
 def get_tests(config={}):
-    from Crypto.Hash import SHA
+    from Crypto.Hash import SHA1
     from common import make_hash_tests
-    return make_hash_tests(SHA, "SHA", test_data,
+    return make_hash_tests(SHA1, "SHA1", test_data,
         digest_size=20,
         oid="1.3.14.3.2.26")
 

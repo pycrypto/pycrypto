@@ -30,12 +30,12 @@ objects.
 
 from __future__ import nested_scopes
 
-from Crypto.Util.number import long_to_bytes, bytes_to_long
-from Crypto.Util.py3compat import *
-
 import sys
 if sys.version_info[0] == 2 and sys.version_info[1] == 1:
     from Crypto.Util.py21compat import *
+from Crypto.Util.py3compat import *
+
+from Crypto.Util.number import long_to_bytes, bytes_to_long
 
 __all__ = [ 'DerObject', 'DerInteger', 'DerOctetString', 'DerNull',
             'DerSequence', 'DerObjectId', 'DerBitString', 'DerSetOf',
@@ -73,7 +73,7 @@ class BytesIO_EOF(BytesIO):
 class NoDerElementError(EOFError):
     pass
 
-class DerObject:
+class DerObject(object):
         """Base class that defines a generic DER object.
 
         This class should never be directly instantiated.

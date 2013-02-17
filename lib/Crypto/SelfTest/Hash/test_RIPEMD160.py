@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#  SelfTest/Hash/test_RIPEMD.py: Self-test for the RIPEMD-160 hash function
+#  SelfTest/Hash/test_RIPEMD160.py: Self-test for the RIPEMD-160 hash function
 #
 # Written in 2008 by Dwayne C. Litzenberger <dlitz@dlitz.net>
 #
@@ -22,7 +22,7 @@
 # SOFTWARE.
 # ===================================================================
 
-#"""Self-test suite for Crypto.Hash.RIPEMD"""
+#"""Self-test suite for Crypto.Hash.RIPEMD160"""
 
 __revision__ = "$Id$"
 
@@ -59,9 +59,9 @@ test_data = [
 ]
 
 def get_tests(config={}):
-    from Crypto.Hash import RIPEMD
+    from Crypto.Hash import RIPEMD160
     from common import make_hash_tests
-    return make_hash_tests(RIPEMD, "RIPEMD", test_data,
+    return make_hash_tests(RIPEMD160, "RIPEMD160", test_data,
         digest_size=20,
         oid="1.3.36.3.2.1")
 
