@@ -65,7 +65,7 @@ class SHA1Hash(HashAlgo):
     #:  }
     #:
     #: This value uniquely identifies the SHA-1 algorithm.
-    oid = b('\x06\x05\x2b\x0e\x03\x02\x1a')
+    oid = "1.3.14.3.2.26"
 
     digest_size = 20
     block_size = 64

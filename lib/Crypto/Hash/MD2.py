@@ -59,7 +59,7 @@ class MD2Hash(HashAlgo):
     #:  }
     #:
     #: This value uniquely identifies the MD2 algorithm.
-    oid = b('\x06\x08\x2a\x86\x48\x86\xf7\x0d\x02\x02')
+    oid = "1.2.840.113549.2.2"
 
     digest_size = 16
     block_size = 16

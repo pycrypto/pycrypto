@@ -178,8 +178,6 @@ def make_hash_tests(module, module_name, test_data, digest_size, oid=None):
             description = row[2].encode('latin-1')
         name = "%s #%d: %s" % (module_name, i+1, description)
         tests.append(HashSelfTest(module, name, expected, input))
-    if oid is not None:
-        oid = b(oid)
     name = "%s #%d: digest_size" % (module_name, i+1)
     tests.append(HashDigestSizeSelfTest(module, name, digest_size))
     tests.append(HashTestOID(module, oid))
