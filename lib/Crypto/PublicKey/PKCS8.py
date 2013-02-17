@@ -100,7 +100,7 @@ def unpad(padded_data, block_size):
             raise ValueError("Padding is incorrect.")
     return padded_data[:-padding_len]
 
-class _DES_CBC:
+class _DES_CBC(object):
     """Cipher based on DES in CBC mode with PKCS#7 padding.
     
     Given the limited security of DES, this class only provides decryption for
@@ -118,7 +118,7 @@ class _DES_CBC:
         pt_padded = cipher.decrypt(ct)
         return unpad(pt_padded, cipher.block_size)
 
-class _RC2_CBC:
+class _RC2_CBC(object):
     """Cipher based on RC2/64 in CBC mode with PKCS#7 padding.
     
     Given the limited security of RC2/64, this class only provides decryption for
@@ -136,7 +136,7 @@ class _RC2_CBC:
         pt_padded = cipher.decrypt(ct)
         return unpad(pt_padded, cipher.block_size)
 
-class _DES_EDE3_CBC:
+class _DES_EDE3_CBC(object):
     """Cipher based on TDES in CBC mode with PKCS#7 padding"""
 
     key_size = 24
@@ -172,7 +172,7 @@ class _DES_EDE3_CBC:
         pt_padded = cipher.decrypt(ct)
         return unpad(pt_padded, cipher.block_size)
 
-class _AES_CBC:
+class _AES_CBC(object):
     """Base class for AES ciphers based in CBC mode with PKCS#7 padding"""
 
     iv_size = 16
@@ -225,7 +225,7 @@ class _AES256_CBC(_AES_CBC):
         self._iv = iv
         self._oid = id_AES256_CBC
 
-class _DES_EDE3_CBC_Factory:
+class _DES_EDE3_CBC_Factory(object):
     """Factory for _DES_EDE3_CBC objects"""
 
     def generate(self, algo_params, randfunc):
@@ -237,7 +237,7 @@ class _DES_EDE3_CBC_Factory:
         return _DES_EDE3_CBC(iv)
     decode = staticmethod(decode)
 
-class _AES128_CBC_Factory:
+class _AES128_CBC_Factory(object):
     """Factory for _AES128_CBC objects"""
 
     def generate(self, algo_params, randfunc):
@@ -249,7 +249,7 @@ class _AES128_CBC_Factory:
         return _AES128_CBC(iv)
     decode = staticmethod(decode)
 
-class _AES192_CBC_Factory:
+class _AES192_CBC_Factory(object):
     """Factory for _AES128_CBC objects"""
 
     def generate(self, algo_params, randfunc):
@@ -261,7 +261,7 @@ class _AES192_CBC_Factory:
         return _AES192_CBC(iv)
     decode = staticmethod(decode)
 
-class _AES256_CBC_Factory:
+class _AES256_CBC_Factory(object):
     """Factory for _AES256_CBC objects"""
 
     def generate(self, algo_params, randfunc):
@@ -273,7 +273,7 @@ class _AES256_CBC_Factory:
         return _AES256_CBC(iv)
     decode = staticmethod(decode)
 
-class _PBKDF1:
+class _PBKDF1(object):
     """Deprecated key derivation function defined in PKCS#5 v1.5."""
 
     def __init__(self, salt, count, hashAlgo):
@@ -285,7 +285,7 @@ class _PBKDF1:
         return PBKDF1(passphrase, self._salt, key_size, self._count,
                 self._hashAlgo)
 
-class _PBKDF2:
+class _PBKDF2(object):
     """Key derivation function from passwords (defined in PKCS#5 v2.0)."""
 
     def __init__(self, salt, count):
@@ -321,7 +321,7 @@ class _PBKDF2:
     def derive(self, passphrase, key_size):
         return PBKDF2(passphrase, self._salt, key_size, self._count)
 
-class _PBKDF2_Factory:
+class _PBKDF2_Factory(object):
     """Factory for _PBKDF2 objects"""
 
     def generate(self, algo_params, randfunc):
@@ -336,7 +336,7 @@ class _PBKDF2_Factory:
         return _PBKDF2(salt, count)
     decode = staticmethod(decode)
 
-class _PBES1:
+class _PBES1(object):
     """Deprecated encryption scheme with password-based key derivation
     (defined in PKCS#5 v1.5)."""
 
@@ -352,7 +352,7 @@ class _PBES1:
         pt = self._cipher(iv).decrypt(ct, key)
         return pt
 
-class _PBES2:
+class _PBES2(object):
     """Encryption scheme with password-based key derivation
     (defined in PKCS#5 v2.0)."""
 
@@ -406,7 +406,7 @@ cipher_dic = {
 #
 kdf_dict = { id_PBKDF2 : _PBKDF2_Factory }
 
-class _PBES2_Factory:
+class _PBES2_Factory(object):
     """Factory for _PBES2 objects"""
 
     def __init__(self, kdf_factory, cipher_factory):
@@ -441,7 +441,7 @@ class _PBES2_Factory:
         return _PBES2(kdf, cipher)
     decode = staticmethod(decode)
 
-class _PBES1_Factory:
+class _PBES1_Factory(object):
     """Factory for _PBES1 objects"""
 
     def __init__(self, hashAlgo, cipherAlgo):
