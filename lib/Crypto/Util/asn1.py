@@ -22,11 +22,13 @@
 
 from Crypto.Util.number import long_to_bytes, bytes_to_long
 import sys
+if sys.version_info[0] == 2 and sys.version_info[1] == 1:
+    from Crypto.Util.py21compat import *
 from Crypto.Util.py3compat import *
 
 __all__ = [ 'DerObject', 'DerInteger', 'DerOctetString', 'DerNull', 'DerSequence', 'DerObjectId' ]
 
-class DerObject:
+class DerObject(object):
         """Base class for defining a single DER object.
 
         Instantiate this class ONLY when you have to decode a DER element.

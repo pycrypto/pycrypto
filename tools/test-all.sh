@@ -1,6 +1,8 @@
-# -*- coding: utf-8 -*-
+#!/bin/bash
+# Script used to build PyCrypto under all Python versions
+# Edit it to suit your needs.
+# by Dwayne Litzenberger
 #
-# ===================================================================
 # The contents of this file are dedicated to the public domain.  To
 # the extent that dedication to the public domain is not available,
 # everyone is granted a worldwide, perpetual, royalty-free,
@@ -16,9 +18,16 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-# ===================================================================
+#
 
-# This file exists for backward compatibility with old code that refers to
-# Crypto.Hash.SHA
+set -e
+PREFIX=${PREFIX:-$(dirname "$(readlink -f "$0")")/py}
 
-from Crypto.Hash.SHA1 import __doc__, new, block_size, digest_size
+export -n PREFIX    # unexport
+
+find "$PREFIX"/pythons/python* -maxdepth 0 -type d -print0 | sort -z | while IFS= read -d '' -r pythondir
+do
+    echo "=== `basename $pythondir` ==="
+    "$pythondir"/bin/python?.? setup.py -q build
+    "$pythondir"/bin/python?.? setup.py -q test
+done

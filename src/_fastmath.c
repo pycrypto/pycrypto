@@ -746,6 +746,7 @@ rsaKey_new (PyObject * self, PyObject * args)
 	} else {
 		if (factorize_N_from_D(key))
 		{
+			Py_DECREF(key);
 			PyErr_SetString(PyExc_ValueError,
 			  "Unable to compute factors p and q from exponent d.");
 			return NULL;
@@ -1097,8 +1098,9 @@ cleanup:
 	mpz_clear (n);
 	Py_END_ALLOW_THREADS;
 
-	if (result == 0)
-	{
+	if (result < 0) {
+		return NULL;
+	} else if (result == 0) {
 		Py_INCREF(Py_False);
 		return Py_False;
 	} else {
@@ -1116,7 +1118,7 @@ INLINE size_t size (mpz_t n)
 
 void bytes_to_mpz (mpz_t result, const unsigned char *bytes, size_t size)
 {
-	unsigned long int i;
+	unsigned long i;
 	mpz_t tmp;
 	mpz_init (tmp);
 	Py_BEGIN_ALLOW_THREADS;
@@ -1124,7 +1126,7 @@ void bytes_to_mpz (mpz_t result, const unsigned char *bytes, size_t size)
 	for (i = 0; i < size; ++i)
 	{
 		/* get current byte */
-		mpz_set_ui (tmp, (unsigned long int)bytes[i]);
+		mpz_set_ui (tmp, (unsigned long)bytes[i]);
 		/* left shift and add */
 		mpz_mul_2exp (tmp, tmp, 8 * i);
 		mpz_add (result, result, tmp);
@@ -1173,12 +1175,12 @@ getRNG (void)
  * support 2.1)
  */
 static int
-getRandomInteger (mpz_t n, unsigned long int bits, PyObject *randfunc_)
+getRandomInteger (mpz_t n, unsigned long bits, PyObject *randfunc_)
 {
-	PyObject *arglist, *randfunc=NULL, *rng=NULL, *rand_bytes=NULL;
+	PyObject *arglist=NULL, *randfunc=NULL, *rng=NULL, *rand_bytes=NULL;
 	int return_val = 1;
-	unsigned long int bytes = bits / 8;
-	unsigned long int odd_bits = bits % 8;
+	unsigned long bytes = bits / 8;
+	unsigned long odd_bits = bits % 8;
 	/* generate 1 to 8 bits too many.
 	   we will remove them later by right-shifting */
 	bytes++;
@@ -1205,7 +1207,7 @@ getRandomInteger (mpz_t n, unsigned long int bits, PyObject *randfunc_)
 		goto cleanup;
 	}
 
-	arglist = Py_BuildValue ("(l)", (long int)bytes);
+	arglist = Py_BuildValue ("(l)", (long)bytes);
 	if (arglist == NULL) {
 		return_val = 0;
 		goto cleanup;
@@ -1215,7 +1217,6 @@ getRandomInteger (mpz_t n, unsigned long int bits, PyObject *randfunc_)
 		return_val = 0;
 		goto cleanup;
 	}
-	Py_DECREF (arglist);
 	if (!PyBytes_Check (rand_bytes))
 	{
 		PyErr_SetString (PyExc_TypeError,
@@ -1229,6 +1230,7 @@ getRandomInteger (mpz_t n, unsigned long int bits, PyObject *randfunc_)
 	mpz_fdiv_q_2exp (n, n, 8 - odd_bits);
 
 cleanup:
+	Py_XDECREF (arglist);
 	Py_XDECREF (rand_bytes);
 	if (rng)
 	{
@@ -1249,7 +1251,7 @@ cleanup:
  * support 2.1)
  */
 static int
-getRandomNBitInteger (mpz_t n, unsigned long int bits, PyObject *randfunc)
+getRandomNBitInteger (mpz_t n, unsigned long bits, PyObject *randfunc)
 {
 	if (!getRandomInteger (n, bits, randfunc))
 		return 0;
@@ -1259,7 +1261,7 @@ getRandomNBitInteger (mpz_t n, unsigned long int bits, PyObject *randfunc)
 }
 
 
-/* Sets n to a rangom number so that lower_bound <= n < upper_bound .
+/* Sets n to a random number so that lower_bound <= n < upper_bound .
  * If randfunc is provided it should be a callable which takes a single int
  * parameter and return as many random bytes as a python string.
  * Returns 1 on success
@@ -1296,7 +1298,7 @@ getRandomRange (mpz_t n, mpz_t lower_bound, mpz_t upper_bound,
 
 
 static void
-sieve_field (char *field, unsigned long int field_size, mpz_t start)
+sieve_field (char *field, unsigned long field_size, mpz_t start)
 {
 	mpz_t mpz_offset;
 	unsigned int offset;
@@ -1323,6 +1325,7 @@ sieve_field (char *field, unsigned long int field_size, mpz_t start)
 /* Tests if n is prime.
  * Returns 0 when n is definitly composite.
  * Returns 1 when n is probably prime.
+ * Returns -1 when there is an error.
  * every round reduces the chance of a false positive be at least 1/4.
  *
  * If randfunc is omitted, then the python version Random.new().read is used.
@@ -1335,7 +1338,8 @@ static int
 rabinMillerTest (mpz_t n, int rounds, PyObject *randfunc)
 {
 	int base_was_tested;
-	unsigned long int i, j, b, composite, return_val=1;
+	unsigned long i, j, b, composite;
+	int return_val = 1;
 	mpz_t a, m, z, n_1, tmp;
 	mpz_t tested[MAX_RABIN_MILLER_ROUNDS];
 
@@ -1369,9 +1373,9 @@ rabinMillerTest (mpz_t n, int rounds, PyObject *randfunc)
 	b = mpz_scan1 (n_1, 0);
 	mpz_fdiv_q_2exp (m, n_1, b);
 
-	if (mpz_fits_ulong_p (n) && (mpz_get_ui (n) - 2 < rounds))
+	if (mpz_fits_ulong_p (n) && (mpz_get_ui (n) - 2 < (unsigned long)rounds))
 		rounds = mpz_get_ui (n) - 2;
-	for (i = 0; i < rounds; ++i)
+	for (i = 0; i < (unsigned long)rounds; ++i)
 	{
 		mpz_set_ui (tmp, 2);
 		do
@@ -1449,17 +1453,17 @@ cleanup:
 static PyObject *
 getStrongPrime (PyObject *self, PyObject *args, PyObject *kwargs)
 {
-	unsigned long int i, j, result, bits, x, e=0;
+	unsigned long i, j, bits, x, e=0;
 	mpz_t p[2], y[2], R, X;
 	mpz_t tmp[2], lower_bound, upper_bound, range, increment;
 	mpf_t tmp_bound;
 	char *field;
-	double false_positive_prob;
-	int rabin_miller_rounds, is_possible_prime, error = 0;
+	double false_positive_prob = 1e-6;
+	int rabin_miller_rounds, is_possible_prime, error = 0, result;
 	PyObject *prime, *randfunc=NULL;
 	static char *kwlist[] = {"N", "e", "false_positive_prob", "randfunc", NULL};
-	unsigned long int base_size = SIEVE_BASE_SIZE;
-	unsigned long int field_size = 5 * base_size;
+	unsigned long base_size = SIEVE_BASE_SIZE;
+	unsigned long field_size = 5 * base_size;
 	int res;
 
 	if (!PyArg_ParseTupleAndKeywords (args, kwargs, "l|ldO:getStrongPrime",
