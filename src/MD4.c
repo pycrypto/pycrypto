@@ -25,18 +25,16 @@
  * ===================================================================
  *
  */
-  
 
-#include "Python.h"
+#include "pycrypto_common.h"
 #include <string.h>
-#include "pycrypto_compat.h"
 
 #define MODULE_NAME _MD4
 #define DIGEST_SIZE 16
 #define BLOCK_SIZE 64
 
-typedef unsigned int U32;
-typedef unsigned char U8;
+typedef uint32_t U32;
+typedef uint8_t U8;
 #define U32_MAX (U32)4294967295
 
 typedef struct {

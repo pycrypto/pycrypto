@@ -27,9 +27,8 @@
  */
   
 
-#include "Python.h"
+#include "pycrypto_common.h"
 #include <string.h>
-#include "pycrypto_compat.h"
 
 #define MODULE_NAME _MD2
 #define DIGEST_SIZE 16
@@ -46,8 +45,8 @@ static const char md2_oid[] = { 0x06, 0x08, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 
 #define DER_OID 		((void*)&md2_oid)
 #define DER_OID_SIZE		(sizeof md2_oid)
 
-typedef unsigned char U8;
-typedef unsigned int U32;
+typedef uint8_t U8;
+typedef uint32_t U32;
 
 typedef struct {
 	U8 C[16], X[48];
