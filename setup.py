@@ -124,6 +124,10 @@ class PCTBuildExt (build_ext):
             # Make assert() statements always work
             self.__remove_compiler_option("-DNDEBUG")
 
+            # mingw32's compiler no longer supports this option
+            if self.compiler.compiler_type == 'mingw32':
+                self.__remove_compiler_option("-mno-cygwin")
+
             # Choose our own optimization options
             for opt in ["-O", "-O0", "-O1", "-O2", "-O3", "-Os"]:
                 self.__remove_compiler_option(opt)
