@@ -49,7 +49,7 @@
 #elif defined(__sun) || defined(__sun__)
 # include <sys/inttypes.h>
 #else
-# error "stdint.h not found"
+# include <inttypes.h>
 #endif
 
 #include <assert.h>
