@@ -84,13 +84,15 @@ class DiffieHellman(object):
         RNG.
     """
     def __init__(self, p=None, g=None, priv_key=None):
-        if p is not None and g is not None:
-            self.p = p
-            self.g = g
-        else:
-            logging.debug('Using default prime and generator');
+        if p is None and g is None:
             self.p = def_p
             self.g = def_g
+        elif (p is None) ^ (g is None):
+            # Both can't be none
+            raise DHError('Invalid DH parameters supplied')
+        else:
+            self.p = p
+            self.g = g
 
         self.priv_key = priv_key
 
