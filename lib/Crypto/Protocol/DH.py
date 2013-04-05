@@ -102,7 +102,7 @@ class DiffieHellman(object):
     args:
         None
     returns:
-        the generated public key based on g**p % p; send this to the other
+        the generated public key based on g**k % p; send this to the other
         party.
     raises:
         TypeError if p, priv_key, or g are not ints/longs
