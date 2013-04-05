@@ -38,6 +38,8 @@ Standard):
     http://www.rsasecurity.com/rsalabs/pkcs/pkcs-3/
 """
 
+# 6411-bit MODP safe prime, group 17
+# Obtained from: http://tools.ietf.org/html/rfc3526#page-6
 # I am aware this is ugly but it's a big number. :(
 def_p = int('0xFFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67'
             'CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF2'
