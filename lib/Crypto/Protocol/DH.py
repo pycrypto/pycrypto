@@ -72,7 +72,7 @@ class DHError(Exception): pass
 
 """ DiffieHellman - Implements DH key exchange """
 class DiffieHellman(object):
-    """ Initalise DH object
+    """ Initialise DH object
 
     args:
         If all arguments are omitted, p, g, and priv_key are all calculated
