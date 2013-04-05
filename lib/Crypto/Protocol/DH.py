@@ -23,6 +23,8 @@
 # SOFTWARE.
 # ===================================================================
 
+__revision__ = "$Id$"
+
 from Crypto.Random.random import randint
 from Crypto.Util.number import bytes_to_long, long_to_bytes
 

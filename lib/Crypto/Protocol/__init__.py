@@ -37,5 +37,5 @@ Crypto.Protocol.KDF
 :undocumented: __revision__
 """
 
-__all__ = ['AllOrNothing', 'Chaffing', 'KDF']
+__all__ = ['AllOrNothing', 'Chaffing', 'KDF', 'DH']
 __revision__ = "$Id$"
