@@ -113,15 +113,15 @@ class DiffieHellman(object):
         return long_to_bytes(self.pub_key)
 
 
-    """Compute the shared secret
-
-    :Parameters:
-        rpub_key : integer, long, or bytes
-            remote public key
-    :Return:
-        The shared secret, derived from rpub_key**priv_key % p
-    """
     def computeKey(self, rpub_key):
+        """Compute the shared secret
+
+        :Parameters:
+            rpub_key : integer, long, or bytes
+                remote public key
+        :Return:
+            The shared secret, derived from rpub_key**priv_key % p
+        """
         if not self.priv_key:
             raise DHError('Private key not generated')
 
