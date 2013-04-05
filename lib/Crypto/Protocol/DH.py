@@ -23,8 +23,6 @@
 # SOFTWARE.
 # ===================================================================
 
-__revision__ = "$Id$"
-
 from Crypto.Random.random import randint
 from Crypto.Util.number import bytes_to_long, long_to_bytes
 
@@ -40,8 +38,6 @@ Standard):
     http://www.rsasecurity.com/rsalabs/pkcs/pkcs-3/
 """
 
-# 6411-bit MODP safe prime, group 17
-# Obtained from: http://tools.ietf.org/html/rfc3526#page-6
 # I am aware this is ugly but it's a big number. :(
 def_p = int('0xFFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67'
             'CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF2'
@@ -72,44 +68,39 @@ def_g = 2
 
 class DHError(Exception): pass
 
-""" DiffieHellman - Implements DH key exchange """
 class DiffieHellman(object):
-    """ Initialise DH object
-
-    args:
-        If all arguments are omitted, p, g, and priv_key are all calculated
-        dynamically.
-
-        p - prime number for DH key exchange. Should be a large "safe prime"
-        g - generator for DH key exchange
-        priv_key - the private key to use. Should be generated from a secure
-        RNG.
-    """
     def __init__(self, p=None, g=None, priv_key=None):
-        if p is None and g is None:
-            self.p = def_p
-            self.g = def_g
-        elif (p is None) ^ (g is None):
-            # Both can't be none
-            raise DHError('Invalid DH parameters supplied')
-        else:
+        """Initialise DH object
+
+        :Parameters:
+            p : integer or long
+                prime number for DH key exchange. Should be a large "safe prime"
+                (a prime of the form 2*p+1, where p is also prime)
+            g : integer
+                generator for DH key exchange. g should be a prime number. It
+                need not be large (2, 3, 5 are common choices).
+            priv_key : integer, long, or bytes
+                the private key to use. Should be generated from a secure RNG.
+                it should be in the range of p > priv_key > 1
+        """
+        if p is not None and g is not None:
             self.p = p
             self.g = g
+        else:
+            logging.debug('Using default prime and generator');
+            self.p = def_p
+            self.g = def_g
 
         self.priv_key = priv_key
 
 
-    """ Generate the private and public keys.
-
-    args:
-        None
-    returns:
-        the generated public key based on g**k % p; send this to the other
-        party.
-    raises:
-        TypeError if p, priv_key, or g are not ints/longs
-    """
     def generateKeys(self):
+        """Generate the private and public keys.
+
+        :Return:
+            The generated public key based on g**p % p; send this to the other
+            party.
+        """
         if not self.priv_key:
             self.priv_key = randint(1, self.p - 1)
         
@@ -122,18 +113,20 @@ class DiffieHellman(object):
         return long_to_bytes(self.pub_key)
 
 
-    """ Compute the shared secret
+    """Compute the shared secret
 
-    args:
-        other party's public key
-    returns:
-        the shared secret
-    raises:
-        DHError if no private key has been generated
+    :Parameters:
+        rpub_key : integer, long, or bytes
+            remote public key
+    :Return:
+        The shared secret, derived from rpub_key**priv_key % p
     """
     def computeKey(self, rpub_key):
         if not self.priv_key:
             raise DHError('Private key not generated')
+
+        if isinstance(rpub_key, bytes):
+            rpub_key = bytes_to_long(rpub_key)
 
         return long_to_bytes(pow(rpub_key, self.priv_key, self.p))
 
