@@ -220,7 +220,8 @@ class DSASlowMathTest(DSATest):
 
 def get_tests(config={}):
     tests = []
-    tests += list_test_cases(DSATest)
+    if config.get('slow_tests', 1):
+        tests += list_test_cases(DSATest)
     try:
         from Crypto.PublicKey import _fastmath
         tests += list_test_cases(DSAFastMathTest)
@@ -234,7 +235,8 @@ def get_tests(config={}):
             raise ImportError("While the _fastmath module exists, importing "+
                 "it failed. This may point to the gmp or mpir shared library "+
                 "not being in the path. _fastmath was found at "+_fm_path)
-    tests += list_test_cases(DSASlowMathTest)
+    if config.get('slow_tests', 1):
+        tests += list_test_cases(DSASlowMathTest)
     return tests
 
 if __name__ == '__main__':

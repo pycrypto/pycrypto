@@ -390,7 +390,8 @@ class RSASlowMathTest(RSATest):
 
 def get_tests(config={}):
     tests = []
-    tests += list_test_cases(RSATest)
+    if config.get('slow_tests', 1):
+        tests += list_test_cases(RSATest)
     try:
         from Crypto.PublicKey import _fastmath
         tests += list_test_cases(RSAFastMathTest)

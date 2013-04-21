@@ -209,7 +209,8 @@ class PKCS1_15_Tests(unittest.TestCase):
 
 def get_tests(config={}):
     tests = []
-    tests += list_test_cases(PKCS1_15_Tests)
+    if config.get('slow_tests', 1):
+        tests += list_test_cases(PKCS1_15_Tests)
     return tests
 
 if __name__ == '__main__':
