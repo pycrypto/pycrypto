@@ -363,7 +363,8 @@ class PKCS1_OAEP_Tests(unittest.TestCase):
 
 def get_tests(config={}):
     tests = []
-    tests += list_test_cases(PKCS1_OAEP_Tests)
+    if config.get('slow_tests', 1):
+        tests += list_test_cases(PKCS1_OAEP_Tests)
     return tests
 
 if __name__ == '__main__':

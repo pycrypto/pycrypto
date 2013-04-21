@@ -31,7 +31,7 @@ from Crypto.PublicKey import ElGamal
 from Crypto.Util.number import *
 from Crypto.Util.py3compat import *
 
-class ElGamalTest(unittest.TestCase):
+class ElGamalTestBase(unittest.TestCase):
 
     #
     # Test vectors
@@ -93,49 +93,6 @@ class ElGamalTest(unittest.TestCase):
         }
     ]
 
-    def test_generate_128(self):
-        self._test_random_key(128)
-
-    def test_generate_512(self):
-        self._test_random_key(512)
-
-    def test_encryption(self):
-        for tv in self.tve:
-            for as_longs in (0,1):
-                d = self.convert_tv(tv, as_longs)
-                key = ElGamal.construct(d['key'])
-                ct = key.encrypt(d['pt'], d['k'])
-                self.assertEquals(ct[0], d['ct1'])
-                self.assertEquals(ct[1], d['ct2'])
-
-    def test_decryption(self):
-        for tv in self.tve:
-            for as_longs in (0,1):
-                d = self.convert_tv(tv, as_longs)
-                key = ElGamal.construct(d['key'])
-                pt = key.decrypt((d['ct1'], d['ct2']))
-                self.assertEquals(pt, d['pt'])
-
-    def test_signing(self):
-        for tv in self.tvs:
-            for as_longs in (0,1):
-                d = self.convert_tv(tv, as_longs)
-                key = ElGamal.construct(d['key'])
-                sig1, sig2 = key.sign(d['h'], d['k'])
-                self.assertEquals(sig1, d['sig1'])
-                self.assertEquals(sig2, d['sig2'])
-
-    def test_verification(self):
-        for tv in self.tvs:
-            for as_longs in (0,1):
-                d = self.convert_tv(tv, as_longs)
-                key = ElGamal.construct(d['key'])
-                # Positive test
-                res = key.verify( d['h'], (d['sig1'],d['sig2']) )
-                self.failUnless(res)
-                # Negative test
-                res = key.verify( d['h'], (d['sig1']+1,d['sig2']) )
-                self.failIf(res)
 
     def convert_tv(self, tv, as_longs=0):
         """Convert a test vector from textual form (hexadecimal ascii
@@ -199,12 +156,59 @@ class ElGamalTest(unittest.TestCase):
         plaintext = b("Test")
         ciphertext = elgObj.encrypt(plaintext, 123456789L)
 
+class ElGamalTest(ElGamalTestBase):
+    def test_generate_128(self):
+        self._test_random_key(128)
+
+    def test_encryption(self):
+        for tv in self.tve:
+            for as_longs in (0,1):
+                d = self.convert_tv(tv, as_longs)
+                key = ElGamal.construct(d['key'])
+                ct = key.encrypt(d['pt'], d['k'])
+                self.assertEquals(ct[0], d['ct1'])
+                self.assertEquals(ct[1], d['ct2'])
+
+    def test_decryption(self):
+        for tv in self.tve:
+            for as_longs in (0,1):
+                d = self.convert_tv(tv, as_longs)
+                key = ElGamal.construct(d['key'])
+                pt = key.decrypt((d['ct1'], d['ct2']))
+                self.assertEquals(pt, d['pt'])
+
+    def test_signing(self):
+        for tv in self.tvs:
+            for as_longs in (0,1):
+                d = self.convert_tv(tv, as_longs)
+                key = ElGamal.construct(d['key'])
+                sig1, sig2 = key.sign(d['h'], d['k'])
+                self.assertEquals(sig1, d['sig1'])
+                self.assertEquals(sig2, d['sig2'])
+
+    def test_verification(self):
+        for tv in self.tvs:
+            for as_longs in (0,1):
+                d = self.convert_tv(tv, as_longs)
+                key = ElGamal.construct(d['key'])
+                # Positive test
+                res = key.verify( d['h'], (d['sig1'],d['sig2']) )
+                self.failUnless(res)
+                # Negative test
+                res = key.verify( d['h'], (d['sig1']+1,d['sig2']) )
+                self.failIf(res)
+
+class ElGamalSlowTest(ElGamalTestBase):
+    def test_generate_512(self):
+        self._test_random_key(512)
+
 def get_tests(config={}):
     tests = []
-    tests += list_test_cases(ElGamalTest)
+    if config.get('slow_tests', 1):
+        tests += list_test_cases(ElGamalTest)
+        tests += list_test_cases(ElGamalSlowTest)
     return tests
 
 if __name__ == '__main__':
     suite = lambda: unittest.TestSuite(get_tests())
     unittest.main(defaultTest='suite')
-
