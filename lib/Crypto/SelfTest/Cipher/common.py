@@ -29,7 +29,10 @@ __revision__ = "$Id$"
 import sys
 import unittest
 from binascii import a2b_hex, b2a_hex
+if sys.version_info[0] == 2 and sys.version_info[1] == 1:
+    from Crypto.Util.py21compat import *
 from Crypto.Util.py3compat import *
+from Crypto.Util.strxor import strxor
 
 # For compatibility with Python 2.1 and Python 2.2
 if sys.hexversion < 0x02030000:
@@ -289,6 +292,149 @@ class IVLengthTest(unittest.TestCase):
     def _dummy_counter(self):
         return "\0" * self.module.block_size
 
+class IVAttributeTest(unittest.TestCase):
+    def __init__(self, module, params):
+        unittest.TestCase.__init__(self)
+        self.module = module
+        self.key = b(params['key'])
+
+    def shortDescription(self):
+        return "Check that the IV attribute is updated after encryption and decryption"
+
+    def runTest(self):
+        self._run_tests_on_module(low_level=True)
+        self._run_tests_on_module(low_level=False)
+
+    def _run_tests_on_module(self, low_level):
+        from Crypto import Random
+        k = a2b_hex(self.key)
+        iv = Random.get_random_bytes(self.module.block_size)
+        zero = b("\0")*self.module.block_size
+        plaintext = Random.get_random_bytes(self.module.block_size)
+
+        ##
+        ## ECB mode
+        ##
+
+        # ECB mode doesn't have an IV, but only test the high-level API, since
+        # the low-level code currently behaves differently.
+        if not low_level:
+            cipher = self.module.new(k, self.module.MODE_ECB)
+            self.assertRaises(AttributeError, getattr, cipher, 'IV')
+            self.assertRaises(AttributeError, setattr, cipher, 'IV', iv)
+
+        ##
+        ## CBC mode
+        ##
+
+        # .IV should initially be the real IV
+        cipher = self.module.new(k, self.module.MODE_CBC, iv)
+        if low_level:
+            cipher = cipher._cipher
+        self.assertEqual(b2a_hex(iv), b2a_hex(cipher.IV))
+
+        # After encryption, the IV should equal the previous ciphertext block
+        ciphertext = cipher.encrypt(plaintext)
+        self.assertEqual(b2a_hex(ciphertext), b2a_hex(cipher.IV))
+
+        # Modifying the IV should affect encryption
+        cipher.IV = iv
+        ciphertext2 = cipher.encrypt(plaintext)
+        self.assertEqual(b2a_hex(ciphertext), b2a_hex(ciphertext2))
+
+        # Modifying the IV should affect decryption
+        cipher = self.module.new(k, self.module.MODE_CBC, zero)
+        if low_level:
+            cipher = cipher._cipher
+        cipher.IV = iv
+        plaintext2 = cipher.decrypt(ciphertext)
+        self.assertEqual(b2a_hex(plaintext), b2a_hex(plaintext2))
+
+        # After decryption, the IV should equal the previous ciphetext block
+        self.assertEqual(b2a_hex(ciphertext), b2a_hex(cipher.IV))
+
+        ##
+        ## CFB mode
+        ##
+
+        # .IV should initially be the real IV
+        cipher = self.module.new(k, self.module.MODE_CFB, iv)
+        if low_level:
+            cipher = cipher._cipher
+        self.assertEqual(b2a_hex(iv), b2a_hex(cipher.IV))
+
+        # After encryption, the IV should equal the previous ciphertext block
+        ciphertext = cipher.encrypt(plaintext)
+        self.assertEqual(b2a_hex(ciphertext), b2a_hex(cipher.IV))
+
+        # Modifying the IV should affect encryption
+        cipher.IV = iv
+        ciphertext2 = cipher.encrypt(plaintext)
+        self.assertEqual(b2a_hex(ciphertext), b2a_hex(ciphertext2))
+
+        # Modifying the IV should affect decryption
+        cipher = self.module.new(k, self.module.MODE_CFB, zero)
+        if low_level:
+            cipher = cipher._cipher
+        cipher.IV = iv
+        plaintext2 = cipher.decrypt(ciphertext)
+        self.assertEqual(b2a_hex(plaintext), b2a_hex(plaintext2))
+
+        # After decryption, the IV should equal the previous ciphetext block
+        self.assertEqual(b2a_hex(ciphertext), b2a_hex(cipher.IV))
+
+        ##
+        ## OFB mode
+        ##
+
+        # .IV should initially be the real IV
+        cipher = self.module.new(k, self.module.MODE_OFB, iv)
+        if low_level:
+            cipher = cipher._cipher
+        self.assertEqual(b2a_hex(iv), b2a_hex(cipher.IV))
+
+        # After encryption, the IV should equal the previous ciphertext block XOR the previous plaintext block
+        ciphertext = cipher.encrypt(plaintext)
+        self.assertEqual(b2a_hex(strxor(ciphertext, plaintext)), b2a_hex(cipher.IV))
+
+        # Modifying the IV should affect encryption
+        cipher.IV = iv
+        ciphertext2 = cipher.encrypt(plaintext)
+        self.assertEqual(b2a_hex(ciphertext), b2a_hex(ciphertext2))
+
+        # Modifying the IV should affect decryption
+        cipher = self.module.new(k, self.module.MODE_OFB, zero)
+        if low_level:
+            cipher = cipher._cipher
+        cipher.IV = iv
+        plaintext2 = cipher.decrypt(ciphertext)
+        self.assertEqual(b2a_hex(plaintext), b2a_hex(plaintext2))
+
+        # After decryption, the IV should equal the previous ciphetext block
+        self.assertEqual(b2a_hex(strxor(ciphertext, plaintext2)), b2a_hex(cipher.IV))
+
+        ##
+        ## CTR mode
+        ##
+
+        # The CTR-mode nonce is accessible via the counter object, not the
+        # cipher itself.
+        if not low_level:
+            cipher = self.module.new(k, self.module.MODE_CTR, counter=lambda: "\0"*16)
+            self.assertRaises(AttributeError, getattr, cipher, 'IV')
+            self.assertRaises(AttributeError, setattr, cipher, 'IV', iv)
+
+        ##
+        ## OPENPGP mode
+        ##
+
+        # There is no low-level MODE_OPENPGP
+        if not low_level:
+            # OPENPGP mode doesn't allow you to set the IV.
+            cipher = self.module.new(k, self.module.MODE_OPENPGP, iv)
+            self.assertEqual(b2a_hex(iv), b2a_hex(cipher.IV))
+            self.assertRaises(AttributeError, setattr, cipher, 'IV', zero)
+
 def make_block_tests(module, module_name, test_data, additional_params=dict()):
     tests = []
     extra_tests_added = 0
@@ -337,6 +483,7 @@ def make_block_tests(module, module_name, test_data, additional_params=dict()):
                 RoundtripTest(module, params),
                 PGPTest(module, params),
                 IVLengthTest(module, params),
+                IVAttributeTest(module, params),
             ]
             extra_tests_added = 1
 

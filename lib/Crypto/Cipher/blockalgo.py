@@ -133,7 +133,7 @@ def _getParameter(name, index, args, kwargs, default=None):
         param = args[index]
     return param or default
     
-class BlockAlgo:
+class BlockAlgo(object):
     """Class modelling an abstract block cipher."""
 
     def __init__(self, factory, key, *args, **kwargs):
@@ -142,7 +142,6 @@ class BlockAlgo:
         
         if self.mode != MODE_OPENPGP:
             self._cipher = factory.new(key, *args, **kwargs)
-            self.IV = self._cipher.IV
         else:
             # OPENPGP mode. For details, see 13.9 in RCC4880.
             #
@@ -153,15 +152,15 @@ class BlockAlgo:
             
             self._done_first_block = False
             self._done_last_block = False
-            self.IV = _getParameter('IV', 1, args, kwargs)
-            if not self.IV:
+            self._IV = _getParameter('IV', 1, args, kwargs)
+            if not self._IV:
                 # XXX - When MODE_OPENPGP was introduced in PyCrypto 2.6, it
                 # expected a lowercase 'iv' kwarg, but every other block cipher
                 # module expected uppercase 'IV'.  For backward-compatibility,
                 # we'll support the old form for a release or two, then remove
                 # it.
-                self.IV = _getParameter('iv', 1, args, kwargs)
-                if self.IV:
+                self._IV = _getParameter('iv', 1, args, kwargs)
+                if self._IV:
                     warnings.warn("lowercase 'iv' kwarg will be removed in a future version of PyCrypto",
                                   LowercaseIV_DeprecationWarning, 4)
                 else:
@@ -173,21 +172,21 @@ class BlockAlgo:
                     segment_size=self.block_size*8)
            
             # The cipher will be used for...
-            if len(self.IV) == self.block_size:
+            if len(self._IV) == self.block_size:
                 # ... encryption
                 self._encrypted_IV = IV_cipher.encrypt(
-                    self.IV + self.IV[-2:] +        # Plaintext
+                    self._IV + self._IV[-2:] +        # Plaintext
                     b('\x00')*(self.block_size-2)   # Padding
                     )[:self.block_size+2]
-            elif len(self.IV) == self.block_size+2:
+            elif len(self._IV) == self.block_size+2:
                 # ... decryption
-                self._encrypted_IV = self.IV
-                self.IV = IV_cipher.decrypt(self.IV +   # Ciphertext
+                self._encrypted_IV = self._IV
+                self._IV = IV_cipher.decrypt(self._IV +   # Ciphertext
                     b('\x00')*(self.block_size-2)       # Padding
                     )[:self.block_size+2]
-                if self.IV[-2:] != self.IV[-4:-2]:
+                if self._IV[-2:] != self._IV[-4:-2]:
                     raise ValueError("Failed integrity check for OPENPGP IV")
-                self.IV = self.IV[:-2]
+                self._IV = self._IV[:-2]
             else:
                 raise ValueError("Length of IV must be %d or %d bytes for MODE_OPENPGP"
                     % (self.block_size, self.block_size+2))
@@ -196,6 +195,41 @@ class BlockAlgo:
             self._cipher = factory.new(key, MODE_CFB,
                 self._encrypted_IV[-self.block_size:],
                 segment_size=self.block_size*8)
+
+    def _BlockAlgo__getIV(self):   # Internal getter for the 'IV' attribute
+        if self.mode in (MODE_ECB, MODE_CTR):
+            raise AttributeError("No IV in this cipher mode")
+        elif self.mode == MODE_OPENPGP:
+            return self._IV
+        else:
+            return self._cipher.IV
+
+    def _BlockAlgo__setIV(self, value):  # Internal setter for the 'IV' attribute
+        if self.mode in (MODE_ECB, MODE_CTR):
+            # It wouldn't do anything anyway
+            raise AttributeError("No IV in this cipher mode")
+        elif self.mode == MODE_OPENPGP:
+            # It wouldn't do anything anyway
+            raise AttributeError("Can't set IV in this cipher mode")
+        else:
+            self._cipher.IV = value
+
+    if sys.version_info[0] == 2 and sys.version_info[1] == 1:
+        # Python 2.1 doesn't have properties
+        def __getattr__(self, name):
+            if name == 'IV':
+                return self.__getIV()
+            else:
+                raise AttributeError(name)
+
+        def __setattr__(self, name, value):
+            if name == 'IV':
+                self.__setIV(value)
+            else:
+                self.__dict__[name] = value
+    else:
+        IV = property(_BlockAlgo__getIV, _BlockAlgo__setIV)
+        del _BlockAlgo__getIV, _BlockAlgo__setIV
 
     def encrypt(self, plaintext):
         """Encrypt data with the key and the parameters set at initialization.
