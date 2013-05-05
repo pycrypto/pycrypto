@@ -26,6 +26,9 @@ if sys.version_info[0] == 2 and sys.version_info[1] == 1:
     from Crypto.Util.py21compat import *
 from Crypto.Util.py3compat import *
 
+import warnings
+from Crypto.pct_warnings import LowercaseIV_DeprecationWarning
+
 #: *Electronic Code Book (ECB)*.
 #: This is the simplest encryption mode. Each of the plaintext blocks
 #: is directly encrypted into a ciphertext block, independently of
@@ -150,10 +153,20 @@ class BlockAlgo:
             
             self._done_first_block = False
             self._done_last_block = False
-            self.IV = _getParameter('iv', 1, args, kwargs)
+            self.IV = _getParameter('IV', 1, args, kwargs)
             if not self.IV:
-                raise ValueError("MODE_OPENPGP requires an IV")
-            
+                # XXX - When MODE_OPENPGP was introduced in PyCrypto 2.6, it
+                # expected a lowercase 'iv' kwarg, but every other block cipher
+                # module expected uppercase 'IV'.  For backward-compatibility,
+                # we'll support the old form for a release or two, then remove
+                # it.
+                self.IV = _getParameter('iv', 1, args, kwargs)
+                if self.IV:
+                    warnings.warn("lowercase 'iv' kwarg will be removed in a future version of PyCrypto",
+                                  LowercaseIV_DeprecationWarning, 4)
+                else:
+                    raise ValueError("MODE_OPENPGP requires an IV")
+
             # Instantiate a temporary cipher to process the IV
             IV_cipher = factory.new(key, MODE_CFB,
                     b('\x00')*self.block_size,      # IV for CFB

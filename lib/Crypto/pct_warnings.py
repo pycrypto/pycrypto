@@ -52,6 +52,9 @@ class GetRandomNumber_DeprecationWarning(CryptoDeprecationWarning):
 class PowmInsecureWarning(CryptoRuntimeWarning):
     """Warning for when _fastmath is built without mpz_powm_sec"""
 
+class LowercaseIV_DeprecationWarning(CryptoDeprecationWarning):
+    """Issued when lowercase 'iv' kwarg is passed to a block cipher"""
+
 # By default, we want this warning to be shown every time we compensate for
 # clock rewinding.
 import warnings as _warnings
