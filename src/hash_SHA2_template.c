@@ -30,8 +30,7 @@
  *
  */
 
-#include "Python.h"
-#include "pycrypto_compat.h"
+#include "pycrypto_common.h"
 
 /* compress one block  */
 static void sha_compress(hash_state * hs)
@@ -87,7 +86,7 @@ static void sha_compress(hash_state * hs)
  * return 1 on success
  * return 0 if the length overflows
  */
-int add_length(hash_state *hs, sha2_word_t inc) {
+static int add_length(hash_state *hs, sha2_word_t inc) {
     sha2_word_t overflow_detector;
     overflow_detector = hs->length_lower;
     hs->length_lower += inc;

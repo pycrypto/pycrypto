@@ -26,8 +26,11 @@
 
 __revision__ = "$Id$"
 
-from common import dict     # For compatibility with Python 2.1 and 2.2
+import sys
+if sys.version_info[0] == 2 and sys.version_info[1] == 1:
+    from Crypto.Util.py21compat import *
 from Crypto.Util.py3compat import *
+from common import dict     # For compatibility with Python 2.1 and 2.2
 from binascii import hexlify
 
 # This is a list of (plaintext, ciphertext, key[, description[, params]]) tuples.
@@ -1446,8 +1449,14 @@ test_data = [
 
 def get_tests(config={}):
     from Crypto.Cipher import AES
+    from Crypto.Util import cpuid
     from common import make_block_tests
-    return make_block_tests(AES, "AES", test_data)
+
+    tests = make_block_tests(AES, "AES", test_data, {'use_aesni': False})
+    if cpuid.have_aes_ni():
+        # Run tests with AES-NI instructions if they are available.
+        tests += make_block_tests(AES, "AESNI", test_data, {'use_aesni': True})
+    return tests
 
 if __name__ == '__main__':
     import unittest

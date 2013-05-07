@@ -26,12 +26,10 @@
  * $Id$
  */
 
+#include "pycrypto_common.h"
 #include <stdio.h>
 #include <string.h>
-#include "Python.h"
-#include "pycrypto_compat.h"
 #include <longintrepr.h>				/* for conversions */
-#include "config.h"
 #if HAVE_LIBGMP
 # include <gmp.h>
 #elif HAVE_LIBMPIR
@@ -52,12 +50,6 @@
 #endif
 
 #define SIEVE_BASE_SIZE (sizeof (sieve_base) / sizeof (sieve_base[0]))
-
-#ifdef _MSC_VER
-#define INLINE __inline
-#else
-#define INLINE inline
-#endif
 
 static unsigned int sieve_base[10000];
 static int rabinMillerTest (mpz_t n, int rounds, PyObject *randfunc);
@@ -746,6 +738,7 @@ rsaKey_new (PyObject * self, PyObject * args)
 	} else {
 		if (factorize_N_from_D(key))
 		{
+			Py_DECREF(key);
 			PyErr_SetString(PyExc_ValueError,
 			  "Unable to compute factors p and q from exponent d.");
 			return NULL;
@@ -1110,7 +1103,7 @@ cleanup:
 
 
 
-INLINE size_t size (mpz_t n)
+inline size_t size (mpz_t n)
 {
 	return mpz_sizeinbase (n, 2);
 }
@@ -1176,7 +1169,7 @@ getRNG (void)
 static int
 getRandomInteger (mpz_t n, unsigned long bits, PyObject *randfunc_)
 {
-	PyObject *arglist, *randfunc=NULL, *rng=NULL, *rand_bytes=NULL;
+	PyObject *arglist=NULL, *randfunc=NULL, *rng=NULL, *rand_bytes=NULL;
 	int return_val = 1;
 	unsigned long bytes = bits / 8;
 	unsigned long odd_bits = bits % 8;
@@ -1216,7 +1209,6 @@ getRandomInteger (mpz_t n, unsigned long bits, PyObject *randfunc_)
 		return_val = 0;
 		goto cleanup;
 	}
-	Py_DECREF (arglist);
 	if (!PyBytes_Check (rand_bytes))
 	{
 		PyErr_SetString (PyExc_TypeError,
@@ -1230,6 +1222,7 @@ getRandomInteger (mpz_t n, unsigned long bits, PyObject *randfunc_)
 	mpz_fdiv_q_2exp (n, n, 8 - odd_bits);
 
 cleanup:
+	Py_XDECREF (arglist);
 	Py_XDECREF (rand_bytes);
 	if (rng)
 	{
