@@ -88,11 +88,17 @@ def new(key, *args, **kwargs):
         actually the *encrypted* IV which was prefixed to the ciphertext).
         It is mandatory.
        
-        For all other modes, it must be `block_size` bytes longs.
+        For `MODE_EAX`, this is the *nonce*. There are no restrictions on its
+        length, but it is recommended to use at least 16 bytes.
+       
+        For all other modes, it must be 8 bytes long.
       counter : callable
         (*Only* `MODE_CTR`). A stateful function that returns the next
         *counter block*, which is a byte string of `block_size` bytes.
         For better performance, use `Crypto.Util.Counter`.
+      mac_len : integer
+        (*Only* `MODE_EAX`). Length of the MAC, in bytes.
+        It must be no larger than 8 (which is the default).
       segment_size : integer
         (*Only* `MODE_CFB`).The number of bits the plaintext and ciphertext
         are segmented in.
@@ -116,6 +122,8 @@ MODE_OFB = 5
 MODE_CTR = 6
 #: OpenPGP Mode. See `blockalgo.MODE_OPENPGP`.
 MODE_OPENPGP = 7
+#: EAX Mode. See `blockalgo.MODE_EAX`.
+MODE_EAX = 9
 #: Size of a data block (in bytes)
 block_size = 8
 #: Size of a key (in bytes)
