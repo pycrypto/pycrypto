@@ -29,11 +29,14 @@ from __future__ import nested_scopes
 __revision__ = "$Id$"
 
 import sys
+if sys.version_info[0] == 2 and sys.version_info[1] == 1:
+    from Crypto.Util.py21compat import *
+
 import unittest
 from binascii import a2b_hex, b2a_hex, hexlify
+
 from Crypto.Util.py3compat import *
 from Crypto.Util.strxor import strxor_c
-
 from Crypto.Cipher.blockalgo import ApiUsageError, MacMismatchError
 
 # For compatibility with Python 2.1 and Python 2.2
@@ -72,8 +75,6 @@ class CipherSelfTest(unittest.TestCase):
         self.ciphertext = b(_extract(params, 'ciphertext'))
         self.module_name = _extract(params, 'module_name', None)
         self.assoc_data = _extract(params, 'assoc_data', None)
-        if self.assoc_data:
-            self.assoc_data = b(self.assoc_data)
         self.mac = _extract(params, 'mac', None)
         if self.assoc_data:
             self.mac = b(self.mac)
@@ -128,12 +129,17 @@ class CipherSelfTest(unittest.TestCase):
             else:
                 return self.module.new(a2b_hex(self.key), self.mode, a2b_hex(self.iv), **params)
 
+    def isMode(self, name):
+        if not hasattr(self.module, "MODE_"+name):
+            return False
+        return self.mode == getattr(self.module, "MODE_"+name)
+
     def runTest(self):
         plaintext = a2b_hex(self.plaintext)
         ciphertext = a2b_hex(self.ciphertext)
-        assoc_data = None
+        assoc_data = []
         if self.assoc_data:
-            assoc_data = a2b_hex(self.assoc_data)
+            assoc_data = [ a2b_hex(b(x)) for x in self.assoc_data]
 
         ct = None
         pt = None
@@ -147,19 +153,22 @@ class CipherSelfTest(unittest.TestCase):
             decipher = self._new(1)
 
             # Only AEAD modes
-            if self.assoc_data:
-                cipher.update(assoc_data)
-                decipher.update(assoc_data)
+            for comp in assoc_data:
+                cipher.update(comp)
+                decipher.update(comp)
             
             ctX = b2a_hex(cipher.encrypt(plaintext))
-            ptX = b2a_hex(decipher.decrypt(ciphertext))
+            if self.isMode("SIV"):
+                ptX = b2a_hex(decipher.decrypt(ciphertext+a2b_hex(self.mac)))
+            else:
+                ptX = b2a_hex(decipher.decrypt(ciphertext))
             
             if ct:
                 self.assertEqual(ct, ctX)
                 self.assertEqual(pt, ptX)
             ct, pt = ctX, ptX
 
-        if hasattr(self.module, "MODE_OPENPGP") and self.mode == self.module.MODE_OPENPGP:
+        if self.isMode("OPENPGP"):
             # In PGP mode, data returned by the first encrypt()
             # is prefixed with the encrypted IV.
             # Here we check it and then remove it from the ciphertexts.
@@ -385,9 +394,17 @@ class AEADTests(unittest.TestCase):
         self.module = module
         self.mode_name = mode_name
         self.mode = getattr(module, mode_name)
-        self.key = b('\xFF')*key_size
+        if not self.isMode("SIV"):
+            self.key = b('\xFF')*key_size
+        else:
+            self.key = b('\xFF')*key_size*2
         self.iv = b('\x00')*10
         self.description = "AEAD Test"
+
+    def isMode(self, name):
+        if not hasattr(self.module, "MODE_"+name):
+            return False
+        return self.mode == getattr(self.module, "MODE_"+name)
 
     def right_mac_test(self):
         """Positive tests for MAC"""
@@ -407,7 +424,10 @@ class AEADTests(unittest.TestCase):
         # Decrypt and verify that MAC is accepted
         decipher = self.module.new(self.key, self.mode, self.iv)
         decipher.update(ad_ref)
-        pt = decipher.decrypt(ct_ref)
+        if not self.isMode("SIV"):
+            pt = decipher.decrypt(ct_ref)
+        else:
+            pt = decipher.decrypt(ct_ref+mac_ref)
         decipher.verify(mac_ref)
         self.assertEqual(pt, pt_ref)
 
@@ -450,6 +470,15 @@ class AEADTests(unittest.TestCase):
         self.description = "Test for multiple updates in %s of %s" % \
             (self.mode_name, self.module.__name__)
 
+        # In all modes other than SIV, the associated data is a single
+        # component that can be arbitrarilly split and submitted to update().
+        #
+        # In SIV, associated data is instead organized in a vector or multiple
+        # components. Each component is passed to update() as a whole.
+        # This test is therefore not meaningful to SIV.
+        if self.isMode("SIV"):
+            return
+
         ad = b("").join([bchr(x) for x in xrange(0,128)])
 
         mac1, mac2, mac3 = (None,)*3
@@ -487,23 +516,24 @@ class AEADTests(unittest.TestCase):
 
         # Calling decrypt after encrypt raises an exception
         cipher = self.module.new(self.key, self.mode, self.iv)
-        cipher.encrypt(b("PT"))
-        self.assertRaises(ApiUsageError, cipher.decrypt, b("XYZ"))
+
+        cipher.encrypt(b("PT")*40)
+        self.assertRaises(ApiUsageError, cipher.decrypt, b("XYZ")*40)
 
         # Calling encrypt after decrypt raises an exception
         cipher = self.module.new(self.key, self.mode, self.iv)
-        cipher.decrypt(b("CT"))
-        self.assertRaises(ApiUsageError, cipher.encrypt, b("XYZ"))
+        cipher.decrypt(b("CT")*40)
+        self.assertRaises(ApiUsageError, cipher.encrypt, b("XYZ")*40)
 
         # Calling verify after encrypt raises an exception
         cipher = self.module.new(self.key, self.mode, self.iv)
-        cipher.encrypt(b("PT"))
+        cipher.encrypt(b("PT")*40)
         self.assertRaises(ApiUsageError, cipher.verify, b("XYZ"))
         self.assertRaises(ApiUsageError, cipher.hexverify, "12")
 
         # Calling digest after decrypt raises an exception
         cipher = self.module.new(self.key, self.mode, self.iv)
-        cipher.decrypt(b("CT"))
+        cipher.decrypt(b("CT")*40)
         self.assertRaises(ApiUsageError, cipher.digest)
         self.assertRaises(ApiUsageError, cipher.hexdigest)
 
@@ -516,13 +546,13 @@ class AEADTests(unittest.TestCase):
         # Calling update after encrypt raises an exception
         cipher = self.module.new(self.key, self.mode, self.iv)
         cipher.update(b("XX"))
-        cipher.encrypt(b("PT"))
+        cipher.encrypt(b("PT")*40)
         self.assertRaises(ApiUsageError, cipher.update, b("XYZ"))
 
         # Calling update after decrypt raises an exception
         cipher = self.module.new(self.key, self.mode, self.iv)
         cipher.update(b("XX"))
-        cipher.decrypt(b("CT"))
+        cipher.decrypt(b("CT")*40)
         self.assertRaises(ApiUsageError, cipher.update, b("XYZ"))
 
     def runTest(self):
@@ -656,10 +686,10 @@ def make_block_tests(module, module_name, test_data, additional_params=dict()):
             extra_tests_added = 1
 
         # Extract associated data and MAC for AEAD modes
-        if p_mode in ('CCM', 'EAX'):
+        if p_mode in ('CCM', 'EAX', 'SIV'):
             assoc_data, params['plaintext'] = params['plaintext'].split('|')
             assoc_data2, params['ciphertext'], params['mac'] = params['ciphertext'].split('|')
-            params['assoc_data'] = assoc_data
+            params['assoc_data'] = assoc_data.split("-")
             params['mac_len'] = len(params['mac'])>>1
 
         # Add the current test to the test suite
@@ -685,7 +715,7 @@ def make_block_tests(module, module_name, test_data, additional_params=dict()):
             CCMMACLengthTest(module),
             CCMSplitEncryptionTest(module),
         ]
-    for aead_mode in ("MODE_CCM","MODE_EAX"):
+    for aead_mode in ("MODE_CCM","MODE_EAX", "MODE_SIV"):
         if hasattr(module, aead_mode):
             key_sizes = []
             try:
