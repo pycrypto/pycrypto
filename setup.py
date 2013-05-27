@@ -262,7 +262,8 @@ class PCTBuildExt (build_ext):
             if os.path.exists("buildenv"):
                 try:
                     f = open("buildenv", "r")
-                    for line in f.readlines():
+                    lines = f.read().replace("\r\n", "\n").split("\n")
+                    for line in lines:
                         if line.startswith("#") or not line.strip():
                             continue
                         k, v = line.split("=", 1)
