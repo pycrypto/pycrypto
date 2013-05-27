@@ -33,6 +33,9 @@ from Crypto.Util import Counter
 from Crypto.Util.strxor import strxor
 from Crypto.Util.number import long_to_bytes
 
+from Crypto import ApiUsageError
+from Crypto.Hash import MacMismatchError
+
 #: *Electronic Code Book (ECB)*.
 #: This is the simplest encryption mode. Each of the plaintext blocks
 #: is directly encrypted into a ciphertext block, independently of
@@ -351,7 +354,7 @@ class BlockAlgo:
 
         if self.mode == MODE_CCM:
             if self.update not in self._next:
-                raise ValueError("update() can only be called immediately after initialization")
+                raise ApiUsageError("update() can only be called immediately after initialization")
             self._next = [ self.update, self.encrypt, self.decrypt,
                     self.digest, self.verify ]
         return self._update(assoc_data)
@@ -442,7 +445,7 @@ class BlockAlgo:
         if self.mode == MODE_CCM:
 
             if self.encrypt not in self._next:
-                raise ValueError("encrypt() can only be called after initialization or an update()")
+                raise ApiUsageError("encrypt() can only be called after initialization or an update()")
             self._next = [ self.encrypt, self.digest ]
 
             if self._assoc_len is None:
@@ -512,7 +515,7 @@ class BlockAlgo:
         if self.mode == MODE_CCM:
 
             if self.decrypt not in self._next:
-                raise ValueError("decrypt() can only be called after initialization or an update()")
+                raise ApiUsageError("decrypt() can only be called after initialization or an update()")
             self._next = [ self.decrypt, self.verify ]
 
             if self._assoc_len is None:
@@ -546,7 +549,7 @@ class BlockAlgo:
         if self.mode == MODE_CCM:
 
             if self.digest not in self._next:
-                raise ValueError("digest() cannot be called when decrypting or validating a message")
+                raise ApiUsageError("digest() cannot be called when decrypting or validating a message")
             self._next = [ self.digest ]
  
             if self._assoc_len is None:
@@ -557,7 +560,7 @@ class BlockAlgo:
 
             return strxor(self._t, self._s_0)[:self._mac_len]
 
-        raise ValueError("digest() not supported by this mode of operation")
+        raise ApiUsageError("digest() not supported by this mode of operation")
 
     def hexdigest(self):
         """Compute the *printable* MAC tag in an AEAD mode.
@@ -581,7 +584,7 @@ class BlockAlgo:
         :Parameters:
           mac_tag : byte string
             This is the *binary* MAC, as received from the sender.
-        :Raises ValueError:
+        :Raises MacMismatchError:
             if the MAC does not match. The message has been tampered with
             or the key is incorrect.
         """
@@ -589,7 +592,7 @@ class BlockAlgo:
         if self.mode == MODE_CCM:
 
             if self.verify not in self._next:
-                raise ValueError("verify() cannot be called when encrypting a message")
+                raise ApiUsageError("verify() cannot be called when encrypting a message")
             self._next = [ self.verify ]
  
             if self._assoc_len is None:
@@ -604,10 +607,10 @@ class BlockAlgo:
             for x,y in zip(u, mac_tag):
                 res |= bord(x) ^ bord(y)
             if res or len(mac_tag)!=self._mac_len:
-                raise ValueError("MAC check failed")
+                raise MacMismatchError("MAC check failed")
             return
         
-        raise ValueError("verify() not supported by this mode of operation")
+        raise ApiUsageError("verify() not supported by this mode of operation")
 
     def hexverify(self, hex_mac_tag):
         """Validate the *printable* MAC tag in an AEAD mode.
@@ -617,7 +620,7 @@ class BlockAlgo:
         :Parameters:
           hex_mac_tag : string
             This is the *printable* MAC, as received from the sender.
-        :Raises ValueError:
+        :Raises MacMismatchError:
             if the MAC does not match. The message has been tampered with
             or the key is incorrect.
         """

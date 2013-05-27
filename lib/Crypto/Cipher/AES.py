@@ -93,6 +93,9 @@ try:
 except ImportError:
     _AESNI = None
 
+from Crypto import ApiUsageError
+from Crypto.Hash import MacMismatchError
+
 class AESCipher (blockalgo.BlockAlgo):
     """AES cipher object"""
 

@@ -34,6 +34,8 @@ from binascii import a2b_hex, b2a_hex, hexlify
 from Crypto.Util.py3compat import *
 from Crypto.Util.strxor import strxor_c
 
+from Crypto.Cipher.blockalgo import ApiUsageError, MacMismatchError
+
 # For compatibility with Python 2.1 and Python 2.2
 if sys.hexversion < 0x02030000:
     # Python 2.1 doesn't have a dict() function
@@ -347,13 +349,13 @@ class CCMSplitEncryptionTest(unittest.TestCase):
                 self.iv, assoc_len=ad_len)
             cipher.update(data)
             cipher.encrypt(pt1)
-            self.assertRaises(ValueError, cipher.encrypt, pt2)
+            self.assertRaises(ApiUsageError, cipher.encrypt, pt2)
 
             cipher = self.module.new(self.key, self.module.MODE_CCM,
                 self.iv, assoc_len=ad_len)
             cipher.update(data)
             cipher.decrypt(ct_ref[:len(pt1)])
-            self.assertRaises(ValueError, cipher.decrypt, ct_ref[len(pt1):])
+            self.assertRaises(ApiUsageError, cipher.decrypt, ct_ref[len(pt1):])
 
         # Run with 2 encrypt()/decrypt(). Results must be the same
         # regardless of the 'assoc_len' parameter
@@ -432,7 +434,7 @@ class AEADTests(unittest.TestCase):
         decipher = self.module.new(self.key, self.mode, self.iv)
         decipher.update(ad_ref)
         pt = decipher.decrypt(ct_ref)
-        self.assertRaises(ValueError, decipher.verify, wrong_mac)
+        self.assertRaises(MacMismatchError, decipher.verify, wrong_mac)
 
     def zero_data(self):
         """Verify transition from INITIALIZED to FINISHED"""
@@ -486,24 +488,24 @@ class AEADTests(unittest.TestCase):
         # Calling decrypt after encrypt raises an exception
         cipher = self.module.new(self.key, self.mode, self.iv)
         cipher.encrypt(b("PT"))
-        self.assertRaises(ValueError, cipher.decrypt, b("XYZ"))
+        self.assertRaises(ApiUsageError, cipher.decrypt, b("XYZ"))
 
         # Calling encrypt after decrypt raises an exception
         cipher = self.module.new(self.key, self.mode, self.iv)
         cipher.decrypt(b("CT"))
-        self.assertRaises(ValueError, cipher.encrypt, b("XYZ"))
+        self.assertRaises(ApiUsageError, cipher.encrypt, b("XYZ"))
 
         # Calling verify after encrypt raises an exception
         cipher = self.module.new(self.key, self.mode, self.iv)
         cipher.encrypt(b("PT"))
-        self.assertRaises(ValueError, cipher.verify, b("XYZ"))
-        self.assertRaises(ValueError, cipher.hexverify, "12")
+        self.assertRaises(ApiUsageError, cipher.verify, b("XYZ"))
+        self.assertRaises(ApiUsageError, cipher.hexverify, "12")
 
         # Calling digest after decrypt raises an exception
         cipher = self.module.new(self.key, self.mode, self.iv)
         cipher.decrypt(b("CT"))
-        self.assertRaises(ValueError, cipher.digest)
-        self.assertRaises(ValueError, cipher.hexdigest)
+        self.assertRaises(ApiUsageError, cipher.digest)
+        self.assertRaises(ApiUsageError, cipher.hexdigest)
 
     def no_late_update(self):
         """Verify that update cannot be called after encrypt or decrypt"""
@@ -515,13 +517,13 @@ class AEADTests(unittest.TestCase):
         cipher = self.module.new(self.key, self.mode, self.iv)
         cipher.update(b("XX"))
         cipher.encrypt(b("PT"))
-        self.assertRaises(ValueError, cipher.update, b("XYZ"))
+        self.assertRaises(ApiUsageError, cipher.update, b("XYZ"))
 
         # Calling update after decrypt raises an exception
         cipher = self.module.new(self.key, self.mode, self.iv)
         cipher.update(b("XX"))
         cipher.decrypt(b("CT"))
-        self.assertRaises(ValueError, cipher.update, b("XYZ"))
+        self.assertRaises(ApiUsageError, cipher.update, b("XYZ"))
 
     def runTest(self):
         self.right_mac_test()
