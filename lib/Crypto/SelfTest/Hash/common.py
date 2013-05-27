@@ -34,6 +34,8 @@ from Crypto.Util.py3compat import *
 if sys.version_info[0] == 2 and sys.version_info[1] == 1:
     from Crypto.Util.py21compat import *
 
+from Crypto.Hash import MacMismatchError
+
 # For compatibility with Python 2.1 and Python 2.2
 if sys.hexversion < 0x02030000:
     # Python 2.1 doesn't have a dict() function
@@ -195,8 +197,8 @@ class MACSelfTest(unittest.TestCase):
 
             # Verify that incorrect MAC does raise ValueError exception
             wrong_mac = strxor_c(out1_bin, 255)
-            self.assertRaises(ValueError, h.verify, wrong_mac)
-            self.assertRaises(ValueError, h.hexverify, "4556")
+            self.assertRaises(MacMismatchError, h.verify, wrong_mac)
+            self.assertRaises(MacMismatchError, h.hexverify, "4556")
 
             h = self.hashmod.new(key, data, hashmod)
 

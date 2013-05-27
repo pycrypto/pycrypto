@@ -54,7 +54,7 @@ This is an example showing how to *create* a MAC:
 
 This is an example showing how to *check* a MAC:
 
-    >>> from Crypto.Hash import HMAC
+    >>> from Crypto.Hash import HMAC, MacMismatchError
     >>>
     >>> # We have received a message 'msg' together
     >>> # with its MAC 'mac'
@@ -65,7 +65,7 @@ This is an example showing how to *check* a MAC:
     >>> try:
     >>>   h.verify(mac)
     >>>   print "The message '%s' is authentic" % msg
-    >>> except ValueError:
+    >>> except MacMismatchError:
     >>>   print "The message or the key is wrong"
 
 .. _RFC2104: http://www.ietf.org/rfc/rfc2104.txt
@@ -83,6 +83,7 @@ from binascii import unhexlify
 
 from Crypto.Util.strxor import strxor_c
 from Crypto.Util.py3compat import *
+from Crypto.Hash import MacMismatchError
 
 #: The size of the authentication tag produced by the MAC.
 #: It matches the digest size on the underlying
@@ -202,7 +203,7 @@ class HMAC:
         :Parameters:
           mac_tag : byte string
             The expected MAC of the message.
-        :Raises ValueError:
+        :Raises MacMismatchError:
             if the MAC does not match. It means that the message
             has been tampered with or that the MAC key is incorrect.
         """
@@ -213,7 +214,7 @@ class HMAC:
         for x,y in zip(mac, mac_tag):
             res |= bord(x) ^ bord(y)
         if res or len(mac_tag)!=self.digest_size:
-            raise ValueError("MAC check failed")
+            raise MacMismatchError("MAC check failed")
 
     def hexdigest(self):
         """Return the **printable** MAC of the message that has been
@@ -233,7 +234,7 @@ class HMAC:
         :Parameters:
           hex_mac_tag : string
             The expected MAC of the message, as a hexadecimal string.
-        :Raises ValueError:
+        :Raises MacMismatchError:
             if the MAC does not match. It means that the message
             has been tampered with or that the MAC key is incorrect.
         """
