@@ -144,8 +144,9 @@ def new(key, *args, **kwargs):
         mind that with CCM there is a trade-off between nonce length and
         maximum message size.
 
-        For `MODE_EAX` and `MODE_SIV`, this is the *nonce*. There are no restrictions on its
-        length, but it is recommended to use at least 16 bytes.
+        For `MODE_EAX`, `MODE_SIV`, and `MODE_GCM` this is the *nonce*.
+        There are no restrictions on its length, but it is recommended to
+        use at least 16 bytes.
 
         For all other modes, it must be 16 bytes longs.
       counter : callable
@@ -160,7 +161,7 @@ def new(key, *args, **kwargs):
         (*Only* `MODE_CCM`). Length of the MAC, in bytes. It must be even and in
         the range ``[4..16]``. The default is 16.
 
-        (*Only* `MODE_EAX`). Length of the MAC, in bytes. It must be no
+        (*Only* `MODE_EAX` and `MODE_GCM`). Length of the MAC, in bytes. It must be no
         larger than 16 bytes (which is the default).
       msg_len : integer
         (*Only* `MODE_CCM`). Length of the message to (de)cipher.
@@ -195,6 +196,8 @@ MODE_CCM = 8
 MODE_EAX = 9
 #: Syntethic Initialization Vector (SIV). See `blockalgo.MODE_SIV`.
 MODE_SIV = 10
+#: Galois Counter Mode (GCM). See `blockalgo.MODE_GCM`.
+MODE_GCM = 11
 #: Size of a data block (in bytes)
 block_size = 16
 #: Size of a key (in bytes)

@@ -183,29 +183,29 @@ class MACSelfTest(unittest.TestCase):
         # Strip whitespace from the expected string (which should be in lowercase-hex)
         expected = b("".join(self.result.split()))
 
-        h = self.module.new(key, **self.params)
-        h.update(data)
-        out1_bin = h.digest()
-        out1 = binascii.b2a_hex(h.digest())
-        out2 = h.hexdigest()
+        ht = self.module.new(key, **self.params)
+        ht.update(data)
+        out1_bin = ht.digest()
+        out1 = binascii.b2a_hex(ht.digest())
+        out2 = ht.hexdigest()
         
         # Verify that correct MAC does not raise any exception
-        h.hexverify(out1)
-        h.verify(out1_bin)
+        ht.hexverify(out1)
+        ht.verify(out1_bin)
 
         # Verify that incorrect MAC does raise ValueError exception
         wrong_mac = strxor_c(out1_bin, 255)
-        self.assertRaises(MacMismatchError, h.verify, wrong_mac)
-        self.assertRaises(MacMismatchError, h.hexverify, "4556")
+        self.assertRaises(MacMismatchError, ht.verify, wrong_mac)
+        self.assertRaises(MacMismatchError, ht.hexverify, "4556")
 
-        h = self.module.new(key, data, **self.params)
+        ht = self.module.new(key, data, **self.params)
 
-        out3 = h.hexdigest()
-        out4 = binascii.b2a_hex(h.digest())
+        out3 = ht.hexdigest()
+        out4 = binascii.b2a_hex(ht.digest())
 
         # Test .copy()
-        h2 = h.copy()
-        h.update(b("blah blah blah"))  # Corrupt the original hash object
+        h2 = ht.copy()
+        ht.update(b("blah blah blah"))  # Corrupt the original hash object
         out5 = binascii.b2a_hex(h2.digest())    # The copied hash object should return the correct result
 
         # PY3K: hexdigest() should return str(), and digest() bytes 
