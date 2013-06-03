@@ -158,17 +158,28 @@ ALG_update(ALGobject *self, PyObject *args)
 {
 	unsigned char *cp;
 	int len;
+#ifdef HAVE_NEW_BUFFER_API
+	Py_buffer buf;
+
+	if (!PyArg_ParseTuple(args, "s*", &buf))
+		return NULL;
+	cp = buf.buf;
+	len = buf.len;
+#else
 
 	if (!PyArg_ParseTuple(args, "s#", &cp, &len))
 		return NULL;
+#endif
 
 	Py_BEGIN_ALLOW_THREADS;
 
 	hash_update(&(self->st), cp, len);
 	Py_END_ALLOW_THREADS;
 
+#ifdef HAVE_NEW_BUFFER_API
+	PyBuffer_Release(&buf);
+#endif
 	Py_INCREF(Py_None);
-
 	return Py_None;
 }
 
@@ -272,20 +283,34 @@ ALG_new(PyObject *self, PyObject *args)
         ALGobject *new;
 	unsigned char *cp = NULL;
 	int len;
+#ifdef HAVE_NEW_BUFFER_API
+	Py_buffer buf = {};
+#endif
 	
 	if ((new = newALGobject()) == NULL)
 		return NULL;
-
+#ifdef HAVE_NEW_BUFFER_API
+	if (!PyArg_ParseTuple(args, "|s*",
+			      &buf)) {
+	        Py_DECREF(new);
+		return NULL;
+	}
+	cp = buf.buf;
+	len = buf.len;
+#else
 	if (!PyArg_ParseTuple(args, "|s#",
 			      &cp, &len)) {
 	        Py_DECREF(new);
 		return NULL;
 	}
-
+#endif
         hash_init(&(new->st));
 
 	if (PyErr_Occurred()) {
 		Py_DECREF(new); 
+#ifdef HAVE_NEW_BUFFER_API
+		PyBuffer_Release(&buf);
+#endif
 		return NULL;
 	}
 	if (cp) {
@@ -294,6 +319,9 @@ ALG_new(PyObject *self, PyObject *args)
 		Py_END_ALLOW_THREADS;
 	}
 
+#ifdef HAVE_NEW_BUFFER_API
+		PyBuffer_Release(&buf);
+#endif
 	return (PyObject *)new;
 }
 

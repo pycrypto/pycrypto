@@ -73,5 +73,9 @@ typedef int Py_ssize_t;
 typedef void PyMODINIT_FUNC;
 #endif
 
+#if PY_VERSION_HEX >= 0x02060000
+#define HAVE_NEW_BUFFER_API
+#endif
+
 #endif /* PYCRYPTO_COMPAT_H */
 /* vim:set ts=4 sw=4 sts=4 expandtab: */

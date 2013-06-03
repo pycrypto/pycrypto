@@ -89,37 +89,52 @@ static ALGobject *
 ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 {
 	unsigned char *key;
-	ALGobject * new;
+	ALGobject * new = NULL;
 	int keylen;
+#ifdef HAVE_NEW_BUFFER_API
+	Py_buffer key_buf;
 
-	new = newALGobject();
+	if (!PyArg_ParseTupleAndKeywords(args, kwdict, "s*", kwlist, 
+					 &key_buf))
+	{
+		return NULL;
+	}
+	key = key_buf.buf;
+	keylen = key_buf.len;
+#else
 	if (!PyArg_ParseTupleAndKeywords(args, kwdict, "s#", kwlist, 
 					 &key, &keylen))
 	{
-		Py_DECREF(new);
 		return NULL;
 	}
+#endif
 
 	if (KEY_SIZE!=0 && keylen != KEY_SIZE)
 	{
 		PyErr_SetString(PyExc_ValueError, 
 				_MODULE_STRING " key must be "
 				"KEY_SIZE bytes long");
-		return NULL;
+		goto out;
 	}
 	if (KEY_SIZE== 0 && keylen == 0)
 	{
 		PyErr_SetString(PyExc_ValueError, 
 				_MODULE_STRING " key cannot be "
 				"the null string (0 bytes long)");
-		return NULL;
+		goto out;
 	}
+	new = newALGobject();
 	stream_init(&(new->st), key, keylen);
 	if (PyErr_Occurred())
 	{
 		Py_DECREF(new);
-		return NULL;
+		new = NULL;
+		goto out;
 	}
+out:
+#ifdef HAVE_NEW_BUFFER_API
+	PyBuffer_Release(&key_buf);
+#endif
 	return new;
 }
 
@@ -131,20 +146,29 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 {
 	unsigned char *buffer, *str;
 	int len;
-	PyObject *result;
+	PyObject *result = NULL;
+#ifdef HAVE_NEW_BUFFER_API
+	Py_buffer buf;
 
+	if (!PyArg_Parse(args, "s*", &buf))
+		return NULL;
+	str = buf.buf;
+	len = buf.len;
+#else
 	if (!PyArg_Parse(args, "s#", &str, &len))
 		return NULL;
+#endif
 	if (len == 0)			/* Handle empty string */
 	{
-		return PyBytes_FromStringAndSize(NULL, 0);
+		result = PyBytes_FromStringAndSize(NULL, 0);
+		goto out;
 	}
 	buffer = malloc(len);
 	if (buffer == NULL)
 	{
 		PyErr_SetString(PyExc_MemoryError, "No memory available in "
 				_MODULE_STRING " encrypt");
-		return NULL;
+		goto out;
 	}
 	Py_BEGIN_ALLOW_THREADS;
 	memcpy(buffer, str, len);
@@ -152,6 +176,10 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 	Py_END_ALLOW_THREADS;
 	result = PyBytes_FromStringAndSize((char *)buffer, len);
 	free(buffer);
+out:
+#ifdef HAVE_NEW_BUFFER_API
+	PyBuffer_Release(&buf);
+#endif
 	return (result);
 }
 
@@ -163,20 +191,29 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 {
 	unsigned char *buffer, *str;
 	int len;
-	PyObject *result;
+	PyObject *result = NULL;
+#ifdef HAVE_NEW_BUFFER_API
+	Py_buffer buf;
 
+	if (!PyArg_Parse(args, "s*", &buf))
+		return NULL;
+	str = buf.buf;
+	len = buf.len;
+#else
 	if (!PyArg_Parse(args, "s#", &str, &len))
 		return NULL;
+#endif
 	if (len == 0)			/* Handle empty string */
 	{
-		return PyBytes_FromStringAndSize(NULL, 0);
+		result = PyBytes_FromStringAndSize(NULL, 0);
+		goto out;
 	}
 	buffer = malloc(len);
 	if (buffer == NULL)
 	{
 		PyErr_SetString(PyExc_MemoryError, "No memory available in "
 				_MODULE_STRING " decrypt");
-		return NULL;
+		goto out;
 	}
 	Py_BEGIN_ALLOW_THREADS;
 	memcpy(buffer, str, len);
@@ -184,6 +221,10 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 	Py_END_ALLOW_THREADS;
 	result = PyBytes_FromStringAndSize((char *)buffer, len);
 	free(buffer);
+out:
+#ifdef HAVE_NEW_BUFFER_API
+	PyBuffer_Release(&buf);
+#endif
 	return (result);
 }
 
