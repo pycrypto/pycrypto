@@ -134,25 +134,39 @@ static PyObject *
 WR_get_bytes(WRobject *self, PyObject *args)
 {
 	int n, nbytes, len = 0;
-	PyObject *res;
+	PyObject *res = NULL;
 	char *buf, *str = NULL;
+#ifdef HAVE_NEW_BUFFER_API
+	Py_buffer buffer = {};
+#endif
 	
 	if (! is_WRobject(self)) {
 		PyErr_Format(PyExc_TypeError,
 		    "WinRandom trying to get_bytes with non-WinRandom object");
 		return NULL;
 	}
+#ifdef HAVE_NEW_BUFFER_API
+	if (!PyArg_ParseTuple(args, "i|s*", &n, &buffer)) {
+		return NULL;
+	}
+	str = buf.buf;
+	len = buf.len;
+#else
 	if (!PyArg_ParseTuple(args, "i|s#", &n, &str, &len)) {
 		return NULL;
 	}
+#endif
 	if (n <= 0) {
 		PyErr_SetString(PyExc_ValueError, "nbytes must be positive number");
-		return NULL;
+		goto out2;
 	}
 	/* Just in case char != BYTE, or userdata > desired result */
 	nbytes = (((n > len) ? n : len) * sizeof(char)) / sizeof(BYTE) + 1;
-	if ((buf = (char *) PyMem_Malloc(nbytes)) == NULL)
-	    return PyErr_NoMemory();
+	if ((buf = (char *) malloc(nbytes)) == NULL) {
+		PyErr_SetString(PyExc_MemoryError, 
+				"No memory available in winrand get_bytes");
+		goto out;
+	}
 	if (len > 0)
 		memcpy(buf, str, len);
 	/*
@@ -170,12 +184,16 @@ WR_get_bytes(WRobject *self, PyObject *args)
 		PyErr_Format(PyExc_SystemError,
 			     "CryptGenRandom failed, error 0x%x",
 			     (unsigned int) GetLastError());
-		PyMem_Free(buf);
-		return NULL;
+		goto out;
 	}
 
 	res = PyBytes_FromStringAndSize(buf, n);
-	PyMem_Free(buf);
+out:
+	free(buf);
+out2:
+#ifdef HAVE_NEW_BUFFER_API
+	PyBuffer_Release(&buffer);
+#endif
 	return res;
 }
 
