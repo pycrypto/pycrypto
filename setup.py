@@ -81,7 +81,7 @@ if sys.version_info[0] == 2:
 else:
     EXCLUDE_PY = [
         # We don't want Py3k to choke on the 2.x compat code
-        ('Crypto.Util', 'py21compat'), 
+        ('Crypto.Util', 'py21compat'),
     ]
     if sys.platform != "win32": # Avoid nt.py, as 2to3 can't fix it w/o winrandom
         EXCLUDE_PY += [('Crypto.Random.OSRNG','nt')]
@@ -159,6 +159,12 @@ class PCTBuildExt (build_ext):
         else:
             # No MP library; use _slowmath.
             PrintErr ("warning: GMP or MPIR library not found; Not building "+
+                "Crypto.PublicKey._fastmath.")
+            self.__remove_extensions(["Crypto.PublicKey._fastmath"])
+
+        if os.environ['NO_FASTMATH'] == "true":
+            # Disable fastmath
+            PrintErr ("warning: env NO_FASTMATH=true specified; Not building "+
                 "Crypto.PublicKey._fastmath.")
             self.__remove_extensions(["Crypto.PublicKey._fastmath"])
 
