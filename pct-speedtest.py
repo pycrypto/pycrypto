@@ -33,6 +33,8 @@ from Crypto.Signature import PKCS1_PSS, PKCS1_v1_5 as RSASSA_PKCS1_v1_5
 from Crypto.Cipher import AES, ARC2, ARC4, Blowfish, CAST, DES3, DES, XOR
 from Crypto.Hash import HMAC, MD2, MD4, MD5, SHA224, SHA256, SHA384, SHA512, CMAC
 from Crypto.Random import get_random_bytes
+import Crypto.Util.Counter
+from Crypto.Util.number import bytes_to_long
 try:
     from Crypto.Hash import SHA1
 except ImportError:
@@ -167,6 +169,11 @@ class Benchmark:
             cipher = module.new(key, module.MODE_CTR, counter=Counter.new(module.block_size*8, little_endian=True))
         elif hasattr(module, 'MODE_CCM') and mode==module.MODE_CCM:
             cipher = module.new(key, mode, iv[:8], msg_len=len(rand)*len(blocks))
+        elif mode==module.MODE_CTR:
+            ctr = Crypto.Util.Counter.new(module.block_size*8,
+                    initial_value=bytes_to_long(iv),
+                    allow_wraparound=True)
+            cipher = module.new(key, module.MODE_CTR, counter=ctr)
         else:
             cipher = module.new(key, mode, iv)
 
@@ -350,6 +357,7 @@ class Benchmark:
             self.test_encryption("%s-CFB-8" % (cipher_name,), module, key_bytes, module.MODE_CFB)
             self.test_encryption("%s-OFB" % (cipher_name,), module, key_bytes, module.MODE_OFB)
             self.test_encryption("%s-ECB" % (cipher_name,), module, key_bytes, module.MODE_ECB)
+            self.test_encryption("%s-CTR" % (cipher_name,), module, key_bytes, module.MODE_CTR)
             self.test_encryption("%s-OPENPGP" % (cipher_name,), module, key_bytes, module.MODE_OPENPGP)
             self.test_encryption("%s-CTR-BE" % (cipher_name,), module, key_bytes, "CTR-BE")
             self.test_encryption("%s-CTR-LE" % (cipher_name,), module, key_bytes, "CTR-LE")
