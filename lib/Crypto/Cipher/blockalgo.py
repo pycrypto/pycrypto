@@ -39,7 +39,7 @@ from Crypto.Protocol.KDF import S2V
 
 from Crypto import ApiUsageError
 from Crypto.Hash import MacMismatchError
-from Crypto.Util.galois import _ghash
+from Crypto.Util import galois
 
 #: *Electronic Code Book (ECB)*.
 #: This is the simplest encryption mode. Each of the plaintext blocks
@@ -318,12 +318,12 @@ class _GHASH(_SmoothMAC):
 
     def __init__(self, hash_subkey, ciphermod):
         _SmoothMAC.__init__(self, ciphermod.block_size, None, 0)
-        self._hash_subkey = hash_subkey
+        self._hash_subkey = galois._ghash_expand(hash_subkey)
         self._last_y = bchr(0)*16
-        self._mac = _ghash
+        self._mac = galois._ghash
 
     def _update(self, block_data): 
-        self._last_y = _ghash(block_data, self._last_y, self._hash_subkey)
+        self._last_y = galois._ghash(block_data, self._last_y, self._hash_subkey)
 
     def _digest(self, left_data):
         return self._last_y
