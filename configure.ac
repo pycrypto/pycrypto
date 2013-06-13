@@ -48,6 +48,10 @@ AX_CHECK_COMPILE_FLAG([-Wall], [AX_APPEND_FLAG([-Wall])])
 AX_CHECK_COMPILE_FLAG([-Wextra], [AX_APPEND_FLAG([-Wextra])])
 AX_CHECK_COMPILE_FLAG([-Wno-missing-field-initializers], [AX_APPEND_FLAG([-Wno-missing-field-initializers])])
 AX_CHECK_COMPILE_FLAG([-Wno-unused-parameter], [AX_APPEND_FLAG([-Wno-unused-parameter])])
+AX_CHECK_COMPILE_FLAG([-maes], [
+    have_maes=yes
+    AC_DEFINE(HAVE_MAES, [1], [Define if CC supports -maes])
+])
 
 # Checks for libraries.
 AC_ARG_WITH([gmp], AS_HELP_STRING([--without-gmp], [Build without gmp library (default: test)]))
@@ -76,7 +80,13 @@ AC_CHECK_DECLS([mpz_powm_sec], [], [], [
 ]])
 
 # Checks for header files.
-AC_CHECK_HEADERS([inttypes.h limits.h stddef.h stdint.h stdlib.h string.h wchar.h])
+AC_CHECK_HEADERS([inttypes.h sys/inttypes.h cpuid.h limits.h stddef.h stdint.h stdlib.h string.h wchar.h])
+old_CPPFLAGS="$CPPFLAGS"
+AS_IF([test "x$have_maes" = "xyes"], [
+    CPPFLAGS="$CPPFLAGS -maes"
+])
+AC_CHECK_HEADERS([wmmintrin.h])
+CPPFLAGS="$old_CPPFLAGS"
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE

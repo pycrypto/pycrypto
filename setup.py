@@ -162,6 +162,21 @@ class PCTBuildExt (build_ext):
                 "Crypto.PublicKey._fastmath.")
             self.__remove_extensions(["Crypto.PublicKey._fastmath"])
 
+        # Detect if we have AES-NI instrincs available
+        if not ac.get("HAVE_WMMINTRIN_H"):
+            # AES-NI instrincs not available
+            self.__remove_extensions(["Crypto.Cipher._AESNI"])
+        elif ac.get("HAVE_MAES"):
+            # -maes has to be passed to the compiler to use the AES-NI instrincs
+            self.__add_extension_compile_option(["Crypto.Cipher._AESNI"],
+                                                ["-maes"])
+
+    def __add_extension_compile_option(self, names, options):
+        """Add compiler options for the specified extension(s)"""
+        for extension in self.extensions:
+            if extension.name in names:
+                extension.extra_compile_args = options
+
     def __add_extension_link_option(self, names, options):
         """Add linker options for the specified extension(s)"""
         i = 0
@@ -399,25 +414,25 @@ kw = {'name':"pycrypto",
                       sources=["src/_fastmath.c"]),
 
             # Hash functions
-            Extension("Crypto.Hash._MD2",
+            Extension("Crypto.Hash.MD2",
                       include_dirs=['src/'],
                       sources=["src/MD2.c"]),
-            Extension("Crypto.Hash._MD4",
+            Extension("Crypto.Hash.MD4",
                       include_dirs=['src/'],
                       sources=["src/MD4.c"]),
-            Extension("Crypto.Hash._SHA256",
+            Extension("Crypto.Hash.SHA256",
                       include_dirs=['src/'],
                       sources=["src/SHA256.c"]),
-            Extension("Crypto.Hash._SHA224",
+            Extension("Crypto.Hash.SHA224",
                       include_dirs=['src/'],
                       sources=["src/SHA224.c"]),
-            Extension("Crypto.Hash._SHA384",
+            Extension("Crypto.Hash.SHA384",
                       include_dirs=['src/'],
                       sources=["src/SHA384.c"]),
-            Extension("Crypto.Hash._SHA512",
+            Extension("Crypto.Hash.SHA512",
                       include_dirs=['src/'],
                       sources=["src/SHA512.c"]),
-            Extension("Crypto.Hash._RIPEMD160",
+            Extension("Crypto.Hash.RIPEMD160",
                       include_dirs=['src/'],
                       sources=["src/RIPEMD160.c"],
                       define_macros=[endianness_macro()]),
@@ -426,6 +441,9 @@ kw = {'name':"pycrypto",
             Extension("Crypto.Cipher._AES",
                       include_dirs=['src/'],
                       sources=["src/AES.c"]),
+            Extension("Crypto.Cipher._AESNI",
+                      include_dirs=['src/'],
+                      sources=["src/AESNI.c"]),
             Extension("Crypto.Cipher._ARC2",
                       include_dirs=['src/'],
                       sources=["src/ARC2.c"]),
@@ -454,6 +472,9 @@ kw = {'name':"pycrypto",
             Extension("Crypto.Util.strxor",
                       include_dirs=['src/'],
                       sources=['src/strxor.c']),
+            Extension("Crypto.Util.cpuid",
+                      include_dirs=['src/'],
+                      sources=['src/cpuid.c']),
 
             # Counter modules
             Extension("Crypto.Util._counter",

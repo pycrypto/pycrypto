@@ -28,9 +28,16 @@ import os
 import sys
 
 from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP, PKCS1_v1_5 as RSAES_PKCS1_v1_5
+from Crypto.Signature import PKCS1_PSS, PKCS1_v1_5 as RSASSA_PKCS1_v1_5
 from Crypto.Cipher import AES, ARC2, ARC4, Blowfish, CAST, DES3, DES, XOR
-from Crypto.Hash import HMAC, MD2, MD4, MD5, SHA, SHA224, SHA256, SHA384, SHA512
+from Crypto.Hash import HMAC, MD2, MD4, MD5, SHA224, SHA256, SHA384, SHA512
 from Crypto.Random import get_random_bytes
+try:
+    from Crypto.Hash import SHA1
+except ImportError:
+    # Maybe it's called SHA
+    from Crypto.Hash import SHA as SHA1
 try:
     from Crypto.Hash import RIPEMD160
 except ImportError:
@@ -52,6 +59,9 @@ try:
     urandom = os.urandom
 except AttributeError:
     urandom = get_random_bytes
+
+from Crypto.Random import random as pycrypto_random
+import random as stdlib_random
 
 class Benchmark:
 
@@ -97,6 +107,16 @@ class Benchmark:
     def announce_result(self, value, units):
         sys.stdout.write("%.2f %s\n" % (value, units))
         sys.stdout.flush()
+
+    def test_random_module(self, module_name, module):
+        self.announce_start("%s.choice" % (module_name,))
+        alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+        t0 = time.time()
+        for i in range(5000):
+            module.choice(alphabet)
+        t = time.time()
+        invocations_per_second = 5000 / (t - t0)
+        self.announce_result(invocations_per_second, "invocations/sec")
 
     def test_pubkey_setup(self, pubkey_name, module, key_bytes):
         self.announce_start("%s pubkey setup" % (pubkey_name,))
@@ -194,6 +214,59 @@ class Benchmark:
         mac_constructor = lambda data=None: hmac_constructor(key, data, digestmod)
         self.test_hash_large(mac_name, mac_constructor, digest_size)
 
+    def test_pkcs1_sign(self, scheme_name, scheme_constructor, hash_name, hash_constructor, digest_size):
+        self.announce_start("%s signing %s (%d-byte inputs)" % (scheme_name, hash_name, digest_size))
+
+        # Make a key
+        k = RSA.generate(2048)
+        sigscheme = scheme_constructor(k)
+
+        # Make some hashes
+        blocks = self.random_blocks(digest_size, 50)
+        hashes = []
+        for b in blocks:
+            hashes.append(hash_constructor(b))
+
+        # Perform signing
+        t0 = time.time()
+        for h in hashes:
+            sigscheme.sign(h)
+        t = time.time()
+
+        speed = len(hashes) / (t - t0)
+        self.announce_result(speed, "sigs/sec")
+
+    def test_pkcs1_verify(self, scheme_name, scheme_constructor, hash_name, hash_constructor, digest_size):
+        self.announce_start("%s verification %s (%d-byte inputs)" % (scheme_name, hash_name, digest_size))
+
+        # Make a key
+        k = RSA.generate(2048)
+        sigscheme = scheme_constructor(k)
+
+        # Make some hashes
+        blocks = self.random_blocks(digest_size, 50)
+        hashes = []
+        for b in blocks:
+            hashes.append(hash_constructor(b))
+
+        # Make some signatures
+        signatures = []
+        for h in hashes:
+            signatures.append(sigscheme.sign(h))
+
+        # Double the list, to make timing better
+        hashes = hashes + hashes
+        signatures = signatures + signatures
+
+        # Perform verification
+        t0 = time.time()
+        for h, s in zip(hashes, signatures):
+            sigscheme.verify(h, s)
+        t = time.time()
+
+        speed = len(hashes) / (t - t0)
+        self.announce_result(speed, "sigs/sec")
+
     def run(self):
         pubkey_specs = [
             ("RSA(1024)", RSA, int(1024/8)),
@@ -221,7 +294,7 @@ class Benchmark:
             ("MD2", MD2),
             ("MD4", MD4),
             ("MD5", MD5),
-            ("SHA", SHA),
+            ("SHA1", SHA1),
             ("SHA224", SHA224),
             ("SHA256", SHA256),
             ("SHA384", SHA384),
@@ -238,6 +311,12 @@ class Benchmark:
             if hasattr(hashlib, 'sha256'): hashlib_specs.append(("hashlib.sha256", hashlib.sha256))
             if hasattr(hashlib, 'sha384'): hashlib_specs.append(("hashlib.sha384", hashlib.sha384))
             if hasattr(hashlib, 'sha512'): hashlib_specs.append(("hashlib.sha512", hashlib.sha512))
+
+        # stdlib random
+        self.test_random_module("stdlib random", stdlib_random)
+
+        # Crypto.Random.random
+        self.test_random_module("Crypto.Random.random", pycrypto_random)
 
         # Crypto.PublicKey
         for pubkey_name, module, key_bytes in pubkey_specs:
@@ -276,6 +355,22 @@ class Benchmark:
         for hash_name, func in hashlib_specs:
             self.test_hmac_small("hmac+"+hash_name, hmac.HMAC, func, func().digest_size)
             self.test_hmac_large("hmac+"+hash_name, hmac.HMAC, func, func().digest_size)
+
+        # PKCS1_v1_5 (sign) + Crypto.Hash
+        for hash_name, module in hash_specs:
+            self.test_pkcs1_sign("PKCS#1-v1.5", RSASSA_PKCS1_v1_5.new, hash_name, module.new, module.digest_size)
+
+        # PKCS1_PSS (sign) + Crypto.Hash
+        for hash_name, module in hash_specs:
+            self.test_pkcs1_sign("PKCS#1-PSS", PKCS1_PSS.new, hash_name, module.new, module.digest_size)
+
+        # PKCS1_v1_5 (verify) + Crypto.Hash
+        for hash_name, module in hash_specs:
+            self.test_pkcs1_verify("PKCS#1-v1.5", RSASSA_PKCS1_v1_5.new, hash_name, module.new, module.digest_size)
+
+        # PKCS1_PSS (verify) + Crypto.Hash
+        for hash_name, module in hash_specs:
+            self.test_pkcs1_verify("PKCS#1-PSS", PKCS1_PSS.new, hash_name, module.new, module.digest_size)
 
 if __name__ == '__main__':
     Benchmark().run()

@@ -24,21 +24,14 @@
 #ifndef PCT__COUNTER_H
 #define PCT__COUNTER_H
 
-#include "config.h"
-#if HAVE_STDINT_H
-# include <stdint.h>
-#elif defined(__sun) || defined(__sun__)
-# include <sys/inttypes.h>
-#else
-# error "stdint.h not found"
-#endif
+#include "pycrypto_common.h"
 
 typedef struct {
     PyObject_HEAD
     PyBytesObject *prefix;     /* Prefix (useful for a nonce) */
     PyBytesObject *suffix;     /* Suffix (useful for a nonce) */
     uint8_t *val;       /* Buffer for our output string */
-    uint32_t buf_size;  /* Size of the buffer */
+    Py_ssize_t buf_size;/* Size of the buffer */
     uint8_t *p;         /* Pointer to the part of the buffer that we're allowed to update */
     uint16_t nbytes;    /* The number of bytes that from .p that are part of the counter */
     void (*inc_func)(void *);   /* Pointer to the counter increment function */
