@@ -98,7 +98,7 @@ class DiffieHellman(object):
         """Generate the private and public keys.
 
         :Return:
-            The generated public key based on g**p % p; send this to the other
+            The generated public key based on g**priv_key % p; send this to the other
             party.
         """
         if not self.priv_key:
