@@ -101,6 +101,11 @@ def new(key, *args, **kwargs):
         (*Only* `MODE_CFB`).The number of bits the plaintext and ciphertext
         are segmented in.
         It must be a multiple of 8. If 0 or not specified, it will be assumed to be 8.
+      mac_state : object
+        (*Only* `MODE_EAX`). An object returned by a
+        call to `get_mac_state()` of another cipher object.
+        The new cipher will behave as if it had authenticated all data that was
+        processed by the old cipher at the time `get_mac_state()` was called.
 
     :Return: an `DESCipher` object
     """

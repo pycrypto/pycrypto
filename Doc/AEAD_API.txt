@@ -50,31 +50,31 @@ cipher properties (e.g. block size).
                                   | .new(key, mode, iv, ...)
                                   v       
                            .-------------.
-.-------------.-------------| INITIALIZED |---------------+-------------.
-|             |             '-------------'               |             |
-|             |                    |                      |             |
-|             |.encrypt()          |.update()             |.decrypt()   |
-|             |                    |                      |             |
-|             |                    v                      |             |
-|             |            .--------------.___ .update()  |             |
-|             |            | CLEAR HEADER |<--'           |             |
-|             |            '--------------'               |             |
-|             |               |  |   |  |                 |             |
-|             |     .encrypt()|  |   |  |.decrypt()       |             |
-|             v               |  |   |  |                 v             |
-|        .--------------.     |  |   |  |     .--------------.          |
-|        | ENCRYPTING   |<----'  |   |  '---->|  DECRYPTING  |          |
-|        '--------------'        |   |        '--------------'          |
-|             |   ^ |            |   |             |  ^ |               |
-| hex/digest()|   | |.encrypt()* |   |             |  | |.decrypt()*    |
-|             |   '''            |   |             |  '''               |
-|             |                  /   \             |                    |
-|             |     hex/digest()/     \hex/verify()|hex/verify()        |
-|hex/digest() |                /       \           |                    |
-|             |               /         \          |        hex/verify()|
-|             v              /           \         v                    |
-|        .--------------.   /             \   .--------------.          |
-'------->| FINISHED/ENC |<--               -->| FINISHED/DEC |<---------'
+.-------------.-------------| INITIALIZED |----------------------+-------------.
+|             |             '-------------'                      |             |
+|             |                    |                             |             |
+|             |.encrypt()          |.update()                    |.decrypt()   |
+|             |                    |                             |             |
+|             |                    v                             |             |
+|             |            .--------------.___ .update()         |             |
+|             |            | CLEAR HEADER |<--'.get_mac_state()  |             |
+|             |            '--------------'                      |             |
+|             |               |  |   |  |                        |             |
+|             |     .encrypt()|  |   |  |.decrypt()              |             |
+|             v               |  |   |  |                        |             |
+|        .--------------.     |  |   |  |     .--------------.   |             |
+|        | ENCRYPTING   |<----'  |   |  '---->|  DECRYPTING  |<--'             |
+|        '--------------'        |   |        '--------------'                 |
+|             |   ^ |            |   |             |  ^ |                      |
+| hex/digest()|   | |.encrypt()* |   |             |  | |.decrypt()*           |
+|             |   '''            |   |             |  '''                      |
+|             |                  /   \             |                           |
+|             |     hex/digest()/     \hex/verify()|hex/verify()               |
+|hex/digest() |                /       \           |                           |
+|             |               /         \          |               hex/verify()|
+|             v              /           \         v                           |
+|        .--------------.   /             \   .--------------.                 |
+'------->| FINISHED/ENC |<--               -->| FINISHED/DEC |<----------------'
          '--------------'                     '--------------'
                ^ |                                  ^ |
                | |hex/digest()                      | |hex/verify()
@@ -105,7 +105,7 @@ The following states are defined:
    are authentic.
 
 In addition to the existing Cipher methods new(), encrypt() and decrypt(),
-5 new methods are added to a Cipher object:
+6 new methods are added to a Cipher object:
 
  - update() to consume all associated data. It takes as input
    a byte string, and it can be invoked multiple times.
@@ -123,6 +123,15 @@ In addition to the existing Cipher methods new(), encrypt() and decrypt(),
    called at the end of decryption. It takes the MAC as input.
 
  - hexverify() as verify(), but the input is ASCII hexadecimal.
+
+ - get_mac_state(). The MAC state can be used to initialize another
+   cipher based on the same key. The new cipher will immediately behave
+   as if it had already authenticated all the data that the old cipher
+   had authenticated until the moment get_mac_state() was called.
+   The performance gain is significant if the common authenticated data
+   is very large.
+   This method is only valid for those modes with a MAC that does not
+   depend on the IV/nonce before encryption/decryption starts.
 
 The syntax of update(), digest(), and hexdigest() are consistent with
 the API of a Hash object.
@@ -144,13 +153,16 @@ of the plaintext. Adding support for that would make the API more complex
 
 === Pre-processing of associated data
 
-The proposed API does not support pre-processing of AD.
+The proposed API supports pre-processing of AD.
 
 Sometimes, a lot of encryptions/decryptions are performed with
-the same key and the same AD, and different nonces and plaintext.
+the same key and the same AD, and different IV/nonces and plaintext.
 
-Certain modes like GCM allow to cache processing of AD, and reuse
-it such results across several encryptions/decryptions.
+With certains modes (like GCM and EAX), the MAC computation of the
+AD does not depend on the IV/nonce.
+
+It is possible to cache the state of the MAC, and reuse it across
+several encryptions/decryptions (see get_mac_state()).
 
 === Singe/2-pass modes and online/non-online modes
 

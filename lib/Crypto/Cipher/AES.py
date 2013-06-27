@@ -171,6 +171,11 @@ def new(key, *args, **kwargs):
         If not specified, all data is internally buffered.
       use_aesni : boolean
         Use AES-NI if available.
+      mac_state : object
+        (*Only* `MODE_EAX` and `MODE_GCM`). An object returned by a
+        call to `get_mac_state()` of another cipher object.
+        The new cipher will behave as if it had authenticated all data that was
+        processed by the old cipher at the time `get_mac_state()` was called.
 
     :Return: an `AESCipher` object
     """

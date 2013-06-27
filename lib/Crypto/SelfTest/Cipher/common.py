@@ -555,6 +555,36 @@ class AEADTests(unittest.TestCase):
         cipher.decrypt(b("CT")*40)
         self.assertRaises(ApiUsageError, cipher.update, b("XYZ"))
 
+    def reuse_mac_state(self):
+        common_ad_piece = b("ZYZ")*1024*1024
+        ad_piece_1 = b("D")
+        pt = b("YU")
+
+        # Run the same encryption twice. The second time, use
+        # the MAC state saved from the previous execution.
+        cipher = self.module.new(self.key, self.mode, self.iv)
+        cipher.update(common_ad_piece)
+        mac_state_1 = cipher.get_mac_state()
+        cipher.update(ad_piece_1)
+        ct, tag = cipher.encrypt(pt), cipher.digest()
+
+        cipher = self.module.new(self.key, self.mode, self.iv,
+                mac_state=mac_state_1)
+        cipher.update(ad_piece_1)
+        ct2, tag2 = cipher.encrypt(pt), cipher.digest()
+
+        self.assertEqual(ct, ct2)
+        self.assertEqual(tag, tag2)
+
+        # The same MAC state can also be used for decryption
+        cipher = self.module.new(self.key, self.mode, self.iv,
+                mac_state=mac_state_1)
+        cipher.update(ad_piece_1)
+        pt2 = cipher.decrypt(ct)
+
+        self.assertEqual(pt, pt2)
+        cipher.verify(tag2)
+
     def runTest(self):
         self.right_mac_test()
         self.wrong_mac_test()
@@ -562,6 +592,8 @@ class AEADTests(unittest.TestCase):
         self.multiple_updates()
         self.no_mix_encrypt_decrypt()
         self.no_late_update()
+        if self.mode_name in ("MODE_GCM", "MODE_EAX"):
+            self.reuse_mac_state()
     
     def shortDescription(self):
         return self.description

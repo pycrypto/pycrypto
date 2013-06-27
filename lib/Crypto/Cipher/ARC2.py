@@ -109,6 +109,11 @@ def new(key, *args, **kwargs):
       effective_keylen : integer
         Maximum cryptographic strength of the key, in bits.
         It can vary from 0 to 1024. The default value is 1024.
+      mac_state : object
+        (*Only* `MODE_EAX`). An object returned by a
+        call to `get_mac_state()` of another cipher object.
+        The new cipher will behave as if it had authenticated all data that was
+        processed by the old cipher at the time `get_mac_state()` was called.
 
     :Return: an `RC2Cipher` object
     """

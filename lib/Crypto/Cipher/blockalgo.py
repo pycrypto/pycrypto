@@ -316,8 +316,8 @@ class _GHASH(_SmoothMAC):
     (x^128 + x^7 + x^2 + x + 1).
     """
 
-    def __init__(self, hash_subkey, ciphermod, table_size='64K'):
-        _SmoothMAC.__init__(self, ciphermod.block_size, None, 0)
+    def __init__(self, hash_subkey, block_size, table_size='64K'):
+        _SmoothMAC.__init__(self, block_size, None, 0)
         if table_size=='64K':
             self._hash_subkey = galois._ghash_expand(hash_subkey)
         else:
@@ -325,6 +325,12 @@ class _GHASH(_SmoothMAC):
         self._last_y = bchr(0)*16
         self._mac = galois._ghash
 
+    def copy(self):
+        clone = _GHASH(self._hash_subkey, self._bs, table_size='0K')
+        _SmoothMAC._deep_copy(self, clone)
+        clone._last_y = self._last_y
+        return clone
+        
     def _update(self, block_data): 
         self._last_y = galois._ghash(block_data, self._last_y, self._hash_subkey)
 
@@ -339,6 +345,7 @@ class BlockAlgo:
         self.block_size = factory.block_size
         self._factory = factory
         self._tag = None
+        self._key = key
 
         if self.mode == MODE_CCM:
             if self.block_size != 16:
@@ -352,7 +359,6 @@ class BlockAlgo:
             if not (self.IV and 7<=len(self.IV)<=13):
                 raise ValueError("Length of parameter 'IV' must be in the range 7..13 bytes")
  
-            self._key = key
             self._msg_len = kwargs.get('msg_len', None)      # p
             self._assoc_len = kwargs.get('assoc_len', None)  # a
         
@@ -393,8 +399,7 @@ class BlockAlgo:
             raise ValueError("Parameter 'mac_len' must not be larger than %d" % 16)
 
         # Allowed transitions after initialization
-        self._next = [ self.update, self.encrypt,
-            self.decrypt, self.digest, self.verify ]
+        self._next = [ self.update, self.encrypt, self.decrypt, self.digest, self.verify ]
 
         self._done_assoc_data = False
         
@@ -412,7 +417,7 @@ class BlockAlgo:
             fill = (16-(len(self.IV) % 16)) % 16 + 8
             ghash_in = self.IV + bchr(0)*fill + long_to_bytes(8*len(self.IV),8)
 
-            mac = _GHASH(hash_subkey, factory, '0K')
+            mac = _GHASH(hash_subkey, factory.block_size, '0K')
             mac.update(ghash_in)
             self._j0 = bytes_to_long(mac.digest())
 
@@ -421,8 +426,14 @@ class BlockAlgo:
         self._cipher = self._factory.new(key, MODE_CTR, counter=ctr)
 
         # Step 5 - Bootstrat GHASH
-        self._cipherMAC = _GHASH(hash_subkey, factory, '64K')
- 
+        mac_state = kwargs.get('mac_state')
+        if mac_state is None:
+            self._cipherMAC = _GHASH(hash_subkey, factory.block_size, '64K')
+        else:
+            if mac_state[:2] != (key, self.mode):
+                raise ValueError("Incorrect MAC state")
+            self._cipherMAC = mac_state[2]
+
         # Step 6 - Prepare GCTR cipher for GMAC
         ctr = Counter.new(128, initial_value=self._j0, allow_wraparound=True)
         self._tag_cipher = self._factory.new(key, MODE_CTR, counter=ctr)
@@ -463,8 +474,7 @@ class BlockAlgo:
             raise ValueError("MODE_EAX requires an IV")
  
         # Allowed transitions after initialization
-        self._next = [ self.update, self.encrypt,
-            self.decrypt, self.digest, self.verify ]
+        self._next = [ self.update, self.encrypt, self.decrypt, self.digest, self.verify ]
 
         self._mac_len = kwargs.get('mac_len', self.block_size)
         if not (self._mac_len and 4<=self._mac_len<=self.block_size):
@@ -478,6 +488,11 @@ class BlockAlgo:
         # Compute MAC of nonce
         self._omac[0].update(self.IV)
 
+        mac_state = kwargs.get('mac_state')
+        if mac_state is not None:
+            if mac_state[:2] != (key, self.mode):
+                raise ValueError("Incorrect MAC state")
+            self._omac[1] = mac_state[2]
         self._cipherMAC = self._omac[1]
 
         # MAC of the nonce is also the initial counter for CTR encryption
@@ -604,7 +619,80 @@ class BlockAlgo:
             raise ApiUsageError("update() can only be called immediately after initialization")
         
         self._next = [ self.update, self.encrypt, self.decrypt, self.digest, self.verify ]
+        if self.mode in (MODE_EAX, MODE_GCM):
+            self._next.append(self.get_mac_state)
+
         return self._cipherMAC.update(assoc_data)
+
+    def get_mac_state(self):
+        """Return the current state of the MAC.
+       
+        This method is useful when one has to encrypt or decrypt multiple
+        messages:
+
+        - that all share the first part of the header, and that part is
+          very large
+        - with the same key (but different IV)
+        - with GCM or EAX modes
+       
+        An optimization consists in authenticating the first part of
+        the header only once, and then reuse the intermediate data
+        (that is, the MAC state) across all other messages.
+
+        **Example.** Let's assume we want to encrypt 2 packets using AES-GCM
+        under the same key. The packets have the following structure:
+
+        ::
+
+          msg_A ::= BIG_HEADER | HEADER_TAIL_A | PLAINTEXT_A
+          msg_B ::= BIG_HEADER | HEADER_TAIL_B | PLAINTEXT_B
+
+        The headers remain in clear, the plaintexts get encrypted and both are
+        authenticated. Of course, both packets are encrypted using different
+        IVs.
+
+        A cipher **A** encrypts ``msg_A``. After feeding ``BIG_HEADER`` to
+        ``update()``, we save the MAC state and continue normal processing.
+        
+        We initialize another cipher B for ``msg_B`` and pass the MAC state.
+        Cipher **B** immediately behaves as if it had already authenticated
+        ``BIG_HEADER``, with consistent savings if that piece of data was
+        indeed very big.
+
+            >>> from Crypto.Cipher import AES
+            >>> from Crypto.Random import get_random_bytes
+            >>>
+            >>> key = get_random_bytes(16)
+            >>> ### Encrypt the first packet
+            >>> iv_A = get_random_bytes(12)
+            >>> cipher_A = AES.new(key, AES.MODE_GCM, iv_A)
+            >>>
+            >>> cipher.update(big_header)
+            >>> state = cipher.get_mac_state()
+            >>> cipher.update(header_tail_A)
+            >>>
+            >>> ct_A, tag = cipher.encrypt(pt_A), cipher.digest()
+            >>>
+            >>> ### Encrypt the second packet
+            >>> iv_B = get_random_bytes(12)
+            >>> cipher_B = AES.new(key, AES.MODE_GCM, iv_B, mac_state=state)
+            >>>
+            >>> # cipher.update(big_header) <<< Not necessary
+            >>> cipher.update(header_tail_B)
+            >>>
+            >>> ct_B, tag = cipher.encrypt(pt_B), cipher.digest()
+
+        :Returns:
+            An opaque object that can passed as ``mac_state`` parameter
+            when creating a new cipher object.
+        """
+
+        if not self.mode in (MODE_EAX, MODE_GCM):
+            raise ValueError("get_mac_state() not supported by this mode of operation")
+        if self.get_mac_state not in self._next:
+            raise ApiUsageError("get_mac_state() can only be called before encryption or decryption start")
+
+        return (self._key, self.mode, self._cipherMAC.copy())
 
     def encrypt(self, plaintext):
         """Encrypt data with the key and the parameters set at initialization.
