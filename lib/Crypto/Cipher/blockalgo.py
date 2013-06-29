@@ -316,9 +316,12 @@ class _GHASH(_SmoothMAC):
     (x^128 + x^7 + x^2 + x + 1).
     """
 
-    def __init__(self, hash_subkey, ciphermod):
+    def __init__(self, hash_subkey, ciphermod, table_size='64K'):
         _SmoothMAC.__init__(self, ciphermod.block_size, None, 0)
-        self._hash_subkey = galois._ghash_expand(hash_subkey)
+        if table_size=='64K':
+            self._hash_subkey = galois._ghash_expand(hash_subkey)
+        else:
+            self._hash_subkey = hash_subkey
         self._last_y = bchr(0)*16
         self._mac = galois._ghash
 
@@ -409,7 +412,7 @@ class BlockAlgo:
             fill = (16-(len(self.IV) % 16)) % 16 + 8
             ghash_in = self.IV + bchr(0)*fill + long_to_bytes(8*len(self.IV),8)
 
-            mac = _GHASH(hash_subkey, factory)
+            mac = _GHASH(hash_subkey, factory, '0K')
             mac.update(ghash_in)
             self._j0 = bytes_to_long(mac.digest())
 
@@ -418,7 +421,7 @@ class BlockAlgo:
         self._cipher = self._factory.new(key, MODE_CTR, counter=ctr)
 
         # Step 5 - Bootstrat GHASH
-        self._cipherMAC = _GHASH(hash_subkey, factory)
+        self._cipherMAC = _GHASH(hash_subkey, factory, '64K')
  
         # Step 6 - Prepare GCTR cipher for GMAC
         ctr = Counter.new(128, initial_value=self._j0, allow_wraparound=True)
