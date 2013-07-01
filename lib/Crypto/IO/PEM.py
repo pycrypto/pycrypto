@@ -41,7 +41,7 @@ from binascii import hexlify, unhexlify, a2b_base64, b2a_base64
 
 from Crypto.Hash import MD5
 from Crypto.Util.Padding import pad, unpad
-from Crypto.Cipher import DES, DES3
+from Crypto.Cipher import DES, DES3, AES
 from Crypto.Protocol.KDF import PBKDF1
 from Crypto.Random import get_random_bytes
 
@@ -142,6 +142,9 @@ def decode(pem_data, passphrase=None):
             key =  PBKDF1(passphrase, salt, 16, 1, MD5)
             key += PBKDF1(key+passphrase, salt, 8, 1, MD5)
             objdec = DES3.new(key, DES3.MODE_CBC, salt)
+        elif algo=="AES-128-CBC":
+            key =  PBKDF1(passphrase, salt[:8], 16, 1, MD5)
+            objdec = AES.new(key, AES.MODE_CBC, salt)
         else:
             raise ValueError("Unsupport PEM encryption algorithm.")
         lines = lines[2:]
