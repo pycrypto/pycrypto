@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 #
-#  SelfTest/PublicKey/__init__.py: Self-test for public key crypto
-#
-# Written in 2008 by Dwayne C. Litzenberger <dlitz@dlitz.net>
-#
 # ===================================================================
 # The contents of this file are dedicated to the public domain.  To
 # the extent that dedication to the public domain is not available,
@@ -22,29 +18,16 @@
 # SOFTWARE.
 # ===================================================================
 
-"""Self-test for public-key crypto"""
+"""
+Modules for reading and writing cryptographic data.
 
-__revision__ = "$Id$"
+========================  =============================================
+Module                    Description
+========================  =============================================
+Crypto.Util.PEM           Set of functions for encapsulating data according to the PEM format.
+Crypto.Util.PKCS8         Set of functions for wrapping/unwrapping private keys.
+========================  =============================================
+"""
 
-import os
+__all__ = [ 'PEM', 'PKCS8']
 
-def get_tests(config={}):
-    tests = []
-    from Crypto.SelfTest.PublicKey import test_DSA;       tests += test_DSA.get_tests(config=config)
-    from Crypto.SelfTest.PublicKey import test_RSA;       tests += test_RSA.get_tests(config=config)
-    
-    from Crypto.SelfTest.PublicKey import test_import_DSA
-    tests +=test_import_DSA.get_tests(config=config)
-    
-    from Crypto.SelfTest.PublicKey import test_import_RSA
-    tests += test_import_RSA.get_tests(config=config)
-
-    from Crypto.SelfTest.PublicKey import test_ElGamal;   tests += test_ElGamal.get_tests(config=config)
-    return tests
-
-if __name__ == '__main__':
-    import unittest
-    suite = lambda: unittest.TestSuite(get_tests())
-    unittest.main(defaultTest='suite')
-
-# vim:set ts=4 sw=4 sts=4 expandtab:
