@@ -64,6 +64,7 @@ import Crypto.Util.number
 from Crypto.Util.number import ceil_div
 from Crypto.Util.asn1 import DerSequence, DerNull, DerOctetString
 from Crypto.Util.py3compat import *
+from Crypto.Util.comparison import constant_time_comparison
 
 class PKCS115_SigScheme:
     """This signature scheme can perform PKCS#1 v1.5 RSA signature or verification."""
@@ -158,7 +159,7 @@ class PKCS115_SigScheme:
         # of its components one at a time) we avoid attacks to the padding
         # scheme like Bleichenbacher's (see http://www.mail-archive.com/cryptography@metzdowd.com/msg06537).
         # 
-        return em1==em2
+        return constant_time_comparison(em1, em2)
     
 def EMSA_PKCS1_V1_5_ENCODE(hash, emLen):
     """

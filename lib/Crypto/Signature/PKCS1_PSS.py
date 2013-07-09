@@ -67,6 +67,7 @@ __revision__ = "$Id$"
 __all__ = [ 'new', 'PSS_SigScheme' ]
 
 from Crypto.Util.py3compat import *
+from Crypto.Util.comparison import constant_time_comparison
 if sys.version_info[0] == 2 and sys.version_info[1] == 1:
     from Crypto.Util.py21compat import *
 import Crypto.Util.number
@@ -343,9 +344,7 @@ def EMSA_PSS_VERIFY(mhash, em, emBits, mgf, sLen):
         # hash object doesn't have a "new" method.  Use Crypto.Hash.new() to instantiate it
         hp = Hash_new(mhash, bchr(0x00)*8 + mhash.digest() + salt).digest()
     # Step 14
-    if h!=hp:
-        return False
-    return True
+    return constant_time_comparison(h, hp)
 
 def new(key, mgfunc=None, saltLen=None):
     """Return a signature scheme object `PSS_SigScheme` that
