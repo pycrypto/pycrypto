@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 #
-#  SelfTest/Util/__init__.py: Self-test for utility modules
+#   comparison.py : Constant time comparison
 #
-# Written in 2008 by Dwayne C. Litzenberger <dlitz@dlitz.net>
+#  Part of the Python Cryptography Toolkit
 #
 # ===================================================================
 # The contents of this file are dedicated to the public domain.  To
@@ -21,25 +20,18 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 # ===================================================================
-
-"""Self-test for utility modules"""
+#
 
 __revision__ = "$Id$"
+from Crypto.Util.py3compat import bord
 
-import os
 
-def get_tests(config={}):
-    tests = []
-    if os.name == 'nt':
-        from Crypto.SelfTest.Util import test_winrandom; tests += test_winrandom.get_tests(config=config)
-    from Crypto.SelfTest.Util import test_number; tests += test_number.get_tests(config=config)
-    from Crypto.SelfTest.Util import test_Counter; tests += test_Counter.get_tests(config=config)
-    from Crypto.SelfTest.Util import test_comparison; tests += test_comparison.get_tests(config=config)
-    return tests
-
-if __name__ == '__main__':
-    import unittest
-    suite = lambda: unittest.TestSuite(get_tests())
-    unittest.main(defaultTest='suite')
-
-# vim:set ts=4 sw=4 sts=4 expandtab:
+def constant_time_comparison(a, b):
+    if len(a) != len(b):
+        return False
+    result = 0
+    for x, y in zip(a, b):
+        result |= bord(x) ^ bord(y)
+    if result:
+        return False
+    return True
