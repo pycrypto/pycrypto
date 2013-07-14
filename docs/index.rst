@@ -12,6 +12,8 @@ Contents:
    :maxdepth: 2
 
 
+.. automodule:: Crypto
+
 
 Indices and tables
 ==================
