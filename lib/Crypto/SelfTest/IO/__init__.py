@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
 #
-#  SelfTest/PublicKey/__init__.py: Self-test for public key crypto
-#
-# Written in 2008 by Dwayne C. Litzenberger <dlitz@dlitz.net>
+#  SelfTest/IO/__init__.py: Self-test for input/output module
 #
 # ===================================================================
 # The contents of this file are dedicated to the public domain.  To
@@ -22,24 +19,11 @@
 # SOFTWARE.
 # ===================================================================
 
-"""Self-test for public-key crypto"""
-
-__revision__ = "$Id$"
-
-import os
+"""Self-test for I/O"""
 
 def get_tests(config={}):
     tests = []
-    from Crypto.SelfTest.PublicKey import test_DSA;       tests += test_DSA.get_tests(config=config)
-    from Crypto.SelfTest.PublicKey import test_RSA;       tests += test_RSA.get_tests(config=config)
-    
-    from Crypto.SelfTest.PublicKey import test_import_DSA
-    tests +=test_import_DSA.get_tests(config=config)
-    
-    from Crypto.SelfTest.PublicKey import test_import_RSA
-    tests += test_import_RSA.get_tests(config=config)
-
-    from Crypto.SelfTest.PublicKey import test_ElGamal;   tests += test_ElGamal.get_tests(config=config)
+    from Crypto.SelfTest.IO import test_PKCS8;     tests += test_PKCS8.get_tests(config=config)
     return tests
 
 if __name__ == '__main__':
@@ -47,4 +31,4 @@ if __name__ == '__main__':
     suite = lambda: unittest.TestSuite(get_tests())
     unittest.main(defaultTest='suite')
 
-# vim:set ts=4 sw=4 sts=4 expandtab:
+
