@@ -34,6 +34,8 @@ from Crypto.Util.py3compat import *
 if sys.version_info[0] == 2 and sys.version_info[1] == 1:
     from Crypto.Util.py21compat import *
 
+from Crypto.Hash import MacMismatchError
+
 # For compatibility with Python 2.1 and Python 2.2
 if sys.hexversion < 0x02030000:
     # Python 2.1 doesn't have a dict() function
@@ -43,6 +45,7 @@ if sys.hexversion < 0x02030000:
 else:
     dict = dict
 
+from Crypto.Util.strxor import strxor_c
 
 class HashDigestSizeSelfTest(unittest.TestCase):
     
@@ -184,8 +187,18 @@ class MACSelfTest(unittest.TestCase):
 
             h = self.hashmod.new(key, digestmod=hashmod)
             h.update(data)
-            out1 = binascii.b2a_hex(h.digest())
+            out1_bin = h.digest()
+            out1 = binascii.b2a_hex(out1_bin)
             out2 = h.hexdigest()
+
+            # Verify that correct MAC does not raise any exception
+            h.hexverify(out1)
+            h.verify(out1_bin)
+
+            # Verify that incorrect MAC does raise ValueError exception
+            wrong_mac = strxor_c(out1_bin, 255)
+            self.assertRaises(MacMismatchError, h.verify, wrong_mac)
+            self.assertRaises(MacMismatchError, h.hexverify, "4556")
 
             h = self.hashmod.new(key, data, hashmod)
 
