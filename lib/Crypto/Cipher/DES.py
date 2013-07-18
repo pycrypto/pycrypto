@@ -53,6 +53,9 @@ __revision__ = "$Id$"
 from Crypto.Cipher import blockalgo
 from Crypto.Cipher import _DES
 
+from Crypto import ApiUsageError
+from Crypto.Hash import MacMismatchError
+
 class DESCipher(blockalgo.BlockAlgo):
     """DES cipher object"""
 
