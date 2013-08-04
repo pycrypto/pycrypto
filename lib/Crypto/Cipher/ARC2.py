@@ -91,11 +91,17 @@ def new(key, *args, **kwargs):
         actually the *encrypted* IV which was prefixed to the ciphertext).
         It is mandatory.
        
-        For all other modes, it must be `block_size` bytes longs.
+        For `MODE_EAX`, this is the *nonce*. There are no restrictions on its
+        length, but it is recommended to use at least 16 bytes.
+       
+        For all other modes, it must be 8 bytes long.
       counter : callable
         (*Only* `MODE_CTR`). A stateful function that returns the next
         *counter block*, which is a byte string of `block_size` bytes.
         For better performance, use `Crypto.Util.Counter`.
+      mac_len : integer
+        (*Only* `MODE_EAX`). Length of the MAC, in bytes.
+        It must be no larger than 8 (which is the default).
       segment_size : integer
         (*Only* `MODE_CFB`).The number of bits the plaintext and ciphertext
         are segmented in.
@@ -103,6 +109,11 @@ def new(key, *args, **kwargs):
       effective_keylen : integer
         Maximum cryptographic strength of the key, in bits.
         It can vary from 0 to 1024. The default value is 1024.
+      mac_state : object
+        (*Only* `MODE_EAX`). An object returned by a
+        call to `get_mac_state()` of another cipher object.
+        The new cipher will behave as if it had authenticated all data that was
+        processed by the old cipher at the time `get_mac_state()` was called.
 
     :Return: an `RC2Cipher` object
     """
@@ -122,6 +133,8 @@ MODE_OFB = 5
 MODE_CTR = 6
 #: OpenPGP Mode. See `blockalgo.MODE_OPENPGP`.
 MODE_OPENPGP = 7
+#: EAX Mode. See `blockalgo.MODE_EAX`.
+MODE_EAX = 9
 #: Size of a data block (in bytes)
 block_size = 8
 #: Size of a key (in bytes)
