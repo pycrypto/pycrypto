@@ -156,13 +156,13 @@ class CipherSelfTest(unittest.TestCase):
             for comp in assoc_data:
                 cipher.update(comp)
                 decipher.update(comp)
-            
+
             ctX = b2a_hex(cipher.encrypt(plaintext))
             if self.isMode("SIV"):
-                ptX = b2a_hex(decipher.decrypt(ciphertext+a2b_hex(self.mac)))
+                ptX = b2a_hex(decipher.decrypt_and_verify(ciphertext, a2b_hex(self.mac)))
             else:
                 ptX = b2a_hex(decipher.decrypt(ciphertext))
-            
+
             if ct:
                 self.assertEqual(ct, ctX)
                 self.assertEqual(pt, ptX)
@@ -424,16 +424,12 @@ class AEADTests(unittest.TestCase):
         # Decrypt and verify that MAC is accepted
         decipher = self.module.new(self.key, self.mode, self.iv)
         decipher.update(ad_ref)
-        if not self.isMode("SIV"):
-            pt = decipher.decrypt(ct_ref)
-        else:
-            pt = decipher.decrypt(ct_ref+mac_ref)
-        decipher.verify(mac_ref)
+        pt = decipher.decrypt_and_verify(ct_ref, mac_ref)
         self.assertEqual(pt, pt_ref)
 
         # Verify that hexverify work
         decipher.hexverify(hexlify(mac_ref))
- 
+
     def wrong_mac_test(self):
         """Negative tests for MAC"""
 
@@ -453,8 +449,8 @@ class AEADTests(unittest.TestCase):
         wrong_mac = strxor_c(mac_ref, 255)
         decipher = self.module.new(self.key, self.mode, self.iv)
         decipher.update(ad_ref)
-        pt = decipher.decrypt(ct_ref)
-        self.assertRaises(MacMismatchError, decipher.verify, wrong_mac)
+        self.assertRaises(MacMismatchError, decipher.decrypt_and_verify,
+                          ct_ref, wrong_mac)
 
     def zero_data(self):
         """Verify transition from INITIALIZED to FINISHED"""
@@ -484,7 +480,7 @@ class AEADTests(unittest.TestCase):
         mac1, mac2, mac3 = (None,)*3
         for chunk_length in 1,10,40,80,128:
             chunks = [ad[i:i+chunk_length] for i in range(0, len(ad), chunk_length)]
-   
+
             # No encryption/decryption
             cipher = self.module.new(self.key, self.mode, self.iv)
             for c in chunks:
@@ -520,10 +516,12 @@ class AEADTests(unittest.TestCase):
         cipher.encrypt(b("PT")*40)
         self.assertRaises(ApiUsageError, cipher.decrypt, b("XYZ")*40)
 
-        # Calling encrypt after decrypt raises an exception
-        cipher = self.module.new(self.key, self.mode, self.iv)
-        cipher.decrypt(b("CT")*40)
-        self.assertRaises(ApiUsageError, cipher.encrypt, b("XYZ")*40)
+        # Calling encrypt() after decrypt() raises an exception
+        # (excluded for SIV, since decrypt() is not valid)
+        if not self.isMode("SIV"):
+            cipher = self.module.new(self.key, self.mode, self.iv)
+            cipher.decrypt(b("CT")*40)
+            self.assertRaises(ApiUsageError, cipher.encrypt, b("XYZ")*40)
 
         # Calling verify after encrypt raises an exception
         cipher = self.module.new(self.key, self.mode, self.iv)
@@ -531,11 +529,13 @@ class AEADTests(unittest.TestCase):
         self.assertRaises(ApiUsageError, cipher.verify, b("XYZ"))
         self.assertRaises(ApiUsageError, cipher.hexverify, "12")
 
-        # Calling digest after decrypt raises an exception
-        cipher = self.module.new(self.key, self.mode, self.iv)
-        cipher.decrypt(b("CT")*40)
-        self.assertRaises(ApiUsageError, cipher.digest)
-        self.assertRaises(ApiUsageError, cipher.hexdigest)
+        # Calling digest() after decrypt() raises an exception
+        # (excluded for SIV, since decrypt() is not valid)
+        if not self.isMode("SIV"):
+            cipher = self.module.new(self.key, self.mode, self.iv)
+            cipher.decrypt(b("CT")*40)
+            self.assertRaises(ApiUsageError, cipher.digest)
+            self.assertRaises(ApiUsageError, cipher.hexdigest)
 
     def no_late_update(self):
         """Verify that update cannot be called after encrypt or decrypt"""
@@ -549,11 +549,13 @@ class AEADTests(unittest.TestCase):
         cipher.encrypt(b("PT")*40)
         self.assertRaises(ApiUsageError, cipher.update, b("XYZ"))
 
-        # Calling update after decrypt raises an exception
-        cipher = self.module.new(self.key, self.mode, self.iv)
-        cipher.update(b("XX"))
-        cipher.decrypt(b("CT")*40)
-        self.assertRaises(ApiUsageError, cipher.update, b("XYZ"))
+        # Calling update() after decrypt() raises an exception
+        # (excluded for SIV, since decrypt() is not valid)
+        if not self.isMode("SIV"):
+            cipher = self.module.new(self.key, self.mode, self.iv)
+            cipher.update(b("XX"))
+            cipher.decrypt(b("CT")*40)
+            self.assertRaises(ApiUsageError, cipher.update, b("XYZ"))
 
     def runTest(self):
         self.right_mac_test()
@@ -562,7 +564,7 @@ class AEADTests(unittest.TestCase):
         self.multiple_updates()
         self.no_mix_encrypt_decrypt()
         self.no_late_update()
-    
+
     def shortDescription(self):
         return self.description
 
@@ -583,7 +585,7 @@ class RoundtripTest(unittest.TestCase):
         for mode in (self.module.MODE_ECB, self.module.MODE_CBC, self.module.MODE_CFB, self.module.MODE_OFB, self.module.MODE_OPENPGP):
             encryption_cipher = self.module.new(a2b_hex(self.key), mode, self.iv)
             ciphertext = encryption_cipher.encrypt(self.plaintext)
-            
+
             if mode != self.module.MODE_OPENPGP:
                 decryption_cipher = self.module.new(a2b_hex(self.key), mode, self.iv)
             else:
@@ -708,7 +710,7 @@ def make_block_tests(module, module_name, test_data, additional_params=dict()):
             if not params2['ctr_params'].has_key('disable_shortcut'):
                 params2['ctr_params']['disable_shortcut'] = 1
             tests.append(CipherSelfTest(module, params2))
-    
+
     # Add tests that don't use test vectors
     if hasattr(module, "MODE_CCM"):
         tests += [
@@ -726,7 +728,7 @@ def make_block_tests(module, module_name, test_data, additional_params=dict()):
                 tests += [
                     AEADTests(module, aead_mode, ks),
                 ]
-    
+
     return tests
 
 def make_stream_tests(module, module_name, test_data):
