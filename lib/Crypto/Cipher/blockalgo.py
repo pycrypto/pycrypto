@@ -147,7 +147,7 @@ MODE_OPENPGP = 7
 #: Additionally, decryption detects if any part of the message - including the
 #: header - has been modified or corrupted.
 #:
-#: This mode requires a nonce (or *IV*). The nonce shall never repeat for two
+#: This mode requires a nonce. The nonce shall never repeat for two
 #: different messages encrypted with the same key, but it does not need
 #: to be random.
 #: Note that there is a trade-off between the size of the nonce and the
@@ -203,7 +203,7 @@ MODE_CCM = 8
 #: Additionally, decryption detects if any part of the message - including the
 #: header - has been modified or corrupted.
 #:
-#: This mode requires a nonce (or *IV*). The nonce shall never repeat for two
+#: This mode requires a nonce. The nonce shall never repeat for two
 #: different messages encrypted with the same key, but it does not need to
 #: be random.
 #
@@ -230,7 +230,7 @@ MODE_EAX = 9
 #: (e.g. a secret key, for key wrapping purposes) a nonce is not strictly
 #: required.
 #:
-#: Otherwise, a nonce (or *IV*) has to be provided; it shall never repeat
+#: Otherwise, a nonce has to be provided; the nonce shall never repeat
 #: for two different messages encrypted with the same key, but it does not
 #: need to be random.
 #:
@@ -271,7 +271,7 @@ MODE_SIV = 10
 #: Additionally, decryption detects if any part of the message - including the
 #: header - has been modified or corrupted.
 #:
-#: This mode requires a nonce (or *IV*). The nonce shall never repeat for two
+#: This mode requires a nonce. The nonce shall never repeat for two
 #: different messages encrypted with the same key, but it does not need to
 #: be random.
 #:
@@ -375,9 +375,9 @@ class BlockAlgo:
                 raise ValueError("Parameter 'mac_len' must be even"
                                  " and in the range 4..16")
 
-            self.IV = _getParameter('IV', 1, args, kwargs)   # N
-            if not (self.IV and 7 <= len(self.IV) <= 13):
-                raise ValueError("Length of parameter 'IV' must be"
+            self.nonce = _getParameter('nonce', 1, args, kwargs)   # N
+            if not (self.nonce and 7 <= len(self.nonce) <= 13):
+                raise ValueError("Length of parameter 'nonce' must be"
                                  " in the range 7..13 bytes")
 
             self._msg_len = kwargs.get('msg_len', None)      # p
@@ -412,9 +412,9 @@ class BlockAlgo:
             raise ValueError("GCM mode is only available for ciphers"
                              " that operate on 128 bits blocks")
 
-        self.IV = _getParameter('IV', 1, args, kwargs)
-        if not self.IV:
-            raise ValueError("MODE_GCM requires an IV")
+        self.nonce = _getParameter('nonce', 1, args, kwargs)
+        if not self.nonce:
+            raise ValueError("MODE_GCM requires a nonce")
 
         self._mac_len = kwargs.get('mac_len', 16)
         if not (self._mac_len and 4 <= self._mac_len <= 16):
@@ -435,13 +435,13 @@ class BlockAlgo:
         hash_subkey = factory.new(key).encrypt(bchr(0) * 16)
 
         # Step 2 - Compute J0 (integer, not byte string!)
-        if len(self.IV) == 12:
-            self._j0 = bytes_to_long(self.IV + b("\x00\x00\x00\x01"))
+        if len(self.nonce) == 12:
+            self._j0 = bytes_to_long(self.nonce + b("\x00\x00\x00\x01"))
         else:
-            fill = (16 - (len(self.IV) % 16)) % 16 + 8
-            ghash_in = (self.IV +
+            fill = (16 - (len(self.nonce) % 16)) % 16 + 8
+            ghash_in = (self.nonce +
                         bchr(0) * fill +
-                        long_to_bytes(8 * len(self.IV), 8))
+                        long_to_bytes(8 * len(self.nonce), 8))
             mac = _GHASH(hash_subkey, factory.block_size, '0K')
             mac.update(ghash_in)
             self._j0 = bytes_to_long(mac.digest())
@@ -466,7 +466,7 @@ class BlockAlgo:
                              " for the underlying cipher")
 
         # IV is optional
-        self.IV = _getParameter('IV', 1, args, kwargs)
+        self.nonce = _getParameter('nonce', 1, args, kwargs)
 
         self._cipherMAC = S2V(key[:subkey_size], ciphermod=factory)
         self._subkey_ctr = key[subkey_size:]
@@ -491,9 +491,9 @@ class BlockAlgo:
 
     def _start_eax(self, factory, key, *args, **kwargs):
 
-        self.IV = _getParameter('IV', 1, args, kwargs)
-        if not self.IV:
-            raise ValueError("MODE_EAX requires an IV")
+        self.nonce = _getParameter('nonce', 1, args, kwargs)
+        if not self.nonce:
+            raise ValueError("MODE_EAX requires a nonce")
 
         # Allowed transitions after initialization
         self._next = [self.update, self.encrypt, self.decrypt,
@@ -511,7 +511,7 @@ class BlockAlgo:
                 ]
 
         # Compute MAC of nonce
-        self._omac[0].update(self.IV)
+        self._omac[0].update(self.nonce)
 
         self._cipherMAC = self._omac[1]
 
@@ -592,7 +592,7 @@ class BlockAlgo:
             return
 
         # q is the length of Q, the encoding of the message length
-        q = 15 - len(self.IV)
+        q = 15 - len(self.nonce)
 
         ## Compute B_0
         flags = (
@@ -600,7 +600,7 @@ class BlockAlgo:
                 8 * divmod(self._mac_len - 2, 2)[0] +
                 (q - 1)
                 )
-        b_0 = bchr(flags) + self.IV + long_to_bytes(self._msg_len, q)
+        b_0 = bchr(flags) + self.nonce + long_to_bytes(self._msg_len, q)
 
         # Start CBC MAC with zero IV
         assoc_len_encoded = b('')
@@ -617,7 +617,7 @@ class BlockAlgo:
         self._cipherMAC.ignite(b_0 + assoc_len_encoded)
 
         # Start CTR cipher
-        prefix = bchr(q - 1) + self.IV
+        prefix = bchr(q - 1) + self.nonce
         ctr = Counter.new(128 - len(prefix) * 8, prefix, initial_value=0)
         self._cipher = self._factory.new(self._key, MODE_CTR, counter=ctr)
         # Will XOR against CBC MAC
@@ -755,8 +755,8 @@ class BlockAlgo:
         if self.mode == MODE_SIV:
             self._next = [self.digest]
 
-            if self.IV:
-                self._cipherMAC.update(self.IV)
+            if self.nonce:
+                self._cipherMAC.update(self.nonce)
 
             self._cipherMAC.update(plaintext)
             self._cipher = self._siv_ctr_cipher(self._cipherMAC.derive())
@@ -1045,8 +1045,8 @@ class BlockAlgo:
 
             pt = self._cipher.decrypt(ciphertext)
 
-            if self.IV:
-                self._cipherMAC.update(self.IV)
+            if self.nonce:
+                self._cipherMAC.update(self.nonce)
             if pt:
                 self._cipherMAC.update(pt)
         else:

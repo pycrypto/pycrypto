@@ -1453,20 +1453,20 @@ test_data = [
     #  2. Associated data + '|' + ciphertext + '|' + MAC
     #  3. AES-128 key
     #  4. Description
-    #  5. Dictionary of parameters to be passed to AES.new() (where iv is the
-    #     nonce)
+    #  5. Dictionary of parameters to be passed to AES.new().
+    #     It must include the nonce.
     #
     ( '0001020304050607|20212223',
       '0001020304050607|7162015b|4dac255d',
       '404142434445464748494a4b4c4d4e4f',
       'NIST SP 800-38C Appex C.1',
-      dict(mode='CCM', iv='10111213141516')
+      dict(mode='CCM', nonce='10111213141516')
     ),
     ( '000102030405060708090a0b0c0d0e0f|202122232425262728292a2b2c2d2e2f',
       '000102030405060708090a0b0c0d0e0f|d2a1f0e051ea5f62081a7792073d593d|1fc64fbfaccd',
       '404142434445464748494a4b4c4d4e4f',
       'NIST SP 800-38C Appex C.2',
-      dict(mode='CCM', iv='1011121314151617')
+      dict(mode='CCM', nonce='1011121314151617')
     ),
     ( '000102030405060708090a0b0c0d0e0f10111213|'+
       '202122232425262728292a2b2c2d2e2f3031323334353637',
@@ -1474,9 +1474,9 @@ test_data = [
       'e3b201a9f5b71a7a9b1ceaeccd97e70b6176aad9a4428aa5|484392fbc1b09951',
       '404142434445464748494a4b4c4d4e4f',
       'NIST SP 800-38C Appex C.3',
-      dict(mode='CCM', iv='101112131415161718191a1b')
+      dict(mode='CCM', nonce='101112131415161718191a1b')
     ),
-    ( 
+    (
       (''.join(["%02X" % (x*16+y) for x in xrange(0,16) for y in xrange(0,16)]))*256+'|'+
       '202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f',
       (''.join(["%02X" % (x*16+y) for x in xrange(0,16) for y in xrange(0,16)]))*256+'|'+
@@ -1484,7 +1484,7 @@ test_data = [
       'b4ac6bec93e8598e7f0dadbcea5b',
       '404142434445464748494a4b4c4d4e4f',
       'NIST SP 800-38C Appex C.4',
-      dict(mode='CCM', iv='101112131415161718191a1b1c')
+      dict(mode='CCM', nonce='101112131415161718191a1b1c')
     ),
     # RFC3610 test vectors
     (
@@ -1493,7 +1493,7 @@ test_data = [
       '17e8d12cfdf926e0',
       'c0c1c2c3c4c5c6c7c8c9cacbcccdcecf',
       'RFC3610 Packet Vector #1',
-      dict(mode='CCM', iv='00000003020100a0a1a2a3a4a5')
+      dict(mode='CCM', nonce='00000003020100a0a1a2a3a4a5')
     ),
     (
       '0001020304050607|08090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f',
@@ -1501,7 +1501,7 @@ test_data = [
       'a091d56e10400916',
       'c0c1c2c3c4c5c6c7c8c9cacbcccdcecf',
       'RFC3610 Packet Vector #2',
-      dict(mode='CCM', iv='00000004030201a0a1a2a3a4a5')
+      dict(mode='CCM', nonce='00000004030201a0a1a2a3a4a5')
     ),
     (
       '0001020304050607|08090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20',
@@ -1509,7 +1509,7 @@ test_data = [
       '4adaa76fbd9fb0c5',
       'c0c1c2c3c4c5c6c7c8c9cacbcccdcecf',
       'RFC3610 Packet Vector #3',
-      dict(mode='CCM', iv='00000005040302A0A1A2A3A4A5')
+      dict(mode='CCM', nonce='00000005040302A0A1A2A3A4A5')
     ),
     (
       '000102030405060708090a0b|0c0d0e0f101112131415161718191a1b1c1d1e',
@@ -1517,7 +1517,7 @@ test_data = [
       '96c861b9c9e61ef1',
       'c0c1c2c3c4c5c6c7c8c9cacbcccdcecf',
       'RFC3610 Packet Vector #4',
-      dict(mode='CCM', iv='00000006050403a0a1a2a3a4a5')
+      dict(mode='CCM', nonce='00000006050403a0a1a2a3a4a5')
     ),
     (
       '000102030405060708090a0b|0c0d0e0f101112131415161718191a1b1c1d1e1f',
@@ -1525,7 +1525,7 @@ test_data = [
       '51e83f077d9c2d93',
       'c0c1c2c3c4c5c6c7c8c9cacbcccdcecf',
       'RFC3610 Packet Vector #5',
-      dict(mode='CCM', iv='00000007060504a0a1a2a3a4a5')
+      dict(mode='CCM', nonce='00000007060504a0a1a2a3a4a5')
     ),
     (
       '000102030405060708090a0b|0c0d0e0f101112131415161718191a1b1c1d1e1f20',
@@ -1533,7 +1533,7 @@ test_data = [
       '405a0443ac91cb94',
       'c0c1c2c3c4c5c6c7c8c9cacbcccdcecf',
       'RFC3610 Packet Vector #6',
-      dict(mode='CCM', iv='00000008070605a0a1a2a3a4a5')
+      dict(mode='CCM', nonce='00000008070605a0a1a2a3a4a5')
     ),
     (
       '0001020304050607|08090a0b0c0d0e0f101112131415161718191a1b1c1d1e',
@@ -1541,7 +1541,7 @@ test_data = [
       '048c56602c97acbb7490',
       'c0c1c2c3c4c5c6c7c8c9cacbcccdcecf',
       'RFC3610 Packet Vector #7',
-      dict(mode='CCM', iv='00000009080706a0a1a2a3a4a5')
+      dict(mode='CCM', nonce='00000009080706a0a1a2a3a4a5')
     ),
     (
       '0001020304050607|08090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f',
@@ -1549,7 +1549,7 @@ test_data = [
       'c17b4433f434963f34b4',
       'c0c1c2c3c4c5c6c7c8c9cacbcccdcecf',
       'RFC3610 Packet Vector #8',
-      dict(mode='CCM', iv='0000000a090807a0a1a2a3a4a5')
+      dict(mode='CCM', nonce='0000000a090807a0a1a2a3a4a5')
     ),
     (
       '0001020304050607|08090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20',
@@ -1557,7 +1557,7 @@ test_data = [
       'ea9c07e56b5eb17e5f4e',
       'c0c1c2c3c4c5c6c7c8c9cacbcccdcecf',
       'RFC3610 Packet Vector #9',
-      dict(mode='CCM', iv='0000000b0a0908a0a1a2a3a4a5')
+      dict(mode='CCM', nonce='0000000b0a0908a0a1a2a3a4a5')
     ),
     (
       '000102030405060708090a0b|0c0d0e0f101112131415161718191a1b1c1d1e',
@@ -1565,7 +1565,7 @@ test_data = [
       '566aa9406b4d999988dd',
       'c0c1c2c3c4c5c6c7c8c9cacbcccdcecf',
       'RFC3610 Packet Vector #10',
-      dict(mode='CCM', iv='0000000c0b0a09a0a1a2a3a4a5')
+      dict(mode='CCM', nonce='0000000c0b0a09a0a1a2a3a4a5')
     ),
     (
       '000102030405060708090a0b|0c0d0e0f101112131415161718191a1b1c1d1e1f',
@@ -1573,7 +1573,7 @@ test_data = [
       'f53aa2e9107a8b6c022c',
       'c0c1c2c3c4c5c6c7c8c9cacbcccdcecf',
       'RFC3610 Packet Vector #11',
-      dict(mode='CCM', iv='0000000d0c0b0aa0a1a2a3a4a5')
+      dict(mode='CCM', nonce='0000000d0c0b0aa0a1a2a3a4a5')
     ),
     (
       '000102030405060708090a0b|0c0d0e0f101112131415161718191a1b1c1d1e1f20',
@@ -1581,7 +1581,7 @@ test_data = [
       'cd1aa31662e7ad65d6db',
       'c0c1c2c3c4c5c6c7c8c9cacbcccdcecf',
       'RFC3610 Packet Vector #12',
-      dict(mode='CCM', iv='0000000e0d0c0ba0a1a2a3a4a5')
+      dict(mode='CCM', nonce='0000000e0d0c0ba0a1a2a3a4a5')
     ),
     (
       '0be1a88bace018b1|08e8cf97d820ea258460e96ad9cf5289054d895ceac47c',
@@ -1589,7 +1589,7 @@ test_data = [
       'e78cf7cb0cddd7b3',
       'd7828d13b2b0bdc325a76236df93cc6b',
       'RFC3610 Packet Vector #13',
-      dict(mode='CCM', iv='00412b4ea9cdbe3c9696766cfa')
+      dict(mode='CCM', nonce='00412b4ea9cdbe3c9696766cfa')
     ),
     (
       '63018f76dc8a1bcb|9020ea6f91bdd85afa0039ba4baff9bfb79c7028949cd0ec',
@@ -1597,7 +1597,7 @@ test_data = [
       'c52ee81d7d77c08a',
       'd7828d13b2b0bdc325a76236df93cc6b',
       'RFC3610 Packet Vector #14',
-      dict(mode='CCM', iv='0033568ef7b2633c9696766cfa')
+      dict(mode='CCM', nonce='0033568ef7b2633c9696766cfa')
     ),
     (
       'aa6cfa36cae86b40|b916e0eacc1c00d7dcec68ec0b3bbb1a02de8a2d1aa346132e',
@@ -1605,7 +1605,7 @@ test_data = [
       'a776796edb723506',
       'd7828d13b2b0bdc325a76236df93cc6b',
       'RFC3610 Packet Vector #15',
-      dict(mode='CCM', iv='00103fe41336713c9696766cfa')
+      dict(mode='CCM', nonce='00103fe41336713c9696766cfa')
     ),
     (
       'd0d0735c531e1becf049c244|12daac5630efa5396f770ce1a66b21f7b2101c',
@@ -1613,7 +1613,7 @@ test_data = [
       '9a6f49975bcadeaf',
       'd7828d13b2b0bdc325a76236df93cc6b',
       'RFC3610 Packet Vector #16',
-      dict(mode='CCM', iv='00764c63b8058e3c9696766cfa')
+      dict(mode='CCM', nonce='00764c63b8058e3c9696766cfa')
     ),
     (
       '77b60f011c03e1525899bcae|e88b6a46c78d63e52eb8c546efb5de6f75e9cc0d',
@@ -1621,7 +1621,7 @@ test_data = [
       '762c0c7744fe7e3c',
       'd7828d13b2b0bdc325a76236df93cc6b',
       'RFC3610 Packet Vector #17',
-      dict(mode='CCM', iv='00f8b678094e3b3c9696766cfa')
+      dict(mode='CCM', nonce='00f8b678094e3b3c9696766cfa')
     ),
     (
       'cd9044d2b71fdb8120ea60c0|6435acbafb11a82e2f071d7ca4a5ebd93a803ba87f',
@@ -1629,7 +1629,7 @@ test_data = [
       '47099e5ae0704551',
       'd7828d13b2b0bdc325a76236df93cc6b',
       'RFC3610 Packet Vector #18',
-      dict(mode='CCM', iv='00d560912d3f703c9696766cfa')
+      dict(mode='CCM', nonce='00d560912d3f703c9696766cfa')
     ),
     (
       'd85bc7e69f944fb8|8a19b950bcf71a018e5e6701c91787659809d67dbedd18',
@@ -1637,7 +1637,7 @@ test_data = [
       '637cf9bec2408897c6ba',
       'd7828d13b2b0bdc325a76236df93cc6b',
       'RFC3610 Packet Vector #19',
-      dict(mode='CCM', iv='0042fff8f1951c3c9696766cfa')
+      dict(mode='CCM', nonce='0042fff8f1951c3c9696766cfa')
     ),
     (
       '74a0ebc9069f5b37|1761433c37c5a35fc1f39f406302eb907c6163be38c98437',
@@ -1645,7 +1645,7 @@ test_data = [
       'f0a477cc2fc9bf548944',
       'd7828d13b2b0bdc325a76236df93cc6b',
       'RFC3610 Packet Vector #20',
-      dict(mode='CCM', iv='00920f40e56cdc3c9696766cfa')
+      dict(mode='CCM', nonce='00920f40e56cdc3c9696766cfa')
     ),
     (
       '44a3aa3aae6475ca|a434a8e58500c6e41530538862d686ea9e81301b5ae4226bfa',
@@ -1653,7 +1653,7 @@ test_data = [
       '4d4151a4ed3a8b87b9ce',
       'd7828d13b2b0bdc325a76236df93cc6b',
       'RFC3610 Packet Vector #21',
-      dict(mode='CCM', iv='0027ca0c7120bc3c9696766cfa')
+      dict(mode='CCM', nonce='0027ca0c7120bc3c9696766cfa')
     ),
     (
       'ec46bb63b02520c33c49fd70|b96b49e21d621741632875db7f6c9243d2d7c2',
@@ -1661,7 +1661,7 @@ test_data = [
       '7d22c8088c666be5c197',
       'd7828d13b2b0bdc325a76236df93cc6b',
       'RFC3610 Packet Vector #22',
-      dict(mode='CCM', iv='005b8ccbcd9af83c9696766cfa')
+      dict(mode='CCM', nonce='005b8ccbcd9af83c9696766cfa')
     ),
     (
       '47a65ac78b3d594227e85e71|e2fcfbb880442c731bf95167c8ffd7895e337076',
@@ -1669,7 +1669,7 @@ test_data = [
       'df7e00dccec7ae52987d',
       'd7828d13b2b0bdc325a76236df93cc6b',
       'RFC3610 Packet Vector #23',
-      dict(mode='CCM', iv='003ebe94044b9a3c9696766cfa')
+      dict(mode='CCM', nonce='003ebe94044b9a3c9696766cfa')
     ),
     (
       '6e37a6ef546d955d34ab6059|abf21c0b02feb88f856df4a37381bce3cc128517d4',
@@ -1677,7 +1677,7 @@ test_data = [
       '6dce9e82efa16da62059',
       'd7828d13b2b0bdc325a76236df93cc6b',
       'RFC3610 Packet Vector #24',
-      dict(mode='CCM', iv='008d493b30ae8b3c9696766cfa')
+      dict(mode='CCM', nonce='008d493b30ae8b3c9696766cfa')
     ),
 
     # Test vectors for EAX taken from http://www.cs.ucdavis.edu/~rogaway/papers/eax.pdf
@@ -1687,77 +1687,77 @@ test_data = [
     #  2. Header + '|' + ciphertext + '|' + MAC
     #  3. AES-128 key
     #  4. Description
-    #  5. Dictionary of parameters to be passed to AES.new() (where iv is the
-    #     nonce)
+    #  5. Dictionary of parameters to be passed to AES.new(). It must
+    #     include the nonce.
     #
     ( '6bfb914fd07eae6b|',
       '6bfb914fd07eae6b||e037830e8389f27b025a2d6527e79d01',
       '233952dee4d5ed5f9b9c6d6ff80ff478',
       'EAX spec Appendix G',
-      dict(mode='EAX', iv='62EC67F9C3A4A407FCB2A8C49031A8B3')
+      dict(mode='EAX', nonce='62EC67F9C3A4A407FCB2A8C49031A8B3')
     ),
-    
+
     ( 'fa3bfd4806eb53fa|f7fb',
       'fa3bfd4806eb53fa|19dd|5c4c9331049d0bdab0277408f67967e5',
       '91945d3f4dcbee0bf45ef52255f095a4',
       'EAX spec Appendix G',
-      dict(mode='EAX', iv='BECAF043B0A23D843194BA972C66DEBD')
+      dict(mode='EAX', nonce='BECAF043B0A23D843194BA972C66DEBD')
     ),
 
     ( '234a3463c1264ac6|1a47cb4933',
       '234a3463c1264ac6|d851d5bae0|3a59f238a23e39199dc9266626c40f80',
       '01f74ad64077f2e704c0f60ada3dd523',
       'EAX spec Appendix G',
-      dict(mode='EAX', iv='70C3DB4F0D26368400A10ED05D2BFF5E')
+      dict(mode='EAX', nonce='70C3DB4F0D26368400A10ED05D2BFF5E')
     ),
 
     ( '33cce2eabff5a79d|481c9e39b1',
       '33cce2eabff5a79d|632a9d131a|d4c168a4225d8e1ff755939974a7bede',
       'd07cf6cbb7f313bdde66b727afd3c5e8',
       'EAX spec Appendix G',
-      dict(mode='EAX', iv='8408DFFF3C1A2B1292DC199E46B7D617')
+      dict(mode='EAX', nonce='8408DFFF3C1A2B1292DC199E46B7D617')
     ),
- 
+
     ( 'aeb96eaebe2970e9|40d0c07da5e4',
       'aeb96eaebe2970e9|071dfe16c675|cb0677e536f73afe6a14b74ee49844dd',
       '35b6d0580005bbc12b0587124557d2c2',
       'EAX spec Appendix G',
-      dict(mode='EAX', iv='FDB6B06676EEDC5C61D74276E1F8E816')
+      dict(mode='EAX', nonce='FDB6B06676EEDC5C61D74276E1F8E816')
     ),
-   
+
     ( 'd4482d1ca78dce0f|4de3b35c3fc039245bd1fb7d',
       'd4482d1ca78dce0f|835bb4f15d743e350e728414|abb8644fd6ccb86947c5e10590210a4f',
       'bd8e6e11475e60b268784c38c62feb22',
       'EAX spec Appendix G',
-      dict(mode='EAX', iv='6EAC5C93072D8E8513F750935E46DA1B')
+      dict(mode='EAX', nonce='6EAC5C93072D8E8513F750935E46DA1B')
     ),
-    
+
     ( '65d2017990d62528|8b0a79306c9ce7ed99dae4f87f8dd61636',
       '65d2017990d62528|02083e3979da014812f59f11d52630da30|137327d10649b0aa6e1c181db617d7f2',
       '7c77d6e813bed5ac98baa417477a2e7d',
       'EAX spec Appendix G',
-      dict(mode='EAX', iv='1A8C98DCD73D38393B2BF1569DEEFC19')
+      dict(mode='EAX', nonce='1A8C98DCD73D38393B2BF1569DEEFC19')
     ),
-     
+
     ( '54b9f04e6a09189a|1bda122bce8a8dbaf1877d962b8592dd2d56',
       '54b9f04e6a09189a|2ec47b2c4954a489afc7ba4897edcdae8cc3|3b60450599bd02c96382902aef7f832a',
       '5fff20cafab119ca2fc73549e20f5b0d',
       'EAX spec Appendix G',
-      dict(mode='EAX', iv='DDE59B97D722156D4D9AFF2BC7559826')
+      dict(mode='EAX', nonce='DDE59B97D722156D4D9AFF2BC7559826')
     ),
-      
+
     ( '899a175897561d7e|6cf36720872b8513f6eab1a8a44438d5ef11',
       '899a175897561d7e|0de18fd0fdd91e7af19f1d8ee8733938b1e8|e7f6d2231618102fdb7fe55ff1991700',
       'a4a4782bcffd3ec5e7ef6d8c34a56123',
       'EAX spec Appendix G',
-      dict(mode='EAX', iv='B781FCF2F75FA5A8DE97A9CA48E522EC')
+      dict(mode='EAX', nonce='B781FCF2F75FA5A8DE97A9CA48E522EC')
     ),
-    
+
     ( '126735fcc320d25a|ca40d7446e545ffaed3bd12a740a659ffbbb3ceab7',
       '126735fcc320d25a|cb8920f87a6c75cff39627b56e3ed197c552d295a7|cfc46afc253b4652b1af3795b124ab6e',
       '8395fcf1e95bebd697bd010bc766aac3',
       'EAX spec Appendix G',
-      dict(mode='EAX', iv='22E7ADD93CFC6393C57EC0B3C17D6B44')
+      dict(mode='EAX', nonce='22E7ADD93CFC6393C57EC0B3C17D6B44')
     ),
 
     # Test vectors for SIV taken from RFC5297
@@ -1767,8 +1767,8 @@ test_data = [
     #  2. Header + '|' + ciphertext + '|' + MAC
     #  3. AES-128 key
     #  4. Description
-    #  5. Dictionary of parameters to be passed to AES.new() (where iv is the
-    #     nonce)
+    #  5. Dictionary of parameters to be passed to AES.new().
+    #     It must include the nonce.
     #
     #  A "Header" is a dash ('-') separated sequece of components.
     #
@@ -1777,7 +1777,7 @@ test_data = [
       '85632d07c6e8f37f950acd320a2ecc93',
       'fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff',
       'RFC5297 A.1',
-      dict(mode='SIV', iv=None)
+      dict(mode='SIV', nonce=None)
     ),
 
     ( '00112233445566778899aabbccddeeffdeaddadadeaddadaffeeddccbbaa9988' +
@@ -1793,7 +1793,7 @@ test_data = [
 
       '7f7e7d7c7b7a79787776757473727170404142434445464748494a4b4c4d4e4f',
       'RFC5297 A.2',
-      dict(mode='SIV', iv='09f911029d74e35bd84156c5635688c0')
+      dict(mode='SIV', nonce='09f911029d74e35bd84156c5635688c0')
     ),
 
     # Test vectors for GCM taken from
@@ -1804,21 +1804,21 @@ test_data = [
     #  2. Header + '|' + ciphertext + '|' + MAC
     #  3. AES-128 key
     #  4. Description
-    #  5. Dictionary of parameters to be passed to AES.new() (where iv is the
-    #     nonce)
+    #  5. Dictionary of parameters to be passed to AES.new().
+    #     It must include the nonce.
     #
     ( '|',
       '||58e2fccefa7e3061367f1d57a4e7455a',
       '00000000000000000000000000000000',
       'GCM Test Case 1',
-      dict(mode='GCM', iv='000000000000000000000000')
+      dict(mode='GCM', nonce='000000000000000000000000')
     ),
- 
+
     ( '|00000000000000000000000000000000',
       '|0388dace60b6a392f328c2b971b2fe78|ab6e47d42cec13bdf53a67b21257bddf',
       '00000000000000000000000000000000',
       'GCM Test Case 2',
-      dict(mode='GCM', iv='000000000000000000000000')
+      dict(mode='GCM', nonce='000000000000000000000000')
     ),
 
     ( '|d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a72' +
@@ -1828,7 +1828,7 @@ test_data = [
        '4d5c2af327cd64a62cf35abd2ba6fab4',
       'feffe9928665731c6d6a8f9467308308',
       'GCM Test Case 3',
-      dict(mode='GCM', iv='cafebabefacedbaddecaf888')
+      dict(mode='GCM', nonce='cafebabefacedbaddecaf888')
     ),
 
     ( 'feedfacedeadbeeffeedfacedeadbeefabaddad2|' +
@@ -1840,9 +1840,9 @@ test_data = [
       '5bc94fbc3221a5db94fae95ae7121a47',
       'feffe9928665731c6d6a8f9467308308',
       'GCM Test Case 4',
-      dict(mode='GCM', iv='cafebabefacedbaddecaf888')
+      dict(mode='GCM', nonce='cafebabefacedbaddecaf888')
     ),
- 
+
     ( 'feedfacedeadbeeffeedfacedeadbeefabaddad2|' +
       'd9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a72' +
       '1c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b39',
@@ -1852,9 +1852,9 @@ test_data = [
       '3612d2e79e3b0785561be14aaca2fccb',
       'feffe9928665731c6d6a8f9467308308',
       'GCM Test Case 5',
-      dict(mode='GCM', iv='cafebabefacedbad')
+      dict(mode='GCM', nonce='cafebabefacedbad')
     ),
-    
+
     ( 'feedfacedeadbeeffeedfacedeadbeefabaddad2|' +
       'd9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a72' +
       '1c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b39',
@@ -1864,23 +1864,23 @@ test_data = [
       '619cc5aefffe0bfa462af43c1699d050',
       'feffe9928665731c6d6a8f9467308308',
       'GCM Test Case 6',
-      dict(mode='GCM', iv='9313225df88406e555909c5aff5269aa'+
+      dict(mode='GCM', nonce='9313225df88406e555909c5aff5269aa'+
           '6a7a9538534f7da1e4c303d2a318a728c3c0c95156809539fcf0e2429a6b5254'+
           '16aedbf5a0de6a57a637b39b' )
     ),
-    
+
     ( '|',
       '||cd33b28ac773f74ba00ed1f312572435',
       '000000000000000000000000000000000000000000000000',
       'GCM Test Case 7',
-      dict(mode='GCM', iv='000000000000000000000000')
+      dict(mode='GCM', nonce='000000000000000000000000')
     ),
-    
+
     ( '|00000000000000000000000000000000',
       '|98e7247c07f0fe411c267e4384b0f600|2ff58d80033927ab8ef4d4587514f0fb',
       '000000000000000000000000000000000000000000000000',
       'GCM Test Case 8',
-      dict(mode='GCM', iv='000000000000000000000000')
+      dict(mode='GCM', nonce='000000000000000000000000')
     ),
 
     ( '|d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a72' +
@@ -1890,7 +1890,7 @@ test_data = [
        '9924a7c8587336bfb118024db8674a14',
       'feffe9928665731c6d6a8f9467308308feffe9928665731c',
       'GCM Test Case 9',
-      dict(mode='GCM', iv='cafebabefacedbaddecaf888')
+      dict(mode='GCM', nonce='cafebabefacedbaddecaf888')
     ),
 
     ( 'feedfacedeadbeeffeedfacedeadbeefabaddad2|' +
@@ -1902,9 +1902,9 @@ test_data = [
       '2519498e80f1478f37ba55bd6d27618c',
       'feffe9928665731c6d6a8f9467308308feffe9928665731c',
       'GCM Test Case 10',
-      dict(mode='GCM', iv='cafebabefacedbaddecaf888')
+      dict(mode='GCM', nonce='cafebabefacedbaddecaf888')
     ),
- 
+
     ( 'feedfacedeadbeeffeedfacedeadbeefabaddad2|' +
       'd9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a72' +
       '1c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b39',
@@ -1914,9 +1914,9 @@ test_data = [
       '65dcc57fcf623a24094fcca40d3533f8',
       'feffe9928665731c6d6a8f9467308308feffe9928665731c',
       'GCM Test Case 11',
-      dict(mode='GCM', iv='cafebabefacedbad')
+      dict(mode='GCM', nonce='cafebabefacedbad')
     ),
-    
+
     ( 'feedfacedeadbeeffeedfacedeadbeefabaddad2|' +
       'd9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a72' +
       '1c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b39',
@@ -1926,7 +1926,7 @@ test_data = [
       'dcf566ff291c25bbb8568fc3d376a6d9',
       'feffe9928665731c6d6a8f9467308308feffe9928665731c',
       'GCM Test Case 12',
-      dict(mode='GCM', iv='9313225df88406e555909c5aff5269aa'+
+      dict(mode='GCM', nonce='9313225df88406e555909c5aff5269aa'+
           '6a7a9538534f7da1e4c303d2a318a728c3c0c95156809539fcf0e2429a6b5254'+
           '16aedbf5a0de6a57a637b39b' )
     ),
@@ -1935,14 +1935,14 @@ test_data = [
       '||530f8afbc74536b9a963b4f1c4cb738b',
       '0000000000000000000000000000000000000000000000000000000000000000',
       'GCM Test Case 13',
-      dict(mode='GCM', iv='000000000000000000000000')
+      dict(mode='GCM', nonce='000000000000000000000000')
     ),
-    
+
     ( '|00000000000000000000000000000000',
       '|cea7403d4d606b6e074ec5d3baf39d18|d0d1c8a799996bf0265b98b5d48ab919',
       '0000000000000000000000000000000000000000000000000000000000000000',
       'GCM Test Case 14',
-      dict(mode='GCM', iv='000000000000000000000000')
+      dict(mode='GCM', nonce='000000000000000000000000')
     ),
 
     ( '|d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a72' +
@@ -1952,7 +1952,7 @@ test_data = [
        'b094dac5d93471bdec1a502270e3cc6c',
       'feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308',
       'GCM Test Case 15',
-      dict(mode='GCM', iv='cafebabefacedbaddecaf888')
+      dict(mode='GCM', nonce='cafebabefacedbaddecaf888')
     ),
 
     ( 'feedfacedeadbeeffeedfacedeadbeefabaddad2|' +
@@ -1964,9 +1964,9 @@ test_data = [
       '76fc6ece0f4e1768cddf8853bb2d551b',
       'feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308',
       'GCM Test Case 16',
-      dict(mode='GCM', iv='cafebabefacedbaddecaf888')
+      dict(mode='GCM', nonce='cafebabefacedbaddecaf888')
     ),
-    
+
     ( 'feedfacedeadbeeffeedfacedeadbeefabaddad2|' +
       'd9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a72' +
       '1c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b39',
@@ -1976,9 +1976,9 @@ test_data = [
       '3a337dbf46a792c45e454913fe2ea8f2',
       'feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308',
       'GCM Test Case 17',
-      dict(mode='GCM', iv='cafebabefacedbad')
+      dict(mode='GCM', nonce='cafebabefacedbad')
     ),
- 
+
     ( 'feedfacedeadbeeffeedfacedeadbeefabaddad2|' +
       'd9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a72' +
       '1c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b39',
@@ -1988,7 +1988,7 @@ test_data = [
       'a44a8266ee1c8eb0c8b5d4cf5ae9f19a',
       'feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308',
       'GCM Test Case 18',
-      dict(mode='GCM', iv='9313225df88406e555909c5aff5269aa'+
+      dict(mode='GCM', nonce='9313225df88406e555909c5aff5269aa'+
           '6a7a9538534f7da1e4c303d2a318a728c3c0c95156809539fcf0e2429a6b5254'+
           '16aedbf5a0de6a57a637b39b' )
     ),

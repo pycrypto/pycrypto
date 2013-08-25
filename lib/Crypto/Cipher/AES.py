@@ -50,16 +50,16 @@ being authenticated. The encryption is done as follows:
     >>> hdr = b'To your eyes only'
     >>> plaintext = b'Attack at dawn'
     >>> key = b'Sixteen byte key'
-    >>> iv = Random.new().read(11)
-    >>> cipher = AES.new(key, AES.MODE_CCM, iv)
+    >>> nonce = Random.new().read(11)
+    >>> cipher = AES.new(key, AES.MODE_CCM, nonce)
     >>> cipher.update(hdr)
-    >>> msg = iv, hdr, cipher.encrypt(secret), cipher.digest()
+    >>> msg = nonce, hdr, cipher.encrypt(secret), cipher.digest()
 
 We assume that the tuple ``msg`` is transmitted to the receiver:
 
-    >>> iv, hdr, ciphertext, mac = msg
+    >>> nonce, hdr, ciphertext, mac = msg
     >>> key = b'Sixteen byte key'
-    >>> cipher = AES.new(key, AES.MODE_CCM, iv)
+    >>> cipher = AES.new(key, AES.MODE_CCM, nonce)
     >>> cipher.update(hdr)
     >>> plaintext = cipher.decrypt(ciphertext)
     >>> try:
@@ -101,7 +101,7 @@ class AESCipher (blockalgo.BlockAlgo):
 
     def __init__(self, key, *args, **kwargs):
         """Initialize an AES cipher object
-        
+
         See also `new()` at the module level."""
 
         # Check if the use_aesni was specified.
@@ -130,25 +130,28 @@ def new(key, *args, **kwargs):
         The chaining mode to use for encryption or decryption.
         Default is `MODE_ECB`.
       IV : byte string
-        The initialization vector or nonce to use for encryption or decryption.
-        
-        It is ignored for `MODE_ECB` and `MODE_CTR`.
+        (*Only* `MODE_CBC`, `MODE_CFB`, `MODE_OFB`, `MODE_OPENPGP`).
+
+        The initialization vector to use for encryption or decryption.
 
         For `MODE_OPENPGP`, IV must be `block_size` bytes long for encryption
         and `block_size` +2 bytes for decryption (in the latter case, it is
         actually the *encrypted* IV which was prefixed to the ciphertext).
         It is mandatory.
 
-        For `MODE_CCM`, this is the *nonce*. Its length must be in the range
-        ``[7..13]``. 11 or 12 bytes are reasonable values in general. Bear in
+        For all other modes, it must be 16 bytes longs.
+      nonce : byte string
+        (*Only* `MODE_EAX`, `MODE_GCM`, `MODE_SIV`, `MODE_CCM`).
+
+        A mandatory value that must never be reused for any other encryption.
+
+        For `MODE_CCM`, its length must be in the range ``[7..13]``.
+        11 or 12 bytes are reasonable values in general. Bear in
         mind that with CCM there is a trade-off between nonce length and
         maximum message size.
 
-        For `MODE_EAX`, `MODE_SIV`, and `MODE_GCM` this is the *nonce*.
-        There are no restrictions on its length, but it is recommended to
-        use at least 16 bytes.
-
-        For all other modes, it must be 16 bytes longs.
+        For the other modes, there are no restrictions on its length,
+        but it is recommended to use at least 16 bytes.
       counter : callable
         (*Only* `MODE_CTR`). A stateful function that returns the next
         *counter block*, which is a byte string of `block_size` bytes.

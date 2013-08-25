@@ -32,7 +32,7 @@ The company eventually published its full specification in RFC2268_.
 
 RC2 has a fixed data block size of 8 bytes. Length of its keys can vary from
 8 to 128 bits. One particular property of RC2 is that the actual
-cryptographic strength of the key (*effective key length*) can be reduced 
+cryptographic strength of the key (*effective key length*) can be reduced
 via a parameter.
 
 Even though RC2 is not cryptographically broken, it has not been analyzed as
@@ -66,7 +66,7 @@ class RC2Cipher (blockalgo.BlockAlgo):
 
     def __init__(self, key, *args, **kwargs):
         """Initialize an ARC2 cipher object
-        
+
         See also `new()` at the module level."""
         blockalgo.BlockAlgo.__init__(self, _ARC2, key, *args, **kwargs)
 
@@ -82,19 +82,21 @@ def new(key, *args, **kwargs):
         The chaining mode to use for encryption or decryption.
         Default is `MODE_ECB`.
       IV : byte string
+        (*Only* `MODE_CBC`, `MODE_CFB`, `MODE_OFB`, `MODE_OPENPGP`).
+
         The initialization vector to use for encryption or decryption.
-        
-        It is ignored for `MODE_ECB` and `MODE_CTR`.
 
         For `MODE_OPENPGP`, IV must be `block_size` bytes long for encryption
         and `block_size` +2 bytes for decryption (in the latter case, it is
         actually the *encrypted* IV which was prefixed to the ciphertext).
         It is mandatory.
-       
-        For `MODE_EAX`, this is the *nonce*. There are no restrictions on its
-        length, but it is recommended to use at least 16 bytes.
-       
+
         For all other modes, it must be 8 bytes long.
+      nonce : byte string
+        (*Only* `MODE_EAX`).
+        A mandatory value that must never be reused for any other encryption.
+        There are no restrictions on its length, but it is recommended to
+        use at least 16 bytes.
       counter : callable
         (*Only* `MODE_CTR`). A stateful function that returns the next
         *counter block*, which is a byte string of `block_size` bytes.

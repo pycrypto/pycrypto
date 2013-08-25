@@ -84,8 +84,12 @@ class CipherSelfTest(unittest.TestCase):
         if mode is not None:
             # Block cipher
             self.mode = getattr(self.module, "MODE_" + mode)
+
             self.iv = _extract(params, 'iv', None)
-            if self.iv is not None: self.iv = b(self.iv)
+            if self.iv is None:
+                self.iv = _extract(params, 'nonce', None)
+            if self.iv is not None:
+                self.iv = b(self.iv)
 
             # Only relevant for OPENPGP mode
             self.encrypted_iv = _extract(params, 'encrypted_iv', None)
