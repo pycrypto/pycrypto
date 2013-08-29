@@ -37,7 +37,6 @@ from Crypto.Hash import CMAC
 from Crypto.Hash.CMAC import _SmoothMAC
 from Crypto.Protocol.KDF import S2V
 
-from Crypto import ApiUsageError
 from Crypto.Hash import MacMismatchError
 from Crypto.Util import galois
 
@@ -306,7 +305,7 @@ class _CBCMAC(_SmoothMAC):
 
     def ignite(self, data):
         if self._mac:
-            raise ApiUsageError("ignite() cannot be called twice")
+            raise TypeError("ignite() cannot be called twice")
 
         self._buffer.insert(0, data)
         self._buffer_len += len(data)
@@ -653,7 +652,7 @@ class BlockAlgo:
                              " this mode of operation")
 
         if self.update not in self._next:
-            raise ApiUsageError("update() can only be called"
+            raise TypeError("update() can only be called"
                                 " immediately after initialization")
 
         self._next = [self.update, self.encrypt, self.decrypt,
@@ -736,7 +735,7 @@ class BlockAlgo:
 
         if self.mode in (MODE_CCM, MODE_EAX, MODE_SIV, MODE_GCM):
             if self.encrypt not in self._next:
-                raise ApiUsageError("encrypt() can only be called after"
+                raise TypeError("encrypt() can only be called after"
                                     " initialization or an update()")
             self._next = [self.encrypt, self.digest]
 
@@ -845,13 +844,13 @@ class BlockAlgo:
             return res
 
         if self.mode == MODE_SIV:
-            raise ApiUsageError("decrypt() not allowed for SIV mode."
+            raise TypeError("decrypt() not allowed for SIV mode."
                                 " Use decrypt_and_verify() instead.")
 
         if self.mode in (MODE_CCM, MODE_EAX, MODE_GCM):
 
             if self.decrypt not in self._next:
-                raise ApiUsageError("decrypt() can only be called"
+                raise TypeError("decrypt() can only be called"
                                     " after initialization or an update()")
             self._next = [self.decrypt, self.verify]
 
@@ -896,11 +895,11 @@ class BlockAlgo:
         """
 
         if self.mode not in (MODE_CCM, MODE_EAX, MODE_SIV, MODE_GCM):
-            raise ApiUsageError("digest() not supported by this mode"
+            raise TypeError("digest() not supported by this mode"
                                 " of operation")
 
         if self.digest not in self._next:
-            raise ApiUsageError("digest() cannot be called when decrypting"
+            raise TypeError("digest() cannot be called when decrypting"
                                 " or validating a message")
         self._next = [self.digest]
 
@@ -973,11 +972,11 @@ class BlockAlgo:
         """
 
         if self.mode not in (MODE_CCM, MODE_EAX, MODE_SIV, MODE_GCM):
-            raise ApiUsageError("verify() not supported"
+            raise TypeError("verify() not supported"
                                 " by this mode of operation")
 
         if self.verify not in self._next:
-            raise ApiUsageError("verify() cannot be called"
+            raise TypeError("verify() cannot be called"
                                 " when encrypting a message")
         self._next = [self.verify]
 
@@ -1035,7 +1034,7 @@ class BlockAlgo:
 
         if self.mode == MODE_SIV:
             if self.decrypt not in self._next:
-                raise ApiUsageError("decrypt() can only be called"
+                raise TypeError("decrypt() can only be called"
                                     " after initialization or an update()")
             self._next = [self.verify]
 

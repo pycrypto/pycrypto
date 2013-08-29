@@ -37,7 +37,7 @@ from binascii import a2b_hex, b2a_hex, hexlify
 
 from Crypto.Util.py3compat import *
 from Crypto.Util.strxor import strxor_c
-from Crypto.Cipher.blockalgo import ApiUsageError, MacMismatchError
+from Crypto.Cipher.blockalgo import MacMismatchError
 
 # For compatibility with Python 2.1 and Python 2.2
 if sys.hexversion < 0x02030000:
@@ -362,13 +362,13 @@ class CCMSplitEncryptionTest(unittest.TestCase):
                 self.iv, assoc_len=ad_len)
             cipher.update(data)
             cipher.encrypt(pt1)
-            self.assertRaises(ApiUsageError, cipher.encrypt, pt2)
+            self.assertRaises(TypeError, cipher.encrypt, pt2)
 
             cipher = self.module.new(self.key, self.module.MODE_CCM,
                 self.iv, assoc_len=ad_len)
             cipher.update(data)
             cipher.decrypt(ct_ref[:len(pt1)])
-            self.assertRaises(ApiUsageError, cipher.decrypt, ct_ref[len(pt1):])
+            self.assertRaises(TypeError, cipher.decrypt, ct_ref[len(pt1):])
 
         # Run with 2 encrypt()/decrypt(). Results must be the same
         # regardless of the 'assoc_len' parameter
@@ -518,28 +518,28 @@ class AEADTests(unittest.TestCase):
         cipher = self.module.new(self.key, self.mode, self.iv)
 
         cipher.encrypt(b("PT")*40)
-        self.assertRaises(ApiUsageError, cipher.decrypt, b("XYZ")*40)
+        self.assertRaises(TypeError, cipher.decrypt, b("XYZ")*40)
 
         # Calling encrypt() after decrypt() raises an exception
         # (excluded for SIV, since decrypt() is not valid)
         if not self.isMode("SIV"):
             cipher = self.module.new(self.key, self.mode, self.iv)
             cipher.decrypt(b("CT")*40)
-            self.assertRaises(ApiUsageError, cipher.encrypt, b("XYZ")*40)
+            self.assertRaises(TypeError, cipher.encrypt, b("XYZ")*40)
 
         # Calling verify after encrypt raises an exception
         cipher = self.module.new(self.key, self.mode, self.iv)
         cipher.encrypt(b("PT")*40)
-        self.assertRaises(ApiUsageError, cipher.verify, b("XYZ"))
-        self.assertRaises(ApiUsageError, cipher.hexverify, "12")
+        self.assertRaises(TypeError, cipher.verify, b("XYZ"))
+        self.assertRaises(TypeError, cipher.hexverify, "12")
 
         # Calling digest() after decrypt() raises an exception
         # (excluded for SIV, since decrypt() is not valid)
         if not self.isMode("SIV"):
             cipher = self.module.new(self.key, self.mode, self.iv)
             cipher.decrypt(b("CT")*40)
-            self.assertRaises(ApiUsageError, cipher.digest)
-            self.assertRaises(ApiUsageError, cipher.hexdigest)
+            self.assertRaises(TypeError, cipher.digest)
+            self.assertRaises(TypeError, cipher.hexdigest)
 
     def no_late_update(self):
         """Verify that update cannot be called after encrypt or decrypt"""
@@ -551,7 +551,7 @@ class AEADTests(unittest.TestCase):
         cipher = self.module.new(self.key, self.mode, self.iv)
         cipher.update(b("XX"))
         cipher.encrypt(b("PT")*40)
-        self.assertRaises(ApiUsageError, cipher.update, b("XYZ"))
+        self.assertRaises(TypeError, cipher.update, b("XYZ"))
 
         # Calling update() after decrypt() raises an exception
         # (excluded for SIV, since decrypt() is not valid)
@@ -559,7 +559,7 @@ class AEADTests(unittest.TestCase):
             cipher = self.module.new(self.key, self.mode, self.iv)
             cipher.update(b("XX"))
             cipher.decrypt(b("CT")*40)
-            self.assertRaises(ApiUsageError, cipher.update, b("XYZ"))
+            self.assertRaises(TypeError, cipher.update, b("XYZ"))
 
     def runTest(self):
         self.right_mac_test()

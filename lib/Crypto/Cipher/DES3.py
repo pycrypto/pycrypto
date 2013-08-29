@@ -66,7 +66,6 @@ __revision__ = "$Id$"
 from Crypto.Cipher import blockalgo
 from Crypto.Cipher import _DES3
 
-from Crypto import ApiUsageError
 from Crypto.Hash import MacMismatchError
 
 class DES3Cipher(blockalgo.BlockAlgo):

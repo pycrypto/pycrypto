@@ -43,7 +43,6 @@ if sys.version_info[0] == 2 and sys.version_info[1] == 1:
     from Crypto.Util.py21compat import *
 from Crypto.Util.py3compat import *
 
-from Crypto import ApiUsageError
 from Crypto.Hash import SHA1, HMAC, CMAC
 from Crypto.Util.strxor import strxor
 from Crypto.Util.number import long_to_bytes, bytes_to_long
@@ -53,7 +52,7 @@ def PBKDF1(password, salt, dkLen, count=1000, hashAlgo=None):
 
     This function performs key derivation according an old version of
     the PKCS#5 standard (v1.5).
-    
+
     This algorithm is called ``PBKDF1``. Even though it is still described
     in the latest version of the PKCS#5 standard (version 2, or RFC2898),
     newer applications should use the more secure and versatile `PBKDF2` instead.
@@ -132,7 +131,7 @@ class S2V(object):
 
     This class implements a pseudorandom function family
     based on CMAC that takes as input a vector of strings.
-    
+
     .. _RFC5297: http://tools.ietf.org/html/rfc5297
     """
 
@@ -173,14 +172,14 @@ class S2V(object):
 
     def update(self, item):
         """Pass the next component of the vector.
-       
+
         The maximum number of components you can pass is equal to the block
         length of the cipher (in bits) minus 1.
 
         :Parameters:
           item : byte string
             The next component of the vector.
-        :Raise ApiUsageError: when the limit on the number of components has been reached.
+        :Raise TypeError: when the limit on the number of components has been reached.
         :Raise ValueError: when the component is empty
         """
 
@@ -188,7 +187,7 @@ class S2V(object):
             raise ValueError("A component cannot be empty")
 
         if self._n_updates==0:
-            raise ApiUsageError("Too many components passed to S2V")
+            raise TypeError("Too many components passed to S2V")
         self._n_updates -= 1
 
         mac = CMAC.new(self._key, msg=self._last_string, ciphermod=self._ciphermod)
