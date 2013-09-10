@@ -25,6 +25,8 @@ __revision__ = "$Id$"
 import unittest
 from binascii import unhexlify
 
+from Crypto.Util.py3compat import *
+
 from Crypto.SelfTest.st_common import list_test_cases
 from Crypto.Hash import SHA1, HMAC
 from Crypto.Cipher import AES, DES3
