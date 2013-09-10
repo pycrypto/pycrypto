@@ -42,7 +42,7 @@ Crypto.Util
 """
 
 __all__ = ['Cipher', 'Hash', 'Protocol', 'PublicKey', 'Util', 'Signature',
-           'IO', 'ApiUsageError' ]
+           'IO' ]
 
 __version__ = '2.6'     # See also below and setup.py
 __revision__ = "$Id$"

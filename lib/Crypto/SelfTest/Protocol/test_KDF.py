@@ -29,8 +29,7 @@ from Crypto.SelfTest.st_common import list_test_cases
 from Crypto.Hash import SHA1, HMAC
 from Crypto.Cipher import AES, DES3
 
-from Crypto.Protocol.KDF import *
-from Crypto import ApiUsageError
+from Crypto.Protocol.KDF import PBKDF1, PBKDF2, S2V
 
 def t2b(t): return unhexlify(b(t))
 
@@ -47,7 +46,7 @@ class PBKDF1_Tests(unittest.TestCase):
             # From http://www.di-mgt.com.au/cryptoKDFs.html#examplespbkdf
             ("password","78578E5A5D63CB06",16,1000,"DC19847E05C64D2FAF10EBFB4A3D2A20"),
     )
-    
+
     def test1(self):
         v = self._testData[0]
         res = PBKDF1(v[0], t2b(v[1]), v[2], v[3], SHA1)
@@ -73,7 +72,7 @@ class PBKDF2_Tests(unittest.TestCase):
                                     25, 4096,       "3d2eec4fe41c849b80c8d83662c0e44a8b291a964cf2f07038"),
             ( 'pass\x00word',"7361006c74",16,4096,  "56fa6aa75548099dcc37d7f03425e0c3"),
     )
-    
+
     def test1(self):
         # Test only for HMAC-SHA1 as PRF
 
@@ -88,7 +87,7 @@ class PBKDF2_Tests(unittest.TestCase):
             self.assertEqual(res, res2)
 
 class S2V_Tests(unittest.TestCase):
-    
+
     # Sequence of test vectors.
     # Each test vector is made up by:
     #   Item #0: a tuple of strings
@@ -106,7 +105,7 @@ class S2V_Tests(unittest.TestCase):
             '85632d07c6e8f37f950acd320a2ecc93',
             AES
             ),
-        
+
             # RFC5297, A.2
             (
              (  '00112233445566778899aabbccddeeffdeaddadadeaddadaffeeddcc'+
@@ -120,7 +119,7 @@ class S2V_Tests(unittest.TestCase):
             '7bdb6e3b432667eb06f4d14bff2fbd0f',
             AES
             ),
- 
+
         ]
 
     def test1(self):
@@ -141,7 +140,7 @@ class S2V_Tests(unittest.TestCase):
             max_comps = module.block_size*8-1
             for i in xrange(max_comps):
                 s2v.update(b("XX"))
-            self.assertRaises(ApiUsageError, s2v.update, b("YY"))
+            self.assertRaises(TypeError, s2v.update, b("YY"))
 
 def get_tests(config={}):
     tests = []
