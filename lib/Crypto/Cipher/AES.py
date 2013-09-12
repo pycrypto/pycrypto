@@ -31,10 +31,10 @@ encryption.
 As an example, encryption can be done as follows:
 
     >>> from Crypto.Cipher import AES
-    >>> from Crypto import Random
+    >>> from Crypto.Random import get_random_bytes
     >>>
     >>> key = b'Sixteen byte key'
-    >>> iv = Random.new().read(AES.block_size)
+    >>> iv = get_random_bytes(16)
     >>> cipher = AES.new(key, AES.MODE_CFB, iv)
     >>> msg = iv + cipher.encrypt(b'Attack at dawn')
 
@@ -44,16 +44,16 @@ It also allows message for the header to remain in the clear, whilst still
 being authenticated. The encryption is done as follows:
 
     >>> from Crypto.Cipher import AES
-    >>> from Crypto import Random
+    >>> from Crypto.Random import get_random_bytes
     >>>
     >>>
     >>> hdr = b'To your eyes only'
     >>> plaintext = b'Attack at dawn'
     >>> key = b'Sixteen byte key'
-    >>> nonce = Random.new().read(11)
+    >>> nonce = get_random_bytes(11)
     >>> cipher = AES.new(key, AES.MODE_CCM, nonce)
     >>> cipher.update(hdr)
-    >>> msg = nonce, hdr, cipher.encrypt(secret), cipher.digest()
+    >>> msg = nonce, hdr, cipher.encrypt(plaintext), cipher.digest()
 
 We assume that the tuple ``msg`` is transmitted to the receiver:
 
