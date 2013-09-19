@@ -1015,7 +1015,7 @@ class BlockAlgo:
             - the MAC
         """
 
-        return self.decrypt(plaintext), self.digest()
+        return self.encrypt(plaintext), self.digest()
 
     def decrypt_and_verify(self, ciphertext, mac_tag):
         """Perform decrypt() and verify() in one step.

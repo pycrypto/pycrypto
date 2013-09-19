@@ -561,6 +561,26 @@ class AEADTests(unittest.TestCase):
             cipher.decrypt(b("CT")*40)
             self.assertRaises(TypeError, cipher.update, b("XYZ"))
 
+    def loopback(self):
+        """Verify composition of encrypt_and_digest() and decrypt_and_verify()
+        is the identity function."""
+
+        self.description  = "Lookback test decrypt_and_verify(encrypt_and_digest)"\
+                            "for %s in %s" % (self.mode_name,
+                            self.module.__name__)
+
+        enc_cipher = self.module.new(self.key, self.mode, self.iv)
+        dec_cipher = self.module.new(self.key, self.mode, self.iv)
+
+        enc_cipher.update(b("XXX"))
+        dec_cipher.update(b("XXX"))
+
+        plaintext = b("Reference") * 10
+        ct, mac = enc_cipher.encrypt_and_digest(plaintext)
+        pt = dec_cipher.decrypt_and_verify(ct, mac)
+
+        self.assertEqual(plaintext, pt)
+
     def runTest(self):
         self.right_mac_test()
         self.wrong_mac_test()
@@ -568,6 +588,7 @@ class AEADTests(unittest.TestCase):
         self.multiple_updates()
         self.no_mix_encrypt_decrypt()
         self.no_late_update()
+        self.loopback()
 
     def shortDescription(self):
         return self.description
