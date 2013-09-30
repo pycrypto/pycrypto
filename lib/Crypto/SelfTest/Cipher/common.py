@@ -37,7 +37,7 @@ from binascii import a2b_hex, b2a_hex, hexlify
 
 from Crypto.Util.py3compat import *
 from Crypto.Util.strxor import strxor_c
-from Crypto.Cipher.blockalgo import MacMismatchError
+from Crypto.Hash import MacMismatchError
 
 # For compatibility with Python 2.1 and Python 2.2
 if sys.hexversion < 0x02030000:
@@ -717,7 +717,8 @@ def make_block_tests(module, module_name, test_data, additional_params=dict()):
             assoc_data, params['plaintext'] = params['plaintext'].split('|')
             assoc_data2, params['ciphertext'], params['mac'] = params['ciphertext'].split('|')
             params['assoc_data'] = assoc_data.split("-")
-            params['mac_len'] = len(params['mac'])>>1
+            if p_mode != 'SIV':
+                params['mac_len'] = len(params['mac'])>>1
 
         # Add the current test to the test suite
         tests.append(CipherSelfTest(module, params))

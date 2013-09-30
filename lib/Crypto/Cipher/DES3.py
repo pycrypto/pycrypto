@@ -57,88 +57,72 @@ As an example, encryption can be done as follows:
 
 .. __: http://en.wikipedia.org/wiki/Triple_DES
 .. _NIST: http://csrc.nist.gov/publications/nistpubs/800-67/SP800-67.pdf
-
-:undocumented: __revision__, __package__
 """
 
-__revision__ = "$Id$"
+from Crypto.Cipher import _DES3, _create_cipher
+from Crypto.Util.parameters import pop_parameter
 
-from Crypto.Cipher import blockalgo
-from Crypto.Cipher import _DES3
-
-from Crypto.Hash import MacMismatchError
-
-class DES3Cipher(blockalgo.BlockAlgo):
-    """TDES cipher object"""
-
-    def __init__(self, key, *args, **kwargs):
-        """Initialize a TDES cipher object
-
-        See also `new()` at the module level."""
-        blockalgo.BlockAlgo.__init__(self, _DES3, key, *args, **kwargs)
-
-def new(key, *args, **kwargs):
-    """Create a new TDES cipher
-
-    :Parameters:
-      key : byte string
-        The secret key to use in the symmetric cipher.
-        It must be 16 or 24 bytes long. The parity bits will be ignored.
-    :Keywords:
-      mode : a *MODE_** constant
-        The chaining mode to use for encryption or decryption.
-        Default is `MODE_ECB`.
-      IV : byte string
-        (*Only* `MODE_CBC`, `MODE_CFB`, `MODE_OFB`, `MODE_OPENPGP`).
-
-        The initialization vector to use for encryption or decryption.
-
-        For `MODE_OPENPGP`, IV must be `block_size` bytes long for encryption
-        and `block_size` +2 bytes for decryption (in the latter case, it is
-        actually the *encrypted* IV which was prefixed to the ciphertext).
-        It is mandatory.
-
-        For all other modes, it must be 8 bytes long.
-      nonce : byte string
-        (*Only* `MODE_EAX`).
-        A mandatory value that must never be reused for any other encryption.
-        There are no restrictions on its length, but it is recommended to
-        use at least 16 bytes.
-      counter : callable
-        (*Only* `MODE_CTR`). A stateful function that returns the next
-        *counter block*, which is a byte string of 8 bytes.
-        For better performance, use `Crypto.Util.Counter`.
-      mac_len : integer
-        (*Only* `MODE_EAX`). Length of the MAC, in bytes.
-        It must be no larger than 8 (which is the default).
-      segment_size : integer
-        (*Only* `MODE_CFB`).The number of bits the plaintext and ciphertext
-        are segmented in.
-        It must be a multiple of 8. If 0 or not specified, it will be assumed to be 8.
-
-    :Attention: it is important that all 8 byte subkeys are different,
-      otherwise TDES would degrade to single `DES`.
-    :Return: an `DES3Cipher` object
-    """
-    return DES3Cipher(key, *args, **kwargs)
-
-#: Electronic Code Book (ECB). See `blockalgo.MODE_ECB`.
+#: Electronic Code Book (ECB). See `ModeECB`.
 MODE_ECB = 1
-#: Cipher-Block Chaining (CBC). See `blockalgo.MODE_CBC`.
+#: Cipher-Block Chaining (CBC). See `ModeECB`.
 MODE_CBC = 2
-#: Cipher FeedBack (CFB). See `blockalgo.MODE_CFB`.
+#: Cipher FeedBack (CFB). See `ModeCFB`.
 MODE_CFB = 3
 #: This mode should not be used.
 MODE_PGP = 4
-#: Output FeedBack (OFB). See `blockalgo.MODE_OFB`.
+#: Output FeedBack (OFB). See `ModeOFB`.
 MODE_OFB = 5
-#: CounTer Mode (CTR). See `blockalgo.MODE_CTR`.
+#: CounTer Mode (CTR). See `ModeCTR`.
 MODE_CTR = 6
-#: OpenPGP Mode. See `blockalgo.MODE_OPENPGP`.
+#: OpenPGP Mode. See `ModeOpenPGP`.
 MODE_OPENPGP = 7
-#: EAX Mode. See `blockalgo.MODE_EAX`.
+#: EAX Mode. See `ModeEAX`.
 MODE_EAX = 9
 #: Size of a data block (in bytes)
 block_size = 8
 #: Size of a key (in bytes)
 key_size = ( 16, 24 )
+
+def new(key, mode, *args, **kwargs):
+    """Create a new TDES cipher.
+
+    Beside the parameters listed below, the function
+    may also accept (or require) some mode-specific
+    keyword arguments.
+
+    The keywords are the same ones used to initialize
+    the relevant mode object.
+
+    +----------------+----------------+
+    |  Mode value    |  Mode object   |
+    +----------------+----------------+
+    |  MODE_ECB      |  `ModeECB`     |
+    +----------------+----------------+
+    |  MODE_CBC      |  `ModeCBC`     |
+    +----------------+----------------+
+    |  MODE_CFB      |  `ModeCFB`     |
+    +----------------+----------------+
+    |  MODE_OFB      |  `ModeOFB`     |
+    +----------------+----------------+
+    |  MODE_CTR      |  `ModeCTR`     |
+    +----------------+----------------+
+    |  MODE_OPENPGP  |  `ModeOpenPGP` |
+    +----------------+----------------+
+    |  MODE_EAX      |  `ModeEAX`     |
+    +----------------+----------------+
+
+    :Parameters:
+      key : byte string
+        The secret key to use in the symmetric cipher.
+        Its length can be 16 or 24 bytes.
+        Parity bits are ignored.
+
+      mode : a *MODE_** constant
+        The chaining mode to use for encryption or decryption.
+        Default is `MODE_ECB`.
+
+    :Return: a cipher mode object
+    """
+
+    return _create_cipher(_DES3, key, mode, 0, *args, **kwargs)
+

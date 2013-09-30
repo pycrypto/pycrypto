@@ -33,12 +33,13 @@ Module                      Description
                             strings of words.
 `Crypto.Util.asn1`          Minimal support for ASN.1 DER encoding
 `Crypto.Util.Padding`       Set of functions for adding and removing padding.
+`Crypto.Util.parameters`    Set of functions for processing parameters.
 ========================    =============================================
 
 """
 
 __all__ = ['randpool', 'RFC1751', 'number', 'strxor', 'asn1', 'Counter',
-            'Padding' ]
+            'Padding', 'parameters' ]
 
 __revision__ = "$Id$"
 
