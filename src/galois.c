@@ -196,12 +196,25 @@ static int ghash_expand(t_key_tables *key_tables, const uint8_t h[16])
         return -1;
     }
 
+    memset(key_tables, 0, sizeof *key_tables);
+
     for (i=0; i<16; i++) {
-        int j;
+        int j, k;
+        uint64_t base[8][2];
+
+        for (k=0; k<8; k++) {
+            /** Z = H*2^{j}*P^{8i} **/
+            gcm_mult3(&base[k][0], 1<<k, i, v_tables);
+        }
 
         for (j=0; j<256; j++) {
             /** Z = H*j*P^{8i} **/
-            gcm_mult3(&((*key_tables)[i][j][0]), j, i, v_tables);
+            for (k=0; k<8; k++) {
+                if (j & (1<<k)) {
+                    (*key_tables)[i][j][0] ^= base[k][0];
+                    (*key_tables)[i][j][1] ^= base[k][1];
+                }
+            }
         }
     }
 
