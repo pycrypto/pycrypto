@@ -78,6 +78,27 @@ __all__ = ['AES', 'ARC2', 'ARC4',
            'PKCS1_v1_5', 'PKCS1_OAEP'
            ]
 
-__revision__ = "$Id$"
+from Crypto.Cipher.mode_gcm import ModeGCM
+from Crypto.Cipher.mode_ctr import ModeCTR
+from Crypto.Cipher.mode_cfb import ModeCFB
+from Crypto.Cipher.mode_cbc import ModeCBC
+from Crypto.Cipher.mode_ecb import ModeECB
+from Crypto.Cipher.mode_ofb import ModeOFB
+from Crypto.Cipher.mode_ccm import ModeCCM
+from Crypto.Cipher.mode_siv import ModeSIV
+from Crypto.Cipher.mode_eax import ModeEAX
+from Crypto.Cipher.mode_openpgp import ModeOpenPGP
 
+_modes = { 1:ModeECB, 2:ModeCBC, 3:ModeCFB,
+           5:ModeOFB, 6:ModeCTR, 7:ModeOpenPGP,
+           9:ModeEAX }
 
+_extra_modes = { 8:ModeCCM, 10:ModeSIV, 11:ModeGCM }
+
+def _create_cipher(factory, key, mode, extra=0, *args, **kwargs):
+    modes = _modes
+    if extra:
+        modes.update(_extra_modes)
+    if not modes.has_key(mode):
+        raise ValueError("Mode not supported")
+    return modes[mode](factory, key, *args, **kwargs)

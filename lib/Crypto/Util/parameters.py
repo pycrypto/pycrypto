@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#  SelfTest/Protocol/__init__.py: Self-tests for Crypto.Protocol
-#
-# Written in 2008 by Dwayne C. Litzenberger <dlitz@dlitz.net>
+#  Util/parameters: Utilities for processing function parameters
 #
 # ===================================================================
 # The contents of this file are dedicated to the public domain.  To
@@ -22,21 +20,34 @@
 # SOFTWARE.
 # ===================================================================
 
-"""Self-test for Crypto.Protocol"""
+__all__ = [ 'get_parameter', 'pop_parameter' ]
 
-__revision__ = "$Id$"
+import sys
 
-def get_tests(config={}):
-    tests = []
-    from Crypto.SelfTest.Protocol import test_chaffing;       tests += test_chaffing.get_tests(config=config)
-    from Crypto.SelfTest.Protocol import test_rfc1751;        tests += test_rfc1751.get_tests(config=config)
-    from Crypto.SelfTest.Protocol import test_AllOrNothing;        tests += test_AllOrNothing.get_tests(config=config)
-    from Crypto.SelfTest.Protocol import test_KDF;        tests += test_KDF.get_tests(config=config)
-    return tests
+def get_parameter(name, index, targs, kwargs, default=None):
+    """Find a parameter in tuple and dictionary arguments
+    a function receives.
+    """
 
-if __name__ == '__main__':
-    import unittest
-    suite = lambda: unittest.TestSuite(get_tests())
-    unittest.main(defaultTest='suite')
+    param = kwargs.get(name, None)
+    if len(targs) > index >= 0:
+        if param:
+            raise ValueError("Parameter '%s' is specified twice" % name)
+        param = targs[index]
+    return param or default
 
-# vim:set ts=4 sw=4 sts=4 expandtab:
+def pop_parameter(name, index, targs, kwargs, default=None):
+    """Find a parameter in tuple and dictionary arguments
+    a function receives. When found, they are removed from there.
+    """
+
+    param = None
+    if kwargs.has_key(name):
+        param = kwargs[name]
+        del kwargs[name]
+    if len(targs) > index >= 0:
+        if param:
+            raise ValueError("Parameter '%s' is specified twice" % name)
+        param = targs[index]
+        del targs[index]
+    return param or default

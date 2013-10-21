@@ -34,6 +34,8 @@ from Crypto.Util.py3compat import *
 if sys.version_info[0] == 2 and sys.version_info[1] == 1:
     from Crypto.Util.py21compat import *
 
+from Crypto.Hash import MacMismatchError
+
 # For compatibility with Python 2.1 and Python 2.2
 if sys.hexversion < 0x02030000:
     # Python 2.1 doesn't have a dict() function
@@ -43,6 +45,7 @@ if sys.hexversion < 0x02030000:
 else:
     dict = dict
 
+from Crypto.Util.strxor import strxor_c
 
 class HashDigestSizeSelfTest(unittest.TestCase):
     
@@ -161,52 +164,60 @@ class GenericHashConstructorTest(unittest.TestCase):
 
 class MACSelfTest(unittest.TestCase):
 
-    def __init__(self, hashmod, description, expected_dict, input, key, hashmods):
+    def __init__(self, module, description, result, input, key, params):
         unittest.TestCase.__init__(self)
-        self.hashmod = hashmod
-        self.expected_dict = expected_dict
+        self.module = module
+        self.result = result
         self.input = input
         self.key = key
-        self.hashmods = hashmods
+        self.params = params
         self.description = description
 
     def shortDescription(self):
         return self.description
 
     def runTest(self):
-        for hashname in self.expected_dict.keys():
-            hashmod = self.hashmods[hashname]
-            key = binascii.a2b_hex(b(self.key))
-            data = binascii.a2b_hex(b(self.input))
+        key = binascii.a2b_hex(b(self.key))
+        data = binascii.a2b_hex(b(self.input))
 
-            # Strip whitespace from the expected string (which should be in lowercase-hex)
-            expected = b("".join(self.expected_dict[hashname].split()))
+        # Strip whitespace from the expected string (which should be in lowercase-hex)
+        expected = b("".join(self.result.split()))
 
-            h = self.hashmod.new(key, digestmod=hashmod)
-            h.update(data)
-            out1 = binascii.b2a_hex(h.digest())
-            out2 = h.hexdigest()
+        ht = self.module.new(key, **self.params)
+        ht.update(data)
+        out1_bin = ht.digest()
+        out1 = binascii.b2a_hex(ht.digest())
+        out2 = ht.hexdigest()
+        
+        # Verify that correct MAC does not raise any exception
+        ht.hexverify(out1)
+        ht.verify(out1_bin)
 
-            h = self.hashmod.new(key, data, hashmod)
+        # Verify that incorrect MAC does raise ValueError exception
+        wrong_mac = strxor_c(out1_bin, 255)
+        self.assertRaises(MacMismatchError, ht.verify, wrong_mac)
+        self.assertRaises(MacMismatchError, ht.hexverify, "4556")
 
-            out3 = h.hexdigest()
-            out4 = binascii.b2a_hex(h.digest())
+        ht = self.module.new(key, data, **self.params)
 
-            # Test .copy()
-            h2 = h.copy()
-            h.update(b("blah blah blah"))  # Corrupt the original hash object
-            out5 = binascii.b2a_hex(h2.digest())    # The copied hash object should return the correct result
+        out3 = ht.hexdigest()
+        out4 = binascii.b2a_hex(ht.digest())
 
-            # PY3K: hexdigest() should return str(), and digest() bytes 
-            self.assertEqual(expected, out1)
-            if sys.version_info[0] == 2:
-                self.assertEqual(expected, out2)
-                self.assertEqual(expected, out3)
-            else:
-                self.assertEqual(expected.decode(), out2)
-                self.assertEqual(expected.decode(), out3)                
-            self.assertEqual(expected, out4)
-            self.assertEqual(expected, out5)
+        # Test .copy()
+        h2 = ht.copy()
+        ht.update(b("blah blah blah"))  # Corrupt the original hash object
+        out5 = binascii.b2a_hex(h2.digest())    # The copied hash object should return the correct result
+
+        # PY3K: hexdigest() should return str(), and digest() bytes 
+        self.assertEqual(expected, out1)
+        if sys.version_info[0] == 2:
+            self.assertEqual(expected, out2)
+            self.assertEqual(expected, out3)
+        else:
+            self.assertEqual(expected.decode(), out2)
+            self.assertEqual(expected.decode(), out3)                
+        self.assertEqual(expected, out4)
+        self.assertEqual(expected, out5)
 
 def make_hash_tests(module, module_name, test_data, digest_size, oid=None):
     tests = []
@@ -228,13 +239,13 @@ def make_hash_tests(module, module_name, test_data, digest_size, oid=None):
         tests.append(GenericHashConstructorTest(module))
     return tests
 
-def make_mac_tests(module, module_name, test_data, hashmods):
+def make_mac_tests(module, module_name, test_data):
     tests = []
     for i in range(len(test_data)):
         row = test_data[i]
-        (key, data, results, description) = row
+        (key, data, results, description, params) = row
         name = "%s #%d: %s" % (module_name, i+1, description)
-        tests.append(MACSelfTest(module, name, results, data, key, hashmods))
+        tests.append(MACSelfTest(module, name, results, data, key, params))
     return tests
 
 # vim:set ts=4 sw=4 sts=4 expandtab:

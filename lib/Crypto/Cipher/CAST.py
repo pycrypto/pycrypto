@@ -49,74 +49,71 @@ As an example, encryption can be done as follows:
 
 .. _CAST-128: http://en.wikipedia.org/wiki/CAST-128
 .. _RFC2144: http://tools.ietf.org/html/rfc2144
-
-:undocumented: __revision__, __package__
 """
 
-__revision__ = "$Id$"
+from Crypto.Cipher import _CAST, _create_cipher
+from Crypto.Util.parameters import pop_parameter
 
-from Crypto.Cipher import blockalgo
-from Crypto.Cipher import _CAST
-
-class CAST128Cipher(blockalgo.BlockAlgo):
-    """CAST-128 cipher object"""
-
-    def __init__(self, key, *args, **kwargs):
-        """Initialize a CAST-128 cipher object
-        
-        See also `new()` at the module level."""
-        blockalgo.BlockAlgo.__init__(self, _CAST, key, *args, **kwargs)
-
-def new(key, *args, **kwargs):
-    """Create a new CAST-128 cipher
-
-    :Parameters:
-      key : byte string
-        The secret key to use in the symmetric cipher.
-        Its length may vary from 5 to 16 bytes.
-    :Keywords:
-      mode : a *MODE_** constant
-        The chaining mode to use for encryption or decryption.
-        Default is `MODE_ECB`.
-      IV : byte string
-        The initialization vector to use for encryption or decryption.
-        
-        It is ignored for `MODE_ECB` and `MODE_CTR`.
-
-        For `MODE_OPENPGP`, IV must be `block_size` bytes long for encryption
-        and `block_size` +2 bytes for decryption (in the latter case, it is
-        actually the *encrypted* IV which was prefixed to the ciphertext).
-        It is mandatory.
-       
-        For all other modes, it must be `block_size` bytes longs.
-      counter : callable
-        (*Only* `MODE_CTR`). A stateful function that returns the next
-        *counter block*, which is a byte string of `block_size` bytes.
-        For better performance, use `Crypto.Util.Counter`.
-      segment_size : integer
-        (*Only* `MODE_CFB`).The number of bits the plaintext and ciphertext
-        are segmented in.
-        It must be a multiple of 8. If 0 or not specified, it will be assumed to be 8.
-
-    :Return: an `CAST128Cipher` object
-    """
-    return CAST128Cipher(key, *args, **kwargs)
-
-#: Electronic Code Book (ECB). See `blockalgo.MODE_ECB`.
+#: Electronic Code Book (ECB). See `ModeECB`.
 MODE_ECB = 1
-#: Cipher-Block Chaining (CBC). See `blockalgo.MODE_CBC`.
+#: Cipher-Block Chaining (CBC). See `ModeCBC`.
 MODE_CBC = 2
-#: Cipher FeedBack (CFB). See `blockalgo.MODE_CFB`.
+#: Cipher FeedBack (CFB). See `ModeCFB`.
 MODE_CFB = 3
 #: This mode should not be used.
 MODE_PGP = 4
-#: Output FeedBack (OFB). See `blockalgo.MODE_OFB`.
+#: Output FeedBack (OFB). See `ModeOFB`.
 MODE_OFB = 5
-#: CounTer Mode (CTR). See `blockalgo.MODE_CTR`.
+#: CounTer Mode (CTR). See `ModeCTR`.
 MODE_CTR = 6
-#: OpenPGP Mode. See `blockalgo.MODE_OPENPGP`.
+#: OpenPGP Mode. See `ModeOpenPGP`.
 MODE_OPENPGP = 7
+#: EAX Mode. See `ModeEAX`.
+MODE_EAX = 9
 #: Size of a data block (in bytes)
 block_size = 8
 #: Size of a key (in bytes)
 key_size = xrange(5,16+1)
+
+def new(key, mode=MODE_ECB, *args, **kwargs):
+    """Create a new CAST cipher.
+
+    Beside the parameters listed below, the function
+    may also accept (or require) some mode-specific
+    keyword arguments.
+
+    The keywords are the same ones used to initialize
+    the relevant mode object.
+
+    +----------------+----------------+
+    |  Mode value    |  Mode object   |
+    +----------------+----------------+
+    |  MODE_ECB      |  `ModeECB`     |
+    +----------------+----------------+
+    |  MODE_CBC      |  `ModeCBC`     |
+    +----------------+----------------+
+    |  MODE_CFB      |  `ModeCFB`     |
+    +----------------+----------------+
+    |  MODE_OFB      |  `ModeOFB`     |
+    +----------------+----------------+
+    |  MODE_CTR      |  `ModeCTR`     |
+    +----------------+----------------+
+    |  MODE_OPENPGP  |  `ModeOpenPGP` |
+    +----------------+----------------+
+    |  MODE_EAX      |  `ModeEAX`     |
+    +----------------+----------------+
+
+    :Parameters:
+      key : byte string
+        The secret key to use in the symmetric cipher.
+        Its length can vary from 5 to 16 bytes.
+
+      mode : a *MODE_** constant
+        The chaining mode to use for encryption or decryption.
+        Default is `MODE_ECB`.
+
+    :Return: a cipher mode object
+    """
+
+    return _create_cipher(_CAST, key, mode, 0, *args, **kwargs)
+
