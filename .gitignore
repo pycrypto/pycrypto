@@ -24,3 +24,6 @@ src/stamp-h1
 
 # Backup files
 *~
+
+# Tox
+.tox
