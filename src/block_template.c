@@ -48,6 +48,9 @@
 #define _MODULE_NAME _PASTE2(init,MODULE_NAME)
 #endif
 #define _MODULE_STRING _XSTR(MODULE_NAME)
+#if PY_MAJOR_VERSION > 2 || (PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION > 5)
+#define HAS_NEW_BUFFER
+#endif
 
 /* Object references for the counter_shortcut */
 static PyObject *_counter_module = NULL;
@@ -115,16 +118,28 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 	int keylen, IVlen=0, mode=MODE_ECB, segment_size=0;
 	PyObject *counter = NULL;
 	int counter_shortcut = 0;
+#ifdef HAS_NEW_BUFFER
+	Py_buffer keyView = { 0 }, IVView = { 0 };
+#endif
 #ifdef PCT_ARC2_MODULE
         int effective_keylen = 1024;    /* this is a weird default, but it's compatible with old versions of PyCrypto */
 #endif
 	/* Set default values */
-	if (!PyArg_ParseTupleAndKeywords(args, kwdict, "s#|is#Oi"
+	if (!PyArg_ParseTupleAndKeywords(args, kwdict,
+#ifdef HAS_NEW_BUFFER
+				"s*|is*Oi"
+#else
+				"s#|is#Oi"
+#endif
 #ifdef PCT_ARC2_MODULE
 					 "i"
 #endif
 					 , kwlist,
+#ifdef HAS_NEW_BUFFER
+					 &keyView, &mode, &IVView,
+#else
 					 &key, &keylen, &mode, &IV, &IVlen,
+#endif
 					 &counter, &segment_size
 #ifdef PCT_ARC2_MODULE
 					 , &effective_keylen
@@ -134,16 +149,31 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 		return NULL;
 	}
 
+#ifdef HAS_NEW_BUFFER
+	key = (unsigned char*)keyView.buf;
+	keylen = keyView.len;
+	IV = (unsigned char*)IVView.buf;
+	IVlen = IVView.len;
+#endif
+
 	if (mode<MODE_ECB || mode>MODE_CTR) 
 	{
 		PyErr_Format(PyExc_ValueError, 
 			     "Unknown cipher feedback mode %i",
 			     mode);
+#ifdef HAS_NEW_BUFFER
+		PyBuffer_Release(&keyView);
+		PyBuffer_Release(&IVView);
+#endif
 		return NULL;
 	}
 	if (mode == MODE_PGP) {
 		PyErr_Format(PyExc_ValueError, 
 			     "MODE_PGP is not supported anymore");
+#ifdef HAS_NEW_BUFFER
+		PyBuffer_Release(&keyView);
+		PyBuffer_Release(&IVView);
+#endif
 		return NULL;
 	}
 	if (KEY_SIZE!=0 && keylen!=KEY_SIZE)
@@ -151,29 +181,49 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 		PyErr_Format(PyExc_ValueError,
 			     "Key must be %i bytes long, not %i",
 			     KEY_SIZE, keylen);
+#ifdef HAS_NEW_BUFFER
+		PyBuffer_Release(&keyView);
+		PyBuffer_Release(&IVView);
+#endif
 		return NULL;
 	}
 	if (KEY_SIZE==0 && keylen==0)
 	{
 		PyErr_SetString(PyExc_ValueError,
 				"Key cannot be the null string");
+#ifdef HAS_NEW_BUFFER
+		PyBuffer_Release(&keyView);
+		PyBuffer_Release(&IVView);
+#endif
 		return NULL;
 	}
 	if (IVlen != 0 && mode == MODE_ECB)
 	{
 		PyErr_Format(PyExc_ValueError, "ECB mode does not use IV");
+#ifdef HAS_NEW_BUFFER
+		PyBuffer_Release(&keyView);
+		PyBuffer_Release(&IVView);
+#endif
 		return NULL;
 	}
 	if (IVlen != 0 && mode == MODE_CTR)
 	{
 		PyErr_Format(PyExc_ValueError,
 			"CTR mode needs counter parameter, not IV");
+#ifdef HAS_NEW_BUFFER
+		PyBuffer_Release(&keyView);
+		PyBuffer_Release(&IVView);
+#endif
 		return NULL;
 	}
 	if (IVlen != BLOCK_SIZE && mode != MODE_ECB && mode != MODE_CTR)
 	{
 		PyErr_Format(PyExc_ValueError,
 			     "IV must be %i bytes long", BLOCK_SIZE);
+#ifdef HAS_NEW_BUFFER
+		PyBuffer_Release(&keyView);
+		PyBuffer_Release(&IVView);
+#endif
 		return NULL;
 	}
 
@@ -184,6 +234,10 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 			PyErr_Format(PyExc_ValueError, 
 				     "segment_size must be multiple of 8 (bits) "
 				     "between 1 and %i", BLOCK_SIZE*8);
+#ifdef HAS_NEW_BUFFER
+			PyBuffer_Release(&keyView);
+			PyBuffer_Release(&IVView);
+#endif
 			return NULL;
 		}
 	}
@@ -191,18 +245,30 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 		if (counter == NULL) {
 			PyErr_SetString(PyExc_TypeError,
 					"'counter' keyword parameter is required with CTR mode");
+#ifdef HAS_NEW_BUFFER
+			PyBuffer_Release(&keyView);
+			PyBuffer_Release(&IVView);
+#endif
 			return NULL;
 		} else if (Py_TYPE(counter) == PCT_CounterBEType || Py_TYPE(counter) == PCT_CounterLEType) {
 			counter_shortcut = 1;
 		} else if (!PyCallable_Check(counter)) {
 			PyErr_SetString(PyExc_ValueError, 
 					"'counter' parameter must be a callable object");
+#ifdef HAS_NEW_BUFFER
+			PyBuffer_Release(&keyView);
+			PyBuffer_Release(&IVView);
+#endif
 			return NULL;
 		}
 	} else {
 		if (counter != NULL) {
 			PyErr_SetString(PyExc_ValueError, 
 					"'counter' parameter only useful with CTR mode");
+#ifdef HAS_NEW_BUFFER
+			PyBuffer_Release(&keyView);
+			PyBuffer_Release(&IVView);
+#endif
 			return NULL;
 		}
 	}
@@ -213,6 +279,10 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 		PyErr_Format(PyExc_ValueError,
 			     "RC2: effective_keylen must be between 0 and 1024, not %i",
 			     effective_keylen);
+#ifdef HAS_NEW_BUFFER
+			PyBuffer_Release(&keyView);
+			PyBuffer_Release(&IVView);
+#endif
 		return NULL;
         }
 #endif
@@ -231,6 +301,10 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 	if (PyErr_Occurred())
 	{
 		Py_DECREF(new);
+#ifdef HAS_NEW_BUFFER
+		PyBuffer_Release(&keyView);
+		PyBuffer_Release(&IVView);
+#endif
 		return NULL;
 	}
 	memset(new->IV, 0, BLOCK_SIZE);
@@ -238,6 +312,10 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 	memcpy(new->IV, IV, IVlen);
 	new->mode = mode;
 	new->count=BLOCK_SIZE;   /* stores how many bytes in new->oldCipher have been used */
+#ifdef HAS_NEW_BUFFER
+	PyBuffer_Release(&keyView);
+	PyBuffer_Release(&IVView);
+#endif
 	return new;
 }
 
@@ -251,18 +329,34 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 	unsigned char temp[BLOCK_SIZE];
 	int i, j, len;
 	PyObject *result;
+#ifdef HAS_NEW_BUFFER
+	Py_buffer view;
   
+	if (!PyArg_Parse(args, "s*", &view))
+		return NULL;
+
+	len = view.len;
+	str = (unsigned char*)view.buf;
+#else
 	if (!PyArg_Parse(args, "s#", &str, &len))
 		return NULL;
+#endif
+
 	if (len==0)			/* Handle empty string */
 	{
+#ifdef HAS_NEW_BUFFER
+		PyBuffer_Release(&view);
+#endif
 		return PyBytes_FromStringAndSize(NULL, 0);
 	}
-	if ( (len % BLOCK_SIZE) !=0 && 
+	if ( (len % BLOCK_SIZE) !=0 &&
 	     (self->mode!=MODE_CFB) &&
 	     (self->mode!=MODE_OFB) &&
 	     (self->mode!=MODE_CTR))
 	{
+#ifdef HAS_NEW_BUFFER
+		PyBuffer_Release(&view);
+#endif
 		PyErr_Format(PyExc_ValueError, 
 			     "Input strings must be "
 			     "a multiple of %i in length",
@@ -271,6 +365,9 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 	}
 	if (self->mode == MODE_CFB && 
 	    (len % (self->segment_size/8) !=0)) {
+#ifdef HAS_NEW_BUFFER
+		PyBuffer_Release(&view);
+#endif
 		PyErr_Format(PyExc_ValueError, 
 			     "Input strings must be a multiple of "
 			     "the segment size %i in length",
@@ -281,6 +378,9 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 	buffer=malloc(len);
 	if (buffer==NULL) 
 	{
+#ifdef HAS_NEW_BUFFER
+		PyBuffer_Release(&view);
+#endif
 		PyErr_SetString(PyExc_MemoryError, 
 				"No memory available in "
 				_MODULE_STRING " encrypt");
@@ -290,14 +390,14 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 	switch(self->mode)
 	{
 	case(MODE_ECB):      
-		for(i=0; i<len; i+=BLOCK_SIZE) 
+		for(i=0; i<len; i+=BLOCK_SIZE)
 		{
 			block_encrypt(&(self->st), str+i, buffer+i);
 		}
 		break;
 
 	case(MODE_CBC):      
-		for(i=0; i<len; i+=BLOCK_SIZE) 
+		for(i=0; i<len; i+=BLOCK_SIZE)
 		{
 			for(j=0; j<BLOCK_SIZE; j++)
 			{
@@ -309,7 +409,7 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 		break;
 
 	case(MODE_CFB):      
-		for(i=0; i<len; i+=self->segment_size/8) 
+		for(i=0; i<len; i+=self->segment_size/8)
 		{
 			block_encrypt(&(self->st), self->IV, temp);
 			for (j=0; j<self->segment_size/8; j++) {
@@ -428,6 +528,9 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 					PyErr_SetString(PyExc_OverflowError,
 							"counter wrapped without allow_wraparound");
 					free(buffer);
+#ifdef HAS_NEW_BUFFER
+      				PyBuffer_Release(&view);
+#endif
 					return NULL;
 				}
 				if (ctr->buf_size != BLOCK_SIZE) {
@@ -437,6 +540,9 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 						     "string of length %zi, not %i",
 						     ctr->buf_size, BLOCK_SIZE);
 					free(buffer);
+#ifdef HAS_NEW_BUFFER
+      				PyBuffer_Release(&view);
+#endif
 					return NULL;
 				}
 				block_encrypt(&(self->st),
@@ -449,6 +555,9 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 				ctr = PyObject_CallObject(self->counter, NULL);
 				if (ctr == NULL) {
 					free(buffer);
+#ifdef HAS_NEW_BUFFER
+      				PyBuffer_Release(&view);
+#endif
 					return NULL;
 				}
 				if (!PyBytes_Check(ctr))
@@ -457,6 +566,9 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 							"CTR counter function didn't return a bytestring");
 					Py_DECREF(ctr);
 					free(buffer);
+#ifdef HAS_NEW_BUFFER
+      				PyBuffer_Release(&view);
+#endif
 					return NULL;
 				}
 				if (PyBytes_Size(ctr) != BLOCK_SIZE) {
@@ -466,6 +578,9 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 						     BLOCK_SIZE);
 					Py_DECREF(ctr);
 					free(buffer);
+#ifdef HAS_NEW_BUFFER
+      				PyBuffer_Release(&view);
+#endif
 					return NULL;
 				}
 				Py_UNBLOCK_THREADS;
@@ -488,11 +603,17 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 			     "this shouldn't happen",
 			     self->mode);
 		free(buffer);
+#ifdef HAS_NEW_BUFFER
+		PyBuffer_Release(&view);
+#endif
 		return NULL;
 	}
 	Py_END_ALLOW_THREADS;
 	result=PyBytes_FromStringAndSize((char *) buffer, len);
 	free(buffer);
+#ifdef HAS_NEW_BUFFER
+	PyBuffer_Release(&view);
+#endif
 	return(result);
 }
 
@@ -514,14 +635,31 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 	if (self->mode == MODE_CTR || self->mode == MODE_OFB)
 		return ALG_Encrypt(self, args);
 
+#ifdef HAS_NEW_BUFFER
+	Py_buffer view;
+  
+	if (!PyArg_Parse(args, "s*", &view))
+		return NULL;
+
+	len = view.len;
+	str = (unsigned char*)view.buf;
+#else
 	if (!PyArg_Parse(args, "s#", &str, &len))
 		return NULL;
+#endif
+
 	if (len==0)			/* Handle empty string */
 	{
+#ifdef HAS_NEW_BUFFFER
+		PyBuffer_Release(&view);
+#endif
 		return PyBytes_FromStringAndSize(NULL, 0);
 	}
 	if ( (len % BLOCK_SIZE) !=0 && (self->mode!=MODE_CFB))
 	{
+#ifdef HAS_NEW_BUFFFER
+		PyBuffer_Release(&view);
+#endif
 		PyErr_Format(PyExc_ValueError, 
 			     "Input strings must be "
 			     "a multiple of %i in length",
@@ -530,6 +668,9 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 	}
 	if (self->mode == MODE_CFB && 
 	    (len % (self->segment_size/8) !=0)) {
+#ifdef HAS_NEW_BUFFFER
+		PyBuffer_Release(&view);
+#endif
 		PyErr_Format(PyExc_ValueError, 
 			     "Input strings must be a multiple of "
 			     "the segment size %i in length",
@@ -539,6 +680,9 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 	buffer=malloc(len);
 	if (buffer==NULL) 
 	{
+#ifdef HAS_NEW_BUFFFER
+		PyBuffer_Release(&view);
+#endif
 		PyErr_SetString(PyExc_MemoryError, 
 				"No memory available in " _MODULE_STRING
 				" decrypt");
@@ -548,14 +692,14 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 	switch(self->mode)
 	{
 	case(MODE_ECB):      
-		for(i=0; i<len; i+=BLOCK_SIZE) 
+		for(i=0; i<len; i+=BLOCK_SIZE)
 		{
 			block_decrypt(&(self->st), str+i, buffer+i);
 		}
 		break;
 
 	case(MODE_CBC):      
-		for(i=0; i<len; i+=BLOCK_SIZE) 
+		for(i=0; i<len; i+=BLOCK_SIZE)
 		{
 			memcpy(self->oldCipher, self->IV, BLOCK_SIZE);
 			block_decrypt(&(self->st), str+i, temp);
@@ -568,7 +712,7 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 		break;
 
 	case(MODE_CFB):      
-		for(i=0; i<len; i+=self->segment_size/8) 
+		for(i=0; i<len; i+=self->segment_size/8)
 		{
 			block_encrypt(&(self->st), self->IV, temp);
 			for (j=0; j<self->segment_size/8; j++) {
@@ -583,7 +727,7 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 				int sz = self->segment_size/8;
 				memmove(self->IV, self->IV + sz, 
 					BLOCK_SIZE-sz);
-				memcpy(self->IV + BLOCK_SIZE - sz, str + i, 
+				memcpy(self->IV + BLOCK_SIZE - sz, str + i,
 				       sz);
 			}
 			else {
@@ -600,11 +744,17 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 			     "this shouldn't happen",
 			     self->mode);
 		free(buffer);
+#ifdef HAS_NEW_BUFFFER
+		PyBuffer_Release(&view);
+#endif
 		return NULL;
 	}
 	Py_END_ALLOW_THREADS;
 	result=PyBytes_FromStringAndSize((char *) buffer, len);
 	free(buffer);
+#ifdef HAS_NEW_BUFFFER
+	PyBuffer_Release(&view);
+#endif
 	return(result);
 }
 
