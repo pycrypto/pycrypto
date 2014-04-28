@@ -19,7 +19,35 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 # ===================================================================
+"""Alleged IDEA symmetric cipher
 
+AIDEA_ (or Alleged IDEA) is a symmetric block cipher designed by James
+Massey of ETH Zurich and Xuejia Lai and was first described in 1991.
+
+It has a fixed data block size of 8 bytes and a fixed key size of 16
+bytes.
+
+As an example, encryption can be done as follows:
+
+    >>> from Crypto.Cipher import AIDEA
+    >>> from Crypto import Random
+    >>>
+    >>> key = b'Sixteen byte key'
+    >>> iv = Random.new().read(AIDEA.block_size)
+    >>> cipher = AIDEA.new(key, AIDEA.MODE_OPENPGP, iv)
+    >>> plaintext = b'sona si latine loqueris '
+    >>> msg = cipher.encrypt(plaintext)
+    >>>
+    ...
+    >>> eiv = msg[:AIDEA.block_size+2]
+    >>> ciphertext = msg[AIDEA.block_size+2:]
+    >>> cipher = AIDEA.new(key, AIDEA.MODE_OPENPGP, eiv)
+    >>> print cipher.decrypt(ciphertext)
+
+.. _AIDEA: http://en.wikipedia.org/wiki/International_Data_Encryption_Algorithm
+
+:undocumented: __revision__, __package__
+"""
 
 __revision__ = "$Id$"
 
