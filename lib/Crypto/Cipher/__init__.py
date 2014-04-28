@@ -48,7 +48,7 @@ Module name                 Type      Description
                                       Very commonly used in the past,
                                       but today its 56-bit keys are too small.
 `Crypto.Cipher.DES3`        Block     Triple DES.
-`Crypto.Cipher.AIDEA        Block     Alleged IDEA.
+`Crypto.Cipher.AIDEA`       Block     Alleged IDEA.
 `Crypto.Cipher.XOR`         Stream    The simple XOR cipher.
 ========================    =======   ========================
 
