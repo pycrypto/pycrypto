@@ -318,6 +318,7 @@ Blowfish          Variable/8 bytes
 CAST              Variable/8 bytes
 DES               8 bytes/8 bytes
 DES3 (Triple DES) 16 bytes/8 bytes
+AIDEA             16 bytes/8 bytes
 ================= ============================
 
 
@@ -465,6 +466,9 @@ not currently feasible, and it has been estimated to be useful until 2030.
 Bruce Schneier endorses DES3 for its security because of the decades of
 study applied against it. It is, however, slow.
 
+There are no publicly known attacks against AIDEA (3050 K/sec), and
+it's been around long enough to have been examined.
+
 There are no known attacks against Blowfish (9250 K/sec) or CAST (2960 K/sec),
 but they're all relatively new algorithms and there hasn't been time for much
 analysis to be performed; use them for serious applications only after careful
@@ -513,6 +517,7 @@ Blowfish algorithm has been placed in the public domain and can be used
 freely.  (See http://www.schneier.com/paper-blowfish-fse.html for more
 information about Blowfish.) The CAST implementation was written by Wim Lewis.
 The DES implementation uses libtomcrypt, which was written by Tom St Denis.
+The AIDEA implementation was written by Colin Plumb.
 
 The Alleged RC4 code was posted to the ``sci.crypt`` newsgroup by an
 unknown party, and re-implemented by A.M. Kuchling.  

@@ -2,11 +2,11 @@ Python Cryptography Toolkit (pycrypto)
 ======================================
 
 This is a collection of both secure hash functions (such as SHA256 and
-RIPEMD160), and various encryption algorithms (AES, DES, RSA, ElGamal,
-etc.).  The package is structured to make adding new modules easy.
-This section is essentially complete, and the software interface will
-almost certainly not change in an incompatible way in the future; all
-that remains to be done is to fix any bugs that show up.  If you
+RIPEMD160), and various encryption algorithms (AES, DES, AIDEA, RSA,
+ElGamal, etc.).  The package is structured to make adding new modules
+easy. This section is essentially complete, and the software interface
+will almost certainly not change in an incompatible way in the future;
+all that remains to be done is to fix any bugs that show up.  If you
 encounter a bug, please report it in the Launchpad bug tracker at
 
        https://launchpad.net/products/pycrypto/+bugs
