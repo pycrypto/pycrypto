@@ -30,7 +30,7 @@ import sys
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP, PKCS1_v1_5 as RSAES_PKCS1_v1_5
 from Crypto.Signature import PKCS1_PSS, PKCS1_v1_5 as RSASSA_PKCS1_v1_5
-from Crypto.Cipher import AES, ARC2, ARC4, Blowfish, CAST, DES3, DES, XOR
+from Crypto.Cipher import AES, ARC2, ARC4, Blowfish, CAST, DES3, DES, IDEA, XOR
 from Crypto.Hash import HMAC, MD2, MD4, MD5, SHA224, SHA256, SHA384, SHA512, CMAC
 from Crypto.Random import get_random_bytes
 import Crypto.Util.Counter
@@ -323,6 +323,7 @@ class Benchmark:
             ("CAST(40)", CAST, 5),
             ("CAST(80)", CAST, 10),
             ("CAST(128)", CAST, 16),
+            ("IDEA", IDEA, 16),
         ]
         stream_specs = [
             ("ARC2(128)", ARC2, 16),
