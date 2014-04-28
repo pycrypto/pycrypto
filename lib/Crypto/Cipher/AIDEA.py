@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#  Cipher/IDEA.py : IDEA
+#  Cipher/AIDEA.py : AIDEA
 #
 # ===================================================================
 # The contents of this file are dedicated to the public domain.  To
@@ -24,19 +24,19 @@
 __revision__ = "$Id$"
 
 from Crypto.Cipher import blockalgo
-from Crypto.Cipher import _IDEA
+from Crypto.Cipher import _AIDEA
 
-class IDEACipher(blockalgo.BlockAlgo):
-    """IDEA cipher object"""
+class AIDEACipher(blockalgo.BlockAlgo):
+    """AIDEA cipher object"""
 
     def __init__(self, key, *args, **kwargs):
-        """Initialize an IDEA cipher object
+        """Initialize an AIDEA cipher object
 
         See also `new()` at the module level."""
-        blockalgo.BlockAlgo.__init__(self, _IDEA, key, *args, **kwargs)
+        blockalgo.BlockAlgo.__init__(self, _AIDEA, key, *args, **kwargs)
 
 def new(key, *args, **kwargs):
-    """Create a new IDEA cipher
+    """Create a new AIDEA cipher
 
     :Parameters:
       key : byte string
@@ -76,9 +76,9 @@ def new(key, *args, **kwargs):
         are segmented in.
         It must be a multiple of 8. If 0 or not specified, it will be assumed to be 8.
 
-    :Return: an `IDEACipher` object
+    :Return: an `AIDEACipher` object
     """
-    return IDEACipher(key, *args, **kwargs)
+    return AIDEACipher(key, *args, **kwargs)
 
 #: Electronic Code Book (ECB). See `blockalgo.MODE_ECB`.
 MODE_ECB = 1

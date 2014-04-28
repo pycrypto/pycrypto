@@ -25,10 +25,10 @@ test_data = [
 
 
 def get_tests(config={}):
-    from Crypto.Cipher import IDEA
+    from Crypto.Cipher import AIDEA
     from common import make_block_tests
 
-    tests = make_block_tests(IDEA, "IDEA", test_data)
+    tests = make_block_tests(AIDEA, "AIDEA", test_data)
     return tests
 
 if __name__ == '__main__':

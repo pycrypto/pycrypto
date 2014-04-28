@@ -465,9 +465,9 @@ kw = {'name':"pycrypto",
             Extension("Crypto.Cipher._DES3",
                       include_dirs=['src/', 'src/libtom/'],
                       sources=["src/DES3.c"]),
-            Extension("Crypto.Cipher._IDEA",
+            Extension("Crypto.Cipher._AIDEA",
                       include_dirs=['src/',],
-                      sources=['src/IDEA.c'],
+                      sources=['src/AIDEA.c'],
                       libraries=HTONS_LIBS),
 
             # Stream ciphers

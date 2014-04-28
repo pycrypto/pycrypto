@@ -1,5 +1,5 @@
 /*
- *  idea.c : Source code for the IDEA block cipher
+ *  aidea.c : Source code for the Alleged IDEA block cipher
  *
  * Part of the Python Cryptography Toolkit
  *
@@ -32,7 +32,7 @@
 #include <netinet/in.h>
 #endif
 
-#define MODULE_NAME _IDEA
+#define MODULE_NAME _AIDEA
 #define BLOCK_SIZE 8
 #define KEY_SIZE 16
 
@@ -140,9 +140,9 @@ block_init(block_state *self, unsigned char *key, int dummy)
 	*--DK = t1;
 }
 
-/*      IDEA encryption/decryption algorithm */
+/*      AIDEA encryption/decryption algorithm */
 /* Note that in and out can be the same buffer */
-static void ideaCipher(block_state *self, byte *block_in,
+static void aideaCipher(block_state *self, byte *block_in,
 		       byte *block_out, word16 const *key)
 {
 	register uint16 x1, x2, x3, x4, s2, s3;
@@ -189,21 +189,21 @@ static void ideaCipher(block_state *self, byte *block_in,
 	*out++ = htons(x2);
 	*out = htons(x4);
 
-}				/* ideaCipher */
+}				/* aideaCipher */
 
 
 static void block_encrypt(block_state *self,
 			  unsigned char *in,
 			  unsigned char *out)
 {
-	ideaCipher(self, in, out, self->EK);
+	aideaCipher(self, in, out, self->EK);
 }
 
 static void block_decrypt(block_state *self,
 			  unsigned char *in,
 			  unsigned char *out)
 {
-	ideaCipher(self, in, out, self->DK);
+	aideaCipher(self, in, out, self->DK);
 }
 
 static void block_finalize(block_state* self)
