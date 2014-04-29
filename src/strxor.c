@@ -132,32 +132,50 @@ static char strxor__doc__[] =
 static PyObject *
 strxor_function(PyObject *self, PyObject *args)
 {
-    PyObject *a, *b, *retval;
-    Py_ssize_t len_a, len_b;
-
-    if (!PyArg_ParseTuple(args, "SS", &a, &b))
+    char *a, *b;
+    PyObject *retval;
+    int len_a, len_b;
+#ifdef HAS_NEW_BUFFER
+    Py_buffer a_view, b_view;
+    if (!PyArg_ParseTuple(args, "s*s*", &a_view, &b_view))
         return NULL;
-
-    len_a = PyBytes_GET_SIZE(a);
-    len_b = PyBytes_GET_SIZE(b);
-
+    a = (char*)a_view.buf;
+    len_a = a_view.len;
+    b = (char*)b_view.buf;
+    len_b = b_view.len;
+#else
+    if (!PyArg_ParseTuple(args, "s#s#", &a, &len_a, &b, &len_b))
+        return NULL;
+#endif
     assert(len_a >= 0);
     assert(len_b >= 0);
 
     if (len_a != len_b) {
         PyErr_SetString(PyExc_ValueError, "length of both strings must be equal");
+#ifdef HAS_NEW_BUFFER
+        PyBuffer_Release(&a_view);
+        PyBuffer_Release(&b_view);
+#endif
         return NULL;
     }
 
     /* Create return string */
     retval = PyBytes_FromStringAndSize(NULL, len_a);
     if (!retval) {
+#ifdef HAS_NEW_BUFFER
+        PyBuffer_Release(&a_view);
+        PyBuffer_Release(&b_view);
+#endif
         return NULL;
     }
 
     /* retval := a ^ b */
-    xor_strings(PyBytes_AS_STRING(retval), PyBytes_AS_STRING(a), PyBytes_AS_STRING(b), len_a);
+    xor_strings(PyBytes_AS_STRING(retval), a, b, len_a);
 
+#ifdef HAS_NEW_BUFFER
+    PyBuffer_Release(&a_view);
+    PyBuffer_Release(&b_view);
+#endif
     return retval;
 }
 
@@ -173,30 +191,44 @@ static char strxor_c__doc__[] =
 static PyObject *
 strxor_c_function(PyObject *self, PyObject *args)
 {
-    PyObject *s, *retval;
+    char *s;
+    PyObject *retval;
     int c;
-    Py_ssize_t length;
-
-    if (!PyArg_ParseTuple(args, "Si", &s, &c))
+    int length;
+#ifdef HAS_NEW_BUFFER
+    Py_buffer view;
+    if (!PyArg_ParseTuple(args, "s*i", &view, &c))
         return NULL;
-
+    s = (char*)view.buf;
+    length = view.len;
+#else
+    if (!PyArg_ParseTuple(args, "s#i", &s, &length, &c))
+        return NULL;
+#endif
     if ((c < 0) || (c > 255)) {
         PyErr_SetString(PyExc_ValueError, "c must be in range(256)");
+#ifdef HAS_NEW_BUFFER
+        PyBuffer_Release(&view);
+#endif
         return NULL;
     }
-
-    length = PyBytes_GET_SIZE(s);
     assert(length >= 0);
 
     /* Create return string */
     retval = PyBytes_FromStringAndSize(NULL, length);
     if (!retval) {
+#ifdef HAS_NEW_BUFFER
+        PyBuffer_Release(&view);
+#endif
         return NULL;
     }
 
     /* retval := a ^ chr(c)*length */
-    xor_string_with_char(PyBytes_AS_STRING(retval), PyBytes_AS_STRING(s), (char) c, length);
+    xor_string_with_char(PyBytes_AS_STRING(retval), s, (char) c, length);
 
+#ifdef HAS_NEW_BUFFER
+    PyBuffer_Release(&view);
+#endif
     return retval;
 }
 
