@@ -136,31 +136,16 @@ WR_get_bytes(WRobject *self, PyObject *args)
 		    "WinRandom trying to get_bytes with non-WinRandom object");
 		return NULL;
 	}
-#ifdef HAS_NEW_BUFFER
-	Py_buffer view = { 0 };
-	if (!PyArg_ParseTuple(args, "i|s*", &n, &view)) {
-		return NULL;
-	}
-	str = (char*)view.buf;
-	len = view.len;
-#else
 	if (!PyArg_ParseTuple(args, "i|s#", &n, &str, &len)) {
 		return NULL;
 	}
-#endif
 	if (n <= 0) {
 		PyErr_SetString(PyExc_ValueError, "nbytes must be positive number");
-#ifdef HAS_NEW_BUFFER
-		PyBuffer_Release(&view);
-#endif
 		return NULL;
 	}
 	/* Just in case char != BYTE, or userdata > desired result */
 	nbytes = (((n > len) ? n : len) * sizeof(char)) / sizeof(BYTE) + 1;
 	if ((buf = (char *) PyMem_Malloc(nbytes)) == NULL)
-#ifdef HAS_NEW_BUFFER
-		PyBuffer_Release(&view);
-#endif
 	    return PyErr_NoMemory();
 	if (len > 0)
 		memcpy(buf, str, len);
@@ -180,17 +165,11 @@ WR_get_bytes(WRobject *self, PyObject *args)
 			     "CryptGenRandom failed, error 0x%x",
 			     (unsigned int) GetLastError());
 		PyMem_Free(buf);
-#ifdef HAS_NEW_BUFFER
-		PyBuffer_Release(&view);
-#endif
 		return NULL;
 	}
 
 	res = PyBytes_FromStringAndSize(buf, n);
 	PyMem_Free(buf);
-#ifdef HAS_NEW_BUFFER
-	PyBuffer_Release(&view);
-#endif
 	return res;
 }
 
