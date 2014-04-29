@@ -221,6 +221,9 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 	{
 		PyErr_SetString(PyExc_MemoryError, "No memory available in "
 				_MODULE_STRING " decrypt");
+#ifdef HAS_NEW_BUFFER
+		PyBuffer_Release(&view);
+#endif
 		return NULL;
 	}
 	Py_BEGIN_ALLOW_THREADS;
@@ -229,6 +232,9 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 	Py_END_ALLOW_THREADS;
 	result = PyBytes_FromStringAndSize((char *)buffer, len);
 	free(buffer);
+#ifdef HAS_NEW_BUFFER
+	PyBuffer_Release(&view);
+#endif
 	return (result);
 }
 
