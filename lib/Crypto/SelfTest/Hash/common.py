@@ -43,6 +43,8 @@ if sys.hexversion < 0x02030000:
 else:
     dict = dict
 
+PYGTE26 = sys.version_info[:2] >= (2, 6)
+
 from Crypto.Util.strxor import strxor_c
 
 class HashDigestSizeSelfTest(unittest.TestCase):
@@ -160,6 +162,17 @@ class GenericHashConstructorTest(unittest.TestCase):
         self.assert_(isinstance(self.hashmod, obj5))
         self.assert_(isinstance(self.hashmod, obj6))
 
+class ByteArrayHashTest(unittest.TestCase):
+    def __init__(self, hashmod):
+        unittest.TestCase.__init__(self)
+        self.hashmod = hashmod
+
+    def runTest(self):
+        obj1 = self.hashmod.new(bytearray(b("foo")))
+        obj2 = Crypto.Hash.new(obj1, bytearray(b("foo")))
+        obj1.update(bytearray(b("bar")))
+        obj2.update(bytearray(b("bar")))
+
 class MACSelfTest(unittest.TestCase):
 
     def __init__(self, module, description, result, input, key, params):
@@ -243,6 +256,8 @@ def make_hash_tests(module, module_name, test_data, digest_size, oid=None):
     if oid is not None:
         tests.append(HashTestOID(module, oid))
     tests.append(HashDocStringTest(module))
+    if PYGTE26:
+        tests.append(ByteArrayHashTest(module))
     if getattr(module, 'name', None) is not None:
         tests.append(GenericHashConstructorTest(module))
     return tests
