@@ -84,11 +84,10 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 	unsigned char *key;
 	ALGobject * new;
 	int keylen;
+    Py_buffer keyView = { 0 };
 
 	new = newALGobject();
 
-#ifdef HAS_NEW_BUFFER
-    Py_buffer keyView = { 0 };
 	if (!PyArg_ParseTupleAndKeywords(args, kwdict, "s*", kwlist, 
 					 &keyView))
 	{
@@ -97,23 +96,13 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 	}
 	keylen = keyView.len;
 	key = (unsigned char*)keyView.buf;
-#else
-	if (!PyArg_ParseTupleAndKeywords(args, kwdict, "s#", kwlist, 
-					 &key, &keylen))
-	{
-		Py_DECREF(new);
-		return NULL;
-	}
-#endif
 
 	if (KEY_SIZE!=0 && keylen != KEY_SIZE)
 	{
 		PyErr_SetString(PyExc_ValueError, 
 				_MODULE_STRING " key must be "
 				"KEY_SIZE bytes long");
-#ifdef HAS_NEW_BUFFER
 		PyBuffer_Release(&keyView);
-#endif
 		return NULL;
 	}
 	if (KEY_SIZE== 0 && keylen == 0)
@@ -121,23 +110,17 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 		PyErr_SetString(PyExc_ValueError, 
 				_MODULE_STRING " key cannot be "
 				"the null string (0 bytes long)");
-#ifdef HAS_NEW_BUFFER
 		PyBuffer_Release(&keyView);
-#endif
 		return NULL;
 	}
 	stream_init(&(new->st), key, keylen);
 	if (PyErr_Occurred())
 	{
 		Py_DECREF(new);
-#ifdef HAS_NEW_BUFFER
 		PyBuffer_Release(&keyView);
-#endif
 		return NULL;
 	}
-#ifdef HAS_NEW_BUFFER
 	PyBuffer_Release(&keyView);
-#endif
 	return new;
 }
 
@@ -150,21 +133,14 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 	unsigned char *buffer, *str;
 	int len;
 	PyObject *result;
-#ifdef HAS_NEW_BUFFER
 	Py_buffer view;
 	if (!PyArg_Parse(args, "s*", &view))
 		return NULL;
 	str = (unsigned char*)view.buf;
 	len = view.len;
-#else
-	if (!PyArg_Parse(args, "s#", &str, &len))
-		return NULL;
-#endif
 	if (len == 0)			/* Handle empty string */
 	{
-#ifdef HAS_NEW_BUFFER
 		PyBuffer_Release(&view);
-#endif
 		return PyBytes_FromStringAndSize(NULL, 0);
 	}
 	buffer = malloc(len);
@@ -172,9 +148,7 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 	{
 		PyErr_SetString(PyExc_MemoryError, "No memory available in "
 				_MODULE_STRING " encrypt");
-#ifdef HAS_NEW_BUFFER
 		PyBuffer_Release(&view);
-#endif
 		return NULL;
 	}
 	Py_BEGIN_ALLOW_THREADS;
@@ -183,9 +157,7 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 	Py_END_ALLOW_THREADS;
 	result = PyBytes_FromStringAndSize((char *)buffer, len);
 	free(buffer);
-#ifdef HAS_NEW_BUFFER
 	PyBuffer_Release(&view);
-#endif
 	return (result);
 }
 
@@ -198,22 +170,15 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 	unsigned char *buffer, *str;
 	int len;
 	PyObject *result;
-#ifdef HAS_NEW_BUFFER
 	Py_buffer view;
 	
 	if (!PyArg_Parse(args, "s*", &view))
 		return NULL;
 	str = (unsigned char*)view.buf;
 	len = view.len;
-#else
-	if (!PyArg_Parse(args, "s#", &str, &len))
-		return NULL;
-#endif
 	if (len == 0)			/* Handle empty string */
 	{
-#ifdef HAS_NEW_BUFFER
 		PyBuffer_Release(&view);
-#endif
 		return PyBytes_FromStringAndSize(NULL, 0);
 	}
 	buffer = malloc(len);
@@ -221,9 +186,7 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 	{
 		PyErr_SetString(PyExc_MemoryError, "No memory available in "
 				_MODULE_STRING " decrypt");
-#ifdef HAS_NEW_BUFFER
 		PyBuffer_Release(&view);
-#endif
 		return NULL;
 	}
 	Py_BEGIN_ALLOW_THREADS;
@@ -232,9 +195,7 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 	Py_END_ALLOW_THREADS;
 	result = PyBytes_FromStringAndSize((char *)buffer, len);
 	free(buffer);
-#ifdef HAS_NEW_BUFFER
 	PyBuffer_Release(&view);
-#endif
 	return (result);
 }
 
@@ -261,15 +222,7 @@ ALGgetattro(PyObject *self, PyObject *attr)
 		return PyInt_FromLong(KEY_SIZE);
 	}
   generic:
-#if PYTHON_API_VERSION >= 1011          /* Python 2.2 and later */
 	return PyObject_GenericGetAttr(self, attr);
-#else
-	if (PyString_Check(attr) < 0) {
-		PyErr_SetObject(PyExc_AttributeError, attr);
-		return NULL;
-	}
-	return Py_FindMethod(ALGmethods, (PyObject *)self, PyString_AsString(attr));
-#endif
 }
 
 /* List of functions defined in the module */
@@ -309,11 +262,9 @@ static PyTypeObject ALGtype =
 	0,				/*tp_clear*/
 	0,				/*tp_richcompare*/
 	0,				/*tp_weaklistoffset*/
-#if PYTHON_API_VERSION >= 1011          /* Python 2.2 and later */
 	0,				/*tp_iter*/
 	0,				/*tp_iternext*/
 	ALGmethods,		/*tp_methods*/
-#endif
  };
 
 #ifdef IS_PY3K

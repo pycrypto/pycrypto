@@ -36,10 +36,5 @@
 #else
 # error "stdint.h and inttypes.h not found"
 #endif
-#ifndef Py_LIMITED_API
-#if PY_MAJOR_VERSION > 2 || (PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION > 5)
-#define HAS_NEW_BUFFER
-#endif
-#endif
 
 #endif /* PYCRYPTO_COMMON_H */

@@ -204,15 +204,7 @@ WRgetattro(PyObject *s, PyObject *attr)
 	if (PyString_CompareWithASCIIString(attr, "hcp") == 0)
 		return PyInt_FromLong((long) self->hcp);
   generic:
-#if PYTHON_API_VERSION >= 1011          /* Python 2.2 and later */
 	return PyObject_GenericGetAttr(s, attr);
-#else
-	if (PyString_Check(attr) < 0) {
-		PyErr_SetObject(PyExc_AttributeError, attr);
-		return NULL;
-	}
-	return Py_FindMethod(WRmethods, (PyObject *)self, PyString_AsString(attr));
-#endif
 }
 
 static PyTypeObject WRtype =
@@ -243,11 +235,9 @@ static PyTypeObject WRtype =
 	0,				/*tp_clear*/
 	0,				/*tp_richcompare*/
 	0,				/*tp_weaklistoffset*/
-#if PYTHON_API_VERSION >= 1011          /* Python 2.2 and later */
 	0,				/*tp_iter*/
 	0,				/*tp_iternext*/
 	WRmethods,		/*tp_methods*/
-#endif
 };
 
 #ifdef IS_PY3K
