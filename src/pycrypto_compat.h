@@ -48,5 +48,6 @@
 # define PyBytesObject PyStringObject
 # define PyString_CompareWithASCIIString(o,s) \
     (PyString_Check(o) ? strcmp(PyString_AsString(o),(s)) : -1)  /* NB: only compares up to the first NUL byte */
+#endif
 #endif /* PYCRYPTO_COMPAT_H */
 /* vim:set ts=4 sw=4 sts=4 expandtab: */
