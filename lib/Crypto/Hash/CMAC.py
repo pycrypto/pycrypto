@@ -119,7 +119,7 @@ class _SmoothMAC(object):
             self._total_len += len(data)
             return
 
-        self._buffer.append(data)
+        self._buffer.append(bstr(data))
         self._buffer_len += len(data)
         self._total_len += len(data)
 

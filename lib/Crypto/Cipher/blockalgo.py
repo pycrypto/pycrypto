@@ -305,7 +305,7 @@ class _CBCMAC(_SmoothMAC):
         if self._mac:
             raise TypeError("_ignite() cannot be called twice")
 
-        self._buffer.insert(0, data)
+        self._buffer.insert(0, bstr(data))
         self._buffer_len += len(data)
         self._mac = self._factory.new(self._key, MODE_CBC, bchr(0) * 16)
         self.update(b(""))
