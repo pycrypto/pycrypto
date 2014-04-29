@@ -628,14 +628,15 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 	unsigned char temp[BLOCK_SIZE];
 	int i, j, len;
 	PyObject *result;
+#ifdef HAS_NEW_BUFFER
+	Py_buffer view;
+#endif
 
 	/* CTR and OFB mode decryption is identical to encryption */
 	if (self->mode == MODE_CTR || self->mode == MODE_OFB)
 		return ALG_Encrypt(self, args);
 
 #ifdef HAS_NEW_BUFFER
-	Py_buffer view;
-  
 	if (!PyArg_Parse(args, "s*", &view))
 		return NULL;
 

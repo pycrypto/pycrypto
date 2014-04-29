@@ -302,11 +302,12 @@ ALG_new(PyObject *self, PyObject *args)
         ALGobject *new;
 	unsigned char *cp = NULL;
 	int len;
+#ifdef HAS_NEW_BUFFER
+    Py_buffer view = { 0 };
+#endif
 	
 	if ((new = newALGobject()) == NULL)
 		return NULL;
-#ifdef HAS_NEW_BUFFER
-        Py_buffer view = { 0 };
         if (!PyArg_ParseTuple(args, "|s*",
                               &view)) {
                 Py_DECREF(new);
