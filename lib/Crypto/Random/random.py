@@ -28,9 +28,6 @@ __revision__ = "$Id$"
 __all__ = ['StrongRandom', 'getrandbits', 'randrange', 'randint', 'choice', 'shuffle', 'sample']
 
 from Crypto import Random
-import sys
-if sys.version_info[0] == 2 and sys.version_info[1] == 1:
-    from Crypto.Util.py21compat import *
 
 class StrongRandom(object):
     def __init__(self, rng=None, randfunc=None):

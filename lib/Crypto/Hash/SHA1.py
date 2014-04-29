@@ -42,9 +42,6 @@ _revision__ = "$Id$"
 __all__ = ['new', 'block_size', 'digest_size']
 
 from Crypto.Util.py3compat import *
-if sys.version_info[0] == 2 and sys.version_info[1] == 1:
-    from Crypto.Util.py21compat import *
-
 
 PY26 = sys.version_info[:2] == (2, 6)
 

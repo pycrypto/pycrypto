@@ -69,8 +69,6 @@ __all__ = ['generate', 'construct', 'error', 'importKey', 'RSAImplementation',
     '_RSAobj', 'oid' , 'algorithmIdentifier' ]
 
 import sys
-if sys.version_info[0] == 2 and sys.version_info[1] == 1:
-    from Crypto.Util.py21compat import *
 from Crypto.Util.py3compat import *
 
 from Crypto.Util.number import getRandomRange, bytes_to_long, long_to_bytes
