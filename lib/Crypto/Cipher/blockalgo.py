@@ -305,7 +305,7 @@ class _CBCMAC(_SmoothMAC):
         if self._mac:
             raise TypeError("_ignite() cannot be called twice")
 
-        self._buffer.insert(0, data)
+        self._buffer.insert(0, bstr(data))
         self._buffer_len += len(data)
         self._mac = self._factory.new(self._key, MODE_CBC, bchr(0) * 16)
         self.update(b(""))
@@ -429,10 +429,10 @@ class BlockAlgo:
 
         # Step 2 - Compute J0 (integer, not byte string!)
         if len(self.nonce) == 12:
-            self._j0 = bytes_to_long(self.nonce + b("\x00\x00\x00\x01"))
+            self._j0 = bytes_to_long(bstr(self.nonce) + b("\x00\x00\x00\x01"))
         else:
             fill = (16 - (len(self.nonce) % 16)) % 16 + 8
-            ghash_in = (self.nonce +
+            ghash_in = (bstr(self.nonce) +
                         bchr(0) * fill +
                         long_to_bytes(8 * len(self.nonce), 8))
 
@@ -599,7 +599,7 @@ class BlockAlgo:
                 8 * divmod(self._mac_len - 2, 2)[0] +
                 (q - 1)
                 )
-        b_0 = bchr(flags) + self.nonce + long_to_bytes(self._msg_len, q)
+        b_0 = bchr(flags) + bstr(self.nonce) + long_to_bytes(self._msg_len, q)
 
         # Start CBC MAC with zero IV
         assoc_len_encoded = b('')
@@ -616,7 +616,7 @@ class BlockAlgo:
         self._cipherMAC._ignite(b_0 + assoc_len_encoded)
 
         # Start CTR cipher
-        prefix = bchr(q - 1) + self.nonce
+        prefix = bchr(q - 1) + bstr(self.nonce)
         ctr = Counter.new(128 - len(prefix) * 8, prefix, initial_value=0)
         self._cipher = self._factory.new(self._key, MODE_CTR, counter=ctr)
         # Will XOR against CBC MAC

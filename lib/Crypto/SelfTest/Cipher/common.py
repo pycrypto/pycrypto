@@ -47,6 +47,8 @@ if sys.hexversion < 0x02030000:
 else:
     dict = dict
 
+PYGTE26 = sys.version_info[:2] >= (2, 6)
+
 class _NoDefault: pass        # sentinel object
 def _extract(d, k, default=_NoDefault):
     """Get an item from a dictionary, and remove it from the dictionary."""
@@ -98,11 +100,21 @@ class CipherSelfTest(unittest.TestCase):
             # Stream cipher
             self.mode = None
             self.iv = None
+            self.encrypted_iv = None
 
         self.extra_params = params
 
     def shortDescription(self):
         return self.description
+
+    def _getCipherInitData(self):
+        key = a2b_hex(self.key)
+        iv = encrypted_iv = None
+        if self.encrypted_iv is not None:
+            encrypted_iv = a2b_hex(self.encrypted_iv)
+        if self.iv is not None:
+            iv = a2b_hex(self.iv)
+        return key, iv, encrypted_iv
 
     def _new(self, do_decryption=0):
         params = self.extra_params.copy()
@@ -118,31 +130,34 @@ class CipherSelfTest(unittest.TestCase):
                 ctr_params['nbits'] = 8*(self.module.block_size - len(ctr_params.get('prefix', '')) - len(ctr_params.get('suffix', '')))
             params['counter'] = ctr_class(**ctr_params)
 
+        key, iv, encrypted_iv = self._getCipherInitData()
         if self.mode is None:
             # Stream cipher
-            return self.module.new(a2b_hex(self.key), **params)
-        elif self.iv is None:
+            return self.module.new(key, **params)
+        elif iv is None:
             # Block cipher without iv
-            return self.module.new(a2b_hex(self.key), self.mode, **params)
+            return self.module.new(key, self.mode, **params)
         else:
             # Block cipher with iv
             if do_decryption and self.mode == self.module.MODE_OPENPGP:
                 # In PGP mode, the IV to feed for decryption is the *encrypted* one
-                return self.module.new(a2b_hex(self.key), self.mode, a2b_hex(self.encrypted_iv), **params)
+                return self.module.new(key, self.mode, encrypted_iv, **params)
             else:
-                return self.module.new(a2b_hex(self.key), self.mode, a2b_hex(self.iv), **params)
+                return self.module.new(key, self.mode, iv, **params)
 
     def isMode(self, name):
         if not hasattr(self.module, "MODE_"+name):
             return False
         return self.mode == getattr(self.module, "MODE_"+name)
 
-    def runTest(self):
-        plaintext = a2b_hex(self.plaintext)
-        ciphertext = a2b_hex(self.ciphertext)
+    def _getInputDataForTest(self):
         assoc_data = []
         if self.assoc_data:
             assoc_data = [ a2b_hex(b(x)) for x in self.assoc_data]
+        return a2b_hex(self.plaintext), a2b_hex(self.ciphertext), assoc_data
+
+    def runTest(self):
+        plaintext, ciphertext, assoc_data = self._getInputDataForTest()
 
         ct = None
         pt = None
@@ -187,6 +202,27 @@ class CipherSelfTest(unittest.TestCase):
             self.assertEqual(self.mac, mac)
             decipher.verify(a2b_hex(self.mac))
 
+class CipherByteArrayTest(CipherSelfTest):
+
+    def _getCipherInitData(self):
+        key = bytearray(a2b_hex(self.key))
+        iv = encrypted_iv = None
+        if self.encrypted_iv is not None:
+            encrypted_iv = bytearray(a2b_hex(self.encrypted_iv))
+        if self.iv is not None:
+            iv = bytearray(a2b_hex(self.iv))
+        return key, iv, encrypted_iv
+
+    def _getInputDataForTest(self):
+        assoc_data = []
+        if self.assoc_data:
+            assoc_data = [ bytearray(a2b_hex(b(x))) for x in self.assoc_data]
+        return (
+            bytearray(a2b_hex(self.plaintext)),
+            bytearray(a2b_hex(self.ciphertext)),
+            assoc_data
+            )
+
 class CipherStreamingSelfTest(CipherSelfTest):
 
     def shortDescription(self):
@@ -196,8 +232,7 @@ class CipherStreamingSelfTest(CipherSelfTest):
         return "%s should behave like a stream cipher" % (desc,)
 
     def runTest(self):
-        plaintext = a2b_hex(self.plaintext)
-        ciphertext = a2b_hex(self.ciphertext)
+        plaintext, ciphertext, _assoc_data = self._getInputDataForTest()
 
         # The cipher should work like a stream cipher
 
@@ -217,6 +252,24 @@ class CipherStreamingSelfTest(CipherSelfTest):
         # PY3K: This is meant to be text, do not change to bytes (data)
         pt3 = b2a_hex(b("").join(pt3))
         self.assertEqual(self.plaintext, pt3)  # decryption (3 bytes at a time)
+
+
+class CipherStreamingByteArrayTest(CipherStreamingSelfTest):
+
+    def _getCipherInitData(self):
+        key = bytearray(a2b_hex(self.key))
+        iv = encrypted_iv = None
+        if self.encrypted_iv is not None:
+            encrypted_iv = bytearray(a2b_hex(self.encrypted_iv))
+        if self.iv is not None:
+            iv = bytearray(a2b_hex(self.iv))
+        return key, iv, encrypted_iv
+
+    def _getInputDataForTest(self):
+        plaintext = bytearray(a2b_hex(self.plaintext))
+        ciphertext = bytearray(a2b_hex(self.ciphertext))
+        return plaintext, ciphertext, []
+
 
 class CTRSegfaultTest(unittest.TestCase):
 
@@ -734,6 +787,8 @@ def make_block_tests(module, module_name, test_data, additional_params=dict()):
 
         # Add the current test to the test suite
         tests.append(CipherSelfTest(module, params))
+        if PYGTE26:
+            tests.append(CipherByteArrayTest(module, params))
 
         # When using CTR mode, test that the interface behaves like a stream cipher
         if p_mode in ('OFB', 'CTR'):
@@ -806,6 +861,9 @@ def make_stream_tests(module, module_name, test_data):
         # Add the test to the test suite
         tests.append(CipherSelfTest(module, params))
         tests.append(CipherStreamingSelfTest(module, params))
+        if PYGTE26:
+            tests.append(CipherByteArrayTest(module, params))
+            tests.append(CipherStreamingByteArrayTest(module, params))
     return tests
 
 # vim:set ts=4 sw=4 sts=4 expandtab:

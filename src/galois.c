@@ -276,16 +276,22 @@ static char ghash_expand__doc__[] =
 static PyObject *
 ghash_expand_function(PyObject *self, PyObject *args)
 {
-    PyObject *h;
+	uint8_t *h;
     PyObject *retval = NULL;
-    Py_ssize_t len_h;
+    int len_h;
     int err;
-
-    if (!PyArg_ParseTuple(args, "S", &h)) {
+#ifdef HAS_NEW_BUFFER
+    Py_buffer h_view;
+    if (!PyArg_ParseTuple(args, "s*", &h_view)) {
         goto out;
     }
-
-    len_h = PyBytes_GET_SIZE(h);
+    h = (uint8_t*)h_view.buf;
+    len_h = h_view.len;
+#else
+    if (!PyArg_ParseTuple(args, "s#", &h, &len_h)) {
+        goto out;
+    }
+#endif
 
     if (len_h!=16) {
         PyErr_SetString(PyExc_ValueError, "Length of h must be 16 bytes.");
@@ -302,7 +308,7 @@ ghash_expand_function(PyObject *self, PyObject *args)
 
     err = ghash_expand(
             (t_key_tables*)PyBytes_AS_STRING(retval),
-            (uint8_t*)PyBytes_AS_STRING(h)
+            h
             );
 
     Py_END_ALLOW_THREADS;
@@ -313,6 +319,9 @@ ghash_expand_function(PyObject *self, PyObject *args)
     }
 
 out:
+#ifdef HAS_NEW_BUFFER
+    PyBuffer_Release(&h_view);
+#endif
     return retval;
 }
 
@@ -325,18 +334,25 @@ static char ghash__doc__[] =
 static PyObject *
 ghash_function(PyObject *self, PyObject *args)
 {
-    PyObject *data, *y, *exp_h;
+	uint8_t *data, *y, *exp_h;
     PyObject *retval = NULL;
     Py_ssize_t len_data, len_y, len_exp_h;
-
-    if (!PyArg_ParseTuple(args, "SSS", &data, &y, &exp_h)) {
+#ifdef HAS_NEW_BUFFER
+    Py_buffer data_view, y_view, exp_h_view;
+    if (!PyArg_ParseTuple(args, "s*s*s*", &data_view, &y_view, &exp_h_view)) {
         goto out;
     }
-
-    len_data = PyBytes_GET_SIZE(data);
-    len_y = PyBytes_GET_SIZE(y);
-    len_exp_h = PyBytes_GET_SIZE(exp_h);
-
+    data = (uint8_t*)data_view.buf;
+    len_data = data_view.len;
+    y = (uint8_t*)y_view.buf;
+    len_y = y_view.len;
+    exp_h = (uint8_t*)exp_h_view.buf;
+    len_exp_h = exp_h_view.len;
+#else
+    if (!PyArg_ParseTuple(args, "s#s#s#", &data, &len_data, &y, &len_y, &exp_h, &len_exp_h)) {
+        goto out;
+    }
+#endif
     if (len_data%16!=0) {
         PyErr_SetString(PyExc_ValueError, "Length of data must be a multiple of 16 bytes.");
         goto out;
@@ -359,18 +375,20 @@ ghash_function(PyObject *self, PyObject *args)
     }
 
     Py_BEGIN_ALLOW_THREADS;
-
 #define PyBytes_Buffer(a)   (uint8_t*)PyBytes_AS_STRING(a)
-
-    ghash(  PyBytes_Buffer(retval), PyBytes_Buffer(data), len_data,
-            PyBytes_Buffer(y),
-            PyBytes_Buffer(exp_h), len_exp_h );
-
-#undef PyBytes_Buffer
+    ghash(  PyBytes_Buffer(retval), data, len_data,
+            y, exp_h, len_exp_h );
 
      Py_END_ALLOW_THREADS;
 
+#undef PyBytes_Buffer
+
 out:
+#ifdef HAS_NEW_BUFFER
+    PyBuffer_Release(&data_view);
+    PyBuffer_Release(&y_view);
+    PyBuffer_Release(&exp_h_view);
+#endif
     return retval;
 }
 
