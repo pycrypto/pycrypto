@@ -28,6 +28,7 @@ __revision__ = "$Id$"
 __all__ = ['StrongRandom', 'getrandbits', 'randrange', 'randint', 'choice', 'shuffle', 'sample']
 
 from Crypto import Random
+import math
 import sys
 if sys.version_info[0] == 2 and sys.version_info[1] == 1:
     from Crypto.Util.py21compat import *
@@ -107,9 +108,14 @@ class StrongRandom(object):
         # See http://en.wikipedia.org/wiki/Fisher-Yates_shuffle
         # Working backwards from the end of the array, we choose a random item
         # from the remaining items until all items have been chosen.
-        for i in xrange(len(x)-1, 0, -1):   # iterate from len(x)-1 downto 1
-            j = self.randrange(0, i+1)      # choose random j such that 0 <= j <= i
-            x[i], x[j] = x[j], x[i]         # exchange x[i] and x[j]
+        r = self.randrange(0, math.factorial(len(x)))
+
+        # iterate from len(x)-1 downto 1
+        for i in xrange(len(x)-1, 0, -1):
+            # choose j from a random range such that 0 <= j <= i
+            r, j = divmod(r, i+1)
+            # exchange x[i] and x[j]
+            x[i], x[j] = x[j], x[i]
 
     def sample(self, population, k):
         """Return a k-length list of unique elements chosen from the population sequence."""
