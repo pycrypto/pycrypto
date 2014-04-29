@@ -308,6 +308,7 @@ ALG_new(PyObject *self, PyObject *args)
 	
 	if ((new = newALGobject()) == NULL)
 		return NULL;
+#ifdef HAS_NEW_BUFFER
         if (!PyArg_ParseTuple(args, "|s*",
                               &view)) {
                 Py_DECREF(new);
