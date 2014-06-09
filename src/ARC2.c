@@ -49,6 +49,12 @@
 #define KEY_SIZE 0
 #define PCT_ARC2_MODULE  /* Defined to get ARC2's additional keyword arguments */
 
+#define HAS_ENCRYPT 1
+#define HAS_MODE_CBC 1
+#define HAS_MODE_CFB 1
+#define HAS_MODE_OFB 1
+#define HAS_MODE_CTR 1
+
 typedef uint32_t U32;
 typedef uint16_t U16;
 typedef uint8_t U8;

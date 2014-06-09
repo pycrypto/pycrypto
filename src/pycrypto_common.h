@@ -37,5 +37,10 @@
 # error "stdint.h and inttypes.h not found"
 #endif
 
+#undef HAS_ENCRYPT
+#undef HAS_MODE_CBC
+#undef HAS_MODE_CFB
+#undef HAS_MODE_OFB
+#undef HAS_MODE_CTR
 
 #endif /* PYCRYPTO_COMMON_H */

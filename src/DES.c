@@ -37,6 +37,12 @@
 
 #include <assert.h>
 
+#define HAS_ENCRYPT 1
+#define HAS_MODE_CBC 1
+#define HAS_MODE_CFB 1
+#define HAS_MODE_OFB 1
+#define HAS_MODE_CTR 1
+
 typedef struct {
     symmetric_key sk;
 } block_state;

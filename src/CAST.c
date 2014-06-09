@@ -48,6 +48,12 @@
 #define BLOCK_SIZE 8
 #define KEY_SIZE 0
 
+#define HAS_ENCRYPT 1
+#define HAS_MODE_CBC 1
+#define HAS_MODE_CFB 1
+#define HAS_MODE_OFB 1
+#define HAS_MODE_CTR 1
+
 /* adjust these according to your compiler/platform. On some machines
    uint32 will have to be a long. It's OK if uint32 is more than 32 bits. */
 typedef uint32_t uint32;

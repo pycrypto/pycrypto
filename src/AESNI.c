@@ -33,6 +33,12 @@
 #define BLOCK_SIZE 16
 #define KEY_SIZE 0
 
+#define HAS_ENCRYPT 1
+#define HAS_MODE_CBC 1
+#define HAS_MODE_CFB 1
+#define HAS_MODE_OFB 1
+#define HAS_MODE_CTR 1
+
 #define MAXKC (256/32)
 #define MAXKB (256/8)
 #define MAXNR 14

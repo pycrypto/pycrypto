@@ -35,6 +35,12 @@
 #define BLOCK_SIZE 8    /* 64-bit block size */
 #define KEY_SIZE 0      /* variable key size */
 
+#define HAS_ENCRYPT 1
+#define HAS_MODE_CBC 1
+#define HAS_MODE_CFB 1
+#define HAS_MODE_OFB 1
+#define HAS_MODE_CTR 1
+
 #define BLOWFISH_MAGIC 0xf9d565deu
 typedef struct {
     uint32_t magic;

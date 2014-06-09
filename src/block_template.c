@@ -134,16 +134,29 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 		return NULL;
 	}
 
-	if (mode<MODE_ECB || mode>MODE_CTR) 
-	{
-		PyErr_Format(PyExc_ValueError, 
-			     "Unknown cipher feedback mode %i",
-			     mode);
-		return NULL;
-	}
-	if (mode == MODE_PGP) {
+	switch (mode) {
+	case MODE_ECB:
+#ifdef HAS_MODE_CBC
+	case MODE_CBC:
+#endif
+#ifdef HAS_MODE_CFB
+	case MODE_CFB:
+#endif
+#ifdef HAS_MODE_OFB
+	case MODE_OFB:
+#endif
+#ifdef HAS_MODE_CTR
+	case MODE_CTR:
+#endif
+		break;
+	case MODE_PGP:
 		PyErr_Format(PyExc_ValueError, 
 			     "MODE_PGP is not supported anymore");
+		return NULL;
+	default:
+		PyErr_Format(PyExc_ValueError,
+			     "Unknown or unsupported cipher feedback mode %i",
+			     mode);
 		return NULL;
 	}
 	if (KEY_SIZE!=0 && keylen!=KEY_SIZE)
@@ -611,7 +624,9 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 /* ALG object methods */
 static PyMethodDef ALGmethods[] =
 {
+#ifdef HAS_ENCRYPT
  {"encrypt", (PyCFunction) ALG_Encrypt, METH_O, ALG_Encrypt__doc__},
+#endif
  {"decrypt", (PyCFunction) ALG_Decrypt, METH_O, ALG_Decrypt__doc__},
  {NULL, NULL}			/* sentinel */
 };
