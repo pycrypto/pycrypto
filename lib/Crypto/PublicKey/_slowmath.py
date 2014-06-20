@@ -113,7 +113,7 @@ def rsa_construct(n, e, d=None, p=None, q=None, u=None):
         # as Factorization", M. Rabin, 1979
         spotted = 0
         a = 2
-        while not spotted and a<100:
+        while not spotted and a<1000:
             k = t
             # Cycle through all values a^{t*2^i}=a^k
             while k<ktot:

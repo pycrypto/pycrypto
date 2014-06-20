@@ -606,7 +606,7 @@ static int factorize_N_from_D(rsaKey *key)
 	cnt = mpz_scan1(t, 0);
 	mpz_fdiv_q_2exp(t,t,cnt);
 	mpz_set_ui(a, 2);
-	for (spotted=0; (!spotted) && (mpz_cmp_ui(a,100)<0); mpz_add_ui(a,a,2)) {
+	for (spotted=0; (!spotted) && (mpz_cmp_ui(a,1000)<0); mpz_add_ui(a,a,2)) {
 		mpz_set(k, t);
 		for (; (mpz_cmp(k,ktot)<0); mpz_mul_ui(k,k,2)) {
 			mpz_powm(cand,a,k,key->n);
