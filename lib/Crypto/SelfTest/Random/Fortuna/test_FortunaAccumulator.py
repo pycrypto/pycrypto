@@ -30,6 +30,7 @@ import sys
 if sys.version_info[0] == 2 and sys.version_info[1] == 1:
     from Crypto.Util.py21compat import *
 from Crypto.Util.py3compat import *
+from Crypto.SelfTest.st_common import assert_disabled
 
 import unittest
 from binascii import b2a_hex
@@ -67,8 +68,9 @@ class FortunaAccumulatorTests(unittest.TestCase):
     def test_which_pools(self):
         """FortunaAccumulator.which_pools"""
 
-        # which_pools(0) should fail
-        self.assertRaises(AssertionError, FortunaAccumulator.which_pools, 0)
+        # which_pools(0) should trigger an assertion failure (unless using -O or -OO)
+        if not assert_disabled():
+            self.assertRaises(AssertionError, FortunaAccumulator.which_pools, 0)
 
         self.assertEqual(FortunaAccumulator.which_pools(1), [0])
         self.assertEqual(FortunaAccumulator.which_pools(2), [0, 1])

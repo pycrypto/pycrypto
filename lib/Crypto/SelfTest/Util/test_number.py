@@ -31,6 +31,7 @@ if sys.version_info[0] == 2 and sys.version_info[1] == 1:
     from Crypto.Util.py21compat import *
 
 import unittest
+from Crypto.SelfTest.st_common import assert_disabled
 
 class MyError(Exception):
     """Dummy exception used for tests"""
@@ -46,8 +47,9 @@ class MiscTests(unittest.TestCase):
 
     def test_ceil_shift(self):
         """Util.number.ceil_shift"""
-        self.assertRaises(AssertionError, number.ceil_shift, -1, 1)
-        self.assertRaises(AssertionError, number.ceil_shift, 1, -1)
+        if not assert_disabled():
+            self.assertRaises(AssertionError, number.ceil_shift, -1, 1)
+            self.assertRaises(AssertionError, number.ceil_shift, 1, -1)
 
         # b = 0
         self.assertEqual(0, number.ceil_shift(0, 0))

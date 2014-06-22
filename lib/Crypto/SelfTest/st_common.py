@@ -72,4 +72,17 @@ def handle_fastmath_import_error():
             "it failed. This may point to the gmp or mpir shared library "
             "not being in the path. _fastmath was found at %s" % (pathname,))
 
+def docstrings_disabled():
+    """Returns True if docstrings are disabled (e.g. by using python -OO)"""
+    return docstrings_disabled.__doc__ is None
+
+def assert_disabled():
+    """Returns True if 'assert' is a no-op (e.g. by using python -O)"""
+    try:
+        assert False
+    except AssertionError:
+        return False
+    else:
+        return True
+
 # vim:set ts=4 sw=4 sts=4 expandtab:

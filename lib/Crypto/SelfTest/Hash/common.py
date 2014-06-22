@@ -43,6 +43,7 @@ if sys.hexversion < 0x02030000:
 else:
     dict = dict
 
+from Crypto.SelfTest.st_common import docstrings_disabled
 from Crypto.Util.strxor import strxor_c
 
 class HashDigestSizeSelfTest(unittest.TestCase):
@@ -139,7 +140,8 @@ class HashDocStringTest(unittest.TestCase):
     def runTest(self):
         docstring = self.hashmod.__doc__
         self.assert_(hasattr(self.hashmod, '__doc__'))
-        self.assert_(isinstance(self.hashmod.__doc__, str))
+        if not docstrings_disabled():     # -OO makes docstrings disappear globally
+            self.assert_(isinstance(self.hashmod.__doc__, str))
 
 class GenericHashConstructorTest(unittest.TestCase):
     def __init__(self, hashmod):
