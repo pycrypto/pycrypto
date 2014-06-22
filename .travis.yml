@@ -1,11 +1,55 @@
-language: python
-python:
-  - "2.5"
-  - "2.6"
-  - "2.7"
-  - "3.2"
-  - "3.3"
+# PyCrypto .travis.yml file, for travis-ci.org testing.
+# See https://travis-ci.org/dlitz/pycrypto for build status.
+env:
+  - PYENV_VERSION=2.1.3
+  - PYENV_VERSION=2.2.3
+  - PYENV_VERSION=2.3.7
+  - PYENV_VERSION=2.4.6
+  - PYENV_VERSION=2.5.6
+  - PYENV_VERSION=2.6.9
+  - PYENV_VERSION=2.7.6
+  - PYENV_VERSION=2.7.6 python_flags=-Qnew
+  - PYENV_VERSION=2.7.6 python_flags=-OO
+  - PYENV_VERSION=2.7.6 preconfigure_args=--without-gmp
+# pip won't install on Python 3.0 (lack of collections.OrderedDict object?)
+#  - PYENV_VERSION=3.0.1
+  - PYENV_VERSION=3.1.5
+  - PYENV_VERSION=3.2.5
+  - PYENV_VERSION=3.3.5
+  - PYENV_VERSION=3.4.0
+  - PYENV_VERSION=3.4.0 preconfigure_args=--without-gmp
 # PyCrypto does not support PyPy yet.
 # See https://github.com/dlitz/pycrypto/pull/59
-#  - "pypy"
-script: python setup.py test
+#  - PYENV_VERSION=pypy-2.3.1
+#  - PYENV_VERSION=pypy3-2.3.1
+language: python
+before_install:
+  # Unexport variables
+  - declare +x preconfigure_args python_flags
+  # List local virtualenvs
+  - ls ~/virtualenv || true
+  # Show environment
+  - if [ "$TRAVIS_SECURE_ENV_VARS" = "false" ] ; then env | sort ; fi
+  # Deactivate whichever virtualenv is currently in use
+  - deactivate
+  # Install some package dependencies
+  - sudo apt-get -qq update
+  - sudo apt-get -qq install libgmp-dev
+  # Download pyenv
+  - pyenv_uri=https://github.com/yyuu/pyenv/archive/59c796c138a04a315171ee3d3275222a0f3bc781.tar.gz
+  - pyenv_basename=$( basename "$pyenv_uri" .tar.gz )
+  - wget ${pyenv_uri}
+  - echo "7f196bfa6fafc7944b6dcc9bf4d037f91625a677463a69a2a3be6c31dcac91bb *${pyenv_basename}.tar.gz" | sha256sum -c -
+  # Install pyenv into ~/.pyenv and load it
+  - tar -xvzf ${pyenv_basename}.tar.gz
+  - mv -f pyenv-${pyenv_basename} ~/.pyenv
+  - export PATH=~/.pyenv/bin:$PATH
+  - eval "$(pyenv init -)"
+  # If the selected Python version is installed locally, activate it.  Otherwise, build it using pyenv.
+  - if [ -e ~/virtualenv/python"$PYENV_VERSION"/bin/activate ] ; then source ~/virtualenv/python"$PYENV_VERSION"/bin/activate ; unset PYENV_VERSION ; else pyenv install "$PYENV_VERSION" ; fi
+script:
+  - "major_version=$( python -V 2>&1 | cut -d' ' -f2  | cut -d. -f1 )"
+  - if [ "$major_version" -ge 3 ] ; then extra_flags="$extra_flags -bb" ; fi
+  - if [ -n "$preconfigure_args" ] ; then ./configure $preconfigure_args ; fi
+  - python -tt $extra_flags $python_flags setup.py -q build
+  - python -tt $extra_flags $python_flags setup.py test
