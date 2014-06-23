@@ -33,8 +33,6 @@
 /* Include the actial DES implementation */
 #include "libtom/tomcrypt_des.c"
 
-#undef DES  /* this is needed because tomcrypt_custom.h defines DES to an empty string */
-
 #include <assert.h>
 
 typedef struct {
