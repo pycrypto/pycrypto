@@ -71,7 +71,23 @@ static void block_init(block_state *self, unsigned char *key, int keylen)
 {
     int rc;
 #ifdef PCT_DES3_MODULE
-    rc = des3_setup(key, keylen, 0, &self->sk);
+    int i;
+    unsigned char keybuf[24];
+    if (keylen == 16) {
+        /* "Two-key 3DES" mode, where the 3DES key is K1,K2,K1 */
+        for (i = 0; i < 16; i++) {
+            keybuf[i] = key[i];
+        }
+        for (i = 0; i < 8; i++) {
+            keybuf[i+16] = key[i];
+        }
+        rc = des3_setup(keybuf, 24, 0, &self->sk);
+        for (i = 0; i < 24; i++) {  /* TODO: securely zeroize this */
+            keybuf[i] = 0;
+        }
+    } else {
+        rc = des3_setup(key, keylen, 0, &self->sk);
+    }
 #else
     rc = des_setup(key, keylen, 0, &self->sk);
 #endif
