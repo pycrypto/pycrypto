@@ -370,11 +370,9 @@ static PyTypeObject dsaKeyType = {
 	0,				/*tp_clear*/
 	0,				/*tp_richcompare*/
 	0,				/*tp_weaklistoffset*/
-#if PYTHON_API_VERSION >= 1011          /* Python 2.2 and later */
 	0,				/*tp_iter*/
 	0,				/*tp_iternext*/
 	dsaKey__methods__,		/*tp_methods*/
-#endif
 };
 
 static PyTypeObject rsaKeyType = {
@@ -404,11 +402,9 @@ static PyTypeObject rsaKeyType = {
 	0,				/*tp_clear*/
 	0,				/*tp_richcompare*/
 	0,				/*tp_weaklistoffset*/
-#if PYTHON_API_VERSION >= 1011          /* Python 2.2 and later */
 	0,				/*tp_iter*/
 	0,				/*tp_iternext*/
 	rsaKey__methods__,		/*tp_methods*/
-#endif
 };
 
 static PyObject *
@@ -476,15 +472,7 @@ dsaKey_getattro (dsaKey * key, PyObject *attr)
 	}
 	else
   generic:
-#if PYTHON_API_VERSION >= 1011          /* Python 2.2 and later */
 		return PyObject_GenericGetAttr((PyObject *) key, attr);
-#else
-		if (PyString_Check(attr) < 0) {
-			PyErr_SetObject(PyExc_AttributeError, attr);
-			return NULL;
-		}
-		return Py_FindMethod(dsaKey__methods__, (PyObject *)key, PyString_AsString(attr));
-#endif
 }
 
 static PyObject *
@@ -748,15 +736,7 @@ rsaKey_getattro (rsaKey * key, PyObject *attr)
 	}
 	else
   generic:
-#if PYTHON_API_VERSION >= 1011          /* Python 2.2 and later */
 		return PyObject_GenericGetAttr((PyObject *) key, attr);
-#else
-		if (PyString_Check(attr) < 0) {
-			PyErr_SetObject(PyExc_AttributeError, attr);
-			return NULL;
-		}
-		return Py_FindMethod(rsaKey__methods__, (PyObject *)key, PyString_AsString(attr));
-#endif
 }
 
 static PyObject *

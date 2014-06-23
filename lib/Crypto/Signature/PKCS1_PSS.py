@@ -59,16 +59,10 @@ the RSA key:
 .. __: http://www.rsa.com/rsalabs/node.asp?id=2125
 """
 
-# Allow nested scopes in Python 2.1
-# See http://oreilly.com/pub/a/python/2001/04/19/pythonnews.html
-from __future__ import nested_scopes
-
 __revision__ = "$Id$"
 __all__ = [ 'new', 'PSS_SigScheme' ]
 
 from Crypto.Util.py3compat import *
-if sys.version_info[0] == 2 and sys.version_info[1] == 1:
-    from Crypto.Util.py21compat import *
 import Crypto.Util.number
 from Crypto.Util.number import ceil_shift, ceil_div, long_to_bytes
 from Crypto.Util.strxor import strxor

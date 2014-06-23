@@ -42,8 +42,10 @@ _revision__ = "$Id$"
 __all__ = ['new', 'block_size', 'digest_size']
 
 from Crypto.Util.py3compat import *
-if sys.version_info[0] == 2 and sys.version_info[1] == 1:
-    from Crypto.Util.py21compat import *
+
+
+PY26 = sys.version_info[:2] == (2, 6)
+
 
 def __make_constructor():
     try:
@@ -53,7 +55,7 @@ def __make_constructor():
         from md5 import new as _hash_new
 
     h = _hash_new()
-    if hasattr(h, 'new') and hasattr(h, 'name') and hasattr(h, 'digest_size') and hasattr(h, 'block_size'):
+    if not PY26 and hasattr(h, 'new') and hasattr(h, 'name') and hasattr(h, 'digest_size') and hasattr(h, 'block_size'):
         # The module from stdlib has the API that we need.  Just use it.
         return _hash_new
     else:
@@ -67,10 +69,14 @@ def __make_constructor():
                 if args and args[0] is _copy_sentinel:
                     self._h = args[1]
                 else:
+                    if PY26:
+                        args = map(bytes, args)
                     self._h = _hash_new(*args)
             def copy(self):
                 return _MD5(_copy_sentinel, self._h.copy())
             def update(self, *args):
+                if PY26:
+                    args = map(bytes, args)
                 f = self.update = self._h.update
                 f(*args)
             def digest(self):

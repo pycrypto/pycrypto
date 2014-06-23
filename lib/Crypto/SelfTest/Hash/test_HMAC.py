@@ -26,7 +26,6 @@
 
 __revision__ = "$Id$"
 
-from common import dict     # For compatibility with Python 2.1 and 2.2
 from Crypto.Util.py3compat import *
 
 from Crypto.Hash import MD5, SHA1, SHA224, SHA256, SHA384, SHA512, HMAC

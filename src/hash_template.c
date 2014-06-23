@@ -189,10 +189,11 @@ ALG_update(ALGobject *self, PyObject *args)
 {
 	unsigned char *cp;
 	int len;
-
-	if (!PyArg_ParseTuple(args, "s#", &cp, &len))
-		return NULL;
-
+        Py_buffer view = { 0 };
+        if (!PyArg_ParseTuple(args, "s*", &view))
+                return NULL;
+        cp = (unsigned char*)view.buf;
+        len = view.len;
 	Py_BEGIN_ALLOW_THREADS;
 
 	hash_update(&(self->st), cp, len);
@@ -200,6 +201,7 @@ ALG_update(ALGobject *self, PyObject *args)
 
 	Py_INCREF(Py_None);
 
+        PyBuffer_Release(&view);
 	return Py_None;
 }
 
@@ -239,15 +241,7 @@ ALG_getattro(PyObject *self, PyObject *attr)
 		return PyString_FromString(_MODULE_STRING);     /* we should try to be compatible with hashlib here */
 
   generic:
-#if PYTHON_API_VERSION >= 1011          /* Python 2.2 and later */
 	return PyObject_GenericGetAttr(self, attr);
-#else
-	if (PyString_Check(attr) < 0) {
-		PyErr_SetObject(PyExc_AttributeError, attr);
-		return NULL;
-	}
-	return Py_FindMethod(ALG_methods, (PyObject *)self, PyString_AsString(attr));
-#endif
 }
 
 static PyTypeObject ALGtype = {
@@ -277,11 +271,9 @@ static PyTypeObject ALGtype = {
 	0,				/*tp_clear*/
 	0,				/*tp_richcompare*/
 	0,				/*tp_weaklistoffset*/
-#if PYTHON_API_VERSION >= 1011          /* Python 2.2 and later */
 	0,				/*tp_iter*/
 	0,				/*tp_iternext*/
 	ALG_methods,		/*tp_methods*/
-#endif
  };
 
 /* The single module-level function: new() */
@@ -293,20 +285,23 @@ ALG_new(PyObject *self, PyObject *args)
         ALGobject *new;
 	unsigned char *cp = NULL;
 	int len;
+    Py_buffer view = { 0 };
 	
 	if ((new = newALGobject()) == NULL)
 		return NULL;
-
-	if (!PyArg_ParseTuple(args, "|s#",
-			      &cp, &len)) {
-	        Py_DECREF(new);
-		return NULL;
-	}
+        if (!PyArg_ParseTuple(args, "|s*",
+                              &view)) {
+                Py_DECREF(new);
+                return NULL;
+        }
+        cp = (unsigned char*)view.buf;
+        len = view.len;
 
         hash_init(&(new->st));
 
 	if (PyErr_Occurred()) {
 		Py_DECREF(new); 
+                PyBuffer_Release(&view);
 		return NULL;
 	}
 	if (cp) {
@@ -315,6 +310,7 @@ ALG_new(PyObject *self, PyObject *args)
 		Py_END_ALLOW_THREADS;
 	}
 
+        PyBuffer_Release(&view);
 	return (PyObject *)new;
 }
 

@@ -37,5 +37,4 @@
 # error "stdint.h and inttypes.h not found"
 #endif
 
-
 #endif /* PYCRYPTO_COMMON_H */

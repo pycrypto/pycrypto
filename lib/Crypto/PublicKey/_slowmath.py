@@ -30,8 +30,6 @@ __all__ = ['rsa_construct']
 
 import sys
 
-if sys.version_info[0] == 2 and sys.version_info[1] == 1:
-    from Crypto.Util.py21compat import *
 from Crypto.Util.number import size, inverse, GCD
 
 class error(Exception):
