@@ -41,9 +41,9 @@ xor_strings(char *dest, const char *src_a, const char *src_b, size_t n)
     size_t i;
 
     /* assert no pointer overflow */
-    assert(src_a + n > src_a);
-    assert(src_b + n > src_b);
-    assert(dest + n > dest);
+    assert(src_a + n >= src_a);
+    assert(src_b + n >= src_b);
+    assert(dest + n >= dest);
 
     for (i = 0; i < n; i++) {
         dest[i] = src_a[i] ^ src_b[i];
@@ -62,8 +62,8 @@ xor_string_with_char(char *dest, const char *src, char c, size_t n)
     size_t i;
 
     /* assert no pointer overflow */
-    assert(src + n > src);
-    assert(dest + n > dest);
+    assert(src + n >= src);
+    assert(dest + n >= dest);
 
     for (i = 0; i < n; i++) {
         dest[i] = src[i] ^ c;
