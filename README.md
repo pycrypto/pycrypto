@@ -98,5 +98,5 @@ If you have any comments, corrections, or improvements for this
 package, please report them to our mailing list, accessible via the
 PyCrypto website:
 
-    http://www.pycrypto.org/
-    https://www.dlitz.net/software/pycrypto/
+http://www.pycrypto.org/
+https://www.dlitz.net/software/pycrypto/
