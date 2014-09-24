@@ -60,8 +60,7 @@ call Random.atfork() in both the parent and child processes after
 using os.fork()
 
 
-Installation
-============
+##Installation
 
 PyCrypto is written and tested using Python version 2.1 through 3.3.  Python
 1.5.2 is not supported.
@@ -101,4 +100,3 @@ PyCrypto website:
 
     http://www.pycrypto.org/
     https://www.dlitz.net/software/pycrypto/
-
