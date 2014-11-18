@@ -235,7 +235,6 @@ def HKDF(ikm, salt="", dkLen=16, hashAlgo=None, info=""):
     info = tobytes(info)
     if not hashAlgo:
         hashAlgo = SHA256
-    prf = lambda key, msg: HMAC.new(key, msg=msg, digestmod=hashAlgo).digest()
 
     # Variable names are mostly identical to RFC 5869:
     # ikm: input keying material
@@ -245,7 +244,7 @@ def HKDF(ikm, salt="", dkLen=16, hashAlgo=None, info=""):
     # num_rounds: How many T(x) values we need, called "N" in the RFC.
 
     # Step 1: Extract
-    prk = prf(salt, ikm)
+    prk = HMAC.new(salt, msg=ikm, digestmod=hashAlgo).digest()
 
     # Step 2: Expand
     # Expand/shrink the $hashlen octets of prk into the number of octets we
