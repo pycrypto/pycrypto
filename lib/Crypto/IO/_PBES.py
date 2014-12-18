@@ -194,7 +194,12 @@ class PBES2(object):
         if randfunc is None:
             randfunc = Random.new().read
 
-        if protection == 'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC':
+        if protection == 'PBKDF2WithHMAC-SHA1AndDES-CBC':
+            key_size = 8
+            module = DES
+            protection = DES.MODE_CBC
+            enc_oid = "1.3.14.3.2.7"
+        elif protection == 'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC':
             key_size = 24
             module = DES3
             protection = DES3.MODE_CBC
@@ -313,7 +318,11 @@ class PBES2(object):
                             encryption_scheme[0]
                             ).value
 
-        if encryption_oid == "1.2.840.113549.3.7":
+        if encryption_oid == "1.3.14.3.2.7":
+            # DES_CBC
+            ciphermod = DES
+            key_size = 8
+        elif encryption_oid == "1.2.840.113549.3.7":
             # DES_EDE3_CBC
             ciphermod = DES3
             key_size = 24
