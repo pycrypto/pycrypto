@@ -54,7 +54,10 @@ except ImportError:
 
 # You need libgmp v5 or later to get mpz_powm_sec.  Warn if it's not available.
 if _fastmath is not None and not _fastmath.HAVE_DECL_MPZ_POWM_SEC:
-    _warn("Not using mpz_powm_sec.  You should rebuild using libgmp >= 5 to avoid timing attack vulnerability.", PowmInsecureWarning)
+    _warn("mpz_powm_sec in libgmp < 5 is vulnerable to timing attacks."
+            " Using non-vulnerable pure-python fallback."
+            " Recompile pycrypto against libgmp >= 5 to use faster routines.",
+            PowmInsecureWarning)
 
 # New functions
 from _number_new import *
