@@ -54,7 +54,7 @@ script:
   - python -tt $extra_flags $python_flags setup.py -q build
   - python -tt $extra_flags $python_flags setup.py test
   # Uninstall setuptools so we can be sure distutils works as well
-  - pip uninstall -y setuptools
+  - sudo pip uninstall -y setuptools
   - rm -r build
   - python -tt $extra_flags $python_flags setup.py -q build
   - python -tt $extra_flags $python_flags setup.py test
