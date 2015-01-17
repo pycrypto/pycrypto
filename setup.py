@@ -525,6 +525,9 @@ if (setuptools is not None or
         'Programming Language :: Python :: 3'
     ]
 
+if setuptools is not None:
+    kw["use_2to3"] = True
+
 setup(**kw)
 
 def touch(path):
