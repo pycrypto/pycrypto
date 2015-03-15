@@ -44,17 +44,17 @@ class FortunaAccumulatorTests(unittest.TestCase):
         """FortunaAccumulator.FortunaPool"""
         pool = FortunaAccumulator.FortunaPool()
         self.assertEqual(0, pool.length)
-        self.assertEqual("5df6e0e2761359d30a8275058e299fcc0381534545f55cf43e41983f5d4c9456", pool.hexdigest())
+        self.assertEqual("e2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf9", pool.hexdigest())
 
         pool.append(b('abc'))
 
         self.assertEqual(3, pool.length)
-        self.assertEqual("4f8b42c22dd3729b519ba6f68d2da7cc5b2d606d05daed5ad5128cc03e6c6358", pool.hexdigest())
+        self.assertEqual("4f16deb3ad853b88d8585b018319ad61455c1aba98a77a72b8fd324cbf0e775a", pool.hexdigest())
 
         pool.append(b("dbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"))
 
         self.assertEqual(56, pool.length)
-        self.assertEqual(b('0cffe17f68954dac3a84fb1458bd5ec99209449749b2b308b7cb55812f9563af'), b2a_hex(pool.digest()))
+        self.assertEqual(b('be2784995e38d67e07716d73e49d920bdafcc426a0be4cbb42731577c3921a6f'), b2a_hex(pool.digest()))
 
         pool.reset()
 
@@ -63,7 +63,7 @@ class FortunaAccumulatorTests(unittest.TestCase):
         pool.append(b('a') * 10**6)
 
         self.assertEqual(10**6, pool.length)
-        self.assertEqual(b('80d1189477563e1b5206b2749f1afe4807e5705e8bd77887a60187a712156688'), b2a_hex(pool.digest()))
+        self.assertEqual(b('15b85d650262b236772f3057dd950fade220b69c15c1cb01343122ae2760c143'), b2a_hex(pool.digest()))
 
     def test_which_pools(self):
         """FortunaAccumulator.which_pools"""
@@ -116,43 +116,43 @@ class FortunaAccumulatorTests(unittest.TestCase):
 
         # The underlying RandomGenerator should get seeded with Pool 0
         #   s = SHAd256(chr(42) + chr(32) + "X"*32 + chr(42) + chr(32) + "X"*32)
-        #     = SHA256(h'edd546f057b389155a31c32e3975e736c1dec030ddebb137014ecbfb32ed8c6f')
-        #     = h'aef42a5dcbddab67e8efa118e1b47fde5d697f89beb971b99e6e8e5e89fbf064'
+        #     = SHA256(h'751e1b2b1b2d2b6ef2ce5b8ce41154691296603c7e9b04ad273559108d07842f')
+        #     = h'f83cbaf31e58f62ca1d57962783c70b5e7ae74e7c1ef816b1ac5198e5fae7b79'
         # The counter and the key before reseeding is:
         #   C_0 = 0
         #   K_0 = "\x00" * 32
         # The counter after reseeding is 1, and the new key after reseeding is
         #   C_1 = 1
         #   K_1 = SHAd256(K_0 || s)
-        #       = SHA256(h'0eae3e401389fab86640327ac919ecfcb067359d95469e18995ca889abc119a6')
-        #       = h'aafe9d0409fbaaafeb0a1f2ef2014a20953349d3c1c6e6e3b962953bea6184dd'
+        #       = SHA256(h'85ae0ca55db8bffe7c2b50d4b7ed2c1b792d77c5c8a4239b9a55165af276547e')
+        #       = h'7296a62009939621e0c078836dec83e2061821f31ba01672b57173fbe8baf9f1'
         # The first block of random data, therefore, is
         #   r_1 = AES-256(K_1, 1)
         #       = AES-256(K_1, h'01000000000000000000000000000000')
-        #       = h'b7b86bd9a27d96d7bb4add1b6b10d157'
+        #       = h'd4e0f092630f6882849795b07bca624e'
         # The second block of random data is
         #   r_2 = AES-256(K_1, 2)
         #       = AES-256(K_1, h'02000000000000000000000000000000')
-        #       = h'2350b1c61253db2f8da233be726dc15f'
+        #       = h'cac3f5007dbea003102d26c2d5537ad6'
         # The third and fourth blocks of random data (which become the new key) are
         #   r_3 = AES-256(K_1, 3)
         #       = AES-256(K_1, h'03000000000000000000000000000000')
-        #       = h'f23ad749f33066ff53d307914fbf5b21'
+        #       = h'f1b725f870e604499270b5ba978de45f'
         #   r_4 = AES-256(K_1, 4)
         #       = AES-256(K_1, h'04000000000000000000000000000000')
-        #       = h'da9667c7e86ba247655c9490e9d94a7c'
+        #       = h'a4d1c10ee72e0c40122cf7579d90b489'
         #   K_2 = r_3 || r_4
-        #       = h'f23ad749f33066ff53d307914fbf5b21da9667c7e86ba247655c9490e9d94a7c'
+        #       = h'f1b725f870e604499270b5ba978de45fa4d1c10ee72e0c40122cf7579d90b489'
         # The final counter value is 5.
-        self.assertEqual("aef42a5dcbddab67e8efa118e1b47fde5d697f89beb971b99e6e8e5e89fbf064",
+        self.assertEqual("f83cbaf31e58f62ca1d57962783c70b5e7ae74e7c1ef816b1ac5198e5fae7b79",
             fa.pools[0].hexdigest())
         self.assertEqual(None, fa.generator.key)
         self.assertEqual(0, fa.generator.counter.next_value())
 
         result = fa.random_data(32)
 
-        self.assertEqual(b("b7b86bd9a27d96d7bb4add1b6b10d157" "2350b1c61253db2f8da233be726dc15f"), b2a_hex(result))
-        self.assertEqual(b("f23ad749f33066ff53d307914fbf5b21da9667c7e86ba247655c9490e9d94a7c"), b2a_hex(fa.generator.key))
+        self.assertEqual(b("d4e0f092630f6882849795b07bca624e" "cac3f5007dbea003102d26c2d5537ad6"), b2a_hex(result))
+        self.assertEqual(b("f1b725f870e604499270b5ba978de45f" "a4d1c10ee72e0c40122cf7579d90b489"), b2a_hex(fa.generator.key))
         self.assertEqual(5, fa.generator.counter.next_value())
 
     def test_accumulator_pool_length(self):
