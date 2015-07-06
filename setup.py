@@ -35,13 +35,16 @@
 # ===================================================================
 
 __revision__ = "$Id$"
-
-from distutils import core
+try:
+    import setuptools as core
+except ImportError:
+    from distutils import core
 from distutils.ccompiler import new_compiler
 from distutils.core import Extension, Command
 from distutils.command.build import build
 from distutils.command.build_ext import build_ext
 import distutils.sysconfig
+
 import os, sys, re
 import struct
 
