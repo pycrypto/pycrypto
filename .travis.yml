@@ -1,0 +1,16 @@
+language: python
+os:
+    - linux
+
+env:
+    matrix:
+        - TOX_ENV=py26
+        - TOX_ENV=py27
+        - TOX_ENV=py33
+        - TOX_ENV=py34
+
+install:
+    - ./.travis/install.sh
+
+script:
+    - ./.travis/run.sh
