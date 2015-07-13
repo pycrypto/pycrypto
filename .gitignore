@@ -18,3 +18,5 @@ src/config.h
 
 # Backup files
 *~
+
+.tox
