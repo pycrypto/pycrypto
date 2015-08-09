@@ -38,20 +38,42 @@ _revision__ = "$Id$"
 
 __all__ = ['new', 'digest_size', 'SHA256Hash' ]
 
+import binascii
+
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+
 from Crypto.Util.py3compat import *
 from Crypto.Hash.hashalgo import HashAlgo
 
-try:
-    import hashlib
-    hashFactory = hashlib.sha256
 
-except ImportError:
-    from Crypto.Hash import _SHA256
-    hashFactory = _SHA256
+class _SHA256(object):
+    def __init__(self, digest=None):
+        if digest is None:
+            self._digest = hashes.Hash(
+                hashes.SHA256(), backend=default_backend()
+            )
+        else:
+            self._digest = digest
+
+    def update(self, data):
+        self._digest.update(data)
+
+    def digest(self):
+        return self._digest.copy().finalize()
+
+    def hexdigest(self):
+        return binascii.hexlify(self.digest()).decode()
+
+    def copy(self):
+        return _SHA256(self._digest.copy())
+
+
+hashFactory = _SHA256
 
 class SHA256Hash(HashAlgo):
     """Class that implements a SHA-256 hash
-    
+
     :undocumented: block_size
     """
 
