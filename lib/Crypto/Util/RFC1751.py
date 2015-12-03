@@ -65,7 +65,7 @@ def key_to_english (key):
     return english[:-1]                 # Remove the trailing space
 
 def english_to_key (s):
-    """english_to_key(string):string(2.x)/bytes(2.x)
+    """english_to_key(string):string(2.x)/bytes(3.x)
     Transform a string into a corresponding key.
     The string must contain words separated by whitespace; the number
     of words must be a multiple of 6.
