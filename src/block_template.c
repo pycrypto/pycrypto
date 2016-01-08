@@ -49,6 +49,9 @@
 #endif
 #define _MODULE_STRING _XSTR(MODULE_NAME)
 
+#define MAX(x, y) ( ((x)>(y))?(x):(y) )
+#define MIN(x, y) ( ((x)<(y))?(x):(y) )
+
 /* Object references for the counter_shortcut */
 static PyObject *_counter_module = NULL;
 static PyTypeObject *PCT_CounterBEType = NULL;
@@ -235,7 +238,7 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 	}
 	memset(new->IV, 0, BLOCK_SIZE);
 	memset(new->oldCipher, 0, BLOCK_SIZE);
-	memcpy(new->IV, IV, IVlen);
+	memcpy(new->IV, IV, MIN(BLOCK_SIZE, IVlen));
 	new->mode = mode;
 	new->count=BLOCK_SIZE;   /* stores how many bytes in new->oldCipher have been used */
 	return new;
