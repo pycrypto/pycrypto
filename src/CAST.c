@@ -48,6 +48,9 @@
 #define BLOCK_SIZE 8
 #define KEY_SIZE 0
 
+// used in block_template.c
+#define SUPPORTS_SERIALIZATION 0
+
 /* adjust these according to your compiler/platform. On some machines
    uint32 will have to be a long. It's OK if uint32 is more than 32 bits. */
 typedef uint32_t uint32;
@@ -454,5 +457,16 @@ static void block_decrypt(block_state *self,
 	memcpy(out, in, 8);
 	castcrypt(self, out, 1);
 }
+
+/* If implemented change SUPPORTS_SERIALIZATION define at top of file to 1 */
+/*
+static char* serialize_state(block_state *state, int *out_length)
+{
+}
+
+static void deserialize_state(block_state *state, char *in, int bslen)
+{
+}
+*/
 
 #include "block_template.c"

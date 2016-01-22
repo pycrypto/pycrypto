@@ -1,4 +1,4 @@
-
+	
 /* -*- C -*- */
 /*
  *  block_template.c : Generic framework for block encryption algorithms
@@ -82,7 +82,7 @@ newALGobject(void)
 
 static void
 ALGdealloc(PyObject *ptr)
-{		
+{
 	ALGobject *self = (ALGobject *)ptr;
 	block_finalize(&self->st);
 
@@ -97,11 +97,10 @@ ALGdealloc(PyObject *ptr)
 }
 
 
-
 static char ALGnew__doc__[] = 
 "new(key, [mode], [IV]): Return a new " _MODULE_STRING " encryption object.";
 
-static char *kwlist[] = {"key", "mode", "IV", "counter", "segment_size",
+static char *kwlist[] = {"key", "mode", "IV", "counter", "segment_size", "block_state_serialized",
 #ifdef PCT_ARC2_MODULE
                          "effective_keylen",
 #endif
@@ -111,8 +110,9 @@ static ALGobject *
 ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 {
 	unsigned char *key, *IV;
+	char *block_state_serialized = NULL;
 	ALGobject * new=NULL;
-	int keylen, IVlen=0, mode=MODE_ECB, segment_size=0;
+	int bslen, keylen, IVlen=0, mode=MODE_ECB, segment_size=0;
 	PyObject *counter = NULL;
 	int counter_shortcut = 0;
 #ifdef PCT_ARC2_MODULE
@@ -123,12 +123,14 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
 #ifdef PCT_ARC2_MODULE
 					 "i"
 #endif
+					"s#"
 					 , kwlist,
 					 &key, &keylen, &mode, &IV, &IVlen,
 					 &counter, &segment_size
 #ifdef PCT_ARC2_MODULE
 					 , &effective_keylen
 #endif
+					, &block_state_serialized, &bslen
 		)) 
 	{
 		return NULL;
@@ -217,6 +219,14 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
         }
 #endif
 
+	// this is a define constant in the underlying implementations
+#if SUPPORTS_SERIALIZATION==0
+	if(block_state_serialized != NULL) {
+		PyErr_SetString(PyExc_NotImplementedError, "Serialization not supported for this algorithm");
+		return NULL;
+	}
+#endif
+
 	/* Copy parameters into object */
 	new = newALGobject();
 	new->segment_size = segment_size;
@@ -227,18 +237,50 @@ ALGnew(PyObject *self, PyObject *args, PyObject *kwdict)
         new->st.effective_keylen = effective_keylen;
 #endif
 
-	block_init(&(new->st), key, keylen);
+	if(block_state_serialized == NULL) {
+		block_init(&(new->st), key, keylen);
+	} else {
+#if SUPPORTS_SERIALIZATION==1
+		deserialize_state(&(new->st), block_state_serialized, bslen);
+#endif
+	}
+
 	if (PyErr_Occurred())
 	{
 		Py_DECREF(new);
 		return NULL;
 	}
+
 	memset(new->IV, 0, BLOCK_SIZE);
 	memset(new->oldCipher, 0, BLOCK_SIZE);
 	memcpy(new->IV, IV, IVlen);
 	new->mode = mode;
 	new->count=BLOCK_SIZE;   /* stores how many bytes in new->oldCipher have been used */
 	return new;
+}
+
+static char ALG_Serialize__doc__[] =
+"Serialize the cipher state to a string.";
+
+static PyObject *
+ALG_Serialize(ALGobject *self, PyObject *args) {
+#if SUPPORTS_SERIALIZATION==1
+	int retlen = 0;
+	char *out = serialize_state(&(self->st), &retlen);
+
+	if (PyErr_Occurred()) {
+		free(out);
+		return NULL;
+	}
+
+	PyObject *ret = PyBytes_FromStringAndSize(out, retlen);
+
+	free(out);
+	return ret;
+#else
+	PyErr_SetString(PyExc_NotImplementedError, "Serialization not implemented for this algorithm");
+	return NULL;
+#endif
 }
 
 static char ALG_Encrypt__doc__[] =
@@ -611,6 +653,7 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 /* ALG object methods */
 static PyMethodDef ALGmethods[] =
 {
+ {"serialize", (PyCFunction) ALG_Serialize, METH_NOARGS, ALG_Serialize__doc__},
  {"encrypt", (PyCFunction) ALG_Encrypt, METH_O, ALG_Encrypt__doc__},
  {"decrypt", (PyCFunction) ALG_Decrypt, METH_O, ALG_Decrypt__doc__},
  {NULL, NULL}			/* sentinel */

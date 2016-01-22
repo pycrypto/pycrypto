@@ -36,6 +36,9 @@
 #define MAXKB	(256/8)
 #define MAXNR	14
 
+// used in block_template.c
+#define SUPPORTS_SERIALIZATION 1
+
 typedef uint8_t     u8;
 typedef uint16_t    u16;
 typedef uint32_t    u32;
@@ -1458,6 +1461,59 @@ static void block_encrypt(block_state *self, u8 *in, u8 *out)
 static void block_decrypt(block_state *self, u8 *in, u8 *out)
 {
 	rijndaelDecrypt(self->dk, self->rounds, in, out);
+}
+
+static char* serialize_state(block_state *state, int *out_length)
+{
+	int keylen = (4*(MAXNR+1)) * sizeof(u32);
+	*out_length = (keylen*2)+sizeof(state->rounds);
+	char *ret = malloc(*out_length);
+	char *out = ret;
+
+	// copy rounds
+	memcpy(out, (char *)(&state->rounds), sizeof(state->rounds));
+	out += sizeof(state->rounds);
+
+	//memcpy(out, (char *)(&keylen), 4);
+	// copy ek
+	memcpy(out, (char *)(&state->ek), keylen);
+	out += keylen;
+
+	// copy dk
+	memcpy(out, (char *)(&state->dk), keylen);
+
+	return ret;
+}
+
+static void deserialize_state(block_state *state, char *in, int bslen)
+{
+	int keylen = 4*(MAXNR+1);
+	// unpack rounds
+	state->rounds = (int)(*in);
+	in += sizeof(int);
+
+	int expected = ((keylen*sizeof(u32)*2)+sizeof(state->rounds));
+
+	// sanity check this is the right size of a dump for this algorithm
+	if(bslen != expected) {
+		PyErr_Format(PyExc_ValueError, "Expected %i bytes, got %i. Invalid or corrupt serialize dump?", expected, bslen);
+		return;
+	}
+
+	u32 *work = (u32 *)in;
+	int i;
+
+	// unpack ek
+	for(i = 0; i < keylen; i++) {
+		state->ek[i] = *work;
+		work++;
+	}
+
+	// unpack dk
+	for(i = 0; i < keylen; i++) {
+		state->dk[i] = *work;
+		work++;
+	}
 }
 
 #include "block_template.c"

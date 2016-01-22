@@ -49,6 +49,9 @@
 #define KEY_SIZE 0
 #define PCT_ARC2_MODULE  /* Defined to get ARC2's additional keyword arguments */
 
+// used in block_template.c
+#define SUPPORTS_SERIALIZATION 0
+
 typedef uint32_t U32;
 typedef uint16_t U16;
 typedef uint8_t U8;
@@ -220,5 +223,16 @@ static void
 block_finalize(block_state* self)
 {
 }
+
+/* If implemented change SUPPORTS_SERIALIZATION define at top of file to 1 */
+/*
+static char* serialize_state(block_state *state, int *out_length)
+{
+}
+
+static void deserialize_state(block_state *state, char *in, int bslen)
+{
+}
+*/
 
 #include "block_template.c"

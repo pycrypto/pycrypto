@@ -37,6 +37,9 @@
 #define MAXKB (256/8)
 #define MAXNR 14
 
+// used in block_template.c
+#define SUPPORTS_SERIALIZATION 1
+
 typedef unsigned char u8;
 
 typedef struct {
@@ -278,6 +281,71 @@ static void block_decrypt(block_state* self, const u8* in, u8* out)
     }
     m = _mm_aesdeclast_si128(m, self->dk[self->rounds]);
     _mm_storeu_si128((__m128i*) out, m);
+}
+
+static char* serialize_state(block_state *state, int *out_length)
+{
+	// caller frees this
+	*out_length = sizeof(state->rounds)+(state->rounds*sizeof(__m128i)*2);
+	char* ret = malloc(*out_length);
+	char* out = ret;
+	int keylen = state->rounds*sizeof(__m128i);
+
+	// copy rounds
+	memcpy(out, (char *)(&state->rounds), sizeof(state->rounds));
+	out += sizeof(state->rounds);
+
+	// copy ek
+	memcpy(out, (char *)state->ek, keylen);
+	out += keylen;
+
+	// copy dk
+	memcpy(out, (char *)state->dk, keylen);
+
+	return ret;
+}
+
+static void deserialize_state(block_state *state, char *in, int bslen){
+	int rounds = (int)(*in);
+	in += sizeof(int);
+
+	void* tek = aligned_malloc_wrapper(16, (rounds + 1) * sizeof(__m128i));
+	void* tdk = aligned_malloc_wrapper(16, (rounds + 1) * sizeof(__m128i));
+
+	if (!tek || !tdk) {
+		aligned_free_wrapper(tek);
+		aligned_free_wrapper(tdk);
+		PyErr_SetString(PyExc_MemoryError,
+				"failed to allocate memory for keys");
+		return;
+	}
+
+	state->ek = tek;
+	state->dk = tdk;
+	state->rounds = rounds;
+
+	int keylen = state->rounds + 1;
+	int expected = sizeof(state->rounds)+(state->rounds*sizeof(__m128i)*2);
+
+	// sanity check this is the right size of a dump for this algorithm
+	if(bslen != expected) {
+		PyErr_Format(PyExc_ValueError, "Expected %i bytes, got %i. Invalid or corrupt serialize dump?", expected, bslen);
+		return;
+	}
+
+	int i;
+
+	// unpack ek
+	for(i = 0; i < keylen; i++) {
+		state->ek[i] = _mm_loadu_si128((__m128i*)in);
+		in += sizeof(__m128i);
+	}
+
+	// unpack dk
+	for(i = 0; i < keylen; i++) {
+		state->dk[i] = _mm_loadu_si128((__m128i*)in);
+		in += sizeof(__m128i);
+	}
 }
 
 #include "block_template.c"
