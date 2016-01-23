@@ -100,10 +100,11 @@ ALGdealloc(PyObject *ptr)
 static char ALGnew__doc__[] = 
 "new(key, [mode], [IV]): Return a new " _MODULE_STRING " encryption object.";
 
-static char *kwlist[] = {"key", "mode", "IV", "counter", "segment_size", "block_state_serialized",
+static char *kwlist[] = {"key", "mode", "IV", "counter", "segment_size",
 #ifdef PCT_ARC2_MODULE
                          "effective_keylen",
 #endif
+			"block_state_serialized",
 			 NULL};
 
 static ALGobject *
