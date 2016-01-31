@@ -286,10 +286,10 @@ static void block_decrypt(block_state* self, const u8* in, u8* out)
 static char* serialize_state(block_state *state, int *out_length)
 {
 	// caller frees this
-	*out_length = sizeof(state->rounds)+(state->rounds*sizeof(__m128i)*2);
-	char* ret = malloc(*out_length);
+    int keylen = 4*(MAXNR+1) * sizeof(__m128i);
+	*out_length = (keylen*2)+sizeof(state->rounds);
+	char* ret = aligned_malloc_wrapper(16, *out_length);
 	char* out = ret;
-	int keylen = state->rounds*sizeof(__m128i);
 
 	// copy rounds
 	memcpy(out, (char *)(&state->rounds), sizeof(state->rounds));
@@ -306,11 +306,16 @@ static char* serialize_state(block_state *state, int *out_length)
 }
 
 static void deserialize_state(block_state *state, char *in, int bslen){
-	int rounds = (int)(*in);
+	int keylen = 4*(MAXNR+1);
+    // unpack rounds
+	state->rounds = (int)(*in);
 	in += sizeof(int);
 
-	void* tek = aligned_malloc_wrapper(16, (rounds + 1) * sizeof(__m128i));
-	void* tdk = aligned_malloc_wrapper(16, (rounds + 1) * sizeof(__m128i));
+	int expected = (keylen*sizeof(__m128i)*2)+sizeof(state->rounds);
+
+    // allocate memory for keys
+	void* tek = aligned_malloc_wrapper(16, keylen*sizeof(__m128i));
+	void* tdk = aligned_malloc_wrapper(16, keylen*sizeof(__m128i));
 
 	if (!tek || !tdk) {
 		aligned_free_wrapper(tek);
@@ -322,10 +327,6 @@ static void deserialize_state(block_state *state, char *in, int bslen){
 
 	state->ek = tek;
 	state->dk = tdk;
-	state->rounds = rounds;
-
-	int keylen = state->rounds + 1;
-	int expected = sizeof(state->rounds)+(state->rounds*sizeof(__m128i)*2);
 
 	// sanity check this is the right size of a dump for this algorithm
 	if(bslen != expected) {
@@ -337,13 +338,13 @@ static void deserialize_state(block_state *state, char *in, int bslen){
 
 	// unpack ek
 	for(i = 0; i < keylen; i++) {
-		state->ek[i] = _mm_loadu_si128((__m128i*)in);
+		state->ek[i] = _mm_load_si128((__m128i*)in);
 		in += sizeof(__m128i);
 	}
 
 	// unpack dk
 	for(i = 0; i < keylen; i++) {
-		state->dk[i] = _mm_loadu_si128((__m128i*)in);
+		state->dk[i] = _mm_load_si128((__m128i*)in);
 		in += sizeof(__m128i);
 	}
 }
