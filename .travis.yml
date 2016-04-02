@@ -62,15 +62,19 @@ before_install:
   # Create alias for sha256sum
   - |-
       if [ "$TRAVIS_OS_NAME" = "osx" ] ; then
+        gsha256sum || echo "NO gsha256sum"
+        sha256sum || echo "NO sha256sum"
         brew update
-        brew outdated coreutils || brew upgrade coreutils
-        alias sha256sum=gsha256sum
+        brew install coreutils
+        #alias sha256sum=gsha256sum
+        gsha256sum || echo "NO gsha256sum"
+        sha256sum || echo "NO sha256sum"
       fi
   # Download and verify pyenv, or use cached version if available.
   - pyenv_uri=https://github.com/yyuu/pyenv/archive/v20160310.tar.gz
   - pyenv_tarball="$HOME/.pyenv/cache/pyenv-$( basename "$pyenv_uri" )"
-  - echo "886e386110bc24e4bfdd560bff0b22db34627fe4be203eacd28ca9e9c2491fcf *${pyenv_tarball}" | sha256sum -c - >/dev/null 2>&1 || wget -O"$pyenv_tarball" -c "$pyenv_uri"
-  - echo "886e386110bc24e4bfdd560bff0b22db34627fe4be203eacd28ca9e9c2491fcf *${pyenv_tarball}" | sha256sum -c -
+  - echo "886e386110bc24e4bfdd560bff0b22db34627fe4be203eacd28ca9e9c2491fcf *${pyenv_tarball}" | gsha256sum -c - >/dev/null 2>&1 || wget -O"$pyenv_tarball" -c "$pyenv_uri"
+  - echo "886e386110bc24e4bfdd560bff0b22db34627fe4be203eacd28ca9e9c2491fcf *${pyenv_tarball}" | gsha256sum -c -
   # Install pyenv into ~/.pyenv and load it
   - tar --strip-components=1 -C ~/.pyenv -xvzf "${pyenv_tarball}"
   - export PATH=~/.pyenv/bin:$PATH
