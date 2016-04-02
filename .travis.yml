@@ -8,16 +8,20 @@ env:
   - PYENV_VERSION=2.5.6
   - PYENV_VERSION=2.6.9
   - PYENV_VERSION=2.7.6
-  - PYENV_VERSION=2.7.6 python_flags=-Qnew
-  - PYENV_VERSION=2.7.6 python_flags=-OO
-  - PYENV_VERSION=2.7.6 PYCRYPTO_CONFIGURE_ARGS=--without-gmp
+  - PYENV_VERSION=2.7.11
+  - PYENV_VERSION=2.7.11 python_flags=-Qnew
+  - PYENV_VERSION=2.7.11 python_flags=-OO
+  - PYENV_VERSION=2.7.11 PYCRYPTO_CONFIGURE_ARGS=--without-gmp
 # pip won't install on Python 3.0 (lack of collections.OrderedDict object?)
 #  - PYENV_VERSION=3.0.1
   - PYENV_VERSION=3.1.5
   - PYENV_VERSION=3.2.5
   - PYENV_VERSION=3.3.5
   - PYENV_VERSION=3.4.0
-  - PYENV_VERSION=3.4.0 PYCRYPTO_CONFIGURE_ARGS=--without-gmp
+  - PYENV_VERSION=3.4.4
+  - PYENV_VERSION=3.5.0
+  - PYENV_VERSION=3.5.1
+  - PYENV_VERSION=3.5.1 PYCRYPTO_CONFIGURE_ARGS=--without-gmp
 # PyCrypto does not support PyPy yet.
 # See https://github.com/dlitz/pycrypto/pull/59
 #  - PYENV_VERSION=pypy-2.3.1
@@ -36,10 +40,10 @@ before_install:
   - sudo apt-get -qq update
   - sudo apt-get -qq install libgmp-dev
   # Download pyenv
-  - pyenv_uri=https://github.com/yyuu/pyenv/archive/59c796c138a04a315171ee3d3275222a0f3bc781.tar.gz
+  - pyenv_uri=https://github.com/yyuu/pyenv/archive/b55ac8cd7822bf7c5bf7b791239f5ae7aa7be364.tar.gz
   - pyenv_basename=$( basename "$pyenv_uri" .tar.gz )
   - wget ${pyenv_uri}
-  - echo "7f196bfa6fafc7944b6dcc9bf4d037f91625a677463a69a2a3be6c31dcac91bb *${pyenv_basename}.tar.gz" | sha256sum -c -
+  - echo "f3a7c9688b2de7f68855aa3ff5da3be421bf36b4470ebbeb51f2748c2fc984d3 *${pyenv_basename}.tar.gz" | sha256sum -c -
   # Install pyenv into ~/.pyenv and load it
   - tar -xvzf ${pyenv_basename}.tar.gz
   - mv -f pyenv-${pyenv_basename} ~/.pyenv
