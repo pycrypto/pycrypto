@@ -73,7 +73,7 @@ before_install:
           pyenv install "$PYENV_VERSION"
           pip install --upgrade pip setuptools wheel virtualenv
         fi
-        virtualenv --no-download ~/uncached-virtualenv
+        virtualenv --never-download ~/uncached-virtualenv
         . ~/uncached-virtualenv/activate
       fi
 script:
