@@ -59,6 +59,13 @@ before_install:
   - if [ "$(type -t deactivate)" = "function" ] ; then deactivate ; fi
   # Create pyenv cache directory if it doesn't already exist.
   - mkdir -p ~/.pyenv/cache
+  # Create alias for sha256sum
+  - |-
+      if [ "$TRAVIS_OS_NAME" = "osx" ] ; then
+        brew update
+        brew outdated coreutils || brew upgrade coreutils
+        alias sha256sum=gsha256sum
+      fi
   # Download and verify pyenv, or use cached version if available.
   - pyenv_uri=https://github.com/yyuu/pyenv/archive/v20160310.tar.gz
   - pyenv_tarball="$HOME/.pyenv/cache/pyenv-$( basename "$pyenv_uri" )"
