@@ -61,3 +61,5 @@ branches:
   - 2.6.x-ci-appveyor-wip
 #build:
 #  verbosity: minimal
+matrix:
+  fast_finish: true
