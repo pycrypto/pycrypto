@@ -17,6 +17,7 @@ python:
   - "3.5.0"
   - "3.5.1"
 env:
+ - ""
  - python_flags=-Qnew
  - python_flags=-OO
  - PYCRYPTO_CONFIGURE_ARGS=--without-gmp
