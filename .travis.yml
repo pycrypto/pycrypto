@@ -1,31 +1,40 @@
 # PyCrypto .travis.yml file, for travis-ci.org testing.
 # See https://travis-ci.org/dlitz/pycrypto for build status.
-env:
-  - PYENV_VERSION=2.1.3
-  - PYENV_VERSION=2.2.3
-  - PYENV_VERSION=2.3.7
-  - PYENV_VERSION=2.4.6
-  - PYENV_VERSION=2.5.6
-  - PYENV_VERSION=2.6.9
-  - PYENV_VERSION=2.7.6
-  - PYENV_VERSION=2.7.11
-  - PYENV_VERSION=2.7.11 python_flags=-Qnew
-  - PYENV_VERSION=2.7.11 python_flags=-OO
-  - PYENV_VERSION=2.7.11 PYCRYPTO_CONFIGURE_ARGS=--without-gmp
-# pip won't install on Python 3.0 (lack of collections.OrderedDict object?)
-#  - PYENV_VERSION=3.0.1
-  - PYENV_VERSION=3.1.5
-  - PYENV_VERSION=3.2.5
-  - PYENV_VERSION=3.3.5
-  - PYENV_VERSION=3.4.0
-  - PYENV_VERSION=3.4.4
-  - PYENV_VERSION=3.5.0
-  - PYENV_VERSION=3.5.1
-  - PYENV_VERSION=3.5.1 PYCRYPTO_CONFIGURE_ARGS=--without-gmp
-# PyCrypto does not support PyPy yet.
-# See https://github.com/dlitz/pycrypto/pull/59
-#  - PYENV_VERSION=pypy-2.3.1
-#  - PYENV_VERSION=pypy3-2.3.1
+matrix:
+  include:
+    - python: "2.7.11"
+    - python: "2.7.11"
+      env: python_flags=-Qnew
+    - python: "2.7.11"
+      env: python_flags=-OO
+    - python: "2.7.11"
+      env: PYCRYPTO_CONFIGURE_ARGS=--without-gmp
+#env:
+#  - PYENV_VERSION=2.1.3
+#  - PYENV_VERSION=2.2.3
+#  - PYENV_VERSION=2.3.7
+#  - PYENV_VERSION=2.4.6
+#  - PYENV_VERSION=2.5.6
+#  - PYENV_VERSION=2.6.9
+#  - PYENV_VERSION=2.7.6
+#  - PYENV_VERSION=2.7.11
+#  - PYENV_VERSION=2.7.11 python_flags=-Qnew
+#  - PYENV_VERSION=2.7.11 python_flags=-OO
+#  - PYENV_VERSION=2.7.11 PYCRYPTO_CONFIGURE_ARGS=--without-gmp
+## pip won't install on Python 3.0 (lack of collections.OrderedDict object?)
+##  - PYENV_VERSION=3.0.1
+#  - PYENV_VERSION=3.1.5
+#  - PYENV_VERSION=3.2.5
+#  - PYENV_VERSION=3.3.5
+#  - PYENV_VERSION=3.4.0
+#  - PYENV_VERSION=3.4.4
+#  - PYENV_VERSION=3.5.0
+#  - PYENV_VERSION=3.5.1
+#  - PYENV_VERSION=3.5.1 PYCRYPTO_CONFIGURE_ARGS=--without-gmp
+## PyCrypto does not support PyPy yet.
+## See https://github.com/dlitz/pycrypto/pull/59
+##  - PYENV_VERSION=pypy-2.3.1
+##  - PYENV_VERSION=pypy3-2.3.1
 language: python
 before_install:
   # Unexport variables
@@ -34,23 +43,23 @@ before_install:
   - ls ~/virtualenv || true
   # Show environment
   - if [ "$TRAVIS_SECURE_ENV_VARS" = "false" ] ; then env | sort ; fi
-  # Deactivate whichever virtualenv is currently in use
-  - deactivate
+#  # Deactivate whichever virtualenv is currently in use
+#  - deactivate
   # Install some package dependencies
   - sudo apt-get -qq update
   - sudo apt-get -qq install libgmp-dev
-  # Download pyenv
-  - pyenv_uri=https://github.com/yyuu/pyenv/archive/b55ac8cd7822bf7c5bf7b791239f5ae7aa7be364.tar.gz
-  - pyenv_basename=$( basename "$pyenv_uri" .tar.gz )
-  - wget ${pyenv_uri}
-  - echo "f3a7c9688b2de7f68855aa3ff5da3be421bf36b4470ebbeb51f2748c2fc984d3 *${pyenv_basename}.tar.gz" | sha256sum -c -
-  # Install pyenv into ~/.pyenv and load it
-  - tar -xvzf ${pyenv_basename}.tar.gz
-  - mv -f pyenv-${pyenv_basename} ~/.pyenv
-  - export PATH=~/.pyenv/bin:$PATH
-  - eval "$(pyenv init -)"
-  # If the selected Python version is installed locally, activate it.  Otherwise, build it using pyenv.
-  - if [ -e ~/virtualenv/python"$PYENV_VERSION"/bin/activate ] ; then source ~/virtualenv/python"$PYENV_VERSION"/bin/activate ; unset PYENV_VERSION ; else pyenv install "$PYENV_VERSION" ; fi
+#  # Download pyenv
+#  - pyenv_uri=https://github.com/yyuu/pyenv/archive/b55ac8cd7822bf7c5bf7b791239f5ae7aa7be364.tar.gz
+#  - pyenv_basename=$( basename "$pyenv_uri" .tar.gz )
+#  - wget ${pyenv_uri}
+#  - echo "f3a7c9688b2de7f68855aa3ff5da3be421bf36b4470ebbeb51f2748c2fc984d3 *${pyenv_basename}.tar.gz" | sha256sum -c -
+#  # Install pyenv into ~/.pyenv and load it
+#  - tar -xvzf ${pyenv_basename}.tar.gz
+#  - mv -f pyenv-${pyenv_basename} ~/.pyenv
+#  - export PATH=~/.pyenv/bin:$PATH
+#  - eval "$(pyenv init -)"
+#  # If the selected Python version is installed locally, activate it.  Otherwise, build it using pyenv.
+#  - if [ -e ~/virtualenv/python"$PYENV_VERSION"/bin/activate ] ; then source ~/virtualenv/python"$PYENV_VERSION"/bin/activate ; unset PYENV_VERSION ; else pyenv install "$PYENV_VERSION" ; fi
 script:
   - "major_version=$( python -V 2>&1 | cut -d' ' -f2  | cut -d. -f1 )"
   - if [ "$major_version" -ge 3 ] ; then extra_flags="$extra_flags -bb" ; fi
