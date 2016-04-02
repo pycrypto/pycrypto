@@ -1,6 +1,9 @@
 # PyCrypto .travis.yml file, for travis-ci.org testing.
 # See https://travis-ci.org/dlitz/pycrypto for build status.
 # See https://docs.travis-ci.com/ for general info about the format of this file.
+os:
+  - linux
+  - osx
 addons:
   apt:
     packages:
