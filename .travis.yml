@@ -7,7 +7,7 @@
 matrix:
   include:
     - os: osx
-      language: python
+      language: generic
       env: PYENV_VERSION=2.1.3
 #addons:
 #  apt:
