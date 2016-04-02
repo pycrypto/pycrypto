@@ -4,16 +4,16 @@
 os:
 #  - linux
   - osx
-addons:
-  apt:
-    packages:
-      - libgmp-dev
+#addons:
+#  apt:
+#    packages:
+#      - libgmp-dev
 sudo: false
-cache:
-  ccache: true
-  pip: true
-  directories:
-    - $HOME/.pyenv/cache
+#cache:
+#  ccache: true
+#  pip: true
+#  directories:
+#    - $HOME/.pyenv/cache
 env:
   - PYENV_VERSION=2.1.3
   - PYENV_VERSION=2.2.3
