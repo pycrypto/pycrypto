@@ -33,7 +33,8 @@ test_script:
   # the interpreter you're using - Appveyor does not do anything special
   # to put the Python evrsion you want to use on PATH.
   #- "build.cmd %PYTHON%\\python.exe setup.py test"
-  - "build.cmd %PYTHON%\\python.exe setup.py build test"
+  #- "build.cmd %PYTHON%\\python.exe setup.py build test"
+  #- "build.cmd %PYTHON%\\python.exe setup.py build"
 
 after_test:
   # This step builds your wheels.
