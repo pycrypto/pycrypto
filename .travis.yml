@@ -11,6 +11,7 @@ cache:
   pip: true
   directories:
     - $HOME/.pyenv/cache
+    - $HOME/.pyenv/versions
 env:
   - PYENV_VERSION=2.1.3
   - PYENV_VERSION=2.2.3
@@ -62,7 +63,7 @@ before_install:
   - export PATH=~/.pyenv/bin:$PATH
   - eval "$(pyenv init -)"
   # If the selected Python version is installed locally (travis-ci native), activate it.
-  # Otherwise, install it using pyenv (if not already installed) and set up a separate virtualenv.
+  # Otherwise, install it using pyenv (if not already installed) and set up a separate (uncached) virtualenv.
   - |-
       if [ -e ~/virtualenv/python"$PYENV_VERSION"/bin/activate ] ; then
         . ~/virtualenv/python"$PYENV_VERSION"/bin/activate
