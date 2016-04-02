@@ -79,7 +79,7 @@ before_install:
           echo "pyenv install $PYENV_VERSION"
           pyenv install "$PYENV_VERSION"
           echo "Creating cache tarball: $cache_tarball <- $cached_dir"
-          tar -C / -czf "$cache_tarball" "cached_dir"
+          tar -C / -czf "$cache_tarball" "$cached_dir"
           touch "${cache_tarball}.done"
         fi
         pyenv rehash
