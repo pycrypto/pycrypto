@@ -274,6 +274,8 @@ class PCTBuildConfigure(Command):
             cmd = "sh configure"    # we use "sh" here so that it'll work on mingw32 with standard python.org binaries
             if self.verbose < 1:
                 cmd += " -q"
+            if os.getenv("PYCRYPTO_CONFIGURE_ARGS"):
+                cmd += " " + os.getenv("PYCRYPTO_CONFIGURE_ARGS")
             if os.system(cmd) != 0:
                 raise RuntimeError("autoconf error")
 

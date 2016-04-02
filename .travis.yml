@@ -10,14 +10,14 @@ env:
   - PYENV_VERSION=2.7.6
   - PYENV_VERSION=2.7.6 python_flags=-Qnew
   - PYENV_VERSION=2.7.6 python_flags=-OO
-  - PYENV_VERSION=2.7.6 preconfigure_args=--without-gmp
+  - PYENV_VERSION=2.7.6 PYCRYPTO_CONFIGURE_ARGS=--without-gmp
 # pip won't install on Python 3.0 (lack of collections.OrderedDict object?)
 #  - PYENV_VERSION=3.0.1
   - PYENV_VERSION=3.1.5
   - PYENV_VERSION=3.2.5
   - PYENV_VERSION=3.3.5
   - PYENV_VERSION=3.4.0
-  - PYENV_VERSION=3.4.0 preconfigure_args=--without-gmp
+  - PYENV_VERSION=3.4.0 PYCRYPTO_CONFIGURE_ARGS=--without-gmp
 # PyCrypto does not support PyPy yet.
 # See https://github.com/dlitz/pycrypto/pull/59
 #  - PYENV_VERSION=pypy-2.3.1
@@ -25,7 +25,7 @@ env:
 language: python
 before_install:
   # Unexport variables
-  - declare +x preconfigure_args python_flags
+  - declare +x python_flags
   # List local virtualenvs
   - ls ~/virtualenv || true
   # Show environment
@@ -50,6 +50,5 @@ before_install:
 script:
   - "major_version=$( python -V 2>&1 | cut -d' ' -f2  | cut -d. -f1 )"
   - if [ "$major_version" -ge 3 ] ; then extra_flags="$extra_flags -bb" ; fi
-  - if [ -n "$preconfigure_args" ] ; then ./configure $preconfigure_args ; fi
   - python -tt $extra_flags $python_flags setup.py -q build
   - python -tt $extra_flags $python_flags setup.py test
