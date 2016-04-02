@@ -71,7 +71,7 @@ before_install:
         . ~/virtualenv/python"$PYENV_VERSION"/bin/activate
         unset PYENV_VERSION
       elif [ -e ~/.pyenv/cache/built-"$PYENV_VERSION".tar.gz.done ]; then
-        tar --strip-components=1 -C ~/.pyenv/versions/"${PYENV_VERSION}" -xvzf ~/.pyenv/cache/built-"$PYENV_VERSION".tar.gz
+        tar -C ~/.pyenv/versions/ -xvzf ~/.pyenv/cache/built-"$PYENV_VERSION".tar.gz "$PYENV_VERSION"
       else
         pyenv install "$PYENV_VERSION"
         tar -C ~/.pyenv/versions -cvzf ~/.pyenv/cache/built-"$PYENV_VERSION".tar.gz "$PYENV_VERSION"
