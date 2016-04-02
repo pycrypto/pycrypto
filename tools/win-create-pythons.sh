@@ -23,7 +23,8 @@
 # Designed to run under "Git Bash" (mingw bash) on Windows
 set -e
 
-PREFIX=${PREFIX:-$(perl -e 'use Cwd; use File::Basename; print dirname(Cwd::abs_path($ARGV[0]));' "$0")/py}
+toolsdir=$(perl -e 'use Cwd; use File::Basename; print dirname(Cwd::abs_path($ARGV[0]));' "$0")
+PREFIX=${PREFIX:-$toolsdir/py}
 
 # Unexport vars
 export -n PREFIX
@@ -90,9 +91,10 @@ EOF
 # Install
 #
 set -x
-cmd //c Python-2.1.2.exe
-cmd //c Python-2.2.3.exe
-cmd //c Python-2.3.5.exe
+cp -f "$toolsdir"/PythonInstall.exe .
+cmd //c PythonInstall.exe C:\\Python21 Python-2.1.2.exe
+cmd //c PythonInstall.exe C:\\Python22 Python-2.2.3.exe
+cmd //c PythonInstall.exe C:\\Python23 Python-2.3.5.exe
 msiexec //passive //i python-2.4.4.msi       ALLUSERS=1
 msiexec //passive //i python-2.5.4.msi       ALLUSERS=1
 msiexec //passive //i python-2.5.4.amd64.msi ALLUSERS=1 TARGETDIR=C:\\Python25-64\\
