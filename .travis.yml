@@ -2,7 +2,7 @@
 # See https://travis-ci.org/dlitz/pycrypto for build status.
 # See https://docs.travis-ci.com/ for general info about the format of this file.
 os:
-  - linux
+#  - linux
   - osx
 addons:
   apt:
