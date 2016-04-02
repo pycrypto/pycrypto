@@ -49,3 +49,14 @@ artifacts:
 #  You can use this step to upload your artifacts to a public website.
 #  See Appveyor's documentation for more details. Or you can simply
 #  access your wheels from the Appveyor "artifacts" tab for your build.
+
+
+# stuff specific to this project
+version: 0.0.0.{build}
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  only:
+  - 2.6.x-ci-appveyor-wip
+#build:
+#  verbosity: minimal
