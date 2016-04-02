@@ -55,8 +55,8 @@ before_install:
   - ls -l ~/.pyenv/cache || true
   # Show environment
   - if [ "$TRAVIS_SECURE_ENV_VARS" = "false" ] ; then env | sort ; fi
-  # Deactivate whichever virtualenv is currently in use
-  - deactivate
+  # Deactivate virtualenv if one is currently in use
+  - if [ "$(type -t deactivate)" = "function" ] ; then deactivate ; fi
   # Create pyenv cache directory if it doesn't already exist.
   - mkdir -p ~/.pyenv/cache
   # Download and verify pyenv, or use cached version if available.
