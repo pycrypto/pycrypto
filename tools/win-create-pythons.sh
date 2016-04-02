@@ -36,24 +36,24 @@ mkdir -p "$PREFIX/archives"
 cd "$PREFIX/archives"
 
 for url in \
-    http://www.python.org/ftp/python/2.1.2/Python-2.1.2.exe \
-    http://www.python.org/ftp/python/2.2.3/Python-2.2.3.exe \
-    http://www.python.org/ftp/python/2.3.5/Python-2.3.5.exe \
-    http://www.python.org/ftp/python/2.4.4/python-2.4.4.msi \
-    http://www.python.org/ftp/python/2.5.4/python-2.5.4.msi \
-    http://www.python.org/ftp/python/2.5.4/python-2.5.4.amd64.msi \
-    http://www.python.org/ftp/python/2.6.6/python-2.6.6.msi \
-    http://www.python.org/ftp/python/2.6.6/python-2.6.6.amd64.msi \
-    http://www.python.org/ftp/python/2.7.3/python-2.7.3.msi \
-    http://www.python.org/ftp/python/2.7.3/python-2.7.3.amd64.msi \
-    http://www.python.org/ftp/python/3.0.1/python-3.0.1.msi \
-    http://www.python.org/ftp/python/3.0.1/python-3.0.1.amd64.msi \
-    http://www.python.org/ftp/python/3.1.4/python-3.1.4.msi \
-    http://www.python.org/ftp/python/3.1.4/python-3.1.4.amd64.msi \
-    http://www.python.org/ftp/python/3.2.3/python-3.2.3.msi \
-    http://www.python.org/ftp/python/3.2.3/python-3.2.3.amd64.msi \
-    http://www.python.org/ftp/python/3.3.0/python-3.3.0.msi \
-    http://www.python.org/ftp/python/3.3.0/python-3.3.0.amd64.msi
+    https://www.python.org/ftp/python/2.1.2/Python-2.1.2.exe \
+    https://www.python.org/ftp/python/2.2.3/Python-2.2.3.exe \
+    https://www.python.org/ftp/python/2.3.5/Python-2.3.5.exe \
+    https://www.python.org/ftp/python/2.4.4/python-2.4.4.msi \
+    https://www.python.org/ftp/python/2.5.4/python-2.5.4.msi \
+    https://www.python.org/ftp/python/2.5.4/python-2.5.4.amd64.msi \
+    https://www.python.org/ftp/python/2.6.6/python-2.6.6.msi \
+    https://www.python.org/ftp/python/2.6.6/python-2.6.6.amd64.msi \
+    https://www.python.org/ftp/python/2.7.3/python-2.7.3.msi \
+    https://www.python.org/ftp/python/2.7.3/python-2.7.3.amd64.msi \
+    https://www.python.org/ftp/python/3.0.1/python-3.0.1.msi \
+    https://www.python.org/ftp/python/3.0.1/python-3.0.1.amd64.msi \
+    https://www.python.org/ftp/python/3.1.4/python-3.1.4.msi \
+    https://www.python.org/ftp/python/3.1.4/python-3.1.4.amd64.msi \
+    https://www.python.org/ftp/python/3.2.3/python-3.2.3.msi \
+    https://www.python.org/ftp/python/3.2.3/python-3.2.3.amd64.msi \
+    https://www.python.org/ftp/python/3.3.0/python-3.3.0.msi \
+    https://www.python.org/ftp/python/3.3.0/python-3.3.0.amd64.msi
 do
     bn=`basename "$url"`
     if [ -e "$PREFIX/archives/$bn" ] ; then
