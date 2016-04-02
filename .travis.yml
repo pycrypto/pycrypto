@@ -58,7 +58,7 @@ before_install:
   - echo "886e386110bc24e4bfdd560bff0b22db34627fe4be203eacd28ca9e9c2491fcf *${pyenv_tarball}" | sha256sum -c - >/dev/null 2>&1 || wget -O"$pyenv_tarball" -c "$pyenv_uri"
   - echo "886e386110bc24e4bfdd560bff0b22db34627fe4be203eacd28ca9e9c2491fcf *${pyenv_tarball}" | sha256sum -c -
   # Install pyenv into ~/.pyenv and load it
-  - tar --strip-components=1 -C ~/.pyenv -xvzf ${pyenv_basename}.tar.gz
+  - tar --strip-components=1 -C ~/.pyenv -xvzf "${pyenv_tarball}"
   - export PATH=~/.pyenv/bin:$PATH
   - eval "$(pyenv init -)"
   # If the selected Python version is installed locally (travis-ci native), activate it.
