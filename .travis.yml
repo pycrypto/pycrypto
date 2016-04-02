@@ -1,14 +1,14 @@
 # PyCrypto .travis.yml file, for travis-ci.org testing.
 # See https://travis-ci.org/dlitz/pycrypto for build status.
 # See https://docs.travis-ci.com/ for general info about the format of this file.
-#os:
+os:
 #  - linux
-#  - osx
-matrix:
-  include:
-    - os: osx
-      language: generic
-      env: PYENV_VERSION=2.1.3
+  - osx
+#matrix:
+#  include:
+#    - os: osx
+#      language: generic
+#      env: PYENV_VERSION=2.1.3
 #addons:
 #  apt:
 #    packages:
@@ -19,33 +19,34 @@ sudo: false
 #  pip: true
 #  directories:
 #    - $HOME/.pyenv/cache
-#env:
-#  - PYENV_VERSION=2.1.3
-#  - PYENV_VERSION=2.2.3
-#  - PYENV_VERSION=2.3.7
-#  - PYENV_VERSION=2.4.6
-#  - PYENV_VERSION=2.5.6
-#  - PYENV_VERSION=2.6.9
-#  - PYENV_VERSION=2.7.6
-#  - PYENV_VERSION=2.7.11
-#  - PYENV_VERSION=2.7.11 python_flags=-Qnew
-#  - PYENV_VERSION=2.7.11 python_flags=-OO
-#  - PYENV_VERSION=2.7.11 PYCRYPTO_CONFIGURE_ARGS=--without-gmp
-## pip won't install on Python 3.0 (lack of collections.OrderedDict object?)
-##  - PYENV_VERSION=3.0.1
-#  - PYENV_VERSION=3.1.5
-#  - PYENV_VERSION=3.2.5
-#  - PYENV_VERSION=3.3.5
-#  - PYENV_VERSION=3.4.0
-#  - PYENV_VERSION=3.4.4
-#  - PYENV_VERSION=3.5.0
-#  - PYENV_VERSION=3.5.1
-#  - PYENV_VERSION=3.5.1 PYCRYPTO_CONFIGURE_ARGS=--without-gmp
-## PyCrypto does not support PyPy yet.
-## See https://github.com/dlitz/pycrypto/pull/59
-##  - PYENV_VERSION=pypy-2.3.1
-##  - PYENV_VERSION=pypy3-2.3.1
-#language: python
+env:
+  - PYENV_VERSION=2.1.3
+  - PYENV_VERSION=2.2.3
+  - PYENV_VERSION=2.3.7
+  - PYENV_VERSION=2.4.6
+  - PYENV_VERSION=2.5.6
+  - PYENV_VERSION=2.6.9
+  - PYENV_VERSION=2.7.6
+  - PYENV_VERSION=2.7.11
+  - PYENV_VERSION=2.7.11 python_flags=-Qnew
+  - PYENV_VERSION=2.7.11 python_flags=-OO
+  - PYENV_VERSION=2.7.11 PYCRYPTO_CONFIGURE_ARGS=--without-gmp
+# pip won't install on Python 3.0 (lack of collections.OrderedDict object?)
+#  - PYENV_VERSION=3.0.1
+  - PYENV_VERSION=3.1.5
+  - PYENV_VERSION=3.2.5
+  - PYENV_VERSION=3.3.5
+  - PYENV_VERSION=3.4.0
+  - PYENV_VERSION=3.4.4
+  - PYENV_VERSION=3.5.0
+  - PYENV_VERSION=3.5.1
+  - PYENV_VERSION=3.5.1 PYCRYPTO_CONFIGURE_ARGS=--without-gmp
+# PyCrypto does not support PyPy yet.
+# See https://github.com/dlitz/pycrypto/pull/59
+#  - PYENV_VERSION=pypy-2.3.1
+#  - PYENV_VERSION=pypy3-2.3.1
+# OSX doesn't support `language: python` yet, so we use generic here.
+language: generic
 before_install:
   # Unexport variables
   - declare +x python_flags
@@ -56,27 +57,11 @@ before_install:
   # Show environment
   - if [ "$TRAVIS_SECURE_ENV_VARS" = "false" ] ; then env | sort ; fi
   # Deactivate virtualenv if one is currently in use
-  - if [ "$(type -t deactivate)" = "function" ] ; then deactivate ; fi
+  - deactivate || true
   # Create pyenv cache directory if it doesn't already exist.
   - mkdir -p ~/.pyenv/cache
-  # Create alias for sha256sum
-  - |-
-      if [ "$TRAVIS_OS_NAME" = "osx" ] ; then
-        #gsha256summ </dev/null || echo "NO gsha256sum"
-        #sha256summ </dev/null || echo "NO sha256sum"
-        #brew update
-        #brew install coreutils
-        #alias sha256sum=gsha256sum
-        #gsha256sum </dev/null || echo "NO gsha256sum"
-        #sha256sum </dev/null || echo "NO sha256sum"
-        sha256sum() {
-          shasum -a 256 "$@"
-        }
-        #mkdir -p ~/bin
-        #echo > ~/bin/sha256sum '#!/bin/sh'
-        #echo >> ~/bin/sha256sum 'exec shasum -a 256 "$@"'
-        #chmod 755 ~/bin/sha256sum
-      fi
+  # OSX needs a different sha256sum invocation
+  - if [ "$TRAVIS_OS_NAME" = "osx" ] ; then sha256sum() { shasum -a 256 "$@" ; } ; fi
   # Download and verify pyenv, or use cached version if available.
   - pyenv_uri=https://github.com/yyuu/pyenv/archive/v20160310.tar.gz
   - pyenv_tarball="$HOME/.pyenv/cache/pyenv-$( basename "$pyenv_uri" )"
