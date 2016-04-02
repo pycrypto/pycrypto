@@ -1,6 +1,14 @@
 # PyCrypto .travis.yml file, for travis-ci.org testing.
 # See https://travis-ci.org/dlitz/pycrypto for build status.
+# See https://docs.travis-ci.com/ for general info about the format of this file.
+addons:
+  apt:
+    packages:
+      - libgmp-dev
+sudo: false
 cache:
+  ccache: true
+  pip: true
   directories:
     - $HOME/.pyenv/cache
 env:
@@ -39,9 +47,9 @@ before_install:
   - if [ "$TRAVIS_SECURE_ENV_VARS" = "false" ] ; then env | sort ; fi
   # Deactivate whichever virtualenv is currently in use
   - deactivate
-  # Install some package dependencies
-  - sudo apt-get -qq update
-  - sudo apt-get -qq install libgmp-dev
+#  # Install some package dependencies
+#  - sudo apt-get -qq update
+#  - sudo apt-get -qq install libgmp-dev
   # Create pyenv cache directory if it doesn't already exist.
   - mkdir -p ~/.pyenv/cache
   # Download and verify pyenv, or use cached version if available.
@@ -53,8 +61,20 @@ before_install:
   - tar --strip-components=1 -C ~/.pyenv -xvzf ${pyenv_basename}.tar.gz
   - export PATH=~/.pyenv/bin:$PATH
   - eval "$(pyenv init -)"
-  # If the selected Python version is installed locally, activate it.  Otherwise, build it using pyenv.
-  - if [ -e ~/virtualenv/python"$PYENV_VERSION"/bin/activate ] ; then source ~/virtualenv/python"$PYENV_VERSION"/bin/activate ; unset PYENV_VERSION ; else pyenv install "$PYENV_VERSION" ; fi
+  # If the selected Python version is installed locally (travis-ci native), activate it.
+  # Otherwise, install it using pyenv (if not already installed) and set up a separate virtualenv.
+  - |-
+      if [ -e ~/virtualenv/python"$PYENV_VERSION"/bin/activate ] ; then
+        . ~/virtualenv/python"$PYENV_VERSION"/bin/activate
+        unset PYENV_VERSION
+      else
+        if ! pyenv version 2>/dev/null; then
+          pyenv install "$PYENV_VERSION"
+          pip install --upgrade pip setuptools wheel virtualenv
+        fi
+        virtualenv --no-download ~/uncached-virtualenv
+        . ~/uncached-virtualenv/activate
+      fi
 script:
   - "major_version=$( python -V 2>&1 | cut -d' ' -f2  | cut -d. -f1 )"
   - if [ "$major_version" -ge 3 ] ; then extra_flags="$extra_flags -bb" ; fi
