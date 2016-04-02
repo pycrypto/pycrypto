@@ -49,9 +49,6 @@ before_install:
   - if [ "$TRAVIS_SECURE_ENV_VARS" = "false" ] ; then env | sort ; fi
   # Deactivate whichever virtualenv is currently in use
   - deactivate
-#  # Install some package dependencies
-#  - sudo apt-get -qq update
-#  - sudo apt-get -qq install libgmp-dev
   # Create pyenv cache directory if it doesn't already exist.
   - mkdir -p ~/.pyenv/cache
   # Download and verify pyenv, or use cached version if available.
@@ -65,18 +62,29 @@ before_install:
   - eval "$(pyenv init -)"
   # If the selected Python version is installed locally (travis-ci native), activate it.
   # If there's a cached Python that's already been built, extract it.
-  # Otherwise, install it using pyenv (if not already installed), and then make a cache tarball.
+  # Otherwise, install it using pyenv (if not already installed), and then make a cache tarball of the pristine state of the Python version.
   - |-
       if [ -e ~/virtualenv/python"$PYENV_VERSION"/bin/activate ] ; then
+        echo "Using travis-ci native Python: ~/virtualenv/python$PYENV_VERSION"
         . ~/virtualenv/python"$PYENV_VERSION"/bin/activate
         unset PYENV_VERSION
-      elif [ -e ~/.pyenv/cache/built-"$PYENV_VERSION".tar.gz.done ]; then
-        tar -C ~/.pyenv/versions/ -xvzf ~/.pyenv/cache/built-"$PYENV_VERSION".tar.gz "$PYENV_VERSION"
       else
-        pyenv install "$PYENV_VERSION"
-        tar -C ~/.pyenv/versions -cvzf ~/.pyenv/cache/built-"$PYENV_VERSION".tar.gz "$PYENV_VERSION"
-        touch ~/.pyenv/cache/built-"$PYENV_VERSION".tar.gz.done
+        echo "Using pyenv"
+        cache_tarball="$HOME/.pyenv/cache/_built-pyenv-python-${PYENV_VERSION}.tgz"
+        cached_dir="$HOME/.pyenv/versions/${PYENV_VERSION}"
+        if [ -e "${cache_tarball}.done" ]; then
+          echo "Extracting tarball: $cache_tarball -> $cached_dir"
+          tar -C / -xzf "$cache_tarball" "$cached_dir"
+        else
+          echo "pyenv install $PYENV_VERSION"
+          pyenv install "$PYENV_VERSION"
+          echo "Creating cache tarball: $cache_tarball <- $cached_dir"
+          tar -C / -czf "$cache_tarball" "cached_dir"
+          touch "${cache_tarball}.done"
+        fi
+        pyenv rehash
       fi
+      unset cache_tarball cached_dir
 script:
   - "major_version=$( python -V 2>&1 | cut -d' ' -f2  | cut -d. -f1 )"
   - if [ "$major_version" -ge 3 ] ; then extra_flags="$extra_flags -bb" ; fi
