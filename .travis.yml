@@ -43,6 +43,8 @@ before_install:
   - declare +x python_flags
   # List local virtualenvs
   - ls ~/virtualenv || true
+  # List the cache for diagnistic purposes
+  - ls -l ~/.pyenv/cache || true
   # Show environment
   - if [ "$TRAVIS_SECURE_ENV_VARS" = "false" ] ; then env | sort ; fi
   # Deactivate whichever virtualenv is currently in use
