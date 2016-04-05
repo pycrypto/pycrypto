@@ -192,6 +192,7 @@ static void block_init(block_state* self, unsigned char* key, int keylen)
         default:
             PyErr_SetString(PyExc_ValueError,
                 "AES key must be either 16, 24, or 32 bytes long");
+            self->ek = self->dk = NULL;
             return;
     }
 
@@ -217,11 +218,13 @@ static void block_init(block_state* self, unsigned char* key, int keylen)
 static void block_finalize(block_state* self)
 {
     /* overwrite contents of ek and dk */
-    memset(self->ek, 0, (self->rounds + 1) * sizeof(__m128i));
-    memset(self->dk, 0, (self->rounds + 1) * sizeof(__m128i));
+    if (self->ek && self->dk) {
+        memset(self->ek, 0, (self->rounds + 1) * sizeof(__m128i));
+        memset(self->dk, 0, (self->rounds + 1) * sizeof(__m128i));
 
-    aligned_free_wrapper(self->ek);
-    aligned_free_wrapper(self->dk);
+        aligned_free_wrapper(self->ek);
+        aligned_free_wrapper(self->dk);
+    }
 }
 
 static void block_encrypt(block_state* self, const u8* in, u8* out)
