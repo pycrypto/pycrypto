@@ -7,9 +7,7 @@ etc.).  The package is structured to make adding new modules easy.
 This section is essentially complete, and the software interface will
 almost certainly not change in an incompatible way in the future; all
 that remains to be done is to fix any bugs that show up.  If you
-encounter a bug, please report it in the GitHub issue tracker at
-
-       https://github.com/dlitz/pycrypto/issues
+encounter a bug, please report it in the [GitHub issue tracker](https://github.com/dlitz/pycrypto/issues)
 
 An example usage of the SHA256 module is:
 
@@ -68,8 +66,7 @@ call Random.atfork() in both the parent and child processes after
 using os.fork()
 
 
-Installation
-============
+###Installation
 
 PyCrypto is written and tested using Python version 2.1 through 3.3.  Python
 1.5.2 is not supported.
