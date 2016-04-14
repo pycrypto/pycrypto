@@ -1,6 +1,14 @@
 Python Cryptography Toolkit (pycrypto)
 ======================================
 
+=======================================================================
+DO NOT USE pycrypto for new projects. Pycrypto is no longer maintained.
+
+Consider using:
+    * pycryptodome for a drop-in replacement of pycrypto: https://github.com/Legrandin/pycryptodome
+    * cryptography: https://cryptography.io/en/latest/
+=======================================================================
+
 This is a collection of both secure hash functions (such as SHA256 and
 RIPEMD160), and various encryption algorithms (AES, DES, RSA, ElGamal,
 etc.).  The package is structured to make adding new modules easy.
