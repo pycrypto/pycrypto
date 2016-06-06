@@ -507,7 +507,8 @@ if hasattr(core, 'setup_keywords'):
           'Programming Language :: Python :: 3',
           ]
 
-core.setup(**kw)
+if __name__ == "__main__":
+    core.setup(**kw)
 
 def touch(path):
     import os, time
@@ -521,7 +522,7 @@ def touch(path):
 # PY3K: Workaround for winrandom.pyd not existing during the first pass.
 # It needs to be there for 2to3 to fix the import in nt.py
 if (sys.platform == 'win32' and sys.version_info[0] == 3 and
-    'build' in sys.argv[1:]):
+    'build' in sys.argv[1:] and __name__ == "__main__"):
     PrintErr("\nSecond pass to allow 2to3 to fix nt.py. No cause for alarm.\n")
     touch("./lib/Crypto/Random/OSRNG/nt.py")
     core.setup(**kw)
