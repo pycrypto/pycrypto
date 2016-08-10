@@ -21,9 +21,6 @@ python -c "import sys; print(sys.version)"
 
 set PYTHONPATH=%WORKSPACE%
 
-# Build
-set -e
-
 set HOME=.
 rem python setup.py build_sphinx
 python setup.py bdist_wheel upload -r %INDEX_SERVER% || exit /b 1
