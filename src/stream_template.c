@@ -25,6 +25,13 @@
  */
 
 #include "pycrypto_common.h"
+
+#ifdef HAVE_MALLOC
+#if HAVE_MALLOC == 0
+#include "rpl_malloc.h"
+#endif
+#endif
+
 #include "modsupport.h"
 
 #define _STR(x) #x
