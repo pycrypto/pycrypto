@@ -493,8 +493,8 @@ class BlockAlgo:
                       self.digest, self.verify]
 
         self._mac_len = kwargs.get('mac_len', self.block_size)
-        if not (self._mac_len and 4 <= self._mac_len <= self.block_size):
-            raise ValueError("Parameter 'mac_len' must not be larger than %d"
+        if not (self._mac_len and 2 <= self._mac_len <= self.block_size):
+            raise ValueError("Parameter 'mac_len' must not be in 2-%d range"
                              % self.block_size)
 
         self._omac = [
