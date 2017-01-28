@@ -22,6 +22,8 @@ export PYTHONPATH=$WORKSPACE
 # Build
 set -e
 
+python -m pip install -U setuptools pip wheel
+
 export HOME=.
 #python setup.py build_sphinx
 python setup.py bdist_wheel upload -r ${INDEX_SERVER}
