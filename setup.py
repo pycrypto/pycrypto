@@ -36,10 +36,12 @@
 
 __revision__ = "$Id$"
 
+from setuptools import setup, find_packages, findall
+from setuptools.extension import Extension
 from setuptools import setup
 from distutils import core
 from distutils.ccompiler import new_compiler
-from distutils.core import Extension, Command
+from distutils.core import Command 
 from distutils.command.build import build
 from distutils.command.build_ext import build_ext
 import os, sys, re
