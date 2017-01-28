@@ -26,6 +26,10 @@ python -m pip install -U setuptools
 python -m pip install -U wheel
 python -m pip list
 
+rem this is a hack to force an include of stdint.h on Python 3.6
+rem see http://stackoverflow.com/questions/41843266/microsoft-windows-python-3-6-pycrypto-installation-error
+set CL=-FI"%VS140COMNTOOLS%..\..\VC\INCLUDE\stdint.h"
+
 set HOME=.
 rem python setup.py build_sphinx
 python setup.py bdist_wheel upload -r %INDEX_SERVER% || exit /b 1
