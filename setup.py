@@ -162,6 +162,12 @@ class PCTBuildExt (build_ext):
                 "Crypto.PublicKey._fastmath.")
             self.__remove_extensions(["Crypto.PublicKey._fastmath"])
 
+        if os.environ['NO_FASTMATH'] == "true":
+            # Disable fastmath
+            PrintErr ("warning: env NO_FASTMATH=true specified; Not building "+
+                "Crypto.PublicKey._fastmath.")
+            self.__remove_extensions(["Crypto.PublicKey._fastmath"])
+
         # Detect if we have AES-NI instrincs available
         if not ac.get("HAVE_WMMINTRIN_H"):
             # AES-NI instrincs not available
