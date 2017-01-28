@@ -21,7 +21,10 @@ python -c "import sys; print(sys.version)"
 
 set PYTHONPATH=%WORKSPACE%
 
-python -m pip install -U setuptools pip wheel
+python -m pip install -U pip
+python -m pip install -U setuptools
+python -m pip install -U wheel
+python -m pip list
 
 set HOME=.
 rem python setup.py build_sphinx
