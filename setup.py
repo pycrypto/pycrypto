@@ -33,6 +33,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 # ===================================================================
+from setuptools.command.build_ext import build_ext
 
 __revision__ = "$Id$"
 
@@ -41,9 +42,10 @@ from setuptools.extension import Extension
 from setuptools import setup
 from distutils import core
 from distutils.ccompiler import new_compiler
-from distutils.core import Command 
-from distutils.command.build import build
-from distutils.command.build_ext import build_ext
+from distutils.core import Command
+#from setuptools.command.build import build
+from setuptools.command.build_ext import build_ext
+
 import os, sys, re
 import struct
 
