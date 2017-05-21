@@ -21,6 +21,7 @@
  * SOFTWARE.
  * ===================================================================
  */
+#include "Python.h"
 #ifndef PYCRYPTO_MSVC_STDINT_H
 #define PYCRYPTO_MSVC_STDINT_H
 
@@ -33,6 +34,15 @@ typedef unsigned __int8  uint8_t;
 typedef unsigned __int16 uint16_t;
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int64 uint64_t;
+
+// python 3.6 + affecting only, but it seems compatible with previous
+// versions like 3.5 either
+#ifdef PY_MAJOR_VERSION
+    #if PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION == 6
+        typedef long long  intmax_t;
+        typedef unsigned long long uintmax_t;
+    #endif
+#endif
 
 #ifndef inline
 # define inline __inline
