@@ -31,7 +31,7 @@ this:
 
     >>> from Crypto.Signature import PKCS1_PSS
     >>> from Crypto.Hash import SHA1
-    >>> from Crypto.PublicKey import RSA1
+    >>> from Crypto.PublicKey import RSA
     >>> from Crypto import Random
     >>>
     >>> message = 'To be signed'
