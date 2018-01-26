@@ -44,7 +44,7 @@ As an example, a sender may encrypt a message in this way:
 At the receiver side, decryption can be done using the private part of
 the RSA key:
 
-        >>> From Crypto.Hash import SHA
+        >>> from Crypto.Hash import SHA
         >>> from Crypto import Random
         >>>
         >>> key = RSA.importKey(open('privkey.der').read())
@@ -56,7 +56,7 @@ the RSA key:
         >>> message = cipher.decrypt(ciphertext, sentinel)
         >>>
         >>> digest = SHA.new(message[:-dsize]).digest()
-        >>> if digest==message[-dsize:]:                # Note how we DO NOT look for the sentinel
+        >>> if digest == message[-dsize:]:                # Note how we DO NOT look for the sentinel
         >>>     print "Encryption was correct."
         >>> else:
         >>>     print "Encryption was not correct."
