@@ -839,6 +839,7 @@ rsaKey__verify (rsaKey * key, PyObject * args)
 {
 	PyObject *l, *lsig;
 	mpz_t v, vsig;
+	int result;
 	if (!PyArg_ParseTuple(args, "O!O!", 
 			      &PyLong_Type, &l, &PyLong_Type, &lsig))
 	{
@@ -849,7 +850,10 @@ rsaKey__verify (rsaKey * key, PyObject * args)
 	longObjToMPZ (v, (PyLongObject *) l);
 	longObjToMPZ (vsig, (PyLongObject *) lsig);
 	rsaEncrypt (key, vsig);
-	if (mpz_cmp (v, vsig) == 0) {
+	result = mpz_cmp (v, vsig);
+	mpz_clear (v);
+	mpz_clear (vsig);
+	if (result == 0) {
 		Py_INCREF(Py_True);
 		return Py_True;
 	}
