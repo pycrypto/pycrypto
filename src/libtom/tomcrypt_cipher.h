@@ -543,7 +543,8 @@ static struct ltc_cipher_descriptor {
        const unsigned char *key, unsigned long keylen,
        const unsigned char *in,  unsigned long inlen,
              unsigned char *out, unsigned long *outlen);
-} cipher_descriptor[];
+//} cipher_descriptor[]; // this will error when using vc
+};
 
 #ifdef LTC_BLOWFISH
 int blowfish_setup(const unsigned char *key, int keylen, int num_rounds, symmetric_key *skey);
