@@ -524,7 +524,8 @@ if hasattr(core, 'setup_keywords'):
           'Programming Language :: Python :: 3',
           ]
 
-core.setup(**kw)
+if __name__ == '__main__':
+    core.setup(**kw)
 
 def touch(path):
     import os, time

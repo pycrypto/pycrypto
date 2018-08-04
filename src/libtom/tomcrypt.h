@@ -63,6 +63,10 @@ enum {
    CRYPT_PK_INVALID_PADDING /* Invalid padding on input */
 };
 
+#ifdef _WIN32
+   #define LTC_NO_PROTOTYPES
+#endif
+
 #include <tomcrypt_cfg.h>
 #include <tomcrypt_macros.h>
 #include <tomcrypt_cipher.h>
