@@ -66,7 +66,7 @@ EOF
 }
 
 PREFIX=${PREFIX:-$(dirname "$(readlink -f "$0")")/py}
-CONCURRENCY_LEVEL=${CONCURRENCY_LEVEL:-5}
+CONCURRENCY_LEVEL=${CONCURRENCY_LEVEL:-$(nproc || echo 5)}
 
 # Unexport vars
 export -n PREFIX CONCURRENCY_LEVEL
