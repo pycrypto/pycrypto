@@ -1,6 +1,6 @@
-PyCrypto Code Submission Requirements - Rev. D
+PyCrypto Code Submission Requirements - Rev. C
 
-Last updated: 2010-11-29
+Last updated: 2009-02-28
 
 In an effort to further clarify PyCrypto's licensing terms, anyone submitting
 code to PyCrypto must be able to certify the following (taken from the Linux
@@ -31,6 +31,11 @@ kernel's SubmittingPatches file):
         personal information I submit with it, including my sign-off) is
         maintained indefinitely and may be redistributed consistent with
         this project or the open source license(s) involved.
+
+In addition, the code's author must not be a national, citizen, or resident of
+the United States of America.
+
+In addition, the code must not be of U.S. origin.
 
 In addition, all new code contributed to PyCrypto must be dedicated to the
 public domain as follows:
