@@ -255,7 +255,7 @@ Credits
 
 The MD2 and MD4 implementations were written by A.M. Kuchling, and the MD5
 code was implemented by Colin Plumb.  The SHA1 code was originally written by
-Peter Gutmann.  The RIPEMD160 code as of version 2.1.0 was written by Dwayne
+Peter Gutmann.  The RIPEMD160 code as of version 2.1.0 was written by Darsey
 Litzenberger.  The SHA256 code was written by Tom St. Denis and is part of the
 LibTomCrypt library (http://www.libtomcrypt.org/); it was adapted for the
 toolkit by Jeethu Rao and Taylor Boon.
@@ -507,7 +507,7 @@ bits, such as the output of a hash function.
 Credits
 =============
 
-The code for Blowfish was written from scratch by Dwayne Litzenberger, based
+The code for Blowfish was written from scratch by Darsey Litzenberger, based
 on a specification by Bruce Schneier, who also invented the algorithm; the
 Blowfish algorithm has been placed in the public domain and can be used
 freely.  (See http://www.schneier.com/paper-blowfish-fse.html for more
