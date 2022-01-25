@@ -1,3 +1,13 @@
+| ⚠️ WARNING                                                                    |
+|:-----------------------------------------------------------------------------|
+| **PyCrypto 2.x is unmaintained, obsolete, and contains security vulnerabilities.** <br> See <https://www.pycrypto.org/> for details. The following is provided for historical/reference purposes only. |
+
+<!--
+If that site is no longer available, you can also look at `index.md` in the
+`www.pycrypto.org` branch of this repository.  The old generated docs and
+mailing list archive can also be found there.
+-->
+
 Python Cryptography Toolkit (pycrypto)
 ======================================
 
@@ -6,21 +16,23 @@ RIPEMD160), and various encryption algorithms (AES, DES, RSA, ElGamal,
 etc.).  The package is structured to make adding new modules easy.
 This section is essentially complete, and the software interface will
 almost certainly not change in an incompatible way in the future; all
-that remains to be done is to fix any bugs that show up.  If you
+that remains to be done is to fix any bugs that show up.  ~~If you
 encounter a bug, please report it in the GitHub issue tracker at
-
-       https://github.com/dlitz/pycrypto/issues
+<https://github.com/dlitz/pycrypto/issues>~~
 
 An example usage of the SHA256 module is:
 
+```python
 >>> from Crypto.Hash import SHA256
 >>> hash = SHA256.new()
 >>> hash.update('message')
 >>> hash.digest()
 '\xabS\n\x13\xe4Y\x14\x98+y\xf9\xb7\xe3\xfb\xa9\x94\xcf\xd1\xf3\xfb"\xf7\x1c\xea\x1a\xfb\xf0+F\x0cm\x1d'
+```
 
 An example usage of an encryption algorithm (AES, in this case) is:
 
+```python
 >>> from Crypto.Cipher import AES
 >>> obj = AES.new('This is a key123', AES.MODE_CBC, 'This is an IV456')
 >>> message = "The answer is no"
@@ -30,6 +42,7 @@ An example usage of an encryption algorithm (AES, in this case) is:
 >>> obj2 = AES.new('This is a key123', AES.MODE_CBC, 'This is an IV456')
 >>> obj2.decrypt(ciphertext)
 'The answer is no'
+```
 
 One possible application of the modules is writing secure
 administration tools.  Another application is in writing daemons and
@@ -43,17 +56,21 @@ implemented.
 As of PyCrypto 2.1.0, PyCrypto provides an easy-to-use random number
 generator:
 
+```python
 >>> from Crypto import Random
 >>> rndfile = Random.new()
 >>> rndfile.read(16)
 '\xf7.\x838{\x85\xa0\xd3>#}\xc6\xc2jJU'
+```
 
 A stronger version of Python's standard "random" module is also
 provided:
 
+```python
 >>> from Crypto.Random import random
 >>> random.choice(['dogs', 'cats', 'bears'])
 'bears'
+```
 
 Caveat: For the random number generator to work correctly, you must
 call Random.atfork() in both the parent and child processes after
@@ -67,38 +84,39 @@ PyCrypto is written and tested using Python version 2.1 through 3.3.  Python
 1.5.2 is not supported.
 
 The modules are packaged using the Distutils, so you can simply run
-"python setup.py build" to build the package, and "python setup.py
+`python setup.py build` to build the package, and "python setup.py
 install" to install it.
 
 Linux installation requires the Python developer tools to be installed. These
-can be found in the ``python-dev`` package on Debian/Ubuntu and the 
-``python2-devel`` package on Red Hat/Fedora. If you are using a non-standard
+can be found in the `python-dev` package on Debian/Ubuntu and the
+`python2-devel` package on Red Hat/Fedora. If you are using a non-standard
 Python version for your distribution, you may require a different package.
 Consult your package manager's documentation for instructions on how to
 install these packages. Other distributions may have different package names.
 
-To verify that everything is in order, run "python setup.py test".  It
+To verify that everything is in order, run `python setup.py test`.  It
 will test all the cryptographic modules, skipping ones that aren't
-available.  If the test script reports an error on your machine,
+available.  ~~If the test script reports an error on your machine,
 please report the bug using the bug tracker (URL given above).  If
 possible, track down the bug and include a patch that fixes it,
 provided that you are able to meet the eligibility requirements at
-http://www.pycrypto.org/submission-requirements/.
+[https://www.pycrypto.org/submission-requirements/].~~
 
 It is possible to test a single sub-package or a single module only, for instance
 when you investigate why certain tests fail and don't want to run the whole
-suite each time. Use "python setup.py test --module=name", where 'name'
+suite each time. Use `python setup.py test --module=name`, where 'name'
 is either a sub-package (Cipher, PublicKey, etc) or a module (Cipher.DES,
 PublicKey.RSA, etc).
-To further cut test coverage, pass also the option "--skip-slow-tests".
+To further cut test coverage, pass also the option `--skip-slow-tests`.
 
 To install the package under the site-packages directory of
-your Python installation, run "python setup.py install".
+your Python installation, run `python setup.py install`.
 
 If you have any comments, corrections, or improvements for this
 package, please report them to our mailing list, accessible via the
 PyCrypto website:
 
-    http://www.pycrypto.org/
-    https://www.dlitz.net/software/pycrypto/
+<https://www.pycrypto.org/><br>
+<https://www.dlitz.net/software/pycrypto/>
 
+[https://www.pycrypto.org/submission-requirements/]: ./LEGAL/CodeSubmissionRequirements.txt
