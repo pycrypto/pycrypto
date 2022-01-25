@@ -1,4 +1,9 @@
-# This software is no longer maintained.
+---
+title: This software is no longer maintained.
+---
+# PyCrypto - The Python Cryptography Toolkit
+
+## This software is no longer maintained.
 
 **PyCrypto 2.x is unmaintained, obsolete, and contains security vulnerabilities.**
 
@@ -32,3 +37,5 @@ Please choose one of the following alternatives:
 * [Release tarballs](./pub/dlitz/crypto/pycrypto/) <!-- mirrored from <https://ftp.dlitz.net/pub/dlitz/crypto/pycrypto/> -->
 * [Mailing list archive](https://lists.dlitz.net/pipermail/pycrypto/) ([Local snapshot](./pipermail/pycrypto/))
 * [PyPI](https://pypi.org/project/pycrypto/)
+
+<a href="https://github.com/pycrypto/pycrypto"><img style="position: absolute; top: 0; right: 0; border: 0;" src="{{ '/images/thirdparty/fork-me-on-github.png' | relative_url }}" alt="[PyCrypto on GitHub]"></a>

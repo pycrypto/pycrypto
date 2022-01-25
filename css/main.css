@@ -1,0 +1,89 @@
+html, body {
+    color: #000;
+    background: #fff;
+}
+
+h1 {
+    color: #080;
+    background: #eee;
+    font-size: 15pt;
+    text-align: center;
+}
+h2 {
+    color: #080;
+}
+h3 {
+    color: #090;
+}
+h4 {
+    color: #0a0;
+}
+
+dt {
+    margin-top: 1ex;
+}
+
+dt:first-child {
+    margin-top: 0;
+}
+
+li {
+  margin-bottom: 0.5ex;
+  padding: 0;
+}
+
+#PageHeader {
+    border: none;
+    padding: 0;
+    left: 0;
+    top: 0;
+    font-family: sans-serif;
+    font-size: larger;
+    text-align: left;
+}
+
+#PageBanner {
+    padding: 0;
+    display: block;
+    float: left;
+}
+
+#PageContent {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    clear: left;
+}
+
+/* Used for formatting math */
+table.math-table { border: 0; }
+table.math-table td { padding: 0.2em 1em 0.2em 0; border: 0 }
+dl.math-dl dt { padding-bottom: 0.2em; }
+dl.math-dl dd { padding-bottom: 0.4em; }
+
+/*
+#PageContent h1:first-child,
+#PageContent h2:first-child
+{
+    margin-top: 0;
+}
+*/
+
+.skip-nav-link {
+    color: #080;
+    background: white;
+    padding: .5rem 1.5rem;
+    border-color: #080;
+    border-radius: 0 0 .25rem .25rem;
+    position: absolute;
+    left: 0.5rem;
+    top: 0;
+    transform: translateY(-120%);
+    transition: transform 325ms ease-in;
+}
+
+.skip-nav-link:focus {
+    transform: translateY(0);
+}
+
+/* vim:set ts=4 sw=4 sts=4 expandtab: */

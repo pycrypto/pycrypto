@@ -46,7 +46,7 @@ plugins:
   #- jekyll-seo-tag
   #- jekyll-optional-front-matter
 
-theme: jekyll-theme-slate
+#theme: jekyll-theme-slate
 
 include:
   - old/api/index.html
