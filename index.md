@@ -27,8 +27,8 @@ Please choose one of the following alternatives:
 ⚠️ **PyCrypto 2.x is unmaintained. The following are provided for reference only.**
 
 * [API docs](./api/) (epydoc output)
-* [Old overview of PyCrypto (v2.3)](./doc/)
-* [Source code repository](https://github.com/pycrypto/pycrypto)
-* [Release tarballs](./pub/dlitz/crypto/pycrypto/)
+* [Overview of PyCrypto](./doc/) (built from [Doc/pycrypto.rst](https://github.com/pycrypto/pycrypto/blob/master/Doc/pycrypt.rst))
+* [Source code repository (GitHub)](https://github.com/pycrypto/pycrypto)
+* [Release tarballs](./pub/dlitz/crypto/pycrypto/) <!-- mirrored from <https://ftp.dlitz.net/pub/dlitz/crypto/pycrypto/> -->
 * [Mailing list archive](https://lists.dlitz.net/pipermail/pycrypto/) ([Local snapshot](./pipermail/pycrypto/))
 * [PyPI](https://pypi.org/project/pycrypto/)
