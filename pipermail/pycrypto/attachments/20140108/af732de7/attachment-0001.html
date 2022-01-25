@@ -1,0 +1,76 @@
+<tt>
+&lt;div&nbsp;dir=&quot;ltr&quot;&gt;Hi&nbsp;Charley,&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Thanks&nbsp;for&nbsp;clarifying&nbsp;that&nbsp;-&nbsp;that&nbsp;makes&nbsp;sense&nbsp;to&nbsp;me.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Cheers&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Hugh&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_extra&quot;&gt;&lt;br&nbsp;clear=&quot;all&quot;&gt;&lt;div&gt;<br>
+<br>
+&lt;br&gt;&lt;/div&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;8&nbsp;January&nbsp;2014&nbsp;00:59,&nbsp;Charley&nbsp;Nibley&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&lt;&lt;a&nbsp;href=&quot;mailto:cnibley@gmail.com&quot;&nbsp;target=&quot;_blank&quot;&gt;cnibley@gmail.com&lt;/a&gt;&gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;<br>
+<br>
+&lt;div&nbsp;dir=&quot;ltr&quot;&gt;Hi&nbsp;Hugh,&lt;br&gt;&lt;div&gt;&lt;br&gt;This&nbsp;behavior&nbsp;you&nbsp;are&nbsp;seeing&nbsp;is&nbsp;expected. &nbsp;It&nbsp;changed&nbsp;with&nbsp;a&nbsp;fix&nbsp;to&nbsp;prevent&nbsp;an&nbsp;empty&nbsp;string&nbsp;IV&nbsp;passed&nbsp;to&nbsp;the&nbsp;function.&nbsp;IV&nbsp;is&nbsp;always&nbsp;mandatory&nbsp;even&nbsp;if&nbsp;at&nbsp;some&nbsp;point&nbsp;in&nbsp;a&nbsp;previous&nbsp;build&nbsp;it&nbsp;was&nbsp;being&nbsp;passed&nbsp;as&nbsp;all&nbsp;zeros. &nbsp;I&nbsp;believe&nbsp;the&nbsp;doc&nbsp;just&nbsp;needs&nbsp;updating.&lt;br&gt;<br>
+<br>
+<br>
+<br>
+<br>
+&lt;br&gt;See&nbsp;line&nbsp;173:&nbsp;&lt;a&nbsp;href=&quot;https://github.com/dlitz/pycrypto/commit/411f60f58cea79f7e93476ba0c069b80a2a4c1a0&quot;&nbsp;target=&quot;_blank&quot;&gt;https://github.com/dlitz/pycrypto/commit/411f60f58cea79f7e93476ba0c069b80a2a4c1a0&lt;/a&gt;&lt;br&gt;&lt;div&gt;<br>
+<br>
+<br>
+<br>
+&lt;br&gt;And&nbsp;see&nbsp;the&nbsp;comments&nbsp;here:&nbsp;&lt;a&nbsp;href=&quot;https://bugs.launchpad.net/pycrypto/+bug/997464&quot;&nbsp;target=&quot;_blank&quot;&gt;https://bugs.launchpad.net/pycrypto/+bug/997464&lt;/a&gt;&lt;br&gt;<br>
+&lt;br&gt;&lt;/div&gt;&lt;div&gt;Charley&nbsp;Nibley&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&nbsp;class=&quot;gmail_extra&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;&lt;div&gt;&lt;div&nbsp;class=&quot;h5&quot;&gt;On&nbsp;Tue,&nbsp;Jan&nbsp;7,&nbsp;2014&nbsp;at&nbsp;9:43&nbsp;AM,&nbsp;Hugh&nbsp;Macdonald&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&lt;&lt;a&nbsp;href=&quot;mailto:hugh.macdonald@nvizible.com&quot;&nbsp;target=&quot;_blank&quot;&gt;hugh.macdonald@nvizible.com&lt;/a&gt;&gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;<br>
+<br>
+<br>
+<br>
+&lt;/div&gt;&lt;/div&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;&lt;div&gt;&lt;div&nbsp;class=&quot;h5&quot;&gt;&lt;div&nbsp;dir=&quot;ltr&quot;&gt;Hi,&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I&#39;ve&nbsp;just&nbsp;been&nbsp;trying&nbsp;to&nbsp;figure&nbsp;out&nbsp;why&nbsp;some&nbsp;code&nbsp;of&nbsp;mine&nbsp;broke&nbsp;after&nbsp;an&nbsp;update&nbsp;from&nbsp;2.0.1&nbsp;to&nbsp;2.6.1,&nbsp;and&nbsp;found&nbsp;that&nbsp;I&nbsp;hadn&#39;t&nbsp;been&nbsp;passing&nbsp;an&nbsp;IV&nbsp;into&nbsp;AES.new()&nbsp;(using&nbsp;MODE_CFB).&lt;/div&gt;<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Previously,&nbsp;it&nbsp;was&nbsp;happy&nbsp;with&nbsp;this,&nbsp;and,&nbsp;according&nbsp;to&nbsp;the&nbsp;docs&nbsp;here&nbsp;(&lt;a&nbsp;href=&quot;https://www.dlitz.net/software/pycrypto/api/current/&quot;&nbsp;target=&quot;_blank&quot;&gt;https://www.dlitz.net/software/pycrypto/api/current/&lt;/a&gt;),&nbsp;&quot;It&nbsp;is&nbsp;optional&nbsp;and&nbsp;when&nbsp;not&nbsp;present&nbsp;it&nbsp;will&nbsp;be&nbsp;given&nbsp;a&nbsp;default&nbsp;value&nbsp;of&nbsp;all&nbsp;zeroes.&quot;&lt;/div&gt;<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Looking&nbsp;at&nbsp;the&nbsp;code&nbsp;that&nbsp;throws&nbsp;the&nbsp;exception&nbsp;(&lt;a&nbsp;href=&quot;https://github.com/dlitz/pycrypto/blob/master/src/block_template.c&quot;&nbsp;target=&quot;_blank&quot;&gt;https://github.com/dlitz/pycrypto/blob/master/src/block_template.c&lt;/a&gt;,&nbsp;line&nbsp;163),&nbsp;it&nbsp;doesn&#39;t&nbsp;allow&nbsp;for&nbsp;doing&nbsp;what&nbsp;the&nbsp;docs&nbsp;suggest&nbsp;it&nbsp;will.&lt;/div&gt;<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I&#39;m&nbsp;not&nbsp;sure&nbsp;whether&nbsp;I&#39;ve&nbsp;either&nbsp;misunderstood&nbsp;something&nbsp;or&nbsp;which&nbsp;of&nbsp;the&nbsp;two&nbsp;is&nbsp;wrong,&nbsp;but&nbsp;I&nbsp;thought&nbsp;I&#39;d&nbsp;at&nbsp;least&nbsp;flag&nbsp;it&nbsp;for&nbsp;discussion...&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;<br>
+<br>
+&lt;br&gt;&lt;/div&gt;&lt;div&gt;Hugh&lt;/div&gt;&lt;/div&gt;<br>
+<br>
+&lt;br&gt;<br>
+&lt;/div&gt;&lt;/div&gt;&lt;div&nbsp;style=&quot;color:rgb(0,0,255)&quot;&gt;&lt;span&nbsp;style=&quot;color:rgb(102,102,102)&quot;&gt;&lt;font&nbsp;face=&quot;Arial&quot;&gt;D&nbsp;I&nbsp;S&nbsp;C&nbsp;L&nbsp;A&nbsp;I&nbsp;M&nbsp;E&nbsp;R&nbsp;:&nbsp;This&nbsp;email&nbsp;and&nbsp;any&nbsp;files&nbsp;transmitted&nbsp;with&nbsp;it&nbsp;are&nbsp;intended&nbsp;solely&nbsp;for&nbsp;the &lt;span&gt;intended &lt;/span&gt;addressee,<br>
+&nbsp;and&nbsp;may&nbsp;contain&nbsp;confidential&nbsp;information&nbsp;or&nbsp;material&nbsp;protected&nbsp;by&nbsp;law,&nbsp;<br>
+copyright&nbsp;or&nbsp;other&nbsp;legislation. &nbsp;If&nbsp;you have&nbsp;received&nbsp;this&nbsp;message&nbsp;in&nbsp;<br>
+error,&nbsp;please return&nbsp;it&nbsp;to&nbsp;the&nbsp;sender&nbsp;or&nbsp;notify&nbsp;the&nbsp;sender&nbsp;by&nbsp;calling&nbsp;<br>
+&lt;a&nbsp;href=&quot;tel:%2B44%20%280%2920%203167%203860&quot;&nbsp;value=&quot;+442031673860&quot;&nbsp;target=&quot;_blank&quot;&gt;+44&nbsp;(0)20&nbsp;3167&nbsp;3860&lt;/a&gt;,&nbsp;and&nbsp;immediately&nbsp;and&nbsp;permanently&nbsp;delete&nbsp;it.&nbsp;You&nbsp;<br>
+should&nbsp;not&nbsp;copy&nbsp;it&nbsp;or&nbsp;use&nbsp;it&nbsp;for&nbsp;any&nbsp;purpose,&nbsp;nor&nbsp;disclose&nbsp;its&nbsp;contents&nbsp;<br>
+to&nbsp;any&nbsp;other&nbsp;person.&nbsp;Only&nbsp;the&nbsp;intended&nbsp;recipient&nbsp;may&nbsp;place&nbsp;any&nbsp;reliance&nbsp;<br>
+upon&nbsp;it.&nbsp;Nvizible&nbsp;Limited&nbsp;accepts&nbsp;no&nbsp;responsibility&nbsp;or&nbsp;liability&nbsp;for&nbsp;<br>
+emails&nbsp;sent&nbsp;by&nbsp;its&nbsp;employees&nbsp;or&nbsp;personnel&nbsp;which&nbsp;are&nbsp;not&nbsp;sent&nbsp;in&nbsp;the&nbsp;<br>
+course&nbsp;of&nbsp;its&nbsp;business&nbsp;or&nbsp;that&nbsp;of&nbsp;its&nbsp;clients.&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&nbsp;style=&quot;color:rgb(0,0,255)&quot;&gt;&lt;font&nbsp;face=&quot;Arial&quot;&gt; &lt;/font&gt;&lt;/div&gt;&lt;div&nbsp;style=&quot;color:rgb(0,0,255)&quot;&gt;&lt;span&nbsp;style=&quot;color:rgb(102,102,102)&quot;&gt;&lt;font&nbsp;face=&quot;Arial&quot;&gt;Nvizible<br>
+&nbsp;Limited,&nbsp;8/9&nbsp;Carlisle&nbsp;Street,&nbsp;London&nbsp;W1D&nbsp;3BP&nbsp;.&nbsp; Registered&nbsp;in&nbsp;England&nbsp;&amp;&nbsp;Wales&nbsp;with&nbsp;Company&nbsp;Number:&nbsp;6900121&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;br&gt;_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&nbsp;target=&quot;_blank&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;br&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;<br>
+&lt;br&gt;_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;br&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;<br>
+<br>
+&lt;br&gt;<br>
+&lt;div&nbsp;style=&quot;color:rgb(0,0,255)&quot;&gt;&lt;span&nbsp;style=&quot;color:rgb(102,102,102)&quot;&gt;&lt;font&nbsp;face=&quot;Arial&quot;&nbsp;size=&quot;2&quot;&gt;D&nbsp;I&nbsp;S&nbsp;C&nbsp;L&nbsp;A&nbsp;I&nbsp;M&nbsp;E&nbsp;R&nbsp;:&nbsp;This&nbsp;email&nbsp;and&nbsp;any&nbsp;files&nbsp;transmitted&nbsp;with&nbsp;it&nbsp;are&nbsp;intended&nbsp;solely&nbsp;for&nbsp;the &lt;span&gt;intended &lt;/span&gt;addressee,<br>
+&nbsp;and&nbsp;may&nbsp;contain&nbsp;confidential&nbsp;information&nbsp;or&nbsp;material&nbsp;protected&nbsp;by&nbsp;law,&nbsp;<br>
+copyright&nbsp;or&nbsp;other&nbsp;legislation. &nbsp;If&nbsp;you have&nbsp;received&nbsp;this&nbsp;message&nbsp;in&nbsp;<br>
+error,&nbsp;please return&nbsp;it&nbsp;to&nbsp;the&nbsp;sender&nbsp;or&nbsp;notify&nbsp;the&nbsp;sender&nbsp;by&nbsp;calling&nbsp;<br>
++44&nbsp;(0)20&nbsp;3167&nbsp;3860,&nbsp;and&nbsp;immediately&nbsp;and&nbsp;permanently&nbsp;delete&nbsp;it.&nbsp;You&nbsp;<br>
+should&nbsp;not&nbsp;copy&nbsp;it&nbsp;or&nbsp;use&nbsp;it&nbsp;for&nbsp;any&nbsp;purpose,&nbsp;nor&nbsp;disclose&nbsp;its&nbsp;contents&nbsp;<br>
+to&nbsp;any&nbsp;other&nbsp;person.&nbsp;Only&nbsp;the&nbsp;intended&nbsp;recipient&nbsp;may&nbsp;place&nbsp;any&nbsp;reliance&nbsp;<br>
+upon&nbsp;it.&nbsp;Nvizible&nbsp;Limited&nbsp;accepts&nbsp;no&nbsp;responsibility&nbsp;or&nbsp;liability&nbsp;for&nbsp;<br>
+emails&nbsp;sent&nbsp;by&nbsp;its&nbsp;employees&nbsp;or&nbsp;personnel&nbsp;which&nbsp;are&nbsp;not&nbsp;sent&nbsp;in&nbsp;the&nbsp;<br>
+course&nbsp;of&nbsp;its&nbsp;business&nbsp;or&nbsp;that&nbsp;of&nbsp;its&nbsp;clients.&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&nbsp;style=&quot;color:rgb(0,0,255)&quot;&gt;&lt;font&nbsp;face=&quot;Arial&quot;&nbsp;size=&quot;2&quot;&gt; &lt;/font&gt;&lt;/div&gt;&lt;div&nbsp;style=&quot;color:rgb(0,0,255)&quot;&gt;&lt;span&nbsp;style=&quot;color:rgb(102,102,102)&quot;&gt;&lt;font&nbsp;face=&quot;Arial&quot;&nbsp;size=&quot;2&quot;&gt;Nvizible<br>
+&nbsp;Limited,&nbsp;8/9&nbsp;Carlisle&nbsp;Street,&nbsp;London&nbsp;W1D&nbsp;3BP&nbsp;.&nbsp; Registered&nbsp;in&nbsp;England&nbsp;&amp;&nbsp;Wales&nbsp;with&nbsp;Company&nbsp;Number:&nbsp;6900121&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;
+</tt>

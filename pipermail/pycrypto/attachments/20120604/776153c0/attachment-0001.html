@@ -1,0 +1,15 @@
+<tt>
+2012/6/4&nbsp;Webie&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&lt;&lt;a&nbsp;href=&quot;mailto:assie181@gmail.com&quot;&nbsp;target=&quot;_blank&quot;&gt;assie181@gmail.com&lt;/a&gt;&gt;&lt;/span&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;<br>
+&lt;br&gt;<br>
+PyCrypto&#39;s&nbsp;output&nbsp;doesn&#39;t&nbsp;match&nbsp;OpenSSL&nbsp;when&nbsp;decrypting&nbsp;a&nbsp;file&nbsp;in&lt;br&gt;<br>
+Blowfish&nbsp;CFB&nbsp;mode.&nbsp;To&nbsp;reproduce&nbsp;this,&nbsp;download&nbsp;and&nbsp;test&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://dl.dropbox.com/u/1522424/PyCrypto-strange.tar&quot;&nbsp;target=&quot;_blank&quot;&gt;http://dl.dropbox.com/u/1522424/PyCrypto-strange.tar&lt;/a&gt;.&lt;br&gt;<br>
+&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;Both&nbsp;are&nbsp;correct.&nbsp;The&nbsp;fact&nbsp;is&nbsp;that&nbsp;they&nbsp;use&nbsp;different&nbsp;default&nbsp;segment&nbsp;sizes&nbsp;for&nbsp;CFB:&lt;br&gt;<br>
+PyCrypto&nbsp;uses&nbsp;8&nbsp;bits,&nbsp;and&nbsp;OpenSSL&nbsp;64&nbsp;bits.&lt;br&gt;<br>
+&lt;br&gt;With:&lt;br&gt;&lt;br&gt;<br>
+bf&nbsp;=&nbsp;Blowfish.new(key&nbsp;=&nbsp;key,&nbsp;mode&nbsp;=&nbsp;Blowfish.MODE_CFB,&nbsp;IV&nbsp;=&nbsp;iv,&lt;br&gt;<br>
+      &nbsp;segment_size=64)&lt;br&gt;<br>
+&lt;br&gt;<br>
+You&nbsp;will&nbsp;get&nbsp;the&nbsp;same&nbsp;result.&lt;br&gt; &lt;br&gt;&lt;/div&gt;&lt;/div&gt;<br>
+
+</tt>

@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Test code - Random
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Test%20code%20-%20Random&In-Reply-To=b6bc4a080811071255j4eda956fj4aa9d4b1b0e2b6b5%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000027.html">
+   <LINK REL="Next"  HREF="000029.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Test code - Random</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Test%20code%20-%20Random&In-Reply-To=b6bc4a080811071255j4eda956fj4aa9d4b1b0e2b6b5%40mail.gmail.com"
+       TITLE="[pycrypto] Test code - Random">dlitz at dlitz.net
+       </A><BR>
+    <I>Fri Nov  7 15:06:26 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000027.html">[pycrypto] Test code - Random
+</A></li>
+        <LI>Next message: <A HREF="000029.html">[pycrypto] Test code - Random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#28">[ date ]</a>
+              <a href="thread.html#28">[ thread ]</a>
+              <a href="subject.html#28">[ subject ]</a>
+              <a href="author.html#28">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Nov 07, 2008 at 08:55:10PM +0000, Sam Phippen wrote:
+&gt;<i>After reviewing the random number test code I thought some extra functions
+</I>&gt;<i>might be useful, attached is said code
+</I>
+Thanks for the patch.  I've reposted it below in unified diff form.
+
+========= BEGIN PATCH =========
+diff --git a/SelfTest/Random/test_random.py b/SelfTest/Random/test_random.py
+index 3b47e9f..0afb963 100644
+--- a/SelfTest/Random/test_random.py
++++ b/SelfTest/Random/test_random.py
+@@ -41,9 +41,37 @@ class SimpleTest(unittest.TestCase):
+          x = randobj.read(16)
+          y = randobj.read(16)
+          self.assertNotEqual(x, y)
++class TestNotAlwaysEqual(unittest.TestCase):
++    def runTest(self):
++        from Crypto import Random
++        randobj = Random.new()
++        k = 10
++        DataArray = []
++        x = randobj.read(16)
++        count = 0
++        for i in range(0,k):
++            y = randobj.read(16)
++            if x == y:
++                count += 1
++        self.assertNotEqual(count,k)
++class TestAverage(unittest.TestCase):
++    def runTest(self):
++        from Crypto import Random
++        randobj = Random.new()
++        x = randobj.read(2**15)
++        values = []
++        for i in x:
++            values.append(ord(i))
++        total = 0
++        for i in values:
++            total += i
++        average = total/len(values)
++        print average
++        self.assertEqual(average in range((256/2)-28,(256/2)+28),True)
++
+  
+  def get_tests():
+-    return [SimpleTest()]
++    return [SimpleTest(),TestNotAlwaysEqual(),TestAverage()]
+  
+  if __name__ == '__main__':
+      suite = lambda: unittest.TestSuite(get_tests())
+========= END PATCH =========
+
+Also, I'll quote our discussion on IRC, for the record:
+
+&gt;<i> &lt;samphippen&gt; dwon, mind if I write some more tests for the rng?
+</I>&gt;<i> &lt;dwon&gt; sure, if you can meet these requirements first: 
+</I>&gt;<i> <A HREF="http://www.dlitz.net/software/pycrypto/submission-requirements/">http://www.dlitz.net/software/pycrypto/submission-requirements/</A>
+</I>&gt;<i> &lt;samphippen&gt; dwon, I meet all those requirements
+</I>&gt;<i> &lt;samphippen&gt; dwon, i'm a uk citizen
+</I>
+This is referring to &quot;PyCrypto Code Submission Requirements - Rev. B&quot;, dated 
+2008-09-14.  Thanks for that.
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20081107/15e8860b/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20081107/15e8860b/attachment.pgp</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000027.html">[pycrypto] Test code - Random
+</A></li>
+	<LI>Next message: <A HREF="000029.html">[pycrypto] Test code - Random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#28">[ date ]</a>
+              <a href="thread.html#28">[ thread ]</a>
+              <a href="subject.html#28">[ subject ]</a>
+              <a href="author.html#28">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Oddity?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Oddity%3F&In-Reply-To=%3CCAEncD4fesv06XS%2Bf3A3wv2y-_v5Zph8v8t%2BYL81YojcQiJdWMQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000733.html">
+   <LINK REL="Next"  HREF="000736.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Oddity?</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Oddity%3F&In-Reply-To=%3CCAEncD4fesv06XS%2Bf3A3wv2y-_v5Zph8v8t%2BYL81YojcQiJdWMQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Oddity?">dave.pawson at gmail.com
+       </A><BR>
+    <I>Sun Nov 24 01:00:05 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000733.html">[pycrypto] Documentation
+</A></li>
+        <LI>Next message: <A HREF="000736.html">[pycrypto] DES3 problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#735">[ date ]</a>
+              <a href="thread.html#735">[ thread ]</a>
+              <a href="subject.html#735">[ subject ]</a>
+              <a href="author.html#735">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE><A HREF="https://www.dlitz.net/software/pycrypto/doc/#introduction">https://www.dlitz.net/software/pycrypto/doc/#introduction</A>
+says
+
+key_size: An integer value; the size of the keys required by this module.
+
+Yet iterating over [AES,ARC2,Blowfish,CAST,DES,DES3]
+I get
+print(&quot;Alg: %s, key size %s&quot; % (name, type(alg.key_size)))
+Alg: AES, key size &lt;class 'tuple'&gt;
+Alg: ARC2, key size &lt;class 'range'&gt;
+Alg: Blowfish, key size &lt;class 'range'&gt;
+Alg: CAST, key size &lt;class 'range'&gt;
+Alg: DES, key size &lt;class 'int'&gt;
+Alg: DES3, key size &lt;class 'tuple'&gt;
+
+is this work outstanding?
+
+regards
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000733.html">[pycrypto] Documentation
+</A></li>
+	<LI>Next message: <A HREF="000736.html">[pycrypto] DES3 problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#735">[ date ]</a>
+              <a href="thread.html#735">[ thread ]</a>
+              <a href="subject.html#735">[ subject ]</a>
+              <a href="author.html#735">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

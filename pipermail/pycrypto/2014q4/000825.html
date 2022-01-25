@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Bug in PyCrypto 2.6.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Bug%20in%20PyCrypto%202.6.1&In-Reply-To=%3CCDBB9246-A032-4BA1-BFC2-FA713B65A1B7%40dell.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000824.html">
+   <LINK REL="Next"  HREF="000826.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Bug in PyCrypto 2.6.1</H1>
+    <B>Paul Koning</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Bug%20in%20PyCrypto%202.6.1&In-Reply-To=%3CCDBB9246-A032-4BA1-BFC2-FA713B65A1B7%40dell.com%3E"
+       TITLE="[pycrypto] Bug in PyCrypto 2.6.1">paul_koning at dell.com
+       </A><BR>
+    <I>Mon Dec  1 08:31:27 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000824.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+        <LI>Next message: <A HREF="000826.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#825">[ date ]</a>
+              <a href="thread.html#825">[ thread ]</a>
+              <a href="subject.html#825">[ subject ]</a>
+              <a href="author.html#825">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>To me, key_size means the size of the key.  It doesn&#8217;t mean the largest value you can encrypt.  If that is what is intended, or if it has to stay that way for historical reasons, fine, but it needs to be very clearly pointed out in the documentation because it is unexpected and counterintuitive.
+
+	paul
+
+&gt;<i> On Dec 1, 2014, at 11:13 AM, Mirko Dziadzka &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">mirko.dziadzka at gmail.com</A>&gt; wrote:
+</I>&gt;<i> 
+</I>&gt;<i> HI
+</I>&gt;<i> 
+</I>&gt;<i> Some thoughts about this &#8230;
+</I>&gt;<i> 
+</I>&gt;&gt;<i> _RSA.RSAobj.size.__doc__ says: Return the maximum number of bits that can be handled by this key
+</I>&gt;<i> 
+</I>&gt;<i> An RSA key can only encrypt data smaller than this key. So if we have an 2048 bit RSA key, it can encrypt some 2048 bit values, but not all. So 2047 should be the safe value here.
+</I>&gt;<i> 
+</I>&gt;<i> IMHO this -1 is correct here.
+</I>&gt;<i> 
+</I>&gt;<i> Mirko
+</I>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000824.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+	<LI>Next message: <A HREF="000826.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#825">[ date ]</a>
+              <a href="thread.html#825">[ thread ]</a>
+              <a href="subject.html#825">[ subject ]</a>
+              <a href="author.html#825">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

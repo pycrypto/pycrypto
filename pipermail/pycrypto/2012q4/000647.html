@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Remove DSA because 1024bit is not safe
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Remove%20DSA%20because%201024bit%20is%20not%20safe&In-Reply-To=%3C50C8427F.4040002%40web.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000641.html">
+   <LINK REL="Next"  HREF="000642.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Remove DSA because 1024bit is not safe</H1>
+    <B>.</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Remove%20DSA%20because%201024bit%20is%20not%20safe&In-Reply-To=%3C50C8427F.4040002%40web.de%3E"
+       TITLE="[pycrypto] Remove DSA because 1024bit is not safe">dcMhOYBdpZkH at web.de
+       </A><BR>
+    <I>Wed Dec 12 00:38:29 PST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000641.html">[pycrypto] Inovking Depreciation warnings in Python
+</A></li>
+        <LI>Next message: <A HREF="000642.html">[pycrypto] Pickling AES cipher objects - any reasons not to support	this?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#647">[ date ]</a>
+              <a href="thread.html#647">[ thread ]</a>
+              <a href="subject.html#647">[ subject ]</a>
+              <a href="author.html#647">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>It is important to consider 1024bit DSA - NIST says this too - not
+secure anymore, or do you want your messages to be readable within your lifetime?. 
+Since DSA max. key size is 1024bit it's time to think
+about removing it completely from pycrypto and use RSA or ECC (with your
+own curves, not NIST's untrustable ones).
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000641.html">[pycrypto] Inovking Depreciation warnings in Python
+</A></li>
+	<LI>Next message: <A HREF="000642.html">[pycrypto] Pickling AES cipher objects - any reasons not to support	this?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#647">[ date ]</a>
+              <a href="thread.html#647">[ thread ]</a>
+              <a href="subject.html#647">[ subject ]</a>
+              <a href="author.html#647">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Pickling AES cipher objects - any reasons not to support this?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Pickling%20AES%20cipher%20objects%20-%20any%20reasons%20not%20to%0A%20support%20this%3F&In-Reply-To=%3CCAGfyce17N0XSbVR0pnSXN8fykBek66txcHR%3DYdQaR87qMpRpbg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000651.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Pickling AES cipher objects - any reasons not to support this?</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Pickling%20AES%20cipher%20objects%20-%20any%20reasons%20not%20to%0A%20support%20this%3F&In-Reply-To=%3CCAGfyce17N0XSbVR0pnSXN8fykBek66txcHR%3DYdQaR87qMpRpbg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Pickling AES cipher objects - any reasons not to support this?">helderijs at gmail.com
+       </A><BR>
+    <I>Mon Jan 14 10:14:19 PST 2013</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000651.html">[pycrypto] Pickling AES cipher objects - any reasons not to support this?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#645">[ date ]</a>
+              <a href="thread.html#645">[ thread ]</a>
+              <a href="subject.html#645">[ subject ]</a>
+              <a href="author.html#645">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Pearu,
+
+
+&gt;<i> &gt;&gt;&gt; import pickle
+</I>&gt;<i> &gt;&gt;&gt; from Crypto.Cipher import AES
+</I>&gt;<i> &gt;&gt;&gt; cipher = AES.new('mysecret'*2)
+</I>&gt;<i> &gt;&gt;&gt; dump=pickle.dumps(cipher)
+</I>&gt;<i> PicklingError: Can't pickle '_AES' object: &lt;_AES object at 0x1fe0bd0&gt;
+</I>&gt;<i>
+</I>&gt;<i> I wonder if there are any fundamental reasons why pickling cipher objects
+</I>&gt;<i> cannot
+</I>&gt;<i> be pickled? Otherwise I would look into implementing pickling support for
+</I>&gt;<i> cipher objects.
+</I>&gt;<i>
+</I>&gt;<i> I would presume that storing cipher object is safer (would it be?)
+</I>&gt;<i> than storing an encryption key used to create the cipher object.
+</I>&gt;<i>
+</I>
+Pickling a cipher object is actually less secure.
+
+First, it cannot be more secure because anybody can easily find back the
+key from the pickled blob.
+
+Second - and with the only exception of ECB mode - a cipher object is
+always stateful: it depends on the key, but also on the IV/nonce, and on
+the data you have processed so far. Pickling will make only sense if the
+encryption process has to be paused half-way so tat it can be resumed at a
+later moment. Not really a common use case.
+
+Pickling a cipher and reusing later for a totally different encryption will
+lead to IV/nonce reuse, which is definitely bad, especially for stream
+cipher-like modes.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20130114/70344e4b/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20130114/70344e4b/attachment.html</A>&gt;
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000651.html">[pycrypto] Pickling AES cipher objects - any reasons not to support this?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#645">[ date ]</a>
+              <a href="thread.html#645">[ thread ]</a>
+              <a href="subject.html#645">[ subject ]</a>
+              <a href="author.html#645">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

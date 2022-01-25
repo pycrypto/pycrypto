@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] the sad state of pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=20081110000156.GA1276%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000050.html">
+   <LINK REL="Next"  HREF="000042.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] the sad state of pycrypto</H1>
+    <B>Paul Hoffman</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=20081110000156.GA1276%40rivest.dlitz.net"
+       TITLE="[pycrypto] the sad state of pycrypto">paul.hoffman at gmail.com
+       </A><BR>
+    <I>Sun Nov  9 18:57:16 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000050.html">[pycrypto] the sad state of pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000042.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#51">[ date ]</a>
+              <a href="thread.html#51">[ thread ]</a>
+              <a href="subject.html#51">[ subject ]</a>
+              <a href="author.html#51">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Nov 9, 2008 at 4:01 PM, Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt; wrote:
+&gt;<i> MD5 was _never_ collision-resistant; We just thought it was.  It's possible
+</I>&gt;<i> that MD5 is not safe for any purpose, and that we just currently think it
+</I>&gt;<i> is.  Maybe it's safe, and maybe not, but it's not a conservative choice for
+</I>&gt;<i> new applications.
+</I>
+Indeed. Those platitudes are true for all hash functions.
+
+&gt;<i> Also, I'm not sure what security proof you're referring to, but see &quot;Forgery
+</I>&gt;<i> and Partial Key-Recovery Attacks on HMAC and NMAC Using Hash Collisions&quot;:
+</I>&gt;<i> <A HREF="http://eprint.iacr.org/2006/319">http://eprint.iacr.org/2006/319</A>
+</I>
+I'm referring to &lt;<A HREF="http://eprint.iacr.org/2006/043">http://eprint.iacr.org/2006/043</A>&gt;, which I consider
+to be more definitive. YMMV.
+
+&gt;&gt;<i> A hashed signature algorithm can use MD5 with no problems.
+</I>&gt;<i>
+</I>&gt;<i> I'm sure you don't mean that.
+</I>
+I'm sure I do.
+
+&gt;<i> Any time you someone signs a message provided
+</I>&gt;<i> by a third party (such as when certifying a computer program or when adding
+</I>&gt;<i> a digital timestamping to a document), the hash function they use needs to
+</I>&gt;<i> be collision-resistant.
+</I>
+...unless the signer can add as much randomness to the signature as
+they want, which is exactly what a hashed signature algorithm does.
+The advantage of a hashed signature algorithm is that it can not only
+compensate for less-than-expected collision resistance, it can make
+the strength of the signature as strong as the preimage resistance of
+the hash, not the collision resistance.
+
+&gt;<i> No, RandomPool was safe if you used it correctly, which meant you had to
+</I>&gt;<i> feed it entropy from somewhere, and you had to monitor the entropy estimate.
+</I>
+So, in order to use it safely, you had to know more about randomness
+than nearly any programmer might. I would not call that safe, but I
+hear that you might. Compare that to MD5, which can be used safely if
+you understand that 64 bits of collision resistance is not enough for
+most applications, and that you will easily get less now that there is
+a proven trivial attack.
+
+&gt;<i> I still think you're being overly optimistic.  Smart developers still make
+</I>&gt;<i> fatal mistakes with crypto, and I have empirical evidence to back that up:
+</I>
+Of course. Removing a hash function will not prevent that. Someone who
+misuses MD5 is just as likely to misuse SHA-1, such as using it where
+collision resistance needs to be more than 2^64. Or were you
+intendeing to remove SHA-1 as well?
+
+&gt;<i>    1. Zooko said:
+</I>&gt;<i>
+</I>&gt;<i>        &quot;I happen to know a somewhat famous developer who once looked
+</I>&gt;<i>  through the Crypto++ API and chose DES-XEX without (I think)
+</I>&gt;<i>  realizing that it was DES-X and not Triple-DES.&quot;
+</I>
+If the Crypto++ API allows a user to give 196 bits of key and then
+only use 64 bits, then the problem is mostly with the API. Also, note
+the &quot;I think&quot; there.
+
+&gt;<i>    2. RandomPool was misused---twice---in Paramiko.  See
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html">http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html</A>
+</I>
+You have already documented why this function was difficult to use.
+Why blame the users for that?
+
+&gt;<i>    3. A Google Code Search for RandomPool turned up a bunch of uses, none
+</I>&gt;<i>     of which were correct.
+</I>
+Ditto.
+
+&gt;<i> Developers of crypto libraries are in a position to reduce the number of
+</I>&gt;<i> mistakes their downstream users accidentally make.  I intend to make full
+</I>&gt;<i> use of this ability. (But see below.)
+</I>
+That is a good thing, and I fully support you in that. Removing hash
+algorithms that are in wide safe use (as well as wide unsafe use) may
+not be the best way to do that, but it's your library.
+
+&gt;&gt;<i> If you really want the library to be in nanny mode, simply rename the
+</I>&gt;&gt;<i> function from &quot;MD5&quot; to something like &quot;idontwantyoutouseMD5&quot;. This is
+</I>&gt;&gt;<i> a serious suggestion. Self-documenting function names are surprisingly
+</I>&gt;&gt;<i> useful.
+</I>&gt;<i>
+</I>&gt;<i> Aside from the maintainability benefits, I don't want to drop algorithms
+</I>&gt;<i> that people need for legacy reasons, even if they would be well-advised not
+</I>&gt;<i> to use them in new applications.  That's why I like the policy idea instead
+</I>&gt;<i> of dropping or renaming modules.  That way, developers can make less
+</I>&gt;<i> conservative choices if they need to, but they'll be less likely to do so
+</I>&gt;<i> accidentally, and reviewers will have an easier time checking for these
+</I>&gt;<i> mistakes.
+</I>
+Sure. However, now you become the enforcer of policy. For hashes,
+that's a very tricky position. Do you call SHA-1 not conservative,
+even though every conservative CA in the world uses it for all their
+certificates? Even if you know that there is an attack that reduces
+its collision resistance to where MD5 was a few years ago? Even though
+there is a preimage attack on it? (The last one is a bit of a red
+herring, but it shows the difficulty of being the arbiter of
+conservativeness.) Again, it's your library, so you get to make the
+judgement calls, but what you think is obvious can be far from it, as
+you have already discovered.
+
+&gt;<i> On the other hand, I don't mind dropping algorithms that nobody actually
+</I>&gt;<i> uses.  It's not just about &quot;nanny mode&quot;: Code no longer present is code I
+</I>&gt;<i> don't have to spend my limited time maintaining.
+</I>
+Fully agree here.
+
+&gt;<i>  That's why I asked about
+</I>&gt;<i> MD2.  Do you know of anyone who uses PyCrypto who needs MD2 support?
+</I>
+I'm the wrong person to ask about that. In fact, probably everyone on
+this list is the wrong person to ask about that. You have to ask every
+user &quot;do you use this&quot;, which is of course impossible. As library
+maintainer, you can rip it out and see who screams.
+
+&gt;<i> My policy is that if I think an algorithm is patent-encumbered, then it's
+</I>&gt;<i> not getting included into PyCrypto; If it's already included, then it gets
+</I>&gt;<i> dropped.
+</I>
+And now you get to define &quot;encumbered&quot;! :-)
+
+&gt;<i> I agree that it's goofy.  I really don't see why a person couldn't just
+</I>&gt;<i> truncate an ordinary SHA-256/512 hash if they want &quot;matched impedance&quot;,
+</I>&gt;<i> rather than also mucking about with the initial values.
+</I>
+...answered by your next sentence...
+
+&gt;<i> If we want to avoid
+</I>&gt;<i> allowing someone to truncate an SHA-256 hash to make a valid 224-bit hash,
+</I>&gt;<i> then we can define separate hash functions like so:
+</I>&gt;<i>
+</I>&gt;<i>   H_256(m) := SHA-256(&quot;SHA-256&quot; || m)
+</I>&gt;<i>   H_224(m) := SHA-256(&quot;SHA-224&quot; || m)[:224]
+</I>
+...at a cost of one extra round of hashing for all messages that are 7
+octets or less short of a block size boundary. Using a different IV
+prevents that performance hit in those cases. It's a design tradeoff.
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000050.html">[pycrypto] the sad state of pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000042.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#51">[ date ]</a>
+              <a href="thread.html#51">[ thread ]</a>
+              <a href="subject.html#51">[ subject ]</a>
+              <a href="author.html#51">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

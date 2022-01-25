@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Python 3 regression
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Python%203%20regression&In-Reply-To=%3C51BAF717.6060704%40borgstrom.se%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000667.html">
+   <LINK REL="Next"  HREF="000669.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Python 3 regression</H1>
+    <B>Jonas Borgstr&#246;m</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Python%203%20regression&In-Reply-To=%3C51BAF717.6060704%40borgstrom.se%3E"
+       TITLE="[pycrypto] Python 3 regression">jonas at borgstrom.se
+       </A><BR>
+    <I>Fri Jun 14 03:57:27 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000667.html">[pycrypto] RFC-2898 Padding
+</A></li>
+        <LI>Next message: <A HREF="000669.html">[pycrypto] RSA exportKey question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#668">[ date ]</a>
+              <a href="thread.html#668">[ thread ]</a>
+              <a href="subject.html#668">[ subject ]</a>
+              <a href="author.html#668">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+While porting an application to Python 3 I noticed that PyCrypto no
+longer supports operations on buffer/memoryview-like objects.
+
+With Python 2 you could do the following:
+
+AES.new(...).decrypt(buffer(a_large_buffer, 32))
+
+To efficiently decrypt a large buffer containing a few header bytes at
+the beginning without having to do an expensive string slice/copy.
+
+The buffer() object is not available in Python 3 and has been replaced
+by memoryview() which has also been backported to python 2.7.
+
+So the Python 2.7+ version of the above is:
+
+AES.new(...).decrypt(memoryview(a_large_buffer)[32:])
+
+I implemented memoryview support and sent a github pull request [1] two
+weeks ago but I haven't received any feedback yet.
+Is there anything I can do to help with the review process?
+
+1. <A HREF="https://github.com/dlitz/pycrypto/pull/47">https://github.com/dlitz/pycrypto/pull/47</A>
+
+Cheers,
+Jonas
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 482 bytes
+Desc: OpenPGP digital signature
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20130614/9f1a1e20/attachment.sig">http://lists.dlitz.net/pipermail/pycrypto/attachments/20130614/9f1a1e20/attachment.sig</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000667.html">[pycrypto] RFC-2898 Padding
+</A></li>
+	<LI>Next message: <A HREF="000669.html">[pycrypto] RSA exportKey question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#668">[ date ]</a>
+              <a href="thread.html#668">[ thread ]</a>
+              <a href="subject.html#668">[ subject ]</a>
+              <a href="author.html#668">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] PyCrypto AND Crypt_RSA integration
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%20AND%20Crypt_RSA%20integration&In-Reply-To=3c5f192d0902090436r3e9c905n2edd78019033118%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000066.html">
+   <LINK REL="Next"  HREF="000072.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] PyCrypto AND Crypt_RSA integration</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%20AND%20Crypt_RSA%20integration&In-Reply-To=3c5f192d0902090436r3e9c905n2edd78019033118%40mail.gmail.com"
+       TITLE="[pycrypto] PyCrypto AND Crypt_RSA integration">dlitz at dlitz.net
+       </A><BR>
+    <I>Tue Feb 10 18:32:53 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000066.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+        <LI>Next message: <A HREF="000072.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#67">[ date ]</a>
+              <a href="thread.html#67">[ thread ]</a>
+              <a href="subject.html#67">[ subject ]</a>
+              <a href="author.html#67">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Feb 09, 2009 at 10:36:40AM -0200, Mauricio Arozi wrote:
+&gt;<i>Am I helpless?
+</I>
+I think the problem is that you're asking the mailing list for the *Python* 
+Cryptography Toolkit about how to use an obscure *PHP* library.
+
+We can help with the Python side of things.  I wouldn't expect the people 
+here to know and/or care much about PHP.
+
+&gt;<i> According to this site: <A HREF="http://pajhome.org.uk/crypt/rsa/rsa.html,">http://pajhome.org.uk/crypt/rsa/rsa.html,</A> and
+</I>&gt;<i> yet others, the e(exponent?) is used for the public key, and d for the
+</I>&gt;<i> private key.
+</I>
+The notation I've seen most often is something like this:
+
+     n - modulus (public)
+     e - public exponent
+     d - private exponent
+     (n, e) - public key
+     (n, d) - private key
+     (p, q) - the (private) primes from which the keypair is derived.
+
+PyCrypto uses a similar notation:
+
+     from Crypto.PublicKey import RSA
+     import os
+
+     # DO NOT USE RandomPool (see below)
+     keypair = RSA.generate(2048, os.urandom)
+
+     print &quot;PRIVATE KEYPAIR:&quot;
+     print &quot;n:&quot;, keypair.n   # modulus (public)
+     print &quot;e:&quot;, keypair.e   # public exponent
+     print &quot;d:&quot;, keypair.d   # private exponent
+     print &quot;p:&quot;, keypair.p   # prime (private)
+     print &quot;q:&quot;, keypair.q   # other prime (private)
+     print &quot;u:&quot;, keypair.u   # I forget what this for (but it's private)
+
+     pub = keypair.publickey()
+     print &quot;&quot;
+     print &quot;PUBLIC KEY:&quot;
+     print &quot;n (pub):&quot;, pub.n     # modulus (public)
+     print &quot;e (pub):&quot;, pub.e     # public exponent
+     print &quot;d (pub):&quot;, pub.d     # raises an exception
+     print &quot;p (pub):&quot;, pub.p     # raises an exception
+     print &quot;q (pub):&quot;, pub.q     # raises an exception
+     print &quot;u (pub):&quot;, pub.u     # raises an exception
+
+This outputs the following:
+
+     PRIVATE KEYPAIR:
+     n: 277...[truncated]
+     e: 65537
+     d: 232...[truncated]
+     p: 159...[truncated]
+     q: 174...[truncated]
+     u: 125...[truncated]
+
+     PUBLIC KEY:
+     n (pub): 277...[truncated]
+     e (pub): 65537
+     d (pub):
+     Traceback (most recent call last):
+       File &quot;x.py&quot;, line 21, in ?
+         print &quot;d (pub):&quot;, pub.d
+       File &quot;/usr/lib/python2.4/site-packages/Crypto/PublicKey/RSA.py&quot;, line 154, in __getattr__
+         return getattr(self.key, attr)
+     AttributeError: rsaKey instance has no attribute 'd'
+
+&gt;<i> My problem is that while using PyCrypto to generate both public and 
+</I>&gt;<i> private keys, the e(exponent?) is always the same.
+</I>
+Mads Kiilerich already talked a bit about this, but I won't go into detail.  
+What you're describing here is normal, and it really helps improve the 
+performance of encryption/verification.
+
+If you're concerned about the security of using RSA, I suggest reading Dan 
+Boneh's 1999 article, &quot;Twenty years of attacks on the RSA cryptosystem&quot;:
+
+     <A HREF="http://crypto.stanford.edu/~dabo/abstracts/RSAattack-survey.html">http://crypto.stanford.edu/~dabo/abstracts/RSAattack-survey.html</A>
+
+&gt;<i>So in simple words, I only need to be able to encrypt/decrypt sign and 
+</I>&gt;<i>verify signs on php and python, simultaneously, if possible, using RSA 
+</I>&gt;<i>algo.
+</I>
+PyCrypto's PublicKey package is very low-level, so people shouldn't use it 
+directly unless they REALLY know what they are doing.  Mere mortals should 
+use a separate library in addition to PyCrypto for that.  You should never 
+do anything like this:
+
+&gt;<i>privkeyA = RSA.generate(512, rpool.get_bytes)
+</I>&gt;<i>pubkeyA = privkeyA.publickey()
+</I>&gt;<i>
+</I>&gt;<i>msg = 'This is the secret phrase testing.'
+</I>&gt;<i>msgc = pubkeyA.encrypt(msg, '')
+</I>
+That is called &quot;textbook RSA&quot;, and it's insecure.  (Also, it uses a 512-bit   
+key, which is way too short, but I assume that's just for demonstration.)  
+I strongly recommend looking at PKCS#1v2 (also known as RSAES-OAEP).  
+PyCrypto doesn't include an implementation yet, but Sergey Chernov 
+mentioned that he is working on one.
+
+Also, I noticed in your code that you used RandomPool.  Don't.  RandomPool 
+is a security disaster, and it will be removed from future versions.  See 
+the following messages:
+
+     <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html">http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html</A>
+     <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2008q3/000020.html">http://lists.dlitz.net/pipermail/pycrypto/2008q3/000020.html</A>
+
+I hope you find the above information helpful.
+
+Cheers,
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+</PRE>
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000066.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+	<LI>Next message: <A HREF="000072.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#67">[ date ]</a>
+              <a href="thread.html#67">[ thread ]</a>
+              <a href="subject.html#67">[ subject ]</a>
+              <a href="author.html#67">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

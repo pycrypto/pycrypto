@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Once again: Python3 with PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=20101224064844.GA13502%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000320.html">
+   <LINK REL="Next"  HREF="000322.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Once again: Python3 with PyCrypto</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=20101224064844.GA13502%40rivest.dlitz.net"
+       TITLE="[pycrypto] Once again: Python3 with PyCrypto">sbehrens at gmx.li
+       </A><BR>
+    <I>Fri Dec 24 16:15:03 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000320.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000322.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#321">[ date ]</a>
+              <a href="thread.html#321">[ thread ]</a>
+              <a href="subject.html#321">[ subject ]</a>
+              <a href="author.html#321">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Well, it builds, and it crashes. Progress? :D
+
+The good news is it still works fine on python21 and python27.
+
+All I've done so far is make the .py stuff work, and apply the patches 
+that Grail Dane had worked on earlier in the year, plus some changes to 
+make things compile. More work to be done - I guess now it's time to 
+attempt to understand what it is I am doing in the first place.
+
+I haven't committed the changes yet, and I'm happy to putz around with 
+this on my own. But if there's an enterprising soul out there who wants 
+to have a go at seeing just how I screwed things up now, let me know, 
+and I'll commit the py3k branch.
+
+For giggles, here are some of the warnings I get on compile time. 
+Clearly, the module definition section needs quite a bit of work.
+ &gt;
+building 'Crypto.Random.OSRNG.winrandom' extension
+C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\BIN\amd64\cl.exe 
+/c /nologo /Ox /MD /W3 /GS- /DNDEBUG -Isrc/ -Isrc/inc-msvc/
+  -Id:\python31\include -Id:\python31\PC /Tcsrc/winrand.c 
+/Fobuild\temp.win-amd64-3.1\Release\src/winrand.obj
+winrand.c
+src/winrand.c(222) : warning C4113: 'destructor' differs in parameter 
+lists from 'printfunc'
+src/winrand.c(222) : warning C4133: 'initializing' : incompatible types 
+- from 'destructor' to 'printfunc'
+src/winrand.c(237) : warning C4047: 'initializing' : 'const char *' 
+differs in levels of indirection from 'long'
+src/winrand.c(245) : warning C4133: 'initializing' : incompatible types 
+- from 'PyMethodDef *' to 'PyMemberDef *'
+C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\BIN\amd64\link.exe 
+/DLL /nologo /INCREMENTAL:NO /LIBPATH:d:\python31\libs /L
+IBPATH:d:\python31\PCbuild\amd64 ws2_32.lib advapi32.lib 
+/EXPORT:PyInit_winrandom build\temp.win-amd64-3.1\Release\src/winrand.obj
+  /OUT:build\lib.win-amd64-3.1\Crypto\Random\OSRNG\winrandom.pyd 
+/IMPLIB:build\temp.win-amd64-3.1\Release\src\winrandom.lib /MANIFE
+STFILE:build\temp.win-amd64-3.1\Release\src\winrandom.pyd.manifest
+winrand.obj : warning LNK4197: export 'PyInit_winrandom' specified 
+multiple times; using first specification
+    Creating library build\temp.win-amd64-3.1\Release\src\winrandom.lib 
+and object build\temp.win-amd64-3.1\Release\src\winrandom.e
+xp
+C:\Program Files\Microsoft SDKs\Windows\v7.0\bin\x64\mt.exe -nologo 
+-manifest build\temp.win-amd64-3.1\Release\src\winrandom.pyd.m
+anifest 
+-outputresource:build\lib.win-amd64-3.1\Crypto\Random\OSRNG\winrandom.pyd;2
+ &gt;&gt;
+
+Thorsten
+
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000320.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000322.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#321">[ date ]</a>
+              <a href="thread.html#321">[ thread ]</a>
+              <a href="subject.html#321">[ subject ]</a>
+              <a href="author.html#321">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

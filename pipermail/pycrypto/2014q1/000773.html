@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Public Key (X.509) in Modulus/Exponent Format
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Public%20Key%20%28X.509%29%20in%20Modulus/Exponent%20Format&In-Reply-To=%3CCANFgmFAHKh_P_pGG-wYm9j%2BjEqeeMFk2ZSoOMGEMQOUmOqN7ZA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000782.html">
+   <LINK REL="Next"  HREF="000775.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Public Key (X.509) in Modulus/Exponent Format</H1>
+    <B>Anurag Chourasia</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Public%20Key%20%28X.509%29%20in%20Modulus/Exponent%20Format&In-Reply-To=%3CCANFgmFAHKh_P_pGG-wYm9j%2BjEqeeMFk2ZSoOMGEMQOUmOqN7ZA%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Public Key (X.509) in Modulus/Exponent Format">anurag.chourasia at gmail.com
+       </A><BR>
+    <I>Thu Feb  6 20:10:07 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000782.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+        <LI>Next message: <A HREF="000775.html">[pycrypto] Public Key (X.509) in Modulus/Exponent Format
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#773">[ date ]</a>
+              <a href="thread.html#773">[ thread ]</a>
+              <a href="subject.html#773">[ subject ]</a>
+              <a href="author.html#773">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi All,
+
+Is it possible to get a Modulus Exponent representation of the public key
+(X.509) using PyCrypto?
+
+For example, the X.509 is
+
+*-----BEGIN CERTIFICATE-----
+MIICLDCCAZWgAwIBAgIQRjRrx4AAVrwR024uxBCzsDANBgkqhkiG9w0BAQUFADAS
+MRAwDgYDVQQDEwdDYXJsUlNBMB4XDTk5MDkxOTAxMDg0N1oXDTM5MTIzMTIzNTk1
+OVowEzERMA8GA1UEAxMIQWxpY2VSU0EwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJ
+AoGBAOCJczmN2PX16Id2OX9OsAW7U4PeD7er3H3HdSkNBS5tEt+mhibU0m+qWCn8
+l+z6glEPMIC+sVCeRkTxLLvYMs/GaG8H2bBgrL7uNAlqE/X3BQWT3166NVbZYf8Z
+f8mB5vhs6odAcO+sbSx0ny36VTq5mXcCpkhSjE7zVzhXdFdfAgMBAAGjgYEwfzAM
+BgNVHRMBAf8EAjAAMA4GA1UdDwEB/wQEAwIGwDAfBgNVHSMEGDAWgBTp4JAnrHgg
+eprTTPJCN04irp44uzAdBgNVHQ4EFgQUd9K00bdMioqjzkWdzuw8oDrj/1AwHwYD
+VR0RBBgwFoEUQWxpY2VSU0FAZXhhbXBsZS5jb20wDQYJKoZIhvcNAQEFBQADgYEA
+PnBHqEjME1iPylFxa042GF0EfoCxjU3MyqOPzH1WyLzPbrMcWakgqgWBqE4lradw
+FHUv9ceb0Q7pY9Jkt8ZmbnMhVN/0uiVdfUnTlGsiNnRzuErsL2Tt0z3Sp0LF6DeK
+tNufZ+S9n/n+dO/q+e5jatg/SyUJtdgadq7rm9tJsCI=
+-----END CERTIFICATE-----*
+
+And i need to get to the following representation
+
+*&lt;RSAKeyValue&gt;
+  &lt;Modulus&gt;
+    4IlzOY3Y9fXoh3Y5f06wBbtTg94Pt6vcfcd1KQ0FLm0S36aGJtTSb6pYKfyX7PqCUQ8wgL6xUJ5GRPEsu9gyz8
+    ZobwfZsGCsvu40CWoT9fcFBZPfXro1Vtlh/xl/yYHm+Gzqh0Bw76xtLHSfLfpVOrmZdwKmSFKMTvNXOFd0V18=
+  &lt;/Modulus&gt;
+  &lt;Exponent&gt;AQAB&lt;/Exponent&gt;
+&lt;/RSAKeyValue&gt;*
+
+Please guide.
+
+Regards,
+Anurag
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20140207/43006f21/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20140207/43006f21/attachment.html</A>&gt;
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000782.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+	<LI>Next message: <A HREF="000775.html">[pycrypto] Public Key (X.509) in Modulus/Exponent Format
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#773">[ date ]</a>
+              <a href="thread.html#773">[ thread ]</a>
+              <a href="subject.html#773">[ subject ]</a>
+              <a href="author.html#773">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] DES3 problem
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20DES3%20problem&In-Reply-To=%3CCAEncD4e3vq%3Dy0Xksc58%2B4x3j%3Di-nuyVBw2eZdA-%2BM0w56QgdOg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000736.html">
+   <LINK REL="Next"  HREF="000738.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] DES3 problem</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20DES3%20problem&In-Reply-To=%3CCAEncD4e3vq%3Dy0Xksc58%2B4x3j%3Di-nuyVBw2eZdA-%2BM0w56QgdOg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] DES3 problem">dave.pawson at gmail.com
+       </A><BR>
+    <I>Wed Nov 27 01:15:40 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000736.html">[pycrypto] DES3 problem
+</A></li>
+        <LI>Next message: <A HREF="000738.html">[pycrypto] DES3 problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#737">[ date ]</a>
+              <a href="thread.html#737">[ thread ]</a>
+              <a href="subject.html#737">[ subject ]</a>
+              <a href="author.html#737">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i>From the lack of response, should I assume that DES3 isn't yet working?
+</I>
+TiA, DaveP
+
+On 24 November 2013 14:50, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt; wrote:
+&gt;<i> <A HREF="https://www.dlitz.net/software/pycrypto/api/current/">https://www.dlitz.net/software/pycrypto/api/current/</A> states DES3 requires an iv.
+</I>&gt;<i>
+</I>&gt;<i> in the api docs the example uses DES not DES3?
+</I>&gt;<i>
+</I>&gt;<i> As an example, encryption can be done as follows:
+</I>&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> from Crypto.Cipher import DES
+</I>&gt;&gt;&gt;&gt;<i> from Crypto import Random
+</I>&gt;&gt;&gt;&gt;<i> from Crypto.Util import Counter
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> key = b'-8B key-'
+</I>&gt;&gt;&gt;&gt;<i> nonce = Random.new().read(DES.block_size/2)
+</I>&gt;&gt;&gt;&gt;<i> ctr = Counter.new(DES.block_size*8/2, prefix=nonce)
+</I>&gt;&gt;&gt;&gt;<i> cipher = DES.new(key, DES.MODE_CTR, counter=ctr)
+</I>&gt;&gt;&gt;&gt;<i> plaintext = b'We are no longer the knights who say ni!'
+</I>&gt;&gt;&gt;&gt;<i> msg = nonce + cipher.encrypt(plaintext)
+</I>&gt;<i>
+</I>&gt;<i> Using
+</I>&gt;<i>         iv=Random.new().read(DES3.block_size)
+</I>&gt;<i>         ciphere = DES3.new(key,mode,IV=iv)
+</I>&gt;<i>
+</I>&gt;<i> I'm getting
+</I>&gt;<i> Traceback (most recent call last):
+</I>&gt;<i>   File &quot;./tester.py&quot;, line 405, in testBlock5
+</I>&gt;<i>     ciphere = DES3.new(key,mode,IV=iv)
+</I>&gt;<i>   File &quot;/usr/lib64/python3.3/site-packages/Crypto/Cipher/DES3.py&quot;,
+</I>&gt;<i> line 114, in new
+</I>&gt;<i>     return DES3Cipher(key, *args, **kwargs)
+</I>&gt;<i>   File &quot;/usr/lib64/python3.3/site-packages/Crypto/Cipher/DES3.py&quot;,
+</I>&gt;<i> line 76, in __init__
+</I>&gt;<i>     blockalgo.BlockAlgo.__init__(self, _DES3, key, *args, **kwargs)
+</I>&gt;<i>   File &quot;/usr/lib64/python3.3/site-packages/Crypto/Cipher/blockalgo.py&quot;,
+</I>&gt;<i> line 155, in __init__
+</I>&gt;<i>     raise ValueError(&quot;MODE_OPENPGP requires an IV&quot;)
+</I>&gt;<i> ValueError: MODE_OPENPGP requires an IV
+</I>&gt;<i>
+</I>&gt;<i> Am I wrong in my usage or is the code incorrect please
+</I>&gt;<i> wrt iv parameter?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Tia
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dave Pawson
+</I>&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;<i> Docbook FAQ.
+</I>&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000736.html">[pycrypto] DES3 problem
+</A></li>
+	<LI>Next message: <A HREF="000738.html">[pycrypto] DES3 problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#737">[ date ]</a>
+              <a href="thread.html#737">[ thread ]</a>
+              <a href="subject.html#737">[ subject ]</a>
+              <a href="author.html#737">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

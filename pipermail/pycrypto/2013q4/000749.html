@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] AES, MODE_CTR
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20AES%2C%20MODE_CTR&In-Reply-To=%3CCAGfyce0iDJxF17dUcF26T%3D1nP%2BHs9kDmLmXSN%3D93yuN4HDF%3D9Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000748.html">
+   <LINK REL="Next"  HREF="000750.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] AES, MODE_CTR</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20AES%2C%20MODE_CTR&In-Reply-To=%3CCAGfyce0iDJxF17dUcF26T%3D1nP%2BHs9kDmLmXSN%3D93yuN4HDF%3D9Q%40mail.gmail.com%3E"
+       TITLE="[pycrypto] AES, MODE_CTR">helderijs at gmail.com
+       </A><BR>
+    <I>Thu Dec  5 11:41:05 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000748.html">[pycrypto] AES, MODE_CTR
+</A></li>
+        <LI>Next message: <A HREF="000750.html">[pycrypto] AES, MODE_CTR
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#749">[ date ]</a>
+              <a href="thread.html#749">[ thread ]</a>
+              <a href="subject.html#749">[ subject ]</a>
+              <a href="author.html#749">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i>Thanks Richard. Now working
+</I>&gt;<i>   def test_AES5(self):
+</I>&gt;<i>        pt=b' '*10
+</I>&gt;<i>        ctr=Counter.new(128)
+</I>&gt;<i>        iv = Random.new().read(AES.block_size)
+</I>&gt;<i>        cipher = AES.new(b' '*16, AES.MODE_CTR, IV=iv, counter=ctr)
+</I>&gt;<i>        ct = cipher.encrypt(pt)
+</I>&gt;<i>        ctrr=Counter.new(128)
+</I>&gt;<i>        decipher = AES.new(b' '*16, AES.MODE_CTR, IV=iv, counter=ctrr)
+</I>&gt;<i>        ptr = decipher.decrypt(ct)
+</I>&gt;<i>        self.assertEqual(pt,ptr)
+</I>&gt;<i> iv added as suggested.
+</I>
+Actually, the IV parameter is ignored in Counter mode.
+If you want to add a nonce to the counter block you must pass it to
+the Counter class:
+
+  nonce = Random.new().read(8)
+  ctr = Counter.new(64, nonce)
+  cipher = AES.new(b' '*16, AES.MODE_CTR, counter=ctr)
+
+The counter block is then made up by 64 bits of nonce and 64 bits of counter.
+
+PS: I think I get 1 out of 3 messages out of this mailing list.
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000748.html">[pycrypto] AES, MODE_CTR
+</A></li>
+	<LI>Next message: <A HREF="000750.html">[pycrypto] AES, MODE_CTR
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#749">[ date ]</a>
+              <a href="thread.html#749">[ thread ]</a>
+              <a href="subject.html#749">[ subject ]</a>
+              <a href="author.html#749">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

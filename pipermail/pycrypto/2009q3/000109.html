@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] _RSA.py and generate_py
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20_RSA.py%20and%20generate_py&In-Reply-To=b2a653cf0905272150p302de21esccb9950b249e372f%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000108.html">
+   <LINK REL="Next"  HREF="000110.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] _RSA.py and generate_py</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20_RSA.py%20and%20generate_py&In-Reply-To=b2a653cf0905272150p302de21esccb9950b249e372f%40mail.gmail.com"
+       TITLE="[pycrypto] _RSA.py and generate_py">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Aug  3 19:41:50 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000108.html">[pycrypto] DES/DES3/XOR/etc removal
+</A></li>
+        <LI>Next message: <A HREF="000110.html">[pycrypto] ANN: PyCrypto 2.1.0 alpha 1 released
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#109">[ date ]</a>
+              <a href="thread.html#109">[ thread ]</a>
+              <a href="subject.html#109">[ subject ]</a>
+              <a href="author.html#109">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, May 27, 2009 at 09:50:07PM -0700, Anthony Honstain wrote:
+&gt;<i>In the generate_py function of lib/Crypto/PublicKey/_RSA.py , it would
+</I>&gt;<i>appear to be possible that the the primes p and q can be generated such that
+</I>&gt;<i>the GCD( 65537, (p-1)(q-1)) != 1 which would result in a unusable key. If
+</I>&gt;<i>anyone can clarify this it would be greatly appreciated.
+</I>
+I haven't looked into this claim yet, but I've filed a bug report:
+
+     <A HREF="https://bugs.launchpad.net/pycrypto/+bug/408660">https://bugs.launchpad.net/pycrypto/+bug/408660</A>
+
+Note that we'll also have to check _fastmath.c, which might use a different 
+algorithm.
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000108.html">[pycrypto] DES/DES3/XOR/etc removal
+</A></li>
+	<LI>Next message: <A HREF="000110.html">[pycrypto] ANN: PyCrypto 2.1.0 alpha 1 released
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#109">[ date ]</a>
+              <a href="thread.html#109">[ thread ]</a>
+              <a href="subject.html#109">[ subject ]</a>
+              <a href="author.html#109">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

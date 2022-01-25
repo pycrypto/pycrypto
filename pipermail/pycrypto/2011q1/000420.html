@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Py3k changes - rebase
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Py3k%20changes%20-%20rebase&In-Reply-To=20110130023127.GA2710%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000417.html">
+   <LINK REL="Next"  HREF="000421.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Py3k changes - rebase</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Py3k%20changes%20-%20rebase&In-Reply-To=20110130023127.GA2710%40rivest.dlitz.net"
+       TITLE="[pycrypto] Py3k changes - rebase">sbehrens at gmx.li
+       </A><BR>
+    <I>Sat Feb 19 06:05:28 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000417.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+        <LI>Next message: <A HREF="000421.html">[pycrypto] Py3k changes - rebase
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#420">[ date ]</a>
+              <a href="thread.html#420">[ thread ]</a>
+              <a href="subject.html#420">[ subject ]</a>
+              <a href="author.html#420">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dwayne,
+
+
+&gt;<i> No, each commit should be a distinct change (and each distinct change
+</I>&gt;<i> should have its own commit).  Having separate commits for the following
+</I>&gt;<i> makes sense:
+</I>&gt;<i>
+</I>&gt;<i>       - Replace tabs with spaces
+</I>&gt;<i>       - Py3K _fastmath.c support
+</I>&gt;<i>       - Change _fastmath.c to compile with VC++
+</I>&gt;<i>       - add MPIR support
+</I>&gt;<i>       - Add Ron Rivest Test
+</I>&gt;<i>       - Add unit tests for Crypto.Random.random
+</I>&gt;<i>       - Update documentation with current state of security of hash and
+</I>&gt;<i>         cipher functions.
+</I>&gt;<i>       - Update documentation with Python 3.x notes.
+</I>&gt;<i>       - Add unit test for AllOrNothing
+</I>&gt;<i>       - Fix AllOrNothing and random.sample()
+</I>
+I took a stab at just a portion of this, the first _fastmath.c changes. 
+The result is that I have a lot of conflicts, and after resolving those, 
+I have code that won't compile.
+
+I can't easily untangle these changes: The additional unit tests either 
+presume that the py3k compatibility layer is there, or are needed to 
+make the library work under py3k.
+
+I have a limited amount of enthusiasm for fixing that which already 
+works, so it fits into a neater order. Here's my compromise proposal:
+
+I will change the unit tests to wrap the test vectors in a different 
+place, instead of wrapping the literals, as we had discussed.
+
+And I will give you a branch with one commit that has all of the changes 
+that were made.
+
+I understand the desire for incremental commits. I can keep it in mind 
+in future, with the better understanding of git that I now have. For 
+this py3k change, though, the amount of work needed to attempt to 
+&quot;unravel&quot; the change and bring it in order is too great for me to want 
+to tackle it. The best I can offer is the compromise above.
+
+I could go on - I'll refrain. Hope to hear from you soon.
+
+Thorsten
+
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000417.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+	<LI>Next message: <A HREF="000421.html">[pycrypto] Py3k changes - rebase
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#420">[ date ]</a>
+              <a href="thread.html#420">[ thread ]</a>
+              <a href="subject.html#420">[ subject ]</a>
+              <a href="author.html#420">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

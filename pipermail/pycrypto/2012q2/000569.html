@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20/%20OAEP%20-%20ValueError%3A%20Plaintext%20is%20too%20long.&In-Reply-To=%3CCAF%2B3j-utzrT4WZSXC1%3DsZxNxE6WVF8Pufudp8y17PexuberPGA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000568.html">
+   <LINK REL="Next"  HREF="000573.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.</H1>
+    <B>Antonio Teixeira</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20/%20OAEP%20-%20ValueError%3A%20Plaintext%20is%20too%20long.&In-Reply-To=%3CCAF%2B3j-utzrT4WZSXC1%3DsZxNxE6WVF8Pufudp8y17PexuberPGA%40mail.gmail.com%3E"
+       TITLE="[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.">eagle.antonio at gmail.com
+       </A><BR>
+    <I>Thu Apr 12 12:34:06 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000568.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+        <LI>Next message: <A HREF="000573.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#569">[ date ]</a>
+              <a href="thread.html#569">[ thread ]</a>
+              <a href="subject.html#569">[ subject ]</a>
+              <a href="author.html#569">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Legrandin thank you for your help.
+When i have time i will put something on pastebin so it can serve as
+example for future members that require this type of solution :)
+
+Regards
+A/T
+
+2012/4/11 Legrandin &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">gooksankoo at hoiptorrow.mailexpire.com</A>&gt;
+
+&gt;<i> &gt; So after a small search i found out that if i increase the RSA Modulus
+</I>&gt;<i> i'm
+</I>&gt;<i> &gt; able to encrypt larger number of bits ( makes sense )  but this feels
+</I>&gt;<i> dirty.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; What do your guys recommend ?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Breaking the data in chunks and encrypting part by part joining it all
+</I>&gt;<i> in a
+</I>&gt;<i> &gt; buffer and send it down the socket all in one with the other server
+</I>&gt;<i> &gt; decrypting part by part and merging the data again ?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; P.S - I dont mind fishing by myself just trying to understand the best
+</I>&gt;<i> &quot;way
+</I>&gt;<i> &gt; / more correct way &quot; to do it :)
+</I>&gt;<i>
+</I>&gt;<i> Hi Antonio,
+</I>&gt;<i>
+</I>&gt;<i> Increasing the RSA key length is not &quot;dirty&quot;: it simply increases
+</I>&gt;<i> security (and incidentally useful payload size) at the expense of
+</I>&gt;<i> decryption speed.
+</I>&gt;<i> If decryption speed is not that important to you, and you have a clear
+</I>&gt;<i> idea on how long you data can be at most, go ahead and increase the
+</I>&gt;<i> key size. The time you gain by taking this approach can be spent on
+</I>&gt;<i> important tasks like making the private key secure, or adding some
+</I>&gt;<i> form of authentication to your protocol.
+</I>&gt;<i>
+</I>&gt;<i> The &quot;proper&quot; way to do encryption would be to create a random AES
+</I>&gt;<i> session key (16 bytes), encrypt it with RSA (hopefully at least 2048
+</I>&gt;<i> bit long), send it, pad the data, encrypt it with AES, send it.
+</I>&gt;<i> Additionally, you should also sign the data and send the signature
+</I>&gt;<i> along.
+</I>&gt;<i>
+</I>&gt;<i> At the receiving end, you decrypt the session key with RSA, decrypt
+</I>&gt;<i> the data with AES, unpad the data, and verify its signature.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20120412/91c526c7/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20120412/91c526c7/attachment.html</A>&gt;
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000568.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+	<LI>Next message: <A HREF="000573.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#569">[ date ]</a>
+              <a href="thread.html#569">[ thread ]</a>
+              <a href="subject.html#569">[ subject ]</a>
+              <a href="author.html#569">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

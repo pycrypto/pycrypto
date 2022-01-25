@@ -1,0 +1,38 @@
+<tt>
+All&nbsp;good&nbsp;stuff,&nbsp;thanks&nbsp;Dave&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Thu,&nbsp;Nov&nbsp;10,&nbsp;2011&nbsp;at&nbsp;10:26&nbsp;AM,&nbsp;Dave&nbsp;Pawson&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&amp;lt;&lt;a&nbsp;href=&quot;mailto:dave.pawson@gmail.com&quot;&gt;dave.pawson@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex;&quot;&gt;<br>
+&lt;div&nbsp;class=&quot;im&quot;&gt;On&nbsp;10&nbsp;November&nbsp;2011&nbsp;18:18,&nbsp;Dean&nbsp;Macinskas&nbsp;&amp;lt;&lt;a&nbsp;href=&quot;mailto:dmacinskas@geobridge.net&quot;&gt;dmacinskas@geobridge.net&lt;/a&gt;&amp;gt;&nbsp;wrote:&lt;br&gt;<br>
+&amp;gt;&nbsp;All&nbsp;blocks&nbsp;need&nbsp;to&nbsp;be&nbsp;16&nbsp;bytes.&nbsp; So&nbsp;for&nbsp;example,&nbsp;if&nbsp;the&nbsp;file&nbsp;is&nbsp;2,000,005&lt;br&gt;<br>
+&amp;gt;&nbsp;bytes,&nbsp;you&amp;#39;d&nbsp;encrypt&nbsp;125,000&nbsp;16-byte&nbsp;blocks;&nbsp;you&nbsp;then&nbsp;have&nbsp;5&nbsp;bytes&nbsp;left&lt;br&gt;<br>
+&amp;gt;&nbsp;over,&nbsp;to&nbsp;which&nbsp;you&amp;#39;d&nbsp;add&nbsp;11&nbsp;padding&nbsp;bytes,&nbsp;which&nbsp;can&nbsp;be&nbsp;any&nbsp;binary&nbsp;value&nbsp;and&lt;br&gt;<br>
+&amp;gt;&nbsp;then&nbsp;encrypt&nbsp;that&nbsp;last&nbsp;block.&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;def&nbsp;_lazysecret(secret,&nbsp;blocksize=32,&nbsp;padding=&amp;#39;}&amp;#39;):&lt;br&gt;<br>
+&nbsp; &nbsp; &amp;quot;&amp;quot;&amp;quot;pads&nbsp;secret&nbsp;if&nbsp;not&nbsp;legal&nbsp;AES&nbsp;block&nbsp;size&nbsp;(16,&nbsp;24,&nbsp;32)&amp;quot;&amp;quot;&amp;quot;&lt;br&gt;<br>
+&nbsp; &nbsp; if&nbsp;not&nbsp;len(secret)&nbsp;in&nbsp;(16,&nbsp;24,&nbsp;32):&lt;br&gt;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; return&nbsp;secret&nbsp;+&nbsp;(blocksize&nbsp;-&nbsp;len(secret))&nbsp;*&nbsp;padding&lt;br&gt;<br>
+&nbsp; &nbsp; return&nbsp;secret&lt;br&gt;<br>
+&lt;br&gt;<br>
+Python&nbsp;makes&nbsp;it&nbsp;quite&nbsp;easy.&lt;br&gt;<br>
+&nbsp; The&nbsp;reason&nbsp;I&nbsp;started&nbsp;to&nbsp;use&nbsp;it!&lt;br&gt;<br>
+Thanks&nbsp;to&lt;br&gt;<br>
+src&nbsp;&lt;a&nbsp;href=&quot;http://www.turnkeylinux.org/blog/python-symmetric-encryption&quot;&nbsp;target=&quot;_blank&quot;&gt;http://www.turnkeylinux.org/blog/python-symmetric-encryption&lt;/a&gt;&lt;br&gt;<br>
+&lt;br&gt;<br>
+great&nbsp;piece&nbsp;of&nbsp;software.&lt;br&gt;<br>
+&lt;br&gt;<br>
+regards&lt;br&gt;<br>
+&lt;font&nbsp;color=&quot;#888888&quot;&gt;&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;br&gt;<br>
+--&lt;br&gt;<br>
+Dave&nbsp;Pawson&lt;br&gt;<br>
+XSLT&nbsp;XSL-FO&nbsp;FAQ.&lt;br&gt;<br>
+Docbook&nbsp;FAQ.&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://www.dpawson.co.uk&quot;&nbsp;target=&quot;_blank&quot;&gt;http://www.dpawson.co.uk&lt;/a&gt;&lt;br&gt;<br>
+&lt;/font&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&nbsp;class=&quot;h5&quot;&gt;_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;/div&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;<br>
+
+</tt>

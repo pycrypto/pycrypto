@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Pycrypto working with python 3.0 or 3.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20working%20with%20python%203.0%20or%203.1&In-Reply-To=SNT132-w7D83651907ACA4DFEB8C7B12B0%40phx.gbl">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000213.html">
+   <LINK REL="Next"  HREF="000212.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Pycrypto working with python 3.0 or 3.1</H1>
+    <B>Christoph Tapler</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20working%20with%20python%203.0%20or%203.1&In-Reply-To=SNT132-w7D83651907ACA4DFEB8C7B12B0%40phx.gbl"
+       TITLE="[pycrypto] Pycrypto working with python 3.0 or 3.1">christoph.tapler at gmx.net
+       </A><BR>
+    <I>Sun Apr 11 04:32:58 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000213.html">[pycrypto] Digest and MAC parameters with PBKDF2()
+</A></li>
+        <LI>Next message: <A HREF="000212.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#214">[ date ]</a>
+              <a href="thread.html#214">[ thread ]</a>
+              <a href="subject.html#214">[ subject ]</a>
+              <a href="author.html#214">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+Fyi, I have adapted the test suite and now I am at least able to execute 
+it on Python 3.1. However, around 99% of all tests are fail. Moreover, 
+at the end of the test suite execution, Python crashes.
+
+Hope to find some time to look into the issues. Anyway, if somebody 
+wants to have the patch, please let me know.
+
+Cheers,
+Christoph
+
+On 18.03.2010 02:57, Grail Dane wrote:
+
+&gt;<i> Hi Christoph
+</I>&gt;<i>
+</I>&gt;<i> So I tried the suggestion below but still received the error about
+</I>&gt;<i> import from non-package :(
+</I>&gt;<i>
+</I>&gt;<i> I changed it to read:
+</I>&gt;<i>
+</I>&gt;<i> from Crypto.SelfTest.Cipher import common
+</I>&gt;<i> return common.make_block_tests(AES, &quot;AES&quot;, test_data)
+</I>&gt;<i>
+</I>&gt;<i> and it does not error on that but now presents me with a segfault :(
+</I>&gt;<i>
+</I>&gt;<i> So I seem to have gone from bad to worse. So I am hoping someone on this
+</I>&gt;<i> list might be able to suggest how I can track the fault to find out what
+</I>&gt;<i> is wrong now??
+</I>&gt;<i>
+</I>&gt;<i> Cheers
+</I>&gt;<i> Grail
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000213.html">[pycrypto] Digest and MAC parameters with PBKDF2()
+</A></li>
+	<LI>Next message: <A HREF="000212.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#214">[ date ]</a>
+              <a href="thread.html#214">[ thread ]</a>
+              <a href="subject.html#214">[ subject ]</a>
+              <a href="author.html#214">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

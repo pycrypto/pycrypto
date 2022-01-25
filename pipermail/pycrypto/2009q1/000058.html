@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] synchronisation 2 computers'databases
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20synchronisation%202%20computers%27databases&In-Reply-To=BAY118-W3181B57F053E79E4459CD7FFC60%40phx.gbl">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000057.html">
+   <LINK REL="Next"  HREF="000059.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] synchronisation 2 computers'databases</H1>
+    <B>Bill Broadley</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20synchronisation%202%20computers%27databases&In-Reply-To=BAY118-W3181B57F053E79E4459CD7FFC60%40phx.gbl"
+       TITLE="[pycrypto] synchronisation 2 computers'databases">bill at broadley.org
+       </A><BR>
+    <I>Fri Jan 30 00:34:47 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000057.html">[pycrypto] synchronisation 2 computers'databases
+</A></li>
+        <LI>Next message: <A HREF="000059.html">[pycrypto] synchronisation 2 computers'databases
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#58">[ date ]</a>
+              <a href="thread.html#58">[ thread ]</a>
+              <a href="subject.html#58">[ subject ]</a>
+              <a href="author.html#58">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>frendy zhang wrote:
+&gt;<i> i am currently working on synchronisation. I have 2 or more &quot;projectA&quot; in different computers and i would like to synchronise all the entries in the database from different computers when few entries are added into database. 
+</I>&gt;<i> so at the end, all the computer would have the same entries in the database 
+</I>&gt;<i> Do u have any example that could help me with this function? 
+</I>&gt;<i> Thanks in Advance 
+</I>
+Not sure how this relates to pycrypto.  But if you keep a unique UID per row,
+and a last updated field per row it becomes very straight forward to do a:
+select from table where update_time&gt;last_sync
+
+So server A says:
+  server B, send me all records updated since X
+
+Then server B says:
+  server A, send me all records updated since X
+
+Then you can use a flag for deleted records, an additional table, or even just
+a queue, then don't purge a record till you are sure both sides are aware of the.
+
+You didn't mention your database, but be careful not to use auto increment, or
+if you do don't use that as a key/index.
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000057.html">[pycrypto] synchronisation 2 computers'databases
+</A></li>
+	<LI>Next message: <A HREF="000059.html">[pycrypto] synchronisation 2 computers'databases
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#58">[ date ]</a>
+              <a href="thread.html#58">[ thread ]</a>
+              <a href="subject.html#58">[ subject ]</a>
+              <a href="author.html#58">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

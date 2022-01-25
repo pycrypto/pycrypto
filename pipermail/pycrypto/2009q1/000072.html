@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] PyCrypto AND Crypt_RSA integration
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%20AND%20Crypt_RSA%20integration&In-Reply-To=20090211003252.GA14085%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000067.html">
+   <LINK REL="Next"  HREF="000062.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] PyCrypto AND Crypt_RSA integration</H1>
+    <B>Mauricio Arozi</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%20AND%20Crypt_RSA%20integration&In-Reply-To=20090211003252.GA14085%40rivest.dlitz.net"
+       TITLE="[pycrypto] PyCrypto AND Crypt_RSA integration">mauricioarozi at gmail.com
+       </A><BR>
+    <I>Thu Feb 12 21:47:15 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000067.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+        <LI>Next message: <A HREF="000062.html">[pycrypto] Buffer overflow in ARC2.new() with len(key) &gt; 128 bytes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#72">[ date ]</a>
+              <a href="thread.html#72">[ thread ]</a>
+              <a href="subject.html#72">[ subject ]</a>
+              <a href="author.html#72">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Yes, I noticed that, I'm using 2048 in production, and I'll start using
+urandom too. But that's not my problem, currently I'm focusing on other
+things, so I'll just wait, meanwhile if someone find anything, it's all
+good, otherwise when I need I'll ask for that other RSA implementation.
+
+On Tue, Feb 10, 2009 at 10:32 PM, Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;wrote:
+
+&gt;<i> On Mon, Feb 09, 2009 at 10:36:40AM -0200, Mauricio Arozi wrote:
+</I>&gt;<i> &gt;Am I helpless?
+</I>&gt;<i>
+</I>&gt;<i> I think the problem is that you're asking the mailing list for the *Python*
+</I>&gt;<i> Cryptography Toolkit about how to use an obscure *PHP* library.
+</I>&gt;<i>
+</I>&gt;<i> We can help with the Python side of things.  I wouldn't expect the people
+</I>&gt;<i> here to know and/or care much about PHP.
+</I>&gt;<i>
+</I>&gt;<i> &gt; According to this site: <A HREF="http://pajhome.org.uk/crypt/rsa/rsa.html,">http://pajhome.org.uk/crypt/rsa/rsa.html,</A> and
+</I>&gt;<i> &gt; yet others, the e(exponent?) is used for the public key, and d for the
+</I>&gt;<i> &gt; private key.
+</I>&gt;<i>
+</I>&gt;<i> The notation I've seen most often is something like this:
+</I>&gt;<i>
+</I>&gt;<i>     n - modulus (public)
+</I>&gt;<i>     e - public exponent
+</I>&gt;<i>     d - private exponent
+</I>&gt;<i>     (n, e) - public key
+</I>&gt;<i>     (n, d) - private key
+</I>&gt;<i>     (p, q) - the (private) primes from which the keypair is derived.
+</I>&gt;<i>
+</I>&gt;<i> PyCrypto uses a similar notation:
+</I>&gt;<i>
+</I>&gt;<i>     from Crypto.PublicKey import RSA
+</I>&gt;<i>      import os
+</I>&gt;<i>
+</I>&gt;<i>     # DO NOT USE RandomPool (see below)
+</I>&gt;<i>     keypair = RSA.generate(2048, os.urandom)
+</I>&gt;<i>
+</I>&gt;<i>     print &quot;PRIVATE KEYPAIR:&quot;
+</I>&gt;<i>     print &quot;n:&quot;, keypair.n   # modulus (public)
+</I>&gt;<i>     print &quot;e:&quot;, keypair.e   # public exponent
+</I>&gt;<i>     print &quot;d:&quot;, keypair.d   # private exponent
+</I>&gt;<i>     print &quot;p:&quot;, keypair.p   # prime (private)
+</I>&gt;<i>     print &quot;q:&quot;, keypair.q   # other prime (private)
+</I>&gt;<i>     print &quot;u:&quot;, keypair.u   # I forget what this for (but it's private)
+</I>&gt;<i>
+</I>&gt;<i>     pub = keypair.publickey()
+</I>&gt;<i>     print &quot;&quot;
+</I>&gt;<i>     print &quot;PUBLIC KEY:&quot;
+</I>&gt;<i>     print &quot;n (pub):&quot;, pub.n     # modulus (public)
+</I>&gt;<i>     print &quot;e (pub):&quot;, pub.e     # public exponent
+</I>&gt;<i>     print &quot;d (pub):&quot;, pub.d     # raises an exception
+</I>&gt;<i>     print &quot;p (pub):&quot;, pub.p     # raises an exception
+</I>&gt;<i>     print &quot;q (pub):&quot;, pub.q     # raises an exception
+</I>&gt;<i>     print &quot;u (pub):&quot;, pub.u     # raises an exception
+</I>&gt;<i>
+</I>&gt;<i> This outputs the following:
+</I>&gt;<i>
+</I>&gt;<i>     PRIVATE KEYPAIR:
+</I>&gt;<i>     n: 277...[truncated]
+</I>&gt;<i>     e: 65537
+</I>&gt;<i>     d: 232...[truncated]
+</I>&gt;<i>     p: 159...[truncated]
+</I>&gt;<i>     q: 174...[truncated]
+</I>&gt;<i>     u: 125...[truncated]
+</I>&gt;<i>
+</I>&gt;<i>     PUBLIC KEY:
+</I>&gt;<i>     n (pub): 277...[truncated]
+</I>&gt;<i>     e (pub): 65537
+</I>&gt;<i>     d (pub):
+</I>&gt;<i>     Traceback (most recent call last):
+</I>&gt;<i>       File &quot;x.py&quot;, line 21, in ?
+</I>&gt;<i>         print &quot;d (pub):&quot;, pub.d
+</I>&gt;<i>       File &quot;/usr/lib/python2.4/site-packages/Crypto/PublicKey/RSA.py&quot;, line
+</I>&gt;<i> 154, in __getattr__
+</I>&gt;<i>         return getattr(self.key, attr)
+</I>&gt;<i>     AttributeError: rsaKey instance has no attribute 'd'
+</I>&gt;<i>
+</I>&gt;<i> &gt; My problem is that while using PyCrypto to generate both public and
+</I>&gt;<i> &gt; private keys, the e(exponent?) is always the same.
+</I>&gt;<i>
+</I>&gt;<i> Mads Kiilerich already talked a bit about this, but I won't go into detail.
+</I>&gt;<i> What you're describing here is normal, and it really helps improve the
+</I>&gt;<i> performance of encryption/verification.
+</I>&gt;<i>
+</I>&gt;<i> If you're concerned about the security of using RSA, I suggest reading Dan
+</I>&gt;<i> Boneh's 1999 article, &quot;Twenty years of attacks on the RSA cryptosystem&quot;:
+</I>&gt;<i>
+</I>&gt;<i>     <A HREF="http://crypto.stanford.edu/~dabo/abstracts/RSAattack-survey.html&lt;http://crypto.stanford.edu/%7Edabo/abstracts/RSAattack-survey.html">http://crypto.stanford.edu/~dabo/abstracts/RSAattack-survey.html&lt;http://crypto.stanford.edu/%7Edabo/abstracts/RSAattack-survey.html</A>&gt;
+</I>&gt;<i>
+</I>&gt;<i> &gt;So in simple words, I only need to be able to encrypt/decrypt sign and
+</I>&gt;<i> &gt;verify signs on php and python, simultaneously, if possible, using RSA
+</I>&gt;<i> &gt;algo.
+</I>&gt;<i>
+</I>&gt;<i> PyCrypto's PublicKey package is very low-level, so people shouldn't use it
+</I>&gt;<i> directly unless they REALLY know what they are doing.  Mere mortals should
+</I>&gt;<i> use a separate library in addition to PyCrypto for that.  You should never
+</I>&gt;<i> do anything like this:
+</I>&gt;<i>
+</I>&gt;<i> &gt;privkeyA = RSA.generate(512, rpool.get_bytes)
+</I>&gt;<i> &gt;pubkeyA = privkeyA.publickey()
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;msg = 'This is the secret phrase testing.'
+</I>&gt;<i> &gt;msgc = pubkeyA.encrypt(msg, '')
+</I>&gt;<i>
+</I>&gt;<i> That is called &quot;textbook RSA&quot;, and it's insecure.  (Also, it uses a 512-bit
+</I>&gt;<i> key, which is way too short, but I assume that's just for demonstration.)
+</I>&gt;<i> I strongly recommend looking at PKCS#1v2 (also known as RSAES-OAEP).
+</I>&gt;<i> PyCrypto doesn't include an implementation yet, but Sergey Chernov
+</I>&gt;<i> mentioned that he is working on one.
+</I>&gt;<i>
+</I>&gt;<i> Also, I noticed in your code that you used RandomPool.  Don't.  RandomPool
+</I>&gt;<i> is a security disaster, and it will be removed from future versions.  See
+</I>&gt;<i> the following messages:
+</I>&gt;<i>
+</I>&gt;<i>     <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html">http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html</A>
+</I>&gt;<i>     <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2008q3/000020.html">http://lists.dlitz.net/pipermail/pycrypto/2008q3/000020.html</A>
+</I>&gt;<i>
+</I>&gt;<i> I hope you find the above information helpful.
+</I>&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i>  - Dwayne
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+</I>&gt;<i>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</I>&gt;<i>  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090213/d009e7ea/attachment-0001.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090213/d009e7ea/attachment-0001.htm</A> 
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000067.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+	<LI>Next message: <A HREF="000062.html">[pycrypto] Buffer overflow in ARC2.new() with len(key) &gt; 128 bytes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#72">[ date ]</a>
+              <a href="thread.html#72">[ thread ]</a>
+              <a href="subject.html#72">[ subject ]</a>
+              <a href="author.html#72">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

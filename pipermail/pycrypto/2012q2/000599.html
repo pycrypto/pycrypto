@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Typo or bug?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Typo%20or%20bug%3F&In-Reply-To=%3CCAEncD4faNrPm0NJG90nVVSDK1P5y6r6UXyD5iWgWyGKWxLg6kg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000612.html">
+   <LINK REL="Next"  HREF="000600.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Typo or bug?</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Typo%20or%20bug%3F&In-Reply-To=%3CCAEncD4faNrPm0NJG90nVVSDK1P5y6r6UXyD5iWgWyGKWxLg6kg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Typo or bug?">dave.pawson at gmail.com
+       </A><BR>
+    <I>Tue Jun 26 02:52:32 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000612.html">[pycrypto] problems with testing PyCrypto Module
+</A></li>
+        <LI>Next message: <A HREF="000600.html">[pycrypto] Typo or bug?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#599">[ date ]</a>
+              <a href="thread.html#599">[ thread ]</a>
+              <a href="subject.html#599">[ subject ]</a>
+              <a href="author.html#599">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Just re-installing pycrypto for my own use. Version 2.6, with python 2.7
+(src src <A HREF="http://www.turnkeylinux.org/blog/python-symmetric-encryption">http://www.turnkeylinux.org/blog/python-symmetric-encryption</A> )
+def _lazysecret(secret, blocksize=16, padding='}'):
+   &quot;&quot;&quot;pads secret if not legal AES block size (16, 24, 32)&quot;&quot;&quot;
+   if not len(secret) in (16, 24, 32):
+       return secret + (blocksize - len(secret)) * padding
+   return secret
+
+def decrypt(ciphertext, secret, lazy=True, checksum=True):
+   &quot;&quot;&quot;decrypt ciphertext with secret
+   ciphertext  - encrypted content to decrypt
+   secret      - secret to decrypt ciphertext
+   lazy        - pad secret if less than legal blocksize (default: True)
+   checksum    - verify crc32 byte encoded checksum (default: True)
+   returns plaintext
+   &quot;&quot;&quot;
+   secret = _lazysecret(secret) if lazy else secret
+   print secret, len(secret)
+   encobj = AES.new(secret, AES.MODE_CFB)
+   plaintext = encobj.decrypt(ciphertext)
+   if checksum:
+       crc, plaintext = (plaintext[-4:], plaintext[:-4])
+       if not crc == struct.pack(&quot;i&quot;, zlib.crc32(plaintext)):
+           print &quot;Checksum error&quot;
+           raise CheckSumError(&quot;checksum mismatch&quot;)
+   return plaintext
+
+
+run this and I get
+
+dkdkkd}}}}}}}}}} 16
+Traceback (most recent call last):
+ File &quot;/files/python/fp/fp.py&quot;, line 148, in &lt;module&gt;
+   domain(sys.argv)
+ File &quot;/files/python/fp/fp.py&quot;, line 131, in domain
+   str=decrypt(encContents,secret)
+ File &quot;/files/python/fp/fp.py&quot;, line 97, in decrypt
+   encobj = AES.new(secret, AES.MODE_CFB)
+ File &quot;/usr/lib64/python2.7/site-packages/Crypto/Cipher/AES.py&quot;, line
+95, in new
+   return AESCipher(key, *args, **kwargs)
+ File &quot;/usr/lib64/python2.7/site-packages/Crypto/Cipher/AES.py&quot;, line
+59, in __init__
+   blockalgo.BlockAlgo.__init__(self, _AES, key, *args, **kwargs)
+ File &quot;/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py&quot;,
+line 141, in __init__
+   self._cipher = factory.new(key, *args, **kwargs)
+ValueError: IV must be 16 bytes long
+
+
+So although the 'secret' is 16 bytes long, I'm getting a report saying it isn't?
+
+Any suggestions please.
+
+TIA
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000612.html">[pycrypto] problems with testing PyCrypto Module
+</A></li>
+	<LI>Next message: <A HREF="000600.html">[pycrypto] Typo or bug?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#599">[ date ]</a>
+              <a href="thread.html#599">[ thread ]</a>
+              <a href="subject.html#599">[ subject ]</a>
+              <a href="author.html#599">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

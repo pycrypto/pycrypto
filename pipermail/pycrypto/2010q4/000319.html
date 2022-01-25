@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Once again: Python3 with PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=20101224021815.GG11168%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000314.html">
+   <LINK REL="Next"  HREF="000320.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Once again: Python3 with PyCrypto</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=20101224021815.GG11168%40rivest.dlitz.net"
+       TITLE="[pycrypto] Once again: Python3 with PyCrypto">sbehrens at gmx.li
+       </A><BR>
+    <I>Thu Dec 23 22:51:33 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000314.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000320.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#319">[ date ]</a>
+              <a href="thread.html#319">[ thread ]</a>
+              <a href="subject.html#319">[ subject ]</a>
+              <a href="author.html#319">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 12/23/2010 9:18 PM, Dwayne C. Litzenberger wrote:
+&gt;<i> Also, down the road, I could be convinced to drop Python 2.1 support, if I
+</I>&gt;<i> had some concrete examples showing that the result would be substantially
+</I>&gt;<i> less error-prone, easier to maintain, etc.
+</I>So far, it doesn't look like that's needed. dict.has_key() cannot be 
+replaced with &quot;in&quot; for 2.1, but 2to3 seems to handle it fine.
+
+Does &quot;setup.py test&quot; touch all of the pycrypto library, or only part of 
+it? That is, can I rely on its output to know whether a conversion to 
+Python 3.x was successful?
+
+I can use some assistance with asn1.py. It defines the magic slice 
+methods. These are gone for good in Python 3.x (deprecated since Python 
+2.0). My understanding is that in Python 2.x, it's still necessary to 
+define these, as they may get called when the parent class has them. 
+Fair enough.
+
+As I understand it, in 3.x, the item methods are called with a sequence 
+wherever a slice method would have been called before. Given this code, 
+then, is that going to cause issues? Do the item methods need to be 
+changed to make sure the class still behaves as expected under 3.x?
+
+class DerSequence(DerObject):
+     def __init__(self):
+         DerObject.__init__(self, 'SEQUENCE')
+         self._seq = []
+     def __delitem__(self, n):
+         del self._seq[n]
+     def __getitem__(self, n):
+         return self._seq[n]
+     def __setitem__(self, key, value):
+         self._seq[key] = value
+     def __setslice__(self,i,j,sequence):
+         self._seq[i:j] = sequence
+     def __delslice__(self,i,j):
+         del self._seq[i:j]
+     def __getslice__(self, i, j):
+         return self._seq[max(0, i):max(0, j)]
+     def __len__(self):
+         return len(self._seq)
+     def append(self, item):
+         return self._seq.append(item)
+
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000314.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000320.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#319">[ date ]</a>
+              <a href="thread.html#319">[ thread ]</a>
+              <a href="subject.html#319">[ subject ]</a>
+              <a href="author.html#319">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Cannot build 2.4
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Cannot%20build%202.4&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000493.html">
+   <LINK REL="Next"  HREF="000495.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Cannot build 2.4</H1>
+    <B>Paul Hoffman</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Cannot%20build%202.4&In-Reply-To="
+       TITLE="[pycrypto] Cannot build 2.4">paul.hoffman at gmail.com
+       </A><BR>
+    <I>Tue Nov  1 14:15:37 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000493.html">[pycrypto] IMP : reg current work in twisted matrix
+</A></li>
+        <LI>Next message: <A HREF="000495.html">[pycrypto] Cannot build 2.4
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#494">[ date ]</a>
+              <a href="thread.html#494">[ thread ]</a>
+              <a href="subject.html#494">[ subject ]</a>
+              <a href="author.html#494">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Greetings again. Just pulled down 2.4, trying to install it on a
+Ubuntu box with &quot;python setup.py build&quot;. However:
+
+. . .
+gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes
+-fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/
+-I/usr/include/python2.6 -c src/MD2.c -o
+build/temp.linux-x86_64-2.6/src/MD2.o
+src/MD2.c:31:20: error: Python.h: No such file or directory
+src/MD2.c:120: error: expected '=', ',', ';', 'asm' or '__attribute__'
+before '*' token
+In file included from src/MD2.c:136:
+src/hash_template.c:48: error: expected specifier-qualifier-list
+before 'PyObject_HEAD'
+src/hash_template.c:59: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before 'PyTypeObject'
+src/hash_template.c: In function 'newALGobject':
+src/hash_template.c:69: warning: implicit declaration of function 'PyObject_New'
+src/hash_template.c:69: error: expected expression before 'ALGobject'
+src/hash_template.c: At top level:
+src/hash_template.c:76: error: expected ')' before '*' token
+src/hash_template.c:91: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before '*' token
+src/hash_template.c:110: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before '*' token
+src/hash_template.c:122: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before '*' token
+src/hash_template.c:162: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before '*' token
+src/hash_template.c:181: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before 'ALG_methods'
+src/hash_template.c:189: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before '*' token
+src/hash_template.c:214: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before 'ALGtype'
+src/hash_template.c:265: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before '*' token
+src/hash_template.c:298: error: array type has incomplete element type
+src/hash_template.c:299: error: 'PyCFunction' undeclared here (not in
+a function)
+src/hash_template.c:299: error: expected '}' before 'ALG_new'
+src/hash_template.c: In function 'initMD2':
+src/hash_template.c:333: error: 'PyObject' undeclared (first use in
+this function)
+src/hash_template.c:333: error: (Each undeclared identifier is
+reported only once
+src/hash_template.c:333: error: for each function it appears in.)
+src/hash_template.c:333: error: 'm' undeclared (first use in this function)
+src/hash_template.c:345: error: 'ALGtype' undeclared (first use in
+this function)
+src/hash_template.c:345: error: 'PyType_Type' undeclared (first use in
+this function)
+src/hash_template.c:346: warning: implicit declaration of function
+'Py_InitModule'
+src/hash_template.c:350: error: 'o' undeclared (first use in this function)
+src/hash_template.c:350: warning: implicit declaration of function
+'PyInt_FromLong'
+src/hash_template.c:350: warning: implicit declaration of function
+'PyDict_SetItemString'
+src/hash_template.c:350: warning: implicit declaration of function
+'PyModule_GetDict'
+src/hash_template.c:350: warning: implicit declaration of function 'Py_DECREF'
+src/hash_template.c:354: warning: implicit declaration of function
+'PyErr_Occurred'
+src/hash_template.c:355: warning: implicit declaration of function
+'Py_FatalError'
+error: command 'gcc' failed with exit status 1
+
+Clues appreciated.
+
+--Paul Hoffman
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000493.html">[pycrypto] IMP : reg current work in twisted matrix
+</A></li>
+	<LI>Next message: <A HREF="000495.html">[pycrypto] Cannot build 2.4
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#494">[ date ]</a>
+              <a href="thread.html#494">[ thread ]</a>
+              <a href="subject.html#494">[ subject ]</a>
+              <a href="author.html#494">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

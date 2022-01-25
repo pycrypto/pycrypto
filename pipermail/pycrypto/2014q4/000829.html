@@ -1,0 +1,394 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Unable to compile PyCrypto 2.6.1 on windows + msvc compiler + python 3.4.2 64bit, missing python imports?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Unable%20to%20compile%20PyCrypto%202.6.1%20on%20windows%20%2B%20msvc%0A%20compiler%20%2B%20python%203.4.2%2064bit%2C%20missing%20python%20imports%3F&In-Reply-To=%3CCAKK78jn%3DV7RmTyaS4uwe3eysnsF%3D9B5vEo6pa67rkuBRm4XKBw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000830.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Unable to compile PyCrypto 2.6.1 on windows + msvc compiler + python 3.4.2 64bit, missing python imports?</H1>
+    <B>Mark Grandi</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Unable%20to%20compile%20PyCrypto%202.6.1%20on%20windows%20%2B%20msvc%0A%20compiler%20%2B%20python%203.4.2%2064bit%2C%20missing%20python%20imports%3F&In-Reply-To=%3CCAKK78jn%3DV7RmTyaS4uwe3eysnsF%3D9B5vEo6pa67rkuBRm4XKBw%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Unable to compile PyCrypto 2.6.1 on windows + msvc compiler + python 3.4.2 64bit, missing python imports?">markgrandi at gmail.com
+       </A><BR>
+    <I>Thu Dec 18 00:31:03 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000830.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#829">[ date ]</a>
+              <a href="thread.html#829">[ thread ]</a>
+              <a href="subject.html#829">[ subject ]</a>
+              <a href="author.html#829">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I seem to have the same problem as Alec Taylor, the last message in this
+mailing list thread:
+<A HREF="http://comments.gmane.org/gmane.comp.python.general/705881">http://comments.gmane.org/gmane.comp.python.general/705881</A>
+
+Basically, i'm unable to compile PyCrypto 2.6.1 on windows. I have visual
+studio 2010 professional installed, but it appears to be not including the
+python 3.4 'include' directory in the link.exe call, but it does correctly
+pass it in to cl.exe... so i'm confused on whats going wrong. This also
+happens if i use pip to install pycrypto, same error. Any ideas? I managed
+to build a wheel of pycrypto on my old windows install, but I'm just
+frustrated that I can't compile it on my new computer.
+
+my python install :
+
+Python 3.4.2 (v3.4.2:ab2c023a9432, Oct  6 2014, 22:16:31) [MSC v.1600 64
+bit (AMD64)] on win32
+
+The full output of the command:
+######################################################################
+
+
+C:\Users\Mark Grandi\Downloads\pycrypto-2.6.1&gt;py -3 setup.py build
+running build
+running build_py
+creating build
+creating build\lib.win-amd64-3.4
+creating build\lib.win-amd64-3.4\Crypto
+copying lib\Crypto\pct_warnings.py -&gt; build\lib.win-amd64-3.4\Crypto
+copying lib\Crypto\__init__.py -&gt; build\lib.win-amd64-3.4\Crypto
+creating build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\hashalgo.py -&gt; build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\HMAC.py -&gt; build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\MD2.py -&gt; build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\MD4.py -&gt; build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\MD5.py -&gt; build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\RIPEMD.py -&gt; build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\SHA.py -&gt; build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\SHA224.py -&gt; build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\SHA256.py -&gt; build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\SHA384.py -&gt; build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\SHA512.py -&gt; build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\__init__.py -&gt; build\lib.win-amd64-3.4\Crypto\Hash
+creating build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\AES.py -&gt; build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\ARC2.py -&gt; build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\ARC4.py -&gt; build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\blockalgo.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\Blowfish.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\CAST.py -&gt; build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\DES.py -&gt; build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\DES3.py -&gt; build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\PKCS1_OAEP.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\PKCS1_v1_5.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\XOR.py -&gt; build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Cipher
+creating build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\asn1.py -&gt; build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\Counter.py -&gt; build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\number.py -&gt; build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\py3compat.py -&gt; build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\randpool.py -&gt; build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\RFC1751.py -&gt; build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\winrandom.py -&gt; build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\_number_new.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\__init__.py -&gt; build\lib.win-amd64-3.4\Crypto\Util
+creating build\lib.win-amd64-3.4\Crypto\Random
+copying lib\Crypto\Random\random.py -&gt; build\lib.win-amd64-3.4\Crypto\Random
+copying lib\Crypto\Random\_UserFriendlyRNG.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Random
+copying lib\Crypto\Random\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Random
+creating build\lib.win-amd64-3.4\Crypto\Random\Fortuna
+copying lib\Crypto\Random\Fortuna\FortunaAccumulator.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Random\Fortuna
+copying lib\Crypto\Random\Fortuna\FortunaGenerator.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Random\Fortuna
+copying lib\Crypto\Random\Fortuna\SHAd256.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Random\Fortuna
+copying lib\Crypto\Random\Fortuna\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Random\Fortuna
+creating build\lib.win-amd64-3.4\Crypto\Random\OSRNG
+copying lib\Crypto\Random\OSRNG\fallback.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Random\OSRNG
+copying lib\Crypto\Random\OSRNG\nt.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Random\OSRNG
+copying lib\Crypto\Random\OSRNG\posix.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Random\OSRNG
+copying lib\Crypto\Random\OSRNG\rng_base.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Random\OSRNG
+copying lib\Crypto\Random\OSRNG\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Random\OSRNG
+creating build\lib.win-amd64-3.4\Crypto\SelfTest
+copying lib\Crypto\SelfTest\st_common.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest
+copying lib\Crypto\SelfTest\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\common.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_AES.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_ARC2.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_ARC4.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_Blowfish.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_CAST.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_DES.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_DES3.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_pkcs1_15.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_pkcs1_oaep.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_XOR.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\common.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_HMAC.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_MD2.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_MD4.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_MD5.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_RIPEMD.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_SHA.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_SHA224.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_SHA256.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_SHA384.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_SHA512.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Protocol
+copying lib\Crypto\SelfTest\Protocol\test_AllOrNothing.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Protocol
+copying lib\Crypto\SelfTest\Protocol\test_chaffing.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Protocol
+copying lib\Crypto\SelfTest\Protocol\test_KDF.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Protocol
+copying lib\Crypto\SelfTest\Protocol\test_rfc1751.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Protocol
+copying lib\Crypto\SelfTest\Protocol\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Protocol
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\PublicKey
+copying lib\Crypto\SelfTest\PublicKey\test_DSA.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\PublicKey
+copying lib\Crypto\SelfTest\PublicKey\test_ElGamal.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\PublicKey
+copying lib\Crypto\SelfTest\PublicKey\test_importKey.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\PublicKey
+copying lib\Crypto\SelfTest\PublicKey\test_RSA.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\PublicKey
+copying lib\Crypto\SelfTest\PublicKey\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\PublicKey
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Random
+copying lib\Crypto\SelfTest\Random\test_random.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random
+copying lib\Crypto\SelfTest\Random\test_rpoolcompat.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random
+copying lib\Crypto\SelfTest\Random\test__UserFriendlyRNG.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random
+copying lib\Crypto\SelfTest\Random\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Random\Fortuna
+copying lib\Crypto\SelfTest\Random\Fortuna\test_FortunaAccumulator.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\Fortuna
+copying lib\Crypto\SelfTest\Random\Fortuna\test_FortunaGenerator.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\Fortuna
+copying lib\Crypto\SelfTest\Random\Fortuna\test_SHAd256.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\Fortuna
+copying lib\Crypto\SelfTest\Random\Fortuna\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\Fortuna
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Random\OSRNG
+copying lib\Crypto\SelfTest\Random\OSRNG\test_fallback.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\OSRNG
+copying lib\Crypto\SelfTest\Random\OSRNG\test_generic.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\OSRNG
+copying lib\Crypto\SelfTest\Random\OSRNG\test_nt.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\OSRNG
+copying lib\Crypto\SelfTest\Random\OSRNG\test_posix.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\OSRNG
+copying lib\Crypto\SelfTest\Random\OSRNG\test_winrandom.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\OSRNG
+copying lib\Crypto\SelfTest\Random\OSRNG\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\OSRNG
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Util
+copying lib\Crypto\SelfTest\Util\test_asn1.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Util
+copying lib\Crypto\SelfTest\Util\test_Counter.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Util
+copying lib\Crypto\SelfTest\Util\test_number.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Util
+copying lib\Crypto\SelfTest\Util\test_winrandom.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Util
+copying lib\Crypto\SelfTest\Util\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Util
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Signature
+copying lib\Crypto\SelfTest\Signature\test_pkcs1_15.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Signature
+copying lib\Crypto\SelfTest\Signature\test_pkcs1_pss.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Signature
+copying lib\Crypto\SelfTest\Signature\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\SelfTest\Signature
+creating build\lib.win-amd64-3.4\Crypto\Protocol
+copying lib\Crypto\Protocol\AllOrNothing.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Protocol
+copying lib\Crypto\Protocol\Chaffing.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Protocol
+copying lib\Crypto\Protocol\KDF.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Protocol
+copying lib\Crypto\Protocol\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Protocol
+creating build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\DSA.py -&gt;
+build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\ElGamal.py -&gt;
+build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\pubkey.py -&gt;
+build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\RSA.py -&gt;
+build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\_DSA.py -&gt;
+build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\_RSA.py -&gt;
+build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\_slowmath.py -&gt;
+build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\PublicKey
+creating build\lib.win-amd64-3.4\Crypto\Signature
+copying lib\Crypto\Signature\PKCS1_PSS.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Signature
+copying lib\Crypto\Signature\PKCS1_v1_5.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Signature
+copying lib\Crypto\Signature\__init__.py -&gt;
+build\lib.win-amd64-3.4\Crypto\Signature
+Skipping implicit fixer: buffer
+Skipping implicit fixer: idioms
+Skipping implicit fixer: set_literal
+Skipping implicit fixer: ws_comma
+running build_ext
+warning: GMP or MPIR library not found; Not building
+Crypto.PublicKey._fastmath.
+building 'Crypto.Random.OSRNG.winrandom' extension
+creating build\temp.win-amd64-3.4
+creating build\temp.win-amd64-3.4\Release
+creating build\temp.win-amd64-3.4\Release\src
+c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\BIN\cl.exe /c
+/nologo /Ox /MD /W3 /GS- /DNDEBUG -Isrc/ -Isrc/inc-msvc/
+-IC:\Python34\include -IC:\Python34\include /Tcsrc/winrand.c
+/Fobuild\temp.win-amd64-3.4\Release\src/winrand.obj
+winrand.c
+c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\BIN\link.exe /DLL
+/nologo /INCREMENTAL:NO /LIBPATH:C:\Python34\libs
+/LIBPATH:C:\Python34\PCbuild\amd64 ws2_32.lib advapi32.lib
+/EXPORT:PyInit_winrandom build\temp.win-amd64-3.4\Release\src/winrand.obj
+/OUT:build\lib.win-amd64-3.4\Crypto\Random\OSRNG\winrandom.pyd
+/IMPLIB:build\temp.win-amd64-3.4\Release\src\winrandom.lib
+/MANIFESTFILE:build\temp.win-amd64-3.4\Release\src\winrandom.pyd.manifest
+   Creating library build\temp.win-amd64-3.4\Release\src\winrandom.lib and
+object build\temp.win-amd64-3.4\Release\src\winrandom.exp
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyObject_Free referenced in function _WRdealloc
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyExc_SystemError referenced in function _WRdealloc
+winrand.obj : error LNK2019: unresolved external symbol __imp__PyErr_Format
+referenced in function _WRdealloc
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyExc_TypeError referenced in function _WRdealloc
+winrand.obj : error LNK2019: unresolved external symbol
+__imp___PyObject_New referenced in function _winrandom_new
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyArg_ParseTupleAndKeywords referenced in function _winrandom_new
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyBytes_FromStringAndSize referenced in function _WR_get_bytes
+winrand.obj : error LNK2019: unresolved external symbol __imp__PyMem_Free
+referenced in function _WR_get_bytes
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyErr_NoMemory referenced in function _WR_get_bytes
+winrand.obj : error LNK2019: unresolved external symbol __imp__PyMem_Malloc
+referenced in function _WR_get_bytes
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyErr_SetString referenced in function _WR_get_bytes
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyExc_ValueError referenced in function _WR_get_bytes
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyArg_ParseTuple referenced in function _WR_get_bytes
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyObject_GenericGetAttr referenced in function _WRgetattro
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyLong_FromLong referenced in function _WRgetattro
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyUnicode_CompareWithASCIIString referenced in function _WRgetattro
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__Py_FatalError referenced in function _PyInit_winrandom
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyErr_Occurred referenced in function _PyInit_winrandom
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyModule_AddStringConstant referenced in function _PyInit_winrandom
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyModule_AddIntConstant referenced in function _PyInit_winrandom
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyModule_Create2 referenced in function _PyInit_winrandom
+winrand.obj : error LNK2019: unresolved external symbol __imp__PyType_Ready
+referenced in function _PyInit_winrandom
+build\lib.win-amd64-3.4\Crypto\Random\OSRNG\winrandom.pyd : fatal error
+LNK1120: 22 unresolved externals
+error: command 'c:\\Program Files (x86)\\Microsoft Visual Studio
+10.0\\VC\\BIN\\link.exe' failed with exit status 1120
+#############################################################################################
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20141218/4f835cf1/attachment-0001.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20141218/4f835cf1/attachment-0001.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000830.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#829">[ date ]</a>
+              <a href="thread.html#829">[ thread ]</a>
+              <a href="subject.html#829">[ subject ]</a>
+              <a href="author.html#829">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Public Key encryption of files
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20Key%20encryption%20of%20files&In-Reply-To=20111111135434.A3951448059%40nhs-pd1e-esg109.ad1.nhs.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000510.html">
+   <LINK REL="Next"  HREF="000513.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Public Key encryption of files</H1>
+    <B>John Matthew</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20Key%20encryption%20of%20files&In-Reply-To=20111111135434.A3951448059%40nhs-pd1e-esg109.ad1.nhs.net"
+       TITLE="[pycrypto] Public Key encryption of files">john at compunique.com
+       </A><BR>
+    <I>Fri Nov 11 14:22:46 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000510.html">[pycrypto] Public Key encryption of files
+</A></li>
+        <LI>Next message: <A HREF="000513.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#512">[ date ]</a>
+              <a href="thread.html#512">[ thread ]</a>
+              <a href="subject.html#512">[ subject ]</a>
+              <a href="author.html#512">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Yes, I agree 100%, this is something I'm not taking lightly, that's why I'm
+trying to get it right the first time :).
+
+Ill checkout your link, thank you very much for your input.
+
+J
+
+On Fri, Nov 11, 2011 at 5:54 AM, Imran Azad &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">Imran.Azad at bthft.nhs.uk</A>&gt; wrote:
+
+&gt;<i>  *Please note my new email address <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">Imran.Azad at bthft.nhs.uk</A>*
+</I>&gt;<i>
+</I>&gt;<i>  John,
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I don&#8217;t mean to steal your thunder, I noticed you asked a question about
+</I>&gt;<i> the suitability of public key cryptography for file encryption and the use
+</I>&gt;<i> of padding. Unless one is an expert in cryptography I don&#8217;t think it&#8217;s a
+</I>&gt;<i> good idea to encrypt sensitive data using your own scheme as cryptography
+</I>&gt;<i> is very easy to get wrong with catastrophic consequences, even &#8216;experts&#8217;
+</I>&gt;<i> make mistakes. Rather it would be safer to use an established scheme, you
+</I>&gt;<i> also need to think about the integrity of what you are encrypting &#8211;
+</I>&gt;<i> although you may have taken this into account. I am not an expert in
+</I>&gt;<i> cryptography and I appreciate and admire the work that has gone into
+</I>&gt;<i> PyCrypto. I am speaking from past experiences and I thought I would share
+</I>&gt;<i> these with you.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> You may find this link useful:
+</I>&gt;<i> <A HREF="http://security.stackexchange.com/questions/8571/rsa-4096-with-aes-256-encryption-process-using-pycrypto">http://security.stackexchange.com/questions/8571/rsa-4096-with-aes-256-encryption-process-using-pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Kind Regards
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> *From:* <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A> [mailto:
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>] *On Behalf Of *John Matthew
+</I>&gt;<i> *Sent:* 10 November 2011 18:32
+</I>&gt;<i>
+</I>&gt;<i> *To:* PyCrypto discussion list
+</I>&gt;<i> *Subject:* Re: [pycrypto] Public Key encryption of files
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> All good stuff, thanks Dave
+</I>&gt;<i>
+</I>&gt;<i> On Thu, Nov 10, 2011 at 10:26 AM, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i>
+</I>&gt;<i> On 10 November 2011 18:18, Dean Macinskas &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dmacinskas at geobridge.net</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; All blocks need to be 16 bytes.  So for example, if the file is 2,000,005
+</I>&gt;<i> &gt; bytes, you'd encrypt 125,000 16-byte blocks; you then have 5 bytes left
+</I>&gt;<i> &gt; over, to which you'd add 11 padding bytes, which can be any binary value
+</I>&gt;<i> and
+</I>&gt;<i> &gt; then encrypt that last block.
+</I>&gt;<i>
+</I>&gt;<i>  def _lazysecret(secret, blocksize=32, padding='}'):
+</I>&gt;<i>    &quot;&quot;&quot;pads secret if not legal AES block size (16, 24, 32)&quot;&quot;&quot;
+</I>&gt;<i>    if not len(secret) in (16, 24, 32):
+</I>&gt;<i>        return secret + (blocksize - len(secret)) * padding
+</I>&gt;<i>    return secret
+</I>&gt;<i>
+</I>&gt;<i> Python makes it quite easy.
+</I>&gt;<i>  The reason I started to use it!
+</I>&gt;<i> Thanks to
+</I>&gt;<i> src <A HREF="http://www.turnkeylinux.org/blog/python-symmetric-encryption">http://www.turnkeylinux.org/blog/python-symmetric-encryption</A>
+</I>&gt;<i>
+</I>&gt;<i> great piece of software.
+</I>&gt;<i>
+</I>&gt;<i> regards
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dave Pawson
+</I>&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;<i> Docbook FAQ.
+</I>&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Imran Azad
+</I>&gt;<i> Web Content Manager
+</I>&gt;<i> Bradford Teaching Hospitals NHS Foundation Trust
+</I>&gt;<i>
+</I>&gt;<i> Tel: 01274 38 3556
+</I>&gt;<i> Mob: 07535660951
+</I>&gt;<i> Internet: <A HREF="http://www.bradfordhospitals.nhs.uk">http://www.bradfordhospitals.nhs.uk</A>
+</I>&gt;<i>
+</I>&gt;<i> *Your Hospital needs YOU!* We need you to register as a Public, Patient
+</I>&gt;<i> or Staff member and help shape the future of your healthcare. Call 0800 280
+</I>&gt;<i> 2581 to register by phone or you can email
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">bradfordhospitals at capitaregistrars.com</A> and ask to be registered as a new
+</I>&gt;<i> member. For more information about our hospitals and Foundation Trust
+</I>&gt;<i> Membership please visit www.bradfordhospitals.nhs.uk
+</I>&gt;<i> This message is confidential. It may also contain privileged information.
+</I>&gt;<i> The contents of this e-mail and any attachments are intended for the named
+</I>&gt;<i> addressee only. Unless you are the named addressee or authorised to receive
+</I>&gt;<i> the e-mail of the named addressee you may not disclose, use or copy the
+</I>&gt;<i> contents of the e-mail. If you are not the person for whom the message was
+</I>&gt;<i> intended, please notify the sender immediately at Bradford Teaching
+</I>&gt;<i> Hospitals NHS Foundation Trust and delete the material from your computer.
+</I>&gt;<i> You must not use the message for any other purpose, nor disclose its
+</I>&gt;<i> contents to any person other than the intended recipient. Bradford Teaching
+</I>&gt;<i> Hospitals NHS Foundation Trust does not accept responsibility for this
+</I>&gt;<i> message and any views or opinions contained in this e-mail are solely those
+</I>&gt;<i> of the author unless expressly stated otherwise.
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20111111/d48df023/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20111111/d48df023/attachment.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000510.html">[pycrypto] Public Key encryption of files
+</A></li>
+	<LI>Next message: <A HREF="000513.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#512">[ date ]</a>
+              <a href="thread.html#512">[ thread ]</a>
+              <a href="subject.html#512">[ subject ]</a>
+              <a href="author.html#512">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Exporting/importing RSA publickeys ( fixed )
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Exporting/importing%20RSA%20publickeys%20%28%20fixed%20%29&In-Reply-To=4BCB3CFE.8040303%40amberfisharts.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000219.html">
+   <LINK REL="Next"  HREF="000220.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Exporting/importing RSA publickeys ( fixed )</H1>
+    <B>death</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Exporting/importing%20RSA%20publickeys%20%28%20fixed%20%29&In-Reply-To=4BCB3CFE.8040303%40amberfisharts.com"
+       TITLE="[pycrypto] Exporting/importing RSA publickeys ( fixed )">Deathzor at Deathzor.com
+       </A><BR>
+    <I>Mon Apr 19 16:11:46 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000219.html">[pycrypto] Exporting/importing RSA publickeys
+</A></li>
+        <LI>Next message: <A HREF="000220.html">[pycrypto] Exporting/importing RSA publickeys
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#221">[ date ]</a>
+              <a href="thread.html#221">[ thread ]</a>
+              <a href="subject.html#221">[ subject ]</a>
+              <a href="author.html#221">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Tested and working code for anybody reading the mailing list after the
+fact:
+#pwd is the string where encrypting for sending 
+PWD=&quot;encrypt this string for me plz&quot;;
+# Generate private key For this node 
+privatekeyClient = RSA.generate(1024)
+#Generate publickey/identy for this node
+publickeyClient = privatekeyClient.publickey()
+#store the publickey 
+stufftosend = {&quot;e&quot;:publickeyClient.e,&quot;n&quot;:publickeyClient.n} 
+#create a new RSA publickey
+publickeyClient2 = RSA.construct((stufftosend['n'],stufftosend['e']))
+#encrypted_PWD
+encrypted_PWD = publickeyClient2.encrypt(PWD, &quot;&quot;)
+print privatekeyClient.decrypt(encrypted_PWD)
+
+Thnx for the advice. 
+
+
+On Sun, 2010-04-18 at 19:10 +0200, Lorenz Quack wrote:
+&gt;<i> Hello death!
+</I>&gt;<i> 
+</I>&gt;<i> The easiest way is to use the pickle module from the python standard library.
+</I>&gt;<i> untested pseudo code to show the general idea:
+</I>&gt;<i>  &gt;&gt;&gt; key = Crypto.publicKey.RSA.generate(1024)
+</I>&gt;<i>  &gt;&gt;&gt; pubkey = key.pubkey()
+</I>&gt;<i>  &gt;&gt;&gt; pubkey_string = pickle.dumps(pubkey)
+</I>&gt;<i>  &gt;&gt;&gt; socket.send(pubkey_string)
+</I>&gt;<i> and on the other side
+</I>&gt;<i>  &gt;&gt;&gt; pubkey_string = socket.recv()
+</I>&gt;<i>  &gt;&gt;&gt; pubkey = pickle.loads(pubkey_string)
+</I>&gt;<i> 
+</I>&gt;<i> an alternative is to access the relevant attributes of the pubkey and then use the construct method.
+</I>&gt;<i> again untested code:
+</I>&gt;<i>  &gt;&gt;&gt; key = Crypto.publicKey.RSA.generate(1024)
+</I>&gt;<i>  &gt;&gt;&gt; pubkey = key.pubkey()
+</I>&gt;<i>  &gt;&gt;&gt; n, e = key.n, key.e
+</I>&gt;<i>  &gt;&gt;&gt; # send n and e over socket
+</I>&gt;<i> and on the other side
+</I>&gt;<i>  &gt;&gt;&gt; # get n and e from the socket
+</I>&gt;<i>  &gt;&gt;&gt; pubkey = Crypto.publicKey.RSA.construct((n,e))
+</I>&gt;<i> 
+</I>&gt;<i> I hope this points you in the right direction.
+</I>&gt;<i> 
+</I>&gt;<i> sincerely yours
+</I>&gt;<i> //Lorenz
+</I>&gt;<i> 
+</I>&gt;<i> On 04/18/2010 01:18 AM, death wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; i'm just wondering is there a way to import AND export the public keys
+</I>&gt;<i> &gt; from RSA so i can, send the public key over a socket, import it on the
+</I>&gt;<i> &gt; otherside so i can create a &quot;secure&quot; socket ( i know authentication is
+</I>&gt;<i> &gt; not done in this process ).
+</I>&gt;<i> &gt; the socket is still subject to a MIM attack, but this is not the point
+</I>&gt;<i> &gt; at the moment
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; it could be my inability to read the documentation but i found no way to
+</I>&gt;<i> &gt; dump the key, and import it again.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+-- 
+Death 
+
+Email: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">Death at Deathzor.com</A>
+Msn: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">msn at Deathzor.com</A>
+
+
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000219.html">[pycrypto] Exporting/importing RSA publickeys
+</A></li>
+	<LI>Next message: <A HREF="000220.html">[pycrypto] Exporting/importing RSA publickeys
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#221">[ date ]</a>
+              <a href="thread.html#221">[ thread ]</a>
+              <a href="subject.html#221">[ subject ]</a>
+              <a href="author.html#221">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

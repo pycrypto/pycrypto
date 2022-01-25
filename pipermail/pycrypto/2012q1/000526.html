@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Run test suite with /dev/random
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000530.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Run test suite with /dev/random</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To="
+       TITLE="[pycrypto] Run test suite with /dev/random">sebastian+lists at ramacher.at
+       </A><BR>
+    <I>Sun Jan  1 22:08:32 CST 2012</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000530.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#526">[ date ]</a>
+              <a href="thread.html#526">[ thread ]</a>
+              <a href="subject.html#526">[ subject ]</a>
+              <a href="author.html#526">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I'm facing the following issue: in the Debian package of pycrypto we build
+pycrypto for Python 2.6, 2.7 and 3.1 and the debug variants. For all these
+versions and variants the test suite is run during the build. This works fine
+except on the GNU/Hurd build system [1]. There the test suite succeeds for Py
+2.6, 2.7 but fails for Py 3.2 because the system runs out of entropy.
+
+I see two options to fix the issue on the Debian side:
+ * Disable the test suite on GNU/Hurd.
+ * Replace every occurrence of /dev/urandom with /dev/random and run the test
+suite with /dev/random.
+
+I don't like either of these two options. I'd rather prefer an option to specify
+the random number generator that should be used for the test suite. But before
+implementing such an option I'd like to know if this has any chance to be
+accepted into pycrypto.
+
+I'm open to other ideas as well and welcome any help.
+
+Kind regerds
+
+[1]
+<A HREF="https://buildd.debian.org/status/fetch.php?pkg=python-crypto&amp;arch=hurd-i386&amp;ver=2.4.1-1&amp;stamp=1321468390">https://buildd.debian.org/status/fetch.php?pkg=python-crypto&amp;arch=hurd-i386&amp;ver=2.4.1-1&amp;stamp=1321468390</A>
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000530.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#526">[ date ]</a>
+              <a href="thread.html#526">[ thread ]</a>
+              <a href="subject.html#526">[ subject ]</a>
+              <a href="author.html#526">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

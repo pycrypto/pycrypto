@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] compiling on AIX patch
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20compiling%20on%20AIX%20patch&In-Reply-To=%3C1399492522.22128.2.camel%40belmer%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000806.html">
+   <LINK REL="Next"  HREF="000808.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] compiling on AIX patch</H1>
+    <B>Brent S. Elmer Ph.D.</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20compiling%20on%20AIX%20patch&In-Reply-To=%3C1399492522.22128.2.camel%40belmer%3E"
+       TITLE="[pycrypto] compiling on AIX patch">webe3vt at aim.com
+       </A><BR>
+    <I>Wed May  7 12:55:22 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000806.html">[pycrypto] compile on AIX fails
+</A></li>
+        <LI>Next message: <A HREF="000808.html">[pycrypto] #include Python.h
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#807">[ date ]</a>
+              <a href="thread.html#807">[ thread ]</a>
+              <a href="subject.html#807">[ subject ]</a>
+              <a href="author.html#807">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>When building on AIX using the xlc family of compilers, -std=c99 is not
+valid.  Instead it should be -qlanglvl=stdc99.  Here is a patch to
+setup.py to test and apply the change.
+
+$ diff -u setup.py ../../pycrypto-2.6.1/setup.py
+--- setup.py    2013-10-14 17:38:10.000000000 -0400
++++ ../../pycrypto-2.6.1/setup.py       2014-05-07 15:39:32.000000000
+-0400
+@@ -118,8 +118,12 @@
+              self.__add_compiler_option(&quot;-std=c99&quot;)
+  
+              # ... but don't tell that to the aCC compiler on HP-UX
++             #     or the xlc compiler on AIX
+              if self.compiler.compiler_so[0] == 'cc' and
+sys.platform.startswith('hp-ux'):
+                  self.__remove_compiler_option(&quot;-std=c99&quot;)
++             elif self.compiler.compiler_so[0].startswith('xlc') and
+sys.platform.startswith('aix'): 
++                 self.__remove_compiler_option(&quot;-std=c99&quot;)
++                 self.__add_compiler_option(&quot;-qlanglvl=stdc99&quot;)
+  
+              # Make assert() statements always work
+              self.__remove_compiler_option(&quot;-DNDEBUG&quot;)
+
+
+</PRE>
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000806.html">[pycrypto] compile on AIX fails
+</A></li>
+	<LI>Next message: <A HREF="000808.html">[pycrypto] #include Python.h
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#807">[ date ]</a>
+              <a href="thread.html#807">[ thread ]</a>
+              <a href="subject.html#807">[ subject ]</a>
+              <a href="author.html#807">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

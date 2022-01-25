@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Installation on python3
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Installation%20on%20python3&In-Reply-To=%3CCAEncD4dMQz4FK6_6wUf_UHteF1cVDv4KJyBn384CocXBP93hNQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000723.html">
+   <LINK REL="Next"  HREF="000725.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Installation on python3</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Installation%20on%20python3&In-Reply-To=%3CCAEncD4dMQz4FK6_6wUf_UHteF1cVDv4KJyBn384CocXBP93hNQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Installation on python3">dave.pawson at gmail.com
+       </A><BR>
+    <I>Fri Nov 15 00:10:16 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000723.html">[pycrypto] Need your input: Major modernization;	dropping legacy Python support?
+</A></li>
+        <LI>Next message: <A HREF="000725.html">[pycrypto] Installation on python3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#724">[ date ]</a>
+              <a href="thread.html#724">[ thread ]</a>
+              <a href="subject.html#724">[ subject ]</a>
+              <a href="author.html#724">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>setup is Fedora 19, 64 bit.
+
+cmd was pip-python3 install pycrypto
+
+result
+
+...
+creating build/temp.linux-x86_64-3.3
+
+creating build/temp.linux-x86_64-3.3/src
+
+gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe
+-Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector
+--param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.3m -c src/MD2.c -o
+build/temp.linux-x86_64-3.3/src/MD2.o
+
+src/MD2.c:31:20: fatal error: Python.h: No such file or directory
+
+ #include &quot;Python.h&quot;
+
+                    ^
+
+compilation terminated.
+
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+
+error: command 'gcc' failed with exit status 1
+
+Any suggestions please?
+pycrypto installed fine on python 2.7
+
+regards
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000723.html">[pycrypto] Need your input: Major modernization;	dropping legacy Python support?
+</A></li>
+	<LI>Next message: <A HREF="000725.html">[pycrypto] Installation on python3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#724">[ date ]</a>
+              <a href="thread.html#724">[ thread ]</a>
+              <a href="subject.html#724">[ subject ]</a>
+              <a href="author.html#724">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

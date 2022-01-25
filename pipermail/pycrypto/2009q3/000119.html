@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] example
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20example&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000118.html">
+   <LINK REL="Next"  HREF="000120.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] example</H1>
+    <B>avo ga</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20example&In-Reply-To="
+       TITLE="[pycrypto] example">avogatro2007 at googlemail.com
+       </A><BR>
+    <I>Mon Aug 24 08:52:26 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000118.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+        <LI>Next message: <A HREF="000120.html">[pycrypto] example
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#119">[ date ]</a>
+              <a href="thread.html#119">[ thread ]</a>
+              <a href="subject.html#119">[ subject ]</a>
+              <a href="author.html#119">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi:
+
+I can't find any example for DSA or ELGAMAL(with google).
+so i wrote a simple example.
+
+<A HREF="http://www.jabbertor.de/wp-content/uploads/2009/08/pycryptotest.txt">http://www.jabbertor.de/wp-content/uploads/2009/08/pycryptotest.txt</A>
+
+Could someone help to check this?
+maybe some Hint about security or perfoumance?
+The script is not commented, sry for that
+
+#!/usr/bin/env python
+from Crypto.Cipher import AES
+import os,sys,random
+#####################AES
+print &quot;=====AES 256 Demo=====&quot;
+PWD=&quot;&quot;
+Initial16bytes='0123456789ABCDEF'
+
+a=0
+for a in xrange(0,32):
+    b=hex(random.randint(1,16)-1)
+    PWD+=b.replace(&quot;0x&quot;,&quot;&quot;)
+print &quot;AES-key&quot;,PWD
+crypt = AES.new(PWD,AES.MODE_CBC,Initial16bytes)
+
+plain=&quot;blabla what the hack blabla.&quot;
+restbyte = 32-len(plain)%32
+temp=&quot;&quot;
+a=0
+for a in xrange(restbyte):
+    temp+=&quot; &quot;
+
+plain+=temp
+print &quot;text: \n&quot;,plain
+c= crypt.encrypt(plain)
+print &quot;encrypted text: &quot;
+print c.encode(&quot;hex&quot;)
+crypt = AES.new(PWD,AES.MODE_CBC,Initial16bytes)
+print &quot;decrypted text: \n&quot;, crypt.decrypt(c)
+#################### RSA
+print &quot;\n=====RSA 368 Demo=====&quot;
+from Crypto.PublicKey import RSA
+from Crypto.Util.randpool import RandomPool
+rpool = RandomPool()
+
+privatekeyCMS = RSA.generate(368, rpool.get_bytes)
+privatekeyClient = RSA.generate(368, rpool.get_bytes)
+publickeyCMS = privatekeyCMS.publickey()
+publickeyClient = privatekeyClient.publickey()
+
+signed_PWD = privatekeyCMS.sign(PWD,&quot;&quot;)
+enc_PWD = publickeyClient.encrypt(PWD, &quot;&quot;)
+print &quot;with publickeyClient encrypted AES-PWD:&quot;
+print enc_PWD
+print &quot;with privatekeyCMS signed AES-PWD:&quot;
+print signed_PWD
+
+
+dec_PWD= privatekeyClient.decrypt(enc_PWD[0])
+print &quot;identity check:\n&quot;,publickeyCMS.verify(dec_PWD,signed_PWD)
+print &quot;decrypted PWD:\n&quot;,dec_PWD
+
+
+#################### ELGAMAL
+K=&quot;&quot;
+a=0
+for a in xrange(0,16):
+    b=hex(random.randint(1,16)-1)
+    K+=b.replace(&quot;0x&quot;,&quot;&quot;)
+
+
+
+print &quot;\n=====ELGamal 368 Demo=====&quot;
+from Crypto.PublicKey import ElGamal
+from Crypto.Util.randpool import RandomPool
+rpool = RandomPool()
+
+privatekeyCMS = ElGamal.generate(368, rpool.get_bytes)
+privatekeyClient = ElGamal.generate(368, rpool.get_bytes)
+publickeyCMS = privatekeyCMS.publickey()
+publickeyClient = privatekeyClient.publickey()
+
+
+enc_PWD = publickeyClient.encrypt(PWD, K)
+print privatekeyCMS.can_sign()
+signed_PWD = privatekeyCMS.sign(PWD,97)
+print &quot;with publickeyClient encrypted AES-PWD:&quot;
+print enc_PWD
+print &quot;with privatekeyCMS signed AES-PWD:&quot;
+print signed_PWD
+
+
+dec_PWD= privatekeyClient.decrypt(enc_PWD)
+print &quot;identity check:\n&quot;,publickeyCMS.verify(dec_PWD,signed_PWD)
+print &quot;decrypted PWD:\n&quot;,dec_PWD
+
+#################### DSA only sign
+K=&quot;&quot;
+a=0
+for a in xrange(0,16):
+    b=hex(random.randint(1,16)-1)
+    K+=b.replace(&quot;0x&quot;,&quot;&quot;)
+
+print &quot;\n=====DSA 368 Demo=====&quot;
+from Crypto.PublicKey import DSA
+rpool = RandomPool()
+
+privatekeyCMS = DSA.generate(368, rpool.get_bytes)
+publickeyCMS = privatekeyCMS.publickey()
+signed_PWD = privatekeyCMS.sign(PWD,K)
+print &quot;identity check:\n&quot;,publickeyCMS.verify(dec_PWD,signed_PWD)
+print &quot;decrypted PWD from ELGAMAL:\n&quot;,dec_PWD
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090824/e0fe2c33/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090824/e0fe2c33/attachment.htm</A> 
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000118.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+	<LI>Next message: <A HREF="000120.html">[pycrypto] example
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#119">[ date ]</a>
+              <a href="thread.html#119">[ thread ]</a>
+              <a href="subject.html#119">[ subject ]</a>
+              <a href="author.html#119">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

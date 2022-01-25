@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ANN: PyCrypto 2.2 released
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ANN%3A%20PyCrypto%202.2%20released&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000258.html">
+   <LINK REL="Next"  HREF="000262.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ANN: PyCrypto 2.2 released</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ANN%3A%20PyCrypto%202.2%20released&In-Reply-To="
+       TITLE="[pycrypto] ANN: PyCrypto 2.2 released">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Aug  2 16:00:13 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000258.html">[pycrypto] rsa decryption question
+</A></li>
+        <LI>Next message: <A HREF="000262.html">[pycrypto] ANN: PyCrypto 2.2 released
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#259">[ date ]</a>
+              <a href="thread.html#259">[ thread ]</a>
+              <a href="subject.html#259">[ subject ]</a>
+              <a href="author.html#259">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>PyCrypto 2.2 has been released.
+
+This release remains compatible with Python 2.1 through 2.6.  (Python 
+3.x is not yet supported.)  A C99 compiler may be required.
+
+You can download this release from <A HREF="http://www.pycrypto.org/,">http://www.pycrypto.org/,</A> you can ask 
+for it in the cheeseshop, and it has the following SHA256 sums:
+
+9219449bc85ab4f4ff61fc83b0cbe0ec23d46943caab3d5413c6ba52da6f922c *pycrypto-2.2.tar.gz
+0168719105999133374f995bdc9fa6a1be2de65b2ae359eb8e5ef9f433f66af5 *pycrypto-2.2.tar.gz.asc
+
+Please test it and post your experiences to the PyCrypto mailing list:
+
+     <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+
+and/or file bug reports on Launchpad:
+
+     <A HREF="https://bugs.launchpad.net/pycrypto">https://bugs.launchpad.net/pycrypto</A>
+
+Here is the changelog:
+
+   - Deprecated Crypto.Util.number.getRandomNumber(), which had confusing
+     semantics.  It's been replaced by getRandomNBitInteger and
+     getRandomInteger.  (Thanks: Lorenz Quack)
+
+   - Better isPrime() and getPrime() implementations that do a real
+     Rabin-Miller probabilistic primality test (not the phony test we did
+     before with fixed bases).  (Thanks: Lorenz Quack)
+
+   - getStrongPrime() implementation for generating RSA primes.
+     (Thanks: Lorenz Quack)
+
+   - Support for importing and exporting RSA keys in DER and PEM format.
+     (Thanks: Legrandin)
+
+   - Fix PyCrypto when floor division (python -Qnew) is enabled.
+
+   - When building using gcc, use -std=c99 for compilation.  This should
+     fix building on FreeBSD and NetBSD.
+
+Thanks to everyone who helped make this release possible!
+
+Cheers,
+- Dwayne
+
+--
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 221 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100802/3a0fb93a/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100802/3a0fb93a/attachment.pgp</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000258.html">[pycrypto] rsa decryption question
+</A></li>
+	<LI>Next message: <A HREF="000262.html">[pycrypto] ANN: PyCrypto 2.2 released
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#259">[ date ]</a>
+              <a href="thread.html#259">[ thread ]</a>
+              <a href="subject.html#259">[ subject ]</a>
+              <a href="author.html#259">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

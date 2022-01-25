@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] the sad state of pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000032.html">
+   <LINK REL="Next"  HREF="000036.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] the sad state of pycrypto</H1>
+    <B>Stefan Spoettl</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To="
+       TITLE="[pycrypto] the sad state of pycrypto">spoettl at hotmail.com
+       </A><BR>
+    <I>Sat Nov  8 14:48:51 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000032.html">[pycrypto] Another layer of testing
+</A></li>
+        <LI>Next message: <A HREF="000036.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#35">[ date ]</a>
+              <a href="thread.html#35">[ thread ]</a>
+              <a href="subject.html#35">[ subject ]</a>
+              <a href="author.html#35">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dear Python Cryptographers,
+
+this is an urgent call for help and the an attempt to convince all participants of the imperative to reconstruct pycrypto from the get-go.
+
+To start with the good points of Kuchling's library:
+
+With respect to the files block_template.c, hash_template.c and stream_template.c one has to state that the Kuchling library has solid fundation. In my eyes the C code is of high quality. Well structured, readable and reusable. Kuchling was avoding C header files, which reduces the amount of files significantly and is very good to keep the overview.
+Furtheron the possibility to add new (not contained) algorithms is impressive, even if I guess that it's not a such trivial job to add one like this is stated in the documentation.
+
+The weak side of Kuchling's library is resulting mainly from the choice of offered algorithms:
+  1.. Hash algorithm
+  Meantimes the main part of the offered hash algorithms is classified as &quot;weak&quot; or &quot;wounded&quot; by the cryptographic community (see <A HREF="http://www.cryptolounge.org/wiki/Category:Algorithm&lt;about:blank">http://www.cryptolounge.org/wiki/Category:Algorithm&lt;about:blank</A>&gt;). With respect to the recommendations of the NIST and others I propose to offer the following algorithm additionally and directly over the distributed library interface: SHA-224, SHA-256 (C file is allready included), SHA-384, SHA-512, RIPEMD-128, RIPEMD-160, RIPEMD-256, RIPEMD-320, Tiger and WHIRLPOOL. In my eyes this abundance of offered hash algorithms is necessary since hash algorithms are attacked frequently. 
+  2.. Block ciphers
+  Well the choice of block ciphers looks like the US style of life: The winner takes it all! A serious cryptographic library has to offer all five AES finalists (Mars, RC6, Rijndael, Serpent and Twofish). There is no doubt, that each finalist is a great cipher. This five ciphers are the best block ciphers, which the public cryptographic community is offering to the world. 
+  3.. Stream ciphers
+  The choice of offered stream ciphers appears to me like a bad joke. ARC4 is classified as &quot;weak&quot; by the cryptographic community and this incredible offer of XOR - don't know what to say for this (one could read in the bible [Schneier, Applied Cryptography, second edition] on page 198 how it break it; well, Kuchling has red the bible, but never the less he is offering this XOR). In fact at this time pycrypt is not offering any stream cipher that could be used seriously. What a mess!
+  I propose the direct offering of the following stream ciphers (mainly candidates of the eSTREAM project <A HREF="http://www.ecrypt.eu.org/stream/&lt;about:blank">http://www.ecrypt.eu.org/stream/&lt;about:blank</A>&gt;): HC-128, HC-256, Panama (could be used as hash algorithm but as hash algorithm and only as hash algorithm it is classified as &quot;wounded&quot;), Rabbit (if you want to strike algorithms form my list, then this one frist, because it's patented and so only nocommerical use is free), Salsa20, SOSEMANUK and Phelix (this one is made by Schneier &amp; co., on the eSTREAM project was published an attack against Phelix and in result it was classified as &quot;wounded&quot;, but the attack is only working if one uses the &quot;nonce == number used once&quot; (parameter to realize the integrated MAC) more then once. So I think that Phelix is appraised unfair). 
+  4.. Random generator
+  Sorry Dwanye, I disagree with you. A cryptographic library has to offer a cryptographic secure random generator. Without that the library is not useful at all. 
+  5.. Asymmetric algorithms
+  Like stated in Dwanye's wishlist Diffie-Hellman support would be nice.
+To fill the wide algorithmic gap of pycrypt I propose a look at Crypto++ Library of Wei Dai (<A HREF="http://www.cryptopp.com&lt;about:blank">http://www.cryptopp.com&lt;about:blank</A>&gt;). Crypto++ is licensed like pycrypt and recommanded by the NIST. In this C++ library could be found all to fill the gap. But this library has a damned ugly structur and contains more than 333 file. So it will be a lot of work to extract the useful things.
+
+Let's talk serious Dwanyne! Will you update your wishlist?
+
+Stefan
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20081108/0da0db16/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20081108/0da0db16/attachment.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000032.html">[pycrypto] Another layer of testing
+</A></li>
+	<LI>Next message: <A HREF="000036.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#35">[ date ]</a>
+              <a href="thread.html#35">[ thread ]</a>
+              <a href="subject.html#35">[ subject ]</a>
+              <a href="author.html#35">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

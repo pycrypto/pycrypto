@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Error trying to install pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Error%20trying%20to%20install%20pycrypto&In-Reply-To=%3C11FB0A7C2C955741B3706164011FE6511855D03E1F%40DFW1MBX22.mex07a.mlsrvr.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000816.html">
+   <LINK REL="Next"  HREF="000818.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Error trying to install pycrypto</H1>
+    <B>Jason Kojro-Badziak</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Error%20trying%20to%20install%20pycrypto&In-Reply-To=%3C11FB0A7C2C955741B3706164011FE6511855D03E1F%40DFW1MBX22.mex07a.mlsrvr.com%3E"
+       TITLE="[pycrypto] Error trying to install pycrypto">jbadziak at monolith-software.com
+       </A><BR>
+    <I>Fri Aug 29 11:40:39 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000816.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+        <LI>Next message: <A HREF="000818.html">[pycrypto] Error trying to install pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#817">[ date ]</a>
+              <a href="thread.html#817">[ thread ]</a>
+              <a href="subject.html#817">[ subject ]</a>
+              <a href="author.html#817">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello all:
+
+Sorry to bother you, but can anyone give me some help with the following installation error?  I'm not sure how to get this running:
+
+[<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">root at snmp-sim</A> pycrypto-2.6.1]# python /opt/pycrypto-2.6.1/setup.py build
+running build
+running build_py
+running build_ext
+running build_configure
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+building 'Crypto.Hash._MD2' extension
+gcc -pthread -fno-strict-aliasing -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m32 -march=i686 -mtune=atom -fasynchronous-unwind-tables -D_GNU_SOURCE -fPIC -fwrapv -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m32 -march=i686 -mtune=atom -fasynchronous-unwind-tables -D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/python2.6 -c src/MD2.c -o build/temp.linux-i686-2.6/src/MD2.o
+src/MD2.c:31:20: error: Python.h: No such file or directory
+src/MD2.c:131: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+In file included from src/MD2.c:147:
+src/hash_template.c:48: error: expected specifier-qualifier-list before 'PyObject_HEAD'
+src/hash_template.c:59: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'PyTypeObject'
+src/hash_template.c: In function 'newALGobject':
+src/hash_template.c:69: warning: implicit declaration of function 'PyObject_New'
+src/hash_template.c:69: error: expected expression before 'ALGobject'
+src/hash_template.c: At top level:
+src/hash_template.c:76: error: expected ')' before '*' token
+src/hash_template.c:91: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+src/hash_template.c:110: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+src/hash_template.c:122: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+src/hash_template.c:162: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+src/hash_template.c:188: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+src/hash_template.c:190: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'ALG_methods'
+src/hash_template.c:199: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+src/hash_template.c:225: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'ALGtype'
+src/hash_template.c:271: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+src/hash_template.c:304: error: array type has incomplete element type
+src/hash_template.c:305: error: 'PyCFunction' undeclared here (not in a function)
+src/hash_template.c:305: error: expected '}' before 'ALG_new'
+src/hash_template.c: In function 'init_MD2':
+src/hash_template.c:339: error: 'PyObject' undeclared (first use in this function)
+src/hash_template.c:339: error: (Each undeclared identifier is reported only once
+src/hash_template.c:339: error: for each function it appears in.)
+src/hash_template.c:339: error: 'm' undeclared (first use in this function)
+src/hash_template.c:351: error: 'ALGtype' undeclared (first use in this function)
+src/hash_template.c:351: error: 'PyType_Type' undeclared (first use in this function)
+src/hash_template.c:352: warning: implicit declaration of function 'Py_InitModule'
+src/hash_template.c:356: error: 'o' undeclared (first use in this function)
+src/hash_template.c:356: warning: implicit declaration of function 'PyInt_FromLong'
+src/hash_template.c:356: warning: implicit declaration of function 'PyDict_SetItemString'
+src/hash_template.c:356: warning: implicit declaration of function 'PyModule_GetDict'
+src/hash_template.c:356: warning: implicit declaration of function 'Py_DECREF'
+src/hash_template.c:360: warning: implicit declaration of function 'PyErr_Occurred'
+src/hash_template.c:361: warning: implicit declaration of function 'Py_FatalError'
+error: command 'gcc' failed with exit status 1
+
+
+Thank you!
+
+Jason Kojro-Badziak
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20140829/4537f31c/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20140829/4537f31c/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000816.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+	<LI>Next message: <A HREF="000818.html">[pycrypto] Error trying to install pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#817">[ date ]</a>
+              <a href="thread.html#817">[ thread ]</a>
+              <a href="subject.html#817">[ subject ]</a>
+              <a href="author.html#817">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

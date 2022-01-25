@@ -1,0 +1,1227 @@
+From randy.eastland at gmail.com  Sun Jul  8 02:45:27 2012
+From: randy.eastland at gmail.com (Randy Eastland)
+Date: Sun, 8 Jul 2012 00:45:27 -0600
+Subject: [pycrypto] Unrecognized command line option '-mno-cygwin'
+Message-ID: <000001cd5cd5$432a0870$c97e1950$@gmail.com>
+
+I'm trying to build the pycrypto libarary. I browse to the folder where my
+files are extracted an type 'make'. Things progress along just fine for
+quite a few minutes when suddenly I get this error and the process halts:
+
+ 
+
+Cc1.exe: error: unrecognized command line option '-mno-cygwin'
+
+Error: command 'gcc' failed with exit status 1
+
+ 
+
+I'm working in MinGW (not cygwin). Can anybody suggest how to fix this?
+Thanks.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120708/07972543/attachment.html>
+
+From gooksankoo at hoiptorrow.mailexpire.com  Sun Jul  8 06:02:42 2012
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Sun, 8 Jul 2012 12:02:42 +0200
+Subject: [pycrypto] Unrecognized command line option '-mno-cygwin'
+In-Reply-To: <000001cd5cd5$432a0870$c97e1950$@gmail.com>
+References: <000001cd5cd5$432a0870$c97e1950$@gmail.com>
+Message-ID: <CAGfyce2PDLD2VF-A9VR22nZqX4rfbHosxcLkc3Znpko8vHf35w@mail.gmail.com>
+
+> I?m trying to build the pycrypto libarary. I browse to the folder where my
+> files are extracted an type ?make?. Things progress along just fine for
+> quite a few minutes when suddenly I get this error and the process halts:*
+> ***
+>
+> ** **
+>
+> Cc1.exe: error: unrecognized command line option '-mno-cygwin'****
+>
+> Error: command ?gcc? failed with exit status 1****
+>
+> ** **
+>
+> I?m working in MinGW (not cygwin). Can anybody suggest how to fix this?
+> Thanks.
+>
+
+It is a known issue of distutils.
+
+Edit C:\Python2.7.1\Lib\distutils\cygwincompiler.py and remove
+'-mno-cygwin' everywhere.
+
+See here:
+
+http://www.secker.nl/2012/03/08/setup-python-2-7-2-and-mingw-on-windows-xp/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120708/32692e65/attachment.html>
+
+From yaronf.ietf at gmail.com  Mon Jul  9 02:38:11 2012
+From: yaronf.ietf at gmail.com (Yaron Sheffer)
+Date: Mon, 09 Jul 2012 09:38:11 +0300
+Subject: [pycrypto] PyCrypto ElGamal code questions/comments
+Message-ID: <4FFA7C53.2090306@gmail.com>
+
+Hi,
+
+I've been going over the code and I have a few questions. I realize that 
+only few people are using this code, but hey, if it's good enough for a 
+recent CVE :-)
+
+  * The documentation of "generate" says that randfunc returns X random
+    bytes. I think this should be bits.
+  * The "generate" function is way too conservative. We construct p as
+    2*q+1, where both p and q are prime. This makes p a classic "safe
+    prime". It also makes two of the checks redundant: g cannot divide
+    p-1, because only 2 and q divide it. g cannot be 2, and most likely
+    will not be q during the lifetime of the universe. I believe that
+    similarly, g**-1 cannot divide p-1, but my algebra skills are too
+    rusty to prove it.
+  * For the same reasons, there is no need for the loop when
+    constructing K (the secret parameter), e.g. on line #342. You just
+    need to ensure that it is an odd number, otherwise its GCD with p-1
+    would be 2. So choose a random t, 2 < t < q-1, and let K=2*t+1. No
+    need for a loop or for the GCD calculation.
+  * An important check is missing: the message M needs to be less than
+    p, both when signing and certainly when encrypting it.
+
+Thanks,
+
+     Yaron
+
+
+From anil.philip at motorolasolutions.com  Thu Jul 12 12:15:15 2012
+From: anil.philip at motorolasolutions.com (Philip Anil-QBW348)
+Date: Thu, 12 Jul 2012 16:15:15 +0000
+Subject: [pycrypto] problems with testing PyCrypto Module
+In-Reply-To: <DD2926DBB985EB40ADF6462A09062EE508EFEBD9@SN2PRD0410MB359.namprd04.prod.outlook.com>
+References: <DD2926DBB985EB40ADF6462A09062EE508EF8096@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EF849D@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EF84D0@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <F08FBCAD-72C7-45E3-A57D-D91284AAB249@dell.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EFA6BA@SN2PRD0410MB359.namprd04.prod.outlook.com>
+ <4FEC5A11.7010301@ramacher.at>
+ <DD2926DBB985EB40ADF6462A09062EE508EFEBD9@SN2PRD0410MB359.namprd04.prod.outlook.com>
+Message-ID: <DD2926DBB985EB40ADF6462A09062EE508F24CC0@SN2PRD0410MB359.namprd04.prod.outlook.com>
+
+With help from the mpir dev list, I built mpir.lib
+Do you know where I should put it in pycrypto-2.6 ?
+I ask because they are all python files so it is not clear where I should drop in a lib file.
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Philip Anil-QBW348
+Sent: Friday, June 29, 2012 10:20 AM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] problems with testing PyCrypto Module
+
+Thank you for replying. I am wondering whether to build and install the C++ mpir lib http://www.exploringbinary.com/how-to-install-and-run-gmp-on-windows-using-mpir/
+Will that fix the issue? But I am not sure which lib folder I should drop the static lib into, since they all contain python scripts only - not libs.
+
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Sebastian Ramacher
+Sent: Thursday, June 28, 2012 8:20 AM
+To: pycrypto at lists.dlitz.net
+Subject: Re: [pycrypto] problems with testing PyCrypto Module
+
+On 28/06/12 15:17, Philip Anil-QBW348 wrote:
+> But what about the errors - anyone have any suggestions?
+
+That's a known issue: https://bugs.launchpad.net/pycrypto/+bug/1004781
+
+Kind regards
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+
+
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+
+
+
+From anil.philip at motorolasolutions.com  Fri Jul 13 17:32:24 2012
+From: anil.philip at motorolasolutions.com (Philip Anil-QBW348)
+Date: Fri, 13 Jul 2012 21:32:24 +0000
+Subject: [pycrypto] problems with testing PyCrypto Module
+In-Reply-To: <DD2926DBB985EB40ADF6462A09062EE508F24CC0@SN2PRD0410MB359.namprd04.prod.outlook.com>
+References: <DD2926DBB985EB40ADF6462A09062EE508EF8096@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EF849D@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EF84D0@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <F08FBCAD-72C7-45E3-A57D-D91284AAB249@dell.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EFA6BA@SN2PRD0410MB359.namprd04.prod.outlook.com>
+ <4FEC5A11.7010301@ramacher.at>
+ <DD2926DBB985EB40ADF6462A09062EE508EFEBD9@SN2PRD0410MB359.namprd04.prod.outlook.com>
+ <DD2926DBB985EB40ADF6462A09062EE508F24CC0@SN2PRD0410MB359.namprd04.prod.outlook.com>
+Message-ID: <DD2926DBB985EB40ADF6462A09062EE508F25E2A@SN2PRD0410MB359.namprd04.prod.outlook.com>
+
+D:\Cryptolibrary\pycrypto-2.6>python setup.py build
+running build
+running build_py
+running build_ext
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+
+even after editing config.h to Case's thread:
+
+/* Define to 1 if you have the declaration of `mpz_powm', and to 0 if you 
+   don't. */ 
+#define HAVE_DECL_MPZ_POWM 1 
+
+/* Define to 1 if you have the declaration of `mpz_powm_sec', and to 0 if you 
+   don't. */ 
+#define HAVE_DECL_MPZ_POWM_SEC 0 
+
+/* Define to 1 if you have the `gmp' library (-lgmp). */ 
+#undef HAVE_LIBGMP 
+
+/* Define to 1 if you have the `mpir' library (-lmpir). */ 
+#define HAVE_LIBMPIR 1 
+
+/* Define to 1 if you have the <stdint.h> header file. */ 
+#define HAVE_STDINT_H 1
+
+Anil
+
+-----Original Message-----
+From: pycrypto [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Philip Anil-QBW348
+Sent: Thursday, July 12, 2012 11:15 AM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] problems with testing PyCrypto Module
+
+With help from the mpir dev list, I built mpir.lib
+Do you know where I should put it in pycrypto-2.6 ?
+I ask because they are all python files so it is not clear where I should drop in a lib file.
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Philip Anil-QBW348
+Sent: Friday, June 29, 2012 10:20 AM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] problems with testing PyCrypto Module
+
+Thank you for replying. I am wondering whether to build and install the C++ mpir lib http://www.exploringbinary.com/how-to-install-and-run-gmp-on-windows-using-mpir/
+Will that fix the issue? But I am not sure which lib folder I should drop the static lib into, since they all contain python scripts only - not libs.
+
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Sebastian Ramacher
+Sent: Thursday, June 28, 2012 8:20 AM
+To: pycrypto at lists.dlitz.net
+Subject: Re: [pycrypto] problems with testing PyCrypto Module
+
+On 28/06/12 15:17, Philip Anil-QBW348 wrote:
+> But what about the errors - anyone have any suggestions?
+
+That's a known issue: https://bugs.launchpad.net/pycrypto/+bug/1004781
+
+Kind regards
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+
+
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+
+
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+
+
+
+From campadrenalin at gmail.com  Thu Jul 26 21:05:56 2012
+From: campadrenalin at gmail.com (Philip Horger)
+Date: Thu, 26 Jul 2012 18:05:56 -0700
+Subject: [pycrypto] RSA output on long inputs can sometimes be gibberish
+Message-ID: <CAHAkNZ3WBEBgMnDnPX6wKAxubE3EG9d94yBfizc=FRyKAq+22Q@mail.gmail.com>
+
+I'm working on a project that includes a wrapper for cryptographic
+encoding, which lets you express an "encryptor" as a JSON list. Of
+course, this kinda hinges on the underlying cryptography code working,
+and since I'm the sort of person who likes cryptographic privacy but
+doesn't have an expert grasp on it, I make good use of my PyCrypto
+dependency.
+
+However, I *am* having issues regarding the RSA encryptor which delve
+beyond my ken, and which may or may not indicate problems with the
+underlying PyCrypto implementation. I wrote some test code and created
+a bug report in my project:
+
+https://github.com/campadrenalin/EJTP-lib-python/issues/9
+
+The test involves the reversibility of the RSA process, using the
+decrypt function on raw input as a bit of a hack to encrypt with the
+private key (such that the public key can be used to decrypt it). This
+matches the real-world functionality it will be used for, where data
+at the innermost layer of encryption will be encrypted with the
+sender's private key. This may seem silly, but it both acts as an
+obfuscation and saves bandwidth (by accomplishing the intention of a
+signature without the network overhead).
+
+If sending raw data through the decrypt function is the problem, as I
+suspect, then I can change the EJTP protocol to use proper signatures,
+that's no biggy. But if this reveals problems in PyCrypto... I figured
+you guys would want to know.
+
+Anyways, my social anxiety and procrastination have delayed me from
+this for long enough. Thank you for your time, and for PyCrypto being
+excellent.
+
+From sebastian+lists at ramacher.at  Fri Jul 27 06:15:58 2012
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Fri, 27 Jul 2012 12:15:58 +0200
+Subject: [pycrypto] RSA output on long inputs can sometimes be gibberish
+In-Reply-To: <CAHAkNZ3WBEBgMnDnPX6wKAxubE3EG9d94yBfizc=FRyKAq+22Q@mail.gmail.com>
+References: <CAHAkNZ3WBEBgMnDnPX6wKAxubE3EG9d94yBfizc=FRyKAq+22Q@mail.gmail.com>
+Message-ID: <50126A5E.2050407@ramacher.at>
+
+Running the tests fails most of the time with:
+
+$ python -m ejtp.rsatest
+key1 >> key2
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "/usr/lib/python2.7/runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "/tmp/EJTP-lib-python/ejtp/rsatest.py", line 33, in <module>
+    test_run(key1, key2)
+  File "/tmp/EJTP-lib-python/ejtp/rsatest.py", line 27, in test_run
+    ciphertext = encode(plaintext, key1, key2)
+  File "/tmp/EJTP-lib-python/ejtp/rsatest.py", line 19, in encode
+    return reciever.encrypt(sender.decrypt(msg))
+  File "ejtp/util/crypto/rsa.py", line 44, in encrypt
+    value[marker:marker+self.blocksize], "")[0])
+  File "/usr/lib/python2.7/dist-packages/Crypto/PublicKey/RSA.py", line 150, in
+encrypt
+    return pubkey.pubkey.encrypt(self, plaintext, K)
+  File "/usr/lib/python2.7/dist-packages/Crypto/PublicKey/pubkey.py", line 75,
+in encrypt
+    ciphertext=self._encrypt(plaintext, K)
+  File "/usr/lib/python2.7/dist-packages/Crypto/PublicKey/RSA.py", line 224, in
+_encrypt
+    return (self.key._encrypt(c),)
+ValueError: Plaintext too large
+
+The code in ejtp/util/crypto/rsa.py looks like you're not doing proper padding
+and using fixed sized blocks that don't depend on the key parameters. That won't
+work.
+
+You might want to have a look at PKCS#1 OAEP and pycrypto's
+Crypto.Cipher.PKCS1_OAEP module [1].
+
+Kind regards
+
+[1]
+https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.PKCS1_OAEP-module.html
+
+From campadrenalin at gmail.com  Fri Jul 27 12:19:48 2012
+From: campadrenalin at gmail.com (Philip Horger)
+Date: Fri, 27 Jul 2012 09:19:48 -0700
+Subject: [pycrypto] RSA output on long inputs can sometimes be gibberish
+In-Reply-To: <50126A5E.2050407@ramacher.at>
+References: <CAHAkNZ3WBEBgMnDnPX6wKAxubE3EG9d94yBfizc=FRyKAq+22Q@mail.gmail.com>
+ <50126A5E.2050407@ramacher.at>
+Message-ID: <CAHAkNZ2Ffc9kbT2EXqyD1Y5EnFvfy6KCRwkKK5uHBowE9ciqJw@mail.gmail.com>
+
+Fantastic! Thank you very much, this sounds like exactly what I was looking
+for!
+
+On Fri, Jul 27, 2012 at 3:15 AM, Sebastian Ramacher <
+sebastian+lists at ramacher.at> wrote:
+
+> Running the tests fails most of the time with:
+>
+> $ python -m ejtp.rsatest
+> key1 >> key2
+> Traceback (most recent call last):
+>   File "/usr/lib/python2.7/runpy.py", line 162, in _run_module_as_main
+>     "__main__", fname, loader, pkg_name)
+>   File "/usr/lib/python2.7/runpy.py", line 72, in _run_code
+>     exec code in run_globals
+>   File "/tmp/EJTP-lib-python/ejtp/rsatest.py", line 33, in <module>
+>     test_run(key1, key2)
+>   File "/tmp/EJTP-lib-python/ejtp/rsatest.py", line 27, in test_run
+>     ciphertext = encode(plaintext, key1, key2)
+>   File "/tmp/EJTP-lib-python/ejtp/rsatest.py", line 19, in encode
+>     return reciever.encrypt(sender.decrypt(msg))
+>   File "ejtp/util/crypto/rsa.py", line 44, in encrypt
+>     value[marker:marker+self.blocksize], "")[0])
+>   File "/usr/lib/python2.7/dist-packages/Crypto/PublicKey/RSA.py", line
+> 150, in
+> encrypt
+>     return pubkey.pubkey.encrypt(self, plaintext, K)
+>   File "/usr/lib/python2.7/dist-packages/Crypto/PublicKey/pubkey.py", line
+> 75,
+> in encrypt
+>     ciphertext=self._encrypt(plaintext, K)
+>   File "/usr/lib/python2.7/dist-packages/Crypto/PublicKey/RSA.py", line
+> 224, in
+> _encrypt
+>     return (self.key._encrypt(c),)
+> ValueError: Plaintext too large
+>
+> The code in ejtp/util/crypto/rsa.py looks like you're not doing proper
+> padding
+> and using fixed sized blocks that don't depend on the key parameters. That
+> won't
+> work.
+>
+> You might want to have a look at PKCS#1 OAEP and pycrypto's
+> Crypto.Cipher.PKCS1_OAEP module [1].
+>
+> Kind regards
+>
+> [1]
+>
+> https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.PKCS1_OAEP-module.html
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120727/d0dc0285/attachment.html>
+
+From gooksankoo at hoiptorrow.mailexpire.com  Sun Aug  5 09:55:25 2012
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Sun, 5 Aug 2012 15:55:25 +0200
+Subject: [pycrypto] PyCrypto ElGamal code questions/comments
+In-Reply-To: <4FFA7C53.2090306@gmail.com>
+References: <4FFA7C53.2090306@gmail.com>
+Message-ID: <CAGfyce3E8CeMkYVmJeigFu5fig+6ZnidMFM3aD4SQ=yYW6836w@mail.gmail.com>
+
+Hi Yaron,
+
+Some comments inline:
+
+
+>  * The documentation of "generate" says that randfunc returns X random
+>    bytes. I think this should be bits.
+>
+
+I am not 100% sure, but a common idiom in pycrypto is:
+
+"
+if randfunc is None:
+     randfunc = Random.new().read
+"
+
+so randfunc(N) returns N bytes of full entropy.
+
+ * The "generate" function is way too conservative. We construct p as
+>    2*q+1, where both p and q are prime. This makes p a classic "safe
+>    prime". It also makes two of the checks redundant: g cannot divide
+>    p-1, because only 2 and q divide it. g cannot be 2, and most likely
+>    will not be q during the lifetime of the universe. I believe that
+>    similarly, g**-1 cannot divide p-1, but my algebra skills are too
+>    rusty to prove it.
+>
+
+I contributed to that part with a patch. My intention was actually to list
+in the loop
+as many criteria as possible that a generator safe for both Elgamal
+encryption and Elgamal signatures (because .generate() does not know how
+the key will be used) must fulfill.
+
+It's true they are redundant in practice, but I think it's good to leave a
+track behind with the general conditions that one must check, regardless of
+how the domain parameters are computed.
+
+ * For the same reasons, there is no need for the loop when
+>    constructing K (the secret parameter), e.g. on line #342. You just
+>    need to ensure that it is an odd number, otherwise its GCD with p-1
+>    would be 2. So choose a random t, 2 < t < q-1, and let K=2*t+1. No
+>    need for a loop or for the GCD calculation.
+>
+
+In the _sign() method I see only a loop to ensure that residues remains in
+the range 0..p-1. The loop does not contribute to GDC computation.
+
+
+>  * An important check is missing: the message M needs to be less than
+>    p, both when signing and certainly when encrypting it.
+>
+
+True. Note that M must not the message when signing with PyCrypto's
+Elgamal. It must be really be the cryptographic hash of the message.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120805/4792d29c/attachment.html>
+
+From ajabberwok at gmail.com  Wed Sep  5 11:02:11 2012
+From: ajabberwok at gmail.com (Mike Anderson)
+Date: Wed, 5 Sep 2012 10:02:11 -0500
+Subject: [pycrypto] vcvarsall.bat?
+Message-ID: <CA+UwFj19+QzDoPP9nfAOfjz+AXcWGirwZ7Nqs3OTokkqrAYLTQ@mail.gmail.com>
+
+I just tried to install pycrypto on windows and saw this error:
+
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+error: Unable to find vcvarsall.bat
+
+
+I didn't see this mentioned in the readme file, so I'm asking here.
+
+Is there some software dependencies that pycrypto has?
+
+Mike
+
+From sebastian+lists at ramacher.at  Wed Sep  5 11:28:30 2012
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Wed, 05 Sep 2012 17:28:30 +0200
+Subject: [pycrypto] vcvarsall.bat?
+In-Reply-To: <CA+UwFj19+QzDoPP9nfAOfjz+AXcWGirwZ7Nqs3OTokkqrAYLTQ@mail.gmail.com>
+References: <CA+UwFj19+QzDoPP9nfAOfjz+AXcWGirwZ7Nqs3OTokkqrAYLTQ@mail.gmail.com>
+Message-ID: <50476F9E.3090108@ramacher.at>
+
+On 05/09/12 17:02, Mike Anderson wrote:
+> I just tried to install pycrypto on windows and saw this error:
+> 
+> warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+> error: Unable to find vcvarsall.bat
+> 
+> 
+> I didn't see this mentioned in the readme file, so I'm asking here.
+> 
+> Is there some software dependencies that pycrypto has?
+
+Looks like you're facing the problem described at [1].
+
+Kind regards
+
+[1] http://stackoverflow.com/questions/2817869/error-unable-to-find-vcvarsall-bat
+
+From ajabberwok at gmail.com  Wed Sep  5 12:31:31 2012
+From: ajabberwok at gmail.com (Mike Anderson)
+Date: Wed, 5 Sep 2012 11:31:31 -0500
+Subject: [pycrypto] vcvarsall.bat?
+Message-ID: <CA+UwFj2OsBAnqNPZubayLHziHNMCfZ9bJQ4frhi6w6S55B=9=g@mail.gmail.com>
+
+> Looks like you're facing the problem described at [1].
+> Kind regards
+> [1] http://stackoverflow.com/questions/2817869/error-unable-to-find-vcvarsall-bat
+
+So I have to install something called "mingw32" in order to install
+pycrypto on windows, correct?
+
+From sebastian+lists at ramacher.at  Wed Sep  5 12:39:33 2012
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Wed, 05 Sep 2012 18:39:33 +0200
+Subject: [pycrypto] vcvarsall.bat?
+In-Reply-To: <CA+UwFj2OsBAnqNPZubayLHziHNMCfZ9bJQ4frhi6w6S55B=9=g@mail.gmail.com>
+References: <CA+UwFj2OsBAnqNPZubayLHziHNMCfZ9bJQ4frhi6w6S55B=9=g@mail.gmail.com>
+Message-ID: <50478045.8080601@ramacher.at>
+
+On 05/09/12 18:31, Mike Anderson wrote:
+> So I have to install something called "mingw32" in order to install
+> pycrypto on windows, correct?
+
+You need a C compiler. Visual Studio is also an option. There was a free version
+around some years ago. I don't know if that's still the case.
+
+From dmacinskas at geobridge.net  Wed Sep  5 12:46:58 2012
+From: dmacinskas at geobridge.net (Dean Macinskas)
+Date: Wed, 5 Sep 2012 12:46:58 -0400
+Subject: [pycrypto] vcvarsall.bat?
+In-Reply-To: <50478045.8080601@ramacher.at>
+References: <CA+UwFj2OsBAnqNPZubayLHziHNMCfZ9bJQ4frhi6w6S55B=9=g@mail.gmail.com>
+ <50478045.8080601@ramacher.at>
+Message-ID: <8129C8D99AA86D4A9A8BEA3E7DCC806A71EB531B86@exch-mail.bridge.net>
+
+Better, just install a pre-compiled version.  Here's a bunch: http://www.python.org/getit/
+
+-----Original Message-----
+From: pycrypto [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Sebastian Ramacher
+Sent: Wednesday, September 05, 2012 12:40 PM
+To: pycrypto at lists.dlitz.net
+Subject: Re: [pycrypto] vcvarsall.bat?
+
+On 05/09/12 18:31, Mike Anderson wrote:
+> So I have to install something called "mingw32" in order to install 
+> pycrypto on windows, correct?
+
+You need a C compiler. Visual Studio is also an option. There was a free version around some years ago. I don't know if that's still the case.
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From ajabberwok at gmail.com  Wed Sep  5 12:48:42 2012
+From: ajabberwok at gmail.com (Mike Anderson)
+Date: Wed, 5 Sep 2012 11:48:42 -0500
+Subject: [pycrypto] chmod error in Windows 7, when trying to install
+Message-ID: <CA+UwFj3jKkP4P0T9os01VbXwF2RPn8f+zFTTHxjuDczPomiU2w@mail.gmail.com>
+
+I'm using Windows 7 Ultimate, and trying to install pycrypto, but
+getting an error "'chmod' is not recognized as an internal or external
+command."
+
+It happens like so:
+> pip install ssh
+   ...
+copying lib\Crypto\Signature\__init__.py -> build\lib.win32-2.7\Crypto\Signature
+
+
+running build_ext
+
+running build_configure
+
+'chmod' is not recognized as an internal or external command,
+
+operable program or batch file.
+
+Traceback (most recent call last):
+
+  File "<string>", line 1, in <module>
+
+  File "C:\Users\killer\build\pycrypto\setup.py", line 456, in <module>
+
+    core.setup(**kw)
+
+  File "C:\Python27\lib\distutils\core.py", line 152, in setup
+
+    dist.run_commands()
+
+  File "C:\Python27\lib\distutils\dist.py", line 953, in run_commands
+
+    self.run_command(cmd)
+
+  File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+
+    cmd_obj.run()
+
+  File "C:\Python27\lib\site-packages\setuptools\command\install.py", line 53, i
+n run
+
+    return _install.run(self)
+
+  File "C:\Python27\lib\distutils\command\install.py", line 563, in run
+
+    self.run_command('build')
+
+  File "C:\Python27\lib\distutils\cmd.py", line 326, in run_command
+
+    self.distribution.run_command(command)
+
+  File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+
+    cmd_obj.run()
+
+  File "C:\Python27\lib\distutils\command\build.py", line 127, in run
+
+    self.run_command(cmd_name)
+
+  File "C:\Python27\lib\distutils\cmd.py", line 326, in run_command
+
+    self.distribution.run_command(command)
+
+  File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+
+    cmd_obj.run()
+
+  File "C:\Users\killer\build\pycrypto\setup.py", line 251, in run
+
+    self.run_command(cmd_name)
+
+  File "C:\Python27\lib\distutils\cmd.py", line 326, in run_command
+
+    self.distribution.run_command(command)
+
+  File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+
+    cmd_obj.run()
+
+  File "C:\Users\killer\build\pycrypto\setup.py", line 273, in run
+
+    raise RuntimeError("chmod error")
+
+RuntimeError: chmod error
+
+From andyhhp at gmail.com  Wed Sep  5 19:21:04 2012
+From: andyhhp at gmail.com (Andrew Cooper)
+Date: Thu, 06 Sep 2012 00:21:04 +0100
+Subject: [pycrypto] chmod error in Windows 7, when trying to install
+In-Reply-To: <CA+UwFj3jKkP4P0T9os01VbXwF2RPn8f+zFTTHxjuDczPomiU2w@mail.gmail.com>
+References: <CA+UwFj3jKkP4P0T9os01VbXwF2RPn8f+zFTTHxjuDczPomiU2w@mail.gmail.com>
+Message-ID: <5047DE60.3040004@gmail.com>
+
+
+On 05/09/2012 17:48, Mike Anderson wrote:
+> I'm using Windows 7 Ultimate, and trying to install pycrypto, but
+> getting an error "'chmod' is not recognized as an internal or external
+> command."
+>
+> It happens like so:
+>> pip install ssh
+>    ...
+> copying lib\Crypto\Signature\__init__.py -> build\lib.win32-2.7\Crypto\Signature
+>
+>
+> running build_ext
+>
+> running build_configure
+>
+> 'chmod' is not recognized as an internal or external command,
+>
+> operable program or batch file.
+>
+> Traceback (most recent call last):
+>
+>   File "<string>", line 1, in <module>
+>
+>   File "C:\Users\killer\build\pycrypto\setup.py", line 456, in <module>
+>
+>     core.setup(**kw)
+>
+>   File "C:\Python27\lib\distutils\core.py", line 152, in setup
+>
+>     dist.run_commands()
+>
+>   File "C:\Python27\lib\distutils\dist.py", line 953, in run_commands
+>
+>     self.run_command(cmd)
+>
+>   File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+>
+>     cmd_obj.run()
+>
+>   File "C:\Python27\lib\site-packages\setuptools\command\install.py", line 53, i
+> n run
+>
+>     return _install.run(self)
+>
+>   File "C:\Python27\lib\distutils\command\install.py", line 563, in run
+>
+>     self.run_command('build')
+>
+>   File "C:\Python27\lib\distutils\cmd.py", line 326, in run_command
+>
+>     self.distribution.run_command(command)
+>
+>   File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+>
+>     cmd_obj.run()
+>
+>   File "C:\Python27\lib\distutils\command\build.py", line 127, in run
+>
+>     self.run_command(cmd_name)
+>
+>   File "C:\Python27\lib\distutils\cmd.py", line 326, in run_command
+>
+>     self.distribution.run_command(command)
+>
+>   File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+>
+>     cmd_obj.run()
+>
+>   File "C:\Users\killer\build\pycrypto\setup.py", line 251, in run
+>
+>     self.run_command(cmd_name)
+>
+>   File "C:\Python27\lib\distutils\cmd.py", line 326, in run_command
+>
+>     self.distribution.run_command(command)
+>
+>   File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+>
+>     cmd_obj.run()
+>
+>   File "C:\Users\killer\build\pycrypto\setup.py", line 273, in run
+>
+>     raise RuntimeError("chmod error")
+>
+> RuntimeError: chmod error
+
+This is because you are on windows and setup.py is trying to run unix
+commands.
+
+To a cursory glance, it appears to be a bug in pycrypto's setup.py  It
+should either provide a windows compatible way of performing autoconf
+and friends (unlikely), or provide a windows alternative way of
+configuring stuff and conditionally invoke the correct one for the system.
+
+~Andrew
+
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From campadrenalin at gmail.com  Wed Sep  5 19:23:04 2012
+From: campadrenalin at gmail.com (Philip Horger)
+Date: Wed, 5 Sep 2012 16:23:04 -0700
+Subject: [pycrypto] chmod error in Windows 7, when trying to install
+In-Reply-To: <5047DE60.3040004@gmail.com>
+References: <CA+UwFj3jKkP4P0T9os01VbXwF2RPn8f+zFTTHxjuDczPomiU2w@mail.gmail.com>
+ <5047DE60.3040004@gmail.com>
+Message-ID: <CAHAkNZ1ZOZEVihY3+sU0YFbBg-r-K9TAbgfE-GTKL3BO6FNLgQ@mail.gmail.com>
+
+As I understand it, compiling and setting PyCrypto up from source on Windows
+requires MinGW. It might also support Cygwin. But some sort of UNIX-y layer to
+work with as common ground.
+
+On Wed, Sep 5, 2012 at 4:21 PM, Andrew Cooper <andyhhp at gmail.com> wrote:
+>
+> On 05/09/2012 17:48, Mike Anderson wrote:
+>> I'm using Windows 7 Ultimate, and trying to install pycrypto, but
+>> getting an error "'chmod' is not recognized as an internal or external
+>> command."
+>>
+>> It happens like so:
+>>> pip install ssh
+>>    ...
+>> copying lib\Crypto\Signature\__init__.py -> build\lib.win32-2.7\Crypto\Signature
+>>
+>>
+>> running build_ext
+>>
+>> running build_configure
+>>
+>> 'chmod' is not recognized as an internal or external command,
+>>
+>> operable program or batch file.
+>>
+>> Traceback (most recent call last):
+>>
+>>   File "<string>", line 1, in <module>
+>>
+>>   File "C:\Users\killer\build\pycrypto\setup.py", line 456, in <module>
+>>
+>>     core.setup(**kw)
+>>
+>>   File "C:\Python27\lib\distutils\core.py", line 152, in setup
+>>
+>>     dist.run_commands()
+>>
+>>   File "C:\Python27\lib\distutils\dist.py", line 953, in run_commands
+>>
+>>     self.run_command(cmd)
+>>
+>>   File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+>>
+>>     cmd_obj.run()
+>>
+>>   File "C:\Python27\lib\site-packages\setuptools\command\install.py", line 53, i
+>> n run
+>>
+>>     return _install.run(self)
+>>
+>>   File "C:\Python27\lib\distutils\command\install.py", line 563, in run
+>>
+>>     self.run_command('build')
+>>
+>>   File "C:\Python27\lib\distutils\cmd.py", line 326, in run_command
+>>
+>>     self.distribution.run_command(command)
+>>
+>>   File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+>>
+>>     cmd_obj.run()
+>>
+>>   File "C:\Python27\lib\distutils\command\build.py", line 127, in run
+>>
+>>     self.run_command(cmd_name)
+>>
+>>   File "C:\Python27\lib\distutils\cmd.py", line 326, in run_command
+>>
+>>     self.distribution.run_command(command)
+>>
+>>   File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+>>
+>>     cmd_obj.run()
+>>
+>>   File "C:\Users\killer\build\pycrypto\setup.py", line 251, in run
+>>
+>>     self.run_command(cmd_name)
+>>
+>>   File "C:\Python27\lib\distutils\cmd.py", line 326, in run_command
+>>
+>>     self.distribution.run_command(command)
+>>
+>>   File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+>>
+>>     cmd_obj.run()
+>>
+>>   File "C:\Users\killer\build\pycrypto\setup.py", line 273, in run
+>>
+>>     raise RuntimeError("chmod error")
+>>
+>> RuntimeError: chmod error
+>
+> This is because you are on windows and setup.py is trying to run unix
+> commands.
+>
+> To a cursory glance, it appears to be a bug in pycrypto's setup.py  It
+> should either provide a windows compatible way of performing autoconf
+> and friends (unlikely), or provide a windows alternative way of
+> configuring stuff and conditionally invoke the correct one for the system.
+>
+> ~Andrew
+>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From andyhhp at gmail.com  Wed Sep  5 19:29:31 2012
+From: andyhhp at gmail.com (Andrew Cooper)
+Date: Thu, 06 Sep 2012 00:29:31 +0100
+Subject: [pycrypto] chmod error in Windows 7, when trying to install
+In-Reply-To: <CAHAkNZ1ZOZEVihY3+sU0YFbBg-r-K9TAbgfE-GTKL3BO6FNLgQ@mail.gmail.com>
+References: <CA+UwFj3jKkP4P0T9os01VbXwF2RPn8f+zFTTHxjuDczPomiU2w@mail.gmail.com>
+ <5047DE60.3040004@gmail.com>
+ <CAHAkNZ1ZOZEVihY3+sU0YFbBg-r-K9TAbgfE-GTKL3BO6FNLgQ@mail.gmail.com>
+Message-ID: <5047E05B.1010204@gmail.com>
+
+
+On 06/09/2012 00:23, Philip Horger wrote:
+> As I understand it, compiling and setting PyCrypto up from source on Windows
+> requires MinGW. It might also support Cygwin. But some sort of UNIX-y layer to
+> work with as common ground.
+
+I could have sworn that I had managed in the past, but it appears that I
+used pre-compiled for windows and did the building sensibly on Linux.
+
+Apologies.
+
+~Andrew
+
+>
+> On Wed, Sep 5, 2012 at 4:21 PM, Andrew Cooper <andyhhp at gmail.com> wrote:
+>> On 05/09/2012 17:48, Mike Anderson wrote:
+>>> I'm using Windows 7 Ultimate, and trying to install pycrypto, but
+>>> getting an error "'chmod' is not recognized as an internal or external
+>>> command."
+>>>
+>>> It happens like so:
+>>>> pip install ssh
+>>>    ...
+>>> copying lib\Crypto\Signature\__init__.py -> build\lib.win32-2.7\Crypto\Signature
+>>>
+>>>
+>>> running build_ext
+>>>
+>>> running build_configure
+>>>
+>>> 'chmod' is not recognized as an internal or external command,
+>>>
+>>> operable program or batch file.
+>>>
+>>> Traceback (most recent call last):
+>>>
+>>>   File "<string>", line 1, in <module>
+>>>
+>>>   File "C:\Users\killer\build\pycrypto\setup.py", line 456, in <module>
+>>>
+>>>     core.setup(**kw)
+>>>
+>>>   File "C:\Python27\lib\distutils\core.py", line 152, in setup
+>>>
+>>>     dist.run_commands()
+>>>
+>>>   File "C:\Python27\lib\distutils\dist.py", line 953, in run_commands
+>>>
+>>>     self.run_command(cmd)
+>>>
+>>>   File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+>>>
+>>>     cmd_obj.run()
+>>>
+>>>   File "C:\Python27\lib\site-packages\setuptools\command\install.py", line 53, i
+>>> n run
+>>>
+>>>     return _install.run(self)
+>>>
+>>>   File "C:\Python27\lib\distutils\command\install.py", line 563, in run
+>>>
+>>>     self.run_command('build')
+>>>
+>>>   File "C:\Python27\lib\distutils\cmd.py", line 326, in run_command
+>>>
+>>>     self.distribution.run_command(command)
+>>>
+>>>   File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+>>>
+>>>     cmd_obj.run()
+>>>
+>>>   File "C:\Python27\lib\distutils\command\build.py", line 127, in run
+>>>
+>>>     self.run_command(cmd_name)
+>>>
+>>>   File "C:\Python27\lib\distutils\cmd.py", line 326, in run_command
+>>>
+>>>     self.distribution.run_command(command)
+>>>
+>>>   File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+>>>
+>>>     cmd_obj.run()
+>>>
+>>>   File "C:\Users\killer\build\pycrypto\setup.py", line 251, in run
+>>>
+>>>     self.run_command(cmd_name)
+>>>
+>>>   File "C:\Python27\lib\distutils\cmd.py", line 326, in run_command
+>>>
+>>>     self.distribution.run_command(command)
+>>>
+>>>   File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+>>>
+>>>     cmd_obj.run()
+>>>
+>>>   File "C:\Users\killer\build\pycrypto\setup.py", line 273, in run
+>>>
+>>>     raise RuntimeError("chmod error")
+>>>
+>>> RuntimeError: chmod error
+>> This is because you are on windows and setup.py is trying to run unix
+>> commands.
+>>
+>> To a cursory glance, it appears to be a bug in pycrypto's setup.py  It
+>> should either provide a windows compatible way of performing autoconf
+>> and friends (unlikely), or provide a windows alternative way of
+>> configuring stuff and conditionally invoke the correct one for the system.
+>>
+>> ~Andrew
+>>
+>>> _______________________________________________
+>>> pycrypto mailing list
+>>> pycrypto at lists.dlitz.net
+>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From nod at nym.hush.com  Fri Sep  7 13:10:02 2012
+From: nod at nym.hush.com (nod at nym.hush.com)
+Date: Fri, 07 Sep 2012 10:10:02 -0700
+Subject: [pycrypto] chmod error in Windows 7, when trying to install
+Message-ID: <20120907171002.D71CEE6739@smtp.hushmail.com>
+
+I created a binary installer for the latest version of pycrypto if 
+you would like it, let me know. If you don't trust meh bits(lul) 
+then I have these notes from when I compiled pycrypto on windows:
+
+Download the MinGW installer here: 
+http://sourceforge.net/projects/mingw/files/Installer/mingw-get-
+inst/mingw-get-inst-20120426/
+Delete all references to -mno-cygwin in distutils\cygwinccompiler.py
+
+>From within the pycrypto folder run: python setup.py build -c 
+mingw32
+Then run: python setup.py bdist_wininst
+You will now have a compiled binary in: dist 
+
+Run the binary on your host your ant pycrypto on and you should be 
+all set.
+
+
+On Wed, 05 Sep 2012 16:29:42 -0700 Andrew Cooper 
+<andyhhp at gmail.com> wrote:
+>On 06/09/2012 00:23, Philip Horger wrote:
+>> As I understand it, compiling and setting PyCrypto up from 
+>source on Windows
+>> requires MinGW. It might also support Cygwin. But some sort of 
+>UNIX-y layer to
+>> work with as common ground.
+>
+>I could have sworn that I had managed in the past, but it appears 
+>that I
+>used pre-compiled for windows and did the building sensibly on 
+>Linux.
+>
+>Apologies.
+>
+>~Andrew
+>
+>>
+>> On Wed, Sep 5, 2012 at 4:21 PM, Andrew Cooper 
+><andyhhp at gmail.com> wrote:
+>>> On 05/09/2012 17:48, Mike Anderson wrote:
+>>>> I'm using Windows 7 Ultimate, and trying to install pycrypto, 
+>but
+>>>> getting an error "'chmod' is not recognized as an internal or 
+>external
+>>>> command."
+>>>>
+>>>> It happens like so:
+>>>>> pip install ssh
+>>>>    ...
+>>>> copying lib\Crypto\Signature\__init__.py -> build\lib.win32-
+>2.7\Crypto\Signature
+>>>>
+>>>>
+>>>> running build_ext
+>>>>
+>>>> running build_configure
+>>>>
+>>>> 'chmod' is not recognized as an internal or external command,
+>>>>
+>>>> operable program or batch file.
+>>>>
+>>>> Traceback (most recent call last):
+>>>>
+>>>>   File "<string>", line 1, in <module>
+>>>>
+>>>>   File "C:\Users\killer\build\pycrypto\setup.py", line 456, in 
+><module>
+>>>>
+>>>>     core.setup(**kw)
+>>>>
+>>>>   File "C:\Python27\lib\distutils\core.py", line 152, in setup
+>>>>
+>>>>     dist.run_commands()
+>>>>
+>>>>   File "C:\Python27\lib\distutils\dist.py", line 953, in 
+>run_commands
+>>>>
+>>>>     self.run_command(cmd)
+>>>>
+>>>>   File "C:\Python27\lib\distutils\dist.py", line 972, in 
+>run_command
+>>>>
+>>>>     cmd_obj.run()
+>>>>
+>>>>   File "C:\Python27\lib\site-
+>packages\setuptools\command\install.py", line 53, i
+>>>> n run
+>>>>
+>>>>     return _install.run(self)
+>>>>
+>>>>   File "C:\Python27\lib\distutils\command\install.py", line 
+>563, in run
+>>>>
+>>>>     self.run_command('build')
+>>>>
+>>>>   File "C:\Python27\lib\distutils\cmd.py", line 326, in 
+>run_command
+>>>>
+>>>>     self.distribution.run_command(command)
+>>>>
+>>>>   File "C:\Python27\lib\distutils\dist.py", line 972, in 
+>run_command
+>>>>
+>>>>     cmd_obj.run()
+>>>>
+>>>>   File "C:\Python27\lib\distutils\command\build.py", line 127, 
+>in run
+>>>>
+>>>>     self.run_command(cmd_name)
+>>>>
+>>>>   File "C:\Python27\lib\distutils\cmd.py", line 326, in 
+>run_command
+>>>>
+>>>>     self.distribution.run_command(command)
+>>>>
+>>>>   File "C:\Python27\lib\distutils\dist.py", line 972, in 
+>run_command
+>>>>
+>>>>     cmd_obj.run()
+>>>>
+>>>>   File "C:\Users\killer\build\pycrypto\setup.py", line 251, in 
+>run
+>>>>
+>>>>     self.run_command(cmd_name)
+>>>>
+>>>>   File "C:\Python27\lib\distutils\cmd.py", line 326, in 
+>run_command
+>>>>
+>>>>     self.distribution.run_command(command)
+>>>>
+>>>>   File "C:\Python27\lib\distutils\dist.py", line 972, in 
+>run_command
+>>>>
+>>>>     cmd_obj.run()
+>>>>
+>>>>   File "C:\Users\killer\build\pycrypto\setup.py", line 273, in 
+>run
+>>>>
+>>>>     raise RuntimeError("chmod error")
+>>>>
+>>>> RuntimeError: chmod error
+>>> This is because you are on windows and setup.py is trying to 
+>run unix
+>>> commands.
+>>>
+>>> To a cursory glance, it appears to be a bug in pycrypto's 
+>setup.py  It
+>>> should either provide a windows compatible way of performing 
+>autoconf
+>>> and friends (unlikely), or provide a windows alternative way of
+>>> configuring stuff and conditionally invoke the correct one for 
+>the system.
+>>>
+>>> ~Andrew
+>>>
+>>>> _______________________________________________
+>>>> pycrypto mailing list
+>>>> pycrypto at lists.dlitz.net
+>>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>> _______________________________________________
+>>> pycrypto mailing list
+>>> pycrypto at lists.dlitz.net
+>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From artem.rizhov at gmail.com  Fri Jul 13 12:05:14 2012
+From: artem.rizhov at gmail.com (Artem)
+Date: Fri, 13 Jul 2012 16:05:14 -0000
+Subject: [pycrypto] random.uniform() method
+Message-ID: <3562448.YMP7aB9TP8@artem-portable>
+
+Hi!
+
+Tell me please, is there a way to use random.uniform() or random.random() with 
+PyCrypto?
+
+--
+Artem
+

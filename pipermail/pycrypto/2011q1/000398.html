@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Base64%20encoded%20output%20differs%20from%20pycrypto%20and%0A%20as3crypto%20libraries.&In-Reply-To=4D2E04BC.2070809%40amberfisharts.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000397.html">
+   <LINK REL="Next"  HREF="000399.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.</H1>
+    <B>Joshua Strauss</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Base64%20encoded%20output%20differs%20from%20pycrypto%20and%0A%20as3crypto%20libraries.&In-Reply-To=4D2E04BC.2070809%40amberfisharts.com"
+       TITLE="[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.">joshua.a.strauss at gmail.com
+       </A><BR>
+    <I>Wed Jan 12 13:43:12 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000397.html">[pycrypto] Base64 encoded output differs from pycrypto and	as3crypto libraries.
+</A></li>
+        <LI>Next message: <A HREF="000399.html">[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#398">[ date ]</a>
+              <a href="thread.html#398">[ thread ]</a>
+              <a href="subject.html#398">[ subject ]</a>
+              <a href="author.html#398">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Lorenz,
+
+Well, I've experimented with ByteArray.writeUTFBytes( 'testtest' ) to avoid
+the Hex utility library and it's given me the same results.
+
+I don't think that is the issue, if you have pycrypto installed would you be
+able to run the code to encrypt and base64 the string? You could copy and
+paste it verbatim into idle, wouldn't be much work at all and it would
+really help me out if I knew what the expected output of the python library
+should be.
+
+Thanks
+Joshua
+
+On Wed, Jan 12, 2011 at 11:45 AM, Lorenz Quack &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">don at amberfisharts.com</A>&gt;wrote:
+
+&gt;<i> Hey Joshua,
+</I>&gt;<i>
+</I>&gt;<i> I haven't used as3crypto (or any as3 for that matter) nor the
+</I>&gt;<i> pycrypto.blowfish. So basicly I'm just wildly guessing
+</I>&gt;<i> here. I was wondering if you made sure that this &quot;Hex&quot; thing in your as3
+</I>&gt;<i> code isn't messing up things?
+</I>&gt;<i> because in you base64 test you don't use that.
+</I>&gt;<i>
+</I>&gt;<i> cheers,
+</I>&gt;<i> //Lorenz
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On 01/12/2011 08:07 PM, Joshua Strauss wrote:
+</I>&gt;<i> &gt; I'm trying to use symmetric encryption to pass data from actionscript 3
+</I>&gt;<i> (client) to python (server).
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; The libraries I'm using are as3crypto and pycrypto.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I'm not sure if I'm using these libraries correctly, here's the action
+</I>&gt;<i> script 3 code.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; private function testOnInit():void {
+</I>&gt;<i> &gt; var t_toEnc:String = 'testtest';
+</I>&gt;<i> &gt; var t_byAry:ByteArray = Hex.toArray( Hex.fromString( t_toEnc ) );
+</I>&gt;<i> &gt; var t_key:ByteArray = Hex.toArray( Hex.fromString( 'Thisisthekey' ) );
+</I>&gt;<i> &gt; var t_cbc:CBCMode = new CBCMode( new BlowFishKey( t_key ), new NullPad );
+</I>&gt;<i> &gt; var t_enc:String;
+</I>&gt;<i> &gt; t_cbc.IV = Hex.toArray( '30313233' );
+</I>&gt;<i> &gt; t_cbc.encrypt( t_byAry );
+</I>&gt;<i> &gt; t_enc = Base64.encodeByteArray( t_byAry );
+</I>&gt;<i> &gt; dbg( 'b64 encrypted string ' + t_enc ); //this is just a debugging
+</I>&gt;<i> function we use in our code.
+</I>&gt;<i> &gt; }
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; This is the base64 encoded output of the function above.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; xvVqLzV5TU4=
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Now, using the same key, initialization vector, and algorithm from the
+</I>&gt;<i> pycrypto library gives me different output.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Here's the python code.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;  &gt;&gt;&gt; from Crypto.Cipher import Blowfish
+</I>&gt;<i> &gt;  &gt;&gt;&gt; B = Blowfish.new( 'Thisisthekey', Blowfish.MODE_CBC, '30313233' )
+</I>&gt;<i> &gt;  &gt;&gt;&gt; S = 'testtest'
+</I>&gt;<i> &gt;  &gt;&gt;&gt; X = B.encrypt( S )
+</I>&gt;<i> &gt;  &gt;&gt;&gt; import base64
+</I>&gt;<i> &gt;  &gt;&gt;&gt; Y = base64.b64encode( X )
+</I>&gt;<i> &gt;  &gt;&gt;&gt; print Y
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I82NQEkSHhE=
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I'm pretty sure that I'm doing something wrong with the encryption
+</I>&gt;<i> process because I can base64 encode 'testtest' on
+</I>&gt;<i> &gt; both libraries and receive the same output.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Here's as3
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; var b:ByteArray = new ByteArray();
+</I>&gt;<i> &gt; b.writeUTFBytes( 'testtest' );
+</I>&gt;<i> &gt; dbg( Base64.encodeByteArray( b ) );
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Yields...
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; dGVzdHRlc3Q=
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Here's the python
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;  &gt;&gt;&gt; T = 'testtest'
+</I>&gt;<i> &gt;  &gt;&gt;&gt; print base64.b64encode( T )
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Yields&#8230;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; dGVzdHRlc3Q=
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Could someone please encrypt and base64encode the same string with the
+</I>&gt;<i> same IV in either python or actionscript, so I
+</I>&gt;<i> &gt; know which library is actually producing the correct output?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Any assistance with this problem would be greatly appreciated, I'm stuck
+</I>&gt;<i> and don't know how to proceed from here.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thank you
+</I>&gt;<i> &gt; Joshua
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20110112/dbd887e7/attachment-0001.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20110112/dbd887e7/attachment-0001.htm</A> 
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000397.html">[pycrypto] Base64 encoded output differs from pycrypto and	as3crypto libraries.
+</A></li>
+	<LI>Next message: <A HREF="000399.html">[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#398">[ date ]</a>
+              <a href="thread.html#398">[ thread ]</a>
+              <a href="subject.html#398">[ subject ]</a>
+              <a href="author.html#398">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

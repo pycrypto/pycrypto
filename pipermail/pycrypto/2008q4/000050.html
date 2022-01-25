@@ -1,0 +1,219 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] the sad state of pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=1e267dfe0811091149l14844c0elea07219a15918127%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000045.html">
+   <LINK REL="Next"  HREF="000051.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] the sad state of pycrypto</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=1e267dfe0811091149l14844c0elea07219a15918127%40mail.gmail.com"
+       TITLE="[pycrypto] the sad state of pycrypto">dlitz at dlitz.net
+       </A><BR>
+    <I>Sun Nov  9 18:01:56 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000045.html">[pycrypto] the sad state of pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000051.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#50">[ date ]</a>
+              <a href="thread.html#50">[ thread ]</a>
+              <a href="subject.html#50">[ subject ]</a>
+              <a href="author.html#50">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Nov 09, 2008 at 11:49:49AM -0800, Paul Hoffman wrote:
+&gt;<i>On Sun, Nov 9, 2008 at 8:31 AM, Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt; wrote:
+</I>&gt;&gt;<i> Really?  Many developers still use MD5 in new applications.
+</I>&gt;<i>
+</I>&gt;<i>MD5 is still perfectly usable in applications that do not rely on the
+</I>&gt;<i>collision resistance and only need 128 bits of preimage resistance.
+</I>&gt;<i>For example, HMAC-MD5 has been proven to be secure even is the
+</I>&gt;<i>collision resistance is near zero.
+</I>
+MD5 was _never_ collision-resistant; We just thought it was.  It's possible 
+that MD5 is not safe for any purpose, and that we just currently think it 
+is.  Maybe it's safe, and maybe not, but it's not a conservative choice for 
+new applications.
+
+Also, I'm not sure what security proof you're referring to, but see 
+&quot;Forgery and Partial Key-Recovery Attacks on HMAC and NMAC Using Hash 
+Collisions&quot;: <A HREF="http://eprint.iacr.org/2006/319">http://eprint.iacr.org/2006/319</A>
+
+&gt;<i> A hashed signature algorithm can use MD5 with no problems.
+</I>
+I'm sure you don't mean that.  Any time you someone signs a message 
+provided by a third party (such as when certifying a computer program or 
+when adding a digital timestamping to a document), the hash function they 
+use needs to be collision-resistant.
+
+&gt;&gt;<i> Following your line of reasoning,
+</I>&gt;&gt;<i> there was nothing wrong with RandomPool; It was simply being misused---by
+</I>&gt;&gt;<i> practically everyone.  I disagree, and RandomPool is now deprecated.
+</I>&gt;<i>
+</I>&gt;<i>That is not my line of reasoning. RandomPool was unsafe at any speed.
+</I>&gt;<i>MD5 is safe for many purposes.
+</I>
+No, RandomPool was safe if you used it correctly, which meant you had to 
+feed it entropy from somewhere, and you had to monitor the entropy 
+estimate.  Few people actually did that, but if they did, RandomPool worked 
+fine.
+
+&gt;&gt;<i> Overly optimistic developers (or their micro-managing bosses) routinely 
+</I>&gt;&gt;<i> make design choices favouring speed or portability over security, and 
+</I>&gt;&gt;<i> it's the _users_ who suffer the consequences.
+</I>&gt;<i>
+</I>&gt;<i>If someone knows enough about MD5 to know that it is faster than
+</I>&gt;<i>SHA-1, or that it is more portable than SHA-1, knows about its
+</I>&gt;<i>properties enough to use it.
+</I>
+I still think you're being overly optimistic.  Smart developers still make 
+fatal mistakes with crypto, and I have empirical evidence to back that up:
+
+     1. Zooko said:
+
+         &quot;I happen to know a somewhat famous developer who once looked 
+         through the Crypto++ API and chose DES-XEX without (I think) 
+         realizing that it was DES-X and not Triple-DES.&quot;
+
+     2. RandomPool was misused---twice---in Paramiko.  See 
+        <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html">http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html</A>
+
+     3. A Google Code Search for RandomPool turned up a bunch of uses, none 
+        of which were correct.
+
+Developers of crypto libraries are in a position to reduce the number of 
+mistakes their downstream users accidentally make.  I intend to make full 
+use of this ability. (But see below.)
+
+&gt;<i>If you really want the library to be in nanny mode, simply rename the
+</I>&gt;<i>function from &quot;MD5&quot; to something like &quot;idontwantyoutouseMD5&quot;. This is
+</I>&gt;<i>a serious suggestion. Self-documenting function names are surprisingly
+</I>&gt;<i>useful.
+</I>
+Aside from the maintainability benefits, I don't want to drop algorithms 
+that people need for legacy reasons, even if they would be well-advised not 
+to use them in new applications.  That's why I like the policy idea instead 
+of dropping or renaming modules.  That way, developers can make less 
+conservative choices if they need to, but they'll be less likely to do so 
+accidentally, and reviewers will have an easier time checking for these 
+mistakes.
+
+On the other hand, I don't mind dropping algorithms that nobody actually 
+uses.  It's not just about &quot;nanny mode&quot;: Code no longer present is code I 
+don't have to spend my limited time maintaining.  That's why I asked about 
+MD2.  Do you know of anyone who uses PyCrypto who needs MD2 support?
+
+&gt;&gt;<i> If it's licensed to everyone on an automatic, royalty-free basis, then 
+</I>&gt;&gt;<i> it's not _encumbered_ by a patent, just _covered_ by a patent.
+</I>&gt;<i>
+</I>&gt;<i>Some pedants would not slice and dice it that way.
+</I>
+It's not &quot;slicing and dicing&quot;; It's the only way to deal with the insanity 
+of various patent systems around the world and still actually develop 
+anything.
+
+If I take the claims of every patent at face value (which I have to, since 
+the courts say I'm not qualified to do anything else, because I'm not a 
+patent attorney) then I must assume that every program I could possibly 
+write is covered by many patents.  However, most of these patents don't 
+cause any actual problems, for whatever reason (which could be that my 
+reading of the patents is too broad, or that the patents are invalid, or 
+that the patent holder doesn't want to enforce them, or that the patents 
+have been explicitly licenced to everyone on a royalty-free basis).  That's 
+how we manage to write software without getting sued into oblivion.  Well, 
+most of the time.
+
+So, like everybody else, I don't read patents until they have expired.  
+This means I can be wrong about what's patented and what's not, but patent 
+law gives me no other choice.
+
+My policy is that if I think an algorithm is patent-encumbered, then it's 
+not getting included into PyCrypto; If it's already included, then it gets 
+dropped.  Patent holders who create encumbrances will get every bit of 
+exclusivity they ask for, and they deserve whatever lack of market 
+penetration comes with it.
+
+&gt;&gt;<i> My understanding was that SHA-224 and SHA-384 had additional patent
+</I>&gt;&gt;<i> encumbrances that are did not apply to SHA-256 and SHA-512.  That
+</I>&gt;&gt;<i> understanding probably came from Wikipedia, and it may be incorrect.
+</I>&gt;<i>
+</I>&gt;<i>I see nothing in the current version of the Wikipedia page that says
+</I>&gt;<i>that, and I have never heard of any such encumbrances. If there were,
+</I>&gt;<i>the NSA would be amazingly remiss in filing an IPR statement with the
+</I>&gt;<i>IETF for the family as a whole but not those members.
+</I>
+Yeah, it sounds like I might have been mistaken about the patent situation 
+regarding SHA-224 and SHA-384.
+
+&gt;&gt;<i> In any case, SHA-224 and SHA-384 are just weakened versions of SHA-256 and
+</I>&gt;&gt;<i> SHA-512, so I'm not inclined to add them without good reason.
+</I>&gt;<i>
+</I>&gt;<i>I am not a proponent of either function, but I can channel those who
+</I>&gt;<i>are. SHA-224 is designed to have &quot;matched impedance&quot; with TripleDES,
+</I>&gt;<i>which has 112 bits of strength. Similarly, SHA-384 is matched to
+</I>&gt;<i>AES-196. I find the impedance idea goofy, but some folks like it.
+</I>
+I agree that it's goofy.  I really don't see why a person couldn't just 
+truncate an ordinary SHA-256/512 hash if they want &quot;matched impedance&quot;, 
+rather than also mucking about with the initial values.  If we want to 
+avoid allowing someone to truncate an SHA-256 hash to make a valid 224-bit 
+hash, then we can define separate hash functions like so:
+
+    H_256(m) := SHA-256(&quot;SHA-256&quot; || m)
+    H_224(m) := SHA-256(&quot;SHA-224&quot; || m)[:224]
+
+This would have the same effect, and wouldn't involve messing with the 
+internals of the hash function.  SHA-224/384 look like hacks to support 
+some bizarre U.S. government system that PyCrypto will never be approved 
+for anyway.  :-)
+
+I might reconsider adding SHA-224/384 at some point in the future if 
+there's some realistic interoperability need for it (e.g. important 
+free/open-source software that depends on PyCrypto suddenly needs to 
+support it for some reason), but for now I think it would just make 
+PyCrypto more complex than it needs to be.
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/bf6b5fcd/attachment-0001.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/bf6b5fcd/attachment-0001.pgp</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000045.html">[pycrypto] the sad state of pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000051.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#50">[ date ]</a>
+              <a href="thread.html#50">[ thread ]</a>
+              <a href="subject.html#50">[ subject ]</a>
+              <a href="author.html#50">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] getStrongPrime() implementation
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20getStrongPrime%28%29%20implementation&In-Reply-To=20091027025621.GA10725%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000146.html">
+   <LINK REL="Next"  HREF="000149.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] getStrongPrime() implementation</H1>
+    <B>don at amberfisharts.com</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20getStrongPrime%28%29%20implementation&In-Reply-To=20091027025621.GA10725%40rivest.dlitz.net"
+       TITLE="[pycrypto] getStrongPrime() implementation">don at amberfisharts.com
+       </A><BR>
+    <I>Tue Oct 27 05:28:11 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000146.html">[pycrypto] getStrongPrime() implementation
+</A></li>
+        <LI>Next message: <A HREF="000149.html">[pycrypto] getStrongPrime() implementation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#148">[ date ]</a>
+              <a href="thread.html#148">[ thread ]</a>
+              <a href="subject.html#148">[ subject ]</a>
+              <a href="author.html#148">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi,
+
+&gt;<i> [I should correct the terminology I used in my previous email: 
+</I>&gt;<i> mpz_probab_prime_p doesn't implement a deterministic test (as I suggested); 
+</I>&gt;<i> it implements the probabilistic Rabin-Miller test deterministically.  As a
+</I>&gt;<i> result, the theoretical guarantee normally provided by the Rabin-Miller 
+</I>&gt;<i> probabilistic test (at most a 25% false positive probability per
+</I>&gt;<i> iteration) is void.]
+</I>
+Yes. I realized this yesturday when I looked at the gmp code. Do you have any idea why they did go for the non-deterministic version (and not seed the PRNG)? 
+I think the PRNG bug you mentioned earlier can't have anything to do with it because a potential attacker would have no influence on when the test is performed and thus when (and with what seed) the PRNG is seeded.
+
+&gt;&gt;<i>Maybe one could then later replace/extend it to a Baillie&#8211;PSW primality
+</I>&gt;&gt;<i>test which has no pseudo-prime numbers up to at least 10^15.
+</I>&gt;<i> 
+</I>&gt;<i> Yes.  Of course, for crypto, we really only need to worry about primes 
+</I>&gt;<i> larger than 2^2047 (10^616).   Does Baillie-PSW offer a theoretical
+</I>&gt;<i> maximum probability of error like Rabin-Miller does?
+</I>
+Baillie-PSW is just a combination of (as I understand it) a single Rabin-Miller-Tests followed by a strong Lucas-Selfridge test.
+There seems to be no pseudoprimes below 2^64 (not yet confirmed) [1] and others seem to estimate that there are non below 10000 [2].
+As that may be I couldn't find a mathamatical proof of any boundary so if we are worried about that we could still do n Rabin-Miller test to get the mathamaticly proven probability of 4^{-n} and then do a Lucas test for better *assumed* probability.
+There are some concerns that the Lucas test might not be computationally feasable for large numbers [1]. 
+So for now this is just an option one can take a look at once the other parts are in place because it wouldn't replace anything but rather extend it.
+
+&gt;&gt;&gt;<i> - We'll need some unit tests to do some basic sanity checks on the output
+</I>&gt;&gt;&gt;<i>    of this new function?
+</I>&gt;&gt;<i>I agree. but what do you have in mind exactly? do you want to do an 
+</I>&gt;&gt;<i>*exact* primality test? 
+</I>&gt;<i> 
+</I>&gt;<i> No. :)
+</I>&gt;<i> 
+</I>&gt;<i> Basically, I just want to test for obvious coding errors.  For example, we
+</I>&gt;<i> could check for &quot;primes&quot; that are even, or wrong sized primes (e.g if you 
+</I>&gt;<i> ask for a 2048-bit prime and get a 2047-bit number instead).  We could also 
+</I>&gt;<i> test a new isPrime() by including some pseudoprimes that currently fool 
+</I>&gt;<i> isPrime (Thomas R. Nicely has generated some).
+</I>
+I see. This sounds reasonable.
+
+
+BTW, is there a certain Python version you want to support?
+I ask because yesturday I caught myself writing &quot;x = x if y else z&quot;. I'll replace that particular line with the equivalent &quot;if ... else ...&quot; construct, but it made me wonder if there are any further constraints.
+
+
+OK, so I'll work on these (supporting randfunc, probabilistic Rabin-Miller-Test, python versions and unit tests) and send in a patch when I think it's review worthy.
+I might even get it done until the weekend. let's see about that.
+
+
+sincerely yours
+//Lorenz
+
+
+[1] <A HREF="http://www.trnicely.net/misc/bpsw.html">http://www.trnicely.net/misc/bpsw.html</A>
+[2] <A HREF="http://en.wikipedia.org/wiki/Baillie%E2%80%93PSW_primality_test">http://en.wikipedia.org/wiki/Baillie%E2%80%93PSW_primality_test</A>
+
+
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000146.html">[pycrypto] getStrongPrime() implementation
+</A></li>
+	<LI>Next message: <A HREF="000149.html">[pycrypto] getStrongPrime() implementation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#148">[ date ]</a>
+              <a href="thread.html#148">[ thread ]</a>
+              <a href="subject.html#148">[ subject ]</a>
+              <a href="author.html#148">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Compile PyCrypto 2.6 on HP-UX 11.23 ia64 on HP C/aC++	compiler
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Compile%20PyCrypto%202.6%20on%20HP-UX%2011.23%20ia64%20on%20HP%20C/aC%2B%2B%0A%09compiler&In-Reply-To=%3CCAMSfCAWu39nMOm%2BmvXZgim1wGo6%3DAXkaSseYcPP%2BM1Rx0nrhwQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000657.html">
+   <LINK REL="Next"  HREF="000659.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Compile PyCrypto 2.6 on HP-UX 11.23 ia64 on HP C/aC++	compiler</H1>
+    <B>Esmond Poynton</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Compile%20PyCrypto%202.6%20on%20HP-UX%2011.23%20ia64%20on%20HP%20C/aC%2B%2B%0A%09compiler&In-Reply-To=%3CCAMSfCAWu39nMOm%2BmvXZgim1wGo6%3DAXkaSseYcPP%2BM1Rx0nrhwQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Compile PyCrypto 2.6 on HP-UX 11.23 ia64 on HP C/aC++	compiler">esmond.poynton at gmail.com
+       </A><BR>
+    <I>Wed Feb 27 07:23:18 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000657.html">[pycrypto] BouncyCastle to PyCrypto translation
+</A></li>
+        <LI>Next message: <A HREF="000659.html">[pycrypto] PyCon
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#658">[ date ]</a>
+              <a href="thread.html#658">[ thread ]</a>
+              <a href="subject.html#658">[ subject ]</a>
+              <a href="author.html#658">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello all,
+
+i am looking for some help/hints on compiling on version 2.6 on HPUX 11.23
+using the HP C/aC++ compiler.
+
+Compiler info
+# B9007AA               C.11.23.16     HP C/aC++ Developer's Bundle
+  B9007AA.ACXX.ACXX     C.06.25        HP aC++ Programming Language
+
+Python Info
+
+# python                2.7.3          python
+  python.python-INC
+  python.python-RUN
+
+Error message is below
+
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">root at greopc01</A>:/tmp/pycrypto-2.6&gt;python setup.py build
+running build
+running build_py
+running build_ext
+running build_configure
+warning: GMP or MPIR library not found; Not building
+Crypto.PublicKey._fastmath.
+building 'Crypto.Hash._MD2' extension
+cc -Ae +Onolimit -I/usr/local/include -I/usr/local/include/ncurses
+-I/usr/local/lib/hpux32/libffi-3.0.11/include +z -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/local/include/python2.7 -c src/MD2.c -o
+build/temp.hp-ux-B.11.23-ia64-2.7/src/MD2.o
+cc: warning 901: unknown option: `-fomit-frame-pointer': use +help for
+online documentation.
+cc -Ae -b -s +Onoprocelim build/temp.hp-ux-B.11.23-ia64-2.7/src/MD2.o
+-lpython2.7 -o build/lib.hp-ux-B.11.23-ia64-2.7/Crypto/Hash/_MD2.so
+ld: Can't find library for -lpython2.7
+Fatal error.
+error: command 'cc' failed with exit status 1
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">root at greopc01</A>:/tmp/pycrypto-2.6&gt;
+
+I am not sure how to resolve this error, if anyone is able to help with
+some pointers or hints that would be great.
+
+Esmond
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20130227/ec2640e5/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20130227/ec2640e5/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000657.html">[pycrypto] BouncyCastle to PyCrypto translation
+</A></li>
+	<LI>Next message: <A HREF="000659.html">[pycrypto] PyCon
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#658">[ date ]</a>
+              <a href="thread.html#658">[ thread ]</a>
+              <a href="subject.html#658">[ subject ]</a>
+              <a href="author.html#658">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

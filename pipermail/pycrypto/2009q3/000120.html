@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] example
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20example&In-Reply-To=8e329bc10908240752h59d97e42l7f11abc6883860ee%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000119.html">
+   <LINK REL="Next"  HREF="000121.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] example</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20example&In-Reply-To=8e329bc10908240752h59d97e42l7f11abc6883860ee%40mail.gmail.com"
+       TITLE="[pycrypto] example">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Aug 24 17:15:56 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000119.html">[pycrypto] example
+</A></li>
+        <LI>Next message: <A HREF="000121.html">[pycrypto] example
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#120">[ date ]</a>
+              <a href="thread.html#120">[ thread ]</a>
+              <a href="subject.html#120">[ subject ]</a>
+              <a href="author.html#120">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Aug 24, 2009 at 04:52:26PM +0200, avo ga wrote:
+&gt;<i>#################### RSA
+</I>&gt;<i>print &quot;\n=====RSA 368 Demo=====&quot;
+</I>&gt;<i>from Crypto.PublicKey import RSA
+</I>&gt;<i>from Crypto.Util.randpool import RandomPool
+</I>&gt;<i>rpool = RandomPool()
+</I>&gt;<i>
+</I>&gt;<i>privatekeyCMS = RSA.generate(368, rpool.get_bytes)
+</I>&gt;<i>privatekeyClient = RSA.generate(368, rpool.get_bytes)
+</I>
+RandomPool is badly broken.  Don't use it.
+
+<A HREF="http://lists.dlitz.net/pipermail/pycrypto/2009q3/000116.html">http://lists.dlitz.net/pipermail/pycrypto/2009q3/000116.html</A>
+
+&gt;<i>#################### DSA only sign
+</I>&gt;<i>privatekeyCMS = DSA.generate(368, rpool.get_bytes)
+</I>&gt;<i>publickeyCMS = privatekeyCMS.publickey()
+</I>&gt;<i>signed_PWD = privatekeyCMS.sign(PWD,K)
+</I>&gt;<i>print &quot;identity check:\n&quot;,publickeyCMS.verify(dec_PWD,signed_PWD)
+</I>&gt;<i>print &quot;decrypted PWD from ELGAMAL:\n&quot;,dec_PWD
+</I>
+PyCrypto's public key primitives are incomplete at this point, and you 
+should not use them unless you are willing to read both PyCrypto's source 
+code and the relevant specifications.  For RSA, you need OAEP (i.e.  PKCS#1 
+v2.1) if you want security.  For DSA, there is a hash you need to compute 
+(it's not done for you automatically---see FIPS 186.  For ElGamal, I'm 
+pretty sure there's something too.
+
+That's all I'm willing to comment on a vague question about a bunch of 
+uncommented demo code.
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000119.html">[pycrypto] example
+</A></li>
+	<LI>Next message: <A HREF="000121.html">[pycrypto] example
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#120">[ date ]</a>
+              <a href="thread.html#120">[ thread ]</a>
+              <a href="subject.html#120">[ subject ]</a>
+              <a href="author.html#120">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

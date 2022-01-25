@@ -1,0 +1,3486 @@
+From paul.hoffman at gmail.com  Sun Jan  2 10:06:57 2011
+From: paul.hoffman at gmail.com (Paul Hoffman)
+Date: Sun, 2 Jan 2011 08:06:57 -0800
+Subject: [pycrypto] Comments on Elgamal,
+	and a broader question: Whither pycrypto?
+In-Reply-To: <4D1DEF9F.7020101@gmx.li>
+References: <4D1DEF9F.7020101@gmx.li>
+Message-ID: <AANLkTimoVprGesa93kNJrhWMYV3M=QW_J2ptFsHY7h2s@mail.gmail.com>
+
+On Fri, Dec 31, 2010 at 6:58 AM, Thorsten Behrens <sbehrens at gmx.li> wrote:
+> I've been looking into writing a unit test for Elgamal. What I was looking
+> for were public test vectors. Those don't exist. What I found instead is
+> that our implementation of Elgamal appears insecure.
+
+No surprise there. I suspect if you look closely at all the primitives
+that require good computation of keys and/or fresh randoms, you will
+find more problems just because these things are hard to get right.
+
+> So far on Elgamal. It makes me reluctant to go through with a unit test for
+> Elgamal. I don't want to validate an implementation that is inherently
+> insecure. Changing Elgamal to be more secure is out of scope of my current
+> effort on the code base. I'll leave that to others.
+
+Given that you suspect (with good evidence) that it is insecure, you
+should instead strongly consider commenting out all the code and links
+to it, with a notation why of course.
+
+> Should pycrypto continue to offer its own implementations of crypto
+> algorithms? Or should it be a Python wrapper for existing implementations
+> such as tomlib, Crypto++ or NSS, relying on those implementations to have
+> been coded in a secure manner?
+
+My personal feeling is pycrypto should *not* offer its own
+implementation of crypto algorithms. The need for a pure-Python crypto
+library is probably small but real, but so is the need for that
+library to be secure. You have shown that the latter need is not being
+met. Instead, I think that a good, really Pythonic interface to a
+known-good library has a much higher value. If someone is going to do
+this, I would prefer Crypto++ to NSS just because of the bindings, but
+either would be useful, and certainly more useful than a crypto
+library without sufficient checking.
+
+--Paul Hoffman
+
+From sbehrens at gmx.li  Sun Jan  2 14:16:40 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Sun, 02 Jan 2011 15:16:40 -0500
+Subject: [pycrypto] Comments on Elgamal,
+ and a broader question: Whither pycrypto?
+In-Reply-To: <AANLkTimoVprGesa93kNJrhWMYV3M=QW_J2ptFsHY7h2s@mail.gmail.com>
+References: <4D1DEF9F.7020101@gmx.li>
+	<AANLkTimoVprGesa93kNJrhWMYV3M=QW_J2ptFsHY7h2s@mail.gmail.com>
+Message-ID: <4D20DD28.9060300@gmx.li>
+
+On 1/2/2011 11:06 AM, Paul Hoffman wrote:
+
+> No surprise there. I suspect if you look closely at all the primitives
+> that require good computation of keys and/or fresh randoms, you will
+> find more problems just because these things are hard to get right.
+No kidding. I am having a hard time just understanding what is needed to 
+get them
+right, never mind attempting to code things in a secure manner.
+
+>
+> Given that you suspect (with good evidence) that it is insecure, you
+> should instead strongly consider commenting out all the code and links
+> to it, with a notation why of course.
+I think I will pass on that. That is more aggressive than I think I have 
+any standing to be.
+I am already changing quite a few things with the Py3k port. I'd like to 
+leave my commit
+at that - Py3k compatibility, additional unit tests for a couple things, 
+updated
+documentation - and then sit down with the all of you to think long and 
+hard about
+the kind of API interface that a "pycrypto-next" should offer, and how 
+to bind it to
+known-good libraries.
+
+>
+> My personal feeling is pycrypto should *not* offer its own
+> implementation of crypto algorithms. [Good justification as to why] If someone is going to do
+> this, I would prefer Crypto++ to NSS just because of the bindings
+Could you elaborate on that comment regarding bindings, please? I am
+dreaming about crypto APIs now (this may be a sign, of what I am
+not sure :/), and any additional input as to what constitutes a good one
+is very welcome.
+
+I happen to be strongly biased towards Crypto++, btw - it's comprehensive,
+it looks to receive a lot of attention on secure implementation, and
+it's public domain.
+I also like the idea of having a design that is flexible enough to support
+multiple libraries, with a separate translation layer/shim each, chosen
+at build time. That way, pycrypto doesn't bind itself too closely to any
+one implementation, and it gives people choice, though that choice may
+be theoretical at first - say if no one feels motivated enough to write an
+NSS shim. Still the option would be there. Choice is good.
+
+Yours
+
+Thorsten
+
+
+From don at amberfisharts.com  Sun Jan  2 15:49:50 2011
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Sun, 02 Jan 2011 22:49:50 +0100
+Subject: [pycrypto] Comments on Elgamal,
+ and a broader question: Whither pycrypto?
+In-Reply-To: <4D1DEF9F.7020101@gmx.li>
+References: <4D1DEF9F.7020101@gmx.li>
+Message-ID: <4D20F2FE.5020204@amberfisharts.com>
+
+Hi
+
+On 12/31/2010 03:58 PM, Thorsten Behrens wrote:
+>[...]
+> What I have found is that pycrypto's Elgamal implementation is, shall we say, naive. Specifically in these regards
+> (and I'll quote others here, these assertions as per crypto safety are not mine. The conclusions about elgamal.py are
+> mine):
+>
+> /- p/  SHOULD be a safe prime, i.e. such that (/p/-1)/2 is prime
+>
+> TB: elgamal.py makes no effort to find a safe prime. elgamal.py does not allow the user to pass her own safe prime to
+> the key generator.
+
+Just for the record: a "safe prime" is *not* the same thing as a "strong prime". A strong prime is a prime p where p-1 
+and p+1 have large prime factors. strong primes are used in RSA and safe primes for discrete logarithm based techniques. 
+pycrypto has a function for generating "strong primes" (getStrongPrime()) but not for safe primes.
+I know that nobody claimed otherwise but I wanted to mention it because I was stumped for a moment because of the 
+similarity of the names.
+
+> [...]
+> The broader question that occurs, particularly also in view of the stdlib-crypto discussion
+> (http://bugs.python.org/issue8998) is: What is pycrypto's intent? What should it be?
+
+Wow! I was not aware that there is an ongoing stdlib-crypto discussion. Thanks a lot!
+
+> Should it be a low-level collection of crypto algorithms, suitable for academic and real work, and requiring a strong
+> understanding of crypto and its complexities in either case, with no safeguards should a user choose to shoot himself
+> in the foot?
+>
+> Should it be a high-level collection of crypto routines, suitable for the crypto-naive coder, offering safe defaults
+> and a few knobs to influence those parameters that should be able to be chosen by a slightly less crypto-naive coder?
+> Note that this would require vigorous debate about what this second tier should look like, which defaults would be
+> chosen, which knobs would still be exposed, and so on. That debate would have to be carried out in public and would
+> have to include all the other movers-and-shakers in the Python crypto community.
+>
+> Should it be both, offering a two-tiered API?
+>
+> And further:
+>
+> Should pycrypto continue to offer its own implementations of crypto algorithms? Or should it be a Python wrapper for
+> existing implementations such as tomlib, Crypto++ or NSS, relying on those implementations to have been coded in a
+> secure manner?
+>
+>
+> Thank you for reading
+>
+> Thorsten
+
+Here are my 2 cents:
+When I was looking for a python crypto package I chose pycrypto mainly for two reasons.
+1) It had the fewest dependencies. Only the optionally (though highly recommended) libgmp.
+2) The API was more pythonic than many libraries that only wrap the calls to C-functions of underlying libraries.
+
+Some people say that pycrypto should not implement the crypto primitives but rather us existing libraries. While I do 
+understand the rationale behind such a statement, I have to voice my opposition. AFAIK there are already python bindings 
+for virtually every major crypto library [1-3]. The only issue with those libraries might be the API but I would suggest 
+that one first tries to persuade the maintainers to adopt a more PEP 272 like API.
+Instead I would suggest to slim down pycrypto. Support one or two of each: block cipher, public key crypto, Hash 
+function. Try to harden their implementation and then move to provide a good upper layer which takes care of padding, 
+envelope encryption and so on.
+This way pycrypto will be a slim independent library which gets the job done. If someone really needs block cipher XYZ 
+then kindly point them to a more exhaustive package that wraps an underlying crypto library.
+Feel free to disagree :)
+
+Enough ranting for today.
+
+Cheers and thanks a lot to all the people that built, improve and maintain this great piece of software.
+Sincerely yours,
+Lorenz
+
+[1] http://tahoe-lafs.org/trac/pycryptopp
+[2] http://people.redhat.com/jdennis/python-nss/doc/api/html/
+[3] http://buggywhip.blogspot.com/2007/06/python-ctypes-wrapper-for-libtomcrypt.html
+
+From sbehrens at gmx.li  Sun Jan  2 17:35:52 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Sun, 02 Jan 2011 18:35:52 -0500
+Subject: [pycrypto] Comments on Elgamal,
+ and a broader question: Whither pycrypto?
+In-Reply-To: <4D20F2FE.5020204@amberfisharts.com>
+References: <4D1DEF9F.7020101@gmx.li> <4D20F2FE.5020204@amberfisharts.com>
+Message-ID: <4D210BD8.9000806@gmx.li>
+
+On 1/2/2011 4:49 PM, Lorenz Quack wrote:
+>
+> Just for the record: a "safe prime" is *not* the same thing as a "strong prime". [...]
+> pycrypto has a function for generating "strong primes" (getStrongPrime()) but not for safe primes.
+Correct. Also, elgamal.py doesn't call the function for strong primes. 
+Much less safe primes, since we don't have one of those :)
+
+> Wow! I was not aware that there is an ongoing stdlib-crypto discussion. Thanks a lot!
+Of course. Martin v. Loewis asked the participants there: Absent user 
+input, what do the experts think? And by "experts",
+he explicitly referred to the pycrypto maintainers. That's you guys. I 
+think it makes a lot of sense to plug you into
+the discussion.
+
+> Here are my 2 cents:
+> When I was looking for a python crypto package I chose pycrypto mainly for two reasons.
+> 1) It had the fewest dependencies. Only the optionally (though highly recommended) libgmp.
+Okay, I get that. A pycrypto-next that wraps existing libraries would 
+break that. This is something to weigh against the (very real) 
+difficulty of writing and maintaining a body of secure crypto routines.
+
+Hybrid models are possible. We could snag low-level crypto primitives as 
+source from Crypto++ and tomlib, and wrap "pythonic" things around those.
+
+> 2) The API was more pythonic than many libraries that only wrap the calls to C-functions of underlying libraries.
+Absolutely, that's a great strength. I'd like to see that extended to a 
+stronger API for public key crypto, message padding and secure key 
+generation.
+
+> Some people say that pycrypto should not implement the crypto primitives but rather us existing libraries. While I do
+> understand the rationale behind such a statement, I have to voice my opposition. AFAIK there are already python bindings
+> for virtually every major crypto library [1-3]. The only issue with those libraries might be the API but I would suggest
+> that one first tries to persuade the maintainers to adopt a more PEP 272 like API.
+Okay, that's a really good point. You make the point, if I understand 
+you right, that pycrypto does not need to be what others already are, 
+and there's something to be said for having less dependencies.
+
+How, then, do we go about offering secure implementations of crypto 
+primitives, however?
+
+> Instead I would suggest to slim down pycrypto. Support one or two of each: block cipher, public key crypto, Hash
+> function. Try to harden their implementation and then move to provide a good upper layer which takes care of padding,
+> envelope encryption and so on.
+I see. So, make an effort to provide the most pertinent algorithms. Do 
+not provide everything-under-the-Sun. Leave existing stuff in for 
+backwards compatibility. Then, once that is done, provide an additional 
+layer that helps people to implement it correctly - without ever 
+becoming KeyCzar. KeyCzar already exists, after all, and it depends on 
+pycrypto.
+
+> This way pycrypto will be a slim independent library which gets the job done. If someone really needs block cipher XYZ
+> then kindly point them to a more exhaustive package that wraps an underlying crypto library.
+I get your point.
+> Feel free to disagree :)
+I'm just stirring the pot. It's Dwayne and you guys who make this 
+decision. I'm the new guy on the block who comes in with a certain 
+amount of fresh enthusiasm and questions the status quo.
+
+All the best
+Thorsten
+
+
+From richmoore44 at gmail.com  Mon Jan  3 05:13:05 2011
+From: richmoore44 at gmail.com (Richard Moore)
+Date: Mon, 3 Jan 2011 11:13:05 +0000
+Subject: [pycrypto] Comments on Elgamal,
+	and a broader question: Whither pycrypto?
+In-Reply-To: <4D20F2FE.5020204@amberfisharts.com>
+References: <4D1DEF9F.7020101@gmx.li>
+	<4D20F2FE.5020204@amberfisharts.com>
+Message-ID: <AANLkTikOHWEpGCJcOooLYejOH6sgk7YYEDcDoo+xHwUp@mail.gmail.com>
+
+On Sun, Jan 2, 2011 at 9:49 PM, Lorenz Quack <don at amberfisharts.com> wrote:
+> function. Try to harden their implementation and then move to provide a good upper layer which takes care of padding,
+
+I have some PKCS#12 padding code lying about if it's of any use here.
+
+Cheers
+
+Rich.
+
+From zooko at zooko.com  Mon Jan  3 09:09:11 2011
+From: zooko at zooko.com (Zooko O'Whielacronx)
+Date: Mon, 3 Jan 2011 08:09:11 -0700
+Subject: [pycrypto] pycryptopp alternative Re:  Comments on Elgamal,
+ and a broader question: Whither pycrypto?
+Message-ID: <AANLkTimt8B+r-oYJMa=aWKTg1_M=Lcs-13+_aPb4FMum@mail.gmail.com>
+
+pycryptopp is a good alternative if you can do without algorithms that
+it doesn't support. It supports only a few at the moment -- AES,
+RSA-PSS-SHA256 signatures (but not encryption), SHA-256. We'll slowly
+add support for a few more in the future. We're adding ECDSA
+signatures (but not encryption) right now, and a Google Summer of Code
+student, Yu Xue, added support for XSalsa20, HMAC, and HKDF...
+
+At least pycryptopp is developed with careful testing which catches
+some bugs, and it is based on Crypto++ which itself gets developed by
+Wei Dai and others.
+
+Here is our buildbot showing tests being run on various platforms:
+
+http://tahoe-lafs.org/buildbot-pycryptopp/waterfall
+
+Here is the trac:
+
+http://tahoe-lafs.org/trac/pycryptopp/wiki
+
+Regards,
+
+Zooko
+
+[1] http://tahoe-lafs.org/trac/pycryptopp/browser/trunk/pycryptopp/publickey/rsamodule.cpp?annotate=blame&rev=756
+
+From zooko at zooko.com  Mon Jan  3 09:15:21 2011
+From: zooko at zooko.com (Zooko O'Whielacronx)
+Date: Mon, 3 Jan 2011 08:15:21 -0700
+Subject: [pycrypto] how to handle known security holes Re: Comments on
+ Elgamal, and a broader question: Whither pycrypto?
+Message-ID: <AANLkTimwXC23LFnov8Yvq-TdaGp28ahN9t3HRG5t-sWy@mail.gmail.com>
+
+Folks:
+
+We need to decide what to do when we find flaws in PyCrypto which
+would expose a user who relies on PyCrypto to harm.
+
+It wouldn't hurt to send an announcement email in some consistent
+format saying something like "security advisory" in the subject line,
+and to update the download page or a NEWS page or whatever to warn
+about the insecure Elgamal implementation.
+
+Perhaps also delete, comment-out, or disable the Elgamal
+implementation and ship a new release of PyCrypto.
+
+It really makes me uncomfortable to see the PyCrypto project ship
+software to users which claims on the label that they can rely on it
+when we know that if they do, they may be exposed to harm.
+
+Regards,
+
+Zooko
+
+From paul.hoffman at gmail.com  Mon Jan  3 10:40:18 2011
+From: paul.hoffman at gmail.com (Paul Hoffman)
+Date: Mon, 3 Jan 2011 08:40:18 -0800
+Subject: [pycrypto] how to handle known security holes Re: Comments on
+ Elgamal, and a broader question: Whither pycrypto?
+In-Reply-To: <AANLkTimwXC23LFnov8Yvq-TdaGp28ahN9t3HRG5t-sWy@mail.gmail.com>
+References: <AANLkTimwXC23LFnov8Yvq-TdaGp28ahN9t3HRG5t-sWy@mail.gmail.com>
+Message-ID: <AANLkTinbrh2ed_atX8h6iFwGBUOhzSTkYeBak_KbdERj@mail.gmail.com>
+
+On Mon, Jan 3, 2011 at 7:15 AM, Zooko O'Whielacronx <zooko at zooko.com> wrote:
+> Folks:
+>
+> We need to decide what to do when we find flaws in PyCrypto which
+> would expose a user who relies on PyCrypto to harm.
+>
+> It wouldn't hurt to send an announcement email in some consistent
+> format saying something like "security advisory" in the subject line,
+> and to update the download page or a NEWS page or whatever to warn
+> about the insecure Elgamal implementation.
+>
+> Perhaps also delete, comment-out, or disable the Elgamal
+> implementation and ship a new release of PyCrypto.
+>
+> It really makes me uncomfortable to see the PyCrypto project ship
+> software to users which claims on the label that they can rely on it
+> when we know that if they do, they may be exposed to harm.
+
++1 to commenting out or disabling things which anyone has serious
+security concerns over.
+
+From dlitz at dlitz.net  Mon Jan  3 10:54:22 2011
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 03 Jan 2011 11:54:22 -0500
+Subject: [pycrypto] how to handle known security holes Re: Comments
+	on	Elgamal, and a broader question: Whither pycrypto?
+In-Reply-To: <AANLkTinbrh2ed_atX8h6iFwGBUOhzSTkYeBak_KbdERj@mail.gmail.com>
+References: <AANLkTimwXC23LFnov8Yvq-TdaGp28ahN9t3HRG5t-sWy@mail.gmail.com>
+	<AANLkTinbrh2ed_atX8h6iFwGBUOhzSTkYeBak_KbdERj@mail.gmail.com>
+Message-ID: <492e8f28-cfc5-4251-961c-2f309208ff23@email.android.com>
+
++1
+
+Could someone volunteer to do a quick survey of publicly available code that uses PyCrypto to see who (if anyone) is actually using Crypto.PublicKey.ElGamal?
+
+"Paul Hoffman" <paul.hoffman at gmail.com> wrote:
+
+>On Mon, Jan 3, 2011 at 7:15 AM, Zooko O'Whielacronx <zooko at zooko.com>
+>wrote:
+>> Folks:
+>>
+>> We need to decide what to do when we find flaws in PyCrypto which
+>> would expose a user who relies on PyCrypto to harm.
+>>
+>> It wouldn't hurt to send an announcement email in some consistent
+>> format saying something like "security advisory" in the subject line,
+>> and to update the download page or a NEWS page or whatever to warn
+>> about the insecure Elgamal implementation.
+>>
+>> Perhaps also delete, comment-out, or disable the Elgamal
+>> implementation and ship a new release of PyCrypto.
+>>
+>> It really makes me uncomfortable to see the PyCrypto project ship
+>> software to users which claims on the label that they can rely on it
+>> when we know that if they do, they may be exposed to harm.
+>
+>+1 to commenting out or disabling things which anyone has serious
+>security concerns over.
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+
+From sbehrens at gmx.li  Mon Jan  3 12:16:42 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Mon, 03 Jan 2011 13:16:42 -0500
+Subject: [pycrypto] pycryptopp alternative
+In-Reply-To: <AANLkTimt8B+r-oYJMa=aWKTg1_M=Lcs-13+_aPb4FMum@mail.gmail.com>
+References: <AANLkTimt8B+r-oYJMa=aWKTg1_M=Lcs-13+_aPb4FMum@mail.gmail.com>
+Message-ID: <4D22128A.1070403@gmx.li>
+
+I am glad to see alternatives, that's excellent!
+
+Personally, I'd really like to see more efforts to have "pythonic" API 
+interfaces, though. Use PEP 272 for cipher API and PEP 247 for hash APIs.
+
+Sure, PEP 272 is in essence nothing but an attempt to standardize 
+pycrypto's interface. Is there room to improve upon that API? Possibly 
+so. Not just for block ciphers, mind you, but for the parts that do not 
+have PEPs right now: public key interface, message padding, there are 
+more that need some love. That's why the Python maintainers have an open 
+issue to try and standardize a "Pythonic" crypto API.
+
+And maybe the answer to that is: pycrypto is already keen on 
+"standardized, Pythonic, be-PEP'd" APIs, let that project run with it, 
+and other projects can focus on providing a more direct one-to-one 
+wrapper to underlying implementations.
+
+Thorsten
+
+On 1/3/2011 10:09 AM, Zooko O'Whielacronx wrote:
+> pycryptopp is a good alternative if you can do without algorithms that
+> it doesn't support. It supports only a few at the moment -- AES,
+> RSA-PSS-SHA256 signatures (but not encryption), SHA-256. We'll slowly
+
+
+From don at amberfisharts.com  Mon Jan  3 13:43:48 2011
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Mon, 03 Jan 2011 20:43:48 +0100
+Subject: [pycrypto] how to handle known security holes Re: Comments	on
+ Elgamal, and a broader question: Whither pycrypto?
+In-Reply-To: <492e8f28-cfc5-4251-961c-2f309208ff23@email.android.com>
+References: <AANLkTimwXC23LFnov8Yvq-TdaGp28ahN9t3HRG5t-sWy@mail.gmail.com>	<AANLkTinbrh2ed_atX8h6iFwGBUOhzSTkYeBak_KbdERj@mail.gmail.com>
+	<492e8f28-cfc5-4251-961c-2f309208ff23@email.android.com>
+Message-ID: <4D2226F4.8090702@amberfisharts.com>
+
+Hey,
+
+A quick google codesearch for "ElGamal lang:python" revealed three different package types.
+
+The first category use pycrypto:
+  * http://www.freenet.org.nz/ezPyCrypto/
+  * http://angelapp.missioneternity.org/
+    they bundle ezPyCrypto
+  * http://dyuri.horak.hu/frenC/
+    site is in hungry but they seem to bundle ezPyCrypto in their snapshots
+  * http://code.google.com/p/cdna/
+  * https://github.com/linuxmint/mint4win
+  * github.com/kichkasch/ioids
+    via ezPyCrypto
+  * various projects include it via googles appengine. However I don't if they actually use it.
+  * http://code.google.com/p/inmszhuce/
+  * http://codespeak.net/svn/user/arigo/hack/pkcrypto/
+
+The second category simply bundles a version of pycrypto:
+  * http://code.google.com/p/gdata-python-client/
+    includes pycrypto-2.0.1
+  * http://code.google.com/p/jsunpack-n/
+    includes pycrypto-2.1
+  * http://code.google.com/appengine/docs/python/tools/libraries.html
+    seems to be based on pycrypto-2.0.1
+
+The third category implement ElGamal themselves:
+  * https://github.com/benadida/jscrypto
+    also many other github projects by the same user
+  * https://github.com/digitaldragoon/referenda
+  * http://code.google.com/p/cryptoworkflow/
+
+Category 1 should be the most important IMHO.
+Of course this list comes without warranty.
+I hope this is helpful.
+
+Cheers,
+Lorenz
+
+
+On 01/03/2011 05:54 PM, Dwayne C. Litzenberger wrote:
+> +1
+>
+> Could someone volunteer to do a quick survey of publicly available code that uses PyCrypto to see who (if anyone) is actually using Crypto.PublicKey.ElGamal?
+>
+> "Paul Hoffman"<paul.hoffman at gmail.com>  wrote:
+>
+>> On Mon, Jan 3, 2011 at 7:15 AM, Zooko O'Whielacronx<zooko at zooko.com>
+>> wrote:
+>>> Folks:
+>>>
+>>> We need to decide what to do when we find flaws in PyCrypto which
+>>> would expose a user who relies on PyCrypto to harm.
+>>>
+>>> It wouldn't hurt to send an announcement email in some consistent
+>>> format saying something like "security advisory" in the subject line,
+>>> and to update the download page or a NEWS page or whatever to warn
+>>> about the insecure Elgamal implementation.
+>>>
+>>> Perhaps also delete, comment-out, or disable the Elgamal
+>>> implementation and ship a new release of PyCrypto.
+>>>
+>>> It really makes me uncomfortable to see the PyCrypto project ship
+>>> software to users which claims on the label that they can rely on it
+>>> when we know that if they do, they may be exposed to harm.
+>>
+>> +1 to commenting out or disabling things which anyone has serious
+>> security concerns over.
+
+
+From sbehrens at gmx.li  Mon Jan  3 21:42:32 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Mon, 03 Jan 2011 22:42:32 -0500
+Subject: [pycrypto] 'tis done: Python3 with PyCrypto
+In-Reply-To: <cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>
+	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>
+	<4D1426D5.80400@gmx.li>	<20101224064844.GA13502@rivest.dlitz.net>	<4D151B67.5000101@gmx.li>
+	<4D1539CB.6000600@gmx.li>	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>	<4D161FFE.3040002@gmx.li>
+	<4D17A488.1080002@gmx.li>	<0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>	<4D18B7BA.30604@gmx.li>
+	<4D18ED63.2030909@gmx.li>	<4D1A5509.2020604@gmx.li>	<ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>	<4D1B251C.8090903@gmx.li>	<64d92a8d-e3eb-40f4-986e-c2d37ca30a83@email.android.com>	<4D1B7BB0.6050201@gmx.li>
+	<cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>
+Message-ID: <4D229728.2000109@gmx.li>
+
+I've done what I will on the py3k branch. It's been tested on 2.1, 2.2, 
+2.7, 3.1 and 3.2.
+
+AllOrNothing unit tests are now in and show AllOrNothing failing 
+occasionally. This has always been the case. The unit test just forces 
+the failure. Since I highly suspect that no-one actually uses 
+AllOrNothing.py - or these errors would have been detected before now - 
+I am not going to tackle that particular piece further. Others are more 
+than welcome to, of course!
+
+I have updated the documentation that ships with pycrypto, adding 
+comments on the (in)security of the algorithms included, such as 
+MD2/4/5, SHA1, ARC2, ARC4. Please do have a look. These changes bear 
+verification by others. I may well have asserted that which is not true, 
+or distorted a fact here and there.
+
+I've issued a pull request. I'm happy to make further changes if there 
+should be something I overlooked and that the unit tests did not expose. 
+But barring that, I consider the porting effort complete. All further 
+work - such as dealing with the errors in AllOrNothing.py and 
+random.sample() (the latter is an issue in Python 2.1 only), dealing 
+with security concerns in Elgamal.py, deciding the fate of qNEW - I'd 
+like to keep to trunk. I've made quite enough changes already on this 
+private branch.
+
+Yours
+Thorsten
+
+
+From don at amberfisharts.com  Tue Jan  4 13:16:15 2011
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Tue, 04 Jan 2011 20:16:15 +0100
+Subject: [pycrypto] 'tis done: Python3 with PyCrypto
+In-Reply-To: <4D229728.2000109@gmx.li>
+References: "\"<4D12AFC7.4060706@gmx.li>"
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>"
+	<4D13E25F.5030106@gmx.li> "<20101224020036.GD11168@rivest.dlitz.net>"
+	<20101224021815.GG11168@rivest.dlitz.net> "\"<4D1426D5.80400@gmx.li>"
+	<20101224064844.GA13502@rivest.dlitz.net>" <4D151B67.5000101@gmx.li>
+	"\"<4D1539CB.6000600@gmx.li>"
+	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>"
+	<4D161FFE.3040002@gmx.li> "\"<4D17A488.1080002@gmx.li>"
+	<0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>"
+	<4D18B7BA.30604@gmx.li>
+	"\"<4D18ED63.2030909@gmx.li>	<4D1A5509.2020604@gmx.li>	<ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>	<4D1B251C.8090903@gmx.li>"
+	<64d92a8d-e3eb-40f4-986e-c2d37ca30a83@email.android.com>"
+	<4D1B7BB0.6050201@gmx.li>
+	<cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>
+	<4D229728.2000109@gmx.li>
+Message-ID: <2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>
+
+ Hey Thorsten,
+
+ I have a small patch you might want to include in your branch before it 
+ merges.
+ It does three things:
+  * fix a typo in your new docs
+  * fixes a bug in the randrange unittests
+  * adds some more tests for randrange and shuffle
+
+ Furthermore it seems that you didn't commit the test_AllOrNothing.py 
+ file.
+
+ Let me thank you once more for your determined and -it seems- 
+ successful push for py3k support.
+
+ Cheers,
+ Lorenz
+ 
+
+ On Mon, 03 Jan 2011 22:42:32 -0500, Thorsten Behrens <sbehrens at gmx.li> 
+ wrote:
+> I've done what I will on the py3k branch. It's been tested on 2.1, 
+> 2.2,
+> 2.7, 3.1 and 3.2.
+>
+> AllOrNothing unit tests are now in and show AllOrNothing failing
+> occasionally. This has always been the case. The unit test just 
+> forces
+> the failure. Since I highly suspect that no-one actually uses
+> AllOrNothing.py - or these errors would have been detected before now 
+> -
+> I am not going to tackle that particular piece further. Others are 
+> more
+> than welcome to, of course!
+>
+> I have updated the documentation that ships with pycrypto, adding
+> comments on the (in)security of the algorithms included, such as
+> MD2/4/5, SHA1, ARC2, ARC4. Please do have a look. These changes bear
+> verification by others. I may well have asserted that which is not 
+> true,
+> or distorted a fact here and there.
+>
+> I've issued a pull request. I'm happy to make further changes if 
+> there
+> should be something I overlooked and that the unit tests did not 
+> expose.
+> But barring that, I consider the porting effort complete. All further
+> work - such as dealing with the errors in AllOrNothing.py and
+> random.sample() (the latter is an issue in Python 2.1 only), dealing
+> with security concerns in Elgamal.py, deciding the fate of qNEW - I'd
+> like to keep to trunk. I've made quite enough changes already on this
+> private branch.
+>
+> Yours
+> Thorsten
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: py3k_branch.patch
+Type: text/x-diff
+Size: 2248 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20110104/d4594010/attachment.patch 
+
+From don at amberfisharts.com  Tue Jan  4 13:44:22 2011
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Tue, 04 Jan 2011 20:44:22 +0100
+Subject: [pycrypto] some readability patches
+Message-ID: <96491f7a4a9b0cdde8191b9abf26017c@amberfisharts.com>
+
+ Hi,
+
+ here is a small patch fixing some minor issues, mainly readability 
+ improvements.
+ In detail the changes are:
+  * fix the version_info to correctly report version 2.3.0
+  * fix the docstring of ElGamal.construct()
+  * made the final loop in getStrongPrime() more pythonic and readable 
+ (in both slow- and fastmath)
+  * fixed some typos in _fastmath.c
+
+ cheers,
+ //Lorenz
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: readability.patch
+Type: text/x-diff
+Size: 7603 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20110104/beff9623/attachment.patch 
+
+From sbehrens at gmx.li  Tue Jan  4 14:14:43 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Tue, 04 Jan 2011 15:14:43 -0500
+Subject: [pycrypto] 'tis done: Python3 with PyCrypto
+In-Reply-To: <2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>
+References: "\"<4D12AFC7.4060706@gmx.li>"	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>"	<4D13E25F.5030106@gmx.li>
+	"<20101224020036.GD11168@rivest.dlitz.net>"	<20101224021815.GG11168@rivest.dlitz.net>
+	"\"<4D1426D5.80400@gmx.li>"	<20101224064844.GA13502@rivest.dlitz.net>"
+	<4D151B67.5000101@gmx.li>	"\"<4D1539CB.6000600@gmx.li>"	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>"	<4D161FFE.3040002@gmx.li>
+	"\"<4D17A488.1080002@gmx.li>"	<0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>"	<4D18B7BA.30604@gmx.li>	"\"<4D18ED63.2030909@gmx.li>	<4D1A5509.2020604@gmx.li>	<ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>	<4D1B251C.8090903@gmx.li>"	<64d92a8d-e3eb-40f4-986e-c2d37ca30a83@email.android.com>"	<4D1B7BB0.6050201@gmx.li>	<cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>	<4D229728.2000109@gmx.li>
+	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>
+Message-ID: <4D237FB3.5070305@gmx.li>
+
+Thanks! I'll take a look. Also: Well oops. The test_AllOrNothing.py file 
+is now staged.
+
+On 1/4/2011 2:16 PM, don at amberfisharts.com wrote:
+> Hey Thorsten,
+>
+> I have a small patch you might want to include in your branch before 
+> it merges.
+> It does three things:
+>  * fix a typo in your new docs
+>  * fixes a bug in the randrange unittests
+>  * adds some more tests for randrange and shuffle
+>
+> Furthermore it seems that you didn't commit the test_AllOrNothing.py 
+> file.
+>
+> Let me thank you once more for your determined and -it seems- 
+> successful push for py3k support.
+>
+> Cheers,
+> Lorenz
+>
+>
+> On Mon, 03 Jan 2011 22:42:32 -0500, Thorsten Behrens <sbehrens at gmx.li> 
+> wrote:
+>> I've done what I will on the py3k branch. It's been tested on 2.1, 2.2,
+>> 2.7, 3.1 and 3.2.
+>>
+>> AllOrNothing unit tests are now in and show AllOrNothing failing
+>> occasionally. This has always been the case. The unit test just forces
+>> the failure. Since I highly suspect that no-one actually uses
+>> AllOrNothing.py - or these errors would have been detected before now -
+>> I am not going to tackle that particular piece further. Others are more
+>> than welcome to, of course!
+>>
+>> I have updated the documentation that ships with pycrypto, adding
+>> comments on the (in)security of the algorithms included, such as
+>> MD2/4/5, SHA1, ARC2, ARC4. Please do have a look. These changes bear
+>> verification by others. I may well have asserted that which is not true,
+>> or distorted a fact here and there.
+>>
+>> I've issued a pull request. I'm happy to make further changes if there
+>> should be something I overlooked and that the unit tests did not expose.
+>> But barring that, I consider the porting effort complete. All further
+>> work - such as dealing with the errors in AllOrNothing.py and
+>> random.sample() (the latter is an issue in Python 2.1 only), dealing
+>> with security concerns in Elgamal.py, deciding the fate of qNEW - I'd
+>> like to keep to trunk. I've made quite enough changes already on this
+>> private branch.
+>>
+>> Yours
+>> Thorsten
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110104/65751368/attachment-0001.htm 
+
+From sbehrens at gmx.li  Tue Jan  4 14:35:22 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Tue, 04 Jan 2011 15:35:22 -0500
+Subject: [pycrypto] 'tis done: Python3 with PyCrypto
+In-Reply-To: <2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>
+References: "\"<4D12AFC7.4060706@gmx.li>"	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>"	<4D13E25F.5030106@gmx.li>
+	"<20101224020036.GD11168@rivest.dlitz.net>"	<20101224021815.GG11168@rivest.dlitz.net>
+	"\"<4D1426D5.80400@gmx.li>"	<20101224064844.GA13502@rivest.dlitz.net>"
+	<4D151B67.5000101@gmx.li>	"\"<4D1539CB.6000600@gmx.li>"	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>"	<4D161FFE.3040002@gmx.li>
+	"\"<4D17A488.1080002@gmx.li>"	<0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>"	<4D18B7BA.30604@gmx.li>	"\"<4D18ED63.2030909@gmx.li>	<4D1A5509.2020604@gmx.li>	<ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>	<4D1B251C.8090903@gmx.li>"	<64d92a8d-e3eb-40f4-986e-c2d37ca30a83@email.android.com>"	<4D1B7BB0.6050201@gmx.li>	<cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>	<4D229728.2000109@gmx.li>
+	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>
+Message-ID: <4D23848A.8090805@gmx.li>
+
+Thank you for giving it such a close reading! I've committed 
+test_AllOrNothing.py, for real this time, and I've committed your patch.
+
+Thorsten
+
+
+On 1/4/2011 2:16 PM, don at amberfisharts.com wrote:
+> Hey Thorsten,
+>
+> I have a small patch you might want to include in your branch before 
+> it merges.
+> It does three things:
+>  * fix a typo in your new docs
+>  * fixes a bug in the randrange unittests
+>  * adds some more tests for randrange and shuffle
+>
+> Furthermore it seems that you didn't commit the test_AllOrNothing.py 
+> file.
+>
+> Let me thank you once more for your determined and -it seems- 
+> successful push for py3k support.
+>
+> Cheers,
+> Lorenz
+>
+>
+> On Mon, 03 Jan 2011 22:42:32 -0500, Thorsten Behrens <sbehrens at gmx.li> 
+> wrote:
+>> I've done what I will on the py3k branch. It's been tested on 2.1, 2.2,
+>> 2.7, 3.1 and 3.2.
+>>
+>> AllOrNothing unit tests are now in and show AllOrNothing failing
+>> occasionally. This has always been the case. The unit test just forces
+>> the failure. Since I highly suspect that no-one actually uses
+>> AllOrNothing.py - or these errors would have been detected before now -
+>> I am not going to tackle that particular piece further. Others are more
+>> than welcome to, of course!
+>>
+>> I have updated the documentation that ships with pycrypto, adding
+>> comments on the (in)security of the algorithms included, such as
+>> MD2/4/5, SHA1, ARC2, ARC4. Please do have a look. These changes bear
+>> verification by others. I may well have asserted that which is not true,
+>> or distorted a fact here and there.
+>>
+>> I've issued a pull request. I'm happy to make further changes if there
+>> should be something I overlooked and that the unit tests did not expose.
+>> But barring that, I consider the porting effort complete. All further
+>> work - such as dealing with the errors in AllOrNothing.py and
+>> random.sample() (the latter is an issue in Python 2.1 only), dealing
+>> with security concerns in Elgamal.py, deciding the fate of qNEW - I'd
+>> like to keep to trunk. I've made quite enough changes already on this
+>> private branch.
+>>
+>> Yours
+>> Thorsten
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110104/890998fc/attachment.htm 
+
+From sbehrens at gmx.li  Tue Jan  4 14:40:18 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Tue, 04 Jan 2011 15:40:18 -0500
+Subject: [pycrypto] Issue with the new random.choice() unit test
+Message-ID: <4D2385B2.2050406@gmx.li>
+
+I have introduced a unit test in test_random.py that has too high a rate 
+of failure. Specifically, this:
+
+         # Test choice
+         seq = []
+         for i in range(500): # seed the sequence
+             seq[i:] = [random.getrandbits(32)]
+         x = random.choice(seq)
+         y = random.choice(seq)
+         self.assertNotEqual(x, y)
+
+just produced a FAIL:
+
+FAIL: runTest (Crypto.SelfTest.Random.test_random.SimpleTest)
+Crypto.Random.new()
+----------------------------------------------------------------------
+Traceback (most recent call last):
+   File "build\lib.win-amd64-2.7\Crypto\SelfTest\Random\test_random.py", 
+line 103, in runTest
+     self.assertNotEqual(x, y)
+AssertionError: 1793595220L == 1793595220L
+
+
+Well darn. I guess saying "hey it's a 1 in 500 chance, it'll never 
+fail!" is indeed naive. What would be a less naive test, then? I am 
+thinking seeding a much smaller seq, and then running choice many times, 
+counting collisions each time, and getting some form of expected value 
+with an expected precision from that. It's been very long since I've 
+done stochastic stuff, however. Before I screw this up further: Concrete 
+suggestions on how to fix this unit test?
+
+Thanks!
+Thorsten
+
+
+From don at amberfisharts.com  Tue Jan  4 17:24:14 2011
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Wed, 05 Jan 2011 00:24:14 +0100
+Subject: [pycrypto] Issue with the new random.choice() unit test
+In-Reply-To: <4D2385B2.2050406@gmx.li>
+References: <4D2385B2.2050406@gmx.li>
+Message-ID: <4D23AC1E.2000509@amberfisharts.com>
+
+Well, this problem exist in all your random test although it is indeed
+unlikely that one will hit the others.
+I personally wouldn't worry to much about the exact distribution of most
+random tests. They all use random.randrange which in turn uses getrandbits.
+So if you want to go for *real* tests those functions should be the focus.
+Although proper test for the others functions would of course also be good
+I personally would settle for simple sanity checks (i.e., just increase the
+seq size or wrap the part with a try-except block in which you repeat the test.
+If it fails again raise an exception)
+
+By the way:
+  * You don't need to create the seq randomly or do you? wouldn't range(500) suffice?
+  * I find the way you fixed the shuffle function rather odd (good catch, though)
+    my suggestion would be
+	for i in xrange(len(x)):
+		p = self.randrange(len(items))
+		x[i] = items[p]
+		del items[p]
+    or even shorter
+	for i in xrange(len(x)):
+		x[i] = items.pop(self.randrange(len(items)))
+
+sincerely yours,
+//Lorenz
+
+
+On 01/04/2011 09:40 PM, Thorsten Behrens wrote:
+> I have introduced a unit test in test_random.py that has too high a rate
+> of failure. Specifically, this:
+>
+>           # Test choice
+>           seq = []
+>           for i in range(500): # seed the sequence
+>               seq[i:] = [random.getrandbits(32)]
+>           x = random.choice(seq)
+>           y = random.choice(seq)
+>           self.assertNotEqual(x, y)
+>
+> just produced a FAIL:
+>
+> FAIL: runTest (Crypto.SelfTest.Random.test_random.SimpleTest)
+> Crypto.Random.new()
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>     File "build\lib.win-amd64-2.7\Crypto\SelfTest\Random\test_random.py",
+> line 103, in runTest
+>       self.assertNotEqual(x, y)
+> AssertionError: 1793595220L == 1793595220L
+>
+>
+> Well darn. I guess saying "hey it's a 1 in 500 chance, it'll never
+> fail!" is indeed naive. What would be a less naive test, then? I am
+> thinking seeding a much smaller seq, and then running choice many times,
+> counting collisions each time, and getting some form of expected value
+> with an expected precision from that. It's been very long since I've
+> done stochastic stuff, however. Before I screw this up further: Concrete
+> suggestions on how to fix this unit test?
+>
+> Thanks!
+> Thorsten
+
+
+From sbehrens at gmx.li  Wed Jan  5 07:01:00 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 05 Jan 2011 08:01:00 -0500
+Subject: [pycrypto] Issue with the new random.choice() unit test
+In-Reply-To: <4D23AC1E.2000509@amberfisharts.com>
+References: <4D2385B2.2050406@gmx.li> <4D23AC1E.2000509@amberfisharts.com>
+Message-ID: <4D246B8C.4010306@gmx.li>
+
+On 1/4/2011 6:24 PM, Lorenz Quack wrote:
+> Well, this problem exist in all your random test although it is indeed
+> unlikely that one will hit the others.
+True. It also exists in all other random tests we have, in one form or 
+another.
+
+> random tests. They all use random.randrange which in turn uses getrandbits.
+> So if you want to go for *real* tests those functions should be the focus.
+Aye. Real tests for those would be good, given the importance of 
+randomness in crypto.
+I don't think I'm tackling that anytime soon, though.
+
+>    * You don't need to create the seq randomly or do you? wouldn't range(500) suffice?
+It doesn't have to be random. I changed it to range(10000). Gets rid of 
+the too-too-likely collision, as well.
+
+>    * I find the way you fixed the shuffle function rather odd (good catch, though)
+>      my suggestion would be
+>      or even shorter
+> 	for i in xrange(len(x)):
+> 		x[i] = items.pop(self.randrange(len(items)))
+That looks a lot more pythonic. Thanks, I've made that change. I'll hold 
+off on yet-another-pull-request though, poor Dwayne. :)
+
+Do you have any ideas on the ailing AllOrNothing.py and random.sample on 
+Python 2.1? I haven't dug into those yet beyond
+noting that they have issues, exposed by the new unit tests.
+
+Yours
+Thorsten
+
+
+From don at amberfisharts.com  Wed Jan  5 13:14:50 2011
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Wed, 05 Jan 2011 20:14:50 +0100
+Subject: [pycrypto] Issue with the new random.choice() unit test
+In-Reply-To: <4D246B8C.4010306@gmx.li>
+References: <4D2385B2.2050406@gmx.li> <4D23AC1E.2000509@amberfisharts.com>
+	<4D246B8C.4010306@gmx.li>
+Message-ID: <4D24C32A.5000806@amberfisharts.com>
+
+Hey,
+
+I just took a look at random.sample.
+The problem is that it uses a dict to simulate a set (introduced in py2.3).
+This is probably done because IIRC dict can do membership test in O(1).
+Lists on the other hand do membership test in O(n) so using sets/dict should
+provide a speedup if sample size k becomes large.
+So what's the problem? Membership testing for dicts was only added in py2.2.
+
+As a fix I simply do O(n) membership testing with the result list.
+The patch is again small and attached to this mail.
+
+I didn't take a look at AllOrNothing yet.
+
+Cheers,
+//Lorenz
+
+
+On 01/05/2011 02:01 PM, Thorsten Behrens wrote:
+> Do you have any ideas on the ailing AllOrNothing.py and random.sample on
+> Python 2.1? I haven't dug into those yet beyond
+> noting that they have issues, exposed by the new unit tests.
+>
+> Yours
+> Thorsten
+
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: random_sample.patch
+Url: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110105/e35dfe76/attachment.txt 
+
+From paul_koning at dell.com  Wed Jan  5 13:14:58 2011
+From: paul_koning at dell.com (Paul Koning)
+Date: Wed, 5 Jan 2011 14:14:58 -0500
+Subject: [pycrypto] Issue with the new random.choice() unit test
+In-Reply-To: <4D24C32A.5000806@amberfisharts.com>
+References: <4D2385B2.2050406@gmx.li> <4D23AC1E.2000509@amberfisharts.com>
+	<4D246B8C.4010306@gmx.li> <4D24C32A.5000806@amberfisharts.com>
+Message-ID: <1AE5CDB8-9C66-49BD-876A-72205E8210F2@dell.com>
+
+
+On Jan 5, 2011, at 2:14 PM, Lorenz Quack wrote:
+
+> Hey,
+> 
+> I just took a look at random.sample.
+> The problem is that it uses a dict to simulate a set (introduced in py2.3).
+> This is probably done because IIRC dict can do membership test in O(1).
+> Lists on the other hand do membership test in O(n) so using sets/dict should
+> provide a speedup if sample size k becomes large.
+> So what's the problem? Membership testing for dicts was only added in py2.2.
+
+True for "k in d" but "d.has_key(k)" works in 2.1.  Unfortunately, it doesn't work in Python 3.  But it would be easy enough to subclass dict and add that method to it in Python 3.
+
+Alternatively, one could use a subscript operation on the dict, wrapped in try/except.
+
+	paul
+
+
+From don at amberfisharts.com  Wed Jan  5 13:36:25 2011
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Wed, 05 Jan 2011 20:36:25 +0100
+Subject: [pycrypto] Issue with the new random.choice() unit test
+In-Reply-To: <4D24C32A.5000806@amberfisharts.com>
+References: <4D2385B2.2050406@gmx.li>
+	<4D23AC1E.2000509@amberfisharts.com>	<4D246B8C.4010306@gmx.li>
+	<4D24C32A.5000806@amberfisharts.com>
+Message-ID: <4D24C839.2020106@amberfisharts.com>
+
+Hey,
+
+I now also took a look at AllOrNothing.
+It was using long_to_bytes with out specifing how many bytes it wants returned.
+Requesting a multiple of the block_size fixed the failing test.
+A few rows below it looked like the same could have happened with the key.
+I also fixed that.
+I did not review the code any further.
+
+patch is attached.
+
+Cheers,
+//Lorenz
+
+
+On 01/05/2011 08:14 PM, Lorenz Quack wrote:
+> [...]
+> I didn't take a look at AllOrNothing yet.
+>
+> Cheers,
+> //Lorenz
+>
+>
+> On 01/05/2011 02:01 PM, Thorsten Behrens wrote:
+>> Do you have any ideas on the ailing AllOrNothing.py and random.sample on
+>> Python 2.1? I haven't dug into those yet beyond
+>> noting that they have issues, exposed by the new unit tests.
+>>
+>> Yours
+>> Thorsten
+>
+
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: AllOrNothing.patch
+Url: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110105/0f806abb/attachment.txt 
+
+From sbehrens at gmx.li  Thu Jan  6 06:16:00 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Thu, 06 Jan 2011 07:16:00 -0500
+Subject: [pycrypto] Issue with the new random.choice() unit test
+In-Reply-To: <1AE5CDB8-9C66-49BD-876A-72205E8210F2@dell.com>
+References: <4D2385B2.2050406@gmx.li>
+	<4D23AC1E.2000509@amberfisharts.com>	<4D246B8C.4010306@gmx.li>
+	<4D24C32A.5000806@amberfisharts.com>
+	<1AE5CDB8-9C66-49BD-876A-72205E8210F2@dell.com>
+Message-ID: <4D25B280.2000306@gmx.li>
+
+On 1/5/2011 2:14 PM, Paul Koning wrote:
+> So what's the problem? Membership testing for dicts was only added in py2.2.
+> True for "k in d" but "d.has_key(k)" works in 2.1.  Unfortunately, it doesn't work in Python 3.  But it would be easy enough to subclass dict and add that method to it in Python 3.
+No need, 2to3 takes care of has_key. I've made the change. Thanks!
+
+Thorsten
+
+
+From sbehrens at gmx.li  Thu Jan  6 06:19:46 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Thu, 06 Jan 2011 07:19:46 -0500
+Subject: [pycrypto] Issue with the new random.choice() unit test
+In-Reply-To: <4D24C839.2020106@amberfisharts.com>
+References: <4D2385B2.2050406@gmx.li>	<4D23AC1E.2000509@amberfisharts.com>	<4D246B8C.4010306@gmx.li>	<4D24C32A.5000806@amberfisharts.com>
+	<4D24C839.2020106@amberfisharts.com>
+Message-ID: <4D25B362.2030603@gmx.li>
+
+Thank you. Patch has been committed. No more random failures, excellent! :D
+
+On 1/5/2011 2:36 PM, Lorenz Quack wrote:
+> Hey,
+>
+> I now also took a look at AllOrNothing.
+> It was using long_to_bytes with out specifing how many bytes it wants 
+> returned.
+> Requesting a multiple of the block_size fixed the failing test.
+> A few rows below it looked like the same could have happened with the 
+> key.
+> I also fixed that.
+> I did not review the code any further.
+>
+> patch is attached.
+>
+> Cheers,
+> //Lorenz
+
+
+From don at amberfisharts.com  Fri Jan  7 12:33:19 2011
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Fri, 07 Jan 2011 19:33:19 +0100
+Subject: [pycrypto] Mailing list test - pycrypto.org down
+Message-ID: <4D275C6F.60302@amberfisharts.com>
+
+Hey,
+
+I noticed, that pycrypto.org is down.
+since the mailing list is hosted on the same domain I wanted to test if it still works.
+If it doesn't I'll file a bug on launchpad.
+
+Cheers,
+//Lorenz
+
+From sbehrens at gmx.li  Fri Jan  7 15:00:15 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Fri, 07 Jan 2011 16:00:15 -0500
+Subject: [pycrypto] Idea: pycrypto user survey
+Message-ID: <4D277EDF.2000703@gmx.li>
+
+Hello folk,
+
+I had an idea: How about we find out who uses pycrypto, and how, and 
+what they would like to see in future versions?
+
+This might be quite helpful in deciding the direction pycrypto 
+development should take. I figured I'd ask for participation on 
+python-discuss and python-crypto, and hope that no-one is going to take 
+that as an invitation to try and bring my web server down.
+
+I've put a quick sample survey up at: 
+http://pycrypto-survey.warshaft.com/index.php?sid=96342&newtest=Y&lang=en
+
+Please take a look and let me know:
+
+- Whether you think a survey is a good idea in the first place
+- And if so, which changes if any you'd like to see made to the survey 
+before it is activated and throw to the Python masses
+
+
+Thanks!
+Thorsten
+
+
+From don at amberfisharts.com  Sun Jan  9 04:37:04 2011
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Sun, 09 Jan 2011 11:37:04 +0100
+Subject: [pycrypto] Idea: pycrypto user survey
+In-Reply-To: <4D277EDF.2000703@gmx.li>
+References: <4D277EDF.2000703@gmx.li>
+Message-ID: <4D298FD0.9080902@amberfisharts.com>
+
+Hi Thorsten,
+
+I personally think it's a good idea but I'm curious about what Dwayne thinks.
+After all he still is the maintainer of PyCrypto. I'm just a random passers-by.
+
+Here some comments on your poll-draft:
+  * It says "pycrypto annual user survey". "annual" really?
+  * Can you make the questions conditional? For example if in the first question "Do you currently use pycrypto?" I 
+answer "No", then the following questions don't make to much sense.
+  * maybe one could ask what cryptographic python library the people use. "pycrypto, ezpycrypto, cryptopp, pytomcrypt,
+..., custom implementation, other (which one?), none"
+  * I would maybe add the possibility for arbitrary comments. either regarding pycrypto or the poll itself.
+
+cheers,
+//Lorenz
+
+
+On 01/07/2011 10:00 PM, Thorsten Behrens wrote:
+> Hello folk,
+>
+> I had an idea: How about we find out who uses pycrypto, and how, and
+> what they would like to see in future versions?
+>
+> This might be quite helpful in deciding the direction pycrypto
+> development should take. I figured I'd ask for participation on
+> python-discuss and python-crypto, and hope that no-one is going to take
+> that as an invitation to try and bring my web server down.
+>
+> I've put a quick sample survey up at:
+> http://pycrypto-survey.warshaft.com/index.php?sid=96342&newtest=Y&lang=en
+>
+> Please take a look and let me know:
+>
+> - Whether you think a survey is a good idea in the first place
+> - And if so, which changes if any you'd like to see made to the survey
+> before it is activated and throw to the Python masses
+>
+>
+> Thanks!
+> Thorsten
+>
+
+From sbehrens at gmx.li  Sun Jan  9 07:08:31 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Sun, 09 Jan 2011 08:08:31 -0500
+Subject: [pycrypto] Idea: pycrypto user survey
+In-Reply-To: <4D298FD0.9080902@amberfisharts.com>
+References: <4D277EDF.2000703@gmx.li> <4D298FD0.9080902@amberfisharts.com>
+Message-ID: <4D29B34F.2080308@gmx.li>
+
+>>
+I personally think it's a good idea but I'm curious about what Dwayne thinks.
+After all he still is the maintainer of PyCrypto. I'm just a random passers-by.
+>>
+
+I feel the same way. Ideally, the survey can be a tool to help Dwayne. And also to help the Python maintainers: There was mention that there's no user feedback on crypto (in the "crypto to the stdlib" thread). Well, we can help change that.
+
+I made some changes to the survey, as I thought all of your suggestions were good. Take another look, if you would.
+
+
+> Here some comments on your poll-draft:
+>    * It says "pycrypto annual user survey". "annual" really?
+I was attempting to be funny, tongue-in-cheek. Clearly, that failed. 
+Being less whimsical is fine. :)
+
+>    * Can you make the questions conditional? For example if in the first question "Do you currently use pycrypto?" I
+> answer "No", then the following questions don't make to much sense.
+I tried, and failed. It wouldn't progress at all then. With your broader 
+scope of the survey, the point has happily become moot, though.
+>    * maybe one could ask what cryptographic python library the people use. "pycrypto, ezpycrypto, cryptopp, pytomcrypt,
+> ..., custom implementation, other (which one?), none"
+Good idea.
+>    * I would maybe add the possibility for arbitrary comments. either regarding pycrypto or the poll itself.
+Okay. Plenty of long-text forms already, one more doesn't hurt.
+
+Thorsten
+
+
+From gooksankoo at hoiptorrow.mailexpire.com  Sun Jan  9 12:37:32 2011
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Sun, 9 Jan 2011 19:37:32 +0100
+Subject: [pycrypto] Idea: pycrypto user survey
+In-Reply-To: <4D277EDF.2000703@gmx.li>
+References: <4D277EDF.2000703@gmx.li>
+Message-ID: <AANLkTinuv35LG=95qV146xbavjOxiVOXFPQD+roHHx70@mail.gmail.com>
+
+Hi Thorsten,
+
+Good idea.
+
+In the library list, replace radio button with checkboxes: one might
+be using more than one.The widely used M2crypto is also missing.
+
+I would personally like to know whether library users are interesting
+in crypto primitives
+a) to be natively compiled to be as fast as they can be, even at the
+cost of portability (e.g. requiring external libraries)
+b) to be natively compiled to be moderately fast, provided that the
+library is self-contained
+c) to be in pure Python, even at the cost of speed
+d) to be available in all forms above, opportunistically selected in
+order a->b-c depending on the target environment
+
+It's also interesting to know - in case of external libraries being
+used - how important the library license (LGPL, GPL, BSD, etc) and the
+source code language (C, C++, assembly) are.
+
+Finally, I would structure the second page differently. Instead of a
+list of primitives, I would have categories like
+- Widely used and secure crypto primitives (AES, 3DES, RSA, DSA, SHA-2, etc)
+- Widely used but known-to-have-a-problem crypto primitives (MD5, DES,
+RC2, RC4, SHA-1, etc)
+- Seldom used but secure crypto primitives (Blowfish, Camellia, etc)
+- Useful, ad-hoc low-level algorithms which can be non-secure if you
+don't know what you are going (El Gamal, qNew, etc)
+- Widely used and secure higher-level protocols (e.g. PKCS#1 signature
+and encryption, HMAC, etc)
+
+Legrandin
+
+2011/1/7 Thorsten Behrens <sbehrens at gmx.li>:
+> Hello folk,
+>
+> I had an idea: How about we find out who uses pycrypto, and how, and
+> what they would like to see in future versions?
+>
+> This might be quite helpful in deciding the direction pycrypto
+> development should take. I figured I'd ask for participation on
+> python-discuss and python-crypto, and hope that no-one is going to take
+> that as an invitation to try and bring my web server down.
+>
+> I've put a quick sample survey up at:
+> http://pycrypto-survey.warshaft.com/index.php?sid=96342&newtest=Y&lang=en
+>
+> Please take a look and let me know:
+>
+> - Whether you think a survey is a good idea in the first place
+> - And if so, which changes if any you'd like to see made to the survey
+> before it is activated and throw to the Python masses
+>
+>
+> Thanks!
+> Thorsten
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+From dlitz at dlitz.net  Sun Jan  9 22:49:38 2011
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 9 Jan 2011 23:49:38 -0500
+Subject: [pycrypto] Initial review of Thorsten's Py3k changes
+In-Reply-To: <4D23848A.8090805@gmx.li>
+References: <4D151B67.5000101@gmx.li> <4D161FFE.3040002@gmx.li>
+	<4D18B7BA.30604@gmx.li> <4D1A5509.2020604@gmx.li>
+	<ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>
+	<4D1B7BB0.6050201@gmx.li>
+	<cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>
+	<4D229728.2000109@gmx.li>
+	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>
+	<4D23848A.8090805@gmx.li>
+Message-ID: <20110110044938.GA12449@rivest.dlitz.net>
+
+So I had a few minutes to take a look at Thorsten's Py3k patches at 
+https://github.com/yorickdowne/pycrypto (thanks, Thorsten!) and I'd like to 
+write down my thoughts on what I'll need before I can merge it into the 
+master branch.
+
+The main thing is that PyCrypto commits should be easily reviewable for 
+correctness and non-maliciousness.  I suspect (and hope) that some of you 
+are conducting your own reviews of PyCrypto changes before you're using 
+them, and we all gain security-wise if I make sure that's reasonably easy.  
+Therefore, I have a few recommendations:
+
+- Don't change the test vector data if you don't need to.  Changing 
+   hundreds of strings like 'd6a141a7ec3c38dfbd61' to strings like 
+   b('d6a141a7ec3c36dfbd61') is unnecessary (since they need to be 
+   hex-decoded somewhere anyway), and it makes it difficult to tell by 
+   inspection that the test vectors weren't modified.  (How many of you 
+   noticed that I changed the 8 to a 6 in that example?)
+
+- Run your tests with python -tt to ensure consistent use of whitespace.  I 
+   haven't been doing this, so the current master doesn't work, but that was 
+   a mistake and I will be doing it from now on.
+
+- Treat each commit like a patch that can be reviewed on its own.  Think 
+   "patch queue", not "modification history":
+
+     - If you have one commit that introduces a bug, and another commit that 
+       removes it, squash those patches into a single commit.
+
+     - The same thing applies if you tried one approach and then switched to 
+       another (e.g.  floordiv -> divmod).
+
+     - The commands "git rebase -i", "git cherry-pick -n", "git reset", and 
+       "git add -p" are your friends.
+
+     - If it's not too much work, try to group related commits together in 
+       the history.  It's much easier to review a series of AllOrNothing 
+       patches, followed by a series of Crypto.Random patches, than it is to 
+       review the patches if they're interlaced.  This isn't always 
+       reasonable, but if a simple "git rebase -i" can make things easier 
+       for reviewers, it's worth the tiny bit of effort that it takes.
+
+- If you need to fix whitespace, do it in a separate commit, labeled 
+   "whitespace", that *only* fixes whitespace.
+
+- Don't include unrelated changes in a commit.  In a commit labeled "Add 
+   Ron Rivest Test", don't make random changes to how "import os" is done in 
+   various files, or how src/inc-msvc/stdint.h works.
+
+- Make sure commit messages that answer the question, "why did you do 
+   that?".
+
+- References to things like RC5 or IDEA, which have been removed from 
+   PyCrypto, can be removed.
+
+- If adding additional/alternative dependencies like MPIR, include *why* 
+   that's being done in the commit message and/or in the documentation.
+
+That's all for now.
+
+Cheers,
+- Dwayne
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From sbehrens at gmx.li  Mon Jan 10 09:18:54 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Mon, 10 Jan 2011 10:18:54 -0500
+Subject: [pycrypto] Initial review of Thorsten's Py3k changes
+In-Reply-To: <20110110044938.GA12449@rivest.dlitz.net>
+References: <4D151B67.5000101@gmx.li>
+	<4D161FFE.3040002@gmx.li>	<4D18B7BA.30604@gmx.li>
+	<4D1A5509.2020604@gmx.li>	<ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>	<4D1B7BB0.6050201@gmx.li>	<cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>	<4D229728.2000109@gmx.li>	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>	<4D23848A.8090805@gmx.li>
+	<20110110044938.GA12449@rivest.dlitz.net>
+Message-ID: <4D2B235E.6040007@gmx.li>
+
+Thanks for looking over my commits.
+
+I have been trying to rebase and am getting nowhere fast. There are a 
+lot of merge conflicts, and I end up with something that may or may not 
+actually be the current state of the repository.
+
+> Therefore, I have a few recommendations:
+>
+> - Don't change the test vector data if you don't need to.  Changing
+>     hundreds of strings like 'd6a141a7ec3c38dfbd61' to strings like
+>     b('d6a141a7ec3c36dfbd61') is unnecessary (since they need to be
+>     hex-decoded somewhere anyway), and it makes it difficult to tell by
+>     inspection that the test vectors weren't modified.  (How many of you
+>     noticed that I changed the 8 to a 6 in that example?)
+This was done for a reason. The tests were failing because b'something' 
+does not equal 'something', and
+because several functions expected bytes, but got str.
+
+As far as I could make out, this was the best way forward. The 
+alternative may have been to write things like
+
+assertEqual(b(x),y) and adding b() to various function calls throughout 
+the test suite.
+
+instead of leaving the asserts and function calls (largely) the way they 
+were.
+
+Adding b() to asserts and function calls struck me as rather opaque. I 
+thought it more consistent to change the way the test vectors are 
+presented instead.
+
+I get that this makes review hard. I didn't think of that aspect at the 
+time.
+
+I'm not sure what the best way forward is for this part of the changes. 
+I still think it's cleaner to change the literals than the way asserts 
+and functions are called. b(s) in Py3k returns s.encode("latin-1"). 
+Compare and contrast these two:
+
+input = b'abcdef00'
+expected = b'abcdef00'
+
+x = somefunction(input)
+assertEqual(x,expected)
+
+to
+
+input = 'abcdef00'
+expected = 'cdefab00'
+
+x = somefunction(input.encode("latin-1"))
+assertEqual(x,expected.encode("latin-1"))
+
+If you were to write native Py3k code, you'd choose the former over the 
+latter. I tried to get as close to that as I could. I don't quite have 
+b'something', since I can't do that and remain compatible with Python 
+2.x. But the spirit of it is intact: I am changing the way the literal 
+is presented, instead of working with a string literal and changing it 
+to bytes whenever I use it.
+
+
+> - Run your tests with python -tt to ensure consistent use of whitespace.  I
+>     haven't been doing this, so the current master doesn't work, but that was
+>     a mistake and I will be doing it from now on.
+>
+Okay.
+
+>       - The commands "git rebase -i", "git cherry-pick -n", "git reset", and
+>         "git add -p" are your friends.
+I think I need some git schooling. I am not getting anywhere fast :/.
+
+> - References to things like RC5 or IDEA, which have been removed from
+>     PyCrypto, can be removed.
+I didn't touch those since they may have been there for a reason.
+> - If adding additional/alternative dependencies like MPIR, include *why*
+>     that's being done in the commit message and/or in the documentation.
+Hmm, I thought I did. This was done so _fastmath.c would work on 
+Windows. GMP is actively hostile to compilation on Windows. MPIR is a 
+GMP fork that is friendly to compilation on Windows.
+
+Yours
+Thorsten
+
+
+From sbehrens at gmx.li  Tue Jan 11 07:18:29 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Tue, 11 Jan 2011 08:18:29 -0500
+Subject: [pycrypto] Idea: pycrypto user survey
+In-Reply-To: <AANLkTinuv35LG=95qV146xbavjOxiVOXFPQD+roHHx70@mail.gmail.com>
+References: <4D277EDF.2000703@gmx.li>
+	<AANLkTinuv35LG=95qV146xbavjOxiVOXFPQD+roHHx70@mail.gmail.com>
+Message-ID: <4D2C58A5.7040904@gmx.li>
+
+The survey has been changed, those changes and additions are in.
+
+I'd like to hold off on adding any more questions to the survey at this 
+point. I don't want to turn people off by taking too much of their time.
+
+On 1/9/2011 1:37 PM, Legrandin wrote:
+> Hi Thorsten,
+>
+> Good idea.
+>
+> In the library list, replace radio button with checkboxes: one might
+> be using more than one.The widely used M2crypto is also missing.
+>
+> I would personally like to know whether library users are interesting
+> in crypto primitives
+> a) to be natively compiled to be as fast as they can be, even at the
+> cost of portability (e.g. requiring external libraries)
+> b) to be natively compiled to be moderately fast, provided that the
+> library is self-contained
+> c) to be in pure Python, even at the cost of speed
+> d) to be available in all forms above, opportunistically selected in
+> order a->b-c depending on the target environment
+>
+> It's also interesting to know - in case of external libraries being
+> used - how important the library license (LGPL, GPL, BSD, etc) and the
+> source code language (C, C++, assembly) are.
+>
+> Finally, I would structure the second page differently. Instead of a
+> list of primitives, I would have categories like
+> - Widely used and secure crypto primitives (AES, 3DES, RSA, DSA, SHA-2, etc)
+> - Widely used but known-to-have-a-problem crypto primitives (MD5, DES,
+> RC2, RC4, SHA-1, etc)
+> - Seldom used but secure crypto primitives (Blowfish, Camellia, etc)
+> - Useful, ad-hoc low-level algorithms which can be non-secure if you
+> don't know what you are going (El Gamal, qNew, etc)
+> - Widely used and secure higher-level protocols (e.g. PKCS#1 signature
+> and encryption, HMAC, etc)
+>
+> Legrandin
+>
+> 2011/1/7 Thorsten Behrens<sbehrens at gmx.li>:
+>> Hello folk,
+>>
+>> I had an idea: How about we find out who uses pycrypto, and how, and
+>> what they would like to see in future versions?
+>>
+>> This might be quite helpful in deciding the direction pycrypto
+>> development should take. I figured I'd ask for participation on
+>> python-discuss and python-crypto, and hope that no-one is going to take
+>> that as an invitation to try and bring my web server down.
+>>
+>> I've put a quick sample survey up at:
+>> http://pycrypto-survey.warshaft.com/index.php?sid=96342&newtest=Y&lang=en
+>>
+>> Please take a look and let me know:
+>>
+>> - Whether you think a survey is a good idea in the first place
+>> - And if so, which changes if any you'd like to see made to the survey
+>> before it is activated and throw to the Python masses
+>>
+>>
+>> Thanks!
+>> Thorsten
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+From sbehrens at gmx.li  Tue Jan 11 09:28:59 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Tue, 11 Jan 2011 10:28:59 -0500
+Subject: [pycrypto] Initial review of Thorsten's Py3k changes
+In-Reply-To: <20110110044938.GA12449@rivest.dlitz.net>
+References: <4D151B67.5000101@gmx.li>
+	<4D161FFE.3040002@gmx.li>	<4D18B7BA.30604@gmx.li>
+	<4D1A5509.2020604@gmx.li>	<ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>	<4D1B7BB0.6050201@gmx.li>	<cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>	<4D229728.2000109@gmx.li>	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>	<4D23848A.8090805@gmx.li>
+	<20110110044938.GA12449@rivest.dlitz.net>
+Message-ID: <4D2C773B.8060605@gmx.li>
+
+Dwayne,
+
+upon further thought, how would the following work for you to address 
+your concerns:
+
+- b('something') vs 'something': Leave literals encased in b(). To 
+assure that no malicious changes have been made, use a 30-day trial 
+version of Beyond Compare 3, which will, in it's "Text Compare" 
+function, highlight the exact changes on each line. It exists for Linux 
+and Windows. vimdiff may work just as well, of course. 
+http://www.scootersoftware.com/download.php
+
+- Multiple commits, too much "history of work", not enough "this is the 
+change": Would you like me to create a py3kmk2 branch, and have a single 
+commit in it with all the changes made?
+   I don't think I am going to be very successful with rebase.
+
+Yours
+Thorsten
+
+
+From joshua.a.strauss at gmail.com  Wed Jan 12 13:07:49 2011
+From: joshua.a.strauss at gmail.com (Joshua Strauss)
+Date: Wed, 12 Jan 2011 11:07:49 -0800
+Subject: [pycrypto] Base64 encoded output differs from pycrypto and
+	as3crypto libraries.
+Message-ID: <3E0EA384-BCAA-40DC-BB39-E6EBE3CBE3F5@gmail.com>
+
+I'm trying to use symmetric encryption to pass data from actionscript 3 (client) to python (server).
+
+The libraries I'm using are as3crypto and pycrypto.
+
+I'm not sure if I'm using these libraries correctly, here's the action script 3 code.
+
+private function testOnInit():void {
+	var t_toEnc:String = 'testtest';
+	var t_byAry:ByteArray = Hex.toArray( Hex.fromString( t_toEnc ) );
+	var t_key:ByteArray = Hex.toArray( Hex.fromString( 'Thisisthekey' ) );
+	var t_cbc:CBCMode = new CBCMode( new BlowFishKey( t_key ), new NullPad );
+	var t_enc:String;
+	t_cbc.IV = Hex.toArray( '30313233' );
+	t_cbc.encrypt( t_byAry );
+	t_enc = Base64.encodeByteArray( t_byAry );      
+	dbg( 'b64 encrypted string ' + t_enc ); //this is just a debugging function we use in our code.
+}
+
+This is the base64 encoded output of the function above.
+
+xvVqLzV5TU4=
+
+Now, using the same key, initialization vector, and algorithm from the pycrypto library gives me different output.
+
+Here's the python code.
+
+>>> from Crypto.Cipher import Blowfish
+>>> B = Blowfish.new( 'Thisisthekey', Blowfish.MODE_CBC, '30313233' )
+>>> S = 'testtest'
+>>> X = B.encrypt( S )
+>>> import base64
+>>> Y = base64.b64encode( X )
+>>> print Y
+
+I82NQEkSHhE=
+
+I'm pretty sure that I'm doing something wrong with the encryption process because I can base64 encode 'testtest' on both libraries and receive the same output.
+
+Here's as3
+
+var b:ByteArray = new ByteArray();
+b.writeUTFBytes( 'testtest' );
+dbg( Base64.encodeByteArray( b ) );
+
+Yields...
+
+dGVzdHRlc3Q=
+
+Here's the python
+
+>>> T = 'testtest'
+>>> print base64.b64encode( T )
+
+Yields?
+
+dGVzdHRlc3Q=
+
+Could someone please encrypt and base64encode the same string with the same IV in either python or actionscript, so I know which library is actually producing the correct output?
+
+Any assistance with this problem would be greatly appreciated, I'm stuck and don't know how to proceed from here.
+
+Thank you
+Joshua
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110112/fd046061/attachment.htm 
+
+From don at amberfisharts.com  Wed Jan 12 13:45:00 2011
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Wed, 12 Jan 2011 20:45:00 +0100
+Subject: [pycrypto] Base64 encoded output differs from pycrypto
+ and	as3crypto libraries.
+In-Reply-To: <3E0EA384-BCAA-40DC-BB39-E6EBE3CBE3F5@gmail.com>
+References: <3E0EA384-BCAA-40DC-BB39-E6EBE3CBE3F5@gmail.com>
+Message-ID: <4D2E04BC.2070809@amberfisharts.com>
+
+Hey Joshua,
+
+I haven't used as3crypto (or any as3 for that matter) nor the pycrypto.blowfish. So basicly I'm just wildly guessing 
+here. I was wondering if you made sure that this "Hex" thing in your as3 code isn't messing up things?
+because in you base64 test you don't use that.
+
+cheers,
+//Lorenz
+
+
+On 01/12/2011 08:07 PM, Joshua Strauss wrote:
+> I'm trying to use symmetric encryption to pass data from actionscript 3 (client) to python (server).
+>
+> The libraries I'm using are as3crypto and pycrypto.
+>
+> I'm not sure if I'm using these libraries correctly, here's the action script 3 code.
+>
+> private function testOnInit():void {
+> var t_toEnc:String = 'testtest';
+> var t_byAry:ByteArray = Hex.toArray( Hex.fromString( t_toEnc ) );
+> var t_key:ByteArray = Hex.toArray( Hex.fromString( 'Thisisthekey' ) );
+> var t_cbc:CBCMode = new CBCMode( new BlowFishKey( t_key ), new NullPad );
+> var t_enc:String;
+> t_cbc.IV = Hex.toArray( '30313233' );
+> t_cbc.encrypt( t_byAry );
+> t_enc = Base64.encodeByteArray( t_byAry );
+> dbg( 'b64 encrypted string ' + t_enc ); //this is just a debugging function we use in our code.
+> }
+>
+> This is the base64 encoded output of the function above.
+>
+> xvVqLzV5TU4=
+>
+> Now, using the same key, initialization vector, and algorithm from the pycrypto library gives me different output.
+>
+> Here's the python code.
+>
+>  >>> from Crypto.Cipher import Blowfish
+>  >>> B = Blowfish.new( 'Thisisthekey', Blowfish.MODE_CBC, '30313233' )
+>  >>> S = 'testtest'
+>  >>> X = B.encrypt( S )
+>  >>> import base64
+>  >>> Y = base64.b64encode( X )
+>  >>> print Y
+>
+> I82NQEkSHhE=
+>
+> I'm pretty sure that I'm doing something wrong with the encryption process because I can base64 encode 'testtest' on
+> both libraries and receive the same output.
+>
+> Here's as3
+>
+> var b:ByteArray = new ByteArray();
+> b.writeUTFBytes( 'testtest' );
+> dbg( Base64.encodeByteArray( b ) );
+>
+> Yields...
+>
+> dGVzdHRlc3Q=
+>
+> Here's the python
+>
+>  >>> T = 'testtest'
+>  >>> print base64.b64encode( T )
+>
+> Yields?
+>
+> dGVzdHRlc3Q=
+>
+> Could someone please encrypt and base64encode the same string with the same IV in either python or actionscript, so I
+> know which library is actually producing the correct output?
+>
+> Any assistance with this problem would be greatly appreciated, I'm stuck and don't know how to proceed from here.
+>
+> Thank you
+> Joshua
+>
+
+
+From joshua.a.strauss at gmail.com  Wed Jan 12 13:43:12 2011
+From: joshua.a.strauss at gmail.com (Joshua Strauss)
+Date: Wed, 12 Jan 2011 11:43:12 -0800
+Subject: [pycrypto] Base64 encoded output differs from pycrypto and
+ as3crypto libraries.
+In-Reply-To: <4D2E04BC.2070809@amberfisharts.com>
+References: <3E0EA384-BCAA-40DC-BB39-E6EBE3CBE3F5@gmail.com>
+	<4D2E04BC.2070809@amberfisharts.com>
+Message-ID: <AANLkTi=F-ZG0z_fgcesrBNo9Hf7hR37qWyf+tJs9AAo3@mail.gmail.com>
+
+Lorenz,
+
+Well, I've experimented with ByteArray.writeUTFBytes( 'testtest' ) to avoid
+the Hex utility library and it's given me the same results.
+
+I don't think that is the issue, if you have pycrypto installed would you be
+able to run the code to encrypt and base64 the string? You could copy and
+paste it verbatim into idle, wouldn't be much work at all and it would
+really help me out if I knew what the expected output of the python library
+should be.
+
+Thanks
+Joshua
+
+On Wed, Jan 12, 2011 at 11:45 AM, Lorenz Quack <don at amberfisharts.com>wrote:
+
+> Hey Joshua,
+>
+> I haven't used as3crypto (or any as3 for that matter) nor the
+> pycrypto.blowfish. So basicly I'm just wildly guessing
+> here. I was wondering if you made sure that this "Hex" thing in your as3
+> code isn't messing up things?
+> because in you base64 test you don't use that.
+>
+> cheers,
+> //Lorenz
+>
+>
+> On 01/12/2011 08:07 PM, Joshua Strauss wrote:
+> > I'm trying to use symmetric encryption to pass data from actionscript 3
+> (client) to python (server).
+> >
+> > The libraries I'm using are as3crypto and pycrypto.
+> >
+> > I'm not sure if I'm using these libraries correctly, here's the action
+> script 3 code.
+> >
+> > private function testOnInit():void {
+> > var t_toEnc:String = 'testtest';
+> > var t_byAry:ByteArray = Hex.toArray( Hex.fromString( t_toEnc ) );
+> > var t_key:ByteArray = Hex.toArray( Hex.fromString( 'Thisisthekey' ) );
+> > var t_cbc:CBCMode = new CBCMode( new BlowFishKey( t_key ), new NullPad );
+> > var t_enc:String;
+> > t_cbc.IV = Hex.toArray( '30313233' );
+> > t_cbc.encrypt( t_byAry );
+> > t_enc = Base64.encodeByteArray( t_byAry );
+> > dbg( 'b64 encrypted string ' + t_enc ); //this is just a debugging
+> function we use in our code.
+> > }
+> >
+> > This is the base64 encoded output of the function above.
+> >
+> > xvVqLzV5TU4=
+> >
+> > Now, using the same key, initialization vector, and algorithm from the
+> pycrypto library gives me different output.
+> >
+> > Here's the python code.
+> >
+> >  >>> from Crypto.Cipher import Blowfish
+> >  >>> B = Blowfish.new( 'Thisisthekey', Blowfish.MODE_CBC, '30313233' )
+> >  >>> S = 'testtest'
+> >  >>> X = B.encrypt( S )
+> >  >>> import base64
+> >  >>> Y = base64.b64encode( X )
+> >  >>> print Y
+> >
+> > I82NQEkSHhE=
+> >
+> > I'm pretty sure that I'm doing something wrong with the encryption
+> process because I can base64 encode 'testtest' on
+> > both libraries and receive the same output.
+> >
+> > Here's as3
+> >
+> > var b:ByteArray = new ByteArray();
+> > b.writeUTFBytes( 'testtest' );
+> > dbg( Base64.encodeByteArray( b ) );
+> >
+> > Yields...
+> >
+> > dGVzdHRlc3Q=
+> >
+> > Here's the python
+> >
+> >  >>> T = 'testtest'
+> >  >>> print base64.b64encode( T )
+> >
+> > Yields?
+> >
+> > dGVzdHRlc3Q=
+> >
+> > Could someone please encrypt and base64encode the same string with the
+> same IV in either python or actionscript, so I
+> > know which library is actually producing the correct output?
+> >
+> > Any assistance with this problem would be greatly appreciated, I'm stuck
+> and don't know how to proceed from here.
+> >
+> > Thank you
+> > Joshua
+> >
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110112/dbd887e7/attachment-0001.htm 
+
+From sbehrens at gmx.li  Wed Jan 12 14:04:00 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 12 Jan 2011 15:04:00 -0500
+Subject: [pycrypto] Base64 encoded output differs from pycrypto and
+ as3crypto libraries.
+In-Reply-To: <AANLkTi=F-ZG0z_fgcesrBNo9Hf7hR37qWyf+tJs9AAo3@mail.gmail.com>
+References: <3E0EA384-BCAA-40DC-BB39-E6EBE3CBE3F5@gmail.com>	<4D2E04BC.2070809@amberfisharts.com>
+	<AANLkTi=F-ZG0z_fgcesrBNo9Hf7hR37qWyf+tJs9AAo3@mail.gmail.com>
+Message-ID: <4D2E0930.5070305@gmx.li>
+
+Joshua,
+
+"I82NQEkSHhE=" is the result I get. I've tested with Python 3.1, hence 
+the b'' for the result string.
+
+We use public test vectors to make sure our Blowfish encrypts correctly. 
+Test vectors are from http://www.schneier.com/code/vectors.txt. We use 
+ECB mode with the test vectors. It is entirely possible that we have an 
+issue with CBC mode, I'll not rule it out right away.
+
+Do you have a reference implementation handy that you can use to encrypt 
+this and see what the results are?
+
+ >>> from Crypto.Cipher import Blowfish
+ >>> B = Blowfish.new( 'Thisisthekey', Blowfish.MODE_CBC, '30313233' )
+ >>> S = 'testtest'
+ >>> X = B.encrypt( S )
+ >>> import base64
+ >>> Y = base64.b64encode( X )
+ >>> print (Y)
+b'I82NQEkSHhE='
+ >>> import binascii
+ >>> Y = binascii.b2a_base64(X)
+ >>> print (Y)
+b'I82NQEkSHhE=\n'
+
+
+Thorsten
+
+
+From sbehrens at gmx.li  Wed Jan 12 14:32:44 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 12 Jan 2011 15:32:44 -0500
+Subject: [pycrypto] Base64 encoded output differs from pycrypto
+ and	as3crypto libraries.
+In-Reply-To: <4D2E04BC.2070809@amberfisharts.com>
+References: <3E0EA384-BCAA-40DC-BB39-E6EBE3CBE3F5@gmail.com>
+	<4D2E04BC.2070809@amberfisharts.com>
+Message-ID: <4D2E0FEC.3080306@gmx.li>
+
+Hey Lorenz,
+
+I notice that we don't use Schneier's CBC test vector. All we use is ECB.
+I tried adding CBC, and got errors. Running it manually, I get errors. 
+Can you sanity-check that I'm not doing something stupid. If I'm 
+invoking it right and it's failing, we need to review the CBC code.
+
+ >>> B = 
+Blowfish.new(binascii.a2b_hex('0123456789ABCDEFF0E1D2C3B4A59687'),Blowfish.MODE_CBC,binascii.a2b_hex('FEDCBA9876543210'))
+ >>> S = 
+binascii.a2b_hex('37363534333231204E6F77206973207468652074696D6520666F722000')
+ >>> X = B.encrypt(S)
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+ValueError: Input strings must be a multiple of 8 in length
+
+Thorsten
+
+
+From sbehrens at gmx.li  Wed Jan 12 14:52:52 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 12 Jan 2011 15:52:52 -0500
+Subject: [pycrypto] Base64 encoded output differs from pycrypto
+ and	as3crypto libraries.
+In-Reply-To: <4D2E0FEC.3080306@gmx.li>
+References: <3E0EA384-BCAA-40DC-BB39-E6EBE3CBE3F5@gmail.com>	<4D2E04BC.2070809@amberfisharts.com>
+	<4D2E0FEC.3080306@gmx.li>
+Message-ID: <4D2E14A4.8090200@gmx.li>
+
+Got it, Schneier padded his test vector with NULLs. Will retest.
+
+On 1/12/2011 3:32 PM, Thorsten Behrens wrote:
+> Hey Lorenz,
+>
+> I notice that we don't use Schneier's CBC test vector. All we use is ECB.
+> I tried adding CBC, and got errors. Running it manually, I get errors.
+> Can you sanity-check that I'm not doing something stupid. If I'm
+> invoking it right and it's failing, we need to review the CBC code.
+>
+>   >>>  B =
+> Blowfish.new(binascii.a2b_hex('0123456789ABCDEFF0E1D2C3B4A59687'),Blowfish.MODE_CBC,binascii.a2b_hex('FEDCBA9876543210'))
+>   >>>  S =
+> binascii.a2b_hex('37363534333231204E6F77206973207468652074696D6520666F722000')
+>   >>>  X = B.encrypt(S)
+> Traceback (most recent call last):
+>     File "<stdin>", line 1, in<module>
+> ValueError: Input strings must be a multiple of 8 in length
+>
+> Thorsten
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+From sbehrens at gmx.li  Wed Jan 12 14:59:38 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 12 Jan 2011 15:59:38 -0500
+Subject: [pycrypto] Base64 encoded output differs from pycrypto and
+ as3crypto libraries.
+In-Reply-To: <AANLkTi=F-ZG0z_fgcesrBNo9Hf7hR37qWyf+tJs9AAo3@mail.gmail.com>
+References: <3E0EA384-BCAA-40DC-BB39-E6EBE3CBE3F5@gmail.com>	<4D2E04BC.2070809@amberfisharts.com>
+	<AANLkTi=F-ZG0z_fgcesrBNo9Hf7hR37qWyf+tJs9AAo3@mail.gmail.com>
+Message-ID: <4D2E163A.7090007@gmx.li>
+
+Josh,
+
+I've added Schneier's CBC test vector to our test suite. We succeed. 
+Here's the vector as it looks in our code:
+
+     # chaining mode (CBC) test data
+     
+(b('37363534333231204e6f77206973207468652074696d6520666f722000000000'),b('6b77b4d63006dee605b156e27403979358deb9e7154616d959f1652bd5ff92cc'),b('0123456789abcdeff0e1d2c3b4a59687'),
+         'Blowfish CBC mode test vector',
+         dict(mode='CBC', iv=b('fedcba9876543210'))),
+
+And here it is as presented by Schneier:
+
+chaining mode test data
+key[16]   = 0123456789ABCDEFF0E1D2C3B4A59687
+iv[8]     = FEDCBA9876543210
+data[29]  = "7654321 Now is the time for " (includes trailing '\0')
+data[29]  = 37363534333231204E6F77206973207468652074696D6520666F722000
+cbc cipher text
+cipher[32]= 6B77B4D63006DEE605B156E27403979358DEB9E7154616D959F1652BD5FF92CC
+
+
+He pads the data[29] with three more \0 at the end to get to 32.
+
+Can you run that test vector against your library and see how it behaves?
+
+Thorsten
+
+
+From gooksankoo at hoiptorrow.mailexpire.com  Wed Jan 12 15:15:18 2011
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Wed, 12 Jan 2011 22:15:18 +0100
+Subject: [pycrypto] Base64 encoded output differs from pycrypto and
+ as3crypto libraries.
+In-Reply-To: <3E0EA384-BCAA-40DC-BB39-E6EBE3CBE3F5@gmail.com>
+References: <3E0EA384-BCAA-40DC-BB39-E6EBE3CBE3F5@gmail.com>
+Message-ID: <20110112211518.GA10793@shannon>
+
+>    var t_byAry:ByteArray = Hex.toArray( Hex.fromString( t_toEnc ) );
+>    var t_key:ByteArray = Hex.toArray( Hex.fromString( 'Thisisthekey' ) );
+>    var t_cbc:CBCMode = new CBCMode( new BlowFishKey( t_key ), new NullPad );
+>    t_cbc.IV = Hex.toArray( '30313233' );
+>    t_cbc.encrypt( t_byAry );
+>    t_enc = Base64.encodeByteArray( t_byAry );      
+
+>    >>> from Crypto.Cipher import Blowfish
+>    >>> B = Blowfish.new( 'Thisisthekey', Blowfish.MODE_CBC, '30313233' )
+
+Could it be that in you AS code your IV is 4 bytes (0x30,0x31,0x32,0x33)
+which t_cbc.encrypt() silently pads, whereas in the python code it is 8
+different bytes (0x33 for '3', 0x30 for '0', etc)?
+
+Legrandin
+
+
+From joshua.a.strauss at gmail.com  Wed Jan 12 15:49:05 2011
+From: joshua.a.strauss at gmail.com (Joshua Strauss)
+Date: Wed, 12 Jan 2011 13:49:05 -0800
+Subject: [pycrypto] Base64 encoded output differs from pycrypto and
+ as3crypto libraries.
+In-Reply-To: <20110112211518.GA10793@shannon>
+References: <3E0EA384-BCAA-40DC-BB39-E6EBE3CBE3F5@gmail.com>
+	<20110112211518.GA10793@shannon>
+Message-ID: <AANLkTi=315L=z9ye7k7f3=rubcW2xjG6_FhjxL2PcxKt@mail.gmail.com>
+
+Legrandin,
+
+I think you are on to something here. Removing the initialization vector
+from both pycrypto and as3crypto produces the same b64encoded output. I've
+been playing around with different IV's but I can only get the output to
+match without the presence of an IV.
+
+This does lead me to believe that the IV is the source of my problem but if
+anyone can think of a reason why this might not be, it would be helpful to
+know as I don't want to be on the wrong track.
+
+I haven't done much coding at the byte level (I'm mainly a web developer,
+and not seasoned by any means), I'll keep trucking from here I suppose.
+
+Regards,
+Joshua
+
+On Wed, Jan 12, 2011 at 1:15 PM, Legrandin <
+gooksankoo at hoiptorrow.mailexpire.com> wrote:
+
+> >    var t_byAry:ByteArray = Hex.toArray( Hex.fromString( t_toEnc ) );
+> >    var t_key:ByteArray = Hex.toArray( Hex.fromString( 'Thisisthekey' ) );
+> >    var t_cbc:CBCMode = new CBCMode( new BlowFishKey( t_key ), new NullPad
+> );
+> >    t_cbc.IV = Hex.toArray( '30313233' );
+> >    t_cbc.encrypt( t_byAry );
+> >    t_enc = Base64.encodeByteArray( t_byAry );
+>
+> >    >>> from Crypto.Cipher import Blowfish
+> >    >>> B = Blowfish.new( 'Thisisthekey', Blowfish.MODE_CBC, '30313233' )
+>
+> Could it be that in you AS code your IV is 4 bytes (0x30,0x31,0x32,0x33)
+> which t_cbc.encrypt() silently pads, whereas in the python code it is 8
+> different bytes (0x33 for '3', 0x30 for '0', etc)?
+>
+> Legrandin
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110112/037dd794/attachment.htm 
+
+From joshua.a.strauss at gmail.com  Wed Jan 12 16:18:55 2011
+From: joshua.a.strauss at gmail.com (Joshua Strauss)
+Date: Wed, 12 Jan 2011 14:18:55 -0800
+Subject: [pycrypto] Base64 encoded output differs from pycrypto and
+ as3crypto libraries.
+In-Reply-To: <AANLkTi=315L=z9ye7k7f3=rubcW2xjG6_FhjxL2PcxKt@mail.gmail.com>
+References: <3E0EA384-BCAA-40DC-BB39-E6EBE3CBE3F5@gmail.com>
+	<20110112211518.GA10793@shannon>
+	<AANLkTi=315L=z9ye7k7f3=rubcW2xjG6_FhjxL2PcxKt@mail.gmail.com>
+Message-ID: <AANLkTim41iW3J24mzXdvGrTs5m9UpPZSR=uJnJd0zCc4@mail.gmail.com>
+
+To all who gave me some of their time.
+
+I've sorted the problem, it was how the IV was being fed into the byte array
+in AS3.
+
+Thank you all for your help :)
+
+Regards,
+Joshua
+
+On Wed, Jan 12, 2011 at 1:49 PM, Joshua Strauss
+<joshua.a.strauss at gmail.com>wrote:
+
+> Legrandin,
+>
+> I think you are on to something here. Removing the initialization vector
+> from both pycrypto and as3crypto produces the same b64encoded output. I've
+> been playing around with different IV's but I can only get the output to
+> match without the presence of an IV.
+>
+> This does lead me to believe that the IV is the source of my problem but if
+> anyone can think of a reason why this might not be, it would be helpful to
+> know as I don't want to be on the wrong track.
+>
+> I haven't done much coding at the byte level (I'm mainly a web developer,
+> and not seasoned by any means), I'll keep trucking from here I suppose.
+>
+> Regards,
+> Joshua
+>
+> On Wed, Jan 12, 2011 at 1:15 PM, Legrandin <
+> gooksankoo at hoiptorrow.mailexpire.com> wrote:
+>
+>> >    var t_byAry:ByteArray = Hex.toArray( Hex.fromString( t_toEnc ) );
+>> >    var t_key:ByteArray = Hex.toArray( Hex.fromString( 'Thisisthekey' )
+>> );
+>> >    var t_cbc:CBCMode = new CBCMode( new BlowFishKey( t_key ), new
+>> NullPad );
+>> >    t_cbc.IV = Hex.toArray( '30313233' );
+>> >    t_cbc.encrypt( t_byAry );
+>> >    t_enc = Base64.encodeByteArray( t_byAry );
+>>
+>> >    >>> from Crypto.Cipher import Blowfish
+>> >    >>> B = Blowfish.new( 'Thisisthekey', Blowfish.MODE_CBC, '30313233' )
+>>
+>> Could it be that in you AS code your IV is 4 bytes (0x30,0x31,0x32,0x33)
+>> which t_cbc.encrypt() silently pads, whereas in the python code it is 8
+>> different bytes (0x33 for '3', 0x30 for '0', etc)?
+>>
+>> Legrandin
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110112/efd8b675/attachment-0001.htm 
+
+From gooksankoo at hoiptorrow.mailexpire.com  Wed Jan 19 03:41:39 2011
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Wed, 19 Jan 2011 10:41:39 +0100
+Subject: [pycrypto] Why p<q in RSA code?
+Message-ID: <AANLkTi=+2NpC_rRbT4kG9rvhiROZ9q2LAWcUvrShtC0Z@mail.gmail.com>
+
+Hi all,
+
+I have noticed that - when generating an RSA key - a special check is
+made to ensure that p<q.
+Why is it so?
+
+One comment says "# p shall be smaller than q (for calc of u)", but if
+I look at CRT and Garner's algorithms,
+there are no requirments on ordering of prime factors. They seem to
+work also when p>q.
+
+Is it because Crypto.Util.number.inverse(u,v) requires u<v?
+I cannot try it right now, but that is the only explaination I could think of.
+
+From gooksankoo at hoiptorrow.mailexpire.com  Wed Jan 19 04:26:06 2011
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Wed, 19 Jan 2011 11:26:06 +0100
+Subject: [pycrypto] Initial review of Thorsten's Py3k changes
+In-Reply-To: <4D2C773B.8060605@gmx.li>
+References: <4D151B67.5000101@gmx.li> <4D161FFE.3040002@gmx.li>
+	<4D18B7BA.30604@gmx.li> <4D1A5509.2020604@gmx.li>
+	<ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>
+	<4D1B7BB0.6050201@gmx.li>
+	<cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>
+	<4D229728.2000109@gmx.li>
+	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>
+	<4D23848A.8090805@gmx.li> <20110110044938.GA12449@rivest.dlitz.net>
+	<4D2C773B.8060605@gmx.li>
+Message-ID: <AANLkTi=H6c1Z5g1-pjicz=29+6Ot69MUxoSOSZfhiW7U@mail.gmail.com>
+
+I am not sure if I grasp all new stuff in Python 3, but would it possible to
+keep the test vectors as they are, and possibly change the encoding at runtime?
+
+For instance, in test_AES.py, we have:
+
+test_data = [
+...
+( '00112233445566778899aabbccddeeff', 'dda97ca4864cdfe06eaf70a0ec0d7191',
+  '000102030405060708090a0b0c0d0e0f1011121314151617',
+  'FIPS 197 C.2 (AES-192)' ),
+... ]
+
+The proposed change wraps each string but the last one with b().
+
+Instead of changing the test vector line, we could have a separate
+piece of code that dynamically
+adjusts a tuple in the list in case python 3 is detected.
+
+Something along these lines, but possibly more pythonic:
+
+if python_version>2:
+   for t in test_data:
+     idx = test_data.index(t)
+     newt = tuple(b(t[0), b(t[1]), b(t[2]), t[3])
+     test_data[idx] = newt
+
+
+2011/1/11 Thorsten Behrens <sbehrens at gmx.li>:
+> Dwayne,
+>
+> upon further thought, how would the following work for you to address
+> your concerns:
+>
+> - b('something') vs 'something': Leave literals encased in b(). To
+> assure that no malicious changes have been made, use a 30-day trial
+> version of Beyond Compare 3, which will, in it's "Text Compare"
+> function, highlight the exact changes on each line. It exists for Linux
+> and Windows. vimdiff may work just as well, of course.
+> http://www.scootersoftware.com/download.php
+>
+> - Multiple commits, too much "history of work", not enough "this is the
+> change": Would you like me to create a py3kmk2 branch, and have a single
+> commit in it with all the changes made?
+> ? I don't think I am going to be very successful with rebase.
+>
+> Yours
+> Thorsten
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+From sbehrens at gmx.li  Wed Jan 19 09:27:01 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 19 Jan 2011 10:27:01 -0500
+Subject: [pycrypto] Initial review of Thorsten's Py3k changes
+In-Reply-To: <AANLkTi=H6c1Z5g1-pjicz=29+6Ot69MUxoSOSZfhiW7U@mail.gmail.com>
+References: <4D151B67.5000101@gmx.li>
+	<4D161FFE.3040002@gmx.li>	<4D18B7BA.30604@gmx.li>
+	<4D1A5509.2020604@gmx.li>	<ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>	<4D1B7BB0.6050201@gmx.li>	<cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>	<4D229728.2000109@gmx.li>	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>	<4D23848A.8090805@gmx.li>
+	<20110110044938.GA12449@rivest.dlitz.net>	<4D2C773B.8060605@gmx.li>
+	<AANLkTi=H6c1Z5g1-pjicz=29+6Ot69MUxoSOSZfhiW7U@mail.gmail.com>
+Message-ID: <4D3702C5.7090803@gmx.li>
+
+Yes, something like that would work. That's a good idea.
+
+I'm happy to make that change. Just waiting on Dwayne to come back on 
+whether he wants me to scrap my repository and redo it (so he has one 
+big commit), and then whether he'd rather have the b() wrapping done the 
+way you suggest.
+
+I also have a small change to the blowfish unit test. I added the CBC 
+vector.
+
+Thorsten
+
+On 1/19/2011 5:26 AM, Legrandin wrote:
+> I am not sure if I grasp all new stuff in Python 3, but would it possible to
+> keep the test vectors as they are, and possibly change the encoding at runtime?
+>
+> For instance, in test_AES.py, we have:
+>
+> test_data = [
+> ...
+> ( '00112233445566778899aabbccddeeff', 'dda97ca4864cdfe06eaf70a0ec0d7191',
+>    '000102030405060708090a0b0c0d0e0f1011121314151617',
+>    'FIPS 197 C.2 (AES-192)' ),
+> ... ]
+>
+> The proposed change wraps each string but the last one with b().
+>
+> Instead of changing the test vector line, we could have a separate
+> piece of code that dynamically
+> adjusts a tuple in the list in case python 3 is detected.
+>
+> Something along these lines, but possibly more pythonic:
+>
+> if python_version>2:
+>     for t in test_data:
+>       idx = test_data.index(t)
+>       newt = tuple(b(t[0), b(t[1]), b(t[2]), t[3])
+>       test_data[idx] = newt
+>
+>
+> 2011/1/11 Thorsten Behrens<sbehrens at gmx.li>:
+>> Dwayne,
+>>
+>> upon further thought, how would the following work for you to address
+>> your concerns:
+>>
+>> - b('something') vs 'something': Leave literals encased in b(). To
+>> assure that no malicious changes have been made, use a 30-day trial
+>> version of Beyond Compare 3, which will, in it's "Text Compare"
+>> function, highlight the exact changes on each line. It exists for Linux
+>> and Windows. vimdiff may work just as well, of course.
+>> http://www.scootersoftware.com/download.php
+>>
+>> - Multiple commits, too much "history of work", not enough "this is the
+>> change": Would you like me to create a py3kmk2 branch, and have a single
+>> commit in it with all the changes made?
+>>    I don't think I am going to be very successful with rebase.
+>>
+>> Yours
+>> Thorsten
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+From sbehrens at gmx.li  Wed Jan 19 09:35:27 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 19 Jan 2011 10:35:27 -0500
+Subject: [pycrypto] Why p<q in RSA code?
+In-Reply-To: <AANLkTi=+2NpC_rRbT4kG9rvhiROZ9q2LAWcUvrShtC0Z@mail.gmail.com>
+References: <AANLkTi=+2NpC_rRbT4kG9rvhiROZ9q2LAWcUvrShtC0Z@mail.gmail.com>
+Message-ID: <4D3704BF.6000808@gmx.li>
+
+On 1/19/2011 4:41 AM, Legrandin wrote:
+> Hi all,
+>
+> I have noticed that - when generating an RSA key - a special check is
+> made to ensure that p<q.
+That's interesting. This is what I found, which seems to suggest the 
+exact opposite:
+
+ >>
+To generate the primes p and q, generate a random number of bit length 
+b/2 where b is the required bit length of n; set the low bit (this 
+ensures the number is odd) and set the /two/ highest bits (this ensures 
+that the high bit of n is also set); check if prime (use the 
+Rabin-Miller test); if not, increment the number by two and check again 
+until you find a prime. This is p. Repeat for q starting with a random 
+integer of length b-b/2. If p<q, swap p and q (this only matters if you 
+intend using the CRT form of the private key). In the extremely unlikely 
+event that p = q, check your random number generator. Alternatively, 
+instead of incrementing by 2, just generate another random number each 
+time.
+
+There are stricter rules in ANSI X9.31 
+<http://www.di-mgt.com.au/rsa_alg.html#x931> to produce strong primes 
+and other restrictions on p and q to minimize the possibility of known 
+techniques being used against the algorithm. There is much argument 
+about this topic. It is probably better just to use a longer key length.
+ >>
+
+Taken from http://www.di-mgt.com.au/rsa_alg.html
+
+That snippet suggests that p>q is desired if using the CRT form of the 
+private key. And we seem to be doing the exact opposite, swapping p and 
+q if p>q.
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110119/a39e32b8/attachment.html 
+
+From gooksankoo at hoiptorrow.mailexpire.com  Wed Jan 19 12:29:24 2011
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Wed, 19 Jan 2011 19:29:24 +0100
+Subject: [pycrypto] Why p<q in RSA code?
+In-Reply-To: <4D3704BF.6000808@gmx.li>
+References: <AANLkTi=+2NpC_rRbT4kG9rvhiROZ9q2LAWcUvrShtC0Z@mail.gmail.com>
+	<4D3704BF.6000808@gmx.li>
+Message-ID: <AANLkTinfHanB+xGjz6BLNYMRtH-mwZH54U172RHWHsQ+@mail.gmail.com>
+
+> I have noticed that - when generating an RSA key - a special check is
+> made to ensure that p<q.
+>
+> That's interesting. This is what I found, which seems to suggest the exact
+> opposite:
+>
+>>>
+> To generate the primes p and q, generate a random number of [...] If p<q, swap
+> p and q (this only matters if you intend using the CRT form of the private
+> key) [...]
+>>>
+>
+> Taken from http://www.di-mgt.com.au/rsa_alg.html
+>
+> That snippet suggests that p>q is desired if using the CRT form of the
+> private key. And we seem to be doing the exact opposite, swapping p and q if
+> p>q.
+
+Makes sense actually...
+
+The rsaDecrypt() routine in _fastmath.c (and possibly soon in
+_slowmath.py ;-)) uses pInv = p^{-1} mod q, that is the u member in a
+pycrypto RSA object.
+In other words, the page you mention and pycrypto are the same if you
+swap p and q.
+
+But still it does not explain *why* it must be p<q or p>q.
+
+PKCS#1 states that qInv must be less than p (and in pycrypto it would
+be pInv to be less than q), but that's fine. All other papers on the
+net (including Handbook of Applied Cryptography) don't set any
+constraint on the relative size of p with respect to q...
+
+I have tried to remove the p/q swappings in pycrypto and the trivial
+test cases that fail if p>q, and everything passes. Not that it proves
+much (there may be probabilistic failures), but still...
+
+On a separate note, LOL for the Nov 15 2010 comment in the page you
+sent the link of.... :-D
+
+From paul_koning at dell.com  Wed Jan 19 13:00:38 2011
+From: paul_koning at dell.com (Paul Koning)
+Date: Wed, 19 Jan 2011 14:00:38 -0500
+Subject: [pycrypto] Why p<q in RSA code?
+In-Reply-To: <AANLkTinfHanB+xGjz6BLNYMRtH-mwZH54U172RHWHsQ+@mail.gmail.com>
+References: <AANLkTi=+2NpC_rRbT4kG9rvhiROZ9q2LAWcUvrShtC0Z@mail.gmail.com>
+	<4D3704BF.6000808@gmx.li>
+	<AANLkTinfHanB+xGjz6BLNYMRtH-mwZH54U172RHWHsQ+@mail.gmail.com>
+Message-ID: <CB45E8BE-E31D-4543-8841-E202E16EA288@dell.com>
+
+
+On Jan 19, 2011, at 1:29 PM, Legrandin wrote:
+
+>> I have noticed that - when generating an RSA key - a special check is
+>> made to ensure that p<q.
+>> 
+>> That's interesting. This is what I found, which seems to suggest the exact
+>> opposite:
+>> 
+>>>> 
+>> To generate the primes p and q, generate a random number of [...] If p<q, swap
+>> p and q (this only matters if you intend using the CRT form of the private
+>> key) [...]
+>>>> 
+>> 
+>> Taken from http://www.di-mgt.com.au/rsa_alg.html
+>> 
+>> That snippet suggests that p>q is desired if using the CRT form of the
+>> private key. And we seem to be doing the exact opposite, swapping p and q if
+>> p>q.
+> 
+> Makes sense actually...
+> 
+> The rsaDecrypt() routine in _fastmath.c (and possibly soon in
+> _slowmath.py ;-)) uses pInv = p^{-1} mod q, that is the u member in a
+> pycrypto RSA object.
+> In other words, the page you mention and pycrypto are the same if you
+> swap p and q.
+> 
+> But still it does not explain *why* it must be p<q or p>q.
+
+If you do modular arithmetic mod q on p -- which is what is being done here -- you'd want to start with p having a legal value mod q.  Such a value is in the range 0..q-1, so that's why you'd have the check.
+
+p^-1 mod q will deliver a value in that range.  You could argue that it should be valid even if p is outside the range -- effectively that means you're doing (p mod q)^-1 mod q.  But I would expect your typical modular arithmetic package not to go through that extra work.
+
+	paul
+
+
+
+From gooksankoo at hoiptorrow.mailexpire.com  Wed Jan 19 14:06:05 2011
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Wed, 19 Jan 2011 21:06:05 +0100
+Subject: [pycrypto] Why p<q in RSA code?
+In-Reply-To: <CB45E8BE-E31D-4543-8841-E202E16EA288@dell.com>
+References: <AANLkTi=+2NpC_rRbT4kG9rvhiROZ9q2LAWcUvrShtC0Z@mail.gmail.com>
+	<4D3704BF.6000808@gmx.li>
+	<AANLkTinfHanB+xGjz6BLNYMRtH-mwZH54U172RHWHsQ+@mail.gmail.com>
+	<CB45E8BE-E31D-4543-8841-E202E16EA288@dell.com>
+Message-ID: <20110119200605.GA18506@shannon>
+
+> >> I have noticed that - when generating an RSA key - a special check is
+> >> made to ensure that p<q.
+> 
+> If you do modular arithmetic mod q on p -- which is what is being done here -- you'd want to start with p having a legal value mod q.  Such a value is in the range 0..q-1, so that's why you'd have the check.
+> 
+> p^-1 mod q will deliver a value in that range.  You could argue that it should be valid even if p is outside the range -- effectively that means you're doing (p mod q)^-1 mod q.  But I would expect your typical modular arithmetic package not to go through that extra work.
+> 
+> 	paul
+
+I see, thanks.
+
+Both Crypto.Util.number.inverse() and mpz_invert() work correctly if the
+number to invert is larger than the modulus though, therefore I
+understand that the check is actually redundant.
+
+Note that I am not advocating to remove the check (if it's not broken
+don't fix it). The problem I was considering is that a private key imported
+as PEM could have p>q, because the standard does not prescribe any ordering.
+Given that, should p and q be swapped (p to becomes q, q to become p) when p>q
+or not?
+
+I believe it is not necessary, but I had no hard proof that a flaw was
+not lurking by doing that.
+
+I would adjust the comment "# p shall be smaller than q (for calc of u)"
+though because it is simply not right, along with the test cases that verify
+that p<q....
+
+
+From dlitz at dlitz.net  Sat Jan 29 19:11:33 2011
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sat, 29 Jan 2011 20:11:33 -0500
+Subject: [pycrypto] Initial review of Thorsten's Py3k changes
+In-Reply-To: <4D2B235E.6040007@gmx.li>
+References: <4D18B7BA.30604@gmx.li> <4D1A5509.2020604@gmx.li>
+	<ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>
+	<4D1B7BB0.6050201@gmx.li>
+	<cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>
+	<4D229728.2000109@gmx.li>
+	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>
+	<4D23848A.8090805@gmx.li> <20110110044938.GA12449@rivest.dlitz.net>
+	<4D2B235E.6040007@gmx.li>
+Message-ID: <20110130011133.GA2551@rivest.dlitz.net>
+
+On Mon, Jan 10, 2011 at 10:18:54AM -0500, Thorsten Behrens wrote:
+>Thanks for looking over my commits.
+
+Thanks for tolerating my glacial response time. :)
+
+>I have been trying to rebase and am getting nowhere fast. There are a 
+>lot of merge conflicts, and I end up with something that may or may not 
+>actually be the current state of the repository.
+
+You might want to take a look at a video that tries to explain rebasing.  
+Here's one I found:
+
+     http://v.youku.com/v_show/id_XMjE3NDI3ODAw.html
+
+If I were rebasing a lot of changes, making substantial changes as I go, 
+I'd probably just create a new branch at origin/master and apply individual 
+changes (using git cherry-pick -n $COMMIT_ID) to build up a new series of 
+commits.  Then, I would do "git diff oldbranch..newbranch" to see what's 
+different between them (hopefully nothing).  Also, I usually re-order the 
+commits first, compare the resulting branches using "git diff" to make sure 
+I didn't miss anything, and *then* make actual code changes.
+
+>I'm not sure what the best way forward is for this part of the changes.  I 
+>still think it's cleaner to change the literals than the way asserts and 
+>functions are called. b(s) in Py3k returns s.encode("latin-1").  Compare 
+>and contrast these two:
+>
+>input = b'abcdef00'
+>expected = b'abcdef00'
+>
+>x = somefunction(input)
+>assertEqual(x,expected)
+>
+>to
+>
+>input = 'abcdef00'
+>expected = 'cdefab00'
+>
+>x = somefunction(input.encode("latin-1"))
+>assertEqual(x,expected.encode("latin-1"))
+>
+>If you were to write native Py3k code, you'd choose the former over the 
+>latter. I tried to get as close to that as I could. I don't quite have 
+>b'something', since I can't do that and remain compatible with Python 
+>2.x. But the spirit of it is intact: I am changing the way the literal 
+>is presented, instead of working with a string literal and changing it 
+>to bytes whenever I use it.
+
+Hmm.  I was puzzled by what you wrote until I saw this:
+
+     >>> import binascii
+     >>> binascii.b2a_hex(b"asdf")
+     b'61736466'
+     >>>
+
+I would have expected binascii.b2a_hex to return a string, since 
+hexadecimal is a human-readable representation of binary data, but 
+apparently it doesn't.  Yuck, ok.
+
+>> - References to things like RC5 or IDEA, which have been removed from
+>>     PyCrypto, can be removed.
+>I didn't touch those since they may have been there for a reason.
+
+OK.  It can be done separately later.
+
+>> - If adding additional/alternative dependencies like MPIR, include *why*
+>>     that's being done in the commit message and/or in the documentation.
+>Hmm, I thought I did. This was done so _fastmath.c would work on 
+>Windows. GMP is actively hostile to compilation on Windows. MPIR is a 
+>GMP fork that is friendly to compilation on Windows.
+
+Ok, I guessed that was the reason, but the commit message just said "add 
+support for mpir as alternative to gmp".
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Sat Jan 29 19:47:08 2011
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sat, 29 Jan 2011 20:47:08 -0500
+Subject: [pycrypto] Initial review of Thorsten's Py3k changes
+In-Reply-To: <4D3702C5.7090803@gmx.li>
+References: <ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>
+	<4D1B7BB0.6050201@gmx.li>
+	<cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>
+	<4D229728.2000109@gmx.li>
+	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>
+	<4D23848A.8090805@gmx.li> <20110110044938.GA12449@rivest.dlitz.net>
+	<4D2C773B.8060605@gmx.li>
+	<AANLkTi=H6c1Z5g1-pjicz=29+6Ot69MUxoSOSZfhiW7U@mail.gmail.com>
+	<4D3702C5.7090803@gmx.li>
+Message-ID: <20110130014708.GB2551@rivest.dlitz.net>
+
+Have a look in the various common.py files.  All of the hex test vectors are   
+being fed through either a2b_hex or b2a_hex.  I think it should be possible 
+to make versions of b2a_hex and a2b_hex that also do bytes->str and 
+str->bytes conversions, respectively.
+
+The following code works in both Python 2.1 and Python 3.2b2:
+
+     from binascii import b2a_hex as _b2a_hex, a2b_hex as _a2b_hex
+     from codecs import ascii_decode as _ascii_decode
+     def bin2hex(bts):
+         """Like b2a_hex, but returns a str instead of bytes in Python 3.x"""
+         return _ascii_decode(_b2a_hex(bts))[0]
+     def hex2bin(s):
+         """Like a2b_hex, but expects a str instead of bytes in Python 3.x"""
+         return _a2b_hex(s.encode('ascii'))
+
+That code could, for example, be placed into lib/Crypto/Util/py3compat.py
+
+Then, at the top of lib/Crypto/SelfTest/Cipher/common.py, you could 
+replace:
+
+     from binascii import a2b_hex, b2a_hex
+
+with:
+
+     from Crypto.Util.py3compat import \
+         hex2bin as a2b_hex, bin2hex as b2a_hex
+
+This also revealed a bug in RoundtripTest, which can be fixed as follows:
+
+--------------------- snip -------------------
+@@ -222,9 +224,9 @@ class RoundtripTest(unittest.TestCase):
+          for mode in (self.module.MODE_ECB, self.module.MODE_CBC, self.module.MODE_CFB, self.module.MODE_PGP, self.module.MODE_OFB):
+              encryption_cipher = self.module.new(a2b_hex(self.key), mode, self.iv)
+              decryption_cipher = self.module.new(a2b_hex(self.key), mode, self.iv)
+-            ciphertext = encryption_cipher.encrypt(self.plaintext)
++            ciphertext = encryption_cipher.encrypt(a2b_hex(self.plaintext))
+              decrypted_plaintext = decryption_cipher.decrypt(ciphertext)
+-            self.assertEqual(self.plaintext, decrypted_plaintext)
++            self.assertEqual(self.plaintext, b2a_hex(decrypted_plaintext))
+  
+  def make_block_tests(module, module_name, test_data):
+      tests = []
+--------------------- snip -------------------
+
+I'm not certain whether this makes your patch cleaner overall, but it might 
+be something worth looking at.
+
+Cheers,
+- Dwayne
+
+On Wed, Jan 19, 2011 at 10:27:01AM -0500, Thorsten Behrens wrote:
+>Yes, something like that would work. That's a good idea.
+>
+>I'm happy to make that change. Just waiting on Dwayne to come back on 
+>whether he wants me to scrap my repository and redo it (so he has one 
+>big commit), and then whether he'd rather have the b() wrapping done the 
+>way you suggest.
+>
+>I also have a small change to the blowfish unit test. I added the CBC 
+>vector.
+>
+>Thorsten
+>
+>On 1/19/2011 5:26 AM, Legrandin wrote:
+>> I am not sure if I grasp all new stuff in Python 3, but would it possible to
+>> keep the test vectors as they are, and possibly change the encoding at runtime?
+>>
+>> For instance, in test_AES.py, we have:
+>>
+>> test_data = [
+>> ...
+>> ( '00112233445566778899aabbccddeeff', 'dda97ca4864cdfe06eaf70a0ec0d7191',
+>>    '000102030405060708090a0b0c0d0e0f1011121314151617',
+>>    'FIPS 197 C.2 (AES-192)' ),
+>> ... ]
+>>
+>> The proposed change wraps each string but the last one with b().
+>>
+>> Instead of changing the test vector line, we could have a separate
+>> piece of code that dynamically
+>> adjusts a tuple in the list in case python 3 is detected.
+>>
+>> Something along these lines, but possibly more pythonic:
+>>
+>> if python_version>2:
+>>     for t in test_data:
+>>       idx = test_data.index(t)
+>>       newt = tuple(b(t[0), b(t[1]), b(t[2]), t[3])
+>>       test_data[idx] = newt
+
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From sbehrens at gmx.li  Sat Jan 29 20:12:39 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Sat, 29 Jan 2011 21:12:39 -0500
+Subject: [pycrypto] Initial review of Thorsten's Py3k changes
+In-Reply-To: <20110130014708.GB2551@rivest.dlitz.net>
+References: <ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>	<4D1B7BB0.6050201@gmx.li>	<cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>	<4D229728.2000109@gmx.li>	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>	<4D23848A.8090805@gmx.li>
+	<20110110044938.GA12449@rivest.dlitz.net>	<4D2C773B.8060605@gmx.li>	<AANLkTi=H6c1Z5g1-pjicz=29+6Ot69MUxoSOSZfhiW7U@mail.gmail.com>	<4D3702C5.7090803@gmx.li>
+	<20110130014708.GB2551@rivest.dlitz.net>
+Message-ID: <4D44C917.4070003@gmx.li>
+
+Okay, I got marching orders. Let me see that I have this right:
+
+- All test vectors back to 'something' instead of b('something'), and 
+change the routines that read the vectors to wrap the b() around it.
+- Take files and create one humongous new commit that has all changes.
+
+Did I get that right? :D
+
+Thorsten
+
+
+
+From dlitz at dlitz.net  Sat Jan 29 20:31:27 2011
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sat, 29 Jan 2011 21:31:27 -0500
+Subject: [pycrypto] Initial review of Thorsten's Py3k changes
+In-Reply-To: <4D44C917.4070003@gmx.li>
+References: <cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>
+	<4D229728.2000109@gmx.li>
+	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>
+	<4D23848A.8090805@gmx.li> <20110110044938.GA12449@rivest.dlitz.net>
+	<4D2C773B.8060605@gmx.li>
+	<AANLkTi=H6c1Z5g1-pjicz=29+6Ot69MUxoSOSZfhiW7U@mail.gmail.com>
+	<4D3702C5.7090803@gmx.li> <20110130014708.GB2551@rivest.dlitz.net>
+	<4D44C917.4070003@gmx.li>
+Message-ID: <20110130023127.GA2710@rivest.dlitz.net>
+
+On Sat, Jan 29, 2011 at 09:12:39PM -0500, Thorsten Behrens wrote:
+>Okay, I got marching orders. Let me see that I have this right:
+>
+>- All test vectors back to 'something' instead of b('something'), and 
+>change the routines that read the vectors to wrap the b() around it.
+
+Yes, if that makes the most sense.
+
+>- Take files and create one humongous new commit that has all changes.
+
+No, each commit should be a distinct change (and each distinct change 
+should have its own commit).  Having separate commits for the following 
+makes sense:
+
+     - Replace tabs with spaces
+     - Py3K _fastmath.c support
+     - Change _fastmath.c to compile with VC++
+     - add MPIR support
+     - Add Ron Rivest Test
+     - Add unit tests for Crypto.Random.random
+     - Update documentation with current state of security of hash and 
+       cipher functions.
+     - Update documentation with Python 3.x notes.
+     - Add unit test for AllOrNothing
+     - Fix AllOrNothing and random.sample()
+
+But the following sorts of commits should be squashed into related commits:
+
+     - Removed erroneous print statement from setup.py - it had snuck in 
+       from the released 2.3 source
+     - Now really staging the allornothing test. oops.
+
+Does that make sense?
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From sbehrens at gmx.li  Sun Jan 30 05:21:49 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Sun, 30 Jan 2011 06:21:49 -0500
+Subject: [pycrypto] Initial review of Thorsten's Py3k changes
+In-Reply-To: <20110130023127.GA2710@rivest.dlitz.net>
+References: <cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>	<4D229728.2000109@gmx.li>	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>	<4D23848A.8090805@gmx.li>
+	<20110110044938.GA12449@rivest.dlitz.net>	<4D2C773B.8060605@gmx.li>	<AANLkTi=H6c1Z5g1-pjicz=29+6Ot69MUxoSOSZfhiW7U@mail.gmail.com>	<4D3702C5.7090803@gmx.li>
+	<20110130014708.GB2551@rivest.dlitz.net>	<4D44C917.4070003@gmx.li>
+	<20110130023127.GA2710@rivest.dlitz.net>
+Message-ID: <4D4549CD.6050702@gmx.li>
+
+Yes, that makes sense. I'll play with git's options and see that I can 
+selectively move those onto a new branch (py3k-mk2? :D).
+
+
+I'll holler when I run into road blocks.
+
+Thorsten
+
+
+From gooksankoo at hoiptorrow.mailexpire.com  Tue Feb  8 04:43:52 2011
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Tue, 8 Feb 2011 11:43:52 +0100
+Subject: [pycrypto] PKCS#1 v1.5 and PSS
+Message-ID: <AANLkTimOeBE=aho=G5aM+u1MOFv1PXiGt5pgNTO1FTE1@mail.gmail.com>
+
+Hi all,
+
+I have just finalized support for PKCS#1-style RSA signatures, meaning
+both v1.5 and the new PSS. I ended up spending most of the time on the
+test suite, so I believe the result is pretty rock solid. I have it
+shelved on a branch of my github repo, which can be retrieved via:
+
+git clone -b pkcs1 https://github.com/Legrandin/pycrypto.git
+
+Any feedback is appreciated!
+
+One thing you may notice, is that Crypto.PublicKey is not touched at
+all (apart from a few bugfixes and small improvements).
+Instead, I have tried to isolate everything in two new modules:
+Crypto.Signature.PKCS1_v1_5 and Crypto.Signature.PKCS1_PSS .
+
+At the sender, one would do:
+
+>>> from Crypto.Signature import PKCS1_v1_5
+>>> from Crypto.Hash import SHA
+>>> from Crypto.PublicKey import RSA
+>>>
+>>> message = 'To be signed'
+>>> key = RSA.importKey('key.der')
+>>> h = SHA.new()
+>>> h.update(message)
+>>>> signature = PKCS1_v1_5.sign(h, key)
+
+whereas at the receiver:
+
+>>> key = RSA.importKey('pubkey.der')
+>>> h = SHA.new()
+>>> h.update(message)
+>>> if PKCS_v1_5.verify(h, key, signature):
+>>> print "The signature is authentic."
+>>>     else:
+>>> print "The signature is not authentic."
+
+Note that no object is used in such modules, because the signing
+algorithms are inherently stateless.
+
+I believe this way is much cleaner that expanding the already shaky RSA.sign() !
+
+More generally, using a Crypto.PublicKey.RSA object as both key (e.g.
+generation) and key engine (signing, encryption) seems to be the root
+of a lot of troubles. It would be much better to use such object (and
+the same applies to everything under Crypto.PublicKey) only for key
+management, and leave all usages of such key to a different module.
+
+That is the same approach found in the Java Crypto Architecture (see
+http://download.oracle.com/javase/6/docs/technotes/guides/security/crypto/CryptoSpec.html)
+which applies the concept to all key types, including symmetric ones.
+In PyCrypto, the fact that Cipher.AES is used to model both the key
+and the raw algorithm seem to be still acceptable though, because key
+management for AES does not require a lot of logic like for public
+keys.
+
+For such reasons, while thinking how to implement the PKCS#1 OAEP algo
+I need, I was considering how the Crypto.Cipher package could be a
+good candidate for holding a new PKCS1_OAEP module. Mixing up
+symmetric key objects and an asymmetric algo may seem bad at first,
+but JCA indeed has a Cipher class meant to cover all encryption algos,
+no matter the type. On the long run, we may actually want to move
+symmetric keys into a Crypto.SymmetricKey module, and leave
+Crypto.Cipher for key usage only, and no key management.
+
+From sbehrens at gmx.li  Fri Feb 18 15:28:49 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Fri, 18 Feb 2011 16:28:49 -0500
+Subject: [pycrypto] SHA-2 tweaks, public comment sought
+Message-ID: <4D5EE491.1010508@gmx.li>
+
+If you haven't already seen it: NIST is thinking about tweaking SHA-512 
+for 64-bit systems, to speed it up some. Comments are sought until May 
+12. SHA-512/224 and SHA-512/256 are the two new variants.
+
+Get your cryptanalysis hats on and get cracking :)
+
+
+From sbehrens at gmx.li  Sat Feb 19 06:05:28 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Sat, 19 Feb 2011 07:05:28 -0500
+Subject: [pycrypto] Py3k changes - rebase
+In-Reply-To: <20110130023127.GA2710@rivest.dlitz.net>
+References: <cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>	<4D229728.2000109@gmx.li>	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>	<4D23848A.8090805@gmx.li>
+	<20110110044938.GA12449@rivest.dlitz.net>	<4D2C773B.8060605@gmx.li>	<AANLkTi=H6c1Z5g1-pjicz=29+6Ot69MUxoSOSZfhiW7U@mail.gmail.com>	<4D3702C5.7090803@gmx.li>
+	<20110130014708.GB2551@rivest.dlitz.net>	<4D44C917.4070003@gmx.li>
+	<20110130023127.GA2710@rivest.dlitz.net>
+Message-ID: <4D5FB208.6060703@gmx.li>
+
+Dwayne,
+
+
+> No, each commit should be a distinct change (and each distinct change
+> should have its own commit).  Having separate commits for the following
+> makes sense:
+>
+>       - Replace tabs with spaces
+>       - Py3K _fastmath.c support
+>       - Change _fastmath.c to compile with VC++
+>       - add MPIR support
+>       - Add Ron Rivest Test
+>       - Add unit tests for Crypto.Random.random
+>       - Update documentation with current state of security of hash and
+>         cipher functions.
+>       - Update documentation with Python 3.x notes.
+>       - Add unit test for AllOrNothing
+>       - Fix AllOrNothing and random.sample()
+
+I took a stab at just a portion of this, the first _fastmath.c changes. 
+The result is that I have a lot of conflicts, and after resolving those, 
+I have code that won't compile.
+
+I can't easily untangle these changes: The additional unit tests either 
+presume that the py3k compatibility layer is there, or are needed to 
+make the library work under py3k.
+
+I have a limited amount of enthusiasm for fixing that which already 
+works, so it fits into a neater order. Here's my compromise proposal:
+
+I will change the unit tests to wrap the test vectors in a different 
+place, instead of wrapping the literals, as we had discussed.
+
+And I will give you a branch with one commit that has all of the changes 
+that were made.
+
+I understand the desire for incremental commits. I can keep it in mind 
+in future, with the better understanding of git that I now have. For 
+this py3k change, though, the amount of work needed to attempt to 
+"unravel" the change and bring it in order is too great for me to want 
+to tackle it. The best I can offer is the compromise above.
+
+I could go on - I'll refrain. Hope to hear from you soon.
+
+Thorsten
+
+
+
+From dlitz at dlitz.net  Sat Feb 19 19:02:32 2011
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sat, 19 Feb 2011 20:02:32 -0500
+Subject: [pycrypto] Py3k changes - rebase
+In-Reply-To: <4D5FB208.6060703@gmx.li>
+References: <cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>
+	<4D229728.2000109@gmx.li>
+	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>
+	<4D23848A.8090805@gmx.li> <20110110044938.GA12449@rivest.dlitz.net>
+	<4D2C773B.8060605@gmx.li>
+	<AANLkTi=H6c1Z5g1-pjicz=29+6Ot69MUxoSOSZfhiW7U@mail.gmail.com>
+	<4D3702C5.7090803@gmx.li> <20110130014708.GB2551@rivest.dlitz.net>
+	<4D44C917.4070003@gmx.li> <20110130023127.GA2710@rivest.dlitz.net>
+	<4D5FB208.6060703@gmx.li>
+Message-ID: <dfa472cc-80e2-4a46-85b8-b4ebfb6c24d5@email.android.com>
+
+Sure, that will do.
+
+"Thorsten Behrens" <sbehrens at gmx.li> wrote:
+
+>Dwayne,
+>
+>
+>> No, each commit should be a distinct change (and each distinct change
+>> should have its own commit).  Having separate commits for the
+>following
+>> makes sense:
+>>
+>>       - Replace tabs with spaces
+>>       - Py3K _fastmath.c support
+>>       - Change _fastmath.c to compile with VC++
+>>       - add MPIR support
+>>       - Add Ron Rivest Test
+>>       - Add unit tests for Crypto.Random.random
+>>       - Update documentation with current state of security of hash
+>and
+>>         cipher functions.
+>>       - Update documentation with Python 3.x notes.
+>>       - Add unit test for AllOrNothing
+>>       - Fix AllOrNothing and random.sample()
+>
+>I took a stab at just a portion of this, the first _fastmath.c changes.
+>
+>The result is that I have a lot of conflicts, and after resolving
+>those, 
+>I have code that won't compile.
+>
+>I can't easily untangle these changes: The additional unit tests either
+>
+>presume that the py3k compatibility layer is there, or are needed to 
+>make the library work under py3k.
+>
+>I have a limited amount of enthusiasm for fixing that which already 
+>works, so it fits into a neater order. Here's my compromise proposal:
+>
+>I will change the unit tests to wrap the test vectors in a different 
+>place, instead of wrapping the literals, as we had discussed.
+>
+>And I will give you a branch with one commit that has all of the
+>changes 
+>that were made.
+>
+>I understand the desire for incremental commits. I can keep it in mind 
+>in future, with the better understanding of git that I now have. For 
+>this py3k change, though, the amount of work needed to attempt to 
+>"unravel" the change and bring it in order is too great for me to want 
+>to tackle it. The best I can offer is the compromise above.
+>
+>I could go on - I'll refrain. Hope to hear from you soon.
+>
+>Thorsten
+
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+
+From aljosa.mohorovic at gmail.com  Mon Feb 21 09:02:35 2011
+From: aljosa.mohorovic at gmail.com (=?UTF-8?B?QWxqb8WhYSBNb2hvcm92acSH?=)
+Date: Mon, 21 Feb 2011 16:02:35 +0100
+Subject: [pycrypto] adding ssh keys support in distutils2
+Message-ID: <AANLkTikPruzs64e8RtRoscB2784HfrDofvBo8U0-8QKN@mail.gmail.com>
+
+i'm looking for information on what would be the best way to add an
+option to distutils2 to use ssh keys to authorize for package upload
+to pypi (and similar software)?
+my idea was something like:
+1) user defines public part of ssh key on pypi
+2) distutils2 somehow gets local private key when uploading
+3) username and package are signed and values are added to request
+when uploading package
+4) pypi server side validates package upload based on ssh key public part
+
+although i'm an average ssh user this is my first time trying to
+implement something like this so any links to common mistakes,
+examples, comments or anything similar is really appreciated.
+
+Aljosa Mohorovic
+
+From dlitz at dlitz.net  Mon Feb 21 10:32:49 2011
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 21 Feb 2011 11:32:49 -0500
+Subject: [pycrypto] adding ssh keys support in distutils2
+In-Reply-To: <AANLkTikPruzs64e8RtRoscB2784HfrDofvBo8U0-8QKN@mail.gmail.com>
+References: <AANLkTikPruzs64e8RtRoscB2784HfrDofvBo8U0-8QKN@mail.gmail.com>
+Message-ID: <20110221163249.GA25006@rivest.dlitz.net>
+
+On Mon, Feb 21, 2011 at 04:02:35PM +0100, Aljo?a Mohorovi? wrote:
+>i'm looking for information on what would be the best way to add an
+>option to distutils2 to use ssh keys to authorize for package upload
+>to pypi (and similar software)?
+
+Robey Pointer has an awesome Python library that does SSH called Paramiko:
+
+http://www.lag.net/paramiko/
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From aljosa.mohorovic at gmail.com  Mon Feb 21 10:39:24 2011
+From: aljosa.mohorovic at gmail.com (=?UTF-8?B?QWxqb8WhYSBNb2hvcm92acSH?=)
+Date: Mon, 21 Feb 2011 17:39:24 +0100
+Subject: [pycrypto] adding ssh keys support in distutils2
+In-Reply-To: <20110221163249.GA25006@rivest.dlitz.net>
+References: <AANLkTikPruzs64e8RtRoscB2784HfrDofvBo8U0-8QKN@mail.gmail.com>
+	<20110221163249.GA25006@rivest.dlitz.net>
+Message-ID: <AANLkTin-J8kh8QEzyhYPZB82OrkXuo5Od3pA76==idYR@mail.gmail.com>
+
+On Mon, Feb 21, 2011 at 5:32 PM, Dwayne C. Litzenberger <dlitz at dlitz.net> wrote:
+> Robey Pointer has an awesome Python library that does SSH called Paramiko:
+>
+> http://www.lag.net/paramiko/
+
+can't figure out if paramiko requires sshd server.
+i would like to avoid having sshd server because i just need to verify
+that python package is uploaded by the owner of key of which i have
+public part.
+in this situation, should i be looking into paramiko or pycrypto?
+
+Aljosa
+
+From dlitz at dlitz.net  Mon Feb 21 10:59:10 2011
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 21 Feb 2011 11:59:10 -0500
+Subject: [pycrypto] adding ssh keys support in distutils2
+In-Reply-To: <AANLkTin-J8kh8QEzyhYPZB82OrkXuo5Od3pA76==idYR@mail.gmail.com>
+References: <AANLkTikPruzs64e8RtRoscB2784HfrDofvBo8U0-8QKN@mail.gmail.com>
+	<20110221163249.GA25006@rivest.dlitz.net>
+	<AANLkTin-J8kh8QEzyhYPZB82OrkXuo5Od3pA76==idYR@mail.gmail.com>
+Message-ID: <20110221165910.GA25341@rivest.dlitz.net>
+
+On Mon, Feb 21, 2011 at 05:39:24PM +0100, Aljo?a Mohorovi? wrote:
+>On Mon, Feb 21, 2011 at 5:32 PM, Dwayne C. Litzenberger <dlitz at dlitz.net> wrote:
+>> Robey Pointer has an awesome Python library that does SSH called Paramiko:
+>>
+>> http://www.lag.net/paramiko/
+>
+>can't figure out if paramiko requires sshd server.
+>i would like to avoid having sshd server because i just need to verify
+>that python package is uploaded by the owner of key of which i have
+>public part.
+>in this situation, should i be looking into paramiko or pycrypto?
+
+Paramiko uses PyCrypto, it *is* an SSH server (and client), and it contains 
+code for parsing, generating, and manipulating SSH keys.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From gooksankoo at hoiptorrow.mailexpire.com  Mon Feb 21 11:08:38 2011
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Mon, 21 Feb 2011 18:08:38 +0100
+Subject: [pycrypto] adding ssh keys support in distutils2
+In-Reply-To: <20110221165910.GA25341@rivest.dlitz.net>
+References: <AANLkTikPruzs64e8RtRoscB2784HfrDofvBo8U0-8QKN@mail.gmail.com>
+	<20110221163249.GA25006@rivest.dlitz.net>
+	<AANLkTin-J8kh8QEzyhYPZB82OrkXuo5Od3pA76==idYR@mail.gmail.com>
+	<20110221165910.GA25341@rivest.dlitz.net>
+Message-ID: <AANLkTinM9=7eLaWXKUeBeT7h-Qj==bc_jM7YL6h3PQwX@mail.gmail.com>
+
+It seems to be that openssl alone is more practical for that, as it
+simply runs from the command line.
+Or do you plan to do everything from within Python?
+
+2011/2/21 Dwayne C. Litzenberger <dlitz at dlitz.net>:
+> On Mon, Feb 21, 2011 at 05:39:24PM +0100, Aljo?a Mohorovi? wrote:
+>>On Mon, Feb 21, 2011 at 5:32 PM, Dwayne C. Litzenberger <dlitz at dlitz.net> wrote:
+>>> Robey Pointer has an awesome Python library that does SSH called Paramiko:
+>>>
+>>> http://www.lag.net/paramiko/
+>>
+>>can't figure out if paramiko requires sshd server.
+>>i would like to avoid having sshd server because i just need to verify
+>>that python package is uploaded by the owner of key of which i have
+>>public part.
+>>in this situation, should i be looking into paramiko or pycrypto?
+>
+> Paramiko uses PyCrypto, it *is* an SSH server (and client), and it contains
+> code for parsing, generating, and manipulating SSH keys.
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+> ?OpenPGP: 19E1 1FE8 B3CF F273 ED17 ?4A24 928C EC13 39C2 5CF7
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+From aljosa.mohorovic at gmail.com  Mon Feb 21 14:27:15 2011
+From: aljosa.mohorovic at gmail.com (=?UTF-8?B?QWxqb8WhYSBNb2hvcm92acSH?=)
+Date: Mon, 21 Feb 2011 21:27:15 +0100
+Subject: [pycrypto] adding ssh keys support in distutils2
+In-Reply-To: <AANLkTinM9=7eLaWXKUeBeT7h-Qj==bc_jM7YL6h3PQwX@mail.gmail.com>
+References: <AANLkTikPruzs64e8RtRoscB2784HfrDofvBo8U0-8QKN@mail.gmail.com>
+	<20110221163249.GA25006@rivest.dlitz.net>
+	<AANLkTin-J8kh8QEzyhYPZB82OrkXuo5Od3pA76==idYR@mail.gmail.com>
+	<20110221165910.GA25341@rivest.dlitz.net>
+	<AANLkTinM9=7eLaWXKUeBeT7h-Qj==bc_jM7YL6h3PQwX@mail.gmail.com>
+Message-ID: <AANLkTim8jbA_LnFnay3frSXX_7U6DPVCVtyua-tTvLK3@mail.gmail.com>
+
+On Mon, Feb 21, 2011 at 6:08 PM, Legrandin
+<gooksankoo at hoiptorrow.mailexpire.com> wrote:
+> It seems to be that openssl alone is more practical for that, as it
+> simply runs from the command line.
+> Or do you plan to do everything from within Python?
+
+within python since both client and server are python code.
+
+Aljosa
+
+From gooksankoo at hoiptorrow.mailexpire.com  Tue Feb 22 14:23:24 2011
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Tue, 22 Feb 2011 21:23:24 +0100
+Subject: [pycrypto] adding ssh keys support in distutils2
+In-Reply-To: <AANLkTim8jbA_LnFnay3frSXX_7U6DPVCVtyua-tTvLK3@mail.gmail.com>
+References: <AANLkTikPruzs64e8RtRoscB2784HfrDofvBo8U0-8QKN@mail.gmail.com>
+	<20110221163249.GA25006@rivest.dlitz.net>
+	<AANLkTin-J8kh8QEzyhYPZB82OrkXuo5Od3pA76==idYR@mail.gmail.com>
+	<20110221165910.GA25341@rivest.dlitz.net>
+	<AANLkTinM9=7eLaWXKUeBeT7h-Qj==bc_jM7YL6h3PQwX@mail.gmail.com>
+	<AANLkTim8jbA_LnFnay3frSXX_7U6DPVCVtyua-tTvLK3@mail.gmail.com>
+Message-ID: <AANLkTim-zQu59ZcktBQ-mVOaVzLfbvi0F8RpaVsxzdKx@mail.gmail.com>
+
+>> It seems to be that openssl alone is more practical for that, as it
+>> simply runs from the command line.
+>> Or do you plan to do everything from within Python?
+>
+> within python since both client and server are python code.
+
+Right now ssh keys cannot be imported in pycrypto (although I have
+been planning for a while to add that).
+Is that important to you?
+
+You can import openssl keys though (.pem/.der) provided they are not
+encrypted with a password. Alternatively, if interoperability is not a
+concern, you can generate a key pair (e.g. RSA) within python and
+export it with pickle.
+
+Once the keys are in python at the sender, you can concatenate and
+pass the file and the request headers through a hash function (like
+SHA), and then sign the resulting hash using RSA.sign.
+
+At the other end, you do the same hash and pass it to RSA.verify
+(where RSA is the public half only) together with the signature you
+received from the sender.
+
+From aljosa.mohorovic at gmail.com  Tue Feb 22 16:42:46 2011
+From: aljosa.mohorovic at gmail.com (=?UTF-8?B?QWxqb8WhYSBNb2hvcm92acSH?=)
+Date: Tue, 22 Feb 2011 23:42:46 +0100
+Subject: [pycrypto] adding ssh keys support in distutils2
+In-Reply-To: <AANLkTim-zQu59ZcktBQ-mVOaVzLfbvi0F8RpaVsxzdKx@mail.gmail.com>
+References: <AANLkTikPruzs64e8RtRoscB2784HfrDofvBo8U0-8QKN@mail.gmail.com>
+	<20110221163249.GA25006@rivest.dlitz.net>
+	<AANLkTin-J8kh8QEzyhYPZB82OrkXuo5Od3pA76==idYR@mail.gmail.com>
+	<20110221165910.GA25341@rivest.dlitz.net>
+	<AANLkTinM9=7eLaWXKUeBeT7h-Qj==bc_jM7YL6h3PQwX@mail.gmail.com>
+	<AANLkTim8jbA_LnFnay3frSXX_7U6DPVCVtyua-tTvLK3@mail.gmail.com>
+	<AANLkTim-zQu59ZcktBQ-mVOaVzLfbvi0F8RpaVsxzdKx@mail.gmail.com>
+Message-ID: <AANLkTimD1BHz-cOosoRuBnXtepS_O4nCqpqVLxry+uw+@mail.gmail.com>
+
+On Tue, Feb 22, 2011 at 9:23 PM, Legrandin
+<gooksankoo at hoiptorrow.mailexpire.com> wrote:
+> Right now ssh keys cannot be imported in pycrypto (although I have
+> been planning for a while to add that).
+> Is that important to you?
+
+it is, i need access to identities available to the authentication agent.
+basically i need anything added with "ssh-add <key>" although i can
+get everything with something like:
+>>> os.system("ssh-add -L")
+
+> Once the keys are in python at the sender, you can concatenate and
+> pass the file and the request headers through a hash function (like
+> SHA), and then sign the resulting hash using RSA.sign.
+>
+> At the other end, you do the same hash and pass it to RSA.verify
+> (where RSA is the public half only) together with the signature you
+> received from the sender.
+
+thanks for info.
+
+Aljosa
+
+From mgpensar at gmail.com  Fri Mar 25 10:30:10 2011
+From: mgpensar at gmail.com (Mauricio Gomes)
+Date: Fri, 25 Mar 2011 13:30:10 -0300
+Subject: [pycrypto] Installation terminated with an error "Unable to find
+	vcvarsall.bat"
+Message-ID: <AANLkTinDkP7id+CHr_T3oEiSjVc6vPB0w+ZH-Gn4Fkat@mail.gmail.com>
+
+Looking for the archives I have found this thread:
+
+On Thu, Dec 17, 2009 at 08:57:18PM +0200, Jonathan Livni wrote:
+>*What and where is this vcvarsall.bat?
+*
+vcvarsall.bat is part of Microsoft's compiler, which I'm told you can
+download at no cost.
+
+Python modules are supposed to be built using the same compiler and stdlib
+as was used to build Python itself.  However, you should be able to use
+mingw32 (which is a Windows port of gcc) for PyCrypto.  That's all I've
+ever tested PyCrypto with on Windows, anyway. :)
+
+-- 
+Dwayne C. Litzenberger <dlitz at
+dlitz.net<http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto>
+>
+
+I am having the same issue but first, instead of looking for vcvarsall.bat I
+would like to try it with mingw32 because that is what I use.
+How do I change the default compiler to mingw32 ?
+
+Thanks !
+Mau.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110325/b942b206/attachment.htm 
+
+From arenstar at gmail.com  Mon Feb 14 13:48:03 2011
+From: arenstar at gmail.com (David Arena)
+Date: Mon, 14 Feb 2011 19:48:03 -0000
+Subject: [pycrypto] AES.Mode_PGP
+Message-ID: <F1740D29-4982-4EDA-99C3-721A3E6B8C4E@gmail.com>
+
+Hello All..
+
+basically im either stupid or guessing something is wrong with the Mode_PGP of the Cipher AES class..
+
+Let me explain..
+
+I assumed that the class would follow the rfc 2440 ( OpenPGP Message Format)
+Basically, in my laymans terms..
+
+On encryption...
+The IV is a random generated number, added  as the first block of the ciphertext and used in CBC mode for the other blocks...
+
+On Decryption..
+The IV added is zero's, The CBC continues finding the IV in the first block, which results in the following blocks to be deciphered correctly.. However  when returning the plaintext it drops the first block of the plaintext  garbage..
+resulting in a correct message..
+
+Im not sure if Pycrypto does this??? I tried and failed.. and i thought i should ask questions..
+
+here is my basic code..
+
+ def AESencode(secretkey,message,vi):
+                cipher = AES.new(secretkey,AES.MODE_PGP,vi)
+                return cipher.encrypt(base64.b64encode(message))
+
+ def AESdecode(secretkey,message):
+                cipher = AES.new(secretkey,AES.MODE_PGP)
+                return cipher.decrypt(base64.b64decode(message))
+
+
+Any suggestions on where to go????
+
+Regards
+David
+
+
+
+From arenstar at gmail.com  Sat Mar 19 14:38:57 2011
+From: arenstar at gmail.com (David Arena)
+Date: Sat, 19 Mar 2011 20:38:57 -0000
+Subject: [pycrypto] PyCrypto & OpenSSL
+Message-ID: <CACA9E95-57B7-43AD-A1FA-02B5375D21B8@gmail.com>
+
+Hello,
+
+I am having trouble decrypting in OpenSSL from a ciphertext encrypted in PyCrypto..
+
+Let me explain what im doing first..
+using Aes-128-cbc..
+
+key          = '0123456789abcdef'             eg. 30313233343536373839414243444546 ( represented here in hex )
+plaintext = uuid ( 128bit without the "-") eg. ffc60acb3cf14fd999cb3dff91a62091
+iv		= urandom(16)			      eg. c4b366c68cd086b4197dc1f6bd3f95f4 (represented here in hex for clarity)
+
+on Encryption in pycrypto
+
+i encrypt in pycrypto.. and append the plaintext iv to the ciphertext
+ciphertext will now equal plaintextIV+ciphertext
+
+on Decryption in pycrypto
+iv = zeros
+
+and everything works as i assumed..
+
+This follows what i understood the pgp approach using CBF..
+
+HOWEVER..
+
+If i try to decrypt in Openssl using this type statement.
+
+echo $ciphertext | openssl aes-128-cbc -K 30313233343536373839414243444546 -iv 30303030303030303030303030303030 -p -nosalt -nopad
+
+it is not functioning, or returning my uuid :(
+
+Can anyone help me?
+Or even tell me how stupid i am :D
+
+Cheers
+
+From sundman.anders at gmail.com  Mon Mar 28 02:55:15 2011
+From: sundman.anders at gmail.com (Anders Sundman)
+Date: Mon, 28 Mar 2011 08:55:15 -0000
+Subject: [pycrypto] Python3 and PyCrypto
+Message-ID: <AANLkTi=euFrfarbRhJ60Q_e_PvcbPdX9-f1r6+Z2SyhH@mail.gmail.com>
+
+Hi,
+
+I'm looking to include pycrypto in a Python 3 project, so I've been
+following the traffic about Python 3.1 & 3.2 support on the list with
+great interest and it looks encouraging.
+
+

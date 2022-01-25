@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Test code - Random
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Test%20code%20-%20Random&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000026.html">
+   <LINK REL="Next"  HREF="000028.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Test code - Random</H1>
+    <B>Sam Phippen</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Test%20code%20-%20Random&In-Reply-To="
+       TITLE="[pycrypto] Test code - Random">samphippen at googlemail.com
+       </A><BR>
+    <I>Fri Nov  7 14:55:10 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000026.html">[pycrypto] Possible problem in src/_fastmath.c
+</A></li>
+        <LI>Next message: <A HREF="000028.html">[pycrypto] Test code - Random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#27">[ date ]</a>
+              <a href="thread.html#27">[ thread ]</a>
+              <a href="subject.html#27">[ subject ]</a>
+              <a href="author.html#27">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>After reviewing the random number test code I thought some extra functions
+might be useful, attached is said code
+
+
+# -*- coding: utf-8 -*-
+#
+#  SelfTest/Util/test_generic.py: Self-test for the Crypto.Random.new()
+function
+#
+# =======================================================================
+# Copyright (C) 2008  Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# &quot;Software&quot;), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# =======================================================================
+#
+
+&quot;&quot;&quot;Self-test suite for Crypto.Random.new()&quot;&quot;&quot;
+
+__revision__ = &quot;$Id$&quot;
+
+import unittest
+
+class SimpleTest(unittest.TestCase):
+    def runTest(self):
+        &quot;&quot;&quot;Crypto.Random.new()&quot;&quot;&quot;
+        # Import the OSRNG module and try to use it
+        from Crypto import Random
+        randobj = Random.new()
+        x = randobj.read(16)
+        y = randobj.read(16)
+        self.assertNotEqual(x, y)
+class TestNotAlwaysEqual(unittest.TestCase):
+    def runTest(self):
+        from Crypto import Random
+        randobj = Random.new()
+        k = 10
+        DataArray = []
+        x = randobj.read(16)
+        count = 0
+        for i in range(0,k):
+            y = randobj.read(16)
+            if x == y:
+                count += 1
+        self.assertNotEqual(count,k)
+class TestAverage(unittest.TestCase):
+    def runTest(self):
+        from Crypto import Random
+        randobj = Random.new()
+        x = randobj.read(2**15)
+        values = []
+        for i in x:
+            values.append(ord(i))
+        total = 0
+        for i in values:
+            total += i
+        average = total/len(values)
+        print average
+        self.assertEqual(average in range((256/2)-28,(256/2)+28),True)
+
+
+def get_tests():
+    return [SimpleTest(),TestNotAlwaysEqual(),TestAverage()]
+
+if __name__ == '__main__':
+    suite = lambda: unittest.TestSuite(get_tests())
+    unittest.main(defaultTest='suite')
+
+# vim:set ts=4 sw=4 sts=4 expandtab:
+
+-- 
+Sam Phippen
+
+Please avoid sending me Word or PowerPoint attachments.
+See <A HREF="http://www.gnu.org/philosophy/no-word-attachments.html">http://www.gnu.org/philosophy/no-word-attachments.html</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20081107/3a4c37f9/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20081107/3a4c37f9/attachment.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000026.html">[pycrypto] Possible problem in src/_fastmath.c
+</A></li>
+	<LI>Next message: <A HREF="000028.html">[pycrypto] Test code - Random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#27">[ date ]</a>
+              <a href="thread.html#27">[ thread ]</a>
+              <a href="subject.html#27">[ subject ]</a>
+              <a href="author.html#27">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

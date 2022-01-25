@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Library design philosophy
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Library%20design%20philosophy&In-Reply-To=20090412143621.GA19936%40shannon">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000084.html">
+   <LINK REL="Next"  HREF="000086.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Library design philosophy</H1>
+    <B>Mads Kiilerich</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Library%20design%20philosophy&In-Reply-To=20090412143621.GA19936%40shannon"
+       TITLE="[pycrypto] Library design philosophy">mads at kiilerich.com
+       </A><BR>
+    <I>Sun Apr 12 14:57:31 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000084.html">[pycrypto] Library design philosophy
+</A></li>
+        <LI>Next message: <A HREF="000086.html">[pycrypto] Library design philosophy
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#85">[ date ]</a>
+              <a href="thread.html#85">[ thread ]</a>
+              <a href="subject.html#85">[ subject ]</a>
+              <a href="author.html#85">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Legrandin wrote, On 04/12/2009 04:36 PM
+&gt;<i> I think that pycrypto is a great project, but the dependency
+</I>&gt;<i> on the C files to carry out the core operation in a way defeats
+</I>&gt;<i> the purpose of the library (i.e. being scriptable and platform
+</I>&gt;<i> independent).
+</I>&gt;<i>
+</I>&gt;<i> Of course performance is important, but if I really need to be fast
+</I>&gt;<i> my first choice is to use some wrapper to openssl or libtomcrypt
+</I>&gt;<i> (e.g m2crypto). On the other hand, the most value I find in pycrypto
+</I>&gt;<i> is it being (also) a command-line crypto workbench.
+</I>&gt;<i>
+</I>&gt;<i> What's your view on this? I appreciate that for some algorithms
+</I>&gt;<i> both versions can be used (C vs python), but for instance there is no way
+</I>&gt;<i> to use AES w/o having to go through the compilation step. To me, it's
+</I>&gt;<i> should be the other way around, first Python code, then C routines.
+</I>&gt;<i>    
+</I>
+Well ... you can have your opinion if I (a random user) can have mine ;-)
+
+Pycrypto does not claim to be a pure-python crypto library. If you 
+expect it to be that then it probably won't meet your expectations.
+
+Pycrypto _is_ cross-platform, and written in a combination of platform 
+independent C and python, just like Python is. (FWIW, pycrypto _is_ 
+partly a &quot;libtomcrypt wrapper&quot;, see 
+<A HREF="http://www.dlitz.net/software/pycrypto/doc/#credits.">http://www.dlitz.net/software/pycrypto/doc/#credits.</A>) Pycrypto _is_ 
+fast. Perhaps not as fast as other optimized libraries are, but it can 
+be used where performance is important.
+
+Some advantages of pycrypto are that it is small, has a simple pythonic 
+API, and don't have any external dependencies. It is not a incomplete 
+wrapper of a huge and complex API (such as the openssl API).
+
+Pure python implementations _could_ be added, but they would probably 
+not really be usable. Users getting this slow fallback would probably be 
+annoyed or complain about the performance instead of fixing the problem 
+by installing the right compiled version. It would also double the cost 
+of maintenance of the library. But a pure python implementation would be 
+convenient for verification of correctness and for documentation purposes.
+
+(Note: I don't understand your comments about being scriptable and a 
+command-line crypto workbench. That seems to be features related to 
+using Python, independent of which crypto library you use.)
+
+/Mads
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 3435 bytes
+Desc: S/MIME Cryptographic Signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090412/39e4e817/attachment.bin">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090412/39e4e817/attachment.bin</A> 
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000084.html">[pycrypto] Library design philosophy
+</A></li>
+	<LI>Next message: <A HREF="000086.html">[pycrypto] Library design philosophy
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#85">[ date ]</a>
+              <a href="thread.html#85">[ thread ]</a>
+              <a href="subject.html#85">[ subject ]</a>
+              <a href="author.html#85">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

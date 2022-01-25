@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Crypto.Cipher.blockalgo.BlockAlgo</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="Crypto-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a href="http://www.pycrypto.org/">PyCrypto.org</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="Crypto-module.html">Package&nbsp;Crypto</a> ::
+        <a href="Crypto.Cipher-module.html">Package&nbsp;Cipher</a> ::
+        <a href="Crypto.Cipher.blockalgo-module.html">Module&nbsp;blockalgo</a> ::
+        Class&nbsp;BlockAlgo
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="Crypto.Cipher.blockalgo.BlockAlgo-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class BlockAlgo</h1><p class="nomargin-top"></p>
+<dl><dt>Known Subclasses:</dt>
+<dd>
+      <ul class="subclass-list">
+<li><a href="Crypto.Cipher.ARC2.RC2Cipher-class.html">ARC2.RC2Cipher</a></li><li>, <a href="Crypto.Cipher.AES.AESCipher-class.html">AES.AESCipher</a></li><li>, <a href="Crypto.Cipher.DES.DESCipher-class.html">DES.DESCipher</a></li><li>, <a href="Crypto.Cipher.DES3.DES3Cipher-class.html">DES3.DES3Cipher</a></li><li>, <a href="Crypto.Cipher.CAST.CAST128Cipher-class.html">CAST.CAST128Cipher</a></li><li>, <a href="Crypto.Cipher.Blowfish.BlowfishCipher-class.html">Blowfish.BlowfishCipher</a></li>  </ul>
+</dd></dl>
+
+<hr />
+Class modelling an abstract block cipher.
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Instance Methods</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">factory</span>,
+        <span class="summary-sig-arg">key</span>,
+        <span class="summary-sig-arg">*args</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="Crypto.Cipher.blockalgo.BlockAlgo-class.html#encrypt" class="summary-sig-name">encrypt</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">plaintext</span>)</span><br />
+      Encrypt data with the key and the parameters set at initialization.</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="Crypto.Cipher.blockalgo.BlockAlgo-class.html#decrypt" class="summary-sig-name">decrypt</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">ciphertext</span>)</span><br />
+      Decrypt data with the key and the parameters set at initialization.</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Method Details</span></td>
+</tr>
+</table>
+<a name="encrypt"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">encrypt</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">plaintext</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Encrypt data with the key and the parameters set at initialization.</p>
+<p>The cipher object is stateful; encryption of a long block
+of data can be broken up in two or more calls to <a href="Crypto.Cipher.blockalgo.BlockAlgo-class.html#encrypt" class="link">encrypt()</a>.
+That is, the statement:</p>
+<blockquote>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>c.encrypt(a) + c.encrypt(b)</pre>
+</blockquote>
+<p>is always equivalent to:</p>
+<blockquote>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>c.encrypt(a+b)</pre>
+</blockquote>
+<p>That also means that you cannot reuse an object for encrypting
+or decrypting other data with the same key.</p>
+<p>This function does not perform any padding.</p>
+<blockquote>
+<ul class="rst-simple">
+<li>For <a href="Crypto.Cipher.blockalgo-module.html#MODE_ECB" class="link">MODE_ECB</a>, <a href="Crypto.Cipher.blockalgo-module.html#MODE_CBC" class="link">MODE_CBC</a>, and <a href="Crypto.Cipher.blockalgo-module.html#MODE_OFB" class="link">MODE_OFB</a>, <em>plaintext</em> length
+(in bytes) must be a multiple of <em>block_size</em>.</li>
+<li>For <a href="Crypto.Cipher.blockalgo-module.html#MODE_CFB" class="link">MODE_CFB</a>, <em>plaintext</em> length (in bytes) must be a multiple
+of <em>segment_size</em>/8.</li>
+<li>For <a href="Crypto.Cipher.blockalgo-module.html#MODE_CTR" class="link">MODE_CTR</a>, <em>plaintext</em> can be of any length.</li>
+<li>For <a href="Crypto.Cipher.blockalgo-module.html#MODE_OPENPGP" class="link">MODE_OPENPGP</a>, <em>plaintext</em> must be a multiple of <em>block_size</em>,
+unless it is the last chunk of the message.</li>
+</ul>
+</blockquote>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>plaintext</code></strong> (byte string) - The piece of data to encrypt.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>the encrypted data, as a byte string. It is as long as
+<em>plaintext</em> with one exception: when encrypting the first message
+chunk with <a href="Crypto.Cipher.blockalgo-module.html#MODE_OPENPGP" class="link">MODE_OPENPGP</a>, the encypted IV is prepended to the
+returned ciphertext.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="decrypt"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">decrypt</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">ciphertext</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Decrypt data with the key and the parameters set at initialization.</p>
+<p>The cipher object is stateful; decryption of a long block
+of data can be broken up in two or more calls to <a href="Crypto.Cipher.blockalgo.BlockAlgo-class.html#decrypt" class="link">decrypt()</a>.
+That is, the statement:</p>
+<blockquote>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>c.decrypt(a) + c.decrypt(b)</pre>
+</blockquote>
+<p>is always equivalent to:</p>
+<blockquote>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>c.decrypt(a+b)</pre>
+</blockquote>
+<p>That also means that you cannot reuse an object for encrypting
+or decrypting other data with the same key.</p>
+<p>This function does not perform any padding.</p>
+<blockquote>
+<ul class="rst-simple">
+<li>For <a href="Crypto.Cipher.blockalgo-module.html#MODE_ECB" class="link">MODE_ECB</a>, <a href="Crypto.Cipher.blockalgo-module.html#MODE_CBC" class="link">MODE_CBC</a>, and <a href="Crypto.Cipher.blockalgo-module.html#MODE_OFB" class="link">MODE_OFB</a>, <em>ciphertext</em> length
+(in bytes) must be a multiple of <em>block_size</em>.</li>
+<li>For <a href="Crypto.Cipher.blockalgo-module.html#MODE_CFB" class="link">MODE_CFB</a>, <em>ciphertext</em> length (in bytes) must be a multiple
+of <em>segment_size</em>/8.</li>
+<li>For <a href="Crypto.Cipher.blockalgo-module.html#MODE_CTR" class="link">MODE_CTR</a>, <em>ciphertext</em> can be of any length.</li>
+<li>For <a href="Crypto.Cipher.blockalgo-module.html#MODE_OPENPGP" class="link">MODE_OPENPGP</a>, <em>plaintext</em> must be a multiple of <em>block_size</em>,
+unless it is the last chunk of the message.</li>
+</ul>
+</blockquote>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>ciphertext</code></strong> (byte string) - The piece of data to decrypt.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>the decrypted data (byte string, as long as <em>ciphertext</em>).</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="Crypto-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a href="http://www.pycrypto.org/">PyCrypto.org</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu May 24 09:02:37 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

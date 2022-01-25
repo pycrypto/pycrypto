@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Need your input: Major modernization; dropping legacy Python support?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Need%20your%20input%3A%20Major%20modernization%3B%0A%20dropping%20legacy%20Python%20support%3F&In-Reply-To=%3C20140702001659.GB4351%40rivest.dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000815.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Need your input: Major modernization; dropping legacy Python support?</H1>
+    <B>Dwayne Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Need%20your%20input%3A%20Major%20modernization%3B%0A%20dropping%20legacy%20Python%20support%3F&In-Reply-To=%3C20140702001659.GB4351%40rivest.dlitz.net%3E"
+       TITLE="[pycrypto] Need your input: Major modernization; dropping legacy Python support?">dlitz at dlitz.net
+       </A><BR>
+    <I>Tue Jul  1 17:16:59 PDT 2014</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000815.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#814">[ date ]</a>
+              <a href="thread.html#814">[ thread ]</a>
+              <a href="subject.html#814">[ subject ]</a>
+              <a href="author.html#814">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Feb 22, 2014 at 09:50:50PM +0100, Sebastian Ramacher wrote:
+&gt;<i>On 2014-02-06 09:51:39, Dwayne Litzenberger wrote:
+</I>&gt;&gt;<i> I'm thinking of merging with the folks at <A HREF="https://cryptography.io/,">https://cryptography.io/,</A>
+</I>&gt;&gt;<i> which is covered by an Apache 2.0 license.
+</I>&gt;<i>
+</I>&gt;<i>What is the merge going to look like?
+</I>
+The idea is to remove most of the redundancy between PyCrypto and 
+Cryptography, and combine the two communities that maintain them, so 
+that we have more eyes looking at less code, and it should remove me as 
+the bottleneck in all PyCrypto development.
+
+PyCrypto would provide the Crypto.* API using the Cryptography framework 
+under the hood.  The Cryptography API is divided into high-level Python 
+APIs, and native cipher backends that are pluggable (at least in theory) 
+and accessed using cffi.
+
+Currently, only an OpenSSL backend is actually implemented, which 
+creates a licensing issue for GPLv2-only software, but we could probably 
+put together a backend using either the existing PyCrypto code, or maybe 
+something like libtomcrypt or libgcrypt.
+
+I'm also talking with the Cryptography folks about ways we can resolve 
+the GPLv2-incompatibility of Cryptography itself.  I'll have more on 
+that later.
+
+Cheers,
+ - Dwayne
+
+[1] <A HREF="https://github.com/pyca/cryptography">https://github.com/pyca/cryptography</A>
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 222 bytes
+Desc: Digital signature
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20140701/03892ea2/attachment.sig">http://lists.dlitz.net/pipermail/pycrypto/attachments/20140701/03892ea2/attachment.sig</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000815.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#814">[ date ]</a>
+              <a href="thread.html#814">[ thread ]</a>
+              <a href="subject.html#814">[ subject ]</a>
+              <a href="author.html#814">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

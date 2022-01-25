@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] _fastmath None !!
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20_fastmath%20None%20%21%21&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000238.html">
+   <LINK REL="Next"  HREF="000240.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] _fastmath None !!</H1>
+    <B>jd</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20_fastmath%20None%20%21%21&In-Reply-To="
+       TITLE="[pycrypto] _fastmath None !!">jdsw2002 at yahoo.com
+       </A><BR>
+    <I>Mon May 17 08:48:13 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000238.html">[pycrypto] Question about AES-NI support
+</A></li>
+        <LI>Next message: <A HREF="000240.html">[pycrypto] _fastmath None !!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#239">[ date ]</a>
+              <a href="thread.html#239">[ thread ]</a>
+              <a href="subject.html#239">[ subject ]</a>
+              <a href="author.html#239">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Guys
+    I am serializing the pycrypto keys using pickle.. as suggested in one of recent posts. It is working fine, but giving following problem on cenos 5.1. (stack at the bottom of email)
+
+'NoneType' object has no attribute 'rsa_construct'
+
+
+    I looked at the code.. it seems while constructing _fastmath is used. Any workarounds / fixes ? I do not think changing to saving tuple would help as it would also need to use __setstate__.. 
+
+Help is greatly appreciated.
+Thanks
+/Jd
+
+File &quot;/tg2env/bin/paster&quot;, line 7, in ?
+    sys.exit(
+  File &quot;/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py&quot;, line 84, in run
+    invoke(command, command_name, options, args[1:])
+  File &quot;/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py&quot;, line 123, in invoke
+    exit_code = runner.run(args)
+  File &quot;/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py&quot;, line 218, in run
+    result = self.command()
+  File &quot;/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py&quot;, line 276, in command
+    relative_to=base, global_conf=vars)
+  File &quot;/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py&quot;, line 311, in loadapp
+    return loadapp(
+  File &quot;/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py&quot;, line 204, in loadapp
+    return loadobj(APP, uri, name=name, **kw)
+  File &quot;/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py&quot;, line 225, in loadobj
+    return context.create()
+  File &quot;/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py&quot;, line 625, in create
+    return self.object_type.invoke(self)
+  File &quot;/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py&quot;, line 110, in invoke
+    return fix_call(context.object, context.global_conf, **context.local_conf)
+  File &quot;/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/util/fixtypeerror.py&quot;, line 57, in fix_call
+    val = callable(*args, **kw)
+  File &quot;/m2svn/trunk/src/app/web/app/app/config/middleware.py&quot;, line 46, in make_app
+    if verify_license():
+  File &quot;/m2svn/trunk/src/app/web/app/app/core/utils/utils.py&quot;, line 2221, in verify_license
+    l_info = read_license_using_embeded(license_file)
+  File &quot;/m2svn/trunk/src/app/web/app/app/core/utils/utils.py&quot;, line 2202, in read_license_using_embeded
+    pub_key =get_embeded_key()
+  File &quot;/m2svn/trunk/src/app/web/app/app/core/utils/utils.py&quot;, line 2197, in get_embeded_key
+    key = pickle.loads(str)
+  File &quot;/usr/lib64/python2.4/pickle.py&quot;, line 1394, in loads
+    return Unpickler(file).load()
+  File &quot;/usr/lib64/python2.4/pickle.py&quot;, line 872, in load
+    dispatch[key](self)
+  File &quot;/usr/lib64/python2.4/pickle.py&quot;, line 1237, in load_build
+    setstate(state)
+  File &quot;build/bdist.linux-x86_64/egg/Crypto/PublicKey/RSA.py&quot;, line 171, in __setstate__
+AttributeError: 'NoneType' object has no attribute 'rsa_construct'
+
+
+      
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000238.html">[pycrypto] Question about AES-NI support
+</A></li>
+	<LI>Next message: <A HREF="000240.html">[pycrypto] _fastmath None !!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#239">[ date ]</a>
+              <a href="thread.html#239">[ thread ]</a>
+              <a href="subject.html#239">[ subject ]</a>
+              <a href="author.html#239">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

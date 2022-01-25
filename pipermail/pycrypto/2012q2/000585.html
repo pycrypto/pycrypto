@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] documentation for PKCS1_PSS.py is incorrect, plus minor issue w/ _slowmath.py
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20documentation%20for%20PKCS1_PSS.py%20is%20incorrect%2C%0A%20plus%20minor%20issue%20w/%20_slowmath.py&In-Reply-To=%3C010EF8E44879B2468C96768709C743D21CE6476CA4%40EXCHANGE.rambus.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000584.html">
+   <LINK REL="Next"  HREF="000586.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] documentation for PKCS1_PSS.py is incorrect, plus minor issue w/ _slowmath.py</H1>
+    <B>Gurney, John-Mark</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20documentation%20for%20PKCS1_PSS.py%20is%20incorrect%2C%0A%20plus%20minor%20issue%20w/%20_slowmath.py&In-Reply-To=%3C010EF8E44879B2468C96768709C743D21CE6476CA4%40EXCHANGE.rambus.com%3E"
+       TITLE="[pycrypto] documentation for PKCS1_PSS.py is incorrect, plus minor issue w/ _slowmath.py">john-mark at cryptography.com
+       </A><BR>
+    <I>Wed May 23 13:48:03 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000584.html">[pycrypto] Generating a public/private key pair from a	passphrase
+</A></li>
+        <LI>Next message: <A HREF="000586.html">[pycrypto] documentation for PKCS1_PSS.py is incorrect, plus minor issue w/ _slowmath.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#585">[ date ]</a>
+              <a href="thread.html#585">[ thread ]</a>
+              <a href="subject.html#585">[ subject ]</a>
+              <a href="author.html#585">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE><A HREF="https://github.com/dlitz/pycrypto/blob/master/lib/Crypto/Signature/PKCS1_PSS.py">https://github.com/dlitz/pycrypto/blob/master/lib/Crypto/Signature/PKCS1_PSS.py</A>
+
+In the file on lines 41 &amp; 42 it has:
+&gt;&gt;&gt;<i> signer = PKCS1_PSS.new(key)
+</I>&gt;&gt;&gt;<i> signature = PKCS1_PSS.sign(key)
+</I>
+The second line is incorrect.  It should be:
+&gt;&gt;&gt;<i> signature = signer.sign(h)
+</I>
+Oh, there is also a bogus assertion in _slowmath.py:
+<A HREF="https://github.com/dlitz/pycrypto/blob/master/lib/Crypto/PublicKey/_slowmath.py">https://github.com/dlitz/pycrypto/blob/master/lib/Crypto/PublicKey/_slowmath.py</A>
+
+On line 85, it asserts that e is long.  If you have an e of 3, it is reasonable for e to be a normal int, and not a long.  Maybe the asserts should be changed to:
+n = long(n)
+e = long(e)
+
+So that python will convert the types properly.
+
+Thanks.
+
+-- 
+John-Mark Gurney
+Cryptography Research a division of Rambus
++1 415 397 0123 x4332
+
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000584.html">[pycrypto] Generating a public/private key pair from a	passphrase
+</A></li>
+	<LI>Next message: <A HREF="000586.html">[pycrypto] documentation for PKCS1_PSS.py is incorrect, plus minor issue w/ _slowmath.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#585">[ date ]</a>
+              <a href="thread.html#585">[ thread ]</a>
+              <a href="subject.html#585">[ subject ]</a>
+              <a href="author.html#585">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

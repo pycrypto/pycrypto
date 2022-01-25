@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] keyrings.cryptfile released on github
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20keyrings.cryptfile%20released%20on%20github&In-Reply-To=%3C4839007.k4Tbcrq13J%40xrated%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <LINK REL="Previous"  HREF="000896.html">
+   <LINK REL="Next"  HREF="000898.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] keyrings.cryptfile released on github</H1>
+    <B>Hans-Peter Jansen</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20keyrings.cryptfile%20released%20on%20github&In-Reply-To=%3C4839007.k4Tbcrq13J%40xrated%3E"
+       TITLE="[pycrypto] keyrings.cryptfile released on github">hpj at urpla.net
+       </A><BR>
+    <I>Fri Mar 10 10:49:24 UTC 2017</I>
+    <P><UL>
+        <LI>Previous message (by thread): <A HREF="000896.html">[pycrypto] keyrings.cryptfile released on github
+</A></li>
+        <LI>Next message (by thread): <A HREF="000898.html">[pycrypto] Build error, 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#897">[ date ]</a>
+              <a href="thread.html#897">[ thread ]</a>
+              <a href="subject.html#897">[ subject ]</a>
+              <a href="author.html#897">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Donnerstag, 9. März 2017 23:09:09 ng0 wrote:
+&gt;<i> Hans-Peter Jansen transcribed 3.8K bytes:
+</I>&gt;<i> &gt; Hi,
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; since the PyCrypto ML is dead, I'm looking for advise/feedback from some
+</I>&gt;<i> &gt; cryptography aware people.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; I've released a keyring companion package today:
+</I>&gt;<i> &gt; 	<A HREF="https://github.com/frispete/keyrings.cryptfile">https://github.com/frispete/keyrings.cryptfile</A>
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Its primary purpose is a decent encrypted file backend for python
+</I>&gt;<i> &gt; keyrings.
+</I>&gt;<i> &gt; As such, it uses manually parameterized argon2 hashes as KDF, and AES in
+</I>&gt;<i> &gt; OCB mode as stream cipher (well, it just encrypts the password for a
+</I>&gt;<i> &gt; given service/user name). Granted, the advantages of OCB are not /that/
+</I>&gt;<i> &gt; crucial here :wink:, but apart from technical factors, the exclusion of
+</I>&gt;<i> &gt; military uses
+</I>&gt;<i> I was looking for some proprietary EULA or something else locked down
+</I>&gt;<i> license and instead just saw the Expat license.
+</I>
+Don't get you here. Yes, the package contains just a MIT license file for now. 
+
+&gt;<i> I assume that you are
+</I>&gt;<i> aware that no anti-mil clause exists in co-existence with free software
+</I>&gt;<i> licenses
+</I>&gt;<i> and your sentence was just written in an
+</I>&gt;<i> odd way?
+</I>
+First, bear with me, as I'm not a native speaker. Sometimes, my expressions 
+tend to confuse people. I'm sorry about that. Second, I'm not a lawyer.
+
+As long as I use OCB in OSS and does not sue somebody else about it, License 1 
+is granted, if I read the OCB license options correctly [1]. Anyway, I will 
+add the OCB license to the package and add a note in the initial password 
+retrieval dialog about it..
+
+In this projects state, I would like to discuss the technical issues first.
+&lt;OT&gt; As said, I sympathize with the idea of the license, since I personally 
+believe, that military conflicts doesn't solve any problems, but many todays 
+problems originate from them.&lt;/OT&gt;
+
+[1] <A HREF="http://web.cs.ucdavis.edu/~rogaway/ocb/license.htm">http://web.cs.ucdavis.edu/~rogaway/ocb/license.htm</A>
+
+&gt;<i> &gt; by its license is rather *attractive* from my POV(!). But I'm open for
+</I>&gt;<i> &gt; discussions of course.
+</I>
+Cheers,
+Pete
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message (by thread): <A HREF="000896.html">[pycrypto] keyrings.cryptfile released on github
+</A></li>
+	<LI>Next message (by thread): <A HREF="000898.html">[pycrypto] Build error, 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#897">[ date ]</a>
+              <a href="thread.html#897">[ thread ]</a>
+              <a href="subject.html#897">[ subject ]</a>
+              <a href="author.html#897">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

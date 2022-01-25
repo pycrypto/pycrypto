@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] the sad state of pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=49162D96.2070509%40kiilerich.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000036.html">
+   <LINK REL="Next"  HREF="000038.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] the sad state of pycrypto</H1>
+    <B>zooko</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=49162D96.2070509%40kiilerich.com"
+       TITLE="[pycrypto] the sad state of pycrypto">zooko at zooko.com
+       </A><BR>
+    <I>Sat Nov  8 20:35:53 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000036.html">[pycrypto] the sad state of pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000038.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#37">[ date ]</a>
+              <a href="thread.html#37">[ thread ]</a>
+              <a href="subject.html#37">[ subject ]</a>
+              <a href="author.html#37">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Nov 8, 2008, at 17:23 PM, Mads Kiilerich wrote:
+
+&gt;<i> If you like Crypto++ then why not use it with an appropriate  
+</I>&gt;<i> wrapper? Why not use Zookos pycryptopp? Only because of the licensing?
+</I>
+Pycryptopp [1] offers only a few algorithms -- just the ones we need  
+for the Tahoe project [2] and whatever the Beaker coders asked for  
+[3]: SHA-256, AES, RSA-PSS, and (not quite working right yet) ECDSA.
+
+I would be willing to entertain the prospect of adding wrappers for  
+other algorithms from Crypto++ for other people's use, especially if  
+this increased the chance of other people helping me to audit, test,  
+debug, port, and maintain pycryptopp.
+
+Another option would be to use a code generation tool like SWIG or  
+Boost.Python to create Python interfaces to the full Crypto++ API.   
+This is in contrast to the current pycryptopp approach, which is hand- 
+coded C++ wrapper code.
+
+Regards,
+
+Zooko
+
+[1] <A HREF="http://allmydata.org/trac/pycryptopp">http://allmydata.org/trac/pycryptopp</A>
+[2] <A HREF="http://allmydata.org">http://allmydata.org</A>
+
+---
+<A HREF="http://allmydata.org">http://allmydata.org</A> -- Tahoe, the Least-Authority Filesystem
+<A HREF="http://allmydata.com">http://allmydata.com</A> -- back up all your files for $10/month
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000036.html">[pycrypto] the sad state of pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000038.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#37">[ date ]</a>
+              <a href="thread.html#37">[ thread ]</a>
+              <a href="subject.html#37">[ subject ]</a>
+              <a href="author.html#37">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

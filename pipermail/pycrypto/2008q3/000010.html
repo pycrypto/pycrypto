@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Bug in Crypto.PublicKey.RSA?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000009.html">
+   <LINK REL="Next"  HREF="000011.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Bug in Crypto.PublicKey.RSA?</H1>
+    <B>Bill Broadley</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To="
+       TITLE="[pycrypto] Bug in Crypto.PublicKey.RSA?">bill at broadley.org
+       </A><BR>
+    <I>Sun Sep  7 23:48:49 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000009.html">[pycrypto] [PATCH] Support for TEA
+</A></li>
+        <LI>Next message: <A HREF="000011.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#10">[ date ]</a>
+              <a href="thread.html#10">[ thread ]</a>
+              <a href="subject.html#10">[ subject ]</a>
+              <a href="author.html#10">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Shouldn't RSA.generate(keysize, rpool.get_bytes) generate a key that is
+keysize bits and that can encrypt that many bits?
+
+I generated a 10MB file with:
+dd if=/dev/urandom of=10MB bs=1024 count=10240
+
+Then used this piece of code:
+
+from Crypto.PublicKey import RSA
+from Crypto.Util.randpool import RandomPool
+
+rpool = RandomPool()
+keysize=368
+privkeyA = RSA.generate(keysize, rpool.get_bytes)
+pubkeyA = privkeyA.publickey()
+print privkeyA.size();
+myfile = open(&quot;10MB&quot;,mode=&quot;rb&quot;)
+buff=myfile.read(keysize/8)
+print len(buff)
+block1 = pubkeyA.encrypt(buff, '')
+
+Sometimes it works:
+$ python pk.py
+367
+46
+
+Sometimes it doesn't (on the same 10MB file):
+$ python pk.py
+367
+46
+Traceback (most recent call last):
+   File &quot;pk.py&quot;, line 17, in &lt;module&gt;
+     block2 = pubkeyA.encrypt(buff, '')
+   File &quot;/usr/lib/python2.5/site-packages/Crypto/PublicKey/pubkey.py&quot;, line
+50, in encrypt
+     ciphertext=self._encrypt(plaintext, K)
+   File &quot;/usr/lib/python2.5/site-packages/Crypto/PublicKey/RSA.py&quot;, line 91,
+in _encrypt
+     raise error, 'Plaintext too large'
+Crypto.PublicKey.RSA.error: Plaintext too large
+
+I believe ssh had a bug like this, if the first bit of the key was zero the
+resulting key was half as big as asked for.  I guess I could always specify
+the key to be one bit bigger than I need, but it seems like to encrypt N bytes
+that the key should need to be N*8 and should always work.
+
+Am I missing anything?  I didn't see anything in my googling (I did find many
+folks with the plaintext too large error) or on the pydoc page.
+
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000009.html">[pycrypto] [PATCH] Support for TEA
+</A></li>
+	<LI>Next message: <A HREF="000011.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#10">[ date ]</a>
+              <a href="thread.html#10">[ thread ]</a>
+              <a href="subject.html#10">[ subject ]</a>
+              <a href="author.html#10">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

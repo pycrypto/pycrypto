@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] How can I read a standard openssl private key with	PyCrypto and decrypt with it?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20How%20can%20I%20read%20a%20standard%20openssl%20private%20key%20with%0A%09PyCrypto%20and%20decrypt%20with%20it%3F&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000110.html">
+   <LINK REL="Next"  HREF="000112.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] How can I read a standard openssl private key with	PyCrypto and decrypt with it?</H1>
+    <B>William Heath</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20How%20can%20I%20read%20a%20standard%20openssl%20private%20key%20with%0A%09PyCrypto%20and%20decrypt%20with%20it%3F&In-Reply-To="
+       TITLE="[pycrypto] How can I read a standard openssl private key with	PyCrypto and decrypt with it?">wgheath at gmail.com
+       </A><BR>
+    <I>Tue Aug 18 19:07:53 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000110.html">[pycrypto] ANN: PyCrypto 2.1.0 alpha 1 released
+</A></li>
+        <LI>Next message: <A HREF="000112.html">[pycrypto] How can I read a standard openssl private key	with	PyCrypto and decrypt with it?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#111">[ date ]</a>
+              <a href="thread.html#111">[ thread ]</a>
+              <a href="subject.html#111">[ subject ]</a>
+              <a href="author.html#111">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi All,
+
+
+I generated a private key with:
+
+
+openssl.exe req -x509 -nodes -days 365 -newkey rsa:1024 -keyout
+sdgidfedapp11.corp.intuit.net.key -out sdgidfedapp11.corp.intuit.net.crt
+
+
+I can't figure out is how to use PyCrypto.RSA.construct with it
+
+to decrypt something.  This works however:
+
+
+from M2Crypto import RSA
+
+
+priv_key = RSA.load_key('private.key', get_password)
+
+
+decrypted_key = priv_key.private_decrypt(base64.b64decode(enc_key),
+RSA.pkcs1
+
+_padding)
+
+
+I am sure there is a way to do this with PyCrypto, anyone know how to do it?
+
+
+-Tim
+
+
+P.S.
+
+
+Thanks for this awsome library, especially on google appe engine!
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090818/8fdcf767/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090818/8fdcf767/attachment.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000110.html">[pycrypto] ANN: PyCrypto 2.1.0 alpha 1 released
+</A></li>
+	<LI>Next message: <A HREF="000112.html">[pycrypto] How can I read a standard openssl private key	with	PyCrypto and decrypt with it?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#111">[ date ]</a>
+              <a href="thread.html#111">[ thread ]</a>
+              <a href="subject.html#111">[ subject ]</a>
+              <a href="author.html#111">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

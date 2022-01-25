@@ -1,0 +1,48 @@
+>From ee47f939fead6cfeac81e799a407dd4bd9278e75 Mon Sep 17 00:00:00 2001
+From: Sebastian Ramacher <s.ramacher@gmx.at>
+Date: Sat, 29 Oct 2011 18:20:01 +0200
+Subject: [PATCH 1/2] Run build_configure from build_ext.
+
+When installing with easy_install build_ext ist called directly. Thus we have to
+ensure that build_configure is run before we're building the extensions in
+build_ext.
+---
+ setup.py |   11 ++++++++---
+ 1 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index 0f1ef01..13dda2d 100644
+--- a/setup.py
++++ b/setup.py
+@@ -287,12 +287,17 @@ class PCTBuildExt (build_ext):
+             f.close()
+         return result
+ 
+-class PCTBuild(build):
++    def run(self):
++        for cmd_name in self.get_sub_commands():
++            self.run_command(cmd_name)
++        
++        build_ext.run(self)
++
+     def has_configure(self):
+         compiler = new_compiler(compiler=self.compiler)
+         return compiler.compiler_type != 'msvc'
+ 
+-    sub_commands = [ ('build_configure', has_configure) ] + build.sub_commands
++    sub_commands = [ ('build_configure', has_configure) ] + build_ext.sub_commands
+ 
+ class PCTBuildConfigure(Command):
+     description = "Generate config.h using ./configure (autoconf)"
+@@ -384,7 +389,7 @@ kw = {'name':"pycrypto",
+       'author_email':"dlitz@dlitz.net",
+       'url':"http://www.pycrypto.org/",
+ 
+-      'cmdclass' : {'build': PCTBuild, 'build_configure': PCTBuildConfigure, 'build_ext':PCTBuildExt, 'build_py': PCTBuildPy, 'test': TestCommand },
++      'cmdclass' : {'build_configure': PCTBuildConfigure, 'build_ext': PCTBuildExt, 'build_py': PCTBuildPy, 'test': TestCommand },
+       'packages' : ["Crypto", "Crypto.Hash", "Crypto.Cipher", "Crypto.Util",
+                   "Crypto.Random",
+                   "Crypto.Random.Fortuna",
+-- 
+1.7.7.1
+

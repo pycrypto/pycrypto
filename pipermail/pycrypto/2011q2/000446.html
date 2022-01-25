@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] PyCrypto 2.3 and unicode
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%202.3%20and%20unicode&In-Reply-To=BANLkTinOwabrerhEHYHi3B30StzQJKFPiw%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000445.html">
+   <LINK REL="Next"  HREF="000447.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] PyCrypto 2.3 and unicode</H1>
+    <B>Lorenz Quack</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%202.3%20and%20unicode&In-Reply-To=BANLkTinOwabrerhEHYHi3B30StzQJKFPiw%40mail.gmail.com"
+       TITLE="[pycrypto] PyCrypto 2.3 and unicode">don at amberfisharts.com
+       </A><BR>
+    <I>Mon May 16 13:54:35 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000445.html">[pycrypto] PyCrypto 2.3 and unicode
+</A></li>
+        <LI>Next message: <A HREF="000447.html">[pycrypto] PyCrypto 2.3 and unicode
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#446">[ date ]</a>
+              <a href="thread.html#446">[ thread ]</a>
+              <a href="subject.html#446">[ subject ]</a>
+              <a href="author.html#446">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Thomas,
+
+what about either:
+
+blah=foo.decrypt(baz).decode(&quot;utf-8&quot;)
+
+or
+
+blah=unicode(foo.decrypt(baz), &quot;utf-8&quot;)
+
+cheers,
+Lorenz
+
+On 05/16/2011 09:18 PM, Thomas Knox wrote:
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> I'm building an application in Python 2.7.1 using PyCrypto 2.3, and it's behaving badly with utf-8 and utf-16 strings.
+</I>&gt;<i> For example:
+</I>&gt;<i>
+</I>&gt;<i> from Crypto.Cipher import AES
+</I>&gt;<i> foo = AES.new('a1b2c3d4e5f6g7h8', AES.MODE_ECB)
+</I>&gt;<i> bar=u''
+</I>&gt;<i> for i in range(0,16):
+</I>&gt;<i>      bar+=unichr(255)
+</I>&gt;<i> # At this point, bar is
+</I>&gt;<i> # u'\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff'
+</I>&gt;<i> baz=foo.encrypt(bar.encode('utf-8'))
+</I>&gt;<i> blah=foo.decrypt(baz)
+</I>&gt;<i> # baz is now
+</I>&gt;<i> #
+</I>&gt;<i> '\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf'
+</I>&gt;<i>
+</I>&gt;<i> How can I get encrypt and decrypt to use UTF gracefully?
+</I>&gt;<i>
+</I>&gt;<i> Thank you,
+</I>&gt;<i> Tom
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000445.html">[pycrypto] PyCrypto 2.3 and unicode
+</A></li>
+	<LI>Next message: <A HREF="000447.html">[pycrypto] PyCrypto 2.3 and unicode
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#446">[ date ]</a>
+              <a href="thread.html#446">[ thread ]</a>
+              <a href="subject.html#446">[ subject ]</a>
+              <a href="author.html#446">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Possible problem in src/_fastmath.c
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Possible%20problem%20in%20src/_fastmath.c&In-Reply-To=20081015202941.GA8072%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000022.html">
+   <LINK REL="Next"  HREF="000024.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Possible problem in src/_fastmath.c</H1>
+    <B>Sergey Chernov</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Possible%20problem%20in%20src/_fastmath.c&In-Reply-To=20081015202941.GA8072%40rivest.dlitz.net"
+       TITLE="[pycrypto] Possible problem in src/_fastmath.c">sergey.chernov at thrift.ru
+       </A><BR>
+    <I>Wed Oct 15 17:39:29 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000022.html">[pycrypto] PyCrypto release plans
+</A></li>
+        <LI>Next message: <A HREF="000024.html">[pycrypto] Possible problem in src/_fastmath.c
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#23">[ date ]</a>
+              <a href="thread.html#23">[ thread ]</a>
+              <a href="subject.html#23">[ subject ]</a>
+              <a href="author.html#23">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>See patch:
+----------------------------------------------------------------------------
+diff --git a/src/_fastmath.c b/src/_fastmath.c
+index d06d697..a0aa181 100755
+--- a/src/_fastmath.c
++++ b/src/_fastmath.c
+@@ -28,6 +28,7 @@ longObjToMPZ (mpz_t m, PyLongObject * p)
+ 		size = p-&gt;ob_size;
+ 	else
+ 		size = -p-&gt;ob_size;
++	mpz_clear( m );
+ 	for (i = 0; i &lt; size; i++)
+ 	{
+ 		mpz_set_ui (temp, p-&gt;ob_digit[i]);
+----------------------------------------------------------------------------
+
+Current usage do not discover the bug as 'm' is always just-initialized.
+Still it, as I think, may cause trouble later.
+
+
+-----Original Message-----
+From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>
+[mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>] On Behalf Of Dwayne C.
+Litzenberger
+Sent: Thursday, October 16, 2008 12:30 AM
+To: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+Subject: Re: [pycrypto] PyCrypto release plans
+
+On Tue, Oct 14, 2008 at 06:07:12PM -0400, Dwayne C. Litzenberger wrote:
+&gt;<i> Here's a quick overview of my plans for future PyCrypto releases:
+</I>&gt;<i>
+</I>&gt;<i> - The current source tree will become the 2.1.x branch.
+</I>
+Accordingly, I have moved the git repository from:
+
+     <A HREF="git://git.pycrypto.org:9419/crypto/pycrypto-2.0.x.git">git://git.pycrypto.org:9419/crypto/pycrypto-2.0.x.git</A>
+to
+     <A HREF="git://git.pycrypto.org:9419/crypto/pycrypto-2.x.git">git://git.pycrypto.org:9419/crypto/pycrypto-2.x.git</A>
+
+Please update your working copies.  I updated mine by editing my .git/config
+file.
+
+Cheers,
+  - Dwayne
+
+--
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000022.html">[pycrypto] PyCrypto release plans
+</A></li>
+	<LI>Next message: <A HREF="000024.html">[pycrypto] Possible problem in src/_fastmath.c
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#23">[ date ]</a>
+              <a href="thread.html#23">[ thread ]</a>
+              <a href="subject.html#23">[ subject ]</a>
+              <a href="author.html#23">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] configure, PATH, and setup.py
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20configure%2C%20PATH%2C%20and%20setup.py&In-Reply-To=%3CCA%2B4wmqzzHeLQ3seqyXqp9-eKJmsUHf7T8B1r-C5XQurLFEJ9rg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000788.html">
+   <LINK REL="Next"  HREF="000790.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] configure, PATH, and setup.py</H1>
+    <B>Robin Jarry</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20configure%2C%20PATH%2C%20and%20setup.py&In-Reply-To=%3CCA%2B4wmqzzHeLQ3seqyXqp9-eKJmsUHf7T8B1r-C5XQurLFEJ9rg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] configure, PATH, and setup.py">robin.jarry at 6wind.com
+       </A><BR>
+    <I>Thu Apr  3 00:18:50 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000788.html">[pycrypto] configure, PATH, and setup.py
+</A></li>
+        <LI>Next message: <A HREF="000790.html">[pycrypto] configure, PATH, and setup.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#789">[ date ]</a>
+              <a href="thread.html#789">[ thread ]</a>
+              <a href="subject.html#789">[ subject ]</a>
+              <a href="author.html#789">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello John,
+
+This sounded weird so I ran some tests. If you have a &lt;script&gt; in the
+current directory (even if &quot;.&quot; is not in the PATH) it has priority when
+calling it with sh &lt;script&gt;.
+
+*<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">robin at tom</A>:~$ path*
+/home/robin/bin
+/usr/local/bin
+/usr/bin
+/bin
+*<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">robin at tom</A>:~$ which test*
+test is /usr/local/bin/test
+*<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">robin at tom</A>:~$ cat /usr/local/bin/test*
+#!/bin/sh
+echo &quot;IN PATH&quot;
+*<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">robin at tom</A>:~$ cat ~/test*
+#!/bin/sh
+echo &quot;LOCAL&quot;
+*<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">robin at tom</A>:~$ test*
+IN PATH
+*<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">robin at tom</A>:~$ ./test*
+LOCAL
+*<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">robin at tom</A>:~$ sh test*
+LOCAL
+
+Maybe you are experiencing another problem.
+
+Robin
+
+
+On Wed, Apr 2, 2014 at 10:17 PM, John Palmieri &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">jhpalmieri64 at gmail.com</A>&gt;wrote:
+
+&gt;<i> I have a patch to suggest. Both on a linux system and an OS X system that
+</I>&gt;<i> I have access to, if my PATH contains another script called &quot;configure&quot;,
+</I>&gt;<i> then pycrypto fails to configure properly, because the line &quot;sh configure&quot;
+</I>&gt;<i> finds that other configure script rather than the pycrypto one. So could
+</I>&gt;<i> that command be changed? For example:
+</I>&gt;<i>
+</I>&gt;<i> $ git diff
+</I>&gt;<i> diff --git a/setup.py b/setup.py
+</I>&gt;<i> index 5269e9d..950d352 100644
+</I>&gt;<i> --- a/setup.py
+</I>&gt;<i> +++ b/setup.py
+</I>&gt;<i> @@ -308,7 +308,7 @@ class PCTBuildConfigure(Command):
+</I>&gt;<i>                  os.chmod(&quot;configure&quot;, stat.S_IRUSR | stat.S_IWUSR |
+</I>&gt;<i>                           stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP |
+</I>&gt;<i>                           stat.S_IROTH | stat.S_IXOTH)
+</I>&gt;<i> -            cmd = &quot;sh configure&quot;    # we use &quot;sh&quot; here so that it'll work
+</I>&gt;<i> on mingw32 with standard python.org binaries
+</I>&gt;<i> +            cmd = &quot;sh ./configure&quot;   # we use &quot;sh&quot; here so that it'll
+</I>&gt;<i> work on mingw32 with standard python.org binaries
+</I>&gt;<i>              if self.verbose &lt; 1:
+</I>&gt;<i>                  cmd += &quot; -q&quot;
+</I>&gt;<i>              if os.system(cmd) != 0:
+</I>&gt;<i>
+</I>&gt;<i> or (maybe more portable):
+</I>&gt;<i>
+</I>&gt;<i> $ git diff
+</I>&gt;<i> diff --git a/setup.py b/setup.py
+</I>&gt;<i> index 5269e9d..77fb2b0 100644
+</I>&gt;<i> --- a/setup.py
+</I>&gt;<i> +++ b/setup.py
+</I>&gt;<i> @@ -308,7 +308,7 @@ class PCTBuildConfigure(Command):
+</I>&gt;<i>                  os.chmod(&quot;configure&quot;, stat.S_IRUSR | stat.S_IWUSR |
+</I>&gt;<i>                           stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP |
+</I>&gt;<i>                           stat.S_IROTH | stat.S_IXOTH)
+</I>&gt;<i> -            cmd = &quot;sh configure&quot;    # we use &quot;sh&quot; here so that it'll work
+</I>&gt;<i> on mingw32 with standard python.org binaries
+</I>&gt;<i> +            cmd = &quot;sh %s&quot; % (os.path.join(os.curdir, 'configure'))   # we
+</I>&gt;<i> use &quot;sh&quot; here so that it'll work on mingw32 w
+</I>&gt;<i>              if self.verbose &lt; 1:
+</I>&gt;<i>                  cmd += &quot; -q&quot;
+</I>&gt;<i>              if os.system(cmd) != 0:
+</I>&gt;<i>
+</I>&gt;<i> I have no experience with Windows, for example, so I don't know how
+</I>&gt;<i> portable this kind of change would be.
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> John H. Palmieri
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20140403/d4508367/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20140403/d4508367/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000788.html">[pycrypto] configure, PATH, and setup.py
+</A></li>
+	<LI>Next message: <A HREF="000790.html">[pycrypto] configure, PATH, and setup.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#789">[ date ]</a>
+              <a href="thread.html#789">[ thread ]</a>
+              <a href="subject.html#789">[ subject ]</a>
+              <a href="author.html#789">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

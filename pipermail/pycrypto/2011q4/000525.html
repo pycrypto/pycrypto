@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] import/export for DSA keys
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20import/export%20for%20DSA%20keys&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000524.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] import/export for DSA keys</H1>
+    <B>Hans-Christoph Steiner</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20import/export%20for%20DSA%20keys&In-Reply-To="
+       TITLE="[pycrypto] import/export for DSA keys">hans at guardianproject.info
+       </A><BR>
+    <I>Tue Dec 20 11:59:30 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000524.html">[pycrypto] import/export for DSA keys
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#525">[ date ]</a>
+              <a href="thread.html#525">[ thread ]</a>
+              <a href="subject.html#525">[ subject ]</a>
+              <a href="author.html#525">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Dec 20, 2011, at 5:40 AM, Legrandin wrote:
+
+&gt;&gt;<i> I've gotten this import and export functionality working using a combination of pycrypto, python-potr, and pyparsing.
+</I>&gt;&gt;<i> <A HREF="https://github.com/guardianproject/otrfileconverter">https://github.com/guardianproject/otrfileconverter</A>
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Would it make sense to cook this into pycrypto's DSA objects?
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> .hc
+</I>&gt;<i> 
+</I>&gt;<i> I felt the need for that a few times in the past, and adding it to
+</I>&gt;<i> pycrypto was high on my to-do list, so I totally vote for that.
+</I>&gt;<i> It should be a standard format though (like PKCS8), otherwise there is
+</I>&gt;<i> no benefit over pickle.
+</I>&gt;<i> I don't think it should require extra dependencies either.
+</I>
+My code can currently output PKCS8, I'm not using pickle at all.  As for extra dependencies, I agree it should be minimal.  It should be easy to get rid of the python-potr dependency, but getting rid of pyparsing would mean writing a S-expressions parser from scratch and getting rid of pyasn1 would mean writing a DER format parser from scratch.    I won't have time to write those chunks but would welcome anyone taking that on.  Or the other option is dropping the support of those formats in pycrypto.
+
+.hc
+
+----------------------------------------------------------------------------
+
+As we enjoy great advantages from inventions of others, we should be glad of an opportunity to serve others by any invention of ours; and this we should do freely and generously.        - Benjamin Franklin
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000524.html">[pycrypto] import/export for DSA keys
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#525">[ date ]</a>
+              <a href="thread.html#525">[ thread ]</a>
+              <a href="subject.html#525">[ subject ]</a>
+              <a href="author.html#525">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

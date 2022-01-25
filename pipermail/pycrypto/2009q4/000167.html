@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] getStrongPrime() implementation
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20getStrongPrime%28%29%20implementation&In-Reply-To=20091028023442.GA24039%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000149.html">
+   <LINK REL="Next"  HREF="000139.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] getStrongPrime() implementation</H1>
+    <B>Lorenz Quack</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20getStrongPrime%28%29%20implementation&In-Reply-To=20091028023442.GA24039%40rivest.dlitz.net"
+       TITLE="[pycrypto] getStrongPrime() implementation">don at amberfisharts.com
+       </A><BR>
+    <I>Fri Oct 30 10:43:58 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000149.html">[pycrypto] getStrongPrime() implementation
+</A></li>
+        <LI>Next message: <A HREF="000139.html">[pycrypto] Distribution of prime numbers?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#167">[ date ]</a>
+              <a href="thread.html#167">[ thread ]</a>
+              <a href="subject.html#167">[ subject ]</a>
+              <a href="author.html#167">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi there!
+
+Here comes my monster patch.
+It includes a python and C version of getStrongPrime, rabinMillerTest and isPrime.
+there are also two small unit tests and some helper functions.
+They all take a randfunc and propagate them (or so I hope).
+The Rabin-Miller-Test uses random bases (non-deterministic).
+getStrongPrime and isPrime take an optional parameter &quot;false_positive_prob&quot;
+where one can specify the maximum probability that the prime is actually
+composite. Internally the functions calculate the Rabin-Miller rounds from
+this. It defaults to 1e-6 (1:1000000) which results in 10 rounds of Rabin-Miller
+testing.
+
+Please review this carefully. Even though I tried hard to get things right some
+bugs always slip through.
+maybe you could also review the way I acquire and release the GIL. It felt kind
+of ugly the way I did it but I don't see a better way just now.
+
+Concerning the public exponent e:
+I now know why it needs to be coprime to p-1 and q-1. The private exponent d is
+the inverse of e mod ((p-1)(q-1)).
+If e is not coprime to ((p-1)(q-1)) then the inverse does not exist [1].
+
+The getStrongPrime take an optional argument e. if provided the function will
+make sure p-1 and e are coprime. if e is even (p-1)/2 will be coprime.
+if e is even then there is a additional constraint: p =/= q mod 8.
+I can't check for that in getStrongPrime of course but since we hardcoded e to
+be odd in _RSA.py this should pose no problem.
+
+The Baillie-PSW-Test is not included.
+
+I tried hard not to use any functionality new than 2.1 but if you find anything
+feel free to criticize. Also if I didn't get the coding style right either tell
+me or feel free to correct it yourself.
+
+
+have fun.
+//Lorenz
+
+
+[1] <A HREF="http://mathworld.wolfram.com/ModularInverse.html">http://mathworld.wolfram.com/ModularInverse.html</A>
+
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: getStrongPrime.patch
+Url: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20091030/ca085bc9/attachment-0001.ksh">http://lists.dlitz.net/pipermail/pycrypto/attachments/20091030/ca085bc9/attachment-0001.ksh</A> 
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000149.html">[pycrypto] getStrongPrime() implementation
+</A></li>
+	<LI>Next message: <A HREF="000139.html">[pycrypto] Distribution of prime numbers?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#167">[ date ]</a>
+              <a href="thread.html#167">[ thread ]</a>
+              <a href="subject.html#167">[ subject ]</a>
+              <a href="author.html#167">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA importKey
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20RSA%20importKey&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000281.html">
+   <LINK REL="Next"  HREF="000283.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA importKey</H1>
+    <B>Fran&#231;ois Santy</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20RSA%20importKey&In-Reply-To="
+       TITLE="[pycrypto] RSA importKey">francoissanty at gmail.com
+       </A><BR>
+    <I>Fri Nov 12 05:19:53 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000281.html">[pycrypto] Patched pycrypto2.3 for python3.1
+</A></li>
+        <LI>Next message: <A HREF="000283.html">[pycrypto] RSA importKey
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#282">[ date ]</a>
+              <a href="thread.html#282">[ thread ]</a>
+              <a href="subject.html#282">[ subject ]</a>
+              <a href="author.html#282">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi everybody !
+
+I'm currently working with pycrypto and I want to import public and private
+keys from DER files.
+I found a piece of code that shows how to proceed, but it isn't working
+anyway !
+Here is the code I'm using:
+
+f = file(&quot;./public_key.der&quot;)
+key = RSA.importKey(f.read())
+
+It tells me *'module' object has no attribute 'importKey'. *It's rather
+strange since the method appears explicitely in the file
+/lib/Crypto/PublicKey/RSA.py*.*
+*
+*
+What am I doing wrong ?
+
+Thanks.
+
+-- 
+Fran&#231;ois S.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20101112/cfba0700/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20101112/cfba0700/attachment.htm</A> 
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000281.html">[pycrypto] Patched pycrypto2.3 for python3.1
+</A></li>
+	<LI>Next message: <A HREF="000283.html">[pycrypto] RSA importKey
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#282">[ date ]</a>
+              <a href="thread.html#282">[ thread ]</a>
+              <a href="subject.html#282">[ subject ]</a>
+              <a href="author.html#282">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

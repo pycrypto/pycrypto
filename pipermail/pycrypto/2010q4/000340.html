@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Create a Digital Signature (DER Encoded PKCS#1) - SHA1withRSA
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Create%20a%20Digital%20Signature%20%28DER%20Encoded%20PKCS%231%29%20-%0A%20SHA1withRSA&In-Reply-To=AANLkTimZKjWhNzQ%2BD22RP36yBDgX5jJUrdh3KYk%2BBbku%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000337.html">
+   <LINK REL="Next"  HREF="000341.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Create a Digital Signature (DER Encoded PKCS#1) - SHA1withRSA</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Create%20a%20Digital%20Signature%20%28DER%20Encoded%20PKCS%231%29%20-%0A%20SHA1withRSA&In-Reply-To=AANLkTimZKjWhNzQ%2BD22RP36yBDgX5jJUrdh3KYk%2BBbku%40mail.gmail.com"
+       TITLE="[pycrypto] Create a Digital Signature (DER Encoded PKCS#1) - SHA1withRSA">sbehrens at gmx.li
+       </A><BR>
+    <I>Tue Dec 28 16:09:38 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000337.html">[pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -	SHA1withRSA
+</A></li>
+        <LI>Next message: <A HREF="000341.html">[pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -	SHA1withRSA
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#340">[ date ]</a>
+              <a href="thread.html#340">[ thread ]</a>
+              <a href="subject.html#340">[ subject ]</a>
+              <a href="author.html#340">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE> &gt;&gt; It wasn't for Home Work :-)
+
+Okay :D
+
+&gt;<i>
+</I>&gt;<i> m.digest()
+</I>&gt;<i> or
+</I>&gt;<i> m.hexdigest() as the computed hash value.
+</I>
+That depends on what you want to do next. m.digest() returns the digest 
+in binary form, ready to be used for further manipulation, such as 
+having it signed. m.hexdigest() returns it in a form suitable for 
+inclusion in a text transmission, such as email.
+
+&gt;<i> Following this, how can i use Crypto again to Sign the computed Hash 
+</I>&gt;<i> Value using the Private Key?
+</I>&gt;<i>
+</I>PKCS #1 has not been integrated into trunk yet. There is a patch 
+available, though, here: <A HREF="https://bugs.launchpad.net/pycrypto/+bug/502291">https://bugs.launchpad.net/pycrypto/+bug/502291</A>
+
+Thorsten
+
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000337.html">[pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -	SHA1withRSA
+</A></li>
+	<LI>Next message: <A HREF="000341.html">[pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -	SHA1withRSA
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#340">[ date ]</a>
+              <a href="thread.html#340">[ thread ]</a>
+              <a href="subject.html#340">[ subject ]</a>
+              <a href="author.html#340">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

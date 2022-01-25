@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Public Key encryption of files
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20Key%20encryption%20of%20files&In-Reply-To=CAEncD4ft%3DFx04wcxwWxmqDm%3DZ2mCdH5aQHVqiiw--3BBBgT8Zw%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000508.html">
+   <LINK REL="Next"  HREF="000511.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Public Key encryption of files</H1>
+    <B>Dean Macinskas</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20Key%20encryption%20of%20files&In-Reply-To=CAEncD4ft%3DFx04wcxwWxmqDm%3DZ2mCdH5aQHVqiiw--3BBBgT8Zw%40mail.gmail.com"
+       TITLE="[pycrypto] Public Key encryption of files">dmacinskas at geobridge.net
+       </A><BR>
+    <I>Fri Nov 11 07:21:05 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000508.html">[pycrypto] Public Key encryption of files
+</A></li>
+        <LI>Next message: <A HREF="000511.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#509">[ date ]</a>
+              <a href="thread.html#509">[ thread ]</a>
+              <a href="subject.html#509">[ subject ]</a>
+              <a href="author.html#509">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dave,
+
+For what you're doing the example is fine, but I think you'd be disappointed in the performance if your file was 10mb instead of 1 kb.  Why? Because CFB-8 requires an AES cycle *PER BYTE*.  So encrypting 1024 bytes requires 1024 AES cycles, compared to 64 if you used CBC.
+
+The example was just that: an example.  No need to optimize if the purpose is to demonstrate how to use pycrypto.
+
+Dean
+
+-----Original Message-----
+From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A> [mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>] On Behalf Of Dave Pawson
+Sent: Friday, November 11, 2011 1:36 AM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] Public Key encryption of files
+
+On 10 November 2011 19:48, Dean Macinskas &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dmacinskas at geobridge.net</A>&gt; wrote:
+&gt;<i> Dave,
+</I>&gt;<i>
+</I>&gt;<i> I took a closer look - apparently the code accepts a user string for the key, then pads it to the next higher valid length. &#160;So the procedure you referenced is for padding KEYS, not data. &#160;The example also used CFB mode, which is actually a form of stream cipher, and thus encrypts byte-for-byte and requires no data padding. &#160;But it's really inefficient (you only use 1 byte out of 16); for file encryption CBC is still the best option, IMHO.
+</I>&gt;<i>
+</I>&gt;<i> Dean
+</I>
+Sorry Dean. Straight over my head.
+My data is a ....1K file of password info? It encrypts/decrypts in
+'human' time with no
+proble, i.e. it does the job I want? So (for me) the inefficiency  is
+not an issue?
+ Agreed using '1 byte out of 16' does sound bad.
+If you have the cycles, perhaps you might suggest an improvement to the code?
+I'll pass it back to the author?
+
+regards
+
+
+
+
+&gt;<i>
+</I>&gt;<i> -----Original Message-----
+</I>&gt;<i> From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A> [mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>] On Behalf Of Dave Pawson
+</I>&gt;<i> Sent: Thursday, November 10, 2011 2:34 PM
+</I>&gt;<i> To: PyCrypto discussion list
+</I>&gt;<i> Subject: Re: [pycrypto] Public Key encryption of files
+</I>&gt;<i>
+</I>&gt;<i> On 10 November 2011 19:28, Dean Macinskas &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dmacinskas at geobridge.net</A>&gt; wrote:
+</I>&gt;&gt;<i> Dave,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> An AES key can be 16, 24 or 32 bytes, but the data block size for AES is 16 bytes, regardless of key length.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Dean
+</I>&gt;<i>
+</I>&gt;<i> Sorry, I used the software as is, found it works (still does) and left
+</I>&gt;<i> well alone?
+</I>&gt;<i> My crypto knowledge is ... minimal!
+</I>&gt;<i>
+</I>&gt;<i> At the url I included, perhaps that is set at 16 prior to the call?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> regards
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Dave Pawson
+</I>&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;<i> Docbook FAQ.
+</I>&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+_______________________________________________
+pycrypto mailing list
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000508.html">[pycrypto] Public Key encryption of files
+</A></li>
+	<LI>Next message: <A HREF="000511.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#509">[ date ]</a>
+              <a href="thread.html#509">[ thread ]</a>
+              <a href="subject.html#509">[ subject ]</a>
+              <a href="author.html#509">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

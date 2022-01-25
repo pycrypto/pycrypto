@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] example
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20example&In-Reply-To=20090824231556.GA30149%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000120.html">
+   <LINK REL="Next"  HREF="000122.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] example</H1>
+    <B>avo ga</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20example&In-Reply-To=20090824231556.GA30149%40rivest.dlitz.net"
+       TITLE="[pycrypto] example">avogatro2007 at googlemail.com
+       </A><BR>
+    <I>Mon Aug 24 20:04:19 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000120.html">[pycrypto] example
+</A></li>
+        <LI>Next message: <A HREF="000122.html">[pycrypto] example
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#121">[ date ]</a>
+              <a href="thread.html#121">[ thread ]</a>
+              <a href="subject.html#121">[ subject ]</a>
+              <a href="author.html#121">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i>RandomPool is badly broken.  Don't use it.
+</I>
+Thx for the hint.
+I will check  RandomPool and change it to some python build-in random
+function,
+if that helps.
+
+
+About DSA:
+I thought the actual pycrypto use SHA-1...
+make hash of the AES key with SHA2, and then sign the SHA2-hash. Is that
+what you mean?
+
+About RSA:
+i will check the code about OAEP.
+can't find it in the documentation. (but in wikipedia...)
+
+ELGAMAL signature requires a random number k: 2&lt;k&lt;p-1 with GCD(k,p-1)=1
+i used a fix prime. I will correct this.
+
+ELGAMAL ist important for me, because it has no patent /copyright.
+
+
+
+&gt;<i> <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2009q3/000116.html">http://lists.dlitz.net/pipermail/pycrypto/2009q3/000116.html</A>
+</I>&gt;<i>
+</I>&gt;<i> &gt;#################### DSA only sign
+</I>&gt;<i> &gt;privatekeyCMS = DSA.generate(368, rpool.get_bytes)
+</I>&gt;<i> &gt;publickeyCMS = privatekeyCMS.publickey()
+</I>&gt;<i> &gt;signed_PWD = privatekeyCMS.sign(PWD,K)
+</I>&gt;<i> &gt;print &quot;identity check:\n&quot;,publickeyCMS.verify(dec_PWD,signed_PWD)
+</I>&gt;<i> &gt;print &quot;decrypted PWD from ELGAMAL:\n&quot;,dec_PWD
+</I>&gt;<i>
+</I>&gt;<i> PyCrypto's public key primitives are incomplete at this point, and you
+</I>&gt;<i> should not use them unless you are willing to read both PyCrypto's source
+</I>&gt;<i> code and the relevant specifications.  For RSA, you need OAEP (i.e.  PKCS#1
+</I>&gt;<i> v2.1) if you want security.  For DSA, there is a hash you need to compute
+</I>&gt;<i> (it's not done for you automatically---see FIPS 186.  For ElGamal, I'm
+</I>&gt;<i> pretty sure there's something too.
+</I>&gt;<i>
+</I>&gt;<i> That's all I'm willing to comment on a vague question about a bunch of
+</I>&gt;<i> uncommented demo code.
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+</I>&gt;<i>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090825/412e85b7/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090825/412e85b7/attachment.htm</A> 
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000120.html">[pycrypto] example
+</A></li>
+	<LI>Next message: <A HREF="000122.html">[pycrypto] example
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#121">[ date ]</a>
+              <a href="thread.html#121">[ thread ]</a>
+              <a href="subject.html#121">[ subject ]</a>
+              <a href="author.html#121">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

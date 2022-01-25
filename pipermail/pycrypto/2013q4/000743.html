@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] DES3 problem
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20DES3%20problem&In-Reply-To=%3CCAGfyce23HW0PLM1x%2BiFOp34PaL3qFPKOuPKz5%2BeEz4exyqDOnQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000742.html">
+   <LINK REL="Next"  HREF="000744.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] DES3 problem</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20DES3%20problem&In-Reply-To=%3CCAGfyce23HW0PLM1x%2BiFOp34PaL3qFPKOuPKz5%2BeEz4exyqDOnQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] DES3 problem">helderijs at gmail.com
+       </A><BR>
+    <I>Sun Dec  1 13:26:12 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000742.html">[pycrypto] DES3 problem
+</A></li>
+        <LI>Next message: <A HREF="000744.html">[pycrypto] DES3 problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#743">[ date ]</a>
+              <a href="thread.html#743">[ thread ]</a>
+              <a href="subject.html#743">[ subject ]</a>
+              <a href="author.html#743">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;&gt;<i> Since a cipher object is stateful, it can be used for either
+</I>&gt;&gt;<i> encryption or decryption but not both.
+</I>&gt;<i>
+</I>&gt;<i> I don't understand that. In what way does it maintain state please?
+</I>
+If the data to encrypt is very long, you may need to invoke the method
+encrypt() of a cipher on one smaller piece at a time. The object
+maintains the state of the last encryption performed, so that it can
+correctly process the data that will come next. If you call decrypt()
+after encrypt(), the cipher will interpret its state as if it was a
+&quot;decryption&quot; state, even though it is actually an &quot;encryption&quot; state.
+
+Same applies if you start with decrypt() and then use encrypt().
+
+That is really a flaw of the pycrypto API: it shouldn't allow one to
+switch mid air between encryption and decryption.
+
+&gt;&gt;<i> The only exception is the ECB mode. Being it stateless, it lets you
+</I>&gt;&gt;<i> intermix encryption and decryption.
+</I>&gt;<i>
+</I>&gt;<i> Thanks.
+</I>&gt;<i> (Nothing that I've found in the docs explains this?)
+</I>
+A little bit hidden here:
+
+<A HREF="https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.blockalgo.BlockAlgo-class.html#encrypt">https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.blockalgo.BlockAlgo-class.html#encrypt</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000742.html">[pycrypto] DES3 problem
+</A></li>
+	<LI>Next message: <A HREF="000744.html">[pycrypto] DES3 problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#743">[ date ]</a>
+              <a href="thread.html#743">[ thread ]</a>
+              <a href="subject.html#743">[ subject ]</a>
+              <a href="author.html#743">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

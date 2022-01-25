@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] pycrypto issue
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20pycrypto%20issue&In-Reply-To=553991.18822.qm%40web55204.mail.re4.yahoo.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000211.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] pycrypto issue</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20pycrypto%20issue&In-Reply-To=553991.18822.qm%40web55204.mail.re4.yahoo.com"
+       TITLE="[pycrypto] pycrypto issue">dlitz at dlitz.net
+       </A><BR>
+    <I>Sun Mar 28 15:44:20 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000211.html">[pycrypto] pycrypto with python 3.1 in windows
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#210">[ date ]</a>
+              <a href="thread.html#210">[ thread ]</a>
+              <a href="subject.html#210">[ subject ]</a>
+              <a href="author.html#210">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Please post on the mailing list so that others who have similar problems 
+can find the answers by searching the archives.
+
+On Sat, Mar 27, 2010 at 09:18:05PM -0700, h nguyen wrote:
+&gt;<i>For the file SHA256.py , I copied from SHA and use sha256 function like 
+</I>&gt;<i>this
+</I>&gt;<i>try:
+</I>&gt;<i>&#160;&#160;&#160; # The md5 module is deprecated in Python 2.6, so use hashlib when possible.
+</I>&gt;<i>&#160;&#160;&#160; import hashlib
+</I>&gt;<i>&#160;&#160;&#160; def new(data=&quot;&quot;):
+</I>&gt;<i>&#160;&#160;&#160;&#160;&#160;&#160;&#160; return hashlib.sha256(data)
+</I>&gt;<i>&#160;&#160;&#160; digest_size = new().digest_size
+</I>&gt;<i>
+</I>&gt;<i>except ImportError:
+</I>&gt;<i>&#160;&#160;&#160; from sha256 import *
+</I>&gt;<i>&#160;&#160;&#160; import sha256
+</I>
+There is no need to do that.
+
+&gt;<i>ImportError: cannot import name _counter
+</I>&gt;<i>
+</I>&gt;<i>I looked in folder Crypto.Util there's no _counter module...
+</I>
+PyCrypto is partly written in C (in the src/ directory) and partly written 
+in Python.  You are using the Python parts and ignoring the C parts, which 
+is why it's not working.  As I mentioned before, the parts in C will need 
+to be compiled into machine code before they can be used.&#160; You'll either 
+need to build it, or you can get Michael Foord's pre-built binaries for 
+Windows from his website:
+
+     <A HREF="http://www.voidspace.org.uk/python/modules.shtml#pycrypto">http://www.voidspace.org.uk/python/modules.shtml#pycrypto</A>
+
+&gt;<i>Do you know that paramiko works on Windows XP?
+</I>
+Yes, I have used paramiko on Windows XP before.
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 221 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100328/c14f1b2e/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100328/c14f1b2e/attachment.pgp</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000211.html">[pycrypto] pycrypto with python 3.1 in windows
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#210">[ date ]</a>
+              <a href="thread.html#210">[ thread ]</a>
+              <a href="subject.html#210">[ subject ]</a>
+              <a href="author.html#210">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

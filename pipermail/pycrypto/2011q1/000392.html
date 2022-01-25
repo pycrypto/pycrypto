@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Initial review of Thorsten's Py3k changes
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Initial%20review%20of%20Thorsten%27s%20Py3k%20changes&In-Reply-To=4D23848A.8090805%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000378.html">
+   <LINK REL="Next"  HREF="000393.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Initial review of Thorsten's Py3k changes</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Initial%20review%20of%20Thorsten%27s%20Py3k%20changes&In-Reply-To=4D23848A.8090805%40gmx.li"
+       TITLE="[pycrypto] Initial review of Thorsten's Py3k changes">dlitz at dlitz.net
+       </A><BR>
+    <I>Sun Jan  9 22:49:38 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000378.html">[pycrypto] 'tis done: Python3 with PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000393.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#392">[ date ]</a>
+              <a href="thread.html#392">[ thread ]</a>
+              <a href="subject.html#392">[ subject ]</a>
+              <a href="author.html#392">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>So I had a few minutes to take a look at Thorsten's Py3k patches at 
+<A HREF="https://github.com/yorickdowne/pycrypto">https://github.com/yorickdowne/pycrypto</A> (thanks, Thorsten!) and I'd like to 
+write down my thoughts on what I'll need before I can merge it into the 
+master branch.
+
+The main thing is that PyCrypto commits should be easily reviewable for 
+correctness and non-maliciousness.  I suspect (and hope) that some of you 
+are conducting your own reviews of PyCrypto changes before you're using 
+them, and we all gain security-wise if I make sure that's reasonably easy.  
+Therefore, I have a few recommendations:
+
+- Don't change the test vector data if you don't need to.  Changing 
+   hundreds of strings like 'd6a141a7ec3c38dfbd61' to strings like 
+   b('d6a141a7ec3c36dfbd61') is unnecessary (since they need to be 
+   hex-decoded somewhere anyway), and it makes it difficult to tell by 
+   inspection that the test vectors weren't modified.  (How many of you 
+   noticed that I changed the 8 to a 6 in that example?)
+
+- Run your tests with python -tt to ensure consistent use of whitespace.  I 
+   haven't been doing this, so the current master doesn't work, but that was 
+   a mistake and I will be doing it from now on.
+
+- Treat each commit like a patch that can be reviewed on its own.  Think 
+   &quot;patch queue&quot;, not &quot;modification history&quot;:
+
+     - If you have one commit that introduces a bug, and another commit that 
+       removes it, squash those patches into a single commit.
+
+     - The same thing applies if you tried one approach and then switched to 
+       another (e.g.  floordiv -&gt; divmod).
+
+     - The commands &quot;git rebase -i&quot;, &quot;git cherry-pick -n&quot;, &quot;git reset&quot;, and 
+       &quot;git add -p&quot; are your friends.
+
+     - If it's not too much work, try to group related commits together in 
+       the history.  It's much easier to review a series of AllOrNothing 
+       patches, followed by a series of Crypto.Random patches, than it is to 
+       review the patches if they're interlaced.  This isn't always 
+       reasonable, but if a simple &quot;git rebase -i&quot; can make things easier 
+       for reviewers, it's worth the tiny bit of effort that it takes.
+
+- If you need to fix whitespace, do it in a separate commit, labeled 
+   &quot;whitespace&quot;, that *only* fixes whitespace.
+
+- Don't include unrelated changes in a commit.  In a commit labeled &quot;Add 
+   Ron Rivest Test&quot;, don't make random changes to how &quot;import os&quot; is done in 
+   various files, or how src/inc-msvc/stdint.h works.
+
+- Make sure commit messages that answer the question, &quot;why did you do 
+   that?&quot;.
+
+- References to things like RC5 or IDEA, which have been removed from 
+   PyCrypto, can be removed.
+
+- If adding additional/alternative dependencies like MPIR, include *why* 
+   that's being done in the commit message and/or in the documentation.
+
+That's all for now.
+
+Cheers,
+- Dwayne
+
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000378.html">[pycrypto] 'tis done: Python3 with PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000393.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#392">[ date ]</a>
+              <a href="thread.html#392">[ thread ]</a>
+              <a href="subject.html#392">[ subject ]</a>
+              <a href="author.html#392">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

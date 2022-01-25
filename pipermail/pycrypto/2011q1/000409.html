@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Why p&lt;q in RSA code?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Why%20p%3Cq%20in%20RSA%20code%3F&In-Reply-To=AANLkTi%3D%2B2NpC_rRbT4kG9rvhiROZ9q2LAWcUvrShtC0Z%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000406.html">
+   <LINK REL="Next"  HREF="000410.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Why p&lt;q in RSA code?</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Why%20p%3Cq%20in%20RSA%20code%3F&In-Reply-To=AANLkTi%3D%2B2NpC_rRbT4kG9rvhiROZ9q2LAWcUvrShtC0Z%40mail.gmail.com"
+       TITLE="[pycrypto] Why p&lt;q in RSA code?">sbehrens at gmx.li
+       </A><BR>
+    <I>Wed Jan 19 09:35:27 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000406.html">[pycrypto] Why p&lt;q in RSA code?
+</A></li>
+        <LI>Next message: <A HREF="000410.html">[pycrypto] Why p&lt;q in RSA code?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#409">[ date ]</a>
+              <a href="thread.html#409">[ thread ]</a>
+              <a href="subject.html#409">[ subject ]</a>
+              <a href="author.html#409">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 1/19/2011 4:41 AM, Legrandin wrote:
+&gt;<i> Hi all,
+</I>&gt;<i>
+</I>&gt;<i> I have noticed that - when generating an RSA key - a special check is
+</I>&gt;<i> made to ensure that p&lt;q.
+</I>That's interesting. This is what I found, which seems to suggest the 
+exact opposite:
+
+ &gt;&gt;
+To generate the primes p and q, generate a random number of bit length 
+b/2 where b is the required bit length of n; set the low bit (this 
+ensures the number is odd) and set the /two/ highest bits (this ensures 
+that the high bit of n is also set); check if prime (use the 
+Rabin-Miller test); if not, increment the number by two and check again 
+until you find a prime. This is p. Repeat for q starting with a random 
+integer of length b-b/2. If p&lt;q, swap p and q (this only matters if you 
+intend using the CRT form of the private key). In the extremely unlikely 
+event that p = q, check your random number generator. Alternatively, 
+instead of incrementing by 2, just generate another random number each 
+time.
+
+There are stricter rules in ANSI X9.31 
+&lt;<A HREF="http://www.di-mgt.com.au/rsa_alg.html#x931">http://www.di-mgt.com.au/rsa_alg.html#x931</A>&gt; to produce strong primes 
+and other restrictions on p and q to minimize the possibility of known 
+techniques being used against the algorithm. There is much argument 
+about this topic. It is probably better just to use a longer key length.
+ &gt;&gt;
+
+Taken from <A HREF="http://www.di-mgt.com.au/rsa_alg.html">http://www.di-mgt.com.au/rsa_alg.html</A>
+
+That snippet suggests that p&gt;q is desired if using the CRT form of the 
+private key. And we seem to be doing the exact opposite, swapping p and 
+q if p&gt;q.
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20110119/a39e32b8/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20110119/a39e32b8/attachment.html</A> 
+</PRE>
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000406.html">[pycrypto] Why p&lt;q in RSA code?
+</A></li>
+	<LI>Next message: <A HREF="000410.html">[pycrypto] Why p&lt;q in RSA code?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#409">[ date ]</a>
+              <a href="thread.html#409">[ thread ]</a>
+              <a href="subject.html#409">[ subject ]</a>
+              <a href="author.html#409">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] providing signature in base64
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20providing%20signature%20in%20base64&In-Reply-To=%3C4FAABAA1.4090901%40lsexperts.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000581.html">
+   <LINK REL="Next"  HREF="000583.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] providing signature in base64</H1>
+    <B>Cornelius K&#246;lbel</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20providing%20signature%20in%20base64&In-Reply-To=%3C4FAABAA1.4090901%40lsexperts.de%3E"
+       TITLE="[pycrypto] providing signature in base64">cornelius.koelbel at lsexperts.de
+       </A><BR>
+    <I>Wed May  9 14:42:41 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000581.html">[pycrypto] providing signature in base64
+</A></li>
+        <LI>Next message: <A HREF="000583.html">[pycrypto] Generating a public/private key pair from a passphrase
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#582">[ date ]</a>
+              <a href="thread.html#582">[ thread ]</a>
+              <a href="subject.html#582">[ subject ]</a>
+              <a href="author.html#582">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+great! Thanks! This indeed verifies the signature successfully.
+
+Too bad, most of the distributions do not yet ship with pycrypto 2.5 ---
+2.4 and lower does not contain the Crypto.Signature.
+And I need to take care to pass a hashing object and not only a hashed
+string...
+
+Anyway, I now know how it will work out.
+
+Kind regards
+Cornelius
+
+Am 09.05.2012 19:31, schrieb Legrandin:
+&gt;<i> Hi Cornelius,
+</I>&gt;<i>
+</I>&gt;<i> I think M2Crypto signs by default using PKCS#1 v1.5.
+</I>&gt;<i> You can try the Crypto.Signature.PKCS1_v1_5 module in pycrypto.
+</I>&gt;<i> Something along these lines:
+</I>&gt;<i>
+</I>&gt;<i> ===
+</I>&gt;<i> import Crypto.Signature.PKCS1_v1_5 as PKCS
+</I>&gt;<i>
+</I>&gt;<i> signature = sign.decode(&quot;base64&quot;)
+</I>&gt;<i> hash = sha256(licStr)
+</I>&gt;<i> RSAKey = RSA.importKey(public)
+</I>&gt;<i> ret =  PKCS.verify(hash, RSAKey, signature)
+</I>&gt;<i> ===
+</I>&gt;<i>
+</I>&gt;<i> 2012/5/9 Cornelius K&#246;lbel &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">cornelius.koelbel at lsexperts.de</A>&gt;:
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> i discovered the number.bytes_to_long function, which does the trick,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> but the signature validation still fails.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I assume I would have to b64decode my signature prior to converting it.
+</I>&gt;&gt;<i> But it fails :-/
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ret =  RSAKey.verify(hash, (number.bytes_to_long(sign.decode(&quot;base64&quot;)),) )
+</I>&gt;&gt;<i> print ret
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ret =  RSAKey.verify(hash, (number.bytes_to_long(base64.b64decode(sign)),))
+</I>&gt;&gt;<i> print ret
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Any hint on that?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The signature was created with openssl/M2Crypto.
+</I>&gt;&gt;<i> And I'd like to mirgate to pycrypto.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Kind regards
+</I>&gt;&gt;<i> Cornelius
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Am 09.05.2012 16:28, schrieb Cornelius K&#246;lbel:
+</I>&gt;&gt;&gt;<i> Hello,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I have a signature provided in base64 like this:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> XQgVBkxrmJXqN2+xkJx8dGRecadoLi61vjBTsl+kYibji0pf6ZsxYF2ewniV7pIbtjQxxIridBRtLo9d1Rpq6QvjvuVbVzqqimQeFZnQTp9scSfAbKCtDe1F4lEWCLP6s/6op3jgPpmgd0p5kPaA4iWLM5IjleT7kxgniggBXIky1aMq4L8DtLujcfHNLeJyXpw9TDPg/2KEYZGT1WqiXIeIuYPt7UySOVnmgIoQYstu7C5Vsy5hjzBfhpVvKaPjXEDeETL4UoO2S9H+hu0x932HyyiNTYCpY9VFQnptsVtTkkOvEqhY3xxYix4nzeU+vXc4hFFnhAZMJbPYmuPy5w==
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> but I am breaking my head how to pass this to the verify function.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I create the RSA Object from a PEM encoded public key. This works fine.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> But when I try to unpack the base64 encoded signature, I do not get ONE
+</I>&gt;&gt;&gt;<i> long but a tuple with 32 long int.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     long_signature= struct.unpack('Q'*32, sign.decode(&quot;base64&quot;))
+</I>&gt;&gt;&gt;<i>     hash = sha256(licStr).digest()
+</I>&gt;&gt;&gt;<i>     RSAKey = RSA.importKey(public)
+</I>&gt;&gt;&gt;<i>     ret =  RSAKey.verify(hash, long_signature)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I know that this is more a matter of how to handle the unpack function,
+</I>&gt;&gt;&gt;<i> but did not find anything about this.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Thanks a lot and kind regards
+</I>&gt;&gt;&gt;<i> Cornelius
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+-- 
+Cornelius K&#246;lbel
+(Senior Security Consultant, Head of Product Management)
+<A HREF="http://www.lsexperts.de">http://www.lsexperts.de</A>
+LSE Leading Security Experts GmbH, Postfach 100121, 64201 Darmstadt
+Tel: +49 6151 9067-252, Fax: -299, Mobil: +49 160 96307089
+Unternehmenssitz: Weiterstadt, Amtsgericht Darmstadt: HRB8649
+Geschaeftsfuehrer: Oliver Michel, Sven Walther, Dr. Peter Schill
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 262 bytes
+Desc: OpenPGP digital signature
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20120509/3da6d05e/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20120509/3da6d05e/attachment.pgp</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000581.html">[pycrypto] providing signature in base64
+</A></li>
+	<LI>Next message: <A HREF="000583.html">[pycrypto] Generating a public/private key pair from a passphrase
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#582">[ date ]</a>
+              <a href="thread.html#582">[ thread ]</a>
+              <a href="subject.html#582">[ subject ]</a>
+              <a href="author.html#582">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

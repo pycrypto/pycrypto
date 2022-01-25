@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Bug in PyCrypto 2.6.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Bug%20in%20PyCrypto%202.6.1&In-Reply-To=%3C547CA9EA.7010401%40amberfisharts.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000826.html">
+   <LINK REL="Next"  HREF="000828.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Bug in PyCrypto 2.6.1</H1>
+    <B>Lorenz Quack</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Bug%20in%20PyCrypto%202.6.1&In-Reply-To=%3C547CA9EA.7010401%40amberfisharts.com%3E"
+       TITLE="[pycrypto] Bug in PyCrypto 2.6.1">don at amberfisharts.com
+       </A><BR>
+    <I>Mon Dec  1 09:48:26 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000826.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+        <LI>Next message: <A HREF="000828.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#827">[ date ]</a>
+              <a href="thread.html#827">[ thread ]</a>
+              <a href="subject.html#827">[ subject ]</a>
+              <a href="author.html#827">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 01/12/14 17:23, Mirko Dziadzka wrote:
+&gt;<i> Oh, I totally agree. Either the name or the implementation has a problem.
+</I>
++1
+
+&gt;<i>
+</I>&gt;<i> I was just pointing out that the behavior is consistent with the documentation in <A HREF="https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA._RSAobj-class.html#size">https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA._RSAobj-class.html#size</A>
+</I>
+I disagree. As I showed in the code example and you pointed out in your previous post there are *some* values that the 
+key can handle with more bits than reported by size().
+So, size() is *not* the &quot;maximum number of bits that can be handled by this key&quot;.
+It is the maximum number of bits that is guaranteed to work for all values.
+
+Lorenz
+
+&gt;<i>
+</I>&gt;<i>      Mirko
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On 01.12.2014, at 17:31, Paul Koning &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">paul_koning at dell.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> To me, key_size means the size of the key.  It doesn&#8217;t mean the largest value you can encrypt.  If that is what is intended, or if it has to stay that way for historical reasons, fine, but it needs to be very clearly pointed out in the documentation because it is unexpected and counterintuitive.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 	paul
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Dec 1, 2014, at 11:13 AM, Mirko Dziadzka &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">mirko.dziadzka at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> HI
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Some thoughts about this &#8230;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _RSA.RSAobj.size.__doc__ says: Return the maximum number of bits that can be handled by this key
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> An RSA key can only encrypt data smaller than this key. So if we have an 2048 bit RSA key, it can encrypt some 2048 bit values, but not all. So 2047 should be the safe value here.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> IMHO this -1 is correct here.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Mirko
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000826.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+	<LI>Next message: <A HREF="000828.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#827">[ date ]</a>
+              <a href="thread.html#827">[ thread ]</a>
+              <a href="subject.html#827">[ subject ]</a>
+              <a href="author.html#827">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

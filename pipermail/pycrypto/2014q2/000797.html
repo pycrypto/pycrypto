@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Linking Against Non-Sytem libgmp
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Linking%20Against%20Non-Sytem%20libgmp&In-Reply-To=%3C7178542C389AAE4B9A26C656124E966F3D1AFB%40xchmbbal505.ds.susq.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000796.html">
+   <LINK REL="Next"  HREF="000804.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Linking Against Non-Sytem libgmp</H1>
+    <B>Wempa, Kristofer</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Linking%20Against%20Non-Sytem%20libgmp&In-Reply-To=%3C7178542C389AAE4B9A26C656124E966F3D1AFB%40xchmbbal505.ds.susq.com%3E"
+       TITLE="[pycrypto] Linking Against Non-Sytem libgmp">Kristofer.Wempa at sig.com
+       </A><BR>
+    <I>Thu Apr 10 07:12:22 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000796.html">[pycrypto] Verify DSA bytestring signature
+</A></li>
+        <LI>Next message: <A HREF="000804.html">[pycrypto] Linking Against Non-Sytem libgmp
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#797">[ date ]</a>
+              <a href="thread.html#797">[ thread ]</a>
+              <a href="subject.html#797">[ subject ]</a>
+              <a href="author.html#797">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Since the libgmp on our Linux server (SLES11SP2) has a known vulnerability, I'm trying to build pycrypto against the latest libgmp that I have installed in an alternate location and have the run path set so that it picks up the alternate libgmp without having to set LD_LIBRARY_PATH.  First, I tried modifying include_dirs, library_dirs and runtime_library_dirs in the setup.py.  When that didn't work, I tried only setting CFLAGS/CPPFLAGS/LDFLAGS environment variables.  Neither worked.  In both cases, I see my compiler and linker flags on the command lines, but because &quot;-L/usr/lib64 -L/lib64&quot; always appears first, the library is linked against the system libgmp and not the alternate one.  At this point, my only solution is to build the _fastmath.so and then re-run the link command without the &quot;-L/usr/lib64 -L/lib64&quot; arguments.  Isn't there a cleaner way to accomplish what I need ?  Why don't my LDFLAGS appear first on the link line ?  Any help would be appreciated.  Thank you.
+
+                Kris
+
+
+________________________________
+
+IMPORTANT: The information contained in this email and/or its attachments is confidential. If you are not the intended recipient, please notify the sender immediately by reply and immediately delete this message and all its attachments. Any review, use, reproduction, disclosure or dissemination of this message or any attachment by an unintended recipient is strictly prohibited. Neither this message nor any attachment is intended as or should be construed as an offer, solicitation or recommendation to buy or sell any security or other financial instrument. Neither the sender, his or her employer nor any of their respective affiliates makes any warranties as to the completeness or accuracy of any of the information contained herein or that this message or any of its attachments is free of viruses.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20140410/e212d65a/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20140410/e212d65a/attachment.html</A>&gt;
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000796.html">[pycrypto] Verify DSA bytestring signature
+</A></li>
+	<LI>Next message: <A HREF="000804.html">[pycrypto] Linking Against Non-Sytem libgmp
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#797">[ date ]</a>
+              <a href="thread.html#797">[ thread ]</a>
+              <a href="subject.html#797">[ subject ]</a>
+              <a href="author.html#797">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] providing signature in base64
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20providing%20signature%20in%20base64&In-Reply-To=%3C4FAA7F0E.1060501%40lsexperts.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000578.html">
+   <LINK REL="Next"  HREF="000580.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] providing signature in base64</H1>
+    <B>Cornelius K&#246;lbel</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20providing%20signature%20in%20base64&In-Reply-To=%3C4FAA7F0E.1060501%40lsexperts.de%3E"
+       TITLE="[pycrypto] providing signature in base64">cornelius.koelbel at lsexperts.de
+       </A><BR>
+    <I>Wed May  9 10:28:30 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000578.html">[pycrypto] Base64 encoded output differs from pycrypto and	as3crypto libraries.
+</A></li>
+        <LI>Next message: <A HREF="000580.html">[pycrypto] providing signature in base64
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#579">[ date ]</a>
+              <a href="thread.html#579">[ thread ]</a>
+              <a href="subject.html#579">[ subject ]</a>
+              <a href="author.html#579">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I have a signature provided in base64 like this:
+
+XQgVBkxrmJXqN2+xkJx8dGRecadoLi61vjBTsl+kYibji0pf6ZsxYF2ewniV7pIbtjQxxIridBRtLo9d1Rpq6QvjvuVbVzqqimQeFZnQTp9scSfAbKCtDe1F4lEWCLP6s/6op3jgPpmgd0p5kPaA4iWLM5IjleT7kxgniggBXIky1aMq4L8DtLujcfHNLeJyXpw9TDPg/2KEYZGT1WqiXIeIuYPt7UySOVnmgIoQYstu7C5Vsy5hjzBfhpVvKaPjXEDeETL4UoO2S9H+hu0x932HyyiNTYCpY9VFQnptsVtTkkOvEqhY3xxYix4nzeU+vXc4hFFnhAZMJbPYmuPy5w==
+
+but I am breaking my head how to pass this to the verify function.
+
+I create the RSA Object from a PEM encoded public key. This works fine.
+
+But when I try to unpack the base64 encoded signature, I do not get ONE
+long but a tuple with 32 long int.
+
+    long_signature= struct.unpack('Q'*32, sign.decode(&quot;base64&quot;))
+    hash = sha256(licStr).digest()
+    RSAKey = RSA.importKey(public)
+    ret =  RSAKey.verify(hash, long_signature)
+
+I know that this is more a matter of how to handle the unpack function,
+but did not find anything about this.
+
+Thanks a lot and kind regards
+Cornelius
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 262 bytes
+Desc: OpenPGP digital signature
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20120509/cc4a977a/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20120509/cc4a977a/attachment.pgp</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000578.html">[pycrypto] Base64 encoded output differs from pycrypto and	as3crypto libraries.
+</A></li>
+	<LI>Next message: <A HREF="000580.html">[pycrypto] providing signature in base64
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#579">[ date ]</a>
+              <a href="thread.html#579">[ thread ]</a>
+              <a href="subject.html#579">[ subject ]</a>
+              <a href="author.html#579">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

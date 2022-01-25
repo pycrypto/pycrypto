@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] extract RSA public from X509 certificate file
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20extract%20RSA%20public%20from%20X509%20certificate%20file&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000450.html">
+   <LINK REL="Next"  HREF="000452.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] extract RSA public from X509 certificate file</H1>
+    <B>Dolf Andringa</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20extract%20RSA%20public%20from%20X509%20certificate%20file&In-Reply-To="
+       TITLE="[pycrypto] extract RSA public from X509 certificate file">dolfandringa at gmail.com
+       </A><BR>
+    <I>Fri Aug 19 10:55:02 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000450.html">[pycrypto] AES-XTS and AES-Wrap support
+</A></li>
+        <LI>Next message: <A HREF="000452.html">[pycrypto] RSA signature pycrypto openssl interoperability
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#451">[ date ]</a>
+              <a href="thread.html#451">[ thread ]</a>
+              <a href="subject.html#451">[ subject ]</a>
+              <a href="author.html#451">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hey Everyone,
+
+I am playing around with PyCrypto and public key encryption using RSA.
+The thing is that I already have an RSA private key, and an X509 certificate
+which contains the RSA public key belonging to the private key.
+
+I succesfully exported the public key starting with the private key file
+like this.
+
+from Crypto.PublicKey import RSA
+from Crypto import Random
+privkey1=RSA.importKey(open('/path/to/private.key','r').read())
+pubkey1=privkey1.publickey()
+print pubkey1.exportKey(format='PEM')
+
+When I compare the print output with the output of the openssl tool which
+can extrac the public key from an x509 certificate file with the following
+command
+openssl x509 -inform pem -in /path/to/certificate.crt -pubkey -noout
+
+The public keys are indeed the same, so the exporting with pycrypto and
+extracting with openssl produce the same public key.
+But is it possible to use pycrypto (or another library) to extract the
+public key from the certificate file (like openssl does)?
+
+Another question is the following:
+
+rng=Random.new().read
+
+This works fine:
+privkey1.decrypt(pubkey1.encrypt(s,rng))
+
+But this raises a typeError:
+pubkey1.decrypt(privkey1.encrypt(s,rng))
+
+But the keys are symmetric right? So it should be possible to encrypt
+something with the private key and decypt that with the public key. It
+doesn't make sense to do this since then anyone can decrypt the data, which
+you just encrypted with the private key, making encryption useless in the
+first place. But the difference between RSA public and private keys is only
+the name. Which one is public, and which one is private is just a matter of
+choice, not a technical difference right? So why then does the PyCrypto
+library raise a TypeError in the first case?
+Cheers,
+
+Dolf.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20110819/33eab5bc/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20110819/33eab5bc/attachment.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000450.html">[pycrypto] AES-XTS and AES-Wrap support
+</A></li>
+	<LI>Next message: <A HREF="000452.html">[pycrypto] RSA signature pycrypto openssl interoperability
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#451">[ date ]</a>
+              <a href="thread.html#451">[ thread ]</a>
+              <a href="subject.html#451">[ subject ]</a>
+              <a href="author.html#451">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

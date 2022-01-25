@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Test code - Random
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Test%20code%20-%20Random&In-Reply-To=51933B5F-5168-403E-965B-9A3A614901D3%40thrift.ru">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000031.html">
+   <LINK REL="Next"  HREF="000034.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Test code - Random</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Test%20code%20-%20Random&In-Reply-To=51933B5F-5168-403E-965B-9A3A614901D3%40thrift.ru"
+       TITLE="[pycrypto] Test code - Random">dlitz at dlitz.net
+       </A><BR>
+    <I>Sat Nov  8 11:16:35 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000031.html">[pycrypto] Test code - Random
+</A></li>
+        <LI>Next message: <A HREF="000034.html">[pycrypto] Test code - Random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#33">[ date ]</a>
+              <a href="thread.html#33">[ thread ]</a>
+              <a href="subject.html#33">[ subject ]</a>
+              <a href="author.html#33">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Nov 08, 2008 at 05:29:02AM +0300, Sergey Chernov wrote:
+&gt;<i> The probability you mentioned should be, as for me, 1e-256.
+</I>
+I assume you mean 2**-256, not 10**-256.  I don't think that's correct, and 
+I think the birthday paradox might have something to do with it.
+
+Let's say we choose a sequence of randomly-chosen 128-bit numbers, X_1, 
+X_2, X_3, ....
+
+P(X_1 = 0) denotes the probability that X_1 (the first randomly-chosen  
+number) comes out as zero.  We can probably agree that this probability is 
+2**-128.  So we have:
+
+     P(X_1 = 0) = 2**-128
+
+The same is true for P(X_1 = 1), P(X_1 = 2), etc:
+
+     P(X_1 = 0) = 2**-128
+     P(X_1 = 1) = 2**-128
+     P(X_1 = 2) = 2**-128
+     P(X_1 = 3) = 2**-128
+     ...
+     P(X_1 = 2**128-1) = 2**-128
+
+So, in general, for any number a:
+
+     P(X_1 = a) = 2**-128        0 &lt;= a &lt;= 2**128-1
+
+Since the numbers are chosen independently, we have the following 
+conditional probabilities:
+
+     P(X_2 = 0 | X_1 = 0) = 2**-128
+     P(X_2 = 1 | X_1 = 0) = 2**-128
+     P(X_2 = 2 | X_1 = 0) = 2**-128
+     P(X_2 = 3 | X_1 = 0) = 2**-128
+     ...
+     P(X_2 = 2**128-1 | X_1 = 0) = 2**-128
+
+The above probabilities also hold for for X_1 = 1, X_1 = 2, etc.
+
+Restating that generally, for any pair of numbers (a, b), the probability 
+that X_2 = b given X_1 = a is as follows:
+
+     P(X_2 = b | X_1 = a) = 2**-128      0 &lt;= a, b &lt;= 2**128-1
+
+Now, what's the probably that X_2 = b *and* that X_1 = a ?  Conditional 
+probability tells us that P(A and B) = P(A) * P(B | A), so we have:
+
+     P(X_2 = b and X_1 = a) = P(X_1 = a) * P(X_2 = b | X_1 = a)
+
+Substituting, we get:
+
+     P(X_2 = b and X_1 = a) = 2**-128 * 2**-128 = 2**-256
+
+So, like you said, the probability is 2**-256.  However, this isn't the 
+probability we're interested in.  What we want is P(X_2 = X_1).
+
+Let P(Y_n) = P(X_2 = X_1 | X_1 = n).  Then we have:
+
+     P(Y_n) = P(X_2 = X_1 | X_1 = n)
+            = P(X_2 = n and X_1 = n)
+            = 2**-256
+
+We want P(X_2 = X_1), which is equivalent to the probability P(Y_n) for 
+*any* n between 0 and 2**128-1.
+
+     P(X_2 = X_1) = P(Y_0 or Y_1 or Y_2 or ... or Y_{2**128-1})
+                  = 2**128 * P(Y_n)
+                  = 2**128 * 2**-256
+                  = 2**-128
+
+QED, I think.
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20081108/c6eeb8b2/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20081108/c6eeb8b2/attachment.pgp</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000031.html">[pycrypto] Test code - Random
+</A></li>
+	<LI>Next message: <A HREF="000034.html">[pycrypto] Test code - Random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#33">[ date ]</a>
+              <a href="thread.html#33">[ thread ]</a>
+              <a href="subject.html#33">[ subject ]</a>
+              <a href="author.html#33">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Guidelines for Py3k support
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Guidelines%20for%20Py3k%20support&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000262.html">
+   <LINK REL="Next"  HREF="000264.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Guidelines for Py3k support</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Guidelines%20for%20Py3k%20support&In-Reply-To="
+       TITLE="[pycrypto] Guidelines for Py3k support">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Aug  2 19:15:21 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000262.html">[pycrypto] ANN: PyCrypto 2.2 released
+</A></li>
+        <LI>Next message: <A HREF="000264.html">[pycrypto] On the future of new ciphers/hashes in PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#263">[ date ]</a>
+              <a href="thread.html#263">[ thread ]</a>
+              <a href="subject.html#263">[ subject ]</a>
+              <a href="author.html#263">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hey guys,
+
+I see that some of you are working on Python 3 support for PyCrypto.  I'll 
+admit that I haven't been paying much attention (I don't really use Python 
+3 right now), but I would definitely like to see this move forward.
+
+Here are some guidelines for patches:
+
+- Patches should be generated using &quot;git format-patch&quot; or &quot;git send-email&quot;, 
+   and sent to this mailing list, along with a statement that they comply 
+   with the PyCrypto Code Submission Requirements - Rev C.  See 
+   <A HREF="http://www.dlitz.net/software/pycrypto/submission-requirements/,">http://www.dlitz.net/software/pycrypto/submission-requirements/,</A> and take 
+   particular note of the residency requirements.
+   (*insert rant about obnoxious crypto export controls here*)
+
+- One master source tree.  I only want to maintain one source tree, and 
+   Python 2.x support is *not* going away any time soon.
+
+- Must work on older Python releases, going back to 2.2.  Ideally, we would 
+   also continue to support Python 2.1, but I'm willing to drop 2.1 if 
+   necessary.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000262.html">[pycrypto] ANN: PyCrypto 2.2 released
+</A></li>
+	<LI>Next message: <A HREF="000264.html">[pycrypto] On the future of new ciphers/hashes in PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#263">[ date ]</a>
+              <a href="thread.html#263">[ thread ]</a>
+              <a href="subject.html#263">[ subject ]</a>
+              <a href="author.html#263">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] pycryptodome
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20pycryptodome&In-Reply-To=%3CCAEncD4dSaCv4JRdQM0aim3Xz68mNenpD4cWedwxNanA%2BY5L%3D4g%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <LINK REL="Previous"  HREF="000881.html">
+   <LINK REL="Next"  HREF="000883.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] pycryptodome</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20pycryptodome&In-Reply-To=%3CCAEncD4dSaCv4JRdQM0aim3Xz68mNenpD4cWedwxNanA%2BY5L%3D4g%40mail.gmail.com%3E"
+       TITLE="[pycrypto] pycryptodome">dave.pawson at gmail.com
+       </A><BR>
+    <I>Thu Dec  8 09:44:56 UTC 2016</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000881.html">[pycrypto] pycryptodome
+</A></li>
+        <LI>Next message: <A HREF="000883.html">[pycrypto] pycryptodome
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#882">[ date ]</a>
+              <a href="thread.html#882">[ thread ]</a>
+              <a href="subject.html#882">[ subject ]</a>
+              <a href="author.html#882">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Additional information.
+
+ pip install pycryptodomex
+Requirement already satisfied: pycryptodomex in
+/usr/lib64/python2.7/site-packages
+
+
+Yet...
+
+ File &quot;/usr/lib64/python3.5/site-packages/Crypto/Cipher/blockalgo.py&quot;,
+line 141, in __init__
+    self._cipher = factory.new(key, *args, **kwargs)
+ValueError: IV must be 16 bytes long
+
+So (since I'm using python3) it's picking up the Crypto library from python 3.5
+and pip is installing it in python 2.7
+
+<A HREF="https://pycryptodome.readthedocs.io/en/latest/src/installation.html#windows-from-sources-python-3-5-and-newer">https://pycryptodome.readthedocs.io/en/latest/src/installation.html#windows-from-sources-python-3-5-and-newer</A>
+
+(aside. Yum no longer used in Fedora, just replace with dnf)
+
+python3 -m Cryptodome.Selftest
+/usr/bin/python3: Error while finding spec for 'Cryptodome.Selftest'
+(ImportError: No module named 'Cryptodome')
+
+regards Dave
+
+
+On 8 December 2016 at 09:20, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt; wrote:
+&gt;<i> <A HREF="https://pycryptodome.readthedocs.io/en/latest/src/installation.html">https://pycryptodome.readthedocs.io/en/latest/src/installation.html</A>
+</I>&gt;<i>
+</I>&gt;<i> python3 -m Cryptodome.SelfTest
+</I>&gt;<i> /usr/bin/python3: Error while finding spec for 'Cryptodome.SelfTest'
+</I>&gt;<i> (ImportError: No module named 'Cryptodome')
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="https://pycryptodome.readthedocs.io/en/latest/src/examples.html">https://pycryptodome.readthedocs.io/en/latest/src/examples.html</A>
+</I>&gt;<i>
+</I>&gt;<i> example
+</I>&gt;<i>
+</I>&gt;<i> python3 exp1.py
+</I>&gt;<i> Traceback (most recent call last):
+</I>&gt;<i>   File &quot;exp1.py&quot;, line 12, in &lt;module&gt;
+</I>&gt;<i>     cipher = AES.new(key, AES.MODE_EAX)
+</I>&gt;<i> AttributeError: module 'Crypto.Cipher.AES' has no attribute 'MODE_EAX'
+</I>&gt;<i>
+</I>&gt;<i> which seems to be true
+</I>&gt;<i>
+</I>&gt;<i> dir(AES)
+</I>&gt;<i> ['AESCipher', 'MODE_CBC', 'MODE_CFB', 'MODE_CTR', 'MODE_ECB',
+</I>&gt;<i> 'MODE_OFB', 'MODE_OPENPGP', 'MODE_PGP', '_AES', '__builtins__',
+</I>&gt;<i> '__cached__', '__doc__', '__file__', '__loader__', '__name__',
+</I>&gt;<i> '__package__', '__revision__', '__spec__', 'block_size', 'blockalgo',
+</I>&gt;<i> 'key_size', 'new']
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Bugs in docs? Library?
+</I>&gt;<i>
+</I>&gt;<i> Suggestions please.
+</I>&gt;<i>
+</I>&gt;<i> regards
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dave Pawson
+</I>&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;<i> Docbook FAQ.
+</I>&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000881.html">[pycrypto] pycryptodome
+</A></li>
+	<LI>Next message: <A HREF="000883.html">[pycrypto] pycryptodome
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#882">[ date ]</a>
+              <a href="thread.html#882">[ thread ]</a>
+              <a href="subject.html#882">[ subject ]</a>
+              <a href="author.html#882">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

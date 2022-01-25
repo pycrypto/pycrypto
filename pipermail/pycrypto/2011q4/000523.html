@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] import/export for DSA keys
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20import/export%20for%20DSA%20keys&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000522.html">
+   <LINK REL="Next"  HREF="000524.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] import/export for DSA keys</H1>
+    <B>Hans-Christoph Steiner</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20import/export%20for%20DSA%20keys&In-Reply-To="
+       TITLE="[pycrypto] import/export for DSA keys">hans at guardianproject.info
+       </A><BR>
+    <I>Mon Dec 19 16:26:02 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000522.html">[pycrypto] Using Counter for true 64-bit decryption
+</A></li>
+        <LI>Next message: <A HREF="000524.html">[pycrypto] import/export for DSA keys
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#523">[ date ]</a>
+              <a href="thread.html#523">[ thread ]</a>
+              <a href="subject.html#523">[ subject ]</a>
+              <a href="author.html#523">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+hey all,
+
+I'm working on a project to make OTR keys (DSA) easily convertible between formats and also possibly embedding OTR DSA keys as subkeys of a gpg key.  The RSA object has the very lovely importKey and exportKey methods, but the DSA object lacks them.  I've gotten this import and export functionality working using a combination of pycrypto, python-potr, and pyparsing.
+
+<A HREF="https://github.com/guardianproject/otrfileconverter">https://github.com/guardianproject/otrfileconverter</A>
+
+Would it make sense to cook this into pycrypto's DSA objects?
+
+.hc
+
+----------------------------------------------------------------------------
+
+I hate it when they say, &quot;He gave his life for his country.&quot;  Nobody gives their life for anything.  We steal the lives of these kids.  -Admiral Gene LeRocque
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000522.html">[pycrypto] Using Counter for true 64-bit decryption
+</A></li>
+	<LI>Next message: <A HREF="000524.html">[pycrypto] import/export for DSA keys
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#523">[ date ]</a>
+              <a href="thread.html#523">[ thread ]</a>
+              <a href="subject.html#523">[ subject ]</a>
+              <a href="author.html#523">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

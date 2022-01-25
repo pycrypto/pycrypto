@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] winrandom alternative (Namely for 64-bit Windows
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20winrandom%20alternative%20%28Namely%20for%2064-bit%20Windows&In-Reply-To=mailman.1.1282932001.1627.pycrypto%40lists.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000271.html">
+   <LINK REL="Next"  HREF="000270.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] winrandom alternative (Namely for 64-bit Windows</H1>
+    <B>Larry Bates</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20winrandom%20alternative%20%28Namely%20for%2064-bit%20Windows&In-Reply-To=mailman.1.1282932001.1627.pycrypto%40lists.dlitz.net"
+       TITLE="[pycrypto] winrandom alternative (Namely for 64-bit Windows">larry.bates at vitalesafe.com
+       </A><BR>
+    <I>Fri Aug 27 12:50:22 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000271.html">[pycrypto] Fixed PyCrypto 2.3 tarball &amp; SHA256-sums
+</A></li>
+        <LI>Next message: <A HREF="000270.html">[pycrypto] winrandom alternative (Namely for 64-bit Windows)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#269">[ date ]</a>
+              <a href="thread.html#269">[ thread ]</a>
+              <a href="subject.html#269">[ subject ]</a>
+              <a href="author.html#269">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>os.urandom works on my 64-bit Windows 7 machine (ActiveState Python V2.7).
+
+I think you can use the following to determine if 32/64bit:
+
+import platform
+if platform.architecture()[0] == '64bit':
+    #
+    # Do 64 bit stuff here
+    #
+else:
+    #
+    # Do 32 bit stuff here
+    #
+
+Larry Bates
+vitalEsafe, Inc.
+
+
+Message: 1
+Date: Fri, 27 Aug 2010 01:02:15 -0400
+From: &quot;Dwayne C. Litzenberger&quot; &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+Subject: Re: [pycrypto] winrandom alternative (Namely for 64-bit
+	Windows)
+To: PyCrypto discussion list &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>&gt;
+Message-ID: &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">20100827050215.GA4397 at rivest.dlitz.net</A>&gt;
+Content-Type: text/plain; charset=us-ascii; format=flowed
+
+On Tue, Aug 24, 2010 at 04:03:33PM -0400, Gregory Taylor wrote:
+&gt;<i>As you are probably aware of, PyCrypto tries to download/compile 
+</I>&gt;<i>winrandom, which can be a problem for many that lack a compiler. As an 
+</I>&gt;<i>alternative for those who can't/won't install winrandom, I put together a 
+</I>&gt;<i>ctypes equivalent that doesn't require compilation like the original 
+</I>&gt;<i>winrandom. This new module aims to be functionally equivalent in every way 
+</I>&gt;<i>to winrandom, but accesses the Windows-specific cryptography library 
+</I>&gt;<i>through ctypes rather than a compiled Python C extension module.
+</I>
+Does os.urandom work on Win64?  We could just use that if someone would 
+help me with the OS detection (see lib/Crypto/Random/OSRNG/__init__.py).
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+
+
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000271.html">[pycrypto] Fixed PyCrypto 2.3 tarball &amp; SHA256-sums
+</A></li>
+	<LI>Next message: <A HREF="000270.html">[pycrypto] winrandom alternative (Namely for 64-bit Windows)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#269">[ date ]</a>
+              <a href="thread.html#269">[ thread ]</a>
+              <a href="subject.html#269">[ subject ]</a>
+              <a href="author.html#269">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

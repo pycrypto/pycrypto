@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Issue with the new random.choice() unit test
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Issue%20with%20the%20new%20random.choice%28%29%20unit%20test&In-Reply-To=1AE5CDB8-9C66-49BD-876A-72205E8210F2%40dell.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000383.html">
+   <LINK REL="Next"  HREF="000384.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Issue with the new random.choice() unit test</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Issue%20with%20the%20new%20random.choice%28%29%20unit%20test&In-Reply-To=1AE5CDB8-9C66-49BD-876A-72205E8210F2%40dell.com"
+       TITLE="[pycrypto] Issue with the new random.choice() unit test">sbehrens at gmx.li
+       </A><BR>
+    <I>Thu Jan  6 06:16:00 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000383.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+        <LI>Next message: <A HREF="000384.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#385">[ date ]</a>
+              <a href="thread.html#385">[ thread ]</a>
+              <a href="subject.html#385">[ subject ]</a>
+              <a href="author.html#385">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 1/5/2011 2:14 PM, Paul Koning wrote:
+&gt;<i> So what's the problem? Membership testing for dicts was only added in py2.2.
+</I>&gt;<i> True for &quot;k in d&quot; but &quot;d.has_key(k)&quot; works in 2.1.  Unfortunately, it doesn't work in Python 3.  But it would be easy enough to subclass dict and add that method to it in Python 3.
+</I>No need, 2to3 takes care of has_key. I've made the change. Thanks!
+
+Thorsten
+
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000383.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+	<LI>Next message: <A HREF="000384.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#385">[ date ]</a>
+              <a href="thread.html#385">[ thread ]</a>
+              <a href="subject.html#385">[ subject ]</a>
+              <a href="author.html#385">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] configure, PATH, and setup.py
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20configure%2C%20PATH%2C%20and%20setup.py&In-Reply-To=%3CCAHNEuZwVcmG%2Bd1_XHb1cCtdxuFk4_CUjXcJZy6-_58S0fkGcZA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000789.html">
+   <LINK REL="Next"  HREF="000791.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] configure, PATH, and setup.py</H1>
+    <B>John Palmieri</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20configure%2C%20PATH%2C%20and%20setup.py&In-Reply-To=%3CCAHNEuZwVcmG%2Bd1_XHb1cCtdxuFk4_CUjXcJZy6-_58S0fkGcZA%40mail.gmail.com%3E"
+       TITLE="[pycrypto] configure, PATH, and setup.py">jhpalmieri64 at gmail.com
+       </A><BR>
+    <I>Thu Apr  3 08:24:32 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000789.html">[pycrypto] configure, PATH, and setup.py
+</A></li>
+        <LI>Next message: <A HREF="000791.html">[pycrypto] Verify DSA bytestring signature
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#790">[ date ]</a>
+              <a href="thread.html#790">[ thread ]</a>
+              <a href="subject.html#790">[ subject ]</a>
+              <a href="author.html#790">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Here's what I see:
+
+(pycrypto-2.6.1) [08:18]$ export PATH=/bin:/usr/bin
+(pycrypto-2.6.1) [08:18]$ sh configure
+  (... seems to work fine, then I hit ctrl-C ...)
+(pycrypto-2.6.1) [08:18]$ export PATH=/Users/palmieri/Desktop:$PATH
+(pycrypto-2.6.1) [08:20]$ cat /Users/palmieri/Desktop/configure
+#!/bin/sh
+echo &quot;IN PATH&quot;
+(pycrypto-2.6.1) [08:19]$ sh configure
+configure: error: cannot find sources (src/pycrypto_compat.h) in
+/Users/palmieri/Desktop or ..
+
+So you're right in that the other configure script is not being run.
+However, something is going wrong, for me, at least, when there is another
+configure script in the path. Changing the command to &quot;sh ./configure&quot;
+fixes it.
+
+Could you test again by creating a dummy &quot;configure&quot; script elsewhere and
+see what happens when you run &quot;sh configure&quot; while in the pycrypto
+directory?
+
+
+
+On Thu, Apr 3, 2014 at 12:18 AM, Robin Jarry &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">robin.jarry at 6wind.com</A>&gt; wrote:
+
+&gt;<i> Hello John,
+</I>&gt;<i>
+</I>&gt;<i> This sounded weird so I ran some tests. If you have a &lt;script&gt; in the
+</I>&gt;<i> current directory (even if &quot;.&quot; is not in the PATH) it has priority when
+</I>&gt;<i> calling it with sh &lt;script&gt;.
+</I>&gt;<i>
+</I>&gt;<i> *<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">robin at tom</A>:~$ path*
+</I>&gt;<i> /home/robin/bin
+</I>&gt;<i> /usr/local/bin
+</I>&gt;<i> /usr/bin
+</I>&gt;<i> /bin
+</I>&gt;<i> *<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">robin at tom</A>:~$ which test*
+</I>&gt;<i> test is /usr/local/bin/test
+</I>&gt;<i> *<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">robin at tom</A>:~$ cat /usr/local/bin/test*
+</I>&gt;<i> #!/bin/sh
+</I>&gt;<i> echo &quot;IN PATH&quot;
+</I>&gt;<i> *<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">robin at tom</A>:~$ cat ~/test*
+</I>&gt;<i> #!/bin/sh
+</I>&gt;<i> echo &quot;LOCAL&quot;
+</I>&gt;<i> *<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">robin at tom</A>:~$ test*
+</I>&gt;<i> IN PATH
+</I>&gt;<i> *<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">robin at tom</A>:~$ ./test*
+</I>&gt;<i> LOCAL
+</I>&gt;<i> *<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">robin at tom</A>:~$ sh test*
+</I>&gt;<i> LOCAL
+</I>&gt;<i>
+</I>&gt;<i> Maybe you are experiencing another problem.
+</I>&gt;<i>
+</I>&gt;<i> Robin
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Apr 2, 2014 at 10:17 PM, John Palmieri &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">jhpalmieri64 at gmail.com</A>&gt;wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> I have a patch to suggest. Both on a linux system and an OS X system that
+</I>&gt;&gt;<i> I have access to, if my PATH contains another script called &quot;configure&quot;,
+</I>&gt;&gt;<i> then pycrypto fails to configure properly, because the line &quot;sh configure&quot;
+</I>&gt;&gt;<i> finds that other configure script rather than the pycrypto one. So could
+</I>&gt;&gt;<i> that command be changed? For example:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> $ git diff
+</I>&gt;&gt;<i> diff --git a/setup.py b/setup.py
+</I>&gt;&gt;<i> index 5269e9d..950d352 100644
+</I>&gt;&gt;<i> --- a/setup.py
+</I>&gt;&gt;<i> +++ b/setup.py
+</I>&gt;&gt;<i> @@ -308,7 +308,7 @@ class PCTBuildConfigure(Command):
+</I>&gt;&gt;<i>                  os.chmod(&quot;configure&quot;, stat.S_IRUSR | stat.S_IWUSR |
+</I>&gt;&gt;<i>                           stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP |
+</I>&gt;&gt;<i>                           stat.S_IROTH | stat.S_IXOTH)
+</I>&gt;&gt;<i> -            cmd = &quot;sh configure&quot;    # we use &quot;sh&quot; here so that it'll
+</I>&gt;&gt;<i> work on mingw32 with standard python.org binaries
+</I>&gt;&gt;<i> +            cmd = &quot;sh ./configure&quot;   # we use &quot;sh&quot; here so that it'll
+</I>&gt;&gt;<i> work on mingw32 with standard python.org binaries
+</I>&gt;&gt;<i>              if self.verbose &lt; 1:
+</I>&gt;&gt;<i>                  cmd += &quot; -q&quot;
+</I>&gt;&gt;<i>              if os.system(cmd) != 0:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> or (maybe more portable):
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> $ git diff
+</I>&gt;&gt;<i> diff --git a/setup.py b/setup.py
+</I>&gt;&gt;<i> index 5269e9d..77fb2b0 100644
+</I>&gt;&gt;<i> --- a/setup.py
+</I>&gt;&gt;<i> +++ b/setup.py
+</I>&gt;&gt;<i> @@ -308,7 +308,7 @@ class PCTBuildConfigure(Command):
+</I>&gt;&gt;<i>                  os.chmod(&quot;configure&quot;, stat.S_IRUSR | stat.S_IWUSR |
+</I>&gt;&gt;<i>                           stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP |
+</I>&gt;&gt;<i>                           stat.S_IROTH | stat.S_IXOTH)
+</I>&gt;&gt;<i> -            cmd = &quot;sh configure&quot;    # we use &quot;sh&quot; here so that it'll
+</I>&gt;&gt;<i> work on mingw32 with standard python.org binaries
+</I>&gt;&gt;<i> +            cmd = &quot;sh %s&quot; % (os.path.join(os.curdir, 'configure'))   #
+</I>&gt;&gt;<i> we use &quot;sh&quot; here so that it'll work on mingw32 w
+</I>&gt;&gt;<i>              if self.verbose &lt; 1:
+</I>&gt;&gt;<i>                  cmd += &quot; -q&quot;
+</I>&gt;&gt;<i>              if os.system(cmd) != 0:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I have no experience with Windows, for example, so I don't know how
+</I>&gt;&gt;<i> portable this kind of change would be.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> John H. Palmieri
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+-- 
+John H. Palmieri
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20140403/1521b609/attachment-0001.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20140403/1521b609/attachment-0001.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000789.html">[pycrypto] configure, PATH, and setup.py
+</A></li>
+	<LI>Next message: <A HREF="000791.html">[pycrypto] Verify DSA bytestring signature
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#790">[ date ]</a>
+              <a href="thread.html#790">[ thread ]</a>
+              <a href="subject.html#790">[ subject ]</a>
+              <a href="author.html#790">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] How can I read a standard openssl private key with	PyCrypto and decrypt with it?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20How%20can%20I%20read%20a%20standard%20openssl%20private%20key%20with%0A%09PyCrypto%20and%20decrypt%20with%20it%3F&In-Reply-To=20090819032630.GA11413%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000112.html">
+   <LINK REL="Next"  HREF="000114.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] How can I read a standard openssl private key with	PyCrypto and decrypt with it?</H1>
+    <B>William Heath</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20How%20can%20I%20read%20a%20standard%20openssl%20private%20key%20with%0A%09PyCrypto%20and%20decrypt%20with%20it%3F&In-Reply-To=20090819032630.GA11413%40rivest.dlitz.net"
+       TITLE="[pycrypto] How can I read a standard openssl private key with	PyCrypto and decrypt with it?">wgheath at gmail.com
+       </A><BR>
+    <I>Wed Aug 19 11:06:26 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000112.html">[pycrypto] How can I read a standard openssl private key	with	PyCrypto and decrypt with it?
+</A></li>
+        <LI>Next message: <A HREF="000114.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#113">[ date ]</a>
+              <a href="thread.html#113">[ thread ]</a>
+              <a href="subject.html#113">[ subject ]</a>
+              <a href="author.html#113">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I am looking for any way to do this on google app engine using any python
+library.  Do you have any ideas on that?
+-Tim
+
+On Tue, Aug 18, 2009 at 8:26 PM, Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;wrote:
+
+&gt;<i> On Tue, Aug 18, 2009 at 06:07:53PM -0700, William Heath wrote:
+</I>&gt;<i> &gt;I generated a private key with:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   openssl.exe req -x509 -nodes -days 365 -newkey rsa:1024 -keyout
+</I>&gt;<i> &gt;sdgidfedapp11.corp.intuit.net.key -out sdgidfedapp11.corp.intuit.net.crt
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;I can't figure out is how to use PyCrypto.RSA.construct with it
+</I>&gt;<i> &gt;to decrypt something.
+</I>&gt;<i> [snip]
+</I>&gt;<i> &gt;I am sure there is a way to do this with PyCrypto, anyone know how to do
+</I>&gt;<i> it?
+</I>&gt;<i>
+</I>&gt;<i> I am not aware of any simple way to do what you ask without using a
+</I>&gt;<i> separate library.  PKCS#1 and X.509 are not implemented in PyCrypto, and as
+</I>&gt;<i> far as I understand, you would need both to do anything useful with such a
+</I>&gt;<i> key.
+</I>&gt;<i>
+</I>&gt;<i> At this time, PyCrypto's API for RSA is somewhat confusing: It only
+</I>&gt;<i> implements textbook RSA, so it's not really useful for anyone except other
+</I>&gt;<i> crypto library developers (e.g. Paramiko, Twisted, etc.).  You might be
+</I>&gt;<i> able to use OpenSSL to generate hex values for each of the parameters, then
+</I>&gt;<i> parse the results and feed them to RSA.construct yourself using something
+</I>&gt;<i> like this:
+</I>&gt;<i>
+</I>&gt;<i>     openssl rsa -text -in sdgidfedapp11.corp.intuit.net.key
+</I>&gt;<i>
+</I>&gt;<i> However, since PyCrypto lacks PKCS#1 support, if you aren't careful or if
+</I>&gt;<i> you don't know exactly what you are doing, you will probably expose your
+</I>&gt;<i> private key to compromise.
+</I>&gt;<i>
+</I>&gt;<i> If you want to do practical public-key work with X.509 today, you might
+</I>&gt;<i> want to check out other libraries like pycryptopp, Google Key Czar, and
+</I>&gt;<i> M2Crypto.  Also, Paramiko (which depends on PyCrypto) might support at
+</I>&gt;<i> least reading those files, since IIRC they're also used for SSH private
+</I>&gt;<i> keys.
+</I>&gt;<i>
+</I>&gt;<i> Please do remember that PyCrypto's current RSA functions are insecure if
+</I>&gt;<i> used directly.  I would like to introduce a simple public key API at some
+</I>&gt;<i> point, but right now it doesn't exist.
+</I>&gt;<i>
+</I>&gt;<i> If you're doing any low-level work with RSA, you should at minimum, read
+</I>&gt;<i> and understand this overview paper:
+</I>&gt;<i>
+</I>&gt;<i>     <A HREF="http://www.cs.bgu.ac.il/~beimel/Courses/crypto/Boneh.pdf">http://www.cs.bgu.ac.il/~beimel/Courses/crypto/Boneh.pdf</A>
+</I>&gt;<i>
+</I>&gt;<i> Also, as a side note, 1024-bit RSA keys are a little on the short side
+</I>&gt;<i> today.  I would recommend nothing less than 2048 bits:
+</I>&gt;<i>
+</I>&gt;<i>     <A HREF="http://www.google.com/search?q=1024-bit+RSA">http://www.google.com/search?q=1024-bit+RSA</A>
+</I>&gt;<i>
+</I>&gt;<i> Hope that helps.
+</I>&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i> - Dwayne
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+</I>&gt;<i>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090819/e650d1b4/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090819/e650d1b4/attachment.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000112.html">[pycrypto] How can I read a standard openssl private key	with	PyCrypto and decrypt with it?
+</A></li>
+	<LI>Next message: <A HREF="000114.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#113">[ date ]</a>
+              <a href="thread.html#113">[ thread ]</a>
+              <a href="subject.html#113">[ subject ]</a>
+              <a href="author.html#113">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

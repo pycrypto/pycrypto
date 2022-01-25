@@ -1,0 +1,231 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Error trying to install pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Error%20trying%20to%20install%20pycrypto&In-Reply-To=%3CCAEncD4fpOJ5STZw2bEEnXs3Fs%2BcbvQEiiWZoB5EodZMyus-qKA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000820.html">
+   <LINK REL="Next"  HREF="000819.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Error trying to install pycrypto</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Error%20trying%20to%20install%20pycrypto&In-Reply-To=%3CCAEncD4fpOJ5STZw2bEEnXs3Fs%2BcbvQEiiWZoB5EodZMyus-qKA%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Error trying to install pycrypto">dave.pawson at gmail.com
+       </A><BR>
+    <I>Mon Sep 15 23:43:56 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000820.html">[pycrypto] Error trying to install pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000819.html">[pycrypto] Mimicking PHP crypt() with pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#821">[ date ]</a>
+              <a href="thread.html#821">[ thread ]</a>
+              <a href="subject.html#821">[ subject ]</a>
+              <a href="author.html#821">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>src/MD2.c:31:20: error: Python.h: No such file or directory
+
+the file is missing? Guessing it is provided by the python development packages?
+
+Try google?
+
+HTH Dave
+
+On 16 September 2014 00:41,  &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">don at amberfisharts.com</A>&gt; wrote:
+&gt;<i> Am 2014-08-29 20:40, schrieb Jason Kojro-Badziak:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hello all:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Sorry to bother you, but can anyone give me some help with the
+</I>&gt;&gt;<i> following installation error? I'm not sure how to get this running:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> [<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">root at snmp-sim</A> pycrypto-2.6.1]# python /opt/pycrypto-2.6.1/setup.py build
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> running build
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> running build_py
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> running build_ext
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> running build_configure
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> warning: GMP or MPIR library not found; Not building
+</I>&gt;&gt;<i> Crypto.PublicKey._fastmath.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> building 'Crypto.Hash._MD2' extension
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> gcc -pthread -fno-strict-aliasing -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2
+</I>&gt;&gt;<i> -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m32
+</I>&gt;&gt;<i> -march=i686 -mtune=atom -fasynchronous-unwind-tables -D_GNU_SOURCE
+</I>&gt;&gt;<i> -fPIC -fwrapv -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions
+</I>&gt;&gt;<i> -fstack-protector --param=ssp-buffer-size=4 -m32 -march=i686
+</I>&gt;&gt;<i> -mtune=atom -fasynchronous-unwind-tables -D_GNU_SOURCE -fPIC -fwrapv
+</I>&gt;&gt;<i> -fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/
+</I>&gt;&gt;<i> -I/usr/include/python2.6 -c src/MD2.c -o
+</I>&gt;&gt;<i> build/temp.linux-i686-2.6/src/MD2.o
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/MD2.c:31:20: error: Python.h: No such file or directory
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/MD2.c:131: error: expected '=', ',', ';', 'asm' or
+</I>&gt;&gt;<i> '__attribute__' before '*' token
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> In file included from src/MD2.c:147:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:48: error: expected specifier-qualifier-list
+</I>&gt;&gt;<i> before 'PyObject_HEAD'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:59: error: expected '=', ',', ';', 'asm' or
+</I>&gt;&gt;<i> '__attribute__' before 'PyTypeObject'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c: In function 'newALGobject':
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:69: warning: implicit declaration of function
+</I>&gt;&gt;<i> 'PyObject_New'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:69: error: expected expression before 'ALGobject'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c: At top level:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:76: error: expected ')' before '*' token
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:91: error: expected '=', ',', ';', 'asm' or
+</I>&gt;&gt;<i> '__attribute__' before '*' token
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:110: error: expected '=', ',', ';', 'asm' or
+</I>&gt;&gt;<i> '__attribute__' before '*' token
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:122: error: expected '=', ',', ';', 'asm' or
+</I>&gt;&gt;<i> '__attribute__' before '*' token
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:162: error: expected '=', ',', ';', 'asm' or
+</I>&gt;&gt;<i> '__attribute__' before '*' token
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:188: error: expected '=', ',', ';', 'asm' or
+</I>&gt;&gt;<i> '__attribute__' before '*' token
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:190: error: expected '=', ',', ';', 'asm' or
+</I>&gt;&gt;<i> '__attribute__' before 'ALG_methods'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:199: error: expected '=', ',', ';', 'asm' or
+</I>&gt;&gt;<i> '__attribute__' before '*' token
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:225: error: expected '=', ',', ';', 'asm' or
+</I>&gt;&gt;<i> '__attribute__' before 'ALGtype'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:271: error: expected '=', ',', ';', 'asm' or
+</I>&gt;&gt;<i> '__attribute__' before '*' token
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:304: error: array type has incomplete element type
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:305: error: 'PyCFunction' undeclared here (not in
+</I>&gt;&gt;<i> a function)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:305: error: expected '}' before 'ALG_new'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c: In function 'init_MD2':
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:339: error: 'PyObject' undeclared (first use in
+</I>&gt;&gt;<i> this function)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:339: error: (Each undeclared identifier is
+</I>&gt;&gt;<i> reported only once
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:339: error: for each function it appears in.)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:339: error: 'm' undeclared (first use in this
+</I>&gt;&gt;<i> function)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:351: error: 'ALGtype' undeclared (first use in
+</I>&gt;&gt;<i> this function)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:351: error: 'PyType_Type' undeclared (first use
+</I>&gt;&gt;<i> in this function)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:352: warning: implicit declaration of function
+</I>&gt;&gt;<i> 'Py_InitModule'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:356: error: 'o' undeclared (first use in this
+</I>&gt;&gt;<i> function)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:356: warning: implicit declaration of function
+</I>&gt;&gt;<i> 'PyInt_FromLong'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:356: warning: implicit declaration of function
+</I>&gt;&gt;<i> 'PyDict_SetItemString'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:356: warning: implicit declaration of function
+</I>&gt;&gt;<i> 'PyModule_GetDict'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:356: warning: implicit declaration of function
+</I>&gt;&gt;<i> 'Py_DECREF'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:360: warning: implicit declaration of function
+</I>&gt;&gt;<i> 'PyErr_Occurred'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/hash_template.c:361: warning: implicit declaration of function
+</I>&gt;&gt;<i> 'Py_FatalError'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> error: command 'gcc' failed with exit status 1
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thank you!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Jason Kojro-Badziak
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> It also seems that you do not have gmp installed.
+</I>&gt;<i> Many PyCrypto functions will be very slow so it is highly recommended that
+</I>&gt;<i> you install it if you want any kind of performance.
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000820.html">[pycrypto] Error trying to install pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000819.html">[pycrypto] Mimicking PHP crypt() with pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#821">[ date ]</a>
+              <a href="thread.html#821">[ thread ]</a>
+              <a href="subject.html#821">[ subject ]</a>
+              <a href="author.html#821">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

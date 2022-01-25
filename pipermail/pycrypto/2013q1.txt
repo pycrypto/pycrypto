@@ -1,0 +1,1128 @@
+From helderijs at gmail.com  Mon Jan 14 10:14:19 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Mon, 14 Jan 2013 19:14:19 +0100
+Subject: [pycrypto] Pickling AES cipher objects - any reasons not to
+ support this?
+In-Reply-To: <CAPpwKcwtgkjU-ap1x7H+4a1fd9Tabbhph2Wb84+BMh4j7wdmQQ@mail.gmail.com>
+References: <CAPpwKcwtgkjU-ap1x7H+4a1fd9Tabbhph2Wb84+BMh4j7wdmQQ@mail.gmail.com>
+Message-ID: <CAGfyce17N0XSbVR0pnSXN8fykBek66txcHR=YdQaR87qMpRpbg@mail.gmail.com>
+
+Hi Pearu,
+
+
+> >>> import pickle
+> >>> from Crypto.Cipher import AES
+> >>> cipher = AES.new('mysecret'*2)
+> >>> dump=pickle.dumps(cipher)
+> PicklingError: Can't pickle '_AES' object: <_AES object at 0x1fe0bd0>
+>
+> I wonder if there are any fundamental reasons why pickling cipher objects
+> cannot
+> be pickled? Otherwise I would look into implementing pickling support for
+> cipher objects.
+>
+> I would presume that storing cipher object is safer (would it be?)
+> than storing an encryption key used to create the cipher object.
+>
+
+Pickling a cipher object is actually less secure.
+
+First, it cannot be more secure because anybody can easily find back the
+key from the pickled blob.
+
+Second - and with the only exception of ECB mode - a cipher object is
+always stateful: it depends on the key, but also on the IV/nonce, and on
+the data you have processed so far. Pickling will make only sense if the
+encryption process has to be paused half-way so tat it can be resumed at a
+later moment. Not really a common use case.
+
+Pickling a cipher and reusing later for a totally different encryption will
+lead to IV/nonce reuse, which is definitely bad, especially for stream
+cipher-like modes.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130114/70344e4b/attachment.html>
+
+From helderijs at gmail.com  Mon Jan 28 02:21:08 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Mon, 28 Jan 2013 11:21:08 +0100
+Subject: [pycrypto] Remove DSA because 1024bit is not safe
+In-Reply-To: <50C8427F.4040002@web.de>
+References: <50C8427F.4040002@web.de>
+Message-ID: <CAGfyce2XC2Mv1ro=HL0Wab=AArWCr6x7b2MRn-vPEXWrpkNm0g@mail.gmail.com>
+
+I think you are looking at an older FIPS 186 spec.
+The current one allows 3072 bits for DSA.
+
+Besides that, DSA is based on a different hard problem than RSA.
+A 1024 bit DSA signature is somewhat more secure than a 1024 bit RSA
+signature.
+
+2012/12/12 . <dcMhOYBdpZkH at web.de>
+
+> It is important to consider 1024bit DSA - NIST says this too - not
+> secure anymore, or do you want your messages to be readable within your
+> lifetime?.
+> Since DSA max. key size is 1024bit it's time to think
+> about removing it completely from pycrypto and use RSA or ECC (with your
+> own curves, not NIST's untrustable ones).
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130128/2355ff60/attachment.html>
+
+From dlitz at dlitz.net  Mon Jan 28 09:28:30 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Mon, 28 Jan 2013 09:28:30 -0800
+Subject: [pycrypto] Remove DSA because 1024bit is not safe
+In-Reply-To: <CAGfyce2XC2Mv1ro=HL0Wab=AArWCr6x7b2MRn-vPEXWrpkNm0g@mail.gmail.com>
+References: <50C8427F.4040002@web.de>
+ <CAGfyce2XC2Mv1ro=HL0Wab=AArWCr6x7b2MRn-vPEXWrpkNm0g@mail.gmail.com>
+Message-ID: <5106B53E.7030308@dlitz.net>
+
+That said, we should probably support the newer spec:
+
+     >>> from Crypto.PublicKey import DSA
+     >>> DSA.generate(3072)
+    Traceback (most recent call last):
+       File "<stdin>", line 1, in <module>
+       File "/usr/lib/python2.7/dist-packages/Crypto/PublicKey/DSA.py",
+    line 337, in generate
+         raise ValueError("Number of bits in p must be a multiple of 64
+    between 512 and 1024, not %d bits" % (bits,))
+    ValueError: Number of bits in p must be a multiple of 64 between 512
+    and 1024, not 3072 bits
+
+
+On 01/28/2013 02:21 AM, Legrandin wrote:
+> I think you are looking at an older FIPS 186 spec.
+> The current one allows 3072 bits for DSA.
+>
+> Besides that, DSA is based on a different hard problem than RSA.
+> A 1024 bit DSA signature is somewhat more secure than a 1024 bit RSA 
+> signature.
+>
+> 2012/12/12 . <dcMhOYBdpZkH at web.de <mailto:dcMhOYBdpZkH at web.de>>
+>
+>     It is important to consider 1024bit DSA - NIST says this too - not
+>     secure anymore, or do you want your messages to be readable within
+>     your lifetime?.
+>     Since DSA max. key size is 1024bit it's time to think
+>     about removing it completely from pycrypto and use RSA or ECC
+>     (with your
+>     own curves, not NIST's untrustable ones).
+>
+>     _______________________________________________
+>     pycrypto mailing list
+>     pycrypto at lists.dlitz.net <mailto:pycrypto at lists.dlitz.net>
+>     http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130128/fb41841c/attachment.html>
+
+From dlitz at dlitz.net  Mon Jan 28 09:36:58 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Mon, 28 Jan 2013 09:36:58 -0800
+Subject: [pycrypto] Pickling AES cipher objects - any reasons not to
+ support this?
+In-Reply-To: <CAGfyce17N0XSbVR0pnSXN8fykBek66txcHR=YdQaR87qMpRpbg@mail.gmail.com>
+References: <CAPpwKcwtgkjU-ap1x7H+4a1fd9Tabbhph2Wb84+BMh4j7wdmQQ@mail.gmail.com>
+ <CAGfyce17N0XSbVR0pnSXN8fykBek66txcHR=YdQaR87qMpRpbg@mail.gmail.com>
+Message-ID: <5106B73A.9070603@dlitz.net>
+
+On 01/14/2013 10:14 AM, Legrandin wrote:
+> Pickling a cipher and reusing later for a totally different encryption 
+> will lead to IV/nonce reuse, which is definitely bad, especially for 
+> stream cipher-like modes.
+That's a good point, and reason enough not to support it.  We do support 
+pickling *key* objects, although IMHO pickling should never be used anyway.
+
+- Dwayne
+
+From dlitz at dlitz.net  Sun Feb 17 23:58:48 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Sun, 17 Feb 2013 23:58:48 -0800
+Subject: [pycrypto] Hash: Remove "oid" attributes; add "name" attribute
+Message-ID: <20130218075848.GA4050@goedel.dlitz.net>
+
+[Reposted from 'Hash: Remove "oid" attributes; add "name" attribute'
+    https://github.com/dlitz/pycrypto/commit/a3ec589b8dcd1c86ddd5f35666e74aa3230801b5]:
+
+Legrandin wrote:
+
+>Hi Dwayne,
+>
+>The Object ID is an identifier assigned by (inter)national standard 
+>bodies (NIST) or recognized private organizations (RSA Inc, Teletrust) 
+>to the hash algorithm for use in all the several crypto protocols based 
+>on ASN.1 (PKCS#1 signatures, PKCS#7/CMS, PKCS#8 private key 
+>encapsulation, SSL/TLS, CA certificates, etc). Nothing stops one from 
+>also using without ASN.1, as a stand-along numerical string guaranteed 
+>to be unique.
+>
+>The fact that a few other protocols don't use it (and prefer to have 
+>their own internal identifiers, and therefore not leverage work done by 
+>others already) does not look to me as a reason to isolate it in the 
+>PKCS#1v1.5 signature module, considering that protocols that use it are 
+>the majority, and all hashes currently in pycrypto have it (being them 
+>all quite mature).
+>
+>The attribute could also remained undefined for those experimental hash 
+>that pycrypto ever introduced but that don't have any Object ID 
+>assigned yet (e.g. Salsa20 maybe?). That would just mean that the hash 
+>cannot be used to make PKCS#1v1.5 signatures (which makes sense). If 
+>the OID exists, it can be added to the module. It it doesn't, it is not 
+>defined.
+
+My response:
+
+     Be very careful with your use of Object Identifiers.  In many cases there are a
+     great many OIDs available for the same algorithm, but the exact OID you're
+     supposed to use varies somewhat.
+     -- Peter Gutmann, X.509 Style Guide, http://www.cs.auckland.ac.nz/~pgut001/pubs/x509guide.txt
+
+> Protocols that use [OIDs] are the majority
+
+Really?  The only widely-used protocols I can think of are SNMP (which 
+is irrelevant here), LDAP (also irrelevant), and the CMS/TLS/PKCS 
+protocol suite.  SSH doesn't use them, OpenPGP doesn't use them, DNSSEC 
+doesn't use them, OAuth doesn't use them, OpenID doesn't use them, DKIM 
+doesn't use them, and I'm pretty sure that IPsec/IKEv1/IKEv2 don't use 
+them.  Of the protocols that do use them, which ones actually use the 
+OIDs listed in this commit, rather than some ciphersuite identifier like 
+pbeWithSHA1AndDES-CBC?  Have there been any major new crypto protocols 
+designed in the last decade that use these OIDs?  That use ASN.1?
+
+This is going to be a bit of a long rant.
+
+OIDs and ASN.1 are legacy ITU-T crap, and the protocols built around 
+them are overcomplicated and error-prone.  The only reason why I merged 
+any ASN.1 stuff at all is because PKCS#1 uses it.  PKCS#1 is a bit of a 
+special case, because it's basically synonymous with RSA; It's even used 
+protocols that don't otherwise use ASN.1 use PKCS#1.
+
+I think it was you who convinced me that the ASN.1 used by PKCS#1 was 
+simple enough that it wouldn't lead to an endless series of bugs.  Even 
+so, you *still* got it wrong, as described in LP#1119552 [1] .  I'm not 
+blaming you; I'm blaming ASN.1 for being such a terrible, complicated, 
+obfuscatory way to define and describe data formats.  Hell, the only 
+reason why you got it wrong was because *so many other people got it 
+wrong early on that the spec was modified to accommodate their errors*.  
+And PKCS#1 is a much *simpler* use-case of ASN.1 compared to the rest of 
+the CMS/TLS/PKCS suite...
+
+In contrast, PyCrypto *needs* to be kept simple, because we simply don't 
+have the developer resources to create a secure CMS/TLS/PKCS 
+implementation.  Even if we had the resources, getting it right is 
+tricky enough that we *shouldn't* try to make yet another 
+implementation---especially not one that's Python-specific.  It would be 
+better to pool our limited resources with other FOSS crypto developers 
+to improve the existing implementations, or maybe to try to recruit them 
+to work on a new project that would become the successor to the existing 
+implementations.  One more insecure, resource-starved FOSS CMS/TLS/PKCS 
+implementation is not good for users.
+
+OpenSSL exists today, and there are several ways to use it from Python.  
+The purpose of PyCrypto is not to reimplement everything that OpenSSL 
+already does.  What would be gained by doing that?  If we just wanted to 
+make a nicer, more Pythonic API for OpenSSL, we could just add OpenSSL 
+as a dependency and be done with it.  (Python itself already uses 
+OpenSSL for hashlib, so it's not unprecedented.)
+
+PyCrypto is used by a lot of folks who are either implementing 
+recently-created protocols (i.e. *not* CMS/TLS/PKCS), or who 
+are---rightly or wrongly---creating new protocols.  One of my goals with 
+PyCrypto has been to improve their chances of building something secure, 
+and to me that means that I should steer people to simpler, 
+easy-to-implement building blocks like OpenPGP and SSH, not complex, 
+error-prone things like ASN.1/CMS/TLS/X.509/PKCS#12.
+
+I want to avoid turning PyCrypto into something that treats CMS/TLS/PKCS 
+as the gold standard and everything else as a second-class citizen.  
+There have already been a few cases of that (for example, the "oid" 
+attribute here, and the "pkcs" parameter to RSA.exportKey), and I see 
+those things as oversights that need to be fixed, not things that I want 
+to entrench further.
+
+I see that you've been building a PKCS#8 implementation in your fork of 
+the PyCrypto repo.  I can only assume that you eventually plan to build 
+a PKCS#7/CMS implementation, too.  That's fine, but seeing things like 
+`algos = { 'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC' : 
+_PBES2_Factory(_PBKDF2_Factory(), _DES_EDE3_CBC_Factory()) }` convinces 
+me that it's beyond the scope of what I want to include in PyCrypto, 
+unless it were in a well-isolated subdirectory that could be easily 
+split into a separate package if the maintenance became too burdensome 
+for me.  At a minimum, we'd need to agree that the string "X.509" 
+doesn't belong in the module that implements the raw RSA primitive.
+
+You've done a lot of good work and I appreciate your contributions, but 
+IMHO you're embedding the PKCS stuff too deeply into the core of 
+PyCrypto when I'd prefer to see it in separate subdirectory, or even a 
+separate library.  This is partly my fault: I was a bit too anxious to 
+merge the PKCS#1 stuff after being absent for a while, so I didn't pay 
+close enough attention to the API changes (even though the API is really 
+what differentiates PyCrypto from other libraries).  In the future, I'm 
+going to try to be more picky upfront about the API, to avoid 
+backpedaling like I'm doing right now with the .oid stuff.
+
+As I see it, the PKCS1 stuff probably should have been consolidated into 
+something like Crypto.Protocol.PKCS1.  Going forward, the PKCS8 stuff 
+should probably go into something like Crypto.Protocol.PKCS8, and a 
+future OpenPGP package could go into Crypto.Protocol.OpenPGP.  
+RSA.importKey and RSA.exportKey should probably be deprecated and moved 
+into the PKCS1 and PKCS8 packages, respectively.
+
+The exact names of the subtrees are debatable, but the idea is create a 
+clear separation between the primitives and the protocols that use them, 
+rather than mixing them all together.  This is particularly important 
+for the hash modules, since those could eventually become thin wrappers 
+around the standard hashlib library---I doubt that would ever happen if 
+we insisted on attaching extraneous things like OIDs to them.
+
+Again, sorry for the long message, but I wanted to explain my thinking 
+as clearly as possible.  Let me know what you think.
+
+Cheers,
+- Dwayne
+
+[1] https://bugs.launchpad.net/pycrypto/+bug/1119552
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From adam.woodbeck at gmail.com  Wed Feb 20 06:14:02 2013
+From: adam.woodbeck at gmail.com (Adam Woodbeck)
+Date: Wed, 20 Feb 2013 09:14:02 -0500
+Subject: [pycrypto] Building pycrypto on HP-UX 11.31
+Message-ID: <CAGkRLJpooHQvqx=vvbyg1Mgy+6yrnuvYoiGbtM7i7fYEqhN_Mw@mail.gmail.com>
+
+Has anyone successfully built pycrypto 2.6 on HP-UX 11.31?  I'm having a
+slight struggle with the build process, the latest of which are the
+following errors:
+
+"src/hash_SHA2.h", line 91: error #2020: identifier "U32" is undefined
+  typedef U32 sha2_word_t;
+
+"src/hash_SHA2_template.c", line 175: error #2020: identifier "U8" is
+undefined
+  hash_update (hash_state *self, const U8 *buf, int len)
+
+2 errors detected in the compilation of "src/SHA256.c".
+
+Any advice would be appreciated.
+
+Sincerely,
+Adam
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130220/ea669d99/attachment.html>
+
+From andyhhp at gmail.com  Wed Feb 20 15:57:36 2013
+From: andyhhp at gmail.com (Andrew Cooper)
+Date: Wed, 20 Feb 2013 23:57:36 +0000
+Subject: [pycrypto] Building pycrypto on HP-UX 11.31
+In-Reply-To: <CAGkRLJpooHQvqx=vvbyg1Mgy+6yrnuvYoiGbtM7i7fYEqhN_Mw@mail.gmail.com>
+References: <CAGkRLJpooHQvqx=vvbyg1Mgy+6yrnuvYoiGbtM7i7fYEqhN_Mw@mail.gmail.com>
+Message-ID: <512562F0.3030907@gmail.com>
+
+
+On 20/02/2013 14:14, Adam Woodbeck wrote:
+> Has anyone successfully built pycrypto 2.6 on HP-UX 11.31?  I'm having
+> a slight struggle with the build process, the latest of which are the
+> following errors:
+>
+> "src/hash_SHA2.h", line 91: error #2020: identifier "U32" is undefined
+>   typedef U32 sha2_word_t;
+>
+> "src/hash_SHA2_template.c", line 175: error #2020: identifier "U8" is
+> undefined
+>   hash_update (hash_state *self, const U8 *buf, int len)
+>
+> 2 errors detected in the compilation of "src/SHA256.c".
+>
+> Any advice would be appreciated.
+>
+> Sincerely,
+> Adam
+
+Probably worth using uint32_t and uint8_t respectively, as they
+substantially more standard than U32 and U8 in the world of C.
+
+~Andrew
+
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130220/16b034ab/attachment.html>
+
+From dlitz at dlitz.net  Thu Feb 21 01:04:24 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Thu, 21 Feb 2013 01:04:24 -0800
+Subject: [pycrypto] Building pycrypto on HP-UX 11.31
+In-Reply-To: <512562F0.3030907@gmail.com>
+References: <CAGkRLJpooHQvqx=vvbyg1Mgy+6yrnuvYoiGbtM7i7fYEqhN_Mw@mail.gmail.com>
+ <512562F0.3030907@gmail.com>
+Message-ID: <5125E318.30205@dlitz.net>
+
+On 02/20/2013 03:57 PM, Andrew Cooper wrote:
+>
+> On 20/02/2013 14:14, Adam Woodbeck wrote:
+>> Has anyone successfully built pycrypto 2.6 on HP-UX 11.31?  I'm 
+>> having a slight struggle with the build process, the latest of which 
+>> are the following errors:
+>>
+>> "src/hash_SHA2.h", line 91: error #2020: identifier "U32" is undefined
+>>   typedef U32 sha2_word_t;
+>>
+>> "src/hash_SHA2_template.c", line 175: error #2020: identifier "U8" is 
+>> undefined
+>>   hash_update (hash_state *self, const U8 *buf, int len)
+>>
+>> 2 errors detected in the compilation of "src/SHA256.c".
+> Probably worth using uint32_t and uint8_t respectively, as they 
+> substantially more standard than U32 and U8 in the world of C.
+I think the problem is in src/hash_SHA2.h.  There's no #else case, and 
+there probably should be:
+
+    /* determine fixed size types */
+    #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
+    #include <stdint.h>
+    typedef uint8_t                U8;
+    typedef uint32_t            U32;
+    typedef uint64_t            U64;
+    #elif defined(_MSC_VER)
+    typedef unsigned char        U8;
+    typedef unsigned __int64    U64;
+    typedef unsigned int        U32;
+    #elif defined(__sun) || defined(__sun__)
+    #include <sys/inttypes.h>
+    typedef uint8_t                U8;
+    typedef uint32_t            U32;
+    typedef uint64_t            U64;
+    #endif
+
+Actually, the problem is that there are a bunch of different ways that 
+integer types are being defined in PyCrypto.  Time to move this over to 
+a common include file and let autoconf figure out the details.
+
+Adam, could you pull the hpux-wip branch of pycrypto, run "python 
+setup.py build test" and see if it works with my changes?  (Don't derive 
+your own branches on top of -wip branches, though, since I delete/rebase 
+them often!)
+
+Basic instructions are as follows:
+
+     git clone https://github.com/dlitz/pycrypto
+     cd pycrypto
+     git checkout hpux-wip
+     python setup.py build test
+
+Alternatively, if you don't have git installed, you can do this:
+
+     # somehow download and unzip 
+https://github.com/dlitz/pycrypto/archive/11559ddebbba3a4d4552a5038392d1cbaf11fbe6.zip
+     cd pycrypto-1159dd*
+     python setup.py build test
+
+If this works, I'll apply the changes to the master branch and include 
+it in the next release.
+
+Cheers,
+- Dwayne
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130221/c45cca29/attachment.html>
+
+From helderijs at gmail.com  Mon Feb 18 14:30:58 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Mon, 18 Feb 2013 23:30:58 +0100
+Subject: [pycrypto] Hash: Remove "oid" attributes; add "name" attribute
+In-Reply-To: <20130218075848.GA4050@goedel.dlitz.net>
+References: <20130218075848.GA4050@goedel.dlitz.net>
+Message-ID: <CAGfyce3W0Y8jNBLVbzJ_dHb_enaS1wjNZ4M0vd-Yn6fg=NmkZQ@mail.gmail.com>
+
+Hi Dwayne,
+
+Please see inline.
+
+2013/2/18 Dwayne Litzenberger <dlitz at dlitz.net>
+
+> [Reposted from 'Hash: Remove "oid" attributes; add "name" attribute'
+>    https://github.com/dlitz/**pycrypto/commit/**
+> a3ec589b8dcd1c86ddd5f35666e74a**a3230801b5<https://github.com/dlitz/pycrypto/commit/a3ec589b8dcd1c86ddd5f35666e74aa3230801b5>
+> ]:
+>
+> Legrandin wrote:
+>
+>  Hi Dwayne,
+>>
+>> The Object ID is an identifier assigned by (inter)national standard
+>> bodies (NIST) or recognized private organizations (RSA Inc, Teletrust) to
+>> the hash algorithm for use in all the several crypto protocols based on
+>> ASN.1 (PKCS#1 signatures, PKCS#7/CMS, PKCS#8 private key encapsulation,
+>> SSL/TLS, CA certificates, etc). Nothing stops one from also using without
+>> ASN.1, as a stand-along numerical string guaranteed to be unique.
+>>
+>> The fact that a few other protocols don't use it (and prefer to have
+>> their own internal identifiers, and therefore not leverage work done by
+>> others already) does not look to me as a reason to isolate it in the
+>> PKCS#1v1.5 signature module, considering that protocols that use it are the
+>> majority, and all hashes currently in pycrypto have it (being them all
+>> quite mature).
+>>
+>> The attribute could also remained undefined for those experimental hash
+>> that pycrypto ever introduced but that don't have any Object ID assigned
+>> yet (e.g. Salsa20 maybe?). That would just mean that the hash cannot be
+>> used to make PKCS#1v1.5 signatures (which makes sense). If the OID exists,
+>> it can be added to the module. It it doesn't, it is not defined.
+>>
+>
+> My response:
+>
+>     Be very careful with your use of Object Identifiers.  In many cases
+> there are a
+>     great many OIDs available for the same algorithm, but the exact OID
+> you're
+>     supposed to use varies somewhat.
+>     -- Peter Gutmann, X.509 Style Guide, http://www.cs.auckland.ac.nz/~**
+> pgut001/pubs/x509guide.txt<http://www.cs.auckland.ac.nz/%7Epgut001/pubs/x509guide.txt>
+>
+>
+Does any of the hash algorithm in the library have more than 1 OID?
+If not, maybe this quote was referring to something else?
+
+
+>  Protocols that use [OIDs] are the majority
+>>
+>
+> Really?  The only widely-used protocols I can think of are SNMP (which is
+> irrelevant here), LDAP (also irrelevant), and the CMS/TLS/PKCS protocol
+> suite.  SSH doesn't use them, OpenPGP doesn't use them, DNSSEC doesn't use
+> them, OAuth doesn't use them, OpenID doesn't use them, DKIM doesn't use
+> them, and I'm pretty sure that IPsec/IKEv1/IKEv2 don't use them.  Of the
+> protocols that do use them, which ones actually use the OIDs listed in this
+> commit, rather than some ciphersuite identifier like pbeWithSHA1AndDES-CBC?
+>  Have there been any major new crypto protocols designed in the last decade
+> that use these OIDs?  That use ASN.1?
+
+ This is going to be a bit of a long rant.
+>
+> OIDs and ASN.1 are legacy ITU-T crap, and the protocols built around them
+> are overcomplicated and error-prone.  The only reason why I merged any
+> ASN.1 stuff at all is because PKCS#1 uses it.  PKCS#1 is a bit of a special
+> case, because it's basically synonymous with RSA; It's even used protocols
+> that don't otherwise use ASN.1 use PKCS#1.
+>
+
+I think we are throwing the baby with the dirty water here.
+
+I agree ITU created a lot of bloated standards and protocols.
+ASN.1 got a bad fame mostly because of that, and even though bells and
+whistles have been added over time due to design-by-committee, its core
+remains very simple and elegant. BER/DER encoding in particular is very
+handy for binary serialization (even outside of the crypto context); it
+could be summarized in 3 or 4 pages only and still cover 95% of the use
+cases one could ever need. Even the famous, short layman guide could be
+trimmed down a lot [2]. To me, BER/DER is just a rock solid binary TLV with
+a compact schema format (which even XML never had until RELAX NG).
+
+Google's ProtocolBuffers, Facebook's Thrift and several others have been
+created very recently to cover the same problem space; they ended up
+re-inventing the same wheel, getting the abstraction wrong, and still
+without the simplicity of BER/DER [3].
+
+Now, in the crypto world, ASN.1 DER has been the encoding of choice exactly
+because it is simple, clear, efficient, and unambiguous. I stress
+"efficient" in that crypto is also done by resource constrained
+applications like embedded/industrial devices, sensors, smart cards, crypto
+tokens (all things that have serious trouble processing a bit of HTTP or
+XML).
+
+Sure, horrible things have been built with ASN.1, but that's true for
+anything.
+XML-DSIG is a good example [4], which does *not* prove that XML is bad per
+se.
+
+I think it was you who convinced me that the ASN.1 used by PKCS#1 was
+> simple enough that it wouldn't lead to an endless series of bugs.  Even so,
+> you *still* got it wrong, as described in LP#1119552 [1] .  I'm not blaming
+> you; I'm blaming ASN.1 for being such a terrible, complicated, obfuscatory
+> way to define and describe data formats.  Hell, the only reason why you got
+> it wrong was because *so many other people got it wrong early on that the
+> spec was modified to accommodate their errors*.  And PKCS#1 is a much
+> *simpler* use-case of ASN.1 compared to the rest of the CMS/TLS/PKCS
+> suite...
+>
+
+I ignored 3 lines in Appendix B of RFC 3447 (page 54, out of 70+).
+
+Would have it made any different if the encoding had been XML, Json, or
+some custom application-specific format? I don't think so.
+
+It has more to do with the fact that any 20+ years old format (PKCS#1)
+always has some quirks. That, and I was not good enough to read the whole
+the RFC.
+But not really a good example for why ASN.1 is bad.
+
+In contrast, PyCrypto *needs* to be kept simple, because we simply don't
+> have the developer resources to create a secure CMS/TLS/PKCS
+> implementation.  Even if we had the resources, getting it right is tricky
+> enough that we *shouldn't* try to make yet another
+> implementation---especially not one that's Python-specific.
+
+
+I think that asn1 module serves the purpose of simplicity, because:
+a) the code that uses it (PKCS#1/#5/#8) is more compact and readable (at
+least to me, and compared to what it would be w/o the asn1 module), and
+more importantly
+b) I consider PKCS#1/#5/#8 fundamental for a base crypto library. I
+consider a library w/o them even harmful.
+
+Having said that, let me derail a bit to say that I agree that TLS doesn't
+belong into PyCrypto because it is way above than "basic crypto". I never
+looked enough into CMS to have an opinion about it, but its RFC is shorter
+than PKCS1, so I don't have the feeling it's actually complicated.
+I don't understand what "PKCS implementation" means though (in the same way
+I would not know what "RFC" implementation is). All PKCS standards vary in
+scope and use.
+PKCS#1 is just a standardized way to do RSA, because otherwise any program
+would do it differently and cryptography in application would be years
+behind (ElGamal anybody?). PKCS#5 is a standardized way to derive keys from
+passwords. I believe they deserve to be in a basic crypto library, since I
+could not imagine working w/o them (they also turned into RFC for a reason).
+Other PKCS specs don't because they are focused on very specific use cases
+(PKCS#11, for secure tokens) or are total crap (PKCS#12).
+
+In short, the expression "CMS/TLS/PKCS" you use all over your email is
+binding together too many unrelated things.
+
+
+> It would be better to pool our limited resources with other FOSS crypto
+> developers to improve the existing implementations, or maybe to try to
+> recruit them to work on a new project that would become the successor to
+> the existing implementations.  One more insecure, resource-starved FOSS
+> CMS/TLS/PKCS implementation is not good for users.
+>
+
+OpenSSL exists today, and there are several ways to use it from Python.
+>  The purpose of PyCrypto is not to reimplement everything that OpenSSL
+> already does.  What would be gained by doing that?  If we just wanted to
+> make a nicer, more Pythonic API for OpenSSL, we could just add OpenSSL as a
+> dependency and be done with it.  (Python itself already uses OpenSSL for
+> hashlib, so it's not unprecedented.)
+>
+
+A hard dependency on OpenSSL would make my life difficult for quite a few
+reasons:
+* Its license is neither LGPL-like nor BSD-like and it forces one to
+advertise its presence (deserved credit, but awkward to do)
+* It is cumbersome to cross-compile
+* Its API is very complex and inconsistent
+* It is difficult to predict if my target platform will have the openssl
+library, and if it does, which version of it
+* It is rather Windows-unfriendly (not that pycrypto itself is much
+different though...)
+* Finally, I don't like to put all eggs in the same basket. Today, a bug in
+OpenSSL can easily cause unpredictable chain reactions because it is used
+too much by too many people [7] (in other projects, I prefer other TLS
+libraries also for that reason). Put differently, I am all for some level
+of ecosystem diversity when it comes to security.
+
+The reason I started using PyCrypto is that nothing better existed for
+python (e.g. like BouncyCastle for Java, Crypto++ for C++, or .NET crypto
+services), apart from odd wrappers to C libraries (if I wanted that, I
+would stick to C++) which also increased my list of external dependencies
+(being self-contained is also very valuable).
+
+The only alternative is keyczar, which keeps too much stuff under the
+bonnet for what I need to do.
+
+PyCrypto is used by a lot of folks who are either implementing
+> recently-created protocols (i.e. *not* CMS/TLS/PKCS), or who are---rightly
+> or wrongly---creating new protocols.  One of my goals with PyCrypto has
+> been to improve their chances of building something secure, and to me that
+> means that I should steer people to simpler, easy-to-implement building
+> blocks like OpenPGP and SSH, not complex, error-prone things like
+> ASN.1/CMS/TLS/X.509/PKCS#12.
+>
+
+I think a good deal of PyCrypto users fly under your radar (embedded SW,
+sys admin scripts, test frameworks, crypto workbenches). They don't develop
+new protocols, they just implement established ones (and not those
+web-oriented like OAuth).
+
+I would also not agree in putting the awful PKCS#12 besides all the other
+protocols you list. If I want to do a PKI, there is no true alternative
+today to X.509, which - in its PKIX definition - is pretty straightforward
+actually. You cannot use neither OpenPGP nor SSH in that they adopt
+different security models (resp. web of trust and opportunistic
+authentication).
+
+Having said that, isn't the goal of "steer[ing] people to simpler,
+easy-to-implement building blocks" exactly the same as keyczar (or nacl,
+not sure if a wrapper exists for it laready)? Why does pycrypto exist then?
+
+I want to avoid turning PyCrypto into something that treats CMS/TLS/PKCS as
+> the gold standard and everything else as a second-class citizen.  There
+> have already been a few cases of that (for example, the "oid" attribute
+> here, and the "pkcs" parameter to RSA.exportKey), and I see those things as
+> oversights that need to be fixed, not things that I want to entrench
+> further.
+>
+
+Just to clear things up, the primary reason I added "oid" was to allow one
+to pass a hash instance to PKCS115_SigScheme.sign() and have the method to
+automatically pick the correct OID. Having "oid" as attribute of the hash
+object seemed to me pretty natural (and neutral) choice. I considered the
+dictionary with hash names, and I was not thrilled by its elegance, but
+beauty is in the eye of the beholder. It was truly for practical
+convenience of the library user; no surreptitious plans to have evil asn.1
+take over. ;-)
+
+The "pkcs" parameter came up because PKCS/DER *is* the gold standard for
+exporting an RSA key. PGP key format exists simply because it was designed
+at the dawn of time. SSH key format is application specific (to say, is
+there even a spec for v1?).
+Any other key format is truly boutique variety.
+
+
+> I see that you've been building a PKCS#8 implementation in your fork of
+> the PyCrypto repo.  I can only assume that you eventually plan to build a
+> PKCS#7/CMS implementation, too.  That's fine, but seeing things like `algos
+> = { 'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC' :
+> _PBES2_Factory(_PBKDF2_Factory(), _DES_EDE3_CBC_Factory()) }` convinces me
+> that it's beyond the scope of what I want to include in PyCrypto, unless it
+> were in a well-isolated subdirectory that could be easily split into a
+> separate package if the maintenance became too burdensome for me.  At a
+> minimum, we'd need to agree that the string "X.509" doesn't belong in the
+> module that implements the raw RSA primitive.
+>
+
+It actually never crossed my mind to develop any PKCS#7/CMS code (as I say
+above, I've never looked into it), but it's not clear to me why you despise
+it so much, apart from being ASN.1 encoded?
+
+The thing is, I see PKCS#8 as belonging more with primitives.
+
+Two of the biggest limitations of PyCrypto were (and up to a point, still
+are) interoperability with other systems and basic key management. The
+former brings value, the latter *must* be done right, because it is
+critical for security and it is often overlooked in favour of key lengths
+and algorithms-of-the-day.
+
+In particular, the way keys are encoded (for exchange, storage, etc) plays
+a big role to both aspects; encoding needs to be agreed upon, secure,
+platform-independent, free from misunderstandings and so on. I recall that
+in PyCrypto 2.1 pickling was the only way, and that was wrong on so many
+levels up to the point it was a security threat by itself.
+
+I decided to spend a good deal of time at making key management
+(export/import) easier and more secure. I started with PKCS#1 as the low
+hanging fruit, but it still only allowed storing private keys in the clear,
+which is pretty bad; it is good practice to have private keys always
+encrypted at least by a pass-phrase, especially if you plan to share them.
+PKCS#8 is *the* standard for protecting private asym. keys, so to me is
+appropriate to have it in a core library, rather than an optional one.
+
+You've done a lot of good work and I appreciate your contributions, but
+> IMHO you're embedding the PKCS stuff too deeply into the core of PyCrypto
+> when I'd prefer to see it in separate subdirectory, or even a separate
+> library.  This is partly my fault: I was a bit too anxious to merge the
+> PKCS#1 stuff after being absent for a while, so I didn't pay close enough
+> attention to the API changes (even though the API is really what
+> differentiates PyCrypto from other libraries).  In the future, I'm going to
+> try to be more picky upfront about the API, to avoid backpedaling like I'm
+> doing right now with the .oid stuff.
+>
+As I see it, the PKCS1 stuff probably should have been consolidated into
+> something like Crypto.Protocol.PKCS1.  Going forward, the PKCS8 stuff
+> should probably go into something like Crypto.Protocol.PKCS8, and a future
+> OpenPGP package could go into Crypto.Protocol.OpenPGP.  RSA.importKey and
+> RSA.exportKey should probably be deprecated and moved into the PKCS1 and
+> PKCS8 packages, respectively.
+>
+> The exact names of the subtrees are debatable, but the idea is create a
+> clear separation between the primitives and the protocols that use them,
+> rather than mixing them all together.  This is particularly important for
+> the hash modules, since those could eventually become thin wrappers around
+> the standard hashlib library---I doubt that would ever happen if we
+> insisted on attaching extraneous things like OIDs to them.
+>
+
+Don't worry, I am happy to be told "move this stuff elsewhere" or even
+better "this stuff is crap, get it out of my way, you dumbass" when I am
+proposing some changes.
+Getting stuck to half-baked APIs is a major pain; they always need careful
+attention and vetting.
+
+However, the meaning of "protocol" is rather wide. I am afraid that
+stuffing everything under Crypto.Protocol leads to major confusion.
+
+I did some thinking before proposing RSA changes (some ended up on the ML
+[5]), and I still believe today that:
+
+* Crypto.Signature is a good place for PKCS#1 signature routines.
+Signatures are protocols, but they are so important that it's debatable
+they should end up in the generic "bucket" that Crypto.Protocol is.
+Additionally, Crypto.Signature resembles the JCA and BouncyCastle style.
+* Crypto.Cipher is a good place for PKCS#1 encryption routines. "Cipher" is
+any protocol that performs a keyed transformation aimed at confidentiality.
+Again it is somewhat similar to JCA.
+* PKCS#1 data structures (e.g. RSAPublicKey, RSAPrivateKey, etc) and
+unencrypted PEM are more encodings than protocols because they don't
+achieve any security objective (see definition of "(cryptographic)
+protocol" 1.55 in HAC [6]). I proposed them in Crypto.PublicKey.RSA simply
+because they are basic actions you can perform with a key, and I could get
+nice one-liners with them. JCA also had something similar (getEncoded).
+They could have also belonged to another new module (e.g. Crypto.IO?) but I
+would be wary of having them in something so generic of Crypto.Protocol.
+
+Put differently, I don't think it adds value to have a PKCS1 module, just
+because all the above things are defined in one standard called PKCS#1.
+What makes one's code cleaner and easier to understand should be the key
+factor.
+
+Now, I agree PKCS#8 and Encrypted PEM could be seen as protocols, but
+something like Crypto.IO is more self-explanatory than Crypto.Protocol.I am
+not thrilled by PublicKey.PKCS8 either.
+
+Again, sorry for the long message, but I wanted to explain my thinking as
+> clearly as possible.  Let me know what you think.
+>
+
+Thanks for the time you spend to put it together actually.
+
+
+> Cheers,
+> - Dwayne
+>
+> [1] https://bugs.launchpad.net/**pycrypto/+bug/1119552<https://bugs.launchpad.net/pycrypto/+bug/1119552>
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+> ______________________________**_________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-**bin/mailman/listinfo/pycrypto<http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto>
+>
+
+[2] http://luca.ntop.org/Teaching/Appunti/asn1.html
+[3]
+http://stackoverflow.com/questions/4633611/what-are-the-key-differences-between-apache-thrift-google-protocol-buffers-mes
+[4] http://www.cs.auckland.ac.nz/~pgut001/pubs/xmlsec.txt
+[5] http://lists.dlitz.net/pipermail/pycrypto/2011q1/000418.html
+[6] http://cacr.uwaterloo.ca/hac/about/chap1.pdf
+[7] http://www.schneier.com/blog/archives/2008/05/random_number_b.html(Debian
+OpenSSL branch)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130218/750a6d6e/attachment-0001.html>
+
+From joshuamasiko at gmail.com  Tue Feb 26 11:41:11 2013
+From: joshuamasiko at gmail.com (joshua masiko)
+Date: Tue, 26 Feb 2013 22:41:11 +0300
+Subject: [pycrypto] BouncyCastle to PyCrypto translation
+Message-ID: <CAAVmh3RvieE08fU8xYV5cYSdekUDvgfbCgWad4A8hSkMRoQytw@mail.gmail.com>
+
+I'm trying to translate some Java code that uses BouncyCastle  to  Python
+using PyCrypto.
+Does any one know what the equivalent code in python would be for the
+snippet below?
+
+
+public String getMAC(byte[] macData, byte[] macKey)
+    byte[] macBytes = new byte[4];
+    CbcBlockCipherMac macCipher = new CbcBlockCipherMac(new DesEdeEngine());
+
+    DesEdeParameters keyParameters = new DesEdeParameters(macKey);
+    DesEdeEngine engine = new DesEdeEngine();
+    engine.Init(true, keyParameters);
+
+    macCipher.Init(keyParameters);
+    macCipher.BlockUpdate(macData, 0, macData.Length);
+    macCipher.DoFinal(macBytes, 0);
+    .......
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130226/02ae43c3/attachment.html>
+
+From esmond.poynton at gmail.com  Wed Feb 27 07:23:18 2013
+From: esmond.poynton at gmail.com (Esmond Poynton)
+Date: Wed, 27 Feb 2013 15:23:18 +0000
+Subject: [pycrypto] Compile PyCrypto 2.6 on HP-UX 11.23 ia64 on HP C/aC++
+	compiler
+Message-ID: <CAMSfCAWu39nMOm+mvXZgim1wGo6=AXkaSseYcPP+M1Rx0nrhwQ@mail.gmail.com>
+
+Hello all,
+
+i am looking for some help/hints on compiling on version 2.6 on HPUX 11.23
+using the HP C/aC++ compiler.
+
+Compiler info
+# B9007AA               C.11.23.16     HP C/aC++ Developer's Bundle
+  B9007AA.ACXX.ACXX     C.06.25        HP aC++ Programming Language
+
+Python Info
+
+# python                2.7.3          python
+  python.python-INC
+  python.python-RUN
+
+Error message is below
+
+root at greopc01:/tmp/pycrypto-2.6>python setup.py build
+running build
+running build_py
+running build_ext
+running build_configure
+warning: GMP or MPIR library not found; Not building
+Crypto.PublicKey._fastmath.
+building 'Crypto.Hash._MD2' extension
+cc -Ae +Onolimit -I/usr/local/include -I/usr/local/include/ncurses
+-I/usr/local/lib/hpux32/libffi-3.0.11/include +z -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/local/include/python2.7 -c src/MD2.c -o
+build/temp.hp-ux-B.11.23-ia64-2.7/src/MD2.o
+cc: warning 901: unknown option: `-fomit-frame-pointer': use +help for
+online documentation.
+cc -Ae -b -s +Onoprocelim build/temp.hp-ux-B.11.23-ia64-2.7/src/MD2.o
+-lpython2.7 -o build/lib.hp-ux-B.11.23-ia64-2.7/Crypto/Hash/_MD2.so
+ld: Can't find library for -lpython2.7
+Fatal error.
+error: command 'cc' failed with exit status 1
+root at greopc01:/tmp/pycrypto-2.6>
+
+I am not sure how to resolve this error, if anyone is able to help with
+some pointers or hints that would be great.
+
+Esmond
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130227/ec2640e5/attachment.html>
+
+From dlitz at dlitz.net  Tue Mar  5 09:16:20 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Tue, 5 Mar 2013 09:16:20 -0800
+Subject: [pycrypto] PyCon
+Message-ID: <20130305171620.GA27876@goedel.dlitz.net>
+
+Anyone going to PyCon in Santa Clara next weekend?
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From debatem1 at gmail.com  Tue Mar  5 09:18:09 2013
+From: debatem1 at gmail.com (geremy condra)
+Date: Tue, 5 Mar 2013 09:18:09 -0800
+Subject: [pycrypto] PyCon
+In-Reply-To: <20130305171620.GA27876@goedel.dlitz.net>
+References: <20130305171620.GA27876@goedel.dlitz.net>
+Message-ID: <CAJ=m_n4L71k6-GdpcoxxT1_qv6LM+0XF2kXANuGa_kQi5R+tZQ@mail.gmail.com>
+
+Yep. Going to the security BoF?
+
+Geremy Condra
+On Mar 5, 2013 9:16 AM, "Dwayne Litzenberger" <dlitz at dlitz.net> wrote:
+
+> Anyone going to PyCon in Santa Clara next weekend?
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+> ______________________________**_________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-**bin/mailman/listinfo/pycrypto<http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130305/41fc9a22/attachment.html>
+
+From dlitz at dlitz.net  Mon Mar 11 01:39:49 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Mon, 11 Mar 2013 01:39:49 -0700
+Subject: [pycrypto] PyCon
+In-Reply-To: <CAJ=m_n4L71k6-GdpcoxxT1_qv6LM+0XF2kXANuGa_kQi5R+tZQ@mail.gmail.com>
+References: <20130305171620.GA27876@goedel.dlitz.net>
+ <CAJ=m_n4L71k6-GdpcoxxT1_qv6LM+0XF2kXANuGa_kQi5R+tZQ@mail.gmail.com>
+Message-ID: <20130311083949.GA31302@rivest.dlitz.net>
+
+On Tue, Mar 05, 2013 at 09:18:09AM -0800, geremy condra wrote:
+>Yep. Going to the security BoF?
+
+There's a security BoF?  I don't see it listed on 
+https://us.pycon.org/2013/community/openspaces/
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From debatem1 at gmail.com  Mon Mar 11 02:30:30 2013
+From: debatem1 at gmail.com (geremy condra)
+Date: Mon, 11 Mar 2013 02:30:30 -0700
+Subject: [pycrypto] PyCon
+In-Reply-To: <20130311083949.GA31302@rivest.dlitz.net>
+References: <20130305171620.GA27876@goedel.dlitz.net>
+ <CAJ=m_n4L71k6-GdpcoxxT1_qv6LM+0XF2kXANuGa_kQi5R+tZQ@mail.gmail.com>
+ <20130311083949.GA31302@rivest.dlitz.net>
+Message-ID: <CAJ=m_n6ZH+8mC7NG6w5rx6fP64qi3pzaxrGSQcZ+Ci_iqWQ6qA@mail.gmail.com>
+
+I usually just put it on the BoF board when I get there. You're welcome to
+list it early, though.
+
+Geremy Condra
+On Mar 11, 2013 1:40 AM, "Dwayne Litzenberger" <dlitz at dlitz.net> wrote:
+
+> On Tue, Mar 05, 2013 at 09:18:09AM -0800, geremy condra wrote:
+>
+>> Yep. Going to the security BoF?
+>>
+>
+> There's a security BoF?  I don't see it listed on
+> https://us.pycon.org/2013/**community/openspaces/<https://us.pycon.org/2013/community/openspaces/>
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+> ______________________________**_________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-**bin/mailman/listinfo/pycrypto<http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130311/1e8ee700/attachment.html>
+
+From dlitz at dlitz.net  Wed Mar 13 07:26:01 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Wed, 13 Mar 2013 07:26:01 -0700
+Subject: [pycrypto] PyCon
+In-Reply-To: <CAJ=m_n6ZH+8mC7NG6w5rx6fP64qi3pzaxrGSQcZ+Ci_iqWQ6qA@mail.gmail.com>
+References: <20130305171620.GA27876@goedel.dlitz.net>
+ <CAJ=m_n4L71k6-GdpcoxxT1_qv6LM+0XF2kXANuGa_kQi5R+tZQ@mail.gmail.com>
+ <20130311083949.GA31302@rivest.dlitz.net>
+ <CAJ=m_n6ZH+8mC7NG6w5rx6fP64qi3pzaxrGSQcZ+Ci_iqWQ6qA@mail.gmail.com>
+Message-ID: <20130313142601.GA24755@rivest.dlitz.net>
+
+Cool.  Yeah, I'll certainly stop by, unless I get lost somehow (it's my 
+first PyCon).  I'll be one of the guys wearing Dropbox clothing (and you 
+can look up my mugshot on Google Images, if you want.)
+
+On Mon, Mar 11, 2013 at 02:30:30AM -0700, geremy condra wrote:
+>I usually just put it on the BoF board when I get there. You're welcome to
+>list it early, though.
+>
+>Geremy Condra
+>On Mar 11, 2013 1:40 AM, "Dwayne Litzenberger" <dlitz at dlitz.net> wrote:
+>
+>> On Tue, Mar 05, 2013 at 09:18:09AM -0800, geremy condra wrote:
+>>
+>>> Yep. Going to the security BoF?
+>>>
+>>
+>> There's a security BoF?  I don't see it listed on
+>> https://us.pycon.org/2013/**community/openspaces/<https://us.pycon.org/2013/community/openspaces/>
+>>
+>> --
+>> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>>  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+>> ______________________________**_________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-**bin/mailman/listinfo/pycrypto<http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto>
+>>
+
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From petermck at google.com  Sun Mar 17 16:20:46 2013
+From: petermck at google.com (Peter McKenzie)
+Date: Mon, 18 Mar 2013 10:20:46 +1100
+Subject: [pycrypto] Two flaky tests
+Message-ID: <CAHzVmCxa84GEN01Y=Qnr_YKYCzA6QbB_5P1xnAAvRtwXk+yoVw@mail.gmail.com>
+
+Greetings,
+
+I've noticed that a couple of the pycrypto (2.6) tests are a little
+flaky.  Our automated internal test infrastructure tends to be pretty
+good at exposing this sort of thing, and it impacts our developer
+productivity, so I was hoping to get the tests patched.
+
+The problems, with suggested fixes are described below.
+
+
+File: lib/Crypto/SelfTest/Random/test_random.py
+
+Code (in functon test_isPrime()):
+
+for composite in (43 * 127 * 211, 61 * 151 * 211, 15259 * 30517,
+                  346141L * 692281L, 1007119L * 2014237L, 3589477L * 7178953L,
+                  4859419L * 9718837L, 2730439L * 5460877L,
+                  245127919L * 490255837L, 963939391L * 1927878781L,
+                  4186358431L * 8372716861L, 1576820467L * 3153640933L):
+    self.assertEqual(number.isPrime(long(composite)), False)
+
+The default probability for isPrime to return a false positive is
+1e-6.  That's enough for us to see them occasionally, so I propose
+changing the assert to be:
+
+self.assertEqual(number.isPrime(long(composite),
+false_positive_prob=1e-9), False)
+
+
+File: lib/Crypto/SelfTest/Util/test_number.py
+
+Code (in function runTest()):
+
+# Test choice
+seq = range(10000)
+x = random.choice(seq)
+y = random.choice(seq)
+self.assertNotEqual(x, y)
+
+This assert will fail approximately one in 10000 runs which is way too
+often for us.  Possible fixes:
+a) remove the assert. I'm fine with that, but presumably someone wants
+to test that x and y are not equal all the time.
+b) make seq a bigger range.  I'd want the range to be at least 100
+million, which needlessly chews up time and CPU.
+c) which I quite like: add the following code immediately prior to the assert:
+
+if x == y:
+  y = random.choice(seq)
+
+That reduces the chance of failure to about 1 in 10000**2, which is acceptable.
+
+
+Thanks,
+Peter McKenzie
+

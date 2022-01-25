@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] _fastmath.c now compiles with VC++ 2008
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20_fastmath.c%20now%20compiles%20with%20VC%2B%2B%202008&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000318.html">
+   <LINK REL="Next"  HREF="000334.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] _fastmath.c now compiles with VC++ 2008</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20_fastmath.c%20now%20compiles%20with%20VC%2B%2B%202008&In-Reply-To="
+       TITLE="[pycrypto] _fastmath.c now compiles with VC++ 2008">sbehrens at gmx.li
+       </A><BR>
+    <I>Thu Dec 23 01:56:29 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000318.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000334.html">[pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -	SHA1withRSA
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#306">[ date ]</a>
+              <a href="thread.html#306">[ thread ]</a>
+              <a href="subject.html#306">[ subject ]</a>
+              <a href="author.html#306">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dwayne,
+
+I've committed a couple changes to git.
+
+The changes allow _fastmath.c to compile using VC++ 2008 Express.
+
+The changes to setup.py allow the use of libmpir as an alternative to 
+libgmp. The main reason for that latter change is that mpir, which is a 
+gmp fork, is friendly to being built with VC++, whereas gmp is not. As 
+libmpir comes with a gmp.h header, only setup.py needed to be changed 
+for libmpir support.
+
+Let me know if I'm not using your source repository in the way you 
+intended it, btw.
+
+All the best
+Thorsten
+
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000318.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000334.html">[pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -	SHA1withRSA
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#306">[ date ]</a>
+              <a href="thread.html#306">[ thread ]</a>
+              <a href="subject.html#306">[ subject ]</a>
+              <a href="author.html#306">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

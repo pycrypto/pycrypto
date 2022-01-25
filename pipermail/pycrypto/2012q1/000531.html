@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Using Counter for true 64-bit decryption
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Using%20Counter%20for%20true%2064-bit%20decryption&In-Reply-To=%3C20120113162059.GB5544%40rivest.dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000529.html">
+   <LINK REL="Next"  HREF="000532.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Using Counter for true 64-bit decryption</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Using%20Counter%20for%20true%2064-bit%20decryption&In-Reply-To=%3C20120113162059.GB5544%40rivest.dlitz.net%3E"
+       TITLE="[pycrypto] Using Counter for true 64-bit decryption">dlitz at dlitz.net
+       </A><BR>
+    <I>Fri Jan 13 11:21:00 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000529.html">[pycrypto] wooow!
+</A></li>
+        <LI>Next message: <A HREF="000532.html">[pycrypto] Reg pycrypto 2.4
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#531">[ date ]</a>
+              <a href="thread.html#531">[ thread ]</a>
+              <a href="subject.html#531">[ subject ]</a>
+              <a href="author.html#531">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Dec 13, 2011 at 07:38:12PM +0000, Lance Ware wrote:
+&gt;<i>
+</I>&gt;<i>Hello,
+</I>&gt;<i>
+</I>&gt;<i>I am trying to use pycrypto to decrypt a file using AES in CTR mode.  Currently I have a file with a counter value store in the first 16 bytes of the file.  I see in most of the examples the first 8 bytes are stored in the counter value as part of a prefix with the last section starting with zero and incrementing up.  My question is that if I want to have a truly random counter value. Do I need to create my own count class to handle the increment or can i use Crypto.Util.counter class.
+</I>&gt;<i>
+</I>&gt;<i>I am trying to use the Crypto.Util.counter class but i keep getting errors on CTR: counter returned not 16 bytes.
+</I>
+AES is a 128-bit block cipher.  Therefore, CTR mode needs a 128-bit 
+counter.
+
+Typically, one would use a 64-bit block counter prefixed with a 64-bit 
+nonce (total: 128 bits).  For example:
+
+     &gt;&gt;&gt; from Crypto import Random
+     &gt;&gt;&gt; from Crypto.Util import Counter
+     &gt;&gt;&gt;
+     &gt;&gt;&gt; nonce = Random.get_random_bytes(8)
+     &gt;&gt;&gt; nonce.encode('hex')
+     'b474f7e74193327b'
+     &gt;&gt;&gt; ctr = Counter.new(64, prefix=nonce)
+     &gt;&gt;&gt; ctr
+     &lt;_counter.CounterBE object at 0x7f73d1688ef8&gt;
+     &gt;&gt;&gt; ctr().encode('hex')
+     'b474f7e74193327b0000000000000001'
+     &gt;&gt;&gt; ctr().encode('hex')
+     'b474f7e74193327b0000000000000002'
+     &gt;&gt;&gt; ctr().encode('hex')
+     'b474f7e74193327b0000000000000003'
+
+Then, you could do something like this:
+
+     &gt;&gt;&gt; from Crypto.Cipher import AES
+     &gt;&gt;&gt; cipher = AES.new(key, AES.MODE_CTR, counter=ctr)
+     &gt;&gt;&gt; ciphertext = cipher.encrypt(...)
+     &gt;&gt;&gt; ciphertext += cipher.encrypt(...)
+
+There's no good reason to use a &quot;truly random counter value&quot;.  AES already 
+takes care of scrambling your counter value.  However, if you really wanted 
+to do that, you could make you own ctr object (as above) that implements 
+__call__, but you'll take a pretty large performance penalty.  
+(Crypto.Util.Counter is implemented in C and uses an internal optimization 
+that bypasses the normal Python function-call dispatcher.)
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000529.html">[pycrypto] wooow!
+</A></li>
+	<LI>Next message: <A HREF="000532.html">[pycrypto] Reg pycrypto 2.4
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#531">[ date ]</a>
+              <a href="thread.html#531">[ thread ]</a>
+              <a href="subject.html#531">[ subject ]</a>
+              <a href="author.html#531">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

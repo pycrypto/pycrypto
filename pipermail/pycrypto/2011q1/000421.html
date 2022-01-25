@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Py3k changes - rebase
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Py3k%20changes%20-%20rebase&In-Reply-To=4D5FB208.6060703%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000420.html">
+   <LINK REL="Next"  HREF="000376.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Py3k changes - rebase</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Py3k%20changes%20-%20rebase&In-Reply-To=4D5FB208.6060703%40gmx.li"
+       TITLE="[pycrypto] Py3k changes - rebase">dlitz at dlitz.net
+       </A><BR>
+    <I>Sat Feb 19 19:02:32 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000420.html">[pycrypto] Py3k changes - rebase
+</A></li>
+        <LI>Next message: <A HREF="000376.html">[pycrypto] some readability patches
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#421">[ date ]</a>
+              <a href="thread.html#421">[ thread ]</a>
+              <a href="subject.html#421">[ subject ]</a>
+              <a href="author.html#421">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Sure, that will do.
+
+&quot;Thorsten Behrens&quot; &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">sbehrens at gmx.li</A>&gt; wrote:
+
+&gt;<i>Dwayne,
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> No, each commit should be a distinct change (and each distinct change
+</I>&gt;&gt;<i> should have its own commit).  Having separate commits for the
+</I>&gt;<i>following
+</I>&gt;&gt;<i> makes sense:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>       - Replace tabs with spaces
+</I>&gt;&gt;<i>       - Py3K _fastmath.c support
+</I>&gt;&gt;<i>       - Change _fastmath.c to compile with VC++
+</I>&gt;&gt;<i>       - add MPIR support
+</I>&gt;&gt;<i>       - Add Ron Rivest Test
+</I>&gt;&gt;<i>       - Add unit tests for Crypto.Random.random
+</I>&gt;&gt;<i>       - Update documentation with current state of security of hash
+</I>&gt;<i>and
+</I>&gt;&gt;<i>         cipher functions.
+</I>&gt;&gt;<i>       - Update documentation with Python 3.x notes.
+</I>&gt;&gt;<i>       - Add unit test for AllOrNothing
+</I>&gt;&gt;<i>       - Fix AllOrNothing and random.sample()
+</I>&gt;<i>
+</I>&gt;<i>I took a stab at just a portion of this, the first _fastmath.c changes.
+</I>&gt;<i>
+</I>&gt;<i>The result is that I have a lot of conflicts, and after resolving
+</I>&gt;<i>those, 
+</I>&gt;<i>I have code that won't compile.
+</I>&gt;<i>
+</I>&gt;<i>I can't easily untangle these changes: The additional unit tests either
+</I>&gt;<i>
+</I>&gt;<i>presume that the py3k compatibility layer is there, or are needed to 
+</I>&gt;<i>make the library work under py3k.
+</I>&gt;<i>
+</I>&gt;<i>I have a limited amount of enthusiasm for fixing that which already 
+</I>&gt;<i>works, so it fits into a neater order. Here's my compromise proposal:
+</I>&gt;<i>
+</I>&gt;<i>I will change the unit tests to wrap the test vectors in a different 
+</I>&gt;<i>place, instead of wrapping the literals, as we had discussed.
+</I>&gt;<i>
+</I>&gt;<i>And I will give you a branch with one commit that has all of the
+</I>&gt;<i>changes 
+</I>&gt;<i>that were made.
+</I>&gt;<i>
+</I>&gt;<i>I understand the desire for incremental commits. I can keep it in mind 
+</I>&gt;<i>in future, with the better understanding of git that I now have. For 
+</I>&gt;<i>this py3k change, though, the amount of work needed to attempt to 
+</I>&gt;<i>&quot;unravel&quot; the change and bring it in order is too great for me to want 
+</I>&gt;<i>to tackle it. The best I can offer is the compromise above.
+</I>&gt;<i>
+</I>&gt;<i>I could go on - I'll refrain. Hope to hear from you soon.
+</I>&gt;<i>
+</I>&gt;<i>Thorsten
+</I>
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000420.html">[pycrypto] Py3k changes - rebase
+</A></li>
+	<LI>Next message: <A HREF="000376.html">[pycrypto] some readability patches
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#421">[ date ]</a>
+              <a href="thread.html#421">[ thread ]</a>
+              <a href="subject.html#421">[ subject ]</a>
+              <a href="author.html#421">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

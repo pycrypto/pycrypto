@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] the sad state of pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=20081109175041.GA29011%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000046.html">
+   <LINK REL="Next"  HREF="000052.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] the sad state of pycrypto</H1>
+    <B>Sergey Chernov</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=20081109175041.GA29011%40rivest.dlitz.net"
+       TITLE="[pycrypto] the sad state of pycrypto">sergey.chernov at thrift.ru
+       </A><BR>
+    <I>Tue Nov 11 06:29:20 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000046.html">[pycrypto] the sad state of pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000052.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#53">[ date ]</a>
+              <a href="thread.html#53">[ thread ]</a>
+              <a href="subject.html#53">[ subject ]</a>
+              <a href="author.html#53">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>+1
+
+policy-checking in existing object creation code will be enough.  
+centralized &quot;any object&quot; factory is (as for me) uglier than policy  
+central used in several object factories.
+
+Sergey Chernov
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">sergey.chernov at thrift.ru</A>
+
+
+
+09.11.2008, &#1074; 20:50, Dwayne C. Litzenberger &#1085;&#1072;&#1087;&#1080;&#1089;&#1072;&#1083;(&#1072;):
+
+&gt;<i> So, hypothetically, you would have something like this:
+</I>&gt;<i>
+</I>&gt;<i>    &gt;&gt;&gt; from Crypto import CryptoAPI
+</I>&gt;<i>    &gt;&gt;&gt; from Crypto.Policy.p2008v1 import ConservativePolicy
+</I>&gt;<i>    &gt;&gt;&gt; api = CryptoAPI(policy=ConservativePolicy)
+</I>&gt;<i>    &gt;&gt;&gt; h = api.Hash.MD5.new()
+</I>&gt;<i>    Traceback (most recent call last):
+</I>&gt;<i>      File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+</I>&gt;<i>    PolicyError: MD5 hash not allowed by policy  
+</I>&gt;<i> &lt;2008.1.ConservativePolicy&gt;
+</I>&gt;<i>
+</I>&gt;<i> This would probably involve concentrating all object creation into a  
+</I>&gt;<i> single &quot;factory&quot;, so I'm not quite sure how to shoehorn the current  
+</I>&gt;<i> PyCrypto API into it.
+</I>&gt;<i>
+</I>&gt;<i> This would also make unit testing easier, since we could substitute  
+</I>&gt;<i> dummy functions for real ones.  Also, things like  
+</I>&gt;<i> Util.number.isPrime could more easily be made non-deterministic  
+</I>&gt;<i> (giving them access to the user's selected RNG) without having to  
+</I>&gt;<i> change the external API.
+</I>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 2193 bytes
+Desc: not available
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20081111/c044e9d9/attachment.bin">http://lists.dlitz.net/pipermail/pycrypto/attachments/20081111/c044e9d9/attachment.bin</A> 
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000046.html">[pycrypto] the sad state of pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000052.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#53">[ date ]</a>
+              <a href="thread.html#53">[ thread ]</a>
+              <a href="subject.html#53">[ subject ]</a>
+              <a href="author.html#53">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

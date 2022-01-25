@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] BouncyCastle to PyCrypto translation
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20BouncyCastle%20to%20PyCrypto%20translation&In-Reply-To=%3CCAAVmh3RvieE08fU8xYV5cYSdekUDvgfbCgWad4A8hSkMRoQytw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000655.html">
+   <LINK REL="Next"  HREF="000658.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] BouncyCastle to PyCrypto translation</H1>
+    <B>joshua masiko</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20BouncyCastle%20to%20PyCrypto%20translation&In-Reply-To=%3CCAAVmh3RvieE08fU8xYV5cYSdekUDvgfbCgWad4A8hSkMRoQytw%40mail.gmail.com%3E"
+       TITLE="[pycrypto] BouncyCastle to PyCrypto translation">joshuamasiko at gmail.com
+       </A><BR>
+    <I>Tue Feb 26 11:41:11 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000655.html">[pycrypto] Building pycrypto on HP-UX 11.31
+</A></li>
+        <LI>Next message: <A HREF="000658.html">[pycrypto] Compile PyCrypto 2.6 on HP-UX 11.23 ia64 on HP C/aC++	compiler
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#657">[ date ]</a>
+              <a href="thread.html#657">[ thread ]</a>
+              <a href="subject.html#657">[ subject ]</a>
+              <a href="author.html#657">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm trying to translate some Java code that uses BouncyCastle  to  Python
+using PyCrypto.
+Does any one know what the equivalent code in python would be for the
+snippet below?
+
+
+public String getMAC(byte[] macData, byte[] macKey)
+    byte[] macBytes = new byte[4];
+    CbcBlockCipherMac macCipher = new CbcBlockCipherMac(new DesEdeEngine());
+
+    DesEdeParameters keyParameters = new DesEdeParameters(macKey);
+    DesEdeEngine engine = new DesEdeEngine();
+    engine.Init(true, keyParameters);
+
+    macCipher.Init(keyParameters);
+    macCipher.BlockUpdate(macData, 0, macData.Length);
+    macCipher.DoFinal(macBytes, 0);
+    .......
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20130226/02ae43c3/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20130226/02ae43c3/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000655.html">[pycrypto] Building pycrypto on HP-UX 11.31
+</A></li>
+	<LI>Next message: <A HREF="000658.html">[pycrypto] Compile PyCrypto 2.6 on HP-UX 11.23 ia64 on HP C/aC++	compiler
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#657">[ date ]</a>
+              <a href="thread.html#657">[ thread ]</a>
+              <a href="subject.html#657">[ subject ]</a>
+              <a href="author.html#657">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

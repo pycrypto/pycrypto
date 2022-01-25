@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] same RSA.construct fails on OSX
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20same%20RSA.construct%20fails%20on%20OSX&In-Reply-To=%3CCAGfyce3gj_0m8QgJa2v%2Bn4753p-vhBG99tpk6C3axCCYGeedTA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000541.html">
+   <LINK REL="Next"  HREF="000543.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] same RSA.construct fails on OSX</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20same%20RSA.construct%20fails%20on%20OSX&In-Reply-To=%3CCAGfyce3gj_0m8QgJa2v%2Bn4753p-vhBG99tpk6C3axCCYGeedTA%40mail.gmail.com%3E"
+       TITLE="[pycrypto] same RSA.construct fails on OSX">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Fri Jan 20 08:33:01 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000541.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+        <LI>Next message: <A HREF="000543.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#542">[ date ]</a>
+              <a href="thread.html#542">[ thread ]</a>
+              <a href="subject.html#542">[ subject ]</a>
+              <a href="author.html#542">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Antoine,
+
+&gt;<i> The following code runs fine on a number of platforms, but fails on OSX
+</I>&gt;<i> (I believe it may have started failing after I added gmp/fastmath)
+</I>&gt;<i>
+</I>&gt;<i> m = 6297666796491112384985580404233259073480862181882692247331293512441057109594629677274269303703414891974879&gt; e = 65537
+</I>&gt;<i> p = 0
+</I>&gt;<i> k = RSA.construct((long(m), long(e), long(p)))
+</I>&gt;<i> print(&quot;recreate_key=%s&quot; % k)
+</I>&gt;<i>
+</I>&gt;<i> On OSX I get:
+</I>&gt;<i> ValueError: Unable to compute factors p and q from exponent d.
+</I>
+This is the correct behavior with current pycrypto version (2.5), no
+matter if you use fast or slow math.
+Your code is trying to reconstruct an RSA private key, but you pass a
+private exponent (which you call p, even if typically is called d)
+with value 0. That is an error, the private exponent must be e^{-1}
+mod phi(m), which clearly cannot be zero.
+
+API is described here
+<A HREF="https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA-module.html#construct">https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA-module.html#construct</A>
+.
+
+With previous version you had to provide at least 5 elements,
+m+e+d+p+q (I don't recall how they complain if you provide only 3).
+
+&gt;<i> What can I do to correct this (and still use fastmath)?
+</I>&gt;<i> Shouldn't this be detected as a problem with fastmath, at build time?
+</I>
+There is nothing to correct I think.
+</PRE>
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000541.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+	<LI>Next message: <A HREF="000543.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#542">[ date ]</a>
+              <a href="thread.html#542">[ thread ]</a>
+              <a href="subject.html#542">[ subject ]</a>
+              <a href="author.html#542">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

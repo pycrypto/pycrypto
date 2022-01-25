@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Installation Problem
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Installation%20Problem&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000182.html">
+   <LINK REL="Next"  HREF="000184.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Installation Problem</H1>
+    <B>Tianyin Xu</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Installation%20Problem&In-Reply-To="
+       TITLE="[pycrypto] Installation Problem">xuty1985 at gmail.com
+       </A><BR>
+    <I>Sun Feb 21 16:38:46 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000182.html">[pycrypto] FW:  python crypto with python 3.0 or 3.1
+</A></li>
+        <LI>Next message: <A HREF="000184.html">[pycrypto] Installation Problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#183">[ date ]</a>
+              <a href="thread.html#183">[ thread ]</a>
+              <a href="subject.html#183">[ subject ]</a>
+              <a href="author.html#183">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I'm new here and I plan to install pycrypto.
+
+I downloaded the pycrypto-2.1.0 and put the command:
+
+python setup.py install
+
+There occur many error, the error log is:
+---------------------------------------------------------------------------------------------------------------------------------------------
+warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+src/MD2.c:31:20: error: Python.h: No such file or directory
+src/MD2.c:118: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217;
+before &#8216;*&#8217; token
+In file included from src/MD2.c:134:
+src/hash_template.c:42: error: expected specifier-qualifier-list before
+&#8216;PyObject_HEAD&#8217;
+src/hash_template.c:46: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or
+&#8216;__attribute__&#8217; before &#8216;PyTypeObject&#8217;
+src/hash_template.c: In function &#8216;newALGobject&#8217;:
+src/hash_template.c:55: warning: implicit declaration of function
+&#8216;PyObject_New&#8217;
+src/hash_template.c:55: error: expected expression before &#8216;ALGobject&#8217;
+src/hash_template.c:55: warning: assignment makes pointer from integer
+without a cast
+src/hash_template.c: At top level:
+src/hash_template.c:62: error: expected &#8216;)&#8217; before &#8216;*&#8217; token
+src/hash_template.c:77: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or
+&#8216;__attribute__&#8217; before &#8216;*&#8217; token
+src/hash_template.c:96: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or
+&#8216;__attribute__&#8217; before &#8216;*&#8217; token
+src/hash_template.c:108: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or
+&#8216;__attribute__&#8217; before &#8216;*&#8217; token
+src/hash_template.c:143: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or
+&#8216;__attribute__&#8217; before &#8216;*&#8217; token
+src/hash_template.c:160: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or
+&#8216;__attribute__&#8217; before &#8216;ALG_methods&#8217;
+src/hash_template.c:169: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or
+&#8216;__attribute__&#8217; before &#8216;*&#8217; token
+src/hash_template.c:178: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or
+&#8216;__attribute__&#8217; before &#8216;ALGtype&#8217;
+src/hash_template.c:203: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or
+&#8216;__attribute__&#8217; before &#8216;*&#8217; token
+src/hash_template.c:237: error: array type has incomplete element type
+src/hash_template.c:238: error: &#8216;PyCFunction&#8217; undeclared here (not in a
+function)
+src/hash_template.c:238: error: expected &#8216;}&#8217; before &#8216;ALG_new&#8217;
+src/hash_template.c: In function &#8216;initMD2&#8217;:
+src/hash_template.c:254: error: &#8216;PyObject&#8217; undeclared (first use in this
+function)
+src/hash_template.c:254: error: (Each undeclared identifier is reported only
+once
+src/hash_template.c:254: error: for each function it appears in.)
+src/hash_template.c:254: error: &#8216;m&#8217; undeclared (first use in this function)
+src/hash_template.c:256: error: &#8216;ALGtype&#8217; undeclared (first use in this
+function)
+src/hash_template.c:256: error: &#8216;PyType_Type&#8217; undeclared (first use in this
+function)
+src/hash_template.c:257: warning: implicit declaration of function
+&#8216;Py_InitModule&#8217;
+src/hash_template.c:260: error: &#8216;o&#8217; undeclared (first use in this function)
+src/hash_template.c:260: warning: implicit declaration of function
+&#8216;PyInt_FromLong&#8217;
+src/hash_template.c:260: warning: implicit declaration of function
+&#8216;PyDict_SetItemString&#8217;
+src/hash_template.c:260: warning: implicit declaration of function
+&#8216;PyModule_GetDict&#8217;
+src/hash_template.c:260: warning: implicit declaration of function
+&#8216;Py_DECREF&#8217;
+src/hash_template.c:263: warning: implicit declaration of function
+&#8216;PyErr_Occurred&#8217;
+src/hash_template.c:264: warning: implicit declaration of function
+&#8216;Py_FatalError&#8217;
+error: command 'gcc' failed with exit status 1
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+Is this the problem of the GCC version?
+My gcc version is 4.4.1 and my python version is Python-2.6.4.
+
+Thank you for help!!
+
+Best,
+Tianyin
+-- 
+Tianyin XU, ( &#24464;&#22825;&#38899; )
+State Key Laboratory for Novel Software Technology
+Department of Computer Science and Technology, Nanjing University
+No. 22, Hankou Road, Nanjing 210093, P. R. China
+Homepage. <A HREF="http://cs.nju.edu.cn/dislab/xuty/xuty.html">http://cs.nju.edu.cn/dislab/xuty/xuty.html</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100221/b87f38ad/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100221/b87f38ad/attachment.htm</A> 
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000182.html">[pycrypto] FW:  python crypto with python 3.0 or 3.1
+</A></li>
+	<LI>Next message: <A HREF="000184.html">[pycrypto] Installation Problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#183">[ date ]</a>
+              <a href="thread.html#183">[ thread ]</a>
+              <a href="subject.html#183">[ subject ]</a>
+              <a href="author.html#183">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

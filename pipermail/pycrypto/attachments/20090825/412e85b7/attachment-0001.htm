@@ -1,0 +1,36 @@
+<tt>
+&amp;gt;RandomPool&nbsp;is&nbsp;badly&nbsp;broken.&nbsp; Don&amp;#39;t&nbsp;use&nbsp;it.&lt;br&gt;&lt;br&gt;Thx&nbsp;for&nbsp;the&nbsp;hint.&lt;br&gt;I&nbsp;will&nbsp;check &nbsp;RandomPool&nbsp;and&nbsp;change&nbsp;it&nbsp;to&nbsp;some&nbsp;python&nbsp;build-in&nbsp;random&nbsp;function,&lt;br&gt;if&nbsp;that&nbsp;helps.&lt;br&gt;&lt;br&gt;&lt;br&gt;About&nbsp;DSA:&lt;br&gt;I&nbsp;thought&nbsp;the&nbsp;actual&nbsp;pycrypto&nbsp;use&nbsp;SHA-1...&lt;br&gt;<br>
+make&nbsp;hash&nbsp;of&nbsp;the&nbsp;AES&nbsp;key&nbsp;with&nbsp;SHA2,&nbsp;and&nbsp;then&nbsp;sign&nbsp;the&nbsp;SHA2-hash.&nbsp;Is&nbsp;that&nbsp;what&nbsp;you&nbsp;mean?&lt;br&gt;&lt;br&gt;About&nbsp;RSA:&lt;br&gt;i&nbsp;will&nbsp;check&nbsp;the&nbsp;code&nbsp;about&nbsp;OAEP.&lt;br&gt;can&amp;#39;t&nbsp;find&nbsp;it&nbsp;in&nbsp;the&nbsp;documentation.&nbsp;(but&nbsp;in&nbsp;wikipedia...)&lt;br&gt;&lt;br&gt;ELGAMAL&nbsp;signature&nbsp;requires&nbsp;a&nbsp;random&nbsp;number&nbsp;k:&nbsp;2&amp;lt;k&amp;lt;p-1&nbsp;with&nbsp;GCD(k,p-1)=1&lt;br&gt;<br>
+i&nbsp;used&nbsp;a&nbsp;fix&nbsp;prime.&nbsp;I&nbsp;will&nbsp;correct&nbsp;this.&nbsp;&lt;br&gt;&lt;br&gt;ELGAMAL&nbsp;ist&nbsp;important&nbsp;for&nbsp;me,&nbsp;because&nbsp;it&nbsp;has&nbsp;no&nbsp;patent&nbsp;/copyright.&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;border-left:&nbsp;1px&nbsp;solid&nbsp;rgb(204,&nbsp;204,&nbsp;204);&nbsp;margin:&nbsp;0pt&nbsp;0pt&nbsp;0pt&nbsp;0.8ex;&nbsp;padding-left:&nbsp;1ex;&quot;&gt;<br>
+<br>
+&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/pipermail/pycrypto/2009q3/000116.html&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/pipermail/pycrypto/2009q3/000116.html&lt;/a&gt;&lt;br&gt;<br>
+&lt;br&gt;<br>
+&amp;gt;####################&nbsp;DSA&nbsp;only&nbsp;sign&lt;br&gt;<br>
+&lt;div&nbsp;class=&quot;im&quot;&gt;&amp;gt;privatekeyCMS&nbsp;=&nbsp;DSA.generate(368,&nbsp;rpool.get_bytes)&lt;br&gt;<br>
+&amp;gt;publickeyCMS&nbsp;=&nbsp;privatekeyCMS.publickey()&lt;br&gt;<br>
+&amp;gt;signed_PWD&nbsp;=&nbsp;privatekeyCMS.sign(PWD,K)&lt;br&gt;<br>
+&amp;gt;print&nbsp;&amp;quot;identity&nbsp;check:\n&amp;quot;,publickeyCMS.verify(dec_PWD,signed_PWD)&lt;br&gt;<br>
+&amp;gt;print&nbsp;&amp;quot;decrypted&nbsp;PWD&nbsp;from&nbsp;ELGAMAL:\n&amp;quot;,dec_PWD&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;PyCrypto&amp;#39;s&nbsp;public&nbsp;key&nbsp;primitives&nbsp;are&nbsp;incomplete&nbsp;at&nbsp;this&nbsp;point,&nbsp;and&nbsp;you&lt;br&gt;<br>
+should&nbsp;not&nbsp;use&nbsp;them&nbsp;unless&nbsp;you&nbsp;are&nbsp;willing&nbsp;to&nbsp;read&nbsp;both&nbsp;PyCrypto&amp;#39;s&nbsp;source&lt;br&gt;<br>
+code&nbsp;and&nbsp;the&nbsp;relevant&nbsp;specifications.&nbsp; For&nbsp;RSA,&nbsp;you&nbsp;need&nbsp;OAEP&nbsp;(i.e.&nbsp; PKCS#1&lt;br&gt;<br>
+v2.1)&nbsp;if&nbsp;you&nbsp;want&nbsp;security.&nbsp; For&nbsp;DSA,&nbsp;there&nbsp;is&nbsp;a&nbsp;hash&nbsp;you&nbsp;need&nbsp;to&nbsp;compute&lt;br&gt;<br>
+(it&amp;#39;s&nbsp;not&nbsp;done&nbsp;for&nbsp;you&nbsp;automatically---see&nbsp;FIPS&nbsp;186.&nbsp; For&nbsp;ElGamal,&nbsp;I&amp;#39;m&lt;br&gt;<br>
+pretty&nbsp;sure&nbsp;there&amp;#39;s&nbsp;something&nbsp;too.&lt;br&gt;<br>
+&lt;br&gt;<br>
+That&amp;#39;s&nbsp;all&nbsp;I&amp;#39;m&nbsp;willing&nbsp;to&nbsp;comment&nbsp;on&nbsp;a&nbsp;vague&nbsp;question&nbsp;about&nbsp;a&nbsp;bunch&nbsp;of&lt;br&gt;<br>
+uncommented&nbsp;demo&nbsp;code.&lt;br&gt;<br>
+&lt;font&nbsp;color=&quot;#888888&quot;&gt;&lt;br&gt;<br>
+--&lt;br&gt;<br>
+Dwayne&nbsp;C.&nbsp;Litzenberger&nbsp;&amp;lt;&lt;a&nbsp;href=&quot;mailto:dlitz@dlitz.net&quot;&gt;dlitz@dlitz.net&lt;/a&gt;&amp;gt;&lt;br&gt;<br>
+&nbsp; Key-signing&nbsp;key&nbsp; &nbsp;-&nbsp;19E1&nbsp;1FE8&nbsp;B3CF&nbsp;F273&nbsp;ED17&nbsp; 4A24&nbsp;928C&nbsp;EC13&nbsp;39C2&nbsp;5CF7&lt;br&gt;<br>
+_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;/font&gt;&lt;/blockquote&gt;&lt;br&gt;<br>
+&lt;/div&gt;&lt;br&gt;<br>
+
+</tt>

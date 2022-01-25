@@ -1,0 +1,2964 @@
+From helderijs at gmail.com  Wed Jul  3 14:26:05 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Wed, 3 Jul 2013 23:26:05 +0200
+Subject: [pycrypto] RSA exportKey question
+In-Reply-To: <CAGwD-jZvf=V15Ui8Ndf5L6iVBhWQ=u7YeLU-mFEPJOexRNtAzA@mail.gmail.com>
+References: <CAGwD-jZvf=V15Ui8Ndf5L6iVBhWQ=u7YeLU-mFEPJOexRNtAzA@mail.gmail.com>
+Message-ID: <CAGfyce32x_0OJNye1f0GFoHSbA1P_KfM==bSqSv0D4GW1edDOw@mail.gmail.com>
+
+I find 3DES is as good as AES for most practical purposes.
+The main limitation I see is that the current RSA.exportKey() uses
+PEM-level encryption and the MD5-based EVP_BytesToKey function for key
+derivation. Nowadays that is *really* weak.
+
+I opened a pull request [1] with a proposal for adding PKCS#8, since
+it is widely used and it makes it easier to have pluggable algorithms
+(the default combination being PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC but
+PBKDF2WithHMAC-SHA1AndAES128-CBC is available too). It took a few
+iterations, but I am pretty happy with it.
+On top of that I have also just added exportKey/importKey to DSA [2].
+
+Feedback is welcome.
+
+[1] https://github.com/dlitz/pycrypto/pull/32
+[2] https://github.com/dlitz/pycrypto/pull/51
+
+2013/6/28 Kurt Vogel <kvogel at mdcom.com>:
+> Hello,
+>
+> Wondering if it would be worthwhile to add more encryption options to rsa
+> exportKey() function rather than just DES3?  As the default for ssh-keygen
+> -t rsa export is 128-bit AES.  And maybe allow plug-able hash algorithms
+> such as PBKDF2, Bcrypt, etc.?
+>
+> Thanks,
+> Kurt
+>
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+From Paul_Koning at Dell.com  Wed Jul  3 17:37:17 2013
+From: Paul_Koning at Dell.com (Paul_Koning at Dell.com)
+Date: Thu, 4 Jul 2013 00:37:17 +0000
+Subject: [pycrypto] RSA exportKey question
+In-Reply-To: <CAGfyce32x_0OJNye1f0GFoHSbA1P_KfM==bSqSv0D4GW1edDOw@mail.gmail.com>
+References: <CAGwD-jZvf=V15Ui8Ndf5L6iVBhWQ=u7YeLU-mFEPJOexRNtAzA@mail.gmail.com>
+ <CAGfyce32x_0OJNye1f0GFoHSbA1P_KfM==bSqSv0D4GW1edDOw@mail.gmail.com>
+Message-ID: <C75A84166056C94F84D238A44AF9F6AD0344508D@AUSX10MPC102.AMER.DELL.COM>
+
+
+On Jul 3, 2013, at 5:26 PM, Legrandin wrote:
+
+> I find 3DES is as good as AES for most practical purposes.
+
+I'm curious what your metrics are for that conclusion.
+
+By way of comparison, the new draft for the RFC covering storage protocol security (successor to RFC 3723) switches from 3DES to AES for clearly stated reasons, one of which is the fact that 64 bit blocks and large quantities of data don't go well together.  If you're dealing with small quantities of data, 3DES might still be good enough, but I still don't see an obvious reason to stick with a rather ancient cipher when a well-vetted replacement is available.
+
+	paul
+
+
+
+From jcea at jcea.es  Wed Jul  3 19:11:17 2013
+From: jcea at jcea.es (Jesus Cea)
+Date: Thu, 04 Jul 2013 04:11:17 +0200
+Subject: [pycrypto] RSA exportKey question
+In-Reply-To: <C75A84166056C94F84D238A44AF9F6AD0344508D@AUSX10MPC102.AMER.DELL.COM>
+References: <CAGwD-jZvf=V15Ui8Ndf5L6iVBhWQ=u7YeLU-mFEPJOexRNtAzA@mail.gmail.com>
+ <CAGfyce32x_0OJNye1f0GFoHSbA1P_KfM==bSqSv0D4GW1edDOw@mail.gmail.com>
+ <C75A84166056C94F84D238A44AF9F6AD0344508D@AUSX10MPC102.AMER.DELL.COM>
+Message-ID: <51D4D9C5.7080707@jcea.es>
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+On 04/07/13 02:37, Paul_Koning at Dell.com wrote:
+> 
+> On Jul 3, 2013, at 5:26 PM, Legrandin wrote:
+> 
+>> I find 3DES is as good as AES for most practical purposes.
+> 
+> I'm curious what your metrics are for that conclusion.
+> 
+> By way of comparison, the new draft for the RFC covering storage 
+> protocol security (successor to RFC 3723) switches from 3DES to
+> AES for clearly stated reasons, one of which is the fact that 64
+> bit blocks and large quantities of data don't go well together.
+> If you're dealing with small quantities of data, 3DES might still
+> be good enough, but I still don't see an obvious reason to stick
+> with a rather ancient cipher when a well-vetted replacement is
+> available.
+
+<https://tools.ietf.org/html/draft-ietf-storm-ipsec-ips-update-01>.
+Section 2.2.
+
+Also, modern x86 CPUs have AES support in the hardware:
+<https://en.wikipedia.org/wiki/AES_instruction_set>
+
+- -- 
+Jes?s Cea Avi?n                         _/_/      _/_/_/        _/_/_/
+jcea at jcea.es - http://www.jcea.es/     _/_/    _/_/  _/_/    _/_/  _/_/
+Twitter: @jcea                        _/_/    _/_/          _/_/_/_/_/
+jabber / xmpp:jcea at jabber.org  _/_/  _/_/    _/_/          _/_/  _/_/
+"Things are not so easy"      _/_/  _/_/    _/_/  _/_/    _/_/  _/_/
+"My name is Dump, Core Dump"   _/_/_/        _/_/_/      _/_/  _/_/
+"El amor es poner tu felicidad en la felicidad de otro" - Leibniz
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iQCVAwUBUdTZxZlgi5GaxT1NAQKQigQAlTniSRilN6RdYCc2OWNzh/1Xypx/Vq0A
+LJorkv2qmBaNUHJN9I+p/P9YVnkBqZblutLXHqs3QFSWcYkhTNG6Qfj9KF6wV0wN
+NYSyJ1VCH6IE2UApgwYb7+kwQDYOAoevwI4Q38yJP4fOUy7MCoGy0NKlj+uXwCBG
+hGo/zMJk/SA=
+=yeSa
+-----END PGP SIGNATURE-----
+
+From kvogel at mdcom.com  Wed Jul  3 23:00:53 2013
+From: kvogel at mdcom.com (Kurt Vogel)
+Date: Wed, 3 Jul 2013 23:00:53 -0700
+Subject: [pycrypto] RSA exportKey question
+In-Reply-To: <CAGfyce32x_0OJNye1f0GFoHSbA1P_KfM==bSqSv0D4GW1edDOw@mail.gmail.com>
+References: <CAGwD-jZvf=V15Ui8Ndf5L6iVBhWQ=u7YeLU-mFEPJOexRNtAzA@mail.gmail.com>
+ <CAGfyce32x_0OJNye1f0GFoHSbA1P_KfM==bSqSv0D4GW1edDOw@mail.gmail.com>
+Message-ID: <CAGwD-jbQUSVWBx3cXLrfjC9s_mzyu-H_j=9p=CY77fp3LKgh1g@mail.gmail.com>
+
+Hi, I was looking at the pycrypto pull request
+https://github.com/dlitz/pycrypto/pull/32.  Just a few comments...
+
+* For readability can you pep8 format the code?
+* RSA, for import/export the protection parameter maybe rename to algo or
+wrap algo?  It evolves from: 'protection' to 'wrap_algo' to 'mode' as it
+goes down the call stack.
+* Also maybe make this parameter an enum/value?  Since the long string can
+be error prone, low level code would need to change anyway if it were
+either string or int if we support more modes.
+* And last but not least... I'm new to this email list and not sure how
+often pull requests are accepted but maybe you could reduce the amount of
+features going in?  I know you have another one, 51, after this...
+Maintainer may reluctant to do massive changes all at once?
+
+Anyway just ideas...
+Thanks for your time,
+Sincerely,
+Kurt
+
+
+
+
+On Wed, Jul 3, 2013 at 2:26 PM, Legrandin <helderijs at gmail.com> wrote:
+
+> I find 3DES is as good as AES for most practical purposes.
+> The main limitation I see is that the current RSA.exportKey() uses
+> PEM-level encryption and the MD5-based EVP_BytesToKey function for key
+> derivation. Nowadays that is *really* weak.
+>
+> I opened a pull request [1] with a proposal for adding PKCS#8, since
+> it is widely used and it makes it easier to have pluggable algorithms
+> (the default combination being PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC but
+> PBKDF2WithHMAC-SHA1AndAES128-CBC is available too). It took a few
+> iterations, but I am pretty happy with it.
+> On top of that I have also just added exportKey/importKey to DSA [2].
+>
+> Feedback is welcome.
+>
+> [1] https://github.com/dlitz/pycrypto/pull/32
+> [2] https://github.com/dlitz/pycrypto/pull/51
+>
+> 2013/6/28 Kurt Vogel <kvogel at mdcom.com>:
+> > Hello,
+> >
+> > Wondering if it would be worthwhile to add more encryption options to rsa
+> > exportKey() function rather than just DES3?  As the default for
+> ssh-keygen
+> > -t rsa export is 128-bit AES.  And maybe allow plug-able hash algorithms
+> > such as PBKDF2, Bcrypt, etc.?
+> >
+> > Thanks,
+> > Kurt
+> >
+> >
+> >
+> >
+> > _______________________________________________
+> > pycrypto mailing list
+> > pycrypto at lists.dlitz.net
+> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130703/d2a98b19/attachment.html>
+
+From helderijs at gmail.com  Fri Jul  5 02:52:32 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Fri, 5 Jul 2013 11:52:32 +0200
+Subject: [pycrypto] RSA exportKey question
+In-Reply-To: <CAGwD-jbQUSVWBx3cXLrfjC9s_mzyu-H_j=9p=CY77fp3LKgh1g@mail.gmail.com>
+References: <CAGwD-jZvf=V15Ui8Ndf5L6iVBhWQ=u7YeLU-mFEPJOexRNtAzA@mail.gmail.com>
+ <CAGfyce32x_0OJNye1f0GFoHSbA1P_KfM==bSqSv0D4GW1edDOw@mail.gmail.com>
+ <CAGwD-jbQUSVWBx3cXLrfjC9s_mzyu-H_j=9p=CY77fp3LKgh1g@mail.gmail.com>
+Message-ID: <CAGfyce1+ZQh4c_G0EQ96Ko5LfkDJuU28_S24RThVKV5O_m5L6w@mail.gmail.com>
+
+Hi Kurt , thanks a lot for providing feedback. It is much appreciated.
+
+* I guess you refer to camel-casing used for several variables, which
+was due to my preference to stick to ASN.1 naming.
+  I can work on that and make sure flake8 does not complain that much.
+
+* Right. Code evolved at different points in time, and indeed it is
+now hard to follow the path of the 'parameter' value. I will try to
+fix that.
+
+* I used strings like 'PBKDF2WithHMAC-SHA1AndAES128-CBC' because that
+is the style used in JCA and BouncyCastle and a lot of people are
+familiar with it.
+  I am not very clear what the benefit enums might bring? One option I
+considered was the ability to provide 3 independent parameters
+  instead of one (since protection mainly depends on type of KDF, PRF,
+and symmetric cipher) but at the end I guess most
+  uses case are about the desire to protect the private key using a
+password in a strong way, and the ability to tweak the various
+parameters
+  is not that relevant. Plus, exportKey() parameter list becomes to long.
+
+* I am really ashamed to admit that I actually have 9 pull requests
+open, not 2 so I am totally giving headaches to the maintainer. :-)
+  It is of course only up to him to decide which features should go
+in; given that he has not much time these days, it is likely that only
+  few features and bugfixes may go into any next release.
+  The release merge window seems to roughly be once per year and I
+find it is natural to have so many outstanding pull requests by now.
+  To my defense, I can only say that the all pull requests cover one
+feature only and that I try to keep them as independent as possible.
+  Most of them apply cleanly to master (e.g. HKDF, CCM, PKCS#8, bug fixes, etc).
+  In some cases though, they do depend on an existing pull request (as
+in the case of DSA import/export depending on PKCS8 be applied first),
+  because keeping them separated is honestly too much work for me
+*and* they are indeed extensions of other extensions.
+
+> Hi, I was looking at the pycrypto pull request
+> https://github.com/dlitz/pycrypto/pull/32.  Just a few comments...
+>
+> * For readability can you pep8 format the code?
+> * RSA, for import/export the protection parameter maybe rename to algo or
+> wrap algo?  It evolves from: 'protection' to 'wrap_algo' to 'mode' as it
+> goes down the call stack.
+> * Also maybe make this parameter an enum/value?  Since the long string can
+> be error prone, low level code would need to change anyway if it were either
+> string or int if we support more modes.
+> * And last but not least... I'm new to this email list and not sure how
+> often pull requests are accepted but maybe you could reduce the amount of
+> features going in?  I know you have another one, 51, after this...
+> Maintainer may reluctant to do massive changes all at once?
+>
+> Anyway just ideas...
+> Thanks for your time,
+> Sincerely,
+> Kurt
+>
+
+From helderijs at gmail.com  Fri Jul  5 03:10:09 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Fri, 5 Jul 2013 12:10:09 +0200
+Subject: [pycrypto] RSA exportKey question
+In-Reply-To: <C75A84166056C94F84D238A44AF9F6AD0344508D@AUSX10MPC102.AMER.DELL.COM>
+References: <CAGwD-jZvf=V15Ui8Ndf5L6iVBhWQ=u7YeLU-mFEPJOexRNtAzA@mail.gmail.com>
+ <CAGfyce32x_0OJNye1f0GFoHSbA1P_KfM==bSqSv0D4GW1edDOw@mail.gmail.com>
+ <C75A84166056C94F84D238A44AF9F6AD0344508D@AUSX10MPC102.AMER.DELL.COM>
+Message-ID: <CAGfyce2cktHCu-51m2NwP5C7mQbtAzOtWX3ovZSB+DRXBXcKXA@mail.gmail.com>
+
+Hi Paul,
+
+In the back of my mind, I was referring to practical purposes *in the
+context of key wrapping*.
+For key wrapping, you deal with very small payloads and the key is
+salted: speed and birthdays paradox are not real concerns,
+and the security marging 3DES (with 112 bits of ) is large enough.
+I am suggesting to stick to "PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC" as
+default PKCS#8 wrapping algorithm for export
+because there are more chances the receiver (e.g. some
+actually-not-so-old openssl versions) will be able to unwrap it.
+If I had to pick a more future proof value (regardless of
+compatibility) I would agree that AES is better, but only in
+combination with scrypt as KDF.
+
+2013/7/4  <Paul_Koning at dell.com>:
+>
+> On Jul 3, 2013, at 5:26 PM, Legrandin wrote:
+>
+>> I find 3DES is as good as AES for most practical purposes.
+>
+> I'm curious what your metrics are for that conclusion.
+>
+> By way of comparison, the new draft for the RFC covering storage protocol security (successor to RFC 3723) switches from 3DES to AES for clearly stated reasons, one of which is the fact that 64 bit blocks and large quantities of data don't go well together.  If you're dealing with small quantities of data, 3DES might still be good enough, but I still don't see an obvious reason to stick with a rather ancient cipher when a well-vetted replacement is available.
+>
+>         paul
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From yaronf.ietf at gmail.com  Fri Jul  5 05:02:21 2013
+From: yaronf.ietf at gmail.com (Yaron Sheffer)
+Date: Fri, 05 Jul 2013 15:02:21 +0300
+Subject: [pycrypto] RSA exportKey question
+In-Reply-To: <CAGfyce2cktHCu-51m2NwP5C7mQbtAzOtWX3ovZSB+DRXBXcKXA@mail.gmail.com>
+References: <CAGwD-jZvf=V15Ui8Ndf5L6iVBhWQ=u7YeLU-mFEPJOexRNtAzA@mail.gmail.com>
+ <CAGfyce32x_0OJNye1f0GFoHSbA1P_KfM==bSqSv0D4GW1edDOw@mail.gmail.com>
+ <C75A84166056C94F84D238A44AF9F6AD0344508D@AUSX10MPC102.AMER.DELL.COM>
+ <CAGfyce2cktHCu-51m2NwP5C7mQbtAzOtWX3ovZSB+DRXBXcKXA@mail.gmail.com>
+Message-ID: <51D6B5CD.9030107@gmail.com>
+
+Actually-not-so-old meaning more than 10 years? (See "Changes between 
+0.9.6h and 0.9.7  [31 Dec 2002]" under 
+http://www.openssl.org/news/changelog.html. Or is Python OpenSSL support 
+so much behind mainline OpenSSL?
+
+Thanks,
+	Yaron
+
+On 2013-07-05 13:10, Legrandin wrote:
+> Hi Paul,
+>
+> In the back of my mind, I was referring to practical purposes *in the
+> context of key wrapping*.
+> For key wrapping, you deal with very small payloads and the key is
+> salted: speed and birthdays paradox are not real concerns,
+> and the security marging 3DES (with 112 bits of ) is large enough.
+> I am suggesting to stick to "PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC" as
+> default PKCS#8 wrapping algorithm for export
+> because there are more chances the receiver (e.g. some
+> actually-not-so-old openssl versions) will be able to unwrap it.
+> If I had to pick a more future proof value (regardless of
+> compatibility) I would agree that AES is better, but only in
+> combination with scrypt as KDF.
+>
+> 2013/7/4  <Paul_Koning at dell.com>:
+>>
+>> On Jul 3, 2013, at 5:26 PM, Legrandin wrote:
+>>
+>>> I find 3DES is as good as AES for most practical purposes.
+>>
+>> I'm curious what your metrics are for that conclusion.
+>>
+>> By way of comparison, the new draft for the RFC covering storage protocol security (successor to RFC 3723) switches from 3DES to AES for clearly stated reasons, one of which is the fact that 64 bit blocks and large quantities of data don't go well together.  If you're dealing with small quantities of data, 3DES might still be good enough, but I still don't see an obvious reason to stick with a rather ancient cipher when a well-vetted replacement is available.
+>>
+>>          paul
+>>
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+From helderijs at gmail.com  Fri Jul  5 06:32:40 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Fri, 5 Jul 2013 15:32:40 +0200
+Subject: [pycrypto] RSA exportKey question
+In-Reply-To: <51D6B5CD.9030107@gmail.com>
+References: <CAGwD-jZvf=V15Ui8Ndf5L6iVBhWQ=u7YeLU-mFEPJOexRNtAzA@mail.gmail.com>
+ <CAGfyce32x_0OJNye1f0GFoHSbA1P_KfM==bSqSv0D4GW1edDOw@mail.gmail.com>
+ <C75A84166056C94F84D238A44AF9F6AD0344508D@AUSX10MPC102.AMER.DELL.COM>
+ <CAGfyce2cktHCu-51m2NwP5C7mQbtAzOtWX3ovZSB+DRXBXcKXA@mail.gmail.com>
+ <51D6B5CD.9030107@gmail.com>
+Message-ID: <CAGfyce0pLWhOEnON2y-vjvfVnhB7tCjYuZkHxmg3tigpw30PvQ@mail.gmail.com>
+
+Hi Yaron,
+
+I don't see anything related to PKCS#8 in the changelog of openssl 0.9.7.
+It may have introduced AES as a cipher but it's not clear to me if
+ability to decrypt PKCS#8-wrapped keys came with that.
+Even if it did, I still don't find it unthinkable to run into software
+of that age in a) production systems behind the lines b) embedded
+systems.
+Note that PyCrypto does not use openssl (M2Crypto is the best wrapped on it).
+Additionally, PyCrypto claims compatibility to Python 2.1, which came
+out in 2001...
+
+PS: glad to see some activity on this mailing list...
+
+2013/7/5 Yaron Sheffer <yaronf.ietf at gmail.com>:
+> Actually-not-so-old meaning more than 10 years? (See "Changes between 0.9.6h
+> and 0.9.7  [31 Dec 2002]" under http://www.openssl.org/news/changelog.html.
+> Or is Python OpenSSL support so much behind mainline OpenSSL?
+>
+> Thanks,
+>         Yaron
+>
+>
+> On 2013-07-05 13:10, Legrandin wrote:
+>>
+>> Hi Paul,
+>>
+>> In the back of my mind, I was referring to practical purposes *in the
+>> context of key wrapping*.
+>> For key wrapping, you deal with very small payloads and the key is
+>> salted: speed and birthdays paradox are not real concerns,
+>> and the security marging 3DES (with 112 bits of ) is large enough.
+>> I am suggesting to stick to "PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC" as
+>> default PKCS#8 wrapping algorithm for export
+>> because there are more chances the receiver (e.g. some
+>> actually-not-so-old openssl versions) will be able to unwrap it.
+>> If I had to pick a more future proof value (regardless of
+>> compatibility) I would agree that AES is better, but only in
+>> combination with scrypt as KDF.
+
+From kvogel at mdcom.com  Sun Jul 14 21:34:19 2013
+From: kvogel at mdcom.com (Kurt Vogel)
+Date: Sun, 14 Jul 2013 21:34:19 -0700
+Subject: [pycrypto] RSA exportKey question with bcrypt?
+Message-ID: <CAGwD-jZtKa2Yr2TCJ+=JkTT3xpTbu3-CHCvQGX_SfO=HSgU4uQ@mail.gmail.com>
+
+Hi,
+
+Do you guys know roughly when this will go in?
+
+Also with import/export RSA keys can we support bcrypt?
+
+Does JCA and BouncyCastle use bcrypt, eg:
+
+'BcryptWithHMAC-SHA1AndAES256-CBC'
+
+Thanks,
+Kurt
+
+
+On Fri, Jul 5, 2013 at 2:52 AM, Legrandin <helderijs at gmail.com> wrote:
+>
+> Hi Kurt , thanks a lot for providing feedback. It is much appreciated.
+>
+> * I guess you refer to camel-casing used for several variables, which
+> was due to my preference to stick to ASN.1 naming.
+>   I can work on that and make sure flake8 does not complain that much.
+>
+> * Right. Code evolved at different points in time, and indeed it is
+> now hard to follow the path of the 'parameter' value. I will try to
+> fix that.
+>
+> * I used strings like 'PBKDF2WithHMAC-SHA1AndAES128-CBC' because that
+> is the style used in JCA and BouncyCastle and a lot of people are
+> familiar with it.
+>   I am not very clear what the benefit enums might bring? One option I
+> considered was the ability to provide 3 independent parameters
+>   instead of one (since protection mainly depends on type of KDF, PRF,
+> and symmetric cipher) but at the end I guess most
+>   uses case are about the desire to protect the private key using a
+> password in a strong way, and the ability to tweak the various
+> parameters
+>   is not that relevant. Plus, exportKey() parameter list becomes to long.
+>
+> * I am really ashamed to admit that I actually have 9 pull requests
+> open, not 2 so I am totally giving headaches to the maintainer. :-)
+>   It is of course only up to him to decide which features should go
+> in; given that he has not much time these days, it is likely that only
+>   few features and bugfixes may go into any next release.
+>   The release merge window seems to roughly be once per year and I
+> find it is natural to have so many outstanding pull requests by now.
+>   To my defense, I can only say that the all pull requests cover one
+> feature only and that I try to keep them as independent as possible.
+>   Most of them apply cleanly to master (e.g. HKDF, CCM, PKCS#8, bug
+fixes, etc).
+>   In some cases though, they do depend on an existing pull request (as
+> in the case of DSA import/export depending on PKCS8 be applied first),
+>   because keeping them separated is honestly too much work for me
+> *and* they are indeed extensions of other extensions.
+>
+> > Hi, I was looking at the pycrypto pull request
+> > https://github.com/dlitz/pycrypto/pull/32.  Just a few comments...
+> >
+> > * For readability can you pep8 format the code?
+> > * RSA, for import/export the protection parameter maybe rename to algo
+or
+> > wrap algo?  It evolves from: 'protection' to 'wrap_algo' to 'mode' as it
+> > goes down the call stack.
+> > * Also maybe make this parameter an enum/value?  Since the long string
+can
+> > be error prone, low level code would need to change anyway if it were
+either
+> > string or int if we support more modes.
+> > * And last but not least... I'm new to this email list and not sure how
+> > often pull requests are accepted but maybe you could reduce the amount
+of
+> > features going in?  I know you have another one, 51, after this...
+> > Maintainer may reluctant to do massive changes all at once?
+> >
+> > Anyway just ideas...
+> > Thanks for your time,
+> > Sincerely,
+> > Kurt
+> >
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130714/d35d24c3/attachment.html>
+
+From kvogel at mdcom.com  Sun Jul 14 23:40:05 2013
+From: kvogel at mdcom.com (Kurt Vogel)
+Date: Sun, 14 Jul 2013 23:40:05 -0700
+Subject: [pycrypto] RSA exportKey question with bcrypt?
+In-Reply-To: <CAGwD-jZtKa2Yr2TCJ+=JkTT3xpTbu3-CHCvQGX_SfO=HSgU4uQ@mail.gmail.com>
+References: <CAGwD-jZtKa2Yr2TCJ+=JkTT3xpTbu3-CHCvQGX_SfO=HSgU4uQ@mail.gmail.com>
+Message-ID: <CAGwD-jae=V7Q8-v0h1LgQH9z4ADrcrtBbTCecf_0WMqX6pnkJw@mail.gmail.com>
+
+While I'm on the subject and appears Dwayne is merging in pull requests :)
+
+For RSA exportKey() think we could have **kwargs for extra prot_params
+passed to
+
+PKCS8.wrap() like iteration_count and salt size?
+
+
+
+On Sun, Jul 14, 2013 at 9:34 PM, Kurt Vogel <kvogel at mdcom.com> wrote:
+
+> Hi,
+>
+> Do you guys know roughly when this will go in?
+>
+> Also with import/export RSA keys can we support bcrypt?
+>
+> Does JCA and BouncyCastle use bcrypt, eg:
+>
+> 'BcryptWithHMAC-SHA1AndAES256-CBC'
+>
+> Thanks,
+> Kurt
+>
+>
+> On Fri, Jul 5, 2013 at 2:52 AM, Legrandin <helderijs at gmail.com> wrote:
+> >
+> > Hi Kurt , thanks a lot for providing feedback. It is much appreciated.
+> >
+> > * I guess you refer to camel-casing used for several variables, which
+> > was due to my preference to stick to ASN.1 naming.
+> >   I can work on that and make sure flake8 does not complain that much.
+> >
+> > * Right. Code evolved at different points in time, and indeed it is
+> > now hard to follow the path of the 'parameter' value. I will try to
+> > fix that.
+> >
+> > * I used strings like 'PBKDF2WithHMAC-SHA1AndAES128-CBC' because that
+> > is the style used in JCA and BouncyCastle and a lot of people are
+> > familiar with it.
+> >   I am not very clear what the benefit enums might bring? One option I
+> > considered was the ability to provide 3 independent parameters
+> >   instead of one (since protection mainly depends on type of KDF, PRF,
+> > and symmetric cipher) but at the end I guess most
+> >   uses case are about the desire to protect the private key using a
+> > password in a strong way, and the ability to tweak the various
+> > parameters
+> >   is not that relevant. Plus, exportKey() parameter list becomes to long.
+> >
+> > * I am really ashamed to admit that I actually have 9 pull requests
+> > open, not 2 so I am totally giving headaches to the maintainer. :-)
+> >   It is of course only up to him to decide which features should go
+> > in; given that he has not much time these days, it is likely that only
+> >   few features and bugfixes may go into any next release.
+> >   The release merge window seems to roughly be once per year and I
+> > find it is natural to have so many outstanding pull requests by now.
+> >   To my defense, I can only say that the all pull requests cover one
+> > feature only and that I try to keep them as independent as possible.
+> >   Most of them apply cleanly to master (e.g. HKDF, CCM, PKCS#8, bug
+> fixes, etc).
+> >   In some cases though, they do depend on an existing pull request (as
+> > in the case of DSA import/export depending on PKCS8 be applied first),
+> >   because keeping them separated is honestly too much work for me
+> > *and* they are indeed extensions of other extensions.
+> >
+> > > Hi, I was looking at the pycrypto pull request
+> > > https://github.com/dlitz/pycrypto/pull/32.  Just a few comments...
+> > >
+> > > * For readability can you pep8 format the code?
+> > > * RSA, for import/export the protection parameter maybe rename to algo
+> or
+> > > wrap algo?  It evolves from: 'protection' to 'wrap_algo' to 'mode' as
+> it
+> > > goes down the call stack.
+> > > * Also maybe make this parameter an enum/value?  Since the long string
+> can
+> > > be error prone, low level code would need to change anyway if it were
+> either
+> > > string or int if we support more modes.
+> > > * And last but not least... I'm new to this email list and not sure how
+> > > often pull requests are accepted but maybe you could reduce the amount
+> of
+> > > features going in?  I know you have another one, 51, after this...
+> > > Maintainer may reluctant to do massive changes all at once?
+> > >
+> > > Anyway just ideas...
+> > > Thanks for your time,
+> > > Sincerely,
+> > > Kurt
+> > >
+> > _______________________________________________
+> > pycrypto mailing list
+> > pycrypto at lists.dlitz.net
+> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130714/b9d6fe8d/attachment.html>
+
+From kvogel at mdcom.com  Mon Jul 15 00:26:45 2013
+From: kvogel at mdcom.com (Kurt Vogel)
+Date: Mon, 15 Jul 2013 00:26:45 -0700
+Subject: [pycrypto] RSA exportKey question with bcrypt?
+In-Reply-To: <CAGwD-jae=V7Q8-v0h1LgQH9z4ADrcrtBbTCecf_0WMqX6pnkJw@mail.gmail.com>
+References: <CAGwD-jZtKa2Yr2TCJ+=JkTT3xpTbu3-CHCvQGX_SfO=HSgU4uQ@mail.gmail.com>
+ <CAGwD-jae=V7Q8-v0h1LgQH9z4ADrcrtBbTCecf_0WMqX6pnkJw@mail.gmail.com>
+Message-ID: <CAGwD-ja5L5TsQ7kkdSo+QEubPVVLPQPd-f0KnSicPvCP-57dWg@mail.gmail.com>
+
+And finally a comment/question/complaint :(
+
+If I use protection like this for ex:
+
+export = rsa.exportKey(passphrase='boo', pkcs=8, protection=
+'PBKDF2WithHMAC-SHA1AndAES256-CBC')
+
+The exported key looks like this:
+-----BEGIN ENCRYPTED PRIVATE KEY-----
+MIIFHzBJBgkqhkiG9w0BBQ0wPDAbBgkqhkiG9w0BBQwwDgQIHI1C+JhO35cCAgPo
+MB0GCWCGSAFlAwQBKgQQ2FsezYUEaQLPHxk0z6+R4gSCBNDV++BsvKxxpo6uhUYw
+...
+
+With export = rsa.exportKey(passphrase='boo'):
+
+-----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+DEK-Info: DES-EDE3-CBC,CE7B6EC598ED0D10
+
+lPMvbYUypG+O4P/LilzGVQqP+6PMbnnLMP6eosyubcBqLtQxvMlvRRqgRu5CDApA
+...
+
+The logic in exportKey() looks a bit convoluted, is this for some backward
+compatibility issue?  I would expect to see something like this, what
+ssh-key does:
+
+-----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+
+oL8O6n5v1S3cgGJIwrzrAq5TQIb7OeolGJpHXiyTUj1iStulgS5vAjkht0cgq53p
+...
+..
+
+Thanks,
+Kurt
+
+
+On Sun, Jul 14, 2013 at 11:40 PM, Kurt Vogel <kvogel at mdcom.com> wrote:
+
+> While I'm on the subject and appears Dwayne is merging in pull requests :)
+>
+> For RSA exportKey() think we could have **kwargs for extra prot_params
+> passed to
+>
+> PKCS8.wrap() like iteration_count and salt size?
+>
+>
+>
+> On Sun, Jul 14, 2013 at 9:34 PM, Kurt Vogel <kvogel at mdcom.com> wrote:
+>
+>> Hi,
+>>
+>> Do you guys know roughly when this will go in?
+>>
+>> Also with import/export RSA keys can we support bcrypt?
+>>
+>> Does JCA and BouncyCastle use bcrypt, eg:
+>>
+>> 'BcryptWithHMAC-SHA1AndAES256-CBC'
+>>
+>> Thanks,
+>> Kurt
+>>
+>>
+>> On Fri, Jul 5, 2013 at 2:52 AM, Legrandin <helderijs at gmail.com> wrote:
+>> >
+>> > Hi Kurt , thanks a lot for providing feedback. It is much appreciated.
+>> >
+>> > * I guess you refer to camel-casing used for several variables, which
+>> > was due to my preference to stick to ASN.1 naming.
+>> >   I can work on that and make sure flake8 does not complain that much.
+>> >
+>> > * Right. Code evolved at different points in time, and indeed it is
+>> > now hard to follow the path of the 'parameter' value. I will try to
+>> > fix that.
+>> >
+>> > * I used strings like 'PBKDF2WithHMAC-SHA1AndAES128-CBC' because that
+>> > is the style used in JCA and BouncyCastle and a lot of people are
+>> > familiar with it.
+>> >   I am not very clear what the benefit enums might bring? One option I
+>> > considered was the ability to provide 3 independent parameters
+>> >   instead of one (since protection mainly depends on type of KDF, PRF,
+>> > and symmetric cipher) but at the end I guess most
+>> >   uses case are about the desire to protect the private key using a
+>> > password in a strong way, and the ability to tweak the various
+>> > parameters
+>> >   is not that relevant. Plus, exportKey() parameter list becomes to
+>> long.
+>> >
+>> > * I am really ashamed to admit that I actually have 9 pull requests
+>> > open, not 2 so I am totally giving headaches to the maintainer. :-)
+>> >   It is of course only up to him to decide which features should go
+>> > in; given that he has not much time these days, it is likely that only
+>> >   few features and bugfixes may go into any next release.
+>> >   The release merge window seems to roughly be once per year and I
+>> > find it is natural to have so many outstanding pull requests by now.
+>> >   To my defense, I can only say that the all pull requests cover one
+>> > feature only and that I try to keep them as independent as possible.
+>> >   Most of them apply cleanly to master (e.g. HKDF, CCM, PKCS#8, bug
+>> fixes, etc).
+>> >   In some cases though, they do depend on an existing pull request (as
+>> > in the case of DSA import/export depending on PKCS8 be applied first),
+>> >   because keeping them separated is honestly too much work for me
+>> > *and* they are indeed extensions of other extensions.
+>> >
+>> > > Hi, I was looking at the pycrypto pull request
+>> > > https://github.com/dlitz/pycrypto/pull/32.  Just a few comments...
+>> > >
+>> > > * For readability can you pep8 format the code?
+>> > > * RSA, for import/export the protection parameter maybe rename to
+>> algo or
+>> > > wrap algo?  It evolves from: 'protection' to 'wrap_algo' to 'mode' as
+>> it
+>> > > goes down the call stack.
+>> > > * Also maybe make this parameter an enum/value?  Since the long
+>> string can
+>> > > be error prone, low level code would need to change anyway if it were
+>> either
+>> > > string or int if we support more modes.
+>> > > * And last but not least... I'm new to this email list and not sure
+>> how
+>> > > often pull requests are accepted but maybe you could reduce the
+>> amount of
+>> > > features going in?  I know you have another one, 51, after this...
+>> > > Maintainer may reluctant to do massive changes all at once?
+>> > >
+>> > > Anyway just ideas...
+>> > > Thanks for your time,
+>> > > Sincerely,
+>> > > Kurt
+>> > >
+>> > _______________________________________________
+>> > pycrypto mailing list
+>> > pycrypto at lists.dlitz.net
+>> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130715/670efb00/attachment-0001.html>
+
+From helderijs at gmail.com  Mon Jul 15 02:26:42 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Mon, 15 Jul 2013 11:26:42 +0200
+Subject: [pycrypto] RSA exportKey question with bcrypt?
+In-Reply-To: <CAGwD-ja5L5TsQ7kkdSo+QEubPVVLPQPd-f0KnSicPvCP-57dWg@mail.gmail.com>
+References: <CAGwD-jZtKa2Yr2TCJ+=JkTT3xpTbu3-CHCvQGX_SfO=HSgU4uQ@mail.gmail.com>
+ <CAGwD-jae=V7Q8-v0h1LgQH9z4ADrcrtBbTCecf_0WMqX6pnkJw@mail.gmail.com>
+ <CAGwD-ja5L5TsQ7kkdSo+QEubPVVLPQPd-f0KnSicPvCP-57dWg@mail.gmail.com>
+Message-ID: <CAGfyce203qv9sHJVTbTv9R=XRbBMj=Adg7ksWjUpxvM1Mw8LRg@mail.gmail.com>
+
+Hi Kurt,
+
+In the PyCrypto 2.6 release, rsa.exportKey(passphrase='boo') generates
+a TDES-encrypted private key, with encryption being done at the PEM
+level.
+
+I don't think that behavior should change (e.g. we should not silently
+switch to AES or even to the more robust PKCS#8-level encryption).
+
+2013/7/15 Kurt Vogel <kvogel at mdcom.com>:
+> And finally a comment/question/complaint :(
+>
+> If I use protection like this for ex:
+>
+> export = rsa.exportKey(passphrase='boo', pkcs=8,
+> protection='PBKDF2WithHMAC-SHA1AndAES256-CBC')
+>
+> The exported key looks like this:
+>
+> -----BEGIN ENCRYPTED PRIVATE KEY-----
+> MIIFHzBJBgkqhkiG9w0BBQ0wPDAbBgkqhkiG9w0BBQwwDgQIHI1C+JhO35cCAgPo
+> MB0GCWCGSAFlAwQBKgQQ2FsezYUEaQLPHxk0z6+R4gSCBNDV++BsvKxxpo6uhUYw
+> ...
+>
+> With export = rsa.exportKey(passphrase='boo'):
+>
+> -----BEGIN RSA PRIVATE KEY-----
+> Proc-Type: 4,ENCRYPTED
+> DEK-Info: DES-EDE3-CBC,CE7B6EC598ED0D10
+>
+> lPMvbYUypG+O4P/LilzGVQqP+6PMbnnLMP6eosyubcBqLtQxvMlvRRqgRu5CDApA
+> ...
+>
+> The logic in exportKey() looks a bit convoluted, is this for some backward
+> compatibility issue?  I would expect to see something like this, what
+> ssh-key does:
+>
+> -----BEGIN RSA PRIVATE KEY-----
+> Proc-Type: 4,ENCRYPTED
+> DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+>
+> oL8O6n5v1S3cgGJIwrzrAq5TQIb7OeolGJpHXiyTUj1iStulgS5vAjkht0cgq53p
+> ...
+> ..
+>
+> Thanks,
+> Kurt
+>
+>
+> On Sun, Jul 14, 2013 at 11:40 PM, Kurt Vogel <kvogel at mdcom.com> wrote:
+>>
+>> While I'm on the subject and appears Dwayne is merging in pull requests :)
+>>
+>> For RSA exportKey() think we could have **kwargs for extra prot_params
+>> passed to
+>>
+>> PKCS8.wrap() like iteration_count and salt size?
+>>
+>>
+>>
+>> On Sun, Jul 14, 2013 at 9:34 PM, Kurt Vogel <kvogel at mdcom.com> wrote:
+>>>
+>>> Hi,
+>>>
+>>> Do you guys know roughly when this will go in?
+>>>
+>>> Also with import/export RSA keys can we support bcrypt?
+>>>
+>>> Does JCA and BouncyCastle use bcrypt, eg:
+>>>
+>>> 'BcryptWithHMAC-SHA1AndAES256-CBC'
+>>>
+>>> Thanks,
+>>> Kurt
+>>>
+>>>
+>>> On Fri, Jul 5, 2013 at 2:52 AM, Legrandin <helderijs at gmail.com> wrote:
+>>> >
+>>> > Hi Kurt , thanks a lot for providing feedback. It is much appreciated.
+>>> >
+>>> > * I guess you refer to camel-casing used for several variables, which
+>>> > was due to my preference to stick to ASN.1 naming.
+>>> >   I can work on that and make sure flake8 does not complain that much.
+>>> >
+>>> > * Right. Code evolved at different points in time, and indeed it is
+>>> > now hard to follow the path of the 'parameter' value. I will try to
+>>> > fix that.
+>>> >
+>>> > * I used strings like 'PBKDF2WithHMAC-SHA1AndAES128-CBC' because that
+>>> > is the style used in JCA and BouncyCastle and a lot of people are
+>>> > familiar with it.
+>>> >   I am not very clear what the benefit enums might bring? One option I
+>>> > considered was the ability to provide 3 independent parameters
+>>> >   instead of one (since protection mainly depends on type of KDF, PRF,
+>>> > and symmetric cipher) but at the end I guess most
+>>> >   uses case are about the desire to protect the private key using a
+>>> > password in a strong way, and the ability to tweak the various
+>>> > parameters
+>>> >   is not that relevant. Plus, exportKey() parameter list becomes to
+>>> > long.
+>>> >
+>>> > * I am really ashamed to admit that I actually have 9 pull requests
+>>> > open, not 2 so I am totally giving headaches to the maintainer. :-)
+>>> >   It is of course only up to him to decide which features should go
+>>> > in; given that he has not much time these days, it is likely that only
+>>> >   few features and bugfixes may go into any next release.
+>>> >   The release merge window seems to roughly be once per year and I
+>>> > find it is natural to have so many outstanding pull requests by now.
+>>> >   To my defense, I can only say that the all pull requests cover one
+>>> > feature only and that I try to keep them as independent as possible.
+>>> >   Most of them apply cleanly to master (e.g. HKDF, CCM, PKCS#8, bug
+>>> > fixes, etc).
+>>> >   In some cases though, they do depend on an existing pull request (as
+>>> > in the case of DSA import/export depending on PKCS8 be applied first),
+>>> >   because keeping them separated is honestly too much work for me
+>>> > *and* they are indeed extensions of other extensions.
+>>> >
+>>> > > Hi, I was looking at the pycrypto pull request
+>>> > > https://github.com/dlitz/pycrypto/pull/32.  Just a few comments...
+>>> > >
+>>> > > * For readability can you pep8 format the code?
+>>> > > * RSA, for import/export the protection parameter maybe rename to
+>>> > > algo or
+>>> > > wrap algo?  It evolves from: 'protection' to 'wrap_algo' to 'mode' as
+>>> > > it
+>>> > > goes down the call stack.
+>>> > > * Also maybe make this parameter an enum/value?  Since the long
+>>> > > string can
+>>> > > be error prone, low level code would need to change anyway if it were
+>>> > > either
+>>> > > string or int if we support more modes.
+>>> > > * And last but not least... I'm new to this email list and not sure
+>>> > > how
+>>> > > often pull requests are accepted but maybe you could reduce the
+>>> > > amount of
+>>> > > features going in?  I know you have another one, 51, after this...
+>>> > > Maintainer may reluctant to do massive changes all at once?
+>>> > >
+>>> > > Anyway just ideas...
+>>> > > Thanks for your time,
+>>> > > Sincerely,
+>>> > > Kurt
+>>> > >
+>>> > _______________________________________________
+>>> > pycrypto mailing list
+>>> > pycrypto at lists.dlitz.net
+>>> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>>
+>>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+From kvogel at mdcom.com  Mon Jul 15 11:48:20 2013
+From: kvogel at mdcom.com (Kurt Vogel)
+Date: Mon, 15 Jul 2013 11:48:20 -0700
+Subject: [pycrypto] RSA exportKey question with bcrypt?
+In-Reply-To: <CAGfyce203qv9sHJVTbTv9R=XRbBMj=Adg7ksWjUpxvM1Mw8LRg@mail.gmail.com>
+References: <CAGwD-jZtKa2Yr2TCJ+=JkTT3xpTbu3-CHCvQGX_SfO=HSgU4uQ@mail.gmail.com>
+ <CAGwD-jae=V7Q8-v0h1LgQH9z4ADrcrtBbTCecf_0WMqX6pnkJw@mail.gmail.com>
+ <CAGwD-ja5L5TsQ7kkdSo+QEubPVVLPQPd-f0KnSicPvCP-57dWg@mail.gmail.com>
+ <CAGfyce203qv9sHJVTbTv9R=XRbBMj=Adg7ksWjUpxvM1Mw8LRg@mail.gmail.com>
+Message-ID: <CAGwD-jZY-A+OUvi+AVcwJCmKxLk7Xg79x1N41nTf51RRY_hc=Q@mail.gmail.com>
+
+Understood, but the format of the export changes when we add 'protection'
+parameter.
+Can we keep same format and have different headers, ex:
+
+> Proc-Type: 4,ENCRYPTED
+> DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+
+Because I notice we wrap the unencrypted PEM into a PBES2 which is
+encrypted there.
+
+Also maybe more importantly would be the extra parameters for salt size and
+iteration count?
+
+An afterthought, maybe it's time exportKey(), importKey() stay the same as
+2.6 and have new functions that allow these extra combinations?
+
+Thanks,
+Kurt
+
+
+
+On Mon, Jul 15, 2013 at 2:26 AM, Legrandin <helderijs at gmail.com> wrote:
+
+> Hi Kurt,
+>
+> In the PyCrypto 2.6 release, rsa.exportKey(passphrase='boo') generates
+> a TDES-encrypted private key, with encryption being done at the PEM
+> level.
+>
+> I don't think that behavior should change (e.g. we should not silently
+> switch to AES or even to the more robust PKCS#8-level encryption).
+>
+> 2013/7/15 Kurt Vogel <kvogel at mdcom.com>:
+> > And finally a comment/question/complaint :(
+> >
+> > If I use protection like this for ex:
+> >
+> > export = rsa.exportKey(passphrase='boo', pkcs=8,
+> > protection='PBKDF2WithHMAC-SHA1AndAES256-CBC')
+> >
+> > The exported key looks like this:
+> >
+> > -----BEGIN ENCRYPTED PRIVATE KEY-----
+> > MIIFHzBJBgkqhkiG9w0BBQ0wPDAbBgkqhkiG9w0BBQwwDgQIHI1C+JhO35cCAgPo
+> > MB0GCWCGSAFlAwQBKgQQ2FsezYUEaQLPHxk0z6+R4gSCBNDV++BsvKxxpo6uhUYw
+> > ...
+> >
+> > With export = rsa.exportKey(passphrase='boo'):
+> >
+> > -----BEGIN RSA PRIVATE KEY-----
+> > Proc-Type: 4,ENCRYPTED
+> > DEK-Info: DES-EDE3-CBC,CE7B6EC598ED0D10
+> >
+> > lPMvbYUypG+O4P/LilzGVQqP+6PMbnnLMP6eosyubcBqLtQxvMlvRRqgRu5CDApA
+> > ...
+> >
+> > The logic in exportKey() looks a bit convoluted, is this for some
+> backward
+> > compatibility issue?  I would expect to see something like this, what
+> > ssh-key does:
+> >
+> > -----BEGIN RSA PRIVATE KEY-----
+> > Proc-Type: 4,ENCRYPTED
+> > DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+> >
+> > oL8O6n5v1S3cgGJIwrzrAq5TQIb7OeolGJpHXiyTUj1iStulgS5vAjkht0cgq53p
+> > ...
+> > ..
+> >
+> > Thanks,
+> > Kurt
+> >
+> >
+> > On Sun, Jul 14, 2013 at 11:40 PM, Kurt Vogel <kvogel at mdcom.com> wrote:
+> >>
+> >> While I'm on the subject and appears Dwayne is merging in pull requests
+> :)
+> >>
+> >> For RSA exportKey() think we could have **kwargs for extra prot_params
+> >> passed to
+> >>
+> >> PKCS8.wrap() like iteration_count and salt size?
+> >>
+> >>
+> >>
+> >> On Sun, Jul 14, 2013 at 9:34 PM, Kurt Vogel <kvogel at mdcom.com> wrote:
+> >>>
+> >>> Hi,
+> >>>
+> >>> Do you guys know roughly when this will go in?
+> >>>
+> >>> Also with import/export RSA keys can we support bcrypt?
+> >>>
+> >>> Does JCA and BouncyCastle use bcrypt, eg:
+> >>>
+> >>> 'BcryptWithHMAC-SHA1AndAES256-CBC'
+> >>>
+> >>> Thanks,
+> >>> Kurt
+> >>>
+> >>>
+> >>> On Fri, Jul 5, 2013 at 2:52 AM, Legrandin <helderijs at gmail.com> wrote:
+> >>> >
+> >>> > Hi Kurt , thanks a lot for providing feedback. It is much
+> appreciated.
+> >>> >
+> >>> > * I guess you refer to camel-casing used for several variables, which
+> >>> > was due to my preference to stick to ASN.1 naming.
+> >>> >   I can work on that and make sure flake8 does not complain that
+> much.
+> >>> >
+> >>> > * Right. Code evolved at different points in time, and indeed it is
+> >>> > now hard to follow the path of the 'parameter' value. I will try to
+> >>> > fix that.
+> >>> >
+> >>> > * I used strings like 'PBKDF2WithHMAC-SHA1AndAES128-CBC' because that
+> >>> > is the style used in JCA and BouncyCastle and a lot of people are
+> >>> > familiar with it.
+> >>> >   I am not very clear what the benefit enums might bring? One option
+> I
+> >>> > considered was the ability to provide 3 independent parameters
+> >>> >   instead of one (since protection mainly depends on type of KDF,
+> PRF,
+> >>> > and symmetric cipher) but at the end I guess most
+> >>> >   uses case are about the desire to protect the private key using a
+> >>> > password in a strong way, and the ability to tweak the various
+> >>> > parameters
+> >>> >   is not that relevant. Plus, exportKey() parameter list becomes to
+> >>> > long.
+> >>> >
+> >>> > * I am really ashamed to admit that I actually have 9 pull requests
+> >>> > open, not 2 so I am totally giving headaches to the maintainer. :-)
+> >>> >   It is of course only up to him to decide which features should go
+> >>> > in; given that he has not much time these days, it is likely that
+> only
+> >>> >   few features and bugfixes may go into any next release.
+> >>> >   The release merge window seems to roughly be once per year and I
+> >>> > find it is natural to have so many outstanding pull requests by now.
+> >>> >   To my defense, I can only say that the all pull requests cover one
+> >>> > feature only and that I try to keep them as independent as possible.
+> >>> >   Most of them apply cleanly to master (e.g. HKDF, CCM, PKCS#8, bug
+> >>> > fixes, etc).
+> >>> >   In some cases though, they do depend on an existing pull request
+> (as
+> >>> > in the case of DSA import/export depending on PKCS8 be applied
+> first),
+> >>> >   because keeping them separated is honestly too much work for me
+> >>> > *and* they are indeed extensions of other extensions.
+> >>> >
+> >>> > > Hi, I was looking at the pycrypto pull request
+> >>> > > https://github.com/dlitz/pycrypto/pull/32.  Just a few comments...
+> >>> > >
+> >>> > > * For readability can you pep8 format the code?
+> >>> > > * RSA, for import/export the protection parameter maybe rename to
+> >>> > > algo or
+> >>> > > wrap algo?  It evolves from: 'protection' to 'wrap_algo' to 'mode'
+> as
+> >>> > > it
+> >>> > > goes down the call stack.
+> >>> > > * Also maybe make this parameter an enum/value?  Since the long
+> >>> > > string can
+> >>> > > be error prone, low level code would need to change anyway if it
+> were
+> >>> > > either
+> >>> > > string or int if we support more modes.
+> >>> > > * And last but not least... I'm new to this email list and not sure
+> >>> > > how
+> >>> > > often pull requests are accepted but maybe you could reduce the
+> >>> > > amount of
+> >>> > > features going in?  I know you have another one, 51, after this...
+> >>> > > Maintainer may reluctant to do massive changes all at once?
+> >>> > >
+> >>> > > Anyway just ideas...
+> >>> > > Thanks for your time,
+> >>> > > Sincerely,
+> >>> > > Kurt
+> >>> > >
+> >>> > _______________________________________________
+> >>> > pycrypto mailing list
+> >>> > pycrypto at lists.dlitz.net
+> >>> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >>>
+> >>
+> >
+> >
+> > _______________________________________________
+> > pycrypto mailing list
+> > pycrypto at lists.dlitz.net
+> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130715/85868584/attachment.html>
+
+From helderijs at gmail.com  Mon Jul 15 13:52:56 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Mon, 15 Jul 2013 22:52:56 +0200
+Subject: [pycrypto] RSA exportKey question with bcrypt?
+In-Reply-To: <CAGwD-jZY-A+OUvi+AVcwJCmKxLk7Xg79x1N41nTf51RRY_hc=Q@mail.gmail.com>
+References: <CAGwD-jZtKa2Yr2TCJ+=JkTT3xpTbu3-CHCvQGX_SfO=HSgU4uQ@mail.gmail.com>
+ <CAGwD-jae=V7Q8-v0h1LgQH9z4ADrcrtBbTCecf_0WMqX6pnkJw@mail.gmail.com>
+ <CAGwD-ja5L5TsQ7kkdSo+QEubPVVLPQPd-f0KnSicPvCP-57dWg@mail.gmail.com>
+ <CAGfyce203qv9sHJVTbTv9R=XRbBMj=Adg7ksWjUpxvM1Mw8LRg@mail.gmail.com>
+ <CAGwD-jZY-A+OUvi+AVcwJCmKxLk7Xg79x1N41nTf51RRY_hc=Q@mail.gmail.com>
+Message-ID: <CAGfyce2xnk5x6k0WMn2DanG=mDNqcLxVtyWmDFm7wJzo3j=EjA@mail.gmail.com>
+
+Hi Kurt,
+
+I hope I understand correctly this time.
+The presence of a header like:
+
+-----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+[...]
+
+indicates that the PEM envelope is encrypted and that the inner PKCS#8
+structure is clear.
+
+A header like:
+
+-----BEGIN ENCRYPTED PRIVATE KEY-----
+MIIFHzBJBgkqhkiG9w0BBQ0wPDAbBgkqhkiG9w0BBQwwDgQIHI1C+JhO35cCAgPo
+[...]
+
+indicates the opposite: the PEM envelope is clear and the inner PKCS#8
+structure is encrypted. That was produced by a call like:
+
+    >> rsa.exportKey(passphrase='boo', pkcs=8,
+protection='PBKDF2WithHMAC-SHA1AndAES256-CBC')
+
+I don't think you can have both PKCS#8-level encryption (with all its
+nice properties, like ability to fine tune the algorithms and so on)
+and nice human-readable headers in the PEM envelope (like DEK-Info)
+describing the type of encryption that was performed.That would
+totally confuse the receiver...
+
+It' also worth streessing that PEM-level encryption is not really
+specified anywhere other than in very old RFCs like RFC 1421, which
+only define DES as algorithm and no password key derivation. Nowadays,
+PEM-level encryption is best avoided, even if that means that the only
+hint that the key is encrypted is the generic "BEGIN ENCRYPTED PRIVATE
+KEY" line.
+
+As described in the docstrings, specifying the 'protection' parameter
+automatically implies
+PKCS#8-level encryption, so the change of export format is actually
+done on purpose.
+
+> Also maybe more importantly would be the extra parameters for salt size and
+> iteration count?
+
+I agree it would be a nice addition (along with some support for bcrypt/scrypt).
+
+> An afterthought, maybe it's time exportKey(), importKey() stay the same as
+> 2.6 and have new functions that allow these extra combinations?
+
+Which extra combinations? Salt size and iteration count you mean?
+They could be passed as a dictionary, since they are
+algorithm-specific parameters.
+
+2013/7/15 Kurt Vogel <kvogel at mdcom.com>:
+>
+> Understood, but the format of the export changes when we add 'protection'
+> parameter.
+> Can we keep same format and have different headers, ex:
+>
+>> Proc-Type: 4,ENCRYPTED
+>> DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+>
+> Because I notice we wrap the unencrypted PEM into a PBES2 which is encrypted
+> there.
+>
+> Also maybe more importantly would be the extra parameters for salt size and
+> iteration count?
+>
+> An afterthought, maybe it's time exportKey(), importKey() stay the same as
+> 2.6 and have new functions that allow these extra combinations?
+>
+> Thanks,
+> Kurt
+>
+>
+>
+> On Mon, Jul 15, 2013 at 2:26 AM, Legrandin <helderijs at gmail.com> wrote:
+>>
+>> Hi Kurt,
+>>
+>> In the PyCrypto 2.6 release, rsa.exportKey(passphrase='boo') generates
+>> a TDES-encrypted private key, with encryption being done at the PEM
+>> level.
+>>
+>> I don't think that behavior should change (e.g. we should not silently
+>> switch to AES or even to the more robust PKCS#8-level encryption).
+>>
+>> 2013/7/15 Kurt Vogel <kvogel at mdcom.com>:
+>> > And finally a comment/question/complaint :(
+>> >
+>> > If I use protection like this for ex:
+>> >
+>> > export = rsa.exportKey(passphrase='boo', pkcs=8,
+>> > protection='PBKDF2WithHMAC-SHA1AndAES256-CBC')
+>> >
+>> > The exported key looks like this:
+>> >
+>> > -----BEGIN ENCRYPTED PRIVATE KEY-----
+>> > MIIFHzBJBgkqhkiG9w0BBQ0wPDAbBgkqhkiG9w0BBQwwDgQIHI1C+JhO35cCAgPo
+>> > MB0GCWCGSAFlAwQBKgQQ2FsezYUEaQLPHxk0z6+R4gSCBNDV++BsvKxxpo6uhUYw
+>> > ...
+>> >
+>> > With export = rsa.exportKey(passphrase='boo'):
+>> >
+>> > -----BEGIN RSA PRIVATE KEY-----
+>> > Proc-Type: 4,ENCRYPTED
+>> > DEK-Info: DES-EDE3-CBC,CE7B6EC598ED0D10
+>> >
+>> > lPMvbYUypG+O4P/LilzGVQqP+6PMbnnLMP6eosyubcBqLtQxvMlvRRqgRu5CDApA
+>> > ...
+>> >
+>> > The logic in exportKey() looks a bit convoluted, is this for some
+>> > backward
+>> > compatibility issue?  I would expect to see something like this, what
+>> > ssh-key does:
+>> >
+>> > -----BEGIN RSA PRIVATE KEY-----
+>> > Proc-Type: 4,ENCRYPTED
+>> > DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+>> >
+>> > oL8O6n5v1S3cgGJIwrzrAq5TQIb7OeolGJpHXiyTUj1iStulgS5vAjkht0cgq53p
+>> > ...
+>> > ..
+>> >
+>> > Thanks,
+>> > Kurt
+>> >
+>> >
+>> > On Sun, Jul 14, 2013 at 11:40 PM, Kurt Vogel <kvogel at mdcom.com> wrote:
+>> >>
+>> >> While I'm on the subject and appears Dwayne is merging in pull requests
+>> >> :)
+>> >>
+>> >> For RSA exportKey() think we could have **kwargs for extra prot_params
+>> >> passed to
+>> >>
+>> >> PKCS8.wrap() like iteration_count and salt size?
+>> >>
+>> >>
+>> >>
+>> >> On Sun, Jul 14, 2013 at 9:34 PM, Kurt Vogel <kvogel at mdcom.com> wrote:
+>> >>>
+>> >>> Hi,
+>> >>>
+>> >>> Do you guys know roughly when this will go in?
+>> >>>
+>> >>> Also with import/export RSA keys can we support bcrypt?
+>> >>>
+>> >>> Does JCA and BouncyCastle use bcrypt, eg:
+>> >>>
+>> >>> 'BcryptWithHMAC-SHA1AndAES256-CBC'
+>> >>>
+>> >>> Thanks,
+>> >>> Kurt
+>> >>>
+>> >>>
+>> >>> On Fri, Jul 5, 2013 at 2:52 AM, Legrandin <helderijs at gmail.com> wrote:
+>> >>> >
+>> >>> > Hi Kurt , thanks a lot for providing feedback. It is much
+>> >>> > appreciated.
+>> >>> >
+>> >>> > * I guess you refer to camel-casing used for several variables,
+>> >>> > which
+>> >>> > was due to my preference to stick to ASN.1 naming.
+>> >>> >   I can work on that and make sure flake8 does not complain that
+>> >>> > much.
+>> >>> >
+>> >>> > * Right. Code evolved at different points in time, and indeed it is
+>> >>> > now hard to follow the path of the 'parameter' value. I will try to
+>> >>> > fix that.
+>> >>> >
+>> >>> > * I used strings like 'PBKDF2WithHMAC-SHA1AndAES128-CBC' because
+>> >>> > that
+>> >>> > is the style used in JCA and BouncyCastle and a lot of people are
+>> >>> > familiar with it.
+>> >>> >   I am not very clear what the benefit enums might bring? One option
+>> >>> > I
+>> >>> > considered was the ability to provide 3 independent parameters
+>> >>> >   instead of one (since protection mainly depends on type of KDF,
+>> >>> > PRF,
+>> >>> > and symmetric cipher) but at the end I guess most
+>> >>> >   uses case are about the desire to protect the private key using a
+>> >>> > password in a strong way, and the ability to tweak the various
+>> >>> > parameters
+>> >>> >   is not that relevant. Plus, exportKey() parameter list becomes to
+>> >>> > long.
+>> >>> >
+>> >>> > * I am really ashamed to admit that I actually have 9 pull requests
+>> >>> > open, not 2 so I am totally giving headaches to the maintainer. :-)
+>> >>> >   It is of course only up to him to decide which features should go
+>> >>> > in; given that he has not much time these days, it is likely that
+>> >>> > only
+>> >>> >   few features and bugfixes may go into any next release.
+>> >>> >   The release merge window seems to roughly be once per year and I
+>> >>> > find it is natural to have so many outstanding pull requests by now.
+>> >>> >   To my defense, I can only say that the all pull requests cover one
+>> >>> > feature only and that I try to keep them as independent as possible.
+>> >>> >   Most of them apply cleanly to master (e.g. HKDF, CCM, PKCS#8, bug
+>> >>> > fixes, etc).
+>> >>> >   In some cases though, they do depend on an existing pull request
+>> >>> > (as
+>> >>> > in the case of DSA import/export depending on PKCS8 be applied
+>> >>> > first),
+>> >>> >   because keeping them separated is honestly too much work for me
+>> >>> > *and* they are indeed extensions of other extensions.
+>> >>> >
+>> >>> > > Hi, I was looking at the pycrypto pull request
+>> >>> > > https://github.com/dlitz/pycrypto/pull/32.  Just a few comments...
+>> >>> > >
+>> >>> > > * For readability can you pep8 format the code?
+>> >>> > > * RSA, for import/export the protection parameter maybe rename to
+>> >>> > > algo or
+>> >>> > > wrap algo?  It evolves from: 'protection' to 'wrap_algo' to 'mode'
+>> >>> > > as
+>> >>> > > it
+>> >>> > > goes down the call stack.
+>> >>> > > * Also maybe make this parameter an enum/value?  Since the long
+>> >>> > > string can
+>> >>> > > be error prone, low level code would need to change anyway if it
+>> >>> > > were
+>> >>> > > either
+>> >>> > > string or int if we support more modes.
+>> >>> > > * And last but not least... I'm new to this email list and not
+>> >>> > > sure
+>> >>> > > how
+>> >>> > > often pull requests are accepted but maybe you could reduce the
+>> >>> > > amount of
+>> >>> > > features going in?  I know you have another one, 51, after this...
+>> >>> > > Maintainer may reluctant to do massive changes all at once?
+>> >>> > >
+>> >>> > > Anyway just ideas...
+>> >>> > > Thanks for your time,
+>> >>> > > Sincerely,
+>> >>> > > Kurt
+>> >>> > >
+>> >>> > _______________________________________________
+>> >>> > pycrypto mailing list
+>> >>> > pycrypto at lists.dlitz.net
+>> >>> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>> >>>
+>> >>
+>> >
+>> >
+>> > _______________________________________________
+>> > pycrypto mailing list
+>> > pycrypto at lists.dlitz.net
+>> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>> >
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+From kvogel at mdcom.com  Mon Jul 15 15:22:09 2013
+From: kvogel at mdcom.com (Kurt Vogel)
+Date: Mon, 15 Jul 2013 15:22:09 -0700
+Subject: [pycrypto] RSA exportKey question with bcrypt?
+In-Reply-To: <CAGfyce2xnk5x6k0WMn2DanG=mDNqcLxVtyWmDFm7wJzo3j=EjA@mail.gmail.com>
+References: <CAGwD-jZtKa2Yr2TCJ+=JkTT3xpTbu3-CHCvQGX_SfO=HSgU4uQ@mail.gmail.com>
+ <CAGwD-jae=V7Q8-v0h1LgQH9z4ADrcrtBbTCecf_0WMqX6pnkJw@mail.gmail.com>
+ <CAGwD-ja5L5TsQ7kkdSo+QEubPVVLPQPd-f0KnSicPvCP-57dWg@mail.gmail.com>
+ <CAGfyce203qv9sHJVTbTv9R=XRbBMj=Adg7ksWjUpxvM1Mw8LRg@mail.gmail.com>
+ <CAGwD-jZY-A+OUvi+AVcwJCmKxLk7Xg79x1N41nTf51RRY_hc=Q@mail.gmail.com>
+ <CAGfyce2xnk5x6k0WMn2DanG=mDNqcLxVtyWmDFm7wJzo3j=EjA@mail.gmail.com>
+Message-ID: <CAGwD-jYTF2MTWW5-OgactjRJCeaj+a=zX7z8H0EBPK_dP5qmPA@mail.gmail.com>
+
+Gotcha, thanks for the updated information.
+Didn't know PEM level encryption is best avoided and being phased out
+
+So ignore comment on additional function names, but add **kwargs to
+exportKey()
+to support iteration count and salt size for protection types allowing
+those arguments?
+
+And if I didn't mention already thanks for all the work on this, there is a
+lot..
+Kurt
+
+
+On Mon, Jul 15, 2013 at 1:52 PM, Legrandin <helderijs at gmail.com> wrote:
+
+> Hi Kurt,
+>
+> I hope I understand correctly this time.
+> The presence of a header like:
+>
+> -----BEGIN RSA PRIVATE KEY-----
+> Proc-Type: 4,ENCRYPTED
+> DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+> [...]
+>
+> indicates that the PEM envelope is encrypted and that the inner PKCS#8
+> structure is clear.
+>
+> A header like:
+>
+> -----BEGIN ENCRYPTED PRIVATE KEY-----
+> MIIFHzBJBgkqhkiG9w0BBQ0wPDAbBgkqhkiG9w0BBQwwDgQIHI1C+JhO35cCAgPo
+> [...]
+>
+> indicates the opposite: the PEM envelope is clear and the inner PKCS#8
+> structure is encrypted. That was produced by a call like:
+>
+>     >> rsa.exportKey(passphrase='boo', pkcs=8,
+> protection='PBKDF2WithHMAC-SHA1AndAES256-CBC')
+>
+> I don't think you can have both PKCS#8-level encryption (with all its
+> nice properties, like ability to fine tune the algorithms and so on)
+> and nice human-readable headers in the PEM envelope (like DEK-Info)
+> describing the type of encryption that was performed.That would
+> totally confuse the receiver...
+>
+> It' also worth streessing that PEM-level encryption is not really
+> specified anywhere other than in very old RFCs like RFC 1421, which
+> only define DES as algorithm and no password key derivation. Nowadays,
+> PEM-level encryption is best avoided, even if that means that the only
+> hint that the key is encrypted is the generic "BEGIN ENCRYPTED PRIVATE
+> KEY" line.
+>
+> As described in the docstrings, specifying the 'protection' parameter
+> automatically implies
+> PKCS#8-level encryption, so the change of export format is actually
+> done on purpose.
+>
+> > Also maybe more importantly would be the extra parameters for salt size
+> and
+> > iteration count?
+>
+> I agree it would be a nice addition (along with some support for
+> bcrypt/scrypt).
+>
+> > An afterthought, maybe it's time exportKey(), importKey() stay the same
+> as
+> > 2.6 and have new functions that allow these extra combinations?
+>
+> Which extra combinations? Salt size and iteration count you mean?
+> They could be passed as a dictionary, since they are
+> algorithm-specific parameters.
+>
+> 2013/7/15 Kurt Vogel <kvogel at mdcom.com>:
+> >
+> > Understood, but the format of the export changes when we add 'protection'
+> > parameter.
+> > Can we keep same format and have different headers, ex:
+> >
+> >> Proc-Type: 4,ENCRYPTED
+> >> DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+> >
+> > Because I notice we wrap the unencrypted PEM into a PBES2 which is
+> encrypted
+> > there.
+> >
+> > Also maybe more importantly would be the extra parameters for salt size
+> and
+> > iteration count?
+> >
+> > An afterthought, maybe it's time exportKey(), importKey() stay the same
+> as
+> > 2.6 and have new functions that allow these extra combinations?
+> >
+> > Thanks,
+> > Kurt
+> >
+> >
+> >
+> > On Mon, Jul 15, 2013 at 2:26 AM, Legrandin <helderijs at gmail.com> wrote:
+> >>
+> >> Hi Kurt,
+> >>
+> >> In the PyCrypto 2.6 release, rsa.exportKey(passphrase='boo') generates
+> >> a TDES-encrypted private key, with encryption being done at the PEM
+> >> level.
+> >>
+> >> I don't think that behavior should change (e.g. we should not silently
+> >> switch to AES or even to the more robust PKCS#8-level encryption).
+> >>
+> >> 2013/7/15 Kurt Vogel <kvogel at mdcom.com>:
+> >> > And finally a comment/question/complaint :(
+> >> >
+> >> > If I use protection like this for ex:
+> >> >
+> >> > export = rsa.exportKey(passphrase='boo', pkcs=8,
+> >> > protection='PBKDF2WithHMAC-SHA1AndAES256-CBC')
+> >> >
+> >> > The exported key looks like this:
+> >> >
+> >> > -----BEGIN ENCRYPTED PRIVATE KEY-----
+> >> > MIIFHzBJBgkqhkiG9w0BBQ0wPDAbBgkqhkiG9w0BBQwwDgQIHI1C+JhO35cCAgPo
+> >> > MB0GCWCGSAFlAwQBKgQQ2FsezYUEaQLPHxk0z6+R4gSCBNDV++BsvKxxpo6uhUYw
+> >> > ...
+> >> >
+> >> > With export = rsa.exportKey(passphrase='boo'):
+> >> >
+> >> > -----BEGIN RSA PRIVATE KEY-----
+> >> > Proc-Type: 4,ENCRYPTED
+> >> > DEK-Info: DES-EDE3-CBC,CE7B6EC598ED0D10
+> >> >
+> >> > lPMvbYUypG+O4P/LilzGVQqP+6PMbnnLMP6eosyubcBqLtQxvMlvRRqgRu5CDApA
+> >> > ...
+> >> >
+> >> > The logic in exportKey() looks a bit convoluted, is this for some
+> >> > backward
+> >> > compatibility issue?  I would expect to see something like this, what
+> >> > ssh-key does:
+> >> >
+> >> > -----BEGIN RSA PRIVATE KEY-----
+> >> > Proc-Type: 4,ENCRYPTED
+> >> > DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+> >> >
+> >> > oL8O6n5v1S3cgGJIwrzrAq5TQIb7OeolGJpHXiyTUj1iStulgS5vAjkht0cgq53p
+> >> > ...
+> >> > ..
+> >> >
+> >> > Thanks,
+> >> > Kurt
+> >> >
+> >> >
+> >> > On Sun, Jul 14, 2013 at 11:40 PM, Kurt Vogel <kvogel at mdcom.com>
+> wrote:
+> >> >>
+> >> >> While I'm on the subject and appears Dwayne is merging in pull
+> requests
+> >> >> :)
+> >> >>
+> >> >> For RSA exportKey() think we could have **kwargs for extra
+> prot_params
+> >> >> passed to
+> >> >>
+> >> >> PKCS8.wrap() like iteration_count and salt size?
+> >> >>
+> >> >>
+> >> >>
+> >> >> On Sun, Jul 14, 2013 at 9:34 PM, Kurt Vogel <kvogel at mdcom.com>
+> wrote:
+> >> >>>
+> >> >>> Hi,
+> >> >>>
+> >> >>> Do you guys know roughly when this will go in?
+> >> >>>
+> >> >>> Also with import/export RSA keys can we support bcrypt?
+> >> >>>
+> >> >>> Does JCA and BouncyCastle use bcrypt, eg:
+> >> >>>
+> >> >>> 'BcryptWithHMAC-SHA1AndAES256-CBC'
+> >> >>>
+> >> >>> Thanks,
+> >> >>> Kurt
+> >> >>>
+> >> >>>
+> >> >>> On Fri, Jul 5, 2013 at 2:52 AM, Legrandin <helderijs at gmail.com>
+> wrote:
+> >> >>> >
+> >> >>> > Hi Kurt , thanks a lot for providing feedback. It is much
+> >> >>> > appreciated.
+> >> >>> >
+> >> >>> > * I guess you refer to camel-casing used for several variables,
+> >> >>> > which
+> >> >>> > was due to my preference to stick to ASN.1 naming.
+> >> >>> >   I can work on that and make sure flake8 does not complain that
+> >> >>> > much.
+> >> >>> >
+> >> >>> > * Right. Code evolved at different points in time, and indeed it
+> is
+> >> >>> > now hard to follow the path of the 'parameter' value. I will try
+> to
+> >> >>> > fix that.
+> >> >>> >
+> >> >>> > * I used strings like 'PBKDF2WithHMAC-SHA1AndAES128-CBC' because
+> >> >>> > that
+> >> >>> > is the style used in JCA and BouncyCastle and a lot of people are
+> >> >>> > familiar with it.
+> >> >>> >   I am not very clear what the benefit enums might bring? One
+> option
+> >> >>> > I
+> >> >>> > considered was the ability to provide 3 independent parameters
+> >> >>> >   instead of one (since protection mainly depends on type of KDF,
+> >> >>> > PRF,
+> >> >>> > and symmetric cipher) but at the end I guess most
+> >> >>> >   uses case are about the desire to protect the private key using
+> a
+> >> >>> > password in a strong way, and the ability to tweak the various
+> >> >>> > parameters
+> >> >>> >   is not that relevant. Plus, exportKey() parameter list becomes
+> to
+> >> >>> > long.
+> >> >>> >
+> >> >>> > * I am really ashamed to admit that I actually have 9 pull
+> requests
+> >> >>> > open, not 2 so I am totally giving headaches to the maintainer.
+> :-)
+> >> >>> >   It is of course only up to him to decide which features should
+> go
+> >> >>> > in; given that he has not much time these days, it is likely that
+> >> >>> > only
+> >> >>> >   few features and bugfixes may go into any next release.
+> >> >>> >   The release merge window seems to roughly be once per year and I
+> >> >>> > find it is natural to have so many outstanding pull requests by
+> now.
+> >> >>> >   To my defense, I can only say that the all pull requests cover
+> one
+> >> >>> > feature only and that I try to keep them as independent as
+> possible.
+> >> >>> >   Most of them apply cleanly to master (e.g. HKDF, CCM, PKCS#8,
+> bug
+> >> >>> > fixes, etc).
+> >> >>> >   In some cases though, they do depend on an existing pull request
+> >> >>> > (as
+> >> >>> > in the case of DSA import/export depending on PKCS8 be applied
+> >> >>> > first),
+> >> >>> >   because keeping them separated is honestly too much work for me
+> >> >>> > *and* they are indeed extensions of other extensions.
+> >> >>> >
+> >> >>> > > Hi, I was looking at the pycrypto pull request
+> >> >>> > > https://github.com/dlitz/pycrypto/pull/32.  Just a few
+> comments...
+> >> >>> > >
+> >> >>> > > * For readability can you pep8 format the code?
+> >> >>> > > * RSA, for import/export the protection parameter maybe rename
+> to
+> >> >>> > > algo or
+> >> >>> > > wrap algo?  It evolves from: 'protection' to 'wrap_algo' to
+> 'mode'
+> >> >>> > > as
+> >> >>> > > it
+> >> >>> > > goes down the call stack.
+> >> >>> > > * Also maybe make this parameter an enum/value?  Since the long
+> >> >>> > > string can
+> >> >>> > > be error prone, low level code would need to change anyway if it
+> >> >>> > > were
+> >> >>> > > either
+> >> >>> > > string or int if we support more modes.
+> >> >>> > > * And last but not least... I'm new to this email list and not
+> >> >>> > > sure
+> >> >>> > > how
+> >> >>> > > often pull requests are accepted but maybe you could reduce the
+> >> >>> > > amount of
+> >> >>> > > features going in?  I know you have another one, 51, after
+> this...
+> >> >>> > > Maintainer may reluctant to do massive changes all at once?
+> >> >>> > >
+> >> >>> > > Anyway just ideas...
+> >> >>> > > Thanks for your time,
+> >> >>> > > Sincerely,
+> >> >>> > > Kurt
+> >> >>> > >
+> >> >>> > _______________________________________________
+> >> >>> > pycrypto mailing list
+> >> >>> > pycrypto at lists.dlitz.net
+> >> >>> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >> >>>
+> >> >>
+> >> >
+> >> >
+> >> > _______________________________________________
+> >> > pycrypto mailing list
+> >> > pycrypto at lists.dlitz.net
+> >> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >> >
+> >> _______________________________________________
+> >> pycrypto mailing list
+> >> pycrypto at lists.dlitz.net
+> >> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >
+> >
+> >
+> > _______________________________________________
+> > pycrypto mailing list
+> > pycrypto at lists.dlitz.net
+> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130715/f3b5143e/attachment-0001.html>
+
+From mpg at elzevir.fr  Mon Jul 15 23:48:35 2013
+From: mpg at elzevir.fr (=?ISO-8859-1?Q?Manuel_P=E9gouri=E9-Gonnard?=)
+Date: Tue, 16 Jul 2013 08:48:35 +0200
+Subject: [pycrypto] RSA exportKey question with bcrypt?
+In-Reply-To: <CAGfyce2xnk5x6k0WMn2DanG=mDNqcLxVtyWmDFm7wJzo3j=EjA@mail.gmail.com>
+References: <CAGwD-jZtKa2Yr2TCJ+=JkTT3xpTbu3-CHCvQGX_SfO=HSgU4uQ@mail.gmail.com>
+ <CAGwD-jae=V7Q8-v0h1LgQH9z4ADrcrtBbTCecf_0WMqX6pnkJw@mail.gmail.com>
+ <CAGwD-ja5L5TsQ7kkdSo+QEubPVVLPQPd-f0KnSicPvCP-57dWg@mail.gmail.com>
+ <CAGfyce203qv9sHJVTbTv9R=XRbBMj=Adg7ksWjUpxvM1Mw8LRg@mail.gmail.com>
+ <CAGwD-jZY-A+OUvi+AVcwJCmKxLk7Xg79x1N41nTf51RRY_hc=Q@mail.gmail.com>
+ <CAGfyce2xnk5x6k0WMn2DanG=mDNqcLxVtyWmDFm7wJzo3j=EjA@mail.gmail.com>
+Message-ID: <51E4ECC3.7050107@elzevir.fr>
+
+Hi all,
+
+On 15/07/2013 22:52, Legrandin wrote:
+> I hope I understand correctly this time.
+> The presence of a header like:
+> 
+> -----BEGIN RSA PRIVATE KEY-----
+> Proc-Type: 4,ENCRYPTED
+> DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+> [...]
+> 
+> indicates that the PEM envelope is encrypted and that the inner PKCS#8
+> structure is clear.
+> 
+I may be mistaken, but I think this header indicates that the key inside the PEM
+envelope is in "naked" PKCS#1 format, not wrapped in PKCS#8.
+
+My understanding is as follows:
+
+-----BEGIN RSA RIVATE KEY----- 	PKCS#1 in a PEM envelope
+-----BEGIN RIVATE KEY----- 	unencrypted PKCS#8 in a PEM envelope
+-----BEGIN RSA RIVATE KEY----- 	encryptedd PKCS#8 in a PEM envelope
+
+I agree with you that the PEM envelope may be encrypted only in the first case.
+
+Manuel.
+
+From mpg at elzevir.fr  Tue Jul 16 00:08:38 2013
+From: mpg at elzevir.fr (=?ISO-8859-1?Q?Manuel_P=E9gouri=E9-Gonnard?=)
+Date: Tue, 16 Jul 2013 09:08:38 +0200
+Subject: [pycrypto] RSA exportKey question with bcrypt?
+In-Reply-To: <51E4ECC3.7050107@elzevir.fr>
+References: <CAGwD-jZtKa2Yr2TCJ+=JkTT3xpTbu3-CHCvQGX_SfO=HSgU4uQ@mail.gmail.com>
+ <CAGwD-jae=V7Q8-v0h1LgQH9z4ADrcrtBbTCecf_0WMqX6pnkJw@mail.gmail.com>
+ <CAGwD-ja5L5TsQ7kkdSo+QEubPVVLPQPd-f0KnSicPvCP-57dWg@mail.gmail.com>
+ <CAGfyce203qv9sHJVTbTv9R=XRbBMj=Adg7ksWjUpxvM1Mw8LRg@mail.gmail.com>
+ <CAGwD-jZY-A+OUvi+AVcwJCmKxLk7Xg79x1N41nTf51RRY_hc=Q@mail.gmail.com>
+ <CAGfyce2xnk5x6k0WMn2DanG=mDNqcLxVtyWmDFm7wJzo3j=EjA@mail.gmail.com>
+ <51E4ECC3.7050107@elzevir.fr>
+Message-ID: <51E4F176.4000101@elzevir.fr>
+
+On 16/07/2013 08:48, Manuel P?gouri?-Gonnard wrote:
+> -----BEGIN RSA RIVATE KEY----- 	PKCS#1 in a PEM envelope
+> -----BEGIN RIVATE KEY----- 	unencrypted PKCS#8 in a PEM envelope
+> -----BEGIN RSA RIVATE KEY----- 	encryptedd PKCS#8 in a PEM envelope
+>
+Oops, I meant:
+
+-----BEGIN RSA RIVATE KEY----- 		PKCS#1 in a PEM envelope
+-----BEGIN PRIVATE KEY----- 		unencrypted PKCS#8 in a PEM envelope
+-----BEGIN ENCRYPTED PRIVATE KEY----- 	encrypted PKCS#8 in a PEM envelope
+
+Manuel.
+
+From helderijs at gmail.com  Tue Jul 16 13:08:01 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Tue, 16 Jul 2013 22:08:01 +0200
+Subject: [pycrypto] RSA exportKey question with bcrypt?
+In-Reply-To: <51E4F176.4000101@elzevir.fr>
+References: <CAGwD-jZtKa2Yr2TCJ+=JkTT3xpTbu3-CHCvQGX_SfO=HSgU4uQ@mail.gmail.com>
+ <CAGwD-jae=V7Q8-v0h1LgQH9z4ADrcrtBbTCecf_0WMqX6pnkJw@mail.gmail.com>
+ <CAGwD-ja5L5TsQ7kkdSo+QEubPVVLPQPd-f0KnSicPvCP-57dWg@mail.gmail.com>
+ <CAGfyce203qv9sHJVTbTv9R=XRbBMj=Adg7ksWjUpxvM1Mw8LRg@mail.gmail.com>
+ <CAGwD-jZY-A+OUvi+AVcwJCmKxLk7Xg79x1N41nTf51RRY_hc=Q@mail.gmail.com>
+ <CAGfyce2xnk5x6k0WMn2DanG=mDNqcLxVtyWmDFm7wJzo3j=EjA@mail.gmail.com>
+ <51E4ECC3.7050107@elzevir.fr> <51E4F176.4000101@elzevir.fr>
+Message-ID: <CAGfyce2zHWAxp3Ajzm-OaXYC0YQKjTL0V6mvmN8YbfhUNhbXBw@mail.gmail.com>
+
+Hi Manuel,
+
+Yes, that is my understanding as well.
+The current code uses the PEM headers you indicate for the various
+cases (see below for actual output).
+I also find this link quite useful:
+
+https://polarssl.org/kb/cryptography/asn1-key-structures-in-der-and-pem
+
+>>> from Crypto.PublicKey import RSA
+>>> k = RSA.generate(1024)
+>>> print k.exportKey('PEM', pkcs=1)
+-----BEGIN RSA PRIVATE KEY-----
+MIICXAIBAAKBgQC+2fP2il/1+Yvr1ctB67+sFPq5hs0bOZ9R4l/Pt9cRKxFAKGDY
+[...]
+
+>>> print k.exportKey('PEM', passphrase='rr', pkcs=1)
+-----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+DEK-Info: DES-EDE3-CBC,FEE6839853DD42B2
+
+MWIPA268NMYw4kFCc5wVn/Dscb8adCpJnFZOF/8CZay+3ik6wIu8yAvlDrUiKguI
+[...]
+
+>>> print k.exportKey('PEM', passphrase='rr', pkcs=8)
+-----BEGIN PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+DEK-Info: DES-EDE3-CBC,E95D4DA9934F6C0E
+
+HZxEFCZq5Qixt08u2Td8etx5poaN7NxwrrP4zlfcNuYb0gyA/4QYc/1FOEFqjWbQ
+[...]
+
+>>> print k.exportKey('PEM', passphrase='rr', pkcs=8, protection='PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC')
+-----BEGIN ENCRYPTED PRIVATE KEY-----
+MIICxjBABgkqhkiG9w0BBQ0wMzAbBgkqhkiG9w0BBQwwDgQIt4O8Lxapq8MCAgPo
+[...]
+
+2013/7/16 Manuel P?gouri?-Gonnard <mpg at elzevir.fr>:
+> On 16/07/2013 08:48, Manuel P?gouri?-Gonnard wrote:
+>> -----BEGIN RSA RIVATE KEY-----        PKCS#1 in a PEM envelope
+>> -----BEGIN RIVATE KEY-----    unencrypted PKCS#8 in a PEM envelope
+>> -----BEGIN RSA RIVATE KEY-----        encryptedd PKCS#8 in a PEM envelope
+>>
+> Oops, I meant:
+>
+> -----BEGIN RSA RIVATE KEY-----          PKCS#1 in a PEM envelope
+> -----BEGIN PRIVATE KEY-----             unencrypted PKCS#8 in a PEM envelope
+> -----BEGIN ENCRYPTED PRIVATE KEY-----   encrypted PKCS#8 in a PEM envelope
+>
+> Manuel.
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From kvogel at mdcom.com  Wed Jul 17 01:33:41 2013
+From: kvogel at mdcom.com (Kurt Vogel)
+Date: Wed, 17 Jul 2013 01:33:41 -0700
+Subject: [pycrypto] RSA exportKey() changes set in stone for 2.7?
+Message-ID: <CAGwD-jYXxfVKyDyB6d+CV1uMSmo_v2C-j_FV=_qaHJ_rvjHqtQ@mail.gmail.com>
+
+Hi, quick question for the group and maintainer...
+
+I am about ready to deploy a project and wondering how set we are on the
+format of rsa.exportKey() for next pycrypto?
+
+Is it safe to include in our requirements.pip (for now) a reference to
+https://github.com/dlitz/pycrypto master branch?  And export my keys with
+the new protection scheme?  And consequently matching importKey().
+
+It would be super nice if we could add **kwargs for iteration_count and
+salt_size to export() but beggars can't be choosers :)  It seems a simple
+enough change and looks like importKey() reads those fields in, I'd do it
+myself but would like any thoughts/opinions?
+
+Thanks,
+Kurt
+
+
+On Mon, Jul 15, 2013 at 1:52 PM, Legrandin <helderijs at gmail.com> wrote:
+
+> Hi Kurt,
+>
+> I hope I understand correctly this time.
+> The presence of a header like:
+>
+> -----BEGIN RSA PRIVATE KEY-----
+> Proc-Type: 4,ENCRYPTED
+> DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+> [...]
+>
+> indicates that the PEM envelope is encrypted and that the inner PKCS#8
+> structure is clear.
+>
+> A header like:
+>
+> -----BEGIN ENCRYPTED PRIVATE KEY-----
+> MIIFHzBJBgkqhkiG9w0BBQ0wPDAbBgkqhkiG9w0BBQwwDgQIHI1C+JhO35cCAgPo
+> [...]
+>
+> indicates the opposite: the PEM envelope is clear and the inner PKCS#8
+> structure is encrypted. That was produced by a call like:
+>
+>     >> rsa.exportKey(passphrase='boo', pkcs=8,
+> protection='PBKDF2WithHMAC-SHA1AndAES256-CBC')
+>
+> I don't think you can have both PKCS#8-level encryption (with all its
+> nice properties, like ability to fine tune the algorithms and so on)
+> and nice human-readable headers in the PEM envelope (like DEK-Info)
+> describing the type of encryption that was performed.That would
+> totally confuse the receiver...
+>
+> It' also worth streessing that PEM-level encryption is not really
+> specified anywhere other than in very old RFCs like RFC 1421, which
+> only define DES as algorithm and no password key derivation. Nowadays,
+> PEM-level encryption is best avoided, even if that means that the only
+> hint that the key is encrypted is the generic "BEGIN ENCRYPTED PRIVATE
+> KEY" line.
+>
+> As described in the docstrings, specifying the 'protection' parameter
+> automatically implies
+> PKCS#8-level encryption, so the change of export format is actually
+> done on purpose.
+>
+> > Also maybe more importantly would be the extra parameters for salt size
+> and
+> > iteration count?
+>
+> I agree it would be a nice addition (along with some support for
+> bcrypt/scrypt).
+>
+> > An afterthought, maybe it's time exportKey(), importKey() stay the same
+> as
+> > 2.6 and have new functions that allow these extra combinations?
+>
+> Which extra combinations? Salt size and iteration count you mean?
+> They could be passed as a dictionary, since they are
+> algorithm-specific parameters.
+>
+> 2013/7/15 Kurt Vogel <kvogel at mdcom.com>:
+> >
+> > Understood, but the format of the export changes when we add 'protection'
+> > parameter.
+> > Can we keep same format and have different headers, ex:
+> >
+> >> Proc-Type: 4,ENCRYPTED
+> >> DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+> >
+> > Because I notice we wrap the unencrypted PEM into a PBES2 which is
+> encrypted
+> > there.
+> >
+> > Also maybe more importantly would be the extra parameters for salt size
+> and
+> > iteration count?
+> >
+> > An afterthought, maybe it's time exportKey(), importKey() stay the same
+> as
+> > 2.6 and have new functions that allow these extra combinations?
+> >
+> > Thanks,
+> > Kurt
+> >
+> >
+> >
+> > On Mon, Jul 15, 2013 at 2:26 AM, Legrandin <helderijs at gmail.com> wrote:
+> >>
+> >> Hi Kurt,
+> >>
+> >> In the PyCrypto 2.6 release, rsa.exportKey(passphrase='boo') generates
+> >> a TDES-encrypted private key, with encryption being done at the PEM
+> >> level.
+> >>
+> >> I don't think that behavior should change (e.g. we should not silently
+> >> switch to AES or even to the more robust PKCS#8-level encryption).
+> >>
+> >> 2013/7/15 Kurt Vogel <kvogel at mdcom.com>:
+> >> > And finally a comment/question/complaint :(
+> >> >
+> >> > If I use protection like this for ex:
+> >> >
+> >> > export = rsa.exportKey(passphrase='boo', pkcs=8,
+> >> > protection='PBKDF2WithHMAC-SHA1AndAES256-CBC')
+> >> >
+> >> > The exported key looks like this:
+> >> >
+> >> > -----BEGIN ENCRYPTED PRIVATE KEY-----
+> >> > MIIFHzBJBgkqhkiG9w0BBQ0wPDAbBgkqhkiG9w0BBQwwDgQIHI1C+JhO35cCAgPo
+> >> > MB0GCWCGSAFlAwQBKgQQ2FsezYUEaQLPHxk0z6+R4gSCBNDV++BsvKxxpo6uhUYw
+> >> > ...
+> >> >
+> >> > With export = rsa.exportKey(passphrase='boo'):
+> >> >
+> >> > -----BEGIN RSA PRIVATE KEY-----
+> >> > Proc-Type: 4,ENCRYPTED
+> >> > DEK-Info: DES-EDE3-CBC,CE7B6EC598ED0D10
+> >> >
+> >> > lPMvbYUypG+O4P/LilzGVQqP+6PMbnnLMP6eosyubcBqLtQxvMlvRRqgRu5CDApA
+> >> > ...
+> >> >
+> >> > The logic in exportKey() looks a bit convoluted, is this for some
+> >> > backward
+> >> > compatibility issue?  I would expect to see something like this, what
+> >> > ssh-key does:
+> >> >
+> >> > -----BEGIN RSA PRIVATE KEY-----
+> >> > Proc-Type: 4,ENCRYPTED
+> >> > DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+> >> >
+> >> > oL8O6n5v1S3cgGJIwrzrAq5TQIb7OeolGJpHXiyTUj1iStulgS5vAjkht0cgq53p
+> >> > ...
+> >> > ..
+> >> >
+> >> > Thanks,
+> >> > Kurt
+> >> >
+> >> >
+> >> > On Sun, Jul 14, 2013 at 11:40 PM, Kurt Vogel <kvogel at mdcom.com>
+> wrote:
+> >> >>
+> >> >> While I'm on the subject and appears Dwayne is merging in pull
+> requests
+> >> >> :)
+> >> >>
+> >> >> For RSA exportKey() think we could have **kwargs for extra
+> prot_params
+> >> >> passed to
+> >> >>
+> >> >> PKCS8.wrap() like iteration_count and salt size?
+> >> >>
+> >> >>
+> >> >>
+> >> >> On Sun, Jul 14, 2013 at 9:34 PM, Kurt Vogel <kvogel at mdcom.com>
+> wrote:
+> >> >>>
+> >> >>> Hi,
+> >> >>>
+> >> >>> Do you guys know roughly when this will go in?
+> >> >>>
+> >> >>> Also with import/export RSA keys can we support bcrypt?
+> >> >>>
+> >> >>> Does JCA and BouncyCastle use bcrypt, eg:
+> >> >>>
+> >> >>> 'BcryptWithHMAC-SHA1AndAES256-CBC'
+> >> >>>
+> >> >>> Thanks,
+> >> >>> Kurt
+> >> >>>
+> >> >>>
+> >> >>> On Fri, Jul 5, 2013 at 2:52 AM, Legrandin <helderijs at gmail.com>
+> wrote:
+> >> >>> >
+> >> >>> > Hi Kurt , thanks a lot for providing feedback. It is much
+> >> >>> > appreciated.
+> >> >>> >
+> >> >>> > * I guess you refer to camel-casing used for several variables,
+> >> >>> > which
+> >> >>> > was due to my preference to stick to ASN.1 naming.
+> >> >>> >   I can work on that and make sure flake8 does not complain that
+> >> >>> > much.
+> >> >>> >
+> >> >>> > * Right. Code evolved at different points in time, and indeed it
+> is
+> >> >>> > now hard to follow the path of the 'parameter' value. I will try
+> to
+> >> >>> > fix that.
+> >> >>> >
+> >> >>> > * I used strings like 'PBKDF2WithHMAC-SHA1AndAES128-CBC' because
+> >> >>> > that
+> >> >>> > is the style used in JCA and BouncyCastle and a lot of people are
+> >> >>> > familiar with it.
+> >> >>> >   I am not very clear what the benefit enums might bring? One
+> option
+> >> >>> > I
+> >> >>> > considered was the ability to provide 3 independent parameters
+> >> >>> >   instead of one (since protection mainly depends on type of KDF,
+> >> >>> > PRF,
+> >> >>> > and symmetric cipher) but at the end I guess most
+> >> >>> >   uses case are about the desire to protect the private key using
+> a
+> >> >>> > password in a strong way, and the ability to tweak the various
+> >> >>> > parameters
+> >> >>> >   is not that relevant. Plus, exportKey() parameter list becomes
+> to
+> >> >>> > long.
+> >> >>> >
+> >> >>> > * I am really ashamed to admit that I actually have 9 pull
+> requests
+> >> >>> > open, not 2 so I am totally giving headaches to the maintainer.
+> :-)
+> >> >>> >   It is of course only up to him to decide which features should
+> go
+> >> >>> > in; given that he has not much time these days, it is likely that
+> >> >>> > only
+> >> >>> >   few features and bugfixes may go into any next release.
+> >> >>> >   The release merge window seems to roughly be once per year and I
+> >> >>> > find it is natural to have so many outstanding pull requests by
+> now.
+> >> >>> >   To my defense, I can only say that the all pull requests cover
+> one
+> >> >>> > feature only and that I try to keep them as independent as
+> possible.
+> >> >>> >   Most of them apply cleanly to master (e.g. HKDF, CCM, PKCS#8,
+> bug
+> >> >>> > fixes, etc).
+> >> >>> >   In some cases though, they do depend on an existing pull request
+> >> >>> > (as
+> >> >>> > in the case of DSA import/export depending on PKCS8 be applied
+> >> >>> > first),
+> >> >>> >   because keeping them separated is honestly too much work for me
+> >> >>> > *and* they are indeed extensions of other extensions.
+> >> >>> >
+> >> >>> > > Hi, I was looking at the pycrypto pull request
+> >> >>> > > https://github.com/dlitz/pycrypto/pull/32.  Just a few
+> comments...
+> >> >>> > >
+> >> >>> > > * For readability can you pep8 format the code?
+> >> >>> > > * RSA, for import/export the protection parameter maybe rename
+> to
+> >> >>> > > algo or
+> >> >>> > > wrap algo?  It evolves from: 'protection' to 'wrap_algo' to
+> 'mode'
+> >> >>> > > as
+> >> >>> > > it
+> >> >>> > > goes down the call stack.
+> >> >>> > > * Also maybe make this parameter an enum/value?  Since the long
+> >> >>> > > string can
+> >> >>> > > be error prone, low level code would need to change anyway if it
+> >> >>> > > were
+> >> >>> > > either
+> >> >>> > > string or int if we support more modes.
+> >> >>> > > * And last but not least... I'm new to this email list and not
+> >> >>> > > sure
+> >> >>> > > how
+> >> >>> > > often pull requests are accepted but maybe you could reduce the
+> >> >>> > > amount of
+> >> >>> > > features going in?  I know you have another one, 51, after
+> this...
+> >> >>> > > Maintainer may reluctant to do massive changes all at once?
+> >> >>> > >
+> >> >>> > > Anyway just ideas...
+> >> >>> > > Thanks for your time,
+> >> >>> > > Sincerely,
+> >> >>> > > Kurt
+> >> >>> > >
+> >> >>> > _______________________________________________
+> >> >>> > pycrypto mailing list
+> >> >>> > pycrypto at lists.dlitz.net
+> >> >>> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >> >>>
+> >> >>
+> >> >
+> >> >
+> >> > _______________________________________________
+> >> > pycrypto mailing list
+> >> > pycrypto at lists.dlitz.net
+> >> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >> >
+> >> _______________________________________________
+> >> pycrypto mailing list
+> >> pycrypto at lists.dlitz.net
+> >> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >
+> >
+> >
+> > _______________________________________________
+> > pycrypto mailing list
+> > pycrypto at lists.dlitz.net
+> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130717/5b8cab35/attachment-0001.html>
+
+From leonb at parsec.co.za  Fri Jul 26 01:35:22 2013
+From: leonb at parsec.co.za (Leon Brits)
+Date: Fri, 26 Jul 2013 10:35:22 +0200
+Subject: [pycrypto] Crypto question
+Message-ID: <8F01EA4FAE71884AAE2CB4A9DEE158D00110882553AF@exchange.PARSEC.local>
+
+Hi all,
+
+In PKCS_PSS.py @ 254: A value of 2 is added. Why 2?
+This came up when I was testing Sign/Verify using RSA1024 and SHA512 combination.
+
+Thanks
+LJB
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130726/515eaaaa/attachment.html>
+
+From helderijs at gmail.com  Mon Aug  5 13:26:55 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Mon, 5 Aug 2013 22:26:55 +0200
+Subject: [pycrypto] Crypto question
+In-Reply-To: <8F01EA4FAE71884AAE2CB4A9DEE158D00110882553AF@exchange.PARSEC.local>
+References: <8F01EA4FAE71884AAE2CB4A9DEE158D00110882553AF@exchange.PARSEC.local>
+Message-ID: <CAGfyce3pW5PRsS7OfH7XnpX-ptDSFb5O679KfQQEw+8S5QjRGg@mail.gmail.com>
+
+Hi Leon,
+
+It's clear from section 9.1.1 of RFC3444 (EMSA-PSS-ENCODE function),
+where the encoded value is called EM.
+
+>From step 12:
+len(EM) = len(maskedDB) + len(hash) + len(0xBC)
+            = len(maskedDB) + len(hash) + 1
+
+>From step 10:
+len(EM) = len(DB) + len(hash) + 1
+
+>From step 8:
+len(EM) = len(PS) + len(0x01) + len(salt) + len(hash) + 1
+            = len(PS) + len(salt) + len(hash) + 2
+
+And finally from step 7 it must be that:
+len(EM) >= len(salt) + len(hash) + 2
+
+
+> In PKCS_PSS.py @ 254: A value of 2 is added. Why 2?
+>
+> This came up when I was testing Sign/Verify using RSA1024 and SHA512
+> combination.
+
+From finid at linuxbsdos.com  Thu Aug 29 14:02:08 2013
+From: finid at linuxbsdos.com (finid at linuxbsdos.com)
+Date: Thu, 29 Aug 2013 21:02:08 +0000
+Subject: [pycrypto] Failed test compiling on Fedora 19
+Message-ID: <db48216a1f8cb775712c66ecda1b6bd1@linuxbsdos.com>
+
+Folks,
+
+When I ran "python3 runtests test" on Fedora 19, most of the test were 
+either SKIPPED or PASSED, and I got a bunch of errors all having to do 
+with SELinux. Here's the tail end of the test report:
+
+<!Start>
+
+rsync: rsync_xal_set: 
+lsetxattr(""/tmp/s3ql-mnt-ssn0wz/orig/C!pulseaudio/O?karm/.sort.B3KkHI"","security.selinux") failed: Operation not supported (95)
+rsync: rsync_xal_set: 
+lsetxattr(""/tmp/s3ql-mnt-ssn0wz/orig/C!pulseaudio/O?karm/.?true.WWN7XB"","security.selinux") failed: Operation not supported (95)
+rsync: rsync_xal_set: 
+lsetxattr(""/tmp/s3ql-mnt-ssn0wz/orig/C!pulseaudio/O?karm/.?kinfocenter.lPArfv"","security.selinux") failed: Operation not supported (95)
+rsync error: some files/attrs were not transferred (see previous errors) 
+(code 23) at main.c(1052) [sender=3.0.9]
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: stopping after 2 
+failures !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+=============== 1 failed, 135 passed, 61 skipped, 1 error in 109.11 
+seconds========
+
+</Stop>
+
+Even with this error, running "python3 setup.py install" completed 
+successfully.
+
+Any ideas what impact those SELinux-related errors will have on using 
+S3QL?
+
+TIA,
+
+
+--
+finid
+http://linuxbsdos.com
+
+From finid at linuxbsdos.com  Thu Aug 29 17:35:37 2013
+From: finid at linuxbsdos.com (finid at linuxbsdos.com)
+Date: Fri, 30 Aug 2013 00:35:37 +0000
+Subject: [pycrypto] Failed test compiling on Fedora 19
+In-Reply-To: <db48216a1f8cb775712c66ecda1b6bd1@linuxbsdos.com>
+References: <db48216a1f8cb775712c66ecda1b6bd1@linuxbsdos.com>
+Message-ID: <0c56da51e220a8f2a0aafd72536beb38@linuxbsdos.com>
+
+Sorry folks. I posted the wrong output from another program.
+
+Here's what happened.
+
+On running "python3 setup.py test" I get this
+
+<!Start>
+
+SelfTest: You can ignore the RandomPool_DeprecationWarning that follows.
+........E...................
+ERROR: test_negative_number_roundtrip_mpzToLongObj_longObjToMPZ 
+(Crypto.SelfTest.Util.test_number.MiscTests)
+Test that mpzToLongObj and longObjToMPZ (internal functions) roundtrip 
+negative numbers correctly.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+   File "build/lib.linux-x86_64-3.3/Crypto/SelfTest/Util/test_number.py", 
+line 283, in test_negative_number_roundtrip_mpzToLongObj_longObjToMPZ
+     k = number._fastmath.rsa_construct(n, e)
+AttributeError: 'NoneType' object has no attribute 'rsa_construct'
+
+----------------------------------------------------------------------
+Ran 1031 tests in 38.282s
+
+FAILED (errors=1)
+Traceback (most recent call last):
+   File "setup.py", line 456, in <module>
+     core.setup(**kw)
+   File "/usr/lib64/python3.3/distutils/core.py", line 148, in setup
+     dist.run_commands()
+   File "/usr/lib64/python3.3/distutils/dist.py", line 929, in 
+run_commands
+     self.run_command(cmd)
+   File "/usr/lib64/python3.3/distutils/dist.py", line 948, in 
+run_command
+     cmd_obj.run()
+   File "setup.py", line 336, in run
+     SelfTest.run(module=moduleObj, verbosity=self.verbose, 
+stream=sys.stdout, config=self.config)
+   File "build/lib.linux-x86_64-3.3/Crypto/SelfTest/__init__.py", line 
+74, in run
+     raise SelfTestError("Self-test failed", result)
+Crypto.SelfTest.SelfTestError: ('Self-test failed', 
+<unittest.runner.TextTestResult run=1031 errors=1 failures=0>)
+
+
+<!/End>
+
+On running "python3 setup.py build" I get this:
+
+<!Start>
+
+python3 setup.py build
+running build
+running build_py
+running build_ext
+running build_configure
+warning: GMP or MPIR library not found; Not building 
+Crypto.PublicKey._fastmath.
+
+<!/End>
+
+But GMP and PMIR are installed.
+
+But even with the error on test and the warning on build, "python3 
+setup.py install" completed successfully, only throwing the same warning 
+I got on the build part.
+
+What's with the error on test and the warning message on build? Are 
+those make or break?
+
+TIA
+
+
+
+--
+finid
+http://linuxbsdos.com
+
+
+
+On 2013-08-29 21:02, finid at linuxbsdos.com wrote:
+> Folks,
+> 
+> When I ran "python3 runtests test" on Fedora 19, most of the test were
+> either SKIPPED or PASSED, and I got a bunch of errors all having to do
+> with SELinux. Here's the tail end of the test report:
+> 
+> <!Start>
+> 
+> rsync: rsync_xal_set:
+> lsetxattr(""/tmp/s3ql-mnt-ssn0wz/orig/C!pulseaudio/O?karm/.sort.B3KkHI"","security.selinux") failed: Operation not supported (95)
+> rsync: rsync_xal_set:
+> lsetxattr(""/tmp/s3ql-mnt-ssn0wz/orig/C!pulseaudio/O?karm/.?true.WWN7XB"","security.selinux") failed: Operation not supported (95)
+> rsync: rsync_xal_set:
+> lsetxattr(""/tmp/s3ql-mnt-ssn0wz/orig/C!pulseaudio/O?karm/.?kinfocenter.lPArfv"","security.selinux") failed: Operation not supported (95)
+> rsync error: some files/attrs were not transferred (see previous
+> errors) (code 23) at main.c(1052) [sender=3.0.9]
+> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: stopping after 2
+> failures !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+> =============== 1 failed, 135 passed, 61 skipped, 1 error in 109.11
+> seconds========
+> 
+> </Stop>
+> 
+> Even with this error, running "python3 setup.py install" completed 
+> successfully.
+> 
+> Any ideas what impact those SELinux-related errors will have on using 
+> S3QL?
+> 
+> TIA,
+> 
+> 
+> --
+> finid
+> http://linuxbsdos.com
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From helderijs at gmail.com  Thu Aug 29 23:05:44 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Fri, 30 Aug 2013 08:05:44 +0200
+Subject: [pycrypto] Failed test compiling on Fedora 19
+Message-ID: <CAGfyce3Zxqh1R+e8So_SMho7Lr1-Cy=26oF7VLCwPWX2d3voWA@mail.gmail.com>
+
+Hi,
+
+It was a known bug on the unit tests:
+
+https://bugs.launchpad.net/pycrypto/+bug/1004781
+
+Try installing libgmp-dev (name may be slightly different) and rebuild.
+Plain GMP library does not contain what's needed to compile and link
+applications based on GMP.
+
+2013/8/30  <finid at linuxbsdos.com>:
+> Sorry folks. I posted the wrong output from another program.
+>
+> Here's what happened.
+>
+> On running "python3 setup.py test" I get this
+>
+> <!Start>
+>
+> SelfTest: You can ignore the RandomPool_DeprecationWarning that follows.
+> ........E...................
+> ERROR: test_negative_number_roundtrip_mpzToLongObj_longObjToMPZ
+> (Crypto.SelfTest.Util.test_number.MiscTests)
+> Test that mpzToLongObj and longObjToMPZ (internal functions) roundtrip
+> negative numbers correctly.
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>   File "build/lib.linux-x86_64-3.3/Crypto/SelfTest/Util/test_number.py",
+> line 283, in test_negative_number_roundtrip_mpzToLongObj_longObjToMPZ
+>     k = number._fastmath.rsa_construct(n, e)
+> AttributeError: 'NoneType' object has no attribute 'rsa_construct'
+>
+> ----------------------------------------------------------------------
+> Ran 1031 tests in 38.282s
+>
+> FAILED (errors=1)
+> Traceback (most recent call last):
+>   File "setup.py", line 456, in <module>
+>     core.setup(**kw)
+>   File "/usr/lib64/python3.3/distutils/core.py", line 148, in setup
+>     dist.run_commands()
+>   File "/usr/lib64/python3.3/distutils/dist.py", line 929, in run_commands
+>     self.run_command(cmd)
+>   File "/usr/lib64/python3.3/distutils/dist.py", line 948, in run_command
+>     cmd_obj.run()
+>   File "setup.py", line 336, in run
+>     SelfTest.run(module=moduleObj, verbosity=self.verbose,
+> stream=sys.stdout, config=self.config)
+>   File "build/lib.linux-x86_64-3.3/Crypto/SelfTest/__init__.py", line 74, in
+> run
+>     raise SelfTestError("Self-test failed", result)
+> Crypto.SelfTest.SelfTestError: ('Self-test failed',
+> <unittest.runner.TextTestResult run=1031 errors=1 failures=0>)
+>
+>
+> <!/End>
+>
+> On running "python3 setup.py build" I get this:
+>
+> <!Start>
+>
+> python3 setup.py build
+> running build
+> running build_py
+> running build_ext
+> running build_configure
+> warning: GMP or MPIR library not found; Not building
+> Crypto.PublicKey._fastmath.
+>
+> <!/End>
+>
+> But GMP and PMIR are installed.
+>
+> But even with the error on test and the warning on build, "python3 setup.py
+> install" completed successfully, only throwing the same warning I got on the
+> build part.
+>
+> What's with the error on test and the warning message on build? Are those
+> make or break?
+>
+> TIA
+>
+>
+>
+> --
+> finid
+> http://linuxbsdos.com
+>
+>
+>
+>
+> On 2013-08-29 21:02, finid at linuxbsdos.com wrote:
+>>
+>> Folks,
+>>
+>> When I ran "python3 runtests test" on Fedora 19, most of the test were
+>> either SKIPPED or PASSED, and I got a bunch of errors all having to do
+>> with SELinux. Here's the tail end of the test report:
+>>
+>> <!Start>
+>>
+>> rsync: rsync_xal_set:
+>>
+>> lsetxattr(""/tmp/s3ql-mnt-ssn0wz/orig/C!pulseaudio/O?karm/.sort.B3KkHI"","security.selinux")
+>> failed: Operation not supported (95)
+>> rsync: rsync_xal_set:
+>>
+>> lsetxattr(""/tmp/s3ql-mnt-ssn0wz/orig/C!pulseaudio/O?karm/.?true.WWN7XB"","security.selinux")
+>> failed: Operation not supported (95)
+>> rsync: rsync_xal_set:
+>>
+>> lsetxattr(""/tmp/s3ql-mnt-ssn0wz/orig/C!pulseaudio/O?karm/.?kinfocenter.lPArfv"","security.selinux")
+>> failed: Operation not supported (95)
+>> rsync error: some files/attrs were not transferred (see previous
+>> errors) (code 23) at main.c(1052) [sender=3.0.9]
+>> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: stopping after 2
+>> failures !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+>> =============== 1 failed, 135 passed, 61 skipped, 1 error in 109.11
+>> seconds========
+>>
+>> </Stop>
+>>
+>> Even with this error, running "python3 setup.py install" completed
+>> successfully.
+>>
+>> Any ideas what impact those SELinux-related errors will have on using
+>> S3QL?
+>>
+>> TIA,
+>>
+>>
+>> --
+>> finid
+>> http://linuxbsdos.com
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From dlitz at dlitz.net  Mon Sep  9 00:03:06 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Mon, 9 Sep 2013 00:03:06 -0700
+Subject: [pycrypto] PyCrypto status update & release plans
+Message-ID: <20130909070306.GA7288@rivest.dlitz.net>
+
+Hi folks!  I've begun work on clearing my backlog, and it's been a while 
+since I've sent a status update, so here goes:
+
+== Where we are right now ==
+
+I've received pull requests for a bunch of new features, including AEAD 
+modes (CCM, EAX, GCM, and SIV), HKDF (HMAC KDF), SHA-3 (Keccak), 
+Diffie-Hellman, a better DSA API, scrypt, Salsa20, encrypted PKCS#8 
+private keys, AES-NI support, ElGamal blinding, and ARC4-drop[n].  There 
+have also been many bugfixes and documentation improvements.
+
+However, I don't think PyCrypto's core is in good enough shape for me to 
+feel comfortable adding a lot of new features.  I think I made a few 
+mistakes in some of our newer APIs, which I want to fix before they get 
+too entrenched:
+
+- .verify methods that return False instead of raising an exception
+- PBKDF1 and PBKDF2 default to using SHA1.
+
+We also have a number of overall design issues that affect performance 
+and/or maintainability:
+
+- Our PBKDF2 implementation is about 8.5x slower than OpenSSL[1].  That 
+   means users are going to use 8.5x lower iteration counts than they 
+   should, thus giving attackers who use a faster PBKDF2 implementation a 
+   sizeable advantage.  I've tested a C-based implementation of PBKDF2, 
+   but that currently doesn't help much, because our coding style has 
+   been to write Python wrappers around all of our C code.[2]
+
+- The `b()` function in Python 3 can also be expensive, since it 
+   allocates memory for a new bytestring on every invocation.
+
+My solutions to both of these problems require Python 2.2 or later.
+
+== Roadmap ==
+
+My rough near-term plan looks something like this:
+
+* "2.6.x" branch - Bugfixes & general quality improvements
+     - Last version to support Python 2.1
+     - DeprecationWarnings on some things that suck (e.g. HMAC without 
+       digestmod)
+     - (Maybe) Do something about .verify not raising an exception.
+     - (Maybe) AES-NI and ElGamal blinding
+
+* 2.7 - Remove Python 2.1 compatibility stuff.
+     - Python 2.2 or later required.
+     - New-style classes in C, with the Python code inheriting from them.  
+       (This can be much faster than proxying.)
+     - Replace b() function calls with b"" literals in Python.
+     - Use better idioms for reference counting in C.
+     - Do something about .verify not raising an exception by default.
+     - Fix the remaining bugs that couldn't be fixed in the 2.6.x 
+       series.
+     - (Maybe) Fix the docs.  We need a user FAQ and some contributor 
+       guidelines.
+     - (Maybe) Run cpychecker and/or Coverity Scan.
+
+* 2.8 and beyond - Major new functionality, such as:
+     - AEAD modes
+     - ARC4-drop[n]
+     - Crypto.Random.random performance improvements
+     - Diffie-Hellman support
+     - Encrypted PKCS#8 keys
+     - HKDF
+     - Performance improvements for Crypto.Random.random
+     - scrypt, Salsa20, Camellia, new DSA API
+     - SHA-3 (assuming the standard is released by this time)
+     - Some PyPy-related improvements
+     - etc.
+
+Hopefully I can get to v2.8 fairly quickly.  Depending on how things go, 
+I might release some things sooner (e.g. AEAD support), because I've 
+been promising my colleagues that I'd finish it for a while now, and the 
+major API design work is almost done.
+
+Anyway, that's the current thinking.  This should help me get the 
+project to a point where I'm not so nervous about merging people's 
+contributions.
+
+== Dropping support for Python 2.1 ==
+
+In case you're only reading the headings: I'm planning to drop support 
+for Python 2.1 in PyCrypto 2.7 and later; The 2.6.x series will be the 
+last versions to support Python 2.1.
+
+== Bug tracker migration: Launchpad -> GitHub ===
+
+At some point, I'm thinking of moving the bug tracker from Launchpad to 
+GitHub.  It's weird that some people might have to create accounts on 
+two separate services in order to report a bug and submit a fix for the 
+bug.  On the other hand, GitHub's bug tracker is a lot more immature 
+than Launchpad's, but I think it will be good enough.
+
+== I've moved to the USA ==
+
+I moved to San Francisco last year (July 7, 2012) to work at Dropbox:
+
+- I don't think this affects anyone as far as export control regulations 
+   are concerned (I had already been accepting US-origin patches for a 
+   while before I moved), but just in case---now you know.
+
+- I'll occasionally be getting contributions from my co-workers or other 
+  people that I meet in the Bay Area, so there will inevitably be more 
+  conversations that happen off-list.  I will be encouraging people to 
+  move these conversations online (or at least to summarize the 
+  important points online) so that online contributors are not left in 
+  the dark.
+
+== Conclusion ==
+
+That's it for now.
+
+Cheers!
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+     OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+[1] I compared three PBKDF2-HMAC-SHA1 implementations on my laptop.  For 
+a 48-byte output with 1,000,000 iterations, I got:
+
+     OpenSSL:                   3.9 seconds
+     PyCrypto v2.6:             44.0 seconds    (11x OpenSSL)
+     PyCrypto master:           33.2 seconds    (8.5x OpenSSL)
+     PyCrypto master PBKDF2.c:  32.1 seconds    (8.5x OpenSSL)
+
+[2] See some of the discussion at 
+https://github.com/dlitz/pycrypto/commit/fd398a28e3a227a539b264a9f1e11287b904c7da#commitcomment-2669743
+
+From kyle.cummings at forge-corp.com  Thu Sep 26 15:13:19 2013
+From: kyle.cummings at forge-corp.com (Kyle Cummings)
+Date: Thu, 26 Sep 2013 16:13:19 -0600
+Subject: [pycrypto] Verifying Signatures on Data and Certifictes
+Message-ID: <CACx543ZySfJ2kncoVTk+en4Y1jTtqw_oBsJ27mcH4GR=mfhLUg@mail.gmail.com>
+
+I apologize before hand for the long e-mail, but I just wanted to be
+thorough in what I was doing.
+
+I am trying to use the PyCrypto library to achieve two similar things. The
+first use is to verify that a piece of data has been signed by the private
+key of a certain certificate. The other use is to verify a certificate
+chain (verify that certificate A has signed B, and then that B has signed
+C).
+
+The process is as follows:
+Client generates certificate / key-pairs A, B, C and D. A signs B, and B
+signs C and D. Then the certificates for A, signed B, signed C and signed D
+are pushed to a server. The server responds with a randomly generated bit
+of binary data for each certificate. The client uses each certificate /
+key-pair to sign the respective binary data, and then pushes the (base64
+encoded) signed responses back to the server. The server then takes the
+responses, decodes them and tries to verify the signatures on the
+
+Code / Attempts:
+My first attempt -
+
+###
+#Function - verifying the signed challenges
+###
+Astr = storedcertificates["acert"]
+Achallenge = storedchallenges["achallenge"]
+Signedchallenge = (read in from http post request)
+Acert = load_certificate(FILETYPE_PEM, Astr)
+
+try:
+   verify (Acert, Signedchallenge, Achallenge, "sha256")
+except Exception e:
+   print "failed to verify for reason:"
+   print e
+
+#Repeat above for B, C and D
+###
+
+With this code I got the following error response from the verify function:
+"must be string without null bytes, not str".
+
+
+My second attempt -
+
+Having the above code fail, I then found and tried adapting the code
+here<http://www.v13.gr/blog/?p=303>,
+but I first received that the function "get_signature_algorithm()" does not
+exists for X509 certificates, and then received the same error response
+back for the verify function if I commented out the signature algorithm and
+just manually provided the digest.
+###
+#Function - verify the signed challenges modified example
+###
+Acert = load_certificate(FILETYPE_PEM, storedcerts["root"])
+challenge = (original binary challenge sent to client)
+algorithm = Acert.get_signature_algorithm()
+dersigin = asn1.DerObject()
+dersigin.decode(rootchal)
+sig0 = dersigin.payload
+if sig0[0] != '\x00':
+print "sig0 error"
+print sig0
+ return False
+
+signature = sig0[1:]
+try:
+verify(Acert, signature, challenge, algorithm)
+ #verify(Acert, signature, challenge, "sha256") #Alternate without the
+get_sig_alg()
+except:
+print "verifcation failed"
+ return False
+print "THE VERIFICATION WORKED?!?!?!?!?!?!??!"
+return True
+
+
+
+For the chain verification stuff, I followed the example code from the
+above link exactly, but received the same errors as the second example code
+(algorithm and string / str).
+
+What am I doing wrong / How am I using the library incorrectly?
+
+
+Thanks,
+Kyle Cummings
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130926/822ef95a/attachment.html>
+
+From dlitz at dlitz.net  Sun Sep 29 18:44:03 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Sun, 29 Sep 2013 18:44:03 -0700
+Subject: [pycrypto] Verifying Signatures on Data and Certifictes
+In-Reply-To: <CACx543ZySfJ2kncoVTk+en4Y1jTtqw_oBsJ27mcH4GR=mfhLUg@mail.gmail.com>
+References: <CACx543ZySfJ2kncoVTk+en4Y1jTtqw_oBsJ27mcH4GR=mfhLUg@mail.gmail.com>
+Message-ID: <20130930014403.GA31413@rivest.dlitz.net>
+
+On Thu, Sep 26, 2013 at 04:13:19PM -0600, Kyle Cummings wrote:
+>I am trying to use the PyCrypto library to achieve two similar things. 
+>The
+>first use is to verify that a piece of data has been signed by the private
+>key of a certain certificate. The other use is to verify a certificate
+>chain (verify that certificate A has signed B, and then that B has signed
+>C).
+[snip]
+>Having the above code fail, I then found and tried adapting the code
+>here<http://www.v13.gr/blog/?p=303>,
+>but I first received that the function "get_signature_algorithm()" does not
+>exists for X509 certificates, and then received the same error response
+>back for the verify function if I commented out the signature algorithm and
+>just manually provided the digest.
+
+PyCrypto does not implement X.509, and probably never will.  X.509 is a 
+mess and a huge amount of effort to implement correctly[1], and it makes 
+no sense for us to re-implement it in Python.  Sorry.
+
+[1] http://www.cs.auckland.ac.nz/~pgut001/pubs/x509guide.txt
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Sun Sep 29 18:52:11 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Sun, 29 Sep 2013 18:52:11 -0700
+Subject: [pycrypto] RSA exportKey() changes set in stone for 2.7?
+In-Reply-To: <CAGwD-jYXxfVKyDyB6d+CV1uMSmo_v2C-j_FV=_qaHJ_rvjHqtQ@mail.gmail.com>
+References: <CAGwD-jYXxfVKyDyB6d+CV1uMSmo_v2C-j_FV=_qaHJ_rvjHqtQ@mail.gmail.com>
+Message-ID: <20130930015211.GB31413@rivest.dlitz.net>
+
+On Wed, Jul 17, 2013 at 01:33:41AM -0700, Kurt Vogel wrote:
+>Hi, quick question for the group and maintainer...
+>
+>I am about ready to deploy a project and wondering how set we are on the
+>format of rsa.exportKey() for next pycrypto?
+>
+>Is it safe to include in our requirements.pip (for now) a reference to
+>https://github.com/dlitz/pycrypto master branch?  And export my keys with
+>the new protection scheme?  And consequently matching importKey().
+>
+>It would be super nice if we could add **kwargs for iteration_count and
+>salt_size to export() but beggars can't be choosers :)  It seems a simple
+>enough change and looks like importKey() reads those fields in, I'd do it
+>myself but would like any thoughts/opinions?
+
+Hi Kurt,
+
+The exportKey API should be considered experimental at this point.  
+There are things about it that don't really make sense (e.g. the 
+`pkcs=1` parameter, which doesn't make any sense if you want to expoer 
+in OpenPGP format, for example).  Realistically, it should probably be 
+removed from Crypto.PublicKey and placed into Crypto.IO, but I'm not 
+sure of exactly when that will happen.
+
+Cheers,
+- Dwayne
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From kvogel at mdcom.com  Mon Sep 30 22:28:20 2013
+From: kvogel at mdcom.com (Kurt Vogel)
+Date: Mon, 30 Sep 2013 22:28:20 -0700
+Subject: [pycrypto] RSA exportKey() changes set in stone for 2.7?
+In-Reply-To: <20130930015211.GB31413@rivest.dlitz.net>
+References: <CAGwD-jYXxfVKyDyB6d+CV1uMSmo_v2C-j_FV=_qaHJ_rvjHqtQ@mail.gmail.com>
+ <20130930015211.GB31413@rivest.dlitz.net>
+Message-ID: <CAGwD-jZFHWmOqw0U5XzemnF+ERZxwoE+SgqkGxx_1JxJAoty6A@mail.gmail.com>
+
+Hi Dwayne,
+
+Thanks, that is what I was assuming.  If we move import/export to Crypto.IO
+it will break backwards compatibility, no?  Is that important?
+
+Is anyone working on this issue?  If backwards compatibility is important I
+say keep what we have there now (2.6) and have a deprecation comment and/or
+stderr output?
+
+Also does Pycrypto have deprecation/error transition plan?  To ease
+transition some packages first do a deprecation warning, second major
+release it becomes an error/exception, then third major release the code is
+completely removed.  Would that work with pycrypto users?
+
+Your thoughts?
+Thanks!
+Kurt
+
+
+
+
+On Sun, Sep 29, 2013 at 6:52 PM, Dwayne Litzenberger <dlitz at dlitz.net>wrote:
+
+> On Wed, Jul 17, 2013 at 01:33:41AM -0700, Kurt Vogel wrote:
+>
+>> Hi, quick question for the group and maintainer...
+>>
+>> I am about ready to deploy a project and wondering how set we are on the
+>> format of rsa.exportKey() for next pycrypto?
+>>
+>> Is it safe to include in our requirements.pip (for now) a reference to
+>> https://github.com/dlitz/**pycrypto <https://github.com/dlitz/pycrypto>master branch?  And export my keys with
+>> the new protection scheme?  And consequently matching importKey().
+>>
+>> It would be super nice if we could add **kwargs for iteration_count and
+>> salt_size to export() but beggars can't be choosers :)  It seems a simple
+>> enough change and looks like importKey() reads those fields in, I'd do it
+>> myself but would like any thoughts/opinions?
+>>
+>
+> Hi Kurt,
+>
+> The exportKey API should be considered experimental at this point.  There
+> are things about it that don't really make sense (e.g. the `pkcs=1`
+> parameter, which doesn't make any sense if you want to expoer in OpenPGP
+> format, for example).  Realistically, it should probably be removed from
+> Crypto.PublicKey and placed into Crypto.IO, but I'm not sure of exactly
+> when that will happen.
+>
+> Cheers,
+> - Dwayne
+>
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+> ______________________________**_________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-**bin/mailman/listinfo/pycrypto<http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130930/9e1919b9/attachment.html>
+

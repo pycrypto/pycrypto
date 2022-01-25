@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Any progress with pycrypto 2.7?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Any%20progress%20with%20pycrypto%202.7%3F&In-Reply-To=%3CCAGfyce3Gkov%3Do1iLBNt%2BebM6t%2B%2BVw-4m1BFg%3D8yg4vGysq_gsQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000781.html">
+   <LINK REL="Next"  HREF="000759.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Any progress with pycrypto 2.7?</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Any%20progress%20with%20pycrypto%202.7%3F&In-Reply-To=%3CCAGfyce3Gkov%3Do1iLBNt%2BebM6t%2B%2BVw-4m1BFg%3D8yg4vGysq_gsQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Any progress with pycrypto 2.7?">helderijs at gmail.com
+       </A><BR>
+    <I>Tue Mar  4 13:25:25 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000781.html">[pycrypto] Any progress with pycrypto 2.7?
+</A></li>
+        <LI>Next message: <A HREF="000759.html">[pycrypto] Unicode?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#783">[ date ]</a>
+              <a href="thread.html#783">[ thread ]</a>
+              <a href="subject.html#783">[ subject ]</a>
+              <a href="author.html#783">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;&gt;<i> 2) Potential DoS when importing an RSA key (segfault of the interpreter)
+</I>&gt;<i> I assume you mean the floating-point exception that occurs when you pass an
+</I>&gt;<i> even modulus to RSA.construct?
+</I>
+Correct.
+
+&gt;<i> <A HREF="https://bugs.launchpad.net/pycrypto/+bug/1193521">https://bugs.launchpad.net/pycrypto/+bug/1193521</A>
+</I>&gt;<i> <A HREF="https://github.com/dlitz/pycrypto/pull/50">https://github.com/dlitz/pycrypto/pull/50</A>
+</I>&gt;<i>
+</I>&gt;<i> On pull request #50 (&quot;Add checks to verify correctness of RSA/DSA/ElGamal
+</I>&gt;<i> keys&quot;), it would be helpful if others could chime in about the potential for
+</I>&gt;<i> leaking private keys via timing side-channels.
+</I>
+In addition to fixing the DoS, PR #50 also replaced the custom
+KeyFormatError exception with ValueError in the DSA code (I wrote it
+before you expressed preference for not having custom exceptions at
+all).
+
+I would actually apply first this other PR:
+
+<A HREF="https://github.com/dlitz/pycrypto/pull/71">https://github.com/dlitz/pycrypto/pull/71</A>
+
+Since there are 2 other exception types to fix.
+Hopefully PR #50 still applies cleanly after it.
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000781.html">[pycrypto] Any progress with pycrypto 2.7?
+</A></li>
+	<LI>Next message: <A HREF="000759.html">[pycrypto] Unicode?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#783">[ date ]</a>
+              <a href="thread.html#783">[ thread ]</a>
+              <a href="subject.html#783">[ subject ]</a>
+              <a href="author.html#783">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

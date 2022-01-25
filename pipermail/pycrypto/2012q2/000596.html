@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] PyCrypto Blowfish CFB limitation
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20PyCrypto%20Blowfish%20CFB%20limitation&In-Reply-To=%3CCAGfyce0GEti-0550DWeDMcEhMm_kRqm1LPAtWshqO9%2BY7wK5FQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000595.html">
+   <LINK REL="Next"  HREF="000597.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] PyCrypto Blowfish CFB limitation</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20PyCrypto%20Blowfish%20CFB%20limitation&In-Reply-To=%3CCAGfyce0GEti-0550DWeDMcEhMm_kRqm1LPAtWshqO9%2BY7wK5FQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] PyCrypto Blowfish CFB limitation">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Wed Jun  6 13:11:47 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000595.html">[pycrypto] PyCrypto Blowfish CFB limitation
+</A></li>
+        <LI>Next message: <A HREF="000597.html">[pycrypto] PyCrypto Blowfish CFB limitation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#596">[ date ]</a>
+              <a href="thread.html#596">[ thread ]</a>
+              <a href="subject.html#596">[ subject ]</a>
+              <a href="author.html#596">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I am getting &quot;ValueError: Input strings must be a multiple of the
+</I>&gt;<i> segment size 8 in length&quot; when trying to decrypt a file by using
+</I>&gt;<i> Blowfish in CFB mode. The file length is not a multiple of 8. However,
+</I>&gt;<i> OpenSSL doesn't require file length to be multiple of 8 and it
+</I>&gt;<i> successfully decrypts the file.
+</I>&gt;<i>
+</I>&gt;<i> 1. Is this a limitation imposed by PyCrypto?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>Yes. I actually opened a
+bug&lt;<A HREF="https://bugs.launchpad.net/pycrypto/+bug/996207">https://bugs.launchpad.net/pycrypto/+bug/996207</A>&gt;about this, but in
+the meanwhile I have read in Section 5.2 of NIST 800 38A
+(the only standard I am aware of that describes CFB) that the input
+*must*be a multiple of the segment size.
+
+That means that strictly speaking OpenSSL is *not *standard compliant,
+unless other standards saying that the last block can be shorter exists.
+
+
+&gt;<i> 2. I could successfully decrypt and inflate the file by padding it
+</I>&gt;<i> with &quot;x&quot; (randomly chosen). Is this safe and correct?
+</I>&gt;<i>
+</I>
+Yes.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20120606/4e405bad/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20120606/4e405bad/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000595.html">[pycrypto] PyCrypto Blowfish CFB limitation
+</A></li>
+	<LI>Next message: <A HREF="000597.html">[pycrypto] PyCrypto Blowfish CFB limitation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#596">[ date ]</a>
+              <a href="thread.html#596">[ thread ]</a>
+              <a href="subject.html#596">[ subject ]</a>
+              <a href="author.html#596">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

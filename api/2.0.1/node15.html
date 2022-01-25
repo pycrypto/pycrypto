@@ -1,0 +1,232 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Crypto.PublicKey: Public-Key Algorithms</TITLE>
+<META NAME="description" CONTENT="Crypto.PublicKey: Public-Key Algorithms">
+<META NAME="keywords" CONTENT="pycrypt">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="pycrypt.css">
+
+<LINK REL="next" HREF="node18.html">
+<LINK REL="previous" HREF="node12.html">
+<LINK REL="up" HREF="pycrypt.html">
+<LINK REL="next" HREF="node16.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html237"
+  HREF="node16.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html233"
+  HREF="pycrypt.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html227"
+  HREF="node14.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html235"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html238"
+  HREF="node16.html">The ElGamal and DSA</A>
+<B> Up:</B> <A NAME="tex2html234"
+  HREF="pycrypt.html">Python Cryptography Toolkit</A>
+<B> Previous:</B> <A NAME="tex2html228"
+  HREF="node14.html">Crypto.Protocol.Chaffing</A>
+ &nbsp; <B>  <A NAME="tex2html236"
+  HREF="node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00060000000000000000">
+Crypto.PublicKey: Public-Key Algorithms</A>
+</H1>
+So far, the encryption algorithms described have all been private
+key ciphers.  The same key is used for both encryption and decryption
+so all correspondents must know it.  This poses a problem: you may
+want encryption to communicate sensitive data over an insecure
+channel, but how can you tell your correspondent what the key is?  You
+can't just e-mail it to her because the channel is insecure.  One
+solution is to arrange the key via some other way: over the phone or
+by meeting in person.
+
+<P>
+Another solution is to use public-key cryptography.  In a public
+key system, there are two different keys: one for encryption and one for
+decryption.  The encryption key can be made public by listing it in a
+directory or mailing it to your correspondent, while you keep the
+decryption key secret.  Your correspondent then sends you data encrypted
+with your public key, and you use the private key to decrypt it.  While
+the two keys are related, it's very difficult to derive the private key
+given only the public key; however, deriving the private key is always
+possible given enough time and computing power.  This makes it very
+important to pick keys of the right size: large enough to be secure, but
+small enough to be applied fairly quickly.
+
+<P>
+Many public-key algorithms can also be used to sign messages; simply
+run the message to be signed through a decryption with your private
+key key.  Anyone receiving the message can encrypt it with your
+publicly available key and read the message.  Some algorithms do only
+one thing, others can both encrypt and authenticate.
+
+<P>
+The currently available public-key algorithms are listed in the
+following table:
+
+<P>
+<BR>
+23#23
+<BR>
+
+<P>
+Many of these algorithms are patented.  Before using any of them in a
+commercial product, consult a patent attorney; you may have to arrange
+a license with the patent holder.
+
+<P>
+An example of using the RSA module to sign a message:
+<PRE>
+&gt;&gt;&gt; from Crypto.Hash import MD5
+&gt;&gt;&gt; from Crypto.PublicKey import RSA
+&gt;&gt;&gt; RSAkey = RSA.generate(384, randfunc)   # This will take a while...
+&gt;&gt;&gt; hash = MD5.new(plaintext).digest()
+&gt;&gt;&gt; signature = RSAkey.sign(hash, "")
+&gt;&gt;&gt; signature   # Print what an RSA sig looks like--you don't really care.
+('\021\317\313\336\264\315' ...,)
+&gt;&gt;&gt; RSAkey.verify(hash, signature)     # This sig will check out
+1
+&gt;&gt;&gt; RSAkey.verify(hash[:-1], signature)# This sig will fail
+0
+</PRE>
+
+<P>
+Public-key modules make the following functions available:
+
+<P>
+<BR>
+24#24
+<BR>
+
+<P>
+<BR>
+25#25
+<BR>
+
+<P>
+If you want to interface with some other program, you will have to know
+the details of the algorithm being used; this isn't a big loss.  If you
+don't care about working with non-Python software, simply use the
+pickle module when you need to write a key or a signature to a
+file.  It's portable across all the architectures that Python supports,
+and it's simple to use.
+
+<P>
+Public-key objects always support the following methods.  Some of them
+may raise exceptions if their functionality is not supported by the
+algorithm.
+
+<P>
+<BR>
+26#26
+<BR>
+
+<P>
+<BR>
+27#27
+<BR>
+
+<P>
+<BR>
+28#28
+<BR>
+
+<P>
+<BR>
+29#29
+<BR>
+
+<P>
+<BR>
+30#30
+<BR>
+
+<P>
+<BR>
+31#31
+<BR>
+
+<P>
+<BR>
+32#32
+<BR>
+
+<P>
+<BR>
+33#33
+<BR>
+
+<P>
+<BR>
+34#34
+<BR>
+
+<P>
+<BR>
+35#35
+<BR>
+
+<P>
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL CLASS="ChildLinks">
+<LI><A NAME="tex2html239"
+  HREF="node16.html">The ElGamal and DSA algorithms</A>
+<LI><A NAME="tex2html240"
+  HREF="node17.html">Security Notes for Public-key Algorithms</A>
+</UL>
+<!--End of Table of Child-Links-->
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html237"
+  HREF="node16.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html233"
+  HREF="pycrypt.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html227"
+  HREF="node14.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html235"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html238"
+  HREF="node16.html">The ElGamal and DSA</A>
+<B> Up:</B> <A NAME="tex2html234"
+  HREF="pycrypt.html">Python Cryptography Toolkit</A>
+<B> Previous:</B> <A NAME="tex2html228"
+  HREF="node14.html">Crypto.Protocol.Chaffing</A>
+ &nbsp; <B>  <A NAME="tex2html236"
+  HREF="node1.html">Contents</A></B> </DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

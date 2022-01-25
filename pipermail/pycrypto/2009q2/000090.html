@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Library design philosophy
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Library%20design%20philosophy&In-Reply-To=20090413125442.GB21388%40shannon">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000088.html">
+   <LINK REL="Next"  HREF="000091.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Library design philosophy</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Library%20design%20philosophy&In-Reply-To=20090413125442.GB21388%40shannon"
+       TITLE="[pycrypto] Library design philosophy">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Apr 13 22:14:43 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000088.html">[pycrypto] Library design philosophy
+</A></li>
+        <LI>Next message: <A HREF="000091.html">[pycrypto] Library design philosophy
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#90">[ date ]</a>
+              <a href="thread.html#90">[ thread ]</a>
+              <a href="subject.html#90">[ subject ]</a>
+              <a href="author.html#90">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Apr 13, 2009 at 02:54:42PM +0200, Legrandin wrote:
+&gt;&gt;<i> Well ... you can have your opinion if I (a random user) can have mine ;-)
+</I>&gt;<i>
+</I>&gt;<i>I was just throwing my stone into the water... :-)
+</I>
+It's good to see this mailing list buzzing. :-)
+
+&gt;&gt;<i> Some advantages of pycrypto are that it is small, has a simple pythonic  
+</I>&gt;&gt;<i> API, and don't have any external dependencies. It is not a incomplete  
+</I>&gt;&gt;<i> wrapper of a huge and complex API (such as the openssl API).
+</I>&gt;<i>
+</I>&gt;<i>Agreed, even though it is not clear to me whether you refer to any
+</I>&gt;<i>existing wrapper. M2crypto seems pretty good for instance.
+</I>
+M2crypto's API is neither simple nor Pythonic, and it depends on OpenSSL.  
+OpenSSL's license is, if I remember correctly, incompatible with the GPL 
+thanks to its advertising clause.
+
+&gt;&gt;<i> Pure python implementations _could_ be added, but they would probably  
+</I>&gt;&gt;<i> not really be usable. Users getting this slow fallback would probably be  
+</I>&gt;&gt;<i> annoyed or complain about the performance instead of fixing the problem  
+</I>&gt;&gt;<i> by installing the right compiled version.
+</I>&gt;<i>
+</I>&gt;<i>I saw several times remarks to urge &quot;normal&quot; users not to use pycryto directly
+</I>&gt;<i>(e.g. RSA schoolbook encryption), but to rely on savier, higher-level code.
+</I>&gt;<i>From that I infer that pycrypto targets &quot;advanced&quot; users, the kind that already
+</I>&gt;<i>knows how to deal with performance trade-offs, and do not need to be patronized.
+</I>
+People who build and install PyCrypto (packagers, vendors, Gentoo users...) 
+do not necessarily understand cryptography.
+
+&gt;<i>Note that we should also define what &quot;too slow&quot; means, 2x? 20x? 50x? What 
+</I>&gt;<i>would be an acceptable slow-down, provided that we know that by the time
+</I>&gt;<i>performance has become a problem, the *advanced* user would have already
+</I>&gt;<i>switched to an optimized library/wrapper?
+</I>
+&quot;Too slow&quot; means slow enough to seriously impact software that uses 
+PyCrypto to do *bulk* encryption/hashing, such as:
+
+     - Paramiko (SSH/SFTP implementation) - <A HREF="http://www.lag.net/paramiko/">http://www.lag.net/paramiko/</A>
+     - Twisted Conch (SSH/SFTP implementation) -
+         <A HREF="http://twistedmatrix.com/trac/wiki/TwistedConch">http://twistedmatrix.com/trac/wiki/TwistedConch</A>
+     - BitTornado - <A HREF="http://www.bittornado.com/">http://www.bittornado.com/</A>
+     - DebTorrent - <A HREF="http://debtorrent.alioth.debian.org/">http://debtorrent.alioth.debian.org/</A>
+     - bzr (via Paramiko) - <A HREF="http://bazaar-vcs.org/">http://bazaar-vcs.org/</A>
+     - Launchpad.net (via bzr) - <A HREF="http://launchpad.net/">http://launchpad.net/</A>
+     - sshproxy (via Paramiko) - <A HREF="http://sshproxy-project.org/">http://sshproxy-project.org/</A>
+     - releaseforge (via Paramiko) - <A HREF="http://releaseforge.sourceforge.net/">http://releaseforge.sourceforge.net/</A>
+     - Zope3 (via Twisted Conch) - <A HREF="http://www.zope.org/">http://www.zope.org/</A>
+     - gecrypt - <A HREF="http://www.dlitz.net/software/gecrypt/">http://www.dlitz.net/software/gecrypt/</A>
+     - PySFTPd (via Paramiko) - <A HREF="http://www.dlitz.net/software/pysftpd/">http://www.dlitz.net/software/pysftpd/</A>
+     - python-pbkdf2 - <A HREF="http://www.dlitz.net/software/python-pbkdf2/">http://www.dlitz.net/software/python-pbkdf2/</A>
+     &lt;/shameless-plugs&gt;
+
+&quot;Too slow&quot; also means slow enough to cause users to choose weaker 
+algorithms or security parameters.  For example, if users routinely choose
+1024-bit RSA keys (or SHA1/MD5 hashes) over strong alternatives for 
+performance reasons, then the library they're using is too slow.
+
+&gt;&gt;<i> (Note: I don't understand your comments about being scriptable and a  
+</I>&gt;&gt;<i> command-line crypto workbench. That seems to be features related to  
+</I>&gt;&gt;<i> using Python, independent of which crypto library you use.)
+</I>&gt;<i>
+</I>&gt;<i>I don't use often pycrpto for full-blown applications. Instead, I make several
+</I>&gt;<i>small proof-of-concepts prototypes that help in setting up the final (C-based!)
+</I>&gt;<i>crypto module of the real application. 
+</I>
+PyCrypto still has lots of room for improvement, but people can and do 
+already use it in real applications.  I would love to reduce the amount of 
+C code in PyCrypto (especially where it's ugly and/or 
+ambiguously-licensed), but I don't see the build-dependency on a C compiler 
+going away any time soon.
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000088.html">[pycrypto] Library design philosophy
+</A></li>
+	<LI>Next message: <A HREF="000091.html">[pycrypto] Library design philosophy
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#90">[ date ]</a>
+              <a href="thread.html#90">[ thread ]</a>
+              <a href="subject.html#90">[ subject ]</a>
+              <a href="author.html#90">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

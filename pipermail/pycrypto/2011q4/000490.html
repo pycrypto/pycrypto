@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Patch for build failures with PyCrypto 2.4 and	easy_install
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Patch%20for%20build%20failures%20with%20PyCrypto%202.4%20and%0A%09easy_install&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000492.html">
+   <LINK REL="Next"  HREF="000496.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Patch for build failures with PyCrypto 2.4 and	easy_install</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Patch%20for%20build%20failures%20with%20PyCrypto%202.4%20and%0A%09easy_install&In-Reply-To="
+       TITLE="[pycrypto] Patch for build failures with PyCrypto 2.4 and	easy_install">sebastian+lists at ramacher.at
+       </A><BR>
+    <I>Sat Oct 29 11:09:20 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000492.html">[PATCH 2/2] Also ship configure, configure.ac and src/config.h.in in sdist.
+</A></li>
+        <LI>Next message: <A HREF="000496.html">[pycrypto] Patch for build failures with PyCrypto 2.4 and easy_install
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#490">[ date ]</a>
+              <a href="thread.html#490">[ thread ]</a>
+              <a href="subject.html#490">[ subject ]</a>
+              <a href="author.html#490">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+attached is a patch that fixes the build issues with the new method to detect
+libgmp and easy_install. The problem is that easy_install builds with bdist_egg
+which manually calls the build_[py|ext] targets but not build itself. Thus
+build_configure will not be called and the build fails.
+
+With the patach build_ext calls build_configure as sub command.
+
+The second patch fixes setup.py sdist. configure, configure.ac and
+src/config.h.in are missing in a tarball created with setup.py sdist with out
+this patch.
+
+Kind regards
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Run-build_configure-from-build_ext.patch
+Type: text/x-diff
+Size: 0 bytes
+Desc: not available
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20111029/96a3772c/attachment.patch">http://lists.dlitz.net/pipermail/pycrypto/attachments/20111029/96a3772c/attachment.patch</A> 
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000492.html">[PATCH 2/2] Also ship configure, configure.ac and src/config.h.in in sdist.
+</A></li>
+	<LI>Next message: <A HREF="000496.html">[pycrypto] Patch for build failures with PyCrypto 2.4 and easy_install
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#490">[ date ]</a>
+              <a href="thread.html#490">[ thread ]</a>
+              <a href="subject.html#490">[ subject ]</a>
+              <a href="author.html#490">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

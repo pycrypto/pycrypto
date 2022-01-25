@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] a problem when build pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20a%20problem%20when%20build%20pycrypto&In-Reply-To=AANLkTikFQ9OGVAFT0ykL3jEeMZoadnr8VquyuNX2M8mP%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000275.html">
+   <LINK REL="Next"  HREF="000276.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] a problem when build pycrypto</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20a%20problem%20when%20build%20pycrypto&In-Reply-To=AANLkTikFQ9OGVAFT0ykL3jEeMZoadnr8VquyuNX2M8mP%40mail.gmail.com"
+       TITLE="[pycrypto] a problem when build pycrypto">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Nov 29 22:21:35 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000275.html">[pycrypto] a problem when build pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000276.html">[pycrypto] On the future of new ciphers/hashes in PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#290">[ date ]</a>
+              <a href="thread.html#290">[ thread ]</a>
+              <a href="subject.html#290">[ subject ]</a>
+              <a href="author.html#290">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Strange.  I develop on Linux i686 using gcc 4.4, and it works find.  Does 
+this machine also have gcc 4.x installed?
+
+It looks like you built your own Python.  How was the build configured?
+
+Cheers,
+- Dwayne
+
+On Fri, Oct 08, 2010 at 04:31:33PM +0800, yu xue wrote:
+&gt;<i>Hello, everyone:
+</I>&gt;<i>I met a problem when trying to build pycrypto on a linux machine, the errors
+</I>&gt;<i>which are reported are as follows:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>gcc -pthread -shared build/temp.linux-i686-2.6/src/MD2.o -o
+</I>&gt;<i>build/lib.linux-i686-2.6/Crypto/Hash/MD2.so
+</I>&gt;<i>building 'Crypto.Hash.MD4' extension
+</I>&gt;<i>gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC
+</I>&gt;<i>-std=c99 -O3 -fomit-frame-pointer -Isrc/
+</I>&gt;<i>-I/home/xueyu/bin/bin/include/python2.6 -c src/MD4.c -o
+</I>&gt;<i>build/temp.linux-i686-2.6/src/MD4.o
+</I>&gt;<i>gcc -pthread -shared build/temp.linux-i686-2.6/src/MD4.o -o
+</I>&gt;<i>build/lib.linux-i686-2.6/Crypto/Hash/MD4.so
+</I>&gt;<i>building 'Crypto.Hash.SHA256' extension
+</I>&gt;<i>gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC
+</I>&gt;<i>-std=c99 -O3 -fomit-frame-pointer -Isrc/
+</I>&gt;<i>-I/home/xueyu/bin/bin/include/python2.6 -c src/SHA256.c -o
+</I>&gt;<i>build/temp.linux-i686-2.6/src/SHA256.o
+</I>&gt;<i>/tmp/cc8i7etX.s: Assembler messages:
+</I>&gt;<i>/tmp/cc8i7etX.s:1692: Error: symbol `fstat64' is already defined
+</I>&gt;<i>/tmp/cc8i7etX.s:1710: Error: symbol `lstat64' is already defined
+</I>&gt;<i>/tmp/cc8i7etX.s:1728: Error: symbol `stat64' is already defined
+</I>&gt;<i>error: command 'gcc' failed with exit status 1
+</I>&gt;<i>And everytime I re-built the pycrypto, the directories which has &quot;Error:
+</I>&gt;<i>symbol 'fstat64/lstat64/stat64' &quot; are different, e.g. they are maybe
+</I>&gt;<i>/tmp/ccHKWjgr.s or /tmp/ccL9eDaZ.s etc...
+</I>&gt;<i>
+</I>&gt;<i>Gcc is 4.3.2, python is 2.6. And I don't have root priviledge , so I don't
+</I>&gt;<i>know whether this is matters. Thank you!
+</I>&gt;<i>
+</I>&gt;<i>Regards
+</I>&gt;<i>   Yu Xue
+</I>&gt;<i>
+</I>&gt;<i>---
+</I>&gt;<i>
+</I>&gt;<i>     &#27492;&#33268;
+</I>&gt;<i>&#25964;&#31036;!
+</I>&gt;<i>                       &#34203;&#23431;
+</I>&gt;<i>
+</I>&gt;<i>                   &#36523;&#21069;&#36523;&#21518;
+</I>&gt;<i>                   &#26159;&#26102;&#38388;&#30340;&#28145;&#28170;
+</I>
+&gt;<i>_______________________________________________
+</I>&gt;<i>pycrypto mailing list
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000275.html">[pycrypto] a problem when build pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000276.html">[pycrypto] On the future of new ciphers/hashes in PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#290">[ date ]</a>
+              <a href="thread.html#290">[ thread ]</a>
+              <a href="subject.html#290">[ subject ]</a>
+              <a href="author.html#290">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

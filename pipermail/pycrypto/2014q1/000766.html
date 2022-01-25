@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] AES, python 2.7 vs 3
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20AES%2C%20python%202.7%20vs%203&In-Reply-To=%3C60E10C8A-0D99-498B-8F81-28C942D52960%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000765.html">
+   <LINK REL="Next"  HREF="000767.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] AES, python 2.7 vs 3</H1>
+    <B>Mirko Dziadzka</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20AES%2C%20python%202.7%20vs%203&In-Reply-To=%3C60E10C8A-0D99-498B-8F81-28C942D52960%40gmail.com%3E"
+       TITLE="[pycrypto] AES, python 2.7 vs 3">mirko.dziadzka at gmail.com
+       </A><BR>
+    <I>Mon Feb  3 06:51:06 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000765.html">[pycrypto] AES, python 2.7 vs 3
+</A></li>
+        <LI>Next message: <A HREF="000767.html">[pycrypto] AES, python 2.7 vs 3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#766">[ date ]</a>
+              <a href="thread.html#766">[ thread ]</a>
+              <a href="subject.html#766">[ subject ]</a>
+              <a href="author.html#766">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi
+
+Without testing or verifying:
+
+You should probably use bytes in Python 3, not characters.
+
+&gt;<i> v = ''.join(chr(random.randint(0, 0xFF)) for i in range(16))
+</I>
+creates a string of 16 (unicode) characters in Python 3
+
+iv = os.urandom(16)
+
+creates 16 bytes
+
+    Mirko
+
+
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000765.html">[pycrypto] AES, python 2.7 vs 3
+</A></li>
+	<LI>Next message: <A HREF="000767.html">[pycrypto] AES, python 2.7 vs 3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#766">[ date ]</a>
+              <a href="thread.html#766">[ thread ]</a>
+              <a href="subject.html#766">[ subject ]</a>
+              <a href="author.html#766">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

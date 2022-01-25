@@ -1,0 +1,259 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA exportKey question with bcrypt?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%20question%20with%20bcrypt%3F&In-Reply-To=%3CCAGwD-jZY-A%2BOUvi%2BAVcwJCmKxLk7Xg79x1N41nTf51RRY_hc%3DQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000681.html">
+   <LINK REL="Next"  HREF="000683.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA exportKey question with bcrypt?</H1>
+    <B>Kurt Vogel</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%20question%20with%20bcrypt%3F&In-Reply-To=%3CCAGwD-jZY-A%2BOUvi%2BAVcwJCmKxLk7Xg79x1N41nTf51RRY_hc%3DQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] RSA exportKey question with bcrypt?">kvogel at mdcom.com
+       </A><BR>
+    <I>Mon Jul 15 11:48:20 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000681.html">[pycrypto] RSA exportKey question with bcrypt?
+</A></li>
+        <LI>Next message: <A HREF="000683.html">[pycrypto] RSA exportKey question with bcrypt?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#682">[ date ]</a>
+              <a href="thread.html#682">[ thread ]</a>
+              <a href="subject.html#682">[ subject ]</a>
+              <a href="author.html#682">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Understood, but the format of the export changes when we add 'protection'
+parameter.
+Can we keep same format and have different headers, ex:
+
+&gt;<i> Proc-Type: 4,ENCRYPTED
+</I>&gt;<i> DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+</I>
+Because I notice we wrap the unencrypted PEM into a PBES2 which is
+encrypted there.
+
+Also maybe more importantly would be the extra parameters for salt size and
+iteration count?
+
+An afterthought, maybe it's time exportKey(), importKey() stay the same as
+2.6 and have new functions that allow these extra combinations?
+
+Thanks,
+Kurt
+
+
+
+On Mon, Jul 15, 2013 at 2:26 AM, Legrandin &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">helderijs at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi Kurt,
+</I>&gt;<i>
+</I>&gt;<i> In the PyCrypto 2.6 release, rsa.exportKey(passphrase='boo') generates
+</I>&gt;<i> a TDES-encrypted private key, with encryption being done at the PEM
+</I>&gt;<i> level.
+</I>&gt;<i>
+</I>&gt;<i> I don't think that behavior should change (e.g. we should not silently
+</I>&gt;<i> switch to AES or even to the more robust PKCS#8-level encryption).
+</I>&gt;<i>
+</I>&gt;<i> 2013/7/15 Kurt Vogel &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">kvogel at mdcom.com</A>&gt;:
+</I>&gt;<i> &gt; And finally a comment/question/complaint :(
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; If I use protection like this for ex:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; export = rsa.exportKey(passphrase='boo', pkcs=8,
+</I>&gt;<i> &gt; protection='PBKDF2WithHMAC-SHA1AndAES256-CBC')
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; The exported key looks like this:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; -----BEGIN ENCRYPTED PRIVATE KEY-----
+</I>&gt;<i> &gt; MIIFHzBJBgkqhkiG9w0BBQ0wPDAbBgkqhkiG9w0BBQwwDgQIHI1C+JhO35cCAgPo
+</I>&gt;<i> &gt; MB0GCWCGSAFlAwQBKgQQ2FsezYUEaQLPHxk0z6+R4gSCBNDV++BsvKxxpo6uhUYw
+</I>&gt;<i> &gt; ...
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; With export = rsa.exportKey(passphrase='boo'):
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; -----BEGIN RSA PRIVATE KEY-----
+</I>&gt;<i> &gt; Proc-Type: 4,ENCRYPTED
+</I>&gt;<i> &gt; DEK-Info: DES-EDE3-CBC,CE7B6EC598ED0D10
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; lPMvbYUypG+O4P/LilzGVQqP+6PMbnnLMP6eosyubcBqLtQxvMlvRRqgRu5CDApA
+</I>&gt;<i> &gt; ...
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; The logic in exportKey() looks a bit convoluted, is this for some
+</I>&gt;<i> backward
+</I>&gt;<i> &gt; compatibility issue?  I would expect to see something like this, what
+</I>&gt;<i> &gt; ssh-key does:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; -----BEGIN RSA PRIVATE KEY-----
+</I>&gt;<i> &gt; Proc-Type: 4,ENCRYPTED
+</I>&gt;<i> &gt; DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; oL8O6n5v1S3cgGJIwrzrAq5TQIb7OeolGJpHXiyTUj1iStulgS5vAjkht0cgq53p
+</I>&gt;<i> &gt; ...
+</I>&gt;<i> &gt; ..
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thanks,
+</I>&gt;<i> &gt; Kurt
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Sun, Jul 14, 2013 at 11:40 PM, Kurt Vogel &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">kvogel at mdcom.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; While I'm on the subject and appears Dwayne is merging in pull requests
+</I>&gt;<i> :)
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; For RSA exportKey() think we could have **kwargs for extra prot_params
+</I>&gt;<i> &gt;&gt; passed to
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; PKCS8.wrap() like iteration_count and salt size?
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; On Sun, Jul 14, 2013 at 9:34 PM, Kurt Vogel &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">kvogel at mdcom.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Hi,
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Do you guys know roughly when this will go in?
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Also with import/export RSA keys can we support bcrypt?
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Does JCA and BouncyCastle use bcrypt, eg:
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; 'BcryptWithHMAC-SHA1AndAES256-CBC'
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Thanks,
+</I>&gt;<i> &gt;&gt;&gt; Kurt
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; On Fri, Jul 5, 2013 at 2:52 AM, Legrandin &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">helderijs at gmail.com</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt;&gt; &gt; Hi Kurt , thanks a lot for providing feedback. It is much
+</I>&gt;<i> appreciated.
+</I>&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt;&gt; &gt; * I guess you refer to camel-casing used for several variables, which
+</I>&gt;<i> &gt;&gt;&gt; &gt; was due to my preference to stick to ASN.1 naming.
+</I>&gt;<i> &gt;&gt;&gt; &gt;   I can work on that and make sure flake8 does not complain that
+</I>&gt;<i> much.
+</I>&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt;&gt; &gt; * Right. Code evolved at different points in time, and indeed it is
+</I>&gt;<i> &gt;&gt;&gt; &gt; now hard to follow the path of the 'parameter' value. I will try to
+</I>&gt;<i> &gt;&gt;&gt; &gt; fix that.
+</I>&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt;&gt; &gt; * I used strings like 'PBKDF2WithHMAC-SHA1AndAES128-CBC' because that
+</I>&gt;<i> &gt;&gt;&gt; &gt; is the style used in JCA and BouncyCastle and a lot of people are
+</I>&gt;<i> &gt;&gt;&gt; &gt; familiar with it.
+</I>&gt;<i> &gt;&gt;&gt; &gt;   I am not very clear what the benefit enums might bring? One option
+</I>&gt;<i> I
+</I>&gt;<i> &gt;&gt;&gt; &gt; considered was the ability to provide 3 independent parameters
+</I>&gt;<i> &gt;&gt;&gt; &gt;   instead of one (since protection mainly depends on type of KDF,
+</I>&gt;<i> PRF,
+</I>&gt;<i> &gt;&gt;&gt; &gt; and symmetric cipher) but at the end I guess most
+</I>&gt;<i> &gt;&gt;&gt; &gt;   uses case are about the desire to protect the private key using a
+</I>&gt;<i> &gt;&gt;&gt; &gt; password in a strong way, and the ability to tweak the various
+</I>&gt;<i> &gt;&gt;&gt; &gt; parameters
+</I>&gt;<i> &gt;&gt;&gt; &gt;   is not that relevant. Plus, exportKey() parameter list becomes to
+</I>&gt;<i> &gt;&gt;&gt; &gt; long.
+</I>&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt;&gt; &gt; * I am really ashamed to admit that I actually have 9 pull requests
+</I>&gt;<i> &gt;&gt;&gt; &gt; open, not 2 so I am totally giving headaches to the maintainer. :-)
+</I>&gt;<i> &gt;&gt;&gt; &gt;   It is of course only up to him to decide which features should go
+</I>&gt;<i> &gt;&gt;&gt; &gt; in; given that he has not much time these days, it is likely that
+</I>&gt;<i> only
+</I>&gt;<i> &gt;&gt;&gt; &gt;   few features and bugfixes may go into any next release.
+</I>&gt;<i> &gt;&gt;&gt; &gt;   The release merge window seems to roughly be once per year and I
+</I>&gt;<i> &gt;&gt;&gt; &gt; find it is natural to have so many outstanding pull requests by now.
+</I>&gt;<i> &gt;&gt;&gt; &gt;   To my defense, I can only say that the all pull requests cover one
+</I>&gt;<i> &gt;&gt;&gt; &gt; feature only and that I try to keep them as independent as possible.
+</I>&gt;<i> &gt;&gt;&gt; &gt;   Most of them apply cleanly to master (e.g. HKDF, CCM, PKCS#8, bug
+</I>&gt;<i> &gt;&gt;&gt; &gt; fixes, etc).
+</I>&gt;<i> &gt;&gt;&gt; &gt;   In some cases though, they do depend on an existing pull request
+</I>&gt;<i> (as
+</I>&gt;<i> &gt;&gt;&gt; &gt; in the case of DSA import/export depending on PKCS8 be applied
+</I>&gt;<i> first),
+</I>&gt;<i> &gt;&gt;&gt; &gt;   because keeping them separated is honestly too much work for me
+</I>&gt;<i> &gt;&gt;&gt; &gt; *and* they are indeed extensions of other extensions.
+</I>&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; Hi, I was looking at the pycrypto pull request
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; <A HREF="https://github.com/dlitz/pycrypto/pull/32.">https://github.com/dlitz/pycrypto/pull/32.</A>  Just a few comments...
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt;
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; * For readability can you pep8 format the code?
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; * RSA, for import/export the protection parameter maybe rename to
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; algo or
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; wrap algo?  It evolves from: 'protection' to 'wrap_algo' to 'mode'
+</I>&gt;<i> as
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; it
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; goes down the call stack.
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; * Also maybe make this parameter an enum/value?  Since the long
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; string can
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; be error prone, low level code would need to change anyway if it
+</I>&gt;<i> were
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; either
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; string or int if we support more modes.
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; * And last but not least... I'm new to this email list and not sure
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; how
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; often pull requests are accepted but maybe you could reduce the
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; amount of
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; features going in?  I know you have another one, 51, after this...
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; Maintainer may reluctant to do massive changes all at once?
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt;
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; Anyway just ideas...
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; Thanks for your time,
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; Sincerely,
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt; Kurt
+</I>&gt;<i> &gt;&gt;&gt; &gt; &gt;
+</I>&gt;<i> &gt;&gt;&gt; &gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt; &gt; pycrypto mailing list
+</I>&gt;<i> &gt;&gt;&gt; &gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> &gt;&gt;&gt; &gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; pycrypto mailing list
+</I>&gt;<i> &gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> &gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20130715/85868584/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20130715/85868584/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000681.html">[pycrypto] RSA exportKey question with bcrypt?
+</A></li>
+	<LI>Next message: <A HREF="000683.html">[pycrypto] RSA exportKey question with bcrypt?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#682">[ date ]</a>
+              <a href="thread.html#682">[ thread ]</a>
+              <a href="subject.html#682">[ subject ]</a>
+              <a href="author.html#682">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

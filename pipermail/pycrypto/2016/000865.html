@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Build error?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Build%20error%3F&In-Reply-To=%3CCAEncD4ds%3D8WY0eHjE4mJ2Udu5%2BbxXGT4hK6ZwOZ2J%2Bcz65r81g%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <LINK REL="Previous"  HREF="000864.html">
+   <LINK REL="Next"  HREF="000866.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Build error?</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Build%20error%3F&In-Reply-To=%3CCAEncD4ds%3D8WY0eHjE4mJ2Udu5%2BbxXGT4hK6ZwOZ2J%2Bcz65r81g%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Build error?">dave.pawson at gmail.com
+       </A><BR>
+    <I>Fri Dec  2 08:28:18 UTC 2016</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000864.html">[pycrypto] issue with redefine of malloc to rpl_malloc on AIX, also hint re: _LARGE_FILES as a CFLAG define
+</A></li>
+        <LI>Next message: <A HREF="000866.html">[pycrypto] Build error?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#865">[ date ]</a>
+              <a href="thread.html#865">[ thread ]</a>
+              <a href="subject.html#865">[ subject ]</a>
+              <a href="author.html#865">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Fedora 25, installing pycrypto 2.6.1
+
+full build at <A HREF="http://pastebin.com/acC5r1YY">http://pastebin.com/acC5r1YY</A>
+
+error reported
+
+gcc: error: /usr/lib/rpm/redhat/redhat-hardened-cc1: No such file or
+directory error: command 'gcc' failed with exit status 1
+
+Searching for the error I found
+<A HREF="https://bugs.launchpad.net/openstack-gate/+bug/1424582">https://bugs.launchpad.net/openstack-gate/+bug/1424582</A>
+
+# dnf install redhat-rpm-config
+
+which then brought
+
+src/MD2.c:31:20: fatal error: Python.h: No such file or directory
+ #include &quot;Python.h&quot;
+                    ^
+compilation terminated.
+error: command 'gcc' failed with exit status 1
+
+dnf install python3-devel
+resolved that.
+
+I'm lost now with
+
+ from Crypto.Cipher import AES
+ImportError: No module named 'Crypto'
+
+Google has lots of varying suggestions, none of which
+seem to work.
+
+Any help please.
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000864.html">[pycrypto] issue with redefine of malloc to rpl_malloc on AIX, also hint re: _LARGE_FILES as a CFLAG define
+</A></li>
+	<LI>Next message: <A HREF="000866.html">[pycrypto] Build error?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#865">[ date ]</a>
+              <a href="thread.html#865">[ thread ]</a>
+              <a href="subject.html#865">[ subject ]</a>
+              <a href="author.html#865">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Need your input: Major modernization; dropping legacy Python support?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Need%20your%20input%3A%20Major%20modernization%3B%0A%20dropping%20legacy%20Python%20support%3F&In-Reply-To=%3C52712DD2.4050109%40amberfisharts.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000719.html">
+   <LINK REL="Next"  HREF="000721.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Need your input: Major modernization; dropping legacy Python support?</H1>
+    <B>Lorenz Quack</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Need%20your%20input%3A%20Major%20modernization%3B%0A%20dropping%20legacy%20Python%20support%3F&In-Reply-To=%3C52712DD2.4050109%40amberfisharts.com%3E"
+       TITLE="[pycrypto] Need your input: Major modernization; dropping legacy Python support?">don at amberfisharts.com
+       </A><BR>
+    <I>Wed Oct 30 09:03:30 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000719.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+        <LI>Next message: <A HREF="000721.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#720">[ date ]</a>
+              <a href="thread.html#720">[ thread ]</a>
+              <a href="subject.html#720">[ subject ]</a>
+              <a href="author.html#720">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On 30/10/13 06:09, Dwayne Litzenberger wrote:
+ &gt; Hi folks,
+ &gt;
+ &gt; I'm thinking about making some fairly drastic changes to PyCrypto (compared to what's happened historically) and I'd
+ &gt; like to know how these would impact people:
+
+I'm only a very, very casual user but for what it's worth here come my 2 cents:
+
+ &gt;
+&gt;<i> 1. How many of you would really care if PyCrypto 2.6 was that last    version to support legacy versions of Python?  By
+</I>&gt;<i> &quot;legacy&quot;, I mean    all versions of Python that are NOT one of these:
+</I>&gt;<i>
+</I>&gt;<i>      - Python 2.6.x
+</I>&gt;<i>      - Python 2.7.x
+</I>&gt;<i>      - Python 3.3 and above.
+</I>&gt;<i>
+</I>&gt;<i>     I'd continue to make bugfix releases of PyCrypto 2.6.x, but add no    more substantial new features.
+</I>
++1
+
+&gt;<i>
+</I>&gt;<i> 2. I'm thinking of pulling in additional dependencies (e.g. cffi),    requiring setuptools, and basically joining what
+</I>&gt;<i> the rest of the    Python community is doing in 2013.
+</I>&gt;<i>
+</I>
+I like to keep dependencies as low as possible. Obviously, you always have to weigh the pros and cons. So I guess what I 
+am saying is that is depends and should be decided on a case by case basis.
+
+&gt;<i> 3. What if src/*.c were removed, and any relevant C code moved into an    independent library, which could be loaded
+</I>&gt;<i> using cffi?  (This is    basically what we need to do to support PyPy properly.)
+</I>&gt;<i>
+</I>
+depends on what exactly you mean by &quot;independent library&quot;. If you mean &quot;maintained and shipped separately and added as a 
+dependency&quot; then I'm -1. There are enough crypto c-libs out there why add another one?
+If you mean &quot;have it in the pycrypto tree but compile it to a lib and use it via cffi just to make pypy happy&quot; then I 
+would like to see some performance analysis. The main reason to have stuff in C is performance if I am not mistaken. By 
+hearsay I think that ctypes has quite a significant impact. what about cffi?
+
+&gt;<i> 4. What if Crypto.* became a wrapper around some other crypto library?
+</I>
+I believe most crypto libs already have a python wrapper. How would pycrypto be differnet?
+
+&gt;<i>
+</I>&gt;<i> 5. The Apache License 2.0.  What if PyCrypto were licensed under it, or    included dependencies that are licensed under
+</I>&gt;<i> it?
+</I>&gt;<i>
+</I>
+Why? What would that achieve/improve? What's wrong with the current state (more or less public domain)? Wouldn't you 
+need to get the consent of every contributor?
+
+&gt;<i> 6. What if src/*.c was mostly replaced with mostly just went away.
+</I>&gt;<i>
+</I>
+Wouldn't that totally kill performance? If the parts you want to kill are not security or performance sensitive: go for it!
+
+That it.
+Cheers and thanks for all your great work Dwayne!
+
+//Lorenz
+
+
+&gt;<i> Don't panic.  These aren't concrete plans yet, but I'd like to know how this might affect various downstream PyCrypto
+</I>&gt;<i> stakeholders, and problems I might expect to encounter if I went in any of these directions.
+</I>&gt;<i>
+</I>&gt;<i> Of particular concern is FOSS distributors packaging PyCrypto (e.g. Linux distros, *BSD ports trees, MacPorts/HomeBrew,
+</I>&gt;<i> etc.), and anything else that might impact a large number of downstream end-users.
+</I>&gt;<i>
+</I>&gt;<i> I've been maintaining backward compatibility in order to protect end-users from bugs introduced in downstream forks of
+</I>&gt;<i> PyCrypto, but that's made it hard to generate interest in working on PyCrypto.  From what I can tell, there are
+</I>&gt;<i> currently several Python crypto libraries, and none of them are particularly great (including PyCrypto).
+</I>&gt;<i>
+</I>&gt;<i> I'm beginning to wonder how the risk of downstream forks compares to the risks that users face when developers still
+</I>&gt;<i> don't have a highly-visible, easy-to-use Python crypto API.  It might be better to merge PyCrypto with one or more other
+</I>&gt;<i> Python crypto libraries...
+</I>&gt;<i>
+</I>&gt;<i> Anyway, I'd love to hear what people have to say on this topic.
+</I>&gt;<i>
+</I>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000719.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+	<LI>Next message: <A HREF="000721.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#720">[ date ]</a>
+              <a href="thread.html#720">[ thread ]</a>
+              <a href="subject.html#720">[ subject ]</a>
+              <a href="author.html#720">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

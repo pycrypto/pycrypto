@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Run test suite with /dev/random
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To=%3C20120127181347.GA8154%40rivest.dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000548.html">
+   <LINK REL="Next"  HREF="000551.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Run test suite with /dev/random</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To=%3C20120127181347.GA8154%40rivest.dlitz.net%3E"
+       TITLE="[pycrypto] Run test suite with /dev/random">dlitz at dlitz.net
+       </A><BR>
+    <I>Fri Jan 27 13:13:47 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000548.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+        <LI>Next message: <A HREF="000551.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#550">[ date ]</a>
+              <a href="thread.html#550">[ thread ]</a>
+              <a href="subject.html#550">[ subject ]</a>
+              <a href="author.html#550">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Jan 20, 2012 at 05:20:57PM +0100, Sebastian Ramacher wrote:
+&gt;<i>Nevertheless there is still an issue in pycrypto left. The assumption that 
+</I>&gt;<i>read always returns the amount of data requested if there is enough 
+</I>&gt;<i>available is not true. If the process is interrupted by a signal read will 
+</I>&gt;<i>return less. At least that's the case for Python3.
+</I>
+That assumption is *correct*.  A Python file object's read() method always 
+returns the requested amount of data, except in two cases:
+
+     1. Non-blocking I/O is selected; or
+     2. End-of-file is reached.
+
+You are confusing this with the read(2) syscall, which *can* return fewer 
+bytes than requested if the process receives a signal.
+
+Here's the relevant Python documentation:
+
+&gt;<i> file.read([&lt;size&gt;])
+</I>&gt;<i>
+</I>&gt;<i>     Read at most &lt;size&gt; bytes from the file (less if the read hits EOF 
+</I>&gt;<i>     before obtaining &lt;size&gt; bytes). If the &lt;size&gt; argument is negative 
+</I>&gt;<i>     or omitted, read all data until EOF is reached. The bytes are 
+</I>&gt;<i>     returned as a string object. An empty string is returned when EOF 
+</I>&gt;<i>     is encountered immediately. (For certain files, like ttys, it makes 
+</I>&gt;<i>     sense to continue reading after an EOF is hit.) Note that this 
+</I>&gt;<i>     method may call the underlying C function fread() more than once in 
+</I>&gt;<i>     an effort to acquire as close to &lt;size&gt; bytes as possible. Also 
+</I>&gt;<i>     note that when in non-blocking mode, less data than was requested 
+</I>&gt;<i>     may be returned, even if no &lt;size&gt; parameter was given.
+</I>&gt;<i>
+</I>&gt;<i>     Note: This function is simply a wrapper for the underlying fread() 
+</I>&gt;<i>     C function, and will behave the same in corner cases, such as 
+</I>&gt;<i>     whether the EOF value is cached.
+</I>&gt;<i>
+</I>&gt;<i> -- <A HREF="http://docs.python.org/library/stdtypes.html#file-objects">http://docs.python.org/library/stdtypes.html#file-objects</A>
+</I>
+You've discovered a Python3 bug.  Good work. :)
+
+I checked, and this works correctly in Python 2.  The problem seems to be 
+(at least in Python 3.2.2) that file.read is no longer a wrapper around 
+fread(), and Python3's implementation doesn't retry read() calls like it's 
+supposed to.
+
+I've attached a C program that allows you to test the behaviour of fread().  
+Here's how to test it (using bash):
+
+    1. Compile it:
+        gcc -O2 -o freadtest freadtest.c
+    2. Run it:
+        ./freadtest /dev/urandom
+    3. Press Ctrl-Z to suspend it.
+    4. Type &quot;fg&quot; to resume the process
+    5. You should not see any output.
+
+So, the problem is that Python3's current implementation of file.read() 
+doesn't behave as documented, and it doesn't behave like it did in Python 
+2.
+
+I suggest reporting this bug against Python itself.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: freadtest.c
+Type: text/x-csrc
+Size: 1290 bytes
+Desc: not available
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20120127/d7831cf3/attachment.c">http://lists.dlitz.net/pipermail/pycrypto/attachments/20120127/d7831cf3/attachment.c</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000548.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+	<LI>Next message: <A HREF="000551.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#550">[ date ]</a>
+              <a href="thread.html#550">[ thread ]</a>
+              <a href="subject.html#550">[ subject ]</a>
+              <a href="author.html#550">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

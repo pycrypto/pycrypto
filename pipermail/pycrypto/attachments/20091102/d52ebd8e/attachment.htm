@@ -1,0 +1,29 @@
+<tt>
+It&nbsp;is&nbsp;essentially&nbsp;the&nbsp;same&nbsp;as&nbsp;the&nbsp;patch&nbsp;I&nbsp;implemented,&nbsp;I&nbsp;have&nbsp;attached&nbsp;an&nbsp;attempt&nbsp;to&nbsp;prove&nbsp;(the&nbsp;best&nbsp;I&nbsp;can&nbsp;do&nbsp;quickly)&nbsp;that&nbsp;this&nbsp;check&nbsp;is&nbsp;sufficient&nbsp;to guarantee that GCD(e,&nbsp;(p-1)(q-1))=1.&nbsp;It&nbsp;did&nbsp;not&nbsp;seem&nbsp;immediately intuitive to&nbsp;me&nbsp;so&nbsp;I&nbsp;tried&nbsp;to&nbsp;prove&nbsp;it.&lt;div&gt;<br>
+&lt;br&gt;&lt;/div&gt;&lt;div&gt;Thanks!&lt;/div&gt;&lt;div&gt;Anthony&nbsp;Honstain&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Sun,&nbsp;Nov&nbsp;1,&nbsp;2009&nbsp;at&nbsp;5:04&nbsp;PM,&nbsp;Dwayne&nbsp;C.&nbsp;Litzenberger&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&amp;lt;&lt;a&nbsp;href=&quot;mailto:dlitz@dlitz.net&quot;&gt;dlitz@dlitz.net&lt;/a&gt;&amp;gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex;&quot;&gt;&lt;div&nbsp;class=&quot;im&quot;&gt;On&nbsp;Mon,&nbsp;Aug&nbsp;03,&nbsp;2009&nbsp;at&nbsp;09:41:50PM&nbsp;-0400,&nbsp;Dwayne&nbsp;C.&nbsp;Litzenberger&nbsp;wrote:&lt;br&gt;<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;<br>
+On&nbsp;Wed,&nbsp;May&nbsp;27,&nbsp;2009&nbsp;at&nbsp;09:50:07PM&nbsp;-0700,&nbsp;Anthony&nbsp;Honstain&nbsp;wrote:&lt;br&gt;<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;<br>
+In&nbsp;the&nbsp;generate_py&nbsp;function&nbsp;of&nbsp;lib/Crypto/PublicKey/_RSA.py&nbsp;,&nbsp;it&nbsp;would&lt;br&gt;<br>
+appear&nbsp;to&nbsp;be&nbsp;possible&nbsp;that&nbsp;the&nbsp;the&nbsp;primes&nbsp;p&nbsp;and&nbsp;q&nbsp;can&nbsp;be&nbsp;generated&nbsp;such&nbsp;that&lt;br&gt;<br>
+the&nbsp;GCD(&nbsp;65537,&nbsp;(p-1)(q-1))&nbsp;!=&nbsp;1&nbsp;which&nbsp;would&nbsp;result&nbsp;in&nbsp;a&nbsp;unusable&nbsp;key.&nbsp;If&lt;br&gt;<br>
+anyone&nbsp;can&nbsp;clarify&nbsp;this&nbsp;it&nbsp;would&nbsp;be&nbsp;greatly&nbsp;appreciated.&lt;br&gt;<br>
+&lt;/blockquote&gt;<br>
+&lt;br&gt;<br>
+I&nbsp;haven&amp;#39;t&nbsp;looked&nbsp;into&nbsp;this&nbsp;claim&nbsp;yet,&nbsp;but&nbsp;I&amp;#39;ve&nbsp;filed&nbsp;a&nbsp;bug&nbsp;report:&lt;br&gt;<br>
+&lt;br&gt;<br>
+&nbsp; &nbsp; &lt;a&nbsp;href=&quot;https://bugs.launchpad.net/pycrypto/+bug/408660&quot;&nbsp;target=&quot;_blank&quot;&gt;https://bugs.launchpad.net/pycrypto/+bug/408660&lt;/a&gt;&lt;br&gt;<br>
+&lt;/blockquote&gt;<br>
+&lt;br&gt;&lt;/div&gt;<br>
+Lorenz&nbsp;Quack&nbsp;has&nbsp;posted&nbsp;a&nbsp;patch&nbsp;that&nbsp;he&nbsp;says&nbsp;will&nbsp;solve&nbsp;this&nbsp;problem.&nbsp; It&nbsp;checks&nbsp;that&nbsp;e&nbsp;does&nbsp;not&nbsp;divide&nbsp;p-1&nbsp;or&nbsp;q-1.&lt;br&gt;<br>
+&lt;br&gt;<br>
+That&nbsp;should&nbsp;fix&nbsp;this&nbsp;bug,&nbsp;right?&lt;div&nbsp;class=&quot;im&quot;&gt;&lt;br&gt;<br>
+&lt;br&gt;<br>
+--&nbsp;&lt;br&gt;<br>
+Dwayne&nbsp;C.&nbsp;Litzenberger&nbsp;&amp;lt;&lt;a&nbsp;href=&quot;mailto:dlitz@dlitz.net&quot;&nbsp;target=&quot;_blank&quot;&gt;dlitz@dlitz.net&lt;/a&gt;&amp;gt;&lt;br&gt;<br>
+ Key-signing&nbsp;key&nbsp; &nbsp;-&nbsp;19E1&nbsp;1FE8&nbsp;B3CF&nbsp;F273&nbsp;ED17&nbsp; 4A24&nbsp;928C&nbsp;EC13&nbsp;39C2&nbsp;5CF7&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&nbsp;class=&quot;h5&quot;&gt;<br>
+ Annual&nbsp;key&nbsp;(2009)&nbsp;-&nbsp;C805&nbsp;1746&nbsp;397B&nbsp;0202&nbsp;2758&nbsp; 2821&nbsp;58E0&nbsp;894B&nbsp;81D2&nbsp;582E&lt;br&gt;<br>
+&lt;/div&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;<br>
+
+</tt>

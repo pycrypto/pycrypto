@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] chmod error in Windows 7, when trying to install
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20chmod%20error%20in%20Windows%207%2C%20when%20trying%20to%20install&In-Reply-To=%3C5047E05B.1010204%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000629.html">
+   <LINK REL="Next"  HREF="000631.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] chmod error in Windows 7, when trying to install</H1>
+    <B>Andrew Cooper</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20chmod%20error%20in%20Windows%207%2C%20when%20trying%20to%20install&In-Reply-To=%3C5047E05B.1010204%40gmail.com%3E"
+       TITLE="[pycrypto] chmod error in Windows 7, when trying to install">andyhhp at gmail.com
+       </A><BR>
+    <I>Wed Sep  5 19:29:31 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000629.html">[pycrypto] chmod error in Windows 7, when trying to install
+</A></li>
+        <LI>Next message: <A HREF="000631.html">[pycrypto] chmod error in Windows 7, when trying to install
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#630">[ date ]</a>
+              <a href="thread.html#630">[ thread ]</a>
+              <a href="subject.html#630">[ subject ]</a>
+              <a href="author.html#630">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 06/09/2012 00:23, Philip Horger wrote:
+&gt;<i> As I understand it, compiling and setting PyCrypto up from source on Windows
+</I>&gt;<i> requires MinGW. It might also support Cygwin. But some sort of UNIX-y layer to
+</I>&gt;<i> work with as common ground.
+</I>
+I could have sworn that I had managed in the past, but it appears that I
+used pre-compiled for windows and did the building sensibly on Linux.
+
+Apologies.
+
+~Andrew
+
+&gt;<i>
+</I>&gt;<i> On Wed, Sep 5, 2012 at 4:21 PM, Andrew Cooper &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">andyhhp at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> On 05/09/2012 17:48, Mike Anderson wrote:
+</I>&gt;&gt;&gt;<i> I'm using Windows 7 Ultimate, and trying to install pycrypto, but
+</I>&gt;&gt;&gt;<i> getting an error &quot;'chmod' is not recognized as an internal or external
+</I>&gt;&gt;&gt;<i> command.&quot;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> It happens like so:
+</I>&gt;&gt;&gt;&gt;<i> pip install ssh
+</I>&gt;&gt;&gt;<i>    ...
+</I>&gt;&gt;&gt;<i> copying lib\Crypto\Signature\__init__.py -&gt; build\lib.win32-2.7\Crypto\Signature
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> running build_ext
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> running build_configure
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> 'chmod' is not recognized as an internal or external command,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> operable program or batch file.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Traceback (most recent call last):
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;C:\Users\killer\build\pycrypto\setup.py&quot;, line 456, in &lt;module&gt;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     core.setup(**kw)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;C:\Python27\lib\distutils\core.py&quot;, line 152, in setup
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     dist.run_commands()
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;C:\Python27\lib\distutils\dist.py&quot;, line 953, in run_commands
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     self.run_command(cmd)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;C:\Python27\lib\distutils\dist.py&quot;, line 972, in run_command
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     cmd_obj.run()
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;C:\Python27\lib\site-packages\setuptools\command\install.py&quot;, line 53, i
+</I>&gt;&gt;&gt;<i> n run
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     return _install.run(self)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;C:\Python27\lib\distutils\command\install.py&quot;, line 563, in run
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     self.run_command('build')
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;C:\Python27\lib\distutils\cmd.py&quot;, line 326, in run_command
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     self.distribution.run_command(command)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;C:\Python27\lib\distutils\dist.py&quot;, line 972, in run_command
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     cmd_obj.run()
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;C:\Python27\lib\distutils\command\build.py&quot;, line 127, in run
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     self.run_command(cmd_name)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;C:\Python27\lib\distutils\cmd.py&quot;, line 326, in run_command
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     self.distribution.run_command(command)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;C:\Python27\lib\distutils\dist.py&quot;, line 972, in run_command
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     cmd_obj.run()
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;C:\Users\killer\build\pycrypto\setup.py&quot;, line 251, in run
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     self.run_command(cmd_name)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;C:\Python27\lib\distutils\cmd.py&quot;, line 326, in run_command
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     self.distribution.run_command(command)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;C:\Python27\lib\distutils\dist.py&quot;, line 972, in run_command
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     cmd_obj.run()
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   File &quot;C:\Users\killer\build\pycrypto\setup.py&quot;, line 273, in run
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     raise RuntimeError(&quot;chmod error&quot;)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> RuntimeError: chmod error
+</I>&gt;&gt;<i> This is because you are on windows and setup.py is trying to run unix
+</I>&gt;&gt;<i> commands.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> To a cursory glance, it appears to be a bug in pycrypto's setup.py  It
+</I>&gt;&gt;<i> should either provide a windows compatible way of performing autoconf
+</I>&gt;&gt;<i> and friends (unlikely), or provide a windows alternative way of
+</I>&gt;&gt;<i> configuring stuff and conditionally invoke the correct one for the system.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ~Andrew
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000629.html">[pycrypto] chmod error in Windows 7, when trying to install
+</A></li>
+	<LI>Next message: <A HREF="000631.html">[pycrypto] chmod error in Windows 7, when trying to install
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#630">[ date ]</a>
+              <a href="thread.html#630">[ thread ]</a>
+              <a href="subject.html#630">[ subject ]</a>
+              <a href="author.html#630">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

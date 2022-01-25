@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Crypto.Hash: Hash Functions</TITLE>
+<META NAME="description" CONTENT="Crypto.Hash: Hash Functions">
+<META NAME="keywords" CONTENT="pycrypt">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="pycrypt.css">
+
+<LINK REL="next" HREF="node8.html">
+<LINK REL="previous" HREF="node2.html">
+<LINK REL="up" HREF="pycrypt.html">
+<LINK REL="next" HREF="node6.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html116"
+  HREF="node6.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html112"
+  HREF="pycrypt.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html106"
+  HREF="node4.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html114"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html117"
+  HREF="node6.html">Security Notes</A>
+<B> Up:</B> <A NAME="tex2html113"
+  HREF="pycrypt.html">Python Cryptography Toolkit</A>
+<B> Previous:</B> <A NAME="tex2html107"
+  HREF="node4.html">Acknowledgements</A>
+ &nbsp; <B>  <A NAME="tex2html115"
+  HREF="node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00030000000000000000">
+Crypto.Hash: Hash Functions</A>
+</H1>
+
+<P>
+Hash functions take arbitrary strings as input, and produce an output
+of fixed size that is dependent on the input; it should never be
+possible to derive the input data given only the hash function's
+output.  One simple hash function consists of simply adding together
+all the bytes of the input, and taking the result modulo 256.  For a
+hash function to be cryptographically secure, it must be very
+difficult to find two messages with the same hash value, or to find a
+message with a given hash value.  The simple additive hash function
+fails this criterion miserably and the hash functions described below
+meet this criterion (as far as we know).  Examples of
+cryptographically secure hash functions include MD2, MD5, and SHA1.
+
+<P>
+Hash functions can be used simply as a checksum, or, in association with a
+public-key algorithm, can be used to implement digital signatures.
+
+<P>
+The hashing algorithms currently implemented are:
+
+<P>
+<BR>
+1#1
+<BR>
+
+<P>
+All hashing modules share the same interface.  After importing a given
+hashing module, call the new() function to create a new
+hashing object. You can now feed arbitrary strings into the object
+with the update() method, and can ask for the hash value at
+any time by calling the digest() or hexdigest()
+methods.  The new() function can also be passed an optional
+string parameter that will be immediately hashed into the object's
+state.
+
+<P>
+Hash function modules define one variable:
+
+<P>
+<BR>
+2#2
+<BR>
+
+<P>
+The methods for hashing objects are always the following:
+
+<P>
+<BR>
+3#3
+<BR>
+
+<P>
+<BR>
+4#4
+<BR>
+
+<P>
+<BR>
+5#5
+<BR>
+
+<P>
+<BR>
+6#6
+<BR>
+
+<P>
+Here's an example, using the MD5 algorithm:
+
+<P>
+<PRE>
+&gt;&gt;&gt; from Crypto.Hash import MD5
+&gt;&gt;&gt; m = MD5.new()
+&gt;&gt;&gt; m.update('abc')
+&gt;&gt;&gt; m.digest()
+'\x90\x01P\x98&lt;\xd2O\xb0\xd6\x96?}(\xe1\x7fr'
+&gt;&gt;&gt; m.hexdigest()
+'900150983cd24fb0d6963f7d28e17f72'
+</PRE>
+
+<P>
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL CLASS="ChildLinks">
+<LI><A NAME="tex2html118"
+  HREF="node6.html">Security Notes</A>
+<LI><A NAME="tex2html119"
+  HREF="node7.html">Credits</A>
+</UL>
+<!--End of Table of Child-Links-->
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html116"
+  HREF="node6.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html112"
+  HREF="pycrypt.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html106"
+  HREF="node4.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html114"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html117"
+  HREF="node6.html">Security Notes</A>
+<B> Up:</B> <A NAME="tex2html113"
+  HREF="pycrypt.html">Python Cryptography Toolkit</A>
+<B> Previous:</B> <A NAME="tex2html107"
+  HREF="node4.html">Acknowledgements</A>
+ &nbsp; <B>  <A NAME="tex2html115"
+  HREF="node1.html">Contents</A></B> </DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

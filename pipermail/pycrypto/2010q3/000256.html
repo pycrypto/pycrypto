@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] AES CFB with 128 bit feedback size
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20AES%20CFB%20with%20128%20bit%20feedback%20size&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000255.html">
+   <LINK REL="Next"  HREF="000257.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] AES CFB with 128 bit feedback size</H1>
+    <B>Brendan Simon (eTRIX)</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20AES%20CFB%20with%20128%20bit%20feedback%20size&In-Reply-To="
+       TITLE="[pycrypto] AES CFB with 128 bit feedback size">brendan.simon at etrix.com.au
+       </A><BR>
+    <I>Tue Jul 20 22:43:55 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000255.html">[pycrypto] ANNOUNCING Tahoe, the Least-Authority File System, v1.7.1
+</A></li>
+        <LI>Next message: <A HREF="000257.html">[pycrypto] Does Pycrypto work with Python 3.x now?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#256">[ date ]</a>
+              <a href="thread.html#256">[ thread ]</a>
+              <a href="subject.html#256">[ subject ]</a>
+              <a href="author.html#256">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE> I _need_ to decrypt some data that _is_ encrypted with AES using 128
+bit CFB.  i.e. feeback size is 128 bits.
+
+I tried MODE_CFB with PyCrypto but the data did not decrypt correctly.
+Reading the docs a little closer I see that PyCrypto only seems to
+implement 8 bit CFB.
+
+Is there any way to set the feedback size to 128 (or other sizes: 64,
+32, 16 or 8 bits) ??
+
+Just for reference, I am porting some VB code to python, and the
+equivalent VB decryption code is :
+
+    Dim myAes as New RijndaelManaged()
+    myAes.FeebackSize = 128
+    myAes.Mode = CipherMode.CFB
+    myAes.Key = key
+    myAes.IV = iv
+    myAes.Padding = PaddingMode.None
+
+
+If there is no way of doing this with PyCrypto, then I guess I will have
+to fall back to using ECB and doing the feedback myself.  Not too
+difficult, but it would be nice if PyCrypto had the option of specifying
+the CFB Feeback size :)
+
+Thanks, Brendan.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100721/d5baa07b/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100721/d5baa07b/attachment.html</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000255.html">[pycrypto] ANNOUNCING Tahoe, the Least-Authority File System, v1.7.1
+</A></li>
+	<LI>Next message: <A HREF="000257.html">[pycrypto] Does Pycrypto work with Python 3.x now?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#256">[ date ]</a>
+              <a href="thread.html#256">[ thread ]</a>
+              <a href="subject.html#256">[ subject ]</a>
+              <a href="author.html#256">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

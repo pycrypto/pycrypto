@@ -1,0 +1,214 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Verify DSA bytestring signature
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Verify%20DSA%20bytestring%20signature&In-Reply-To=%3CCAGfyce0pk6H4n-AHy4yt1_gNBb%2BxSx081LzoXEL85QhYOcSPGQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000793.html">
+   <LINK REL="Next"  HREF="000795.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Verify DSA bytestring signature</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Verify%20DSA%20bytestring%20signature&In-Reply-To=%3CCAGfyce0pk6H4n-AHy4yt1_gNBb%2BxSx081LzoXEL85QhYOcSPGQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Verify DSA bytestring signature">helderijs at gmail.com
+       </A><BR>
+    <I>Mon Apr  7 04:50:26 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000793.html">[pycrypto] Verify DSA bytestring signature
+</A></li>
+        <LI>Next message: <A HREF="000795.html">[pycrypto] Verify DSA bytestring signature
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#794">[ date ]</a>
+              <a href="thread.html#794">[ thread ]</a>
+              <a href="subject.html#794">[ subject ]</a>
+              <a href="author.html#794">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>The openssl code is using SHA-1 twice: once to create the digest of the
+archive (dgst -sha1) and a second time when computing the DSA signature
+(dgst -dss1).
+
+If your goal is to sign the hash, the Python code should actually read:
+
+&gt;&gt;<i> return pubkey.verify(SHA1.new(zipfile_digest).digest(), signature)
+</I>
+If your goal is to sign only the archive, the openssl code should be:
+
+&gt;&gt;<i> | openssl dgst -dss1 -sign &quot;$DSA_PRIVKEY&quot;  &lt; &quot;$RELEASE_ARCHIVE&quot; \
+</I>&gt;&gt;<i> | openssl enc -base64
+</I>
+2014-04-07 0:49 GMT+02:00 Winston Weinert &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">winston at ml1.net</A>&gt;:
+
+&gt;<i> The signature is created using the openssl(1) command-line tool like this:
+</I>&gt;<i>
+</I>&gt;<i> openssl dgst -sha1 -binary &lt; &quot;$RELEASE_ARCHIVE&quot; \
+</I>&gt;<i> | openssl dgst -dss1 -sign &quot;$DSA_PRIVKEY&quot; \
+</I>&gt;<i> | openssl enc -base64
+</I>&gt;<i>
+</I>&gt;<i> It verifies correctly using this command-line:
+</I>&gt;<i>
+</I>&gt;<i> echo &quot;$SIGNATURE&quot; | openssl enc -base64 -d &gt; /tmp/decoded_signature
+</I>&gt;<i> openssl dgst -sha1 -binary &lt; &quot;$RELEASE_ARCHIVE&quot; &gt; /tmp/release_archive_sha1
+</I>&gt;<i> openssl dgst -dss1 -verify &quot;$DSA_PUBKEY&quot; -signature /tmp/decoded_signature
+</I>&gt;<i> /tmp/release_archive_sha1
+</I>&gt;<i>
+</I>&gt;<i> After I wrote my email, I dug around for awhile. After a lot of research I
+</I>&gt;<i> learned
+</I>&gt;<i> about ASN.1 DER's usage in Dss-Sig-Value (
+</I>&gt;<i> <A HREF="http://www.ietf.org/rfc/rfc2459.txt">http://www.ietf.org/rfc/rfc2459.txt</A>). I
+</I>&gt;<i> wrote this code that appeared to decode my Base64 encoded signature
+</I>&gt;<i> correctly (I
+</I>&gt;<i> checked against <A HREF="http://lapo.it/asn1js/">http://lapo.it/asn1js/</A>):
+</I>&gt;<i>
+</I>&gt;<i> def decode_DSA_signature(signature):
+</I>&gt;<i>     raw_signature = base64.b64decode(signature)
+</I>&gt;<i>     der = DerSequence()
+</I>&gt;<i>     der.decode(raw_signature)
+</I>&gt;<i>     return (der[0], der[1])
+</I>&gt;<i>
+</I>&gt;<i> Unfortunately .verify() returns False on correctly verified signature and
+</I>&gt;<i> hash
+</I>&gt;<i> pairs. I am using this new function like so:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def validate(dsa_pubkey, signature, zipfile):
+</I>&gt;<i>     with open(dsa_pubkey, 'rb') as f:
+</I>&gt;<i>         pubkey = DSA.importKey(f.read())
+</I>&gt;<i>     with open(zipfile, 'rb') as f:
+</I>&gt;<i>         h = SHA1.new()
+</I>&gt;<i>         h.update(f.read())
+</I>&gt;<i>         zipfile_digest = h.digest()
+</I>&gt;<i>     signature = decode_DSA_signature(signature)
+</I>&gt;<i>
+</I>&gt;<i>     return pubkey.verify(zipfile_digest, signature)
+</I>&gt;<i>
+</I>&gt;<i> Maybe there is a problem with PyCrypto DSA and my environment?
+</I>&gt;<i> &gt;&gt;&gt; sys.version
+</I>&gt;<i> '2.7.6 (default, Feb  7 2014, 12:51:34) \n[GCC 4.2.1 Compatible Apple LLVM
+</I>&gt;<i> 5.0 (clang-500.2.79)]'
+</I>&gt;<i>
+</I>&gt;<i> For the time being I'm invoking openssl(1) for this task.
+</I>&gt;<i>
+</I>&gt;<i> Thank you for the reply!
+</I>&gt;<i> Winston Weinert
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Apr 6, 2014, at 4:50, Legrandin &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">helderijs at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt; How was the signature created exactly?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; The .verify() method of a DSA object requires two integers, and there
+</I>&gt;<i> are several ways to encode them into a bytestring. It's very hard to guess
+</I>&gt;<i> the correct one for your case.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; FYI, there is a long standing pull request I created to add a saner DSA
+</I>&gt;<i> API:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; <A HREF="https://github.com/dlitz/pycrypto/pull/53">https://github.com/dlitz/pycrypto/pull/53</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; The verification method accepts DER or big-endian encoded signatures.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; 2014-04-05 21:03 GMT+02:00 Winston Weinert &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">winston at ml1.net</A>&gt;:
+</I>&gt;<i> &gt; Hello,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I noticed in Git there is a &quot;verify&quot; method on Crypto.PublicKey.DSA. How
+</I>&gt;<i> do
+</I>&gt;<i> &gt; I go about using this method? It wants a tuple, but unsure how to create
+</I>&gt;<i> &gt; the appropriate tuple from my bytestring (which is decoded base64 text).
+</I>&gt;<i> &gt; This is git revision 2d1aecd. The relevant code and error:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Code:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; def validate(dsa_pubkey, signature, zipfile):
+</I>&gt;<i> &gt;     with open(dsa_pubkey, 'rb') as f:
+</I>&gt;<i> &gt;         pubkey = DSA.importKey(f.read())
+</I>&gt;<i> &gt;     with open(zipfile, 'rb') as f:
+</I>&gt;<i> &gt;         h = SHA1.new()
+</I>&gt;<i> &gt;         h.update(f.read())
+</I>&gt;<i> &gt;         zipfile_digest = h.digest()
+</I>&gt;<i> &gt;     decoded_signature = base64.b64decode(signature)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     return pubkey.verify(zipfile_digest, decoded_signature)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Error:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Traceback (most recent call last):
+</I>&gt;<i> &gt;   File &quot;sparkle_tool.py&quot;, line 67, in &lt;module&gt;
+</I>&gt;<i> &gt;     validate_files(appcast, dsa_pubkey)
+</I>&gt;<i> &gt;   File &quot;sparkle_tool.py&quot;, line 55, in validate_files
+</I>&gt;<i> &gt;     if validate(dsa_pubkey, signature, local_file):
+</I>&gt;<i> &gt;   File &quot;sparkle_tool.py&quot;, line 33, in validate
+</I>&gt;<i> &gt;     return pubkey.verify(zipfile_digest, decoded_signature)
+</I>&gt;<i> &gt;   File
+</I>&gt;<i> &quot;/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py&quot;,
+</I>&gt;<i> line 222, in verify
+</I>&gt;<i> &gt;     return pubkey.pubkey.verify(self, M, signature)
+</I>&gt;<i> &gt;   File
+</I>&gt;<i> &quot;/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/pubkey.py&quot;,
+</I>&gt;<i> line 126, in verify
+</I>&gt;<i> &gt;     return self._verify(M, signature)
+</I>&gt;<i> &gt;   File
+</I>&gt;<i> &quot;/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py&quot;,
+</I>&gt;<i> line 240, in _verify
+</I>&gt;<i> &gt;     (r, s) = sig
+</I>&gt;<i> &gt; ValueError: too many values to unpack
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thanks a bunch!
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt; Winston Weinert
+</I>&gt;<i> &gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">winston at ml1.net</A>
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; pycrypto mailing list
+</I>&gt;<i> &gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> &gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; pycrypto mailing list
+</I>&gt;<i> &gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> &gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20140407/b61f21b3/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20140407/b61f21b3/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000793.html">[pycrypto] Verify DSA bytestring signature
+</A></li>
+	<LI>Next message: <A HREF="000795.html">[pycrypto] Verify DSA bytestring signature
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#794">[ date ]</a>
+              <a href="thread.html#794">[ thread ]</a>
+              <a href="subject.html#794">[ subject ]</a>
+              <a href="author.html#794">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

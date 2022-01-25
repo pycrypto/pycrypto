@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] pycrypto with python 3.1 in windows
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20pycrypto%20with%20python%203.1%20in%20windows&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000197.html">
+   <LINK REL="Next"  HREF="000210.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] pycrypto with python 3.1 in windows</H1>
+    <B>Nauman Anders</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20pycrypto%20with%20python%203.1%20in%20windows&In-Reply-To="
+       TITLE="[pycrypto] pycrypto with python 3.1 in windows">anders_nauman at hotmail.com
+       </A><BR>
+    <I>Mon Mar 15 15:02:38 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000197.html">[pycrypto] port for IronPython
+</A></li>
+        <LI>Next message: <A HREF="000210.html">[pycrypto] pycrypto issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#211">[ date ]</a>
+              <a href="thread.html#211">[ thread ]</a>
+              <a href="subject.html#211">[ subject ]</a>
+              <a href="author.html#211">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi
+
+Ran into this error after patching with various combos of all patches that has been posted here. Always the same place of the error.
+Im also running through MinGW with fullinstallation and Win7 as OS.
+installing though this commando: python setup.py build -c mingw32
+
+Its successfull until this part.
+
+running build_ext
+warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+building 'Crypto.Random.OSRNG.winrandom' extension
+Traceback (most recent call last):
+  File &quot;setup.py&quot;, line 335, in &lt;module&gt; core.setup(**kw)
+  File &quot;C:\Program Files\Python31\lib\distutils\core.py&quot;, line 149, in setup dist.run_commands()
+  File &quot;C:\Program Files\Python31\lib\distutils\dist.py&quot;, line 919, in run_commands self.run_command(cmd)
+  File &quot;C:\Program Files\Python31\lib\distutils\dist.py&quot;, line 938, in run_command cmd_obj.run()
+  File &quot;C:\Program Files\Python31\lib\distutils\command\build.py&quot;, line 128, in run self.run_command(cmd_name)
+  File &quot;C:\Program Files\Python31\lib\distutils\cmd.py&quot;, line 315, in run_command self.distribution.run_command(command)
+  File &quot;C:\Program Files\Python31\lib\distutils\dist.py&quot;, line 938, in run_command cmd_obj.run()
+  File &quot;C:\Program Files\Python31\lib\distutils\command\build_ext.py&quot;, line 347, in run self.build_extensions()
+
+  File &quot;setup.py&quot;, line 147, in build_extensions build_ext.build_extensions(self)
+  File &quot;C:\Program Files\Python31\lib\distutils\command\build_ext.py&quot;, line 456, in build_extensions self.build_extension(ext)
+  File &quot;C:\Program Files\Python31\lib\distutils\command\build_ext.py&quot;, line 511, in build_extension depends=ext.depends)
+  File &quot;C:\Program Files\Python31\lib\distutils\msvc9compiler.py&quot;, line 448, in compile self.initialize()
+  File &quot;C:\Program Files\Python31\lib\distutils\msvc9compiler.py&quot;, line 359, in initialize vc_env = query_vcvarsall(VERSION, plat_spec)
+  File &quot;C:\Program Files\Python31\lib\distutils\msvc9compiler.py&quot;, line 275, in query_vcvarsall raise ValueError(str(list(result.keys()))) ValueError: ['path']
+
+To be honest im only after the blowfish file to windows since im programing a thing to irc so if someone have the python 3.1 compiled file for windows i would be really glad if u send it to me.
+Or could answer what im missing for having this error :).
+
+Thanks and great work.. Its working fine under linux though ;).
+
+//anders
+ 		 	   		  
+_________________________________________________________________
+Mejla p&#229; krogen! Hotmail i mobilen. 
+<A HREF="http://new.windowslivemobile.msn.com/SE-SE/windows-live-hotmail/default.aspx">http://new.windowslivemobile.msn.com/SE-SE/windows-live-hotmail/default.aspx</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100315/73e60ecc/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100315/73e60ecc/attachment.htm</A> 
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000197.html">[pycrypto] port for IronPython
+</A></li>
+	<LI>Next message: <A HREF="000210.html">[pycrypto] pycrypto issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#211">[ date ]</a>
+              <a href="thread.html#211">[ thread ]</a>
+              <a href="subject.html#211">[ subject ]</a>
+              <a href="author.html#211">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

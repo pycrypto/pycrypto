@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] windows + linux line endings issue
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20windows%20%2B%20linux%20line%20endings%20issue&In-Reply-To=%3CCAEncD4fW%3DLWU-dSQ5HZrR8XH2weowXvf2o-F1hTn-UF1wvfp8w%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000756.html">
+   <LINK REL="Next"  HREF="000758.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] windows + linux line endings issue</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20windows%20%2B%20linux%20line%20endings%20issue&In-Reply-To=%3CCAEncD4fW%3DLWU-dSQ5HZrR8XH2weowXvf2o-F1hTn-UF1wvfp8w%40mail.gmail.com%3E"
+       TITLE="[pycrypto] windows + linux line endings issue">dave.pawson at gmail.com
+       </A><BR>
+    <I>Wed Jan 22 03:15:17 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000756.html">[pycrypto] windows + linux line endings issue
+</A></li>
+        <LI>Next message: <A HREF="000758.html">[pycrypto] Any progress with pycrypto 2.7?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#757">[ date ]</a>
+              <a href="thread.html#757">[ thread ]</a>
+              <a href="subject.html#757">[ subject ]</a>
+              <a href="author.html#757">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 22 January 2014 11:01, Nicco Kunzmann &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">niccokunzmann at rambler.ru</A>&gt; wrote:
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> I do not know your code but could you check that you save (open(.., 'wb'))
+</I>&gt;<i> and load the file (open(..., 'rb')) in the binary mode instead of text  mode
+</I>&gt;<i> without 'b'?
+</I>&gt;<i>
+</I>&gt;<i> Greetings!
+</I>
+Hi Nicco.
+
+with open(in_filename, 'rb') as infile:
+        with open(out_filename, 'wb') as outfile:
+
+is used to read plain text, write encrypted
+and
+
+ with open(in_filename, 'rb') as infile:
+for decrypt.
+
+Google searching suggested that - but I was already using it.
+  Not sure what else affects it?
+
+regards
+
+
+
+
+
+&gt;<i>
+</I>&gt;<i> Am 22.01.2014 11:30, schrieb Dave Pawson:
+</I>&gt;<i>
+</I>&gt;<i> I want to share an encrypted file across Windows / Linux (say by
+</I>&gt;<i> saving the file to Dropbox).
+</I>&gt;<i>
+</I>&gt;<i> When I encrypt using Linux and decrypt using Windows, the
+</I>&gt;<i> line ending differences screw up the decryption.
+</I>&gt;<i>
+</I>&gt;<i> I think it's a Python issue, but I'm unsure. Has anyone addressed
+</I>&gt;<i> this please?
+</I>&gt;<i>
+</I>&gt;<i> TiA
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000756.html">[pycrypto] windows + linux line endings issue
+</A></li>
+	<LI>Next message: <A HREF="000758.html">[pycrypto] Any progress with pycrypto 2.7?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#757">[ date ]</a>
+              <a href="thread.html#757">[ thread ]</a>
+              <a href="subject.html#757">[ subject ]</a>
+              <a href="author.html#757">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

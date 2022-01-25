@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] FYI: PyCrypto on Google App Engine
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20FYI%3A%20PyCrypto%20on%20Google%20App%20Engine&In-Reply-To=20090503164954.GA17760%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000102.html">
+   <LINK REL="Next"  HREF="000104.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] FYI: PyCrypto on Google App Engine</H1>
+    <B>Sam Phippen</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20FYI%3A%20PyCrypto%20on%20Google%20App%20Engine&In-Reply-To=20090503164954.GA17760%40rivest.dlitz.net"
+       TITLE="[pycrypto] FYI: PyCrypto on Google App Engine">samphippen at googlemail.com
+       </A><BR>
+    <I>Sun May  3 12:33:54 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000102.html">[pycrypto] FYI: PyCrypto on Google App Engine
+</A></li>
+        <LI>Next message: <A HREF="000104.html">[pycrypto] DES/DES3/XOR/etc removal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#103">[ date ]</a>
+              <a href="thread.html#103">[ thread ]</a>
+              <a href="subject.html#103">[ subject ]</a>
+              <a href="author.html#103">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>2009/5/3 Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+
+&gt;<i> On Sat, May 02, 2009 at 03:15:42PM +0200, Mads Kiilerich wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> <A HREF="http://code.google.com/appengine/docs/python/tools/libraries.html#PyCrypto">http://code.google.com/appengine/docs/python/tools/libraries.html#PyCrypto</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; App Engine includes a custom version of the Python Cryptography Toolkit
+</I>&gt;<i> &gt; &lt;<A HREF="http://www.amk.ca/python/code/crypto">http://www.amk.ca/python/code/crypto</A>&gt;, also known as PyCrypto. The
+</I>&gt;<i> version
+</I>&gt;<i> &gt; included with App Engine is based on pycrypto 2.0.1. This is not the
+</I>&gt;<i> latest
+</I>&gt;<i> &gt; version &lt;<A HREF="http://pycrypto.org">http://pycrypto.org</A>&gt;, but should be largely compatible with
+</I>&gt;<i> more
+</I>&gt;<i> &gt; recent versions.
+</I>&gt;<i>
+</I>&gt;<i> Neat.  Thanks for pointing this out.
+</I>&gt;<i>
+</I>&gt;<i> &gt; For reasons both technical and legal, the App Engine version of PyCrypto
+</I>&gt;<i> &gt; has the following differences from the original PyCrypto 2.0.1:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;    * The RC5 and IDEA ciphers have been removed.
+</I>&gt;<i>
+</I>&gt;<i> Makes sense.  RC5 and IDEA are patent-encumbered.
+</I>&gt;<i>
+</I>&gt;<i> &gt;    * The MODE_PGP encryption mode has been removed.
+</I>&gt;<i>
+</I>&gt;<i> Hmm.  Does anybody know why MODE_PGP would have been removed?
+</I>
+
+PGP is a registered company, there may be some trademark/copyright issues
+there.
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> &gt;    * All public key cryptography routines are implemented in pure
+</I>&gt;<i> &gt;      Python code. They do not use any native acceleration (C code).
+</I>&gt;<i>
+</I>&gt;<i> In other words, they built PyCrypto without the optional support for libgmp
+</I>&gt;<i> (_fastmath.c).
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+</I>&gt;<i>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</I>&gt;<i>  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+Sam Phippen
+
+Please avoid sending me Word or PowerPoint attachments.
+See <A HREF="http://www.gnu.org/philosophy/no-word-attachments.html">http://www.gnu.org/philosophy/no-word-attachments.html</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090503/8e7d0773/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090503/8e7d0773/attachment.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000102.html">[pycrypto] FYI: PyCrypto on Google App Engine
+</A></li>
+	<LI>Next message: <A HREF="000104.html">[pycrypto] DES/DES3/XOR/etc removal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#103">[ date ]</a>
+              <a href="thread.html#103">[ thread ]</a>
+              <a href="subject.html#103">[ subject ]</a>
+              <a href="author.html#103">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,589 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Problems installing pycrypto 2.5 on Ununtu Linux
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Problems%20installing%20pycrypto%202.5%20on%20Ununtu%20Linux&In-Reply-To=%3CA26E884D-02C6-438C-9C40-26AF443D9572%40panix.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000562.html">
+   <LINK REL="Next"  HREF="000564.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Problems installing pycrypto 2.5 on Ununtu Linux</H1>
+    <B>Roy Smith</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Problems%20installing%20pycrypto%202.5%20on%20Ununtu%20Linux&In-Reply-To=%3CA26E884D-02C6-438C-9C40-26AF443D9572%40panix.com%3E"
+       TITLE="[pycrypto] Problems installing pycrypto 2.5 on Ununtu Linux">roy at panix.com
+       </A><BR>
+    <I>Sat Mar 17 12:14:50 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000562.html">[pycrypto] announcing pycryptopp	v0.6.0.1206569328141510525648634803928199668821045408958
+</A></li>
+        <LI>Next message: <A HREF="000564.html">[pycrypto] Problems installing pycrypto 2.5 on Ununtu Linux
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#563">[ date ]</a>
+              <a href="thread.html#563">[ thread ]</a>
+              <a href="subject.html#563">[ subject ]</a>
+              <a href="author.html#563">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm trying to upgrade my old copy of pycrypto 2.0.1 (probably installed with apt-get).  I'm running python 2.6.5 on Ubuntu 10.04.3.  When I run &quot;pip install --upgrade pycrypto&quot; with a virtualenv enabled, everything seems to go fine until it gets up to &quot;   building &quot;Crypto.Hash._MD2' extension&quot; (see below).  Any suggestions for what might be wrong?
+
+   building 'Crypto.Hash._MD2' extension
+    gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/python2.6 -c src/MD2.c -o build/temp.linux-x86_64-2.6/src/MD2.o
+    src/MD2.c:31:20: error: Python.h: No such file or directory
+    src/MD2.c:131: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+    In file included from src/MD2.c:147:
+    src/hash_template.c:48: error: expected specifier-qualifier-list before &#8216;PyObject_HEAD&#8217;
+    src/hash_template.c:59: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;PyTypeObject&#8217;
+    src/hash_template.c: In function &#8216;newALGobject&#8217;:
+    src/hash_template.c:69: warning: implicit declaration of function &#8216;PyObject_New&#8217;
+    src/hash_template.c:69: error: expected expression before &#8216;ALGobject&#8217;
+    src/hash_template.c: At top level:
+    src/hash_template.c:76: error: expected &#8216;)&#8217; before &#8216;*&#8217; token
+    src/hash_template.c:91: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+    src/hash_template.c:110: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+    src/hash_template.c:122: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+    src/hash_template.c:162: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+    src/hash_template.c:188: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+    src/hash_template.c:190: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;ALG_methods&#8217;
+    src/hash_template.c:199: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+    src/hash_template.c:225: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;ALGtype&#8217;
+    src/hash_template.c:271: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+    src/hash_template.c:304: error: array type has incomplete element type
+    src/hash_template.c:305: error: &#8216;PyCFunction&#8217; undeclared here (not in a function)
+    src/hash_template.c:305: error: expected &#8216;}&#8217; before &#8216;ALG_new&#8217;
+    src/hash_template.c: In function &#8216;init_MD2&#8217;:
+    src/hash_template.c:339: error: &#8216;PyObject&#8217; undeclared (first use in this function)
+    src/hash_template.c:339: error: (Each undeclared identifier is reported only once
+    src/hash_template.c:339: error: for each function it appears in.)
+    src/hash_template.c:339: error: &#8216;m&#8217; undeclared (first use in this function)
+    src/hash_template.c:351: error: &#8216;ALGtype&#8217; undeclared (first use in this function)
+    src/hash_template.c:351: error: &#8216;PyType_Type&#8217; undeclared (first use in this function)
+    src/hash_template.c:352: warning: implicit declaration of function &#8216;Py_InitModule&#8217;
+    src/hash_template.c:356: error: &#8216;o&#8217; undeclared (first use in this function)
+    src/hash_template.c:356: warning: implicit declaration of function &#8216;PyInt_FromLong&#8217;
+    src/hash_template.c:356: warning: implicit declaration of function &#8216;PyDict_SetItemString&#8217;
+    src/hash_template.c:356: warning: implicit declaration of function &#8216;PyModule_GetDict&#8217;
+    src/hash_template.c:356: warning: implicit declaration of function &#8216;Py_DECREF&#8217;
+    src/hash_template.c:360: warning: implicit declaration of function &#8216;PyErr_Occurred&#8217;
+    src/hash_template.c:361: warning: implicit declaration of function &#8216;Py_FatalError&#8217;
+    error: command 'gcc' failed with exit status 1
+    Complete output from command /home/roy/production/python/bin/python -c &quot;import setuptools;__file__='/home/roy/production/python/build/pycrypto/setup.py';execfile(__file__)&quot; install --single-version-externally-managed --record /tmp/pip-jmWK8k-record/install-record.txt --install-headers /home/roy/production/python/include/site/python2.6:
+    running install
+
+running build
+
+running build_py
+
+creating build
+
+creating build/lib.linux-x86_64-2.6
+
+creating build/lib.linux-x86_64-2.6/Crypto
+
+copying lib/Crypto/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto
+
+copying lib/Crypto/pct_warnings.py -&gt; build/lib.linux-x86_64-2.6/Crypto
+
+creating build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/RIPEMD.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/SHA224.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/SHA384.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/SHA.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/SHA256.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/HMAC.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/MD4.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/MD2.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/SHA512.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/MD5.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Hash
+
+creating build/lib.linux-x86_64-2.6/Crypto/Cipher
+
+copying lib/Crypto/Cipher/PKCS1_v1_5.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Cipher
+
+copying lib/Crypto/Cipher/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Cipher
+
+copying lib/Crypto/Cipher/PKCS1_OAEP.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Cipher
+
+creating build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/py3compat.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/Counter.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/asn1.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/winrandom.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/randpool.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/number.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/RFC1751.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/_number_new.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/wrapper.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/py21compat.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Util
+
+creating build/lib.linux-x86_64-2.6/Crypto/Random
+
+copying lib/Crypto/Random/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Random
+
+copying lib/Crypto/Random/random.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Random
+
+copying lib/Crypto/Random/_UserFriendlyRNG.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Random
+
+creating build/lib.linux-x86_64-2.6/Crypto/Random/Fortuna
+
+copying lib/Crypto/Random/Fortuna/SHAd256.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Random/Fortuna
+
+copying lib/Crypto/Random/Fortuna/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Random/Fortuna
+
+copying lib/Crypto/Random/Fortuna/FortunaAccumulator.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Random/Fortuna
+
+copying lib/Crypto/Random/Fortuna/FortunaGenerator.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Random/Fortuna
+
+creating build/lib.linux-x86_64-2.6/Crypto/Random/OSRNG
+
+copying lib/Crypto/Random/OSRNG/posix.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Random/OSRNG
+
+copying lib/Crypto/Random/OSRNG/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Random/OSRNG
+
+copying lib/Crypto/Random/OSRNG/nt.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Random/OSRNG
+
+copying lib/Crypto/Random/OSRNG/fallback.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Random/OSRNG
+
+copying lib/Crypto/Random/OSRNG/rng_base.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Random/OSRNG
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest
+
+copying lib/Crypto/SelfTest/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest
+
+copying lib/Crypto/SelfTest/st_common.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_pkcs1_15.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_CAST.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/common.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_DES3.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_ARC2.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_DES.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_AES.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_XOR.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_Blowfish.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_pkcs1_oaep.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_ARC4.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_SHA224.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_MD2.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_MD4.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/common.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_RIPEMD.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_HMAC.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_SHA.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_SHA512.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_SHA384.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_MD5.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_SHA256.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Protocol
+
+copying lib/Crypto/SelfTest/Protocol/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Protocol
+
+copying lib/Crypto/SelfTest/Protocol/test_rfc1751.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Protocol
+
+copying lib/Crypto/SelfTest/Protocol/test_AllOrNothing.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Protocol
+
+copying lib/Crypto/SelfTest/Protocol/test_KDF.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Protocol
+
+copying lib/Crypto/SelfTest/Protocol/test_chaffing.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Protocol
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/PublicKey
+
+copying lib/Crypto/SelfTest/PublicKey/test_RSA.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/PublicKey
+
+copying lib/Crypto/SelfTest/PublicKey/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/PublicKey
+
+copying lib/Crypto/SelfTest/PublicKey/test_DSA.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/PublicKey
+
+copying lib/Crypto/SelfTest/PublicKey/test_importKey.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/PublicKey
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random
+
+copying lib/Crypto/SelfTest/Random/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random
+
+copying lib/Crypto/SelfTest/Random/test_random.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random
+
+copying lib/Crypto/SelfTest/Random/test_rpoolcompat.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/Fortuna
+
+copying lib/Crypto/SelfTest/Random/Fortuna/test_FortunaAccumulator.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/Fortuna
+
+copying lib/Crypto/SelfTest/Random/Fortuna/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/Fortuna
+
+copying lib/Crypto/SelfTest/Random/Fortuna/test_FortunaGenerator.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/Fortuna
+
+copying lib/Crypto/SelfTest/Random/Fortuna/test_SHAd256.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/Fortuna
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/OSRNG
+
+copying lib/Crypto/SelfTest/Random/OSRNG/test_posix.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/OSRNG
+
+copying lib/Crypto/SelfTest/Random/OSRNG/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/OSRNG
+
+copying lib/Crypto/SelfTest/Random/OSRNG/test_generic.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/OSRNG
+
+copying lib/Crypto/SelfTest/Random/OSRNG/test_nt.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/OSRNG
+
+copying lib/Crypto/SelfTest/Random/OSRNG/test_winrandom.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/OSRNG
+
+copying lib/Crypto/SelfTest/Random/OSRNG/test_fallback.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/OSRNG
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Util
+
+copying lib/Crypto/SelfTest/Util/test_asn1.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Util
+
+copying lib/Crypto/SelfTest/Util/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Util
+
+copying lib/Crypto/SelfTest/Util/test_winrandom.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Util
+
+copying lib/Crypto/SelfTest/Util/test_Counter.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Util
+
+copying lib/Crypto/SelfTest/Util/test_number.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Util
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Signature
+
+copying lib/Crypto/SelfTest/Signature/test_pkcs1_15.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Signature
+
+copying lib/Crypto/SelfTest/Signature/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Signature
+
+copying lib/Crypto/SelfTest/Signature/test_pkcs1_pss.py -&gt; build/lib.linux-x86_64-2.6/Crypto/SelfTest/Signature
+
+creating build/lib.linux-x86_64-2.6/Crypto/Protocol
+
+copying lib/Crypto/Protocol/Chaffing.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Protocol
+
+copying lib/Crypto/Protocol/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Protocol
+
+copying lib/Crypto/Protocol/AllOrNothing.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Protocol
+
+copying lib/Crypto/Protocol/KDF.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Protocol
+
+creating build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/qNEW.py -&gt; build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/ElGamal.py -&gt; build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/_RSA.py -&gt; build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/RSA.py -&gt; build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/pubkey.py -&gt; build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/_slowmath.py -&gt; build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/_DSA.py -&gt; build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/DSA.py -&gt; build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+creating build/lib.linux-x86_64-2.6/Crypto/Signature
+
+copying lib/Crypto/Signature/PKCS1_v1_5.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Signature
+
+copying lib/Crypto/Signature/PKCS1_PSS.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Signature
+
+copying lib/Crypto/Signature/__init__.py -&gt; build/lib.linux-x86_64-2.6/Crypto/Signature
+
+running build_ext
+
+running build_configure
+
+checking for gcc... gcc
+
+checking whether the C compiler works... yes
+
+checking for C compiler default output file name... a.out
+
+checking for suffix of executables...
+
+checking whether we are cross compiling... no
+
+checking for suffix of object files... o
+
+checking whether we are using the GNU C compiler... yes
+
+checking whether gcc accepts -g... yes
+
+checking for gcc option to accept ISO C89... none needed
+
+checking for __gmpz_init in -lgmp... no
+
+checking for __gmpz_init in -lmpir... no
+
+checking whether mpz_powm is declared... no
+
+checking whether mpz_powm_sec is declared... no
+
+checking how to run the C preprocessor... gcc -E
+
+checking for grep that handles long lines and -e... /bin/grep
+
+checking for egrep... /bin/grep -E
+
+checking for ANSI C header files... yes
+
+checking for sys/types.h... yes
+
+checking for sys/stat.h... yes
+
+checking for stdlib.h... yes
+
+checking for string.h... yes
+
+checking for memory.h... yes
+
+checking for strings.h... yes
+
+checking for inttypes.h... yes
+
+checking for stdint.h... yes
+
+checking for unistd.h... yes
+
+checking for inttypes.h... (cached) yes
+
+checking limits.h usability... yes
+
+checking limits.h presence... yes
+
+checking for limits.h... yes
+
+checking stddef.h usability... yes
+
+checking stddef.h presence... yes
+
+checking for stddef.h... yes
+
+checking for stdint.h... (cached) yes
+
+checking for stdlib.h... (cached) yes
+
+checking for string.h... (cached) yes
+
+checking wchar.h usability... yes
+
+checking wchar.h presence... yes
+
+checking for wchar.h... yes
+
+checking for inline... inline
+
+checking for int16_t... yes
+
+checking for int32_t... yes
+
+checking for int64_t... yes
+
+checking for int8_t... yes
+
+checking for size_t... yes
+
+checking for uint16_t... yes
+
+checking for uint32_t... yes
+
+checking for uint64_t... yes
+
+checking for uint8_t... yes
+
+checking for stdlib.h... (cached) yes
+
+checking for GNU libc compatible malloc... yes
+
+checking for memmove... yes
+
+checking for memset... yes
+
+configure: creating ./config.status
+
+config.status: creating src/config.h
+
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+
+building 'Crypto.Hash._MD2' extension
+
+creating build/temp.linux-x86_64-2.6
+
+creating build/temp.linux-x86_64-2.6/src
+
+gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/python2.6 -c src/MD2.c -o build/temp.linux-x86_64-2.6/src/MD2.o
+
+src/MD2.c:31:20: error: Python.h: No such file or directory
+
+src/MD2.c:131: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+
+In file included from src/MD2.c:147:
+
+src/hash_template.c:48: error: expected specifier-qualifier-list before &#8216;PyObject_HEAD&#8217;
+
+src/hash_template.c:59: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;PyTypeObject&#8217;
+
+src/hash_template.c: In function &#8216;newALGobject&#8217;:
+
+src/hash_template.c:69: warning: implicit declaration of function &#8216;PyObject_New&#8217;
+
+src/hash_template.c:69: error: expected expression before &#8216;ALGobject&#8217;
+
+src/hash_template.c: At top level:
+
+src/hash_template.c:76: error: expected &#8216;)&#8217; before &#8216;*&#8217; token
+
+src/hash_template.c:91: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+
+src/hash_template.c:110: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+
+src/hash_template.c:122: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+
+src/hash_template.c:162: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+
+src/hash_template.c:188: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+
+src/hash_template.c:190: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;ALG_methods&#8217;
+
+src/hash_template.c:199: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+
+src/hash_template.c:225: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;ALGtype&#8217;
+
+src/hash_template.c:271: error: expected &#8216;=&#8217;, &#8216;,&#8217;, &#8216;;&#8217;, &#8216;asm&#8217; or &#8216;__attribute__&#8217; before &#8216;*&#8217; token
+
+src/hash_template.c:304: error: array type has incomplete element type
+
+src/hash_template.c:305: error: &#8216;PyCFunction&#8217; undeclared here (not in a function)
+
+src/hash_template.c:305: error: expected &#8216;}&#8217; before &#8216;ALG_new&#8217;
+
+src/hash_template.c: In function &#8216;init_MD2&#8217;:
+
+src/hash_template.c:339: error: &#8216;PyObject&#8217; undeclared (first use in this function)
+
+src/hash_template.c:339: error: (Each undeclared identifier is reported only once
+
+src/hash_template.c:339: error: for each function it appears in.)
+
+src/hash_template.c:339: error: &#8216;m&#8217; undeclared (first use in this function)
+
+src/hash_template.c:351: error: &#8216;ALGtype&#8217; undeclared (first use in this function)
+
+src/hash_template.c:351: error: &#8216;PyType_Type&#8217; undeclared (first use in this function)
+
+src/hash_template.c:352: warning: implicit declaration of function &#8216;Py_InitModule&#8217;
+
+src/hash_template.c:356: error: &#8216;o&#8217; undeclared (first use in this function)
+
+src/hash_template.c:356: warning: implicit declaration of function &#8216;PyInt_FromLong&#8217;
+
+src/hash_template.c:356: warning: implicit declaration of function &#8216;PyDict_SetItemString&#8217;
+
+src/hash_template.c:356: warning: implicit declaration of function &#8216;PyModule_GetDict&#8217;
+
+src/hash_template.c:356: warning: implicit declaration of function &#8216;Py_DECREF&#8217;
+
+src/hash_template.c:360: warning: implicit declaration of function &#8216;PyErr_Occurred&#8217;
+
+src/hash_template.c:361: warning: implicit declaration of function &#8216;Py_FatalError&#8217;
+
+error: command 'gcc' failed with exit status 1
+
+----------------------------------------
+  Can't roll back pycrypto; was not uninstalled
+Command /home/roy/production/python/bin/python -c &quot;import setuptools;__file__='/home/roy/production/python/build/pycrypto/setup.py';execfile(__file__)&quot; install --single-version-externally-managed --record /tmp/pip-jmWK8k-record/install-record.txt --install-headers /home/roy/production/python/include/site/python2.6 failed with error code 1
+Storing complete log in /home/roy/.pip/pip.log
+(python)<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">roy at gilbert</A>:~$ 
+
+
+--
+Roy Smith
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">roy at panix.com</A>
+
+
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000562.html">[pycrypto] announcing pycryptopp	v0.6.0.1206569328141510525648634803928199668821045408958
+</A></li>
+	<LI>Next message: <A HREF="000564.html">[pycrypto] Problems installing pycrypto 2.5 on Ununtu Linux
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#563">[ date ]</a>
+              <a href="thread.html#563">[ thread ]</a>
+              <a href="subject.html#563">[ subject ]</a>
+              <a href="author.html#563">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

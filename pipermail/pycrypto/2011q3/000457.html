@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20setup.py%20fails%20to%20find%20gmp%20on%20Debian/Ubuntu&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000454.html">
+   <LINK REL="Next"  HREF="000458.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] setup.py fails to find gmp on Debian/Ubuntu</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20setup.py%20fails%20to%20find%20gmp%20on%20Debian/Ubuntu&In-Reply-To="
+       TITLE="[pycrypto] setup.py fails to find gmp on Debian/Ubuntu">sebastian+lists at ramacher.at
+       </A><BR>
+    <I>Sat Sep 24 07:04:49 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000454.html">[pycrypto] extract RSA public from X509 certificate file
+</A></li>
+        <LI>Next message: <A HREF="000458.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#457">[ date ]</a>
+              <a href="thread.html#457">[ thread ]</a>
+              <a href="subject.html#457">[ subject ]</a>
+              <a href="author.html#457">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+Debian and Ubuntu recently started to implement Multiarch [1]. Because of this,
+libgmp.so has been moved from /usr/lib/ to /usr/lib/&lt;host-triplet&gt;/ and setup.py
+cannot find it anymore.
+
+I was able to circumvent this problem by asking gcc for its library search path
+(see the attached patch). I don't know if that is the best way to fix this issue
+but I would be glad if you'd consider the patch or fix the issue differently.
+
+Regards
+
+[1] <A HREF="https://wiki.ubuntu.com/MultiarchSpec">https://wiki.ubuntu.com/MultiarchSpec</A>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: multiarch.patch
+Type: text/x-diff
+Size: 1334 bytes
+Desc: not available
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20110924/58564f26/attachment.patch">http://lists.dlitz.net/pipermail/pycrypto/attachments/20110924/58564f26/attachment.patch</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000454.html">[pycrypto] extract RSA public from X509 certificate file
+</A></li>
+	<LI>Next message: <A HREF="000458.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#457">[ date ]</a>
+              <a href="thread.html#457">[ thread ]</a>
+              <a href="subject.html#457">[ subject ]</a>
+              <a href="author.html#457">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

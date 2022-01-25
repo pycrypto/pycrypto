@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ERROR%3A%20testRsaUnversionedSignAndVerify%20failed&In-Reply-To=91103efc0908201342s13f41a75y5fcc11e1172afbd3%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000115.html">
+   <LINK REL="Next"  HREF="000127.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ERROR%3A%20testRsaUnversionedSignAndVerify%20failed&In-Reply-To=91103efc0908201342s13f41a75y5fcc11e1172afbd3%40mail.gmail.com"
+       TITLE="[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed">dlitz at dlitz.net
+       </A><BR>
+    <I>Thu Aug 20 19:55:43 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000115.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+        <LI>Next message: <A HREF="000127.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#116">[ date ]</a>
+              <a href="thread.html#116">[ thread ]</a>
+              <a href="subject.html#116">[ subject ]</a>
+              <a href="author.html#116">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Aug 20, 2009 at 01:42:12PM -0700, Steve Weis wrote:
+&gt;<i>Are there advantages to using Pycrypto's Randpool over
+</I>&gt;<i>Random.SystemRandom()?
+</I>&gt;<i>In another Keyczar thread, someone reported that Randpool was a performance
+</I>&gt;<i>bottleneck and got a big improvement by switching to SystemRandom.
+</I>&gt;<i>
+</I>&gt;<i>I don't know enough about the underlying implementations to make any
+</I>&gt;<i>security judgement. If anyone can comment authoritatively, please do.
+</I>
+Quoting myself in <A HREF="https://bugs.launchpad.net/pycrypto/+bug/249765:">https://bugs.launchpad.net/pycrypto/+bug/249765:</A>
+
+     RandomPool really really needs to die, at least in its current form.
+     It's not thread-safe, it's not fork-safe, and if it can't get entropy
+     from the OS, it silently produces predictable output. What's worse is
+     that everyone assumes that it's a portable substitute for reading from
+     /dev/urandom on Linux, but it's actually way too fragile to be safely
+     used that way.
+
+It's also much slower than just reading from /dev/urandom on Linux.  I 
+don't remember how it compares on Windows.
+
+You could use random.SystemRandom(), which is basically just a wrapper 
+around reading from /dev/urandom of Windows's CryptGenRandom.  That's 
+better than using RandomPool, but there are still caveats:
+
+- Some systems are adversely affected when you read a lot of data from the 
+  operating system's PRNG.  For example, old versions of Linux (I don't 
+  remember how old, but it wasn't too long ago) starved /dev/random if you 
+  had a process continually reading from /dev/urandom.
+
+- Windows XP's (and probably earlier's) PRNG is vulnerable to a 
+  state-extension attack, because it inappropriately uses RC4:
+    <A HREF="http://en.wikipedia.org/w/index.php?title=CryptGenRandom&amp;oldid=292725857#Security">http://en.wikipedia.org/w/index.php?title=CryptGenRandom&amp;oldid=292725857#Security</A>
+
+- I'm told that some old *nix's /dev/urandom devices are far less 
+  trustworthy than Linux's.
+
+- Even the security of Linux's /dev/urandom is debated (search lkml.org for 
+  Jean-Luc Cooke &amp; Fortuna).
+
+Why trust them when you can trust me? (Hah!)
+
+Regarding this patch:
+
+&gt;&gt;<i> --- util.py.orig        2009-08-20 10:40:19.248702303 +0200
+</I>&gt;&gt;<i> +++ util.py     2009-08-20 10:57:27.765198430 +0200
+</I>&gt;&gt;<i> @@ -30,7 +30,12 @@ except ImportError:
+</I>&gt;&gt;<i>   from sha import sha as sha1
+</I>&gt;&gt;<i>   from Crypto.Hash.SHA256 import new as sha256
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> -from Crypto.Util import randpool
+</I>&gt;&gt;<i> +try:
+</I>&gt;&gt;<i> +  # Import RandomPoolCompat, if available
+</I>&gt;&gt;<i> +  from Crypto.Random import RandomPoolCompat as RandomPool
+</I>&gt;&gt;<i> +except ImportError:
+</I>&gt;&gt;<i> +  from Crypto.Util.randpool import RandomPool
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i>  from pyasn1.codec.der import decoder
+</I>&gt;&gt;<i>  from pyasn1.codec.der import encoder
+</I>&gt;&gt;<i>  from pyasn1.type import univ
+</I>&gt;&gt;<i> @@ -291,7 +296,7 @@ def TrimBytes(bytes):
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>  def RandBytes(n):
+</I>&gt;&gt;<i>   &quot;&quot;&quot;Return n random bytes.&quot;&quot;&quot;
+</I>&gt;&gt;<i> -  return randpool.RandomPool(512).get_bytes(n)
+</I>&gt;&gt;<i> +  return RandomPool(512).get_bytes(n)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>  def Hash(digest, *inputs):
+</I>&gt;&gt;<i>   &quot;&quot;&quot;Return a SHA-1 hash over a variable number of inputs.&quot;&quot;&quot;
+</I>
+That will work, but it will perform better if you invoke Random.new() once, 
+then .read() from the resulting object every time you want random data.  
+
+I don't recommend using RandomPoolCompat, and after seeing it used here I 
+think I will drop it before the next release.  RandomPool is *broken*, and 
+on Windows it is a catastrophic security hole.  You should not use it even 
+to maintain backwards compatibility.
+
+Instead, use os.urandom() if Crypto.Random is not available (but you should 
+use Crypto.Random if it's available: Crypto.Random performs better than 
+os.urandom on Linux, and on Windows it provides a workaround for the 
+weaknesses in Microsoft's RC4-based CryptGenRandom implementation).
+
+You can use this code.  I hereby release it into the public domain:
+
+try:
+    from Crypto import Random
+    _rng_instance = Random.new()
+except ImportError:
+    class RandomStub:
+        def read(n):
+            return os.urandom(n)
+    _rng_instance = RandomStub()
+
+def RandBytes(n):
+    &quot;&quot;&quot;Return n random bytes.&quot;&quot;&quot;
+    return _rng_instance.read(n)
+
+Does that help clarify things?
+
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000115.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+	<LI>Next message: <A HREF="000127.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#116">[ date ]</a>
+              <a href="thread.html#116">[ thread ]</a>
+              <a href="subject.html#116">[ subject ]</a>
+              <a href="author.html#116">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

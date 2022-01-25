@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Run test suite with /dev/random
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To=4F107F25.2020008%40ramacher.at">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000537.html">
+   <LINK REL="Next"  HREF="000547.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Run test suite with /dev/random</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To=4F107F25.2020008%40ramacher.at"
+       TITLE="[pycrypto] Run test suite with /dev/random">sebastian+lists at ramacher.at
+       </A><BR>
+    <I>Fri Jan 20 10:20:57 CST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000537.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+        <LI>Next message: <A HREF="000547.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#546">[ date ]</a>
+              <a href="thread.html#546">[ thread ]</a>
+              <a href="subject.html#546">[ subject ]</a>
+              <a href="author.html#546">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 01/13/2012 07:59 PM, Sebastian Ramacher wrote:
+&gt;<i> Thank you for the explanation. This was a misunderstanding on my side. I'll talk
+</I>&gt;<i> with the Hurd Developers then.
+</I>
+Apparently this is a known issue with Hurd's urandom implementation.
+
+Nevertheless there is still an issue in pycrypto left. The assumption that read
+always returns the amount of data requested if there is enough available is not
+true. If the process is interrupted by a signal read will return less. At least
+that's the case for Python3.
+
+The following example illustrates that:
+
+% cat signal.py
+from Crypto.Random import OSRNG
+r = OSRNG.new()
+
+S = 1024**3
+while True:
+  r.read(S)
+
+% python3 signal.py &amp; ; PID=$! ; sleep 2 ; kill -STOP $PID ; sleep 10 ; kill
+-CONT $PID ; sleep 1 ; kill -KILL $PID
+[2] 25862
+[2]  + 25862 suspended (signal)  python3 signal.py
+Traceback (most recent call last):
+  File &quot;signal.py&quot;, line 6, in &lt;module&gt;
+    r.read(S)
+  File &quot;/usr/lib/python3/dist-packages/Crypto/Random/OSRNG/rng_base.py&quot;, line
+78, in read
+    raise AssertionError(&quot;%s produced truncated output (requested %d, got %d)&quot; %
+(self.name, N, len(data)))
+AssertionError: /dev/urandom produced truncated output (requested 1073741824,
+got 20447500)
+kill: kill 25862 failed: no such process
+
+
+I've attached a patch that fixes this issue.
+
+Kind regards
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: posixread.diff
+Type: text/x-diff
+Size: 542 bytes
+Desc: not available
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20120120/7b674eb6/attachment.diff">http://lists.dlitz.net/pipermail/pycrypto/attachments/20120120/7b674eb6/attachment.diff</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000537.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+	<LI>Next message: <A HREF="000547.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#546">[ date ]</a>
+              <a href="thread.html#546">[ thread ]</a>
+              <a href="subject.html#546">[ subject ]</a>
+              <a href="author.html#546">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

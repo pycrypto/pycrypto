@@ -1,0 +1,833 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Crypto.PublicKey.RSA._RSAobj</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="Crypto-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a href="http://www.pycrypto.org/">PyCrypto.org</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="Crypto-module.html">Package&nbsp;Crypto</a> ::
+        <a href="Crypto.PublicKey-module.html">Package&nbsp;PublicKey</a> ::
+        <a href="Crypto.PublicKey.RSA-module.html">Module&nbsp;RSA</a> ::
+        Class&nbsp;_RSAobj
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="Crypto.PublicKey.RSA._RSAobj-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class _RSAobj</h1><p class="nomargin-top"></p>
+<pre class="base-tree">
+pubkey.pubkey --+
+                |
+               <strong class="uidshort">_RSAobj</strong>
+</pre>
+
+<hr />
+Class defining an actual RSA key.
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Instance Methods</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="Crypto.PublicKey.RSA._RSAobj-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">implementation</span>,
+        <span class="summary-sig-arg">key</span>,
+        <span class="summary-sig-arg">randfunc</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="Crypto.PublicKey.RSA._RSAobj-class.html#encrypt" class="summary-sig-name">encrypt</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">plaintext</span>,
+        <span class="summary-sig-arg">K</span>)</span><br />
+      Encrypt a piece of data with RSA.</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="Crypto.PublicKey.RSA._RSAobj-class.html#decrypt" class="summary-sig-name">decrypt</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">ciphertext</span>)</span><br />
+      Decrypt a piece of data with RSA.</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="Crypto.PublicKey.RSA._RSAobj-class.html#sign" class="summary-sig-name">sign</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">M</span>,
+        <span class="summary-sig-arg">K</span>)</span><br />
+      Sign a piece of data with RSA.</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="Crypto.PublicKey.RSA._RSAobj-class.html#verify" class="summary-sig-name">verify</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">M</span>,
+        <span class="summary-sig-arg">signature</span>)</span><br />
+      Verify the validity of an RSA signature.</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="Crypto.PublicKey.RSA._RSAobj-class.html#has_private" class="summary-sig-name">has_private</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Tell if the key object contains private components.</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="Crypto.PublicKey.RSA._RSAobj-class.html#size" class="summary-sig-name">size</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Tell the maximum number of bits that can be handled by this key.</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="Crypto.PublicKey.RSA._RSAobj-class.html#can_blind" class="summary-sig-name">can_blind</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Tell if the algorithm can deal with data blinding.</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="Crypto.PublicKey.RSA._RSAobj-class.html#can_encrypt" class="summary-sig-name">can_encrypt</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Tell if the algorithm can deal with data encryption.</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="Crypto.PublicKey.RSA._RSAobj-class.html#can_sign" class="summary-sig-name">can_sign</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Tell if the algorithm can deal with cryptographic signatures.</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="Crypto.PublicKey.RSA._RSAobj-class.html#publickey" class="summary-sig-name">publickey</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Construct a new key carrying only the public information.</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="Crypto.PublicKey.RSA._RSAobj-class.html#exportKey" class="summary-sig-name">exportKey</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">format</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">PEM</code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">passphrase</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">pkcs</span>=<span class="summary-sig-default">1</span>)</span><br />
+      Export this RSA key.</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>pubkey.pubkey</code></b>:
+      <code>blind</code>,
+      <code>unblind</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Class Variables</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="Crypto.PublicKey.RSA._RSAobj-class.html#keydata" class="summary-name">keydata</a> = <code title="['n', 'e', 'd', 'p', 'q', 'u']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">n</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">e</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">d</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">p</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">q</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">u</code><code class="variable-quote">'</code><code class="variable-group">]</code></code><br />
+      Dictionary of RSA parameters.
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Method Details</span></td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">implementation</span>,
+        <span class="sig-arg">key</span>,
+        <span class="sig-arg">randfunc</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Overrides:
+        pubkey.pubkey.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="encrypt"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">encrypt</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">plaintext</span>,
+        <span class="sig-arg">K</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  Encrypt a piece of data with RSA.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>plaintext</code></strong> (byte string or long) - The piece of data to encrypt with RSA. It may not
+be numerically larger than the RSA module (<strong>n</strong>).</li>
+        <li><strong class="pname"><code>K</code></strong> (byte string or long) - A random parameter (<em>for compatibility only. This
+value will be ignored</em>)</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>A tuple with two items. The first item is the ciphertext
+of the same type as the plaintext (string or long). The second item
+is always None.</dd>
+    <dt>Overrides:
+        pubkey.pubkey.encrypt
+    </dt>
+  </dl>
+<div class="fields">      <p><strong>Attention:</strong>
+        this function performs the plain, primitive RSA encryption
+(<em>textbook</em>). In real applications, you always need to use proper
+cryptographic padding, and you should not directly encrypt data with
+this method. Failure to do so may lead to security vulnerabilities.
+It is recommended to use modules
+<a href="Crypto.Cipher.PKCS1_OAEP-module.html" class="link">Crypto.Cipher.PKCS1_OAEP</a> or <a href="Crypto.Cipher.PKCS1_v1_5-module.html" class="link">Crypto.Cipher.PKCS1_v1_5</a> instead.
+      </p>
+</div></td></tr></table>
+</div>
+<a name="decrypt"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">decrypt</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">ciphertext</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Decrypt a piece of data with RSA.</p>
+<p>Decryption always takes place with blinding.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>ciphertext</code></strong> (byte string, long or a 2-item tuple as returned by
+<a href="Crypto.PublicKey.RSA._RSAobj-class.html#encrypt" class="link">encrypt</a>) - The piece of data to decrypt with RSA. It may
+not be numerically larger than the RSA module (<strong>n</strong>). If a tuple,
+the first item is the actual ciphertext; the second item is ignored.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>A byte string if ciphertext was a byte string or a tuple
+of byte strings. A long otherwise.</dd>
+    <dt>Overrides:
+        pubkey.pubkey.decrypt
+    </dt>
+  </dl>
+<div class="fields">      <p><strong>Attention:</strong>
+        this function performs the plain, primitive RSA decryption
+(<em>textbook</em>). In real applications, you always need to use proper
+cryptographic padding, and you should not directly decrypt data with
+this method. Failure to do so may lead to security vulnerabilities.
+It is recommended to use modules
+<a href="Crypto.Cipher.PKCS1_OAEP-module.html" class="link">Crypto.Cipher.PKCS1_OAEP</a> or <a href="Crypto.Cipher.PKCS1_v1_5-module.html" class="link">Crypto.Cipher.PKCS1_v1_5</a> instead.
+      </p>
+</div></td></tr></table>
+</div>
+<a name="sign"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">sign</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">M</span>,
+        <span class="sig-arg">K</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Sign a piece of data with RSA.</p>
+<p>Signing always takes place with blinding.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>M</code></strong> (byte string or long) - The piece of data to sign with RSA. It may
+not be numerically larger than the RSA module (<strong>n</strong>).</li>
+        <li><strong class="pname"><code>K</code></strong> (byte string or long) - A random parameter (<em>for compatibility only. This
+value will be ignored</em>)</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>A 2-item tuple. The first item is the actual signature (a
+long). The second item is always None.</dd>
+    <dt>Overrides:
+        pubkey.pubkey.sign
+    </dt>
+  </dl>
+<div class="fields">      <p><strong>Attention:</strong>
+        this function performs the plain, primitive RSA decryption
+(<em>textbook</em>). In real applications, you always need to use proper
+cryptographic padding, and you should not directly sign data with
+this method. Failure to do so may lead to security vulnerabilities.
+It is recommended to use modules
+<a href="Crypto.Signature.PKCS1_PSS-module.html" class="link">Crypto.Signature.PKCS1_PSS</a> or <a href="Crypto.Signature.PKCS1_v1_5-module.html" class="link">Crypto.Signature.PKCS1_v1_5</a> instead.
+      </p>
+</div></td></tr></table>
+</div>
+<a name="verify"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">verify</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">M</span>,
+        <span class="sig-arg">signature</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  Verify the validity of an RSA signature.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>M</code></strong> (byte string or long) - The expected message.</li>
+        <li><strong class="pname"><code>signature</code></strong> (A 2-item tuple as return by <a href="Crypto.PublicKey.RSA._RSAobj-class.html#sign" class="link">sign</a>) - The RSA signature to verify. The first item of
+the tuple is the actual signature (a long not larger than the modulus
+<strong>n</strong>), whereas the second item is always ignored.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>True if the signature is correct, False otherwise.</dd>
+    <dt>Overrides:
+        pubkey.pubkey.verify
+    </dt>
+  </dl>
+<div class="fields">      <p><strong>Attention:</strong>
+        this function performs the plain, primitive RSA encryption
+(<em>textbook</em>). In real applications, you always need to use proper
+cryptographic padding, and you should not directly verify data with
+this method. Failure to do so may lead to security vulnerabilities.
+It is recommended to use modules
+<a href="Crypto.Signature.PKCS1_PSS-module.html" class="link">Crypto.Signature.PKCS1_PSS</a> or <a href="Crypto.Signature.PKCS1_v1_5-module.html" class="link">Crypto.Signature.PKCS1_v1_5</a> instead.
+      </p>
+</div></td></tr></table>
+</div>
+<a name="has_private"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">has_private</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  Tell if the key object contains private components.
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>bool</dd>
+    <dt>Overrides:
+        pubkey.pubkey.has_private
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="size"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">size</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  Tell the maximum number of bits that can be handled by this key.
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>int</dd>
+    <dt>Overrides:
+        pubkey.pubkey.size
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="can_blind"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">can_blind</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Tell if the algorithm can deal with data blinding.</p>
+<p>This property concerns the <em>algorithm</em>, not the key itself.
+It may happen that this particular key object hasn't got
+the private information required carry out blinding.</p>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>boolean</dd>
+    <dt>Overrides:
+        pubkey.pubkey.can_blind
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="can_encrypt"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">can_encrypt</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Tell if the algorithm can deal with data encryption.</p>
+<p>This property concerns the <em>algorithm</em>, not the key itself.
+It may happen that this particular key object hasn't got
+the private information required to decrypt data.</p>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>boolean</dd>
+    <dt>Overrides:
+        pubkey.pubkey.can_encrypt
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="can_sign"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">can_sign</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Tell if the algorithm can deal with cryptographic signatures.</p>
+<p>This property concerns the <em>algorithm</em>, not the key itself.
+It may happen that this particular key object hasn't got
+the private information required to generate a signature.</p>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>boolean</dd>
+    <dt>Overrides:
+        pubkey.pubkey.can_sign
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="publickey"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">publickey</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  Construct a new key carrying only the public information.
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>A new pubkey object.</dd>
+    <dt>Overrides:
+        pubkey.pubkey.publickey
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="exportKey"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">exportKey</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">format</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">PEM</code><code class="variable-quote">'</code></span>,
+        <span class="sig-arg">passphrase</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">pkcs</span>=<span class="sig-default">1</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Export this RSA key.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><p><strong class="pname"><code>format</code></strong> (string) - The format to use for wrapping the key.</p>
+<ul class="rst-simple">
+<li><em>'DER'</em>. Binary encoding, always unencrypted.</li>
+<li><em>'PEM'</em>. Textual encoding, done according to <a class="rst-reference external" href="http://www.ietf.org/rfc/rfc1421.txt" target="_top">RFC1421</a>/<a class="rst-reference external" href="http://www.ietf.org/rfc/rfc1423.txt" target="_top">RFC1423</a>.
+Unencrypted (default) or encrypted.</li>
+<li><em>'OpenSSH'</em>. Textual encoding, done according to OpenSSH specification.
+Only suitable for public keys (not private keys).</li>
+</ul></li>
+        <li><strong class="pname"><code>passphrase</code></strong> (string) - In case of PEM, the pass phrase to derive the encryption key from.</li>
+        <li><p><strong class="pname"><code>pkcs</code></strong> (integer) - The PKCS standard to follow for assembling the key.
+You have two choices:</p>
+<blockquote>
+<ul class="rst-simple">
+<li>with <strong>1</strong>, the public key is embedded into an X.509 <code class="link">SubjectPublicKeyInfo</code> DER SEQUENCE.
+The private key is embedded into a <a class="rst-reference external" href="http://www.ietf.org/rfc/rfc3447.txt" target="_top">PKCS#1</a> <code class="link">RSAPrivateKey</code> DER SEQUENCE.
+This mode is the default.</li>
+<li>with <strong>8</strong>, the private key is embedded into a <a class="rst-reference external" href="http://www.ietf.org/rfc/rfc5208.txt" target="_top">PKCS#8</a> <code class="link">PrivateKeyInfo</code> DER SEQUENCE.
+This mode is not available for public keys.</li>
+</ul>
+</blockquote>
+<p>PKCS standards are not relevant for the <em>OpenSSH</em> format.</p></li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>A byte string with the encoded public or private half.</dd>
+    <dt>Raises:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code><strong class='fraise'>ValueError</strong></code> - When the format is unknown.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== CLASS VARIABLE DETAILS ==================== -->
+<a name="section-ClassVariableDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Class Variable Details</span></td>
+</tr>
+</table>
+<a name="keydata"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">keydata</h3>
+  <p>Dictionary of RSA parameters.</p>
+<p>A public key will only have the following entries:</p>
+<blockquote>
+<ul class="rst-simple">
+<li><strong>n</strong>, the modulus.</li>
+<li><strong>e</strong>, the public exponent.</li>
+</ul>
+</blockquote>
+<p>A private key will also have:</p>
+<blockquote>
+<ul class="rst-simple">
+<li><strong>d</strong>, the private exponent.</li>
+<li><strong>p</strong>, the first factor of n.</li>
+<li><strong>q</strong>, the second factor of n.</li>
+<li><strong>u</strong>, the CRT coefficient (1/p) mod q.</li>
+</ul>
+</blockquote>
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">n</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">e</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">d</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">p</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">q</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">u</code><code class="variable-quote">'</code><code class="variable-group">]</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="Crypto-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a href="http://www.pycrypto.org/">PyCrypto.org</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu May 24 09:02:37 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

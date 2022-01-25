@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Unicode?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Unicode%3F&In-Reply-To=%3CCAEncD4eWkV-pH14iJWFCndt9%3DZ9c0k0uOgJNNozipFnn9DQgGw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000783.html">
+   <LINK REL="Next"  HREF="000760.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Unicode?</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Unicode%3F&In-Reply-To=%3CCAEncD4eWkV-pH14iJWFCndt9%3DZ9c0k0uOgJNNozipFnn9DQgGw%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Unicode?">dave.pawson at gmail.com
+       </A><BR>
+    <I>Mon Feb  3 01:39:43 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000783.html">[pycrypto] Any progress with pycrypto 2.7?
+</A></li>
+        <LI>Next message: <A HREF="000760.html">[pycrypto] Unicode?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#759">[ date ]</a>
+              <a href="thread.html#759">[ thread ]</a>
+              <a href="subject.html#759">[ subject ]</a>
+              <a href="author.html#759">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm having a problem 'sharing' an encrypted file between
+MSDOS and Linux.
+
+so I thought I'd replace \nl in the plain text with a non ASCII
+character prior to encryption.
+
+encryptor = AES.new(key, AES.MODE_CBC, iv)
+outfile.write(encryptor.encrypt(chunk))
+
+gives me
+
+ File &quot;/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py&quot;,
+line 244, in encrypt
+    return self._cipher.encrypt(plaintext)
+UnicodeEncodeError: 'ascii' codec can't encode character u'\u2022' in
+position 34: ordinal not in range(128)
+
+
+It would seem I can't use non-ASCII characters, at least with AES, is
+this right ?
+
+If not, how to address it please?
+
+
+regards
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000783.html">[pycrypto] Any progress with pycrypto 2.7?
+</A></li>
+	<LI>Next message: <A HREF="000760.html">[pycrypto] Unicode?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#759">[ date ]</a>
+              <a href="thread.html#759">[ thread ]</a>
+              <a href="subject.html#759">[ subject ]</a>
+              <a href="author.html#759">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

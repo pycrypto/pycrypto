@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Verifying Signatures on Data and Certifictes
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Verifying%20Signatures%20on%20Data%20and%20Certifictes&In-Reply-To=%3CCACx543ZySfJ2kncoVTk%2Ben4Y1jTtqw_oBsJ27mcH4GR%3DmfhLUg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000694.html">
+   <LINK REL="Next"  HREF="000696.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Verifying Signatures on Data and Certifictes</H1>
+    <B>Kyle Cummings</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Verifying%20Signatures%20on%20Data%20and%20Certifictes&In-Reply-To=%3CCACx543ZySfJ2kncoVTk%2Ben4Y1jTtqw_oBsJ27mcH4GR%3DmfhLUg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Verifying Signatures on Data and Certifictes">kyle.cummings at forge-corp.com
+       </A><BR>
+    <I>Thu Sep 26 15:13:19 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000694.html">[pycrypto] PyCrypto status update &amp; release plans
+</A></li>
+        <LI>Next message: <A HREF="000696.html">[pycrypto] Verifying Signatures on Data and Certifictes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#695">[ date ]</a>
+              <a href="thread.html#695">[ thread ]</a>
+              <a href="subject.html#695">[ subject ]</a>
+              <a href="author.html#695">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I apologize before hand for the long e-mail, but I just wanted to be
+thorough in what I was doing.
+
+I am trying to use the PyCrypto library to achieve two similar things. The
+first use is to verify that a piece of data has been signed by the private
+key of a certain certificate. The other use is to verify a certificate
+chain (verify that certificate A has signed B, and then that B has signed
+C).
+
+The process is as follows:
+Client generates certificate / key-pairs A, B, C and D. A signs B, and B
+signs C and D. Then the certificates for A, signed B, signed C and signed D
+are pushed to a server. The server responds with a randomly generated bit
+of binary data for each certificate. The client uses each certificate /
+key-pair to sign the respective binary data, and then pushes the (base64
+encoded) signed responses back to the server. The server then takes the
+responses, decodes them and tries to verify the signatures on the
+
+Code / Attempts:
+My first attempt -
+
+###
+#Function - verifying the signed challenges
+###
+Astr = storedcertificates[&quot;acert&quot;]
+Achallenge = storedchallenges[&quot;achallenge&quot;]
+Signedchallenge = (read in from http post request)
+Acert = load_certificate(FILETYPE_PEM, Astr)
+
+try:
+   verify (Acert, Signedchallenge, Achallenge, &quot;sha256&quot;)
+except Exception e:
+   print &quot;failed to verify for reason:&quot;
+   print e
+
+#Repeat above for B, C and D
+###
+
+With this code I got the following error response from the verify function:
+&quot;must be string without null bytes, not str&quot;.
+
+
+My second attempt -
+
+Having the above code fail, I then found and tried adapting the code
+here&lt;<A HREF="http://www.v13.gr/blog/?p=303">http://www.v13.gr/blog/?p=303</A>&gt;,
+but I first received that the function &quot;get_signature_algorithm()&quot; does not
+exists for X509 certificates, and then received the same error response
+back for the verify function if I commented out the signature algorithm and
+just manually provided the digest.
+###
+#Function - verify the signed challenges modified example
+###
+Acert = load_certificate(FILETYPE_PEM, storedcerts[&quot;root&quot;])
+challenge = (original binary challenge sent to client)
+algorithm = Acert.get_signature_algorithm()
+dersigin = asn1.DerObject()
+dersigin.decode(rootchal)
+sig0 = dersigin.payload
+if sig0[0] != '\x00':
+print &quot;sig0 error&quot;
+print sig0
+ return False
+
+signature = sig0[1:]
+try:
+verify(Acert, signature, challenge, algorithm)
+ #verify(Acert, signature, challenge, &quot;sha256&quot;) #Alternate without the
+get_sig_alg()
+except:
+print &quot;verifcation failed&quot;
+ return False
+print &quot;THE VERIFICATION WORKED?!?!?!?!?!?!??!&quot;
+return True
+
+
+
+For the chain verification stuff, I followed the example code from the
+above link exactly, but received the same errors as the second example code
+(algorithm and string / str).
+
+What am I doing wrong / How am I using the library incorrectly?
+
+
+Thanks,
+Kyle Cummings
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20130926/822ef95a/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20130926/822ef95a/attachment.html</A>&gt;
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000694.html">[pycrypto] PyCrypto status update &amp; release plans
+</A></li>
+	<LI>Next message: <A HREF="000696.html">[pycrypto] Verifying Signatures on Data and Certifictes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#695">[ date ]</a>
+              <a href="thread.html#695">[ thread ]</a>
+              <a href="subject.html#695">[ subject ]</a>
+              <a href="author.html#695">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,220 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] pycryptodome
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20pycryptodome&In-Reply-To=%3CCAEncD4dYM0jQEmGxH5ifz30jWQMg5-P3v74ZYLZoQ6x5RsXjpg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <LINK REL="Previous"  HREF="000887.html">
+   <LINK REL="Next"  HREF="000889.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] pycryptodome</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20pycryptodome&In-Reply-To=%3CCAEncD4dYM0jQEmGxH5ifz30jWQMg5-P3v74ZYLZoQ6x5RsXjpg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] pycryptodome">dave.pawson at gmail.com
+       </A><BR>
+    <I>Fri Dec  9 10:34:27 UTC 2016</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000887.html">[pycrypto] pycryptodome
+</A></li>
+        <LI>Next message: <A HREF="000889.html">[pycrypto] pycryptodome
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#888">[ date ]</a>
+              <a href="thread.html#888">[ thread ]</a>
+              <a href="subject.html#888">[ subject ]</a>
+              <a href="author.html#888">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>This is getting messy!
+Comments inline
+
+On 8 December 2016 at 20:29, Martin Falatic &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">martin at falatic.com</A>&gt; wrote:
+&gt;<i> This is beyond the scope of pycrypto for the moment - you have system
+</I>&gt;<i> problems because you've upgraded pip yourself.
+</I>&gt;<i>
+</I>&gt;<i> This looks familiar because I did the same exact thing myself in the
+</I>&gt;<i> process of testing this (and it didn't go smoothly - same problem you're
+</I>&gt;<i> having - so I rolled that back to get pip2 and pip3 working properly).
+</I>&gt;<i> Let's get you back on track.
+</I>&gt;<i>
+</I>&gt;<i> # At this point let's get back to the system default pips and go from
+</I>&gt;<i> there. IF you upgraded the system pip to 9.0.1 as it appears, here's how
+</I>&gt;<i> to fix them:
+</I>&gt;<i>
+</I>&gt;<i> sudo dnf reinstall python-pip python3-pip
+</I>
+OK
+
+
+&gt;<i>
+</I>&gt;<i> # Now, with that done, run these:
+</I>&gt;<i> sudo pip3.5 uninstall pycrypto
+</I>
+produces
+# pip3.5 uninstall pycrypto
+DEPRECATION: Uninstalling a distutils installed project (pycrypto) has
+been deprecated and will be removed in a future version. This is due
+to the fact that uninstalling a distutils project will only partially
+uninstall the project.
+Uninstalling pycrypto-2.6.1:
+  /usr/lib64/python3.5/site-packages/pycrypto-2.6.1-py3.5.egg-info
+Proceed (y/n)?
+
+&quot;distutils installed project&quot; - will only partially uninstall the project?
+Unclear just what that means.
+Accept y and get a pip warning!
+
+Proceed (y/n)? y
+  Successfully uninstalled pycrypto-2.6.1
+You are using pip version 8.1.2, however version 9.0.1 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+
+
+Ignored the message
+
+
+&gt;<i> sudo pip2.7 uninstall pycrypto
+</I>
+Ah! A difference.
+#pip2.7 uninstall pycrypto
+Cannot uninstall requirement pycrypto, not installed
+You are using pip version 8.1.2, however version 9.0.1 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+
+It would seem that pycrypto (installed using python setup.py install) is
+&quot;associated&quot; with python 2.7 (guess)
+
+Either way it is uninstalled.
+
+<A HREF="https://ofswiki.org/wiki/Uninstalling_setup.py_install">https://ofswiki.org/wiki/Uninstalling_setup.py_install</A>
+
+&gt;<i>
+</I>&gt;<i> # Once that's done, list them as per my earlier email:
+</I>&gt;<i> pip3.5 list | grep pycrypt
+</I>&gt;<i> pip2.7 list | grep pycrypt
+</I>
+Nothing from pip3.5
+
+however
+
+# pip2.7 list | grep pycrypt
+pycryptodomex (3.4.3)
+
+so that is there.
+
+
+
+&gt;<i>
+</I>&gt;<i> Shouldn't see `pycrypto` there now. If you do... you installed it some
+</I>&gt;<i> other way (perhaps as a dnf package?) Uninstall it via the same mechanism
+</I>&gt;<i> you installed it and try again.
+</I>
+Which I did yesterday, using the suggestion from a link
+<A HREF="https://ofswiki.org/wiki/Uninstalling_setup.py_install">https://ofswiki.org/wiki/Uninstalling_setup.py_install</A>
+
+&gt;<i>
+</I>&gt;<i> Now go through the steps in my previous email to install pycryptodome and
+</I>&gt;<i> pycryptodomex for the purpose of this test, and report the results.
+</I>
+Both? IFAICT the suggestion is one or the other, both not needed?
+
+
+Aside, I am not 'out of date' with pip
+# pip3.5 -V
+pip 8.1.2 from /usr/lib/python3.5/site-packages (python 3.5)
+
+# pip2.7 -V
+pip 8.1.2 from /usr/lib/python2.7/site-packages (python 2.7)
+
+
+
+OK, to repeat the tests from the pycryptodome pages.
+
+# python3 -m Cryptodome.SelfTest
+/usr/bin/python3: Error while finding spec for 'Cryptodome.SelfTest'
+(ImportError: No module named 'Cryptodome')
+
+Yet...
+
+# python -m Cryptodome.SelfTest
+and off it goes!
+Ran 22656 tests in 48.420s
+
+
+Implication that Cryptodome is in the 2.7 library?
+
+More testing.
+
+import Crypto.Cipher.AES
+
+    mods=sys.modules
+    if &quot;Crypto&quot; in mods:
+        print(&quot;Found Crypto&quot;)
+        print(mods[&quot;Crypto&quot;])
+        print(dir(Crypto))
+        print(dir(Crypto.Cipher))
+        print(&quot;\nCrypto.Cipher.AES: &quot;,dir(Crypto.Cipher.AES))
+
+shows
+
+&lt;module 'Crypto' from '/usr/lib64/python3.5/site-packages/Crypto/__init__.py'&gt;
+['Cipher', 'Util', '__all__', '__builtins__', '__cached__', '__doc__',
+'__file__', '__loader__', '__name__', '__package__', '__path__',
+'__revision__', '__spec__', '__version__', 'version_info']
+['AES', '_AES', '__all__', '__builtins__', '__cached__', '__doc__',
+'__file__', '__loader__', '__name__', '__package__', '__path__',
+'__revision__', '__spec__', 'blockalgo']
+
+Crypto.Cipher.AES:  ['AESCipher', 'MODE_CBC', 'MODE_CFB', 'MODE_CTR',
+'MODE_ECB', 'MODE_OFB', 'MODE_OPENPGP', 'MODE_PGP', '_AES',
+'__builtins__', '__cached__', '__doc__', '__file__', '__loader__',
+'__name__', '__package__', '__revision__', '__spec__', 'block_size',
+'blockalgo', 'key_size', 'new']
+
+
+So how to tell whether I have crypto (??) or pycryptodome[x] ?
+
+Signed, confused.com &lt;grin/&gt;
+
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000887.html">[pycrypto] pycryptodome
+</A></li>
+	<LI>Next message: <A HREF="000889.html">[pycrypto] pycryptodome
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#888">[ date ]</a>
+              <a href="thread.html#888">[ thread ]</a>
+              <a href="subject.html#888">[ subject ]</a>
+              <a href="author.html#888">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,2117 @@
+From robin.jarry at 6wind.com  Tue Apr  1 03:22:38 2014
+From: robin.jarry at 6wind.com (Robin Jarry)
+Date: Tue, 1 Apr 2014 12:22:38 +0200
+Subject: [pycrypto] XCBCMAC support
+Message-ID: <CA+4wmqwLWxtSBy9x91WAycW-FiJe-OeCWK5CUVBMzL0qcwceZg@mail.gmail.com>
+
+Hello all,
+
+Recently I saw that pycrypto had CMAC support. This is good news.
+
+Some of you may know that ipsec also uses XCBCMAC for authentication (for
+both ESP and AH protocols). I wrote a small patch that implements this.
+
+Here is a link to the pull request I made on github:
+https://github.com/dlitz/pycrypto/pull/74
+
+Can you tell me if this looks good?
+
+Cheers,
+
+--
+Robin
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140401/20d391ec/attachment.html>
+
+From jhpalmieri64 at gmail.com  Wed Apr  2 13:17:50 2014
+From: jhpalmieri64 at gmail.com (John Palmieri)
+Date: Wed, 2 Apr 2014 13:17:50 -0700
+Subject: [pycrypto] configure, PATH, and setup.py
+Message-ID: <CAHNEuZxLo9VDSSo+vVa2cESh-xD8-qXLLEgHgSMU3FB0ysVdiQ@mail.gmail.com>
+
+I have a patch to suggest. Both on a linux system and an OS X system that I
+have access to, if my PATH contains another script called "configure", then
+pycrypto fails to configure properly, because the line "sh configure" finds
+that other configure script rather than the pycrypto one. So could that
+command be changed? For example:
+
+$ git diff
+diff --git a/setup.py b/setup.py
+index 5269e9d..950d352 100644
+--- a/setup.py
++++ b/setup.py
+@@ -308,7 +308,7 @@ class PCTBuildConfigure(Command):
+                 os.chmod("configure", stat.S_IRUSR | stat.S_IWUSR |
+                          stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP |
+                          stat.S_IROTH | stat.S_IXOTH)
+-            cmd = "sh configure"    # we use "sh" here so that it'll work
+on mingw32 with standard python.org binaries
++            cmd = "sh ./configure"   # we use "sh" here so that it'll work
+on mingw32 with standard python.org binaries
+             if self.verbose < 1:
+                 cmd += " -q"
+             if os.system(cmd) != 0:
+
+or (maybe more portable):
+
+$ git diff
+diff --git a/setup.py b/setup.py
+index 5269e9d..77fb2b0 100644
+--- a/setup.py
++++ b/setup.py
+@@ -308,7 +308,7 @@ class PCTBuildConfigure(Command):
+                 os.chmod("configure", stat.S_IRUSR | stat.S_IWUSR |
+                          stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP |
+                          stat.S_IROTH | stat.S_IXOTH)
+-            cmd = "sh configure"    # we use "sh" here so that it'll work
+on mingw32 with standard python.org binaries
++            cmd = "sh %s" % (os.path.join(os.curdir, 'configure'))   # we
+use "sh" here so that it'll work on mingw32 w
+             if self.verbose < 1:
+                 cmd += " -q"
+             if os.system(cmd) != 0:
+
+I have no experience with Windows, for example, so I don't know how
+portable this kind of change would be.
+
+-- 
+John H. Palmieri
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140402/117d4813/attachment.html>
+
+From robin.jarry at 6wind.com  Thu Apr  3 00:18:50 2014
+From: robin.jarry at 6wind.com (Robin Jarry)
+Date: Thu, 3 Apr 2014 09:18:50 +0200
+Subject: [pycrypto] configure, PATH, and setup.py
+In-Reply-To: <CAHNEuZxLo9VDSSo+vVa2cESh-xD8-qXLLEgHgSMU3FB0ysVdiQ@mail.gmail.com>
+References: <CAHNEuZxLo9VDSSo+vVa2cESh-xD8-qXLLEgHgSMU3FB0ysVdiQ@mail.gmail.com>
+Message-ID: <CA+4wmqzzHeLQ3seqyXqp9-eKJmsUHf7T8B1r-C5XQurLFEJ9rg@mail.gmail.com>
+
+Hello John,
+
+This sounded weird so I ran some tests. If you have a <script> in the
+current directory (even if "." is not in the PATH) it has priority when
+calling it with sh <script>.
+
+*robin at tom:~$ path*
+/home/robin/bin
+/usr/local/bin
+/usr/bin
+/bin
+*robin at tom:~$ which test*
+test is /usr/local/bin/test
+*robin at tom:~$ cat /usr/local/bin/test*
+#!/bin/sh
+echo "IN PATH"
+*robin at tom:~$ cat ~/test*
+#!/bin/sh
+echo "LOCAL"
+*robin at tom:~$ test*
+IN PATH
+*robin at tom:~$ ./test*
+LOCAL
+*robin at tom:~$ sh test*
+LOCAL
+
+Maybe you are experiencing another problem.
+
+Robin
+
+
+On Wed, Apr 2, 2014 at 10:17 PM, John Palmieri <jhpalmieri64 at gmail.com>wrote:
+
+> I have a patch to suggest. Both on a linux system and an OS X system that
+> I have access to, if my PATH contains another script called "configure",
+> then pycrypto fails to configure properly, because the line "sh configure"
+> finds that other configure script rather than the pycrypto one. So could
+> that command be changed? For example:
+>
+> $ git diff
+> diff --git a/setup.py b/setup.py
+> index 5269e9d..950d352 100644
+> --- a/setup.py
+> +++ b/setup.py
+> @@ -308,7 +308,7 @@ class PCTBuildConfigure(Command):
+>                  os.chmod("configure", stat.S_IRUSR | stat.S_IWUSR |
+>                           stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP |
+>                           stat.S_IROTH | stat.S_IXOTH)
+> -            cmd = "sh configure"    # we use "sh" here so that it'll work
+> on mingw32 with standard python.org binaries
+> +            cmd = "sh ./configure"   # we use "sh" here so that it'll
+> work on mingw32 with standard python.org binaries
+>              if self.verbose < 1:
+>                  cmd += " -q"
+>              if os.system(cmd) != 0:
+>
+> or (maybe more portable):
+>
+> $ git diff
+> diff --git a/setup.py b/setup.py
+> index 5269e9d..77fb2b0 100644
+> --- a/setup.py
+> +++ b/setup.py
+> @@ -308,7 +308,7 @@ class PCTBuildConfigure(Command):
+>                  os.chmod("configure", stat.S_IRUSR | stat.S_IWUSR |
+>                           stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP |
+>                           stat.S_IROTH | stat.S_IXOTH)
+> -            cmd = "sh configure"    # we use "sh" here so that it'll work
+> on mingw32 with standard python.org binaries
+> +            cmd = "sh %s" % (os.path.join(os.curdir, 'configure'))   # we
+> use "sh" here so that it'll work on mingw32 w
+>              if self.verbose < 1:
+>                  cmd += " -q"
+>              if os.system(cmd) != 0:
+>
+> I have no experience with Windows, for example, so I don't know how
+> portable this kind of change would be.
+>
+> --
+> John H. Palmieri
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140403/d4508367/attachment.html>
+
+From jhpalmieri64 at gmail.com  Thu Apr  3 08:24:32 2014
+From: jhpalmieri64 at gmail.com (John Palmieri)
+Date: Thu, 3 Apr 2014 08:24:32 -0700
+Subject: [pycrypto] configure, PATH, and setup.py
+In-Reply-To: <CA+4wmqzzHeLQ3seqyXqp9-eKJmsUHf7T8B1r-C5XQurLFEJ9rg@mail.gmail.com>
+References: <CAHNEuZxLo9VDSSo+vVa2cESh-xD8-qXLLEgHgSMU3FB0ysVdiQ@mail.gmail.com>
+ <CA+4wmqzzHeLQ3seqyXqp9-eKJmsUHf7T8B1r-C5XQurLFEJ9rg@mail.gmail.com>
+Message-ID: <CAHNEuZwVcmG+d1_XHb1cCtdxuFk4_CUjXcJZy6-_58S0fkGcZA@mail.gmail.com>
+
+Here's what I see:
+
+(pycrypto-2.6.1) [08:18]$ export PATH=/bin:/usr/bin
+(pycrypto-2.6.1) [08:18]$ sh configure
+  (... seems to work fine, then I hit ctrl-C ...)
+(pycrypto-2.6.1) [08:18]$ export PATH=/Users/palmieri/Desktop:$PATH
+(pycrypto-2.6.1) [08:20]$ cat /Users/palmieri/Desktop/configure
+#!/bin/sh
+echo "IN PATH"
+(pycrypto-2.6.1) [08:19]$ sh configure
+configure: error: cannot find sources (src/pycrypto_compat.h) in
+/Users/palmieri/Desktop or ..
+
+So you're right in that the other configure script is not being run.
+However, something is going wrong, for me, at least, when there is another
+configure script in the path. Changing the command to "sh ./configure"
+fixes it.
+
+Could you test again by creating a dummy "configure" script elsewhere and
+see what happens when you run "sh configure" while in the pycrypto
+directory?
+
+
+
+On Thu, Apr 3, 2014 at 12:18 AM, Robin Jarry <robin.jarry at 6wind.com> wrote:
+
+> Hello John,
+>
+> This sounded weird so I ran some tests. If you have a <script> in the
+> current directory (even if "." is not in the PATH) it has priority when
+> calling it with sh <script>.
+>
+> *robin at tom:~$ path*
+> /home/robin/bin
+> /usr/local/bin
+> /usr/bin
+> /bin
+> *robin at tom:~$ which test*
+> test is /usr/local/bin/test
+> *robin at tom:~$ cat /usr/local/bin/test*
+> #!/bin/sh
+> echo "IN PATH"
+> *robin at tom:~$ cat ~/test*
+> #!/bin/sh
+> echo "LOCAL"
+> *robin at tom:~$ test*
+> IN PATH
+> *robin at tom:~$ ./test*
+> LOCAL
+> *robin at tom:~$ sh test*
+> LOCAL
+>
+> Maybe you are experiencing another problem.
+>
+> Robin
+>
+>
+> On Wed, Apr 2, 2014 at 10:17 PM, John Palmieri <jhpalmieri64 at gmail.com>wrote:
+>
+>> I have a patch to suggest. Both on a linux system and an OS X system that
+>> I have access to, if my PATH contains another script called "configure",
+>> then pycrypto fails to configure properly, because the line "sh configure"
+>> finds that other configure script rather than the pycrypto one. So could
+>> that command be changed? For example:
+>>
+>> $ git diff
+>> diff --git a/setup.py b/setup.py
+>> index 5269e9d..950d352 100644
+>> --- a/setup.py
+>> +++ b/setup.py
+>> @@ -308,7 +308,7 @@ class PCTBuildConfigure(Command):
+>>                  os.chmod("configure", stat.S_IRUSR | stat.S_IWUSR |
+>>                           stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP |
+>>                           stat.S_IROTH | stat.S_IXOTH)
+>> -            cmd = "sh configure"    # we use "sh" here so that it'll
+>> work on mingw32 with standard python.org binaries
+>> +            cmd = "sh ./configure"   # we use "sh" here so that it'll
+>> work on mingw32 with standard python.org binaries
+>>              if self.verbose < 1:
+>>                  cmd += " -q"
+>>              if os.system(cmd) != 0:
+>>
+>> or (maybe more portable):
+>>
+>> $ git diff
+>> diff --git a/setup.py b/setup.py
+>> index 5269e9d..77fb2b0 100644
+>> --- a/setup.py
+>> +++ b/setup.py
+>> @@ -308,7 +308,7 @@ class PCTBuildConfigure(Command):
+>>                  os.chmod("configure", stat.S_IRUSR | stat.S_IWUSR |
+>>                           stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP |
+>>                           stat.S_IROTH | stat.S_IXOTH)
+>> -            cmd = "sh configure"    # we use "sh" here so that it'll
+>> work on mingw32 with standard python.org binaries
+>> +            cmd = "sh %s" % (os.path.join(os.curdir, 'configure'))   #
+>> we use "sh" here so that it'll work on mingw32 w
+>>              if self.verbose < 1:
+>>                  cmd += " -q"
+>>              if os.system(cmd) != 0:
+>>
+>> I have no experience with Windows, for example, so I don't know how
+>> portable this kind of change would be.
+>>
+>> --
+>> John H. Palmieri
+>>
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+
+
+-- 
+John H. Palmieri
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140403/1521b609/attachment-0001.html>
+
+From winston at ml1.net  Sat Apr  5 12:03:25 2014
+From: winston at ml1.net (Winston Weinert)
+Date: Sat, 5 Apr 2014 14:03:25 -0500
+Subject: [pycrypto] Verify DSA bytestring signature
+Message-ID: <11C3813F-BD17-4DCA-A289-49AED7D650B0@ml1.net>
+
+Hello,
+
+I noticed in Git there is a ?verify? method on Crypto.PublicKey.DSA. How do
+I go about using this method? It wants a tuple, but unsure how to create
+the appropriate tuple from my bytestring (which is decoded base64 text).
+This is git revision 2d1aecd. The relevant code and error:
+
+Code:
+
+def validate(dsa_pubkey, signature, zipfile):
+    with open(dsa_pubkey, 'rb') as f:
+        pubkey = DSA.importKey(f.read())
+    with open(zipfile, 'rb') as f:
+        h = SHA1.new()
+        h.update(f.read())
+        zipfile_digest = h.digest()
+    decoded_signature = base64.b64decode(signature)
+
+    return pubkey.verify(zipfile_digest, decoded_signature)
+
+Error:
+
+Traceback (most recent call last):
+  File "sparkle_tool.py", line 67, in <module>
+    validate_files(appcast, dsa_pubkey)
+  File "sparkle_tool.py", line 55, in validate_files
+    if validate(dsa_pubkey, signature, local_file):
+  File "sparkle_tool.py", line 33, in validate
+    return pubkey.verify(zipfile_digest, decoded_signature)
+  File "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py", line 222, in verify
+    return pubkey.pubkey.verify(self, M, signature)
+  File "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/pubkey.py", line 126, in verify
+    return self._verify(M, signature)
+  File "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py", line 240, in _verify
+    (r, s) = sig
+ValueError: too many values to unpack
+
+Thanks a bunch!
+?
+Winston Weinert
+winston at ml1.net
+
+From helderijs at gmail.com  Sun Apr  6 02:50:53 2014
+From: helderijs at gmail.com (Legrandin)
+Date: Sun, 6 Apr 2014 11:50:53 +0200
+Subject: [pycrypto] Verify DSA bytestring signature
+In-Reply-To: <11C3813F-BD17-4DCA-A289-49AED7D650B0@ml1.net>
+References: <11C3813F-BD17-4DCA-A289-49AED7D650B0@ml1.net>
+Message-ID: <CAGfyce2TeM5cwUcmHc6a8R6ZRRsFiCtkBJ-n5cNuBXx4NwZ_7g@mail.gmail.com>
+
+How was the signature created exactly?
+
+The .verify() method of a DSA object requires two integers, and there are
+several ways to encode them into a bytestring. It's very hard to guess the
+correct one for your case.
+
+FYI, there is a long standing pull request I created to add a saner DSA API:
+
+https://github.com/dlitz/pycrypto/pull/53
+
+The verification method accepts DER or big-endian encoded signatures.
+
+
+
+2014-04-05 21:03 GMT+02:00 Winston Weinert <winston at ml1.net>:
+
+> Hello,
+>
+> I noticed in Git there is a "verify" method on Crypto.PublicKey.DSA. How do
+> I go about using this method? It wants a tuple, but unsure how to create
+> the appropriate tuple from my bytestring (which is decoded base64 text).
+> This is git revision 2d1aecd. The relevant code and error:
+>
+> Code:
+>
+> def validate(dsa_pubkey, signature, zipfile):
+>     with open(dsa_pubkey, 'rb') as f:
+>         pubkey = DSA.importKey(f.read())
+>     with open(zipfile, 'rb') as f:
+>         h = SHA1.new()
+>         h.update(f.read())
+>         zipfile_digest = h.digest()
+>     decoded_signature = base64.b64decode(signature)
+>
+>     return pubkey.verify(zipfile_digest, decoded_signature)
+>
+> Error:
+>
+> Traceback (most recent call last):
+>   File "sparkle_tool.py", line 67, in <module>
+>     validate_files(appcast, dsa_pubkey)
+>   File "sparkle_tool.py", line 55, in validate_files
+>     if validate(dsa_pubkey, signature, local_file):
+>   File "sparkle_tool.py", line 33, in validate
+>     return pubkey.verify(zipfile_digest, decoded_signature)
+>   File
+> "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py",
+> line 222, in verify
+>     return pubkey.pubkey.verify(self, M, signature)
+>   File
+> "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/pubkey.py",
+> line 126, in verify
+>     return self._verify(M, signature)
+>   File
+> "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py",
+> line 240, in _verify
+>     (r, s) = sig
+> ValueError: too many values to unpack
+>
+> Thanks a bunch!
+> --
+> Winston Weinert
+> winston at ml1.net
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140406/87e21505/attachment.html>
+
+From winston at ml1.net  Sun Apr  6 15:49:47 2014
+From: winston at ml1.net (Winston Weinert)
+Date: Sun, 6 Apr 2014 17:49:47 -0500
+Subject: [pycrypto] Verify DSA bytestring signature
+In-Reply-To: <CAGfyce2TeM5cwUcmHc6a8R6ZRRsFiCtkBJ-n5cNuBXx4NwZ_7g@mail.gmail.com>
+References: <11C3813F-BD17-4DCA-A289-49AED7D650B0@ml1.net>
+ <CAGfyce2TeM5cwUcmHc6a8R6ZRRsFiCtkBJ-n5cNuBXx4NwZ_7g@mail.gmail.com>
+Message-ID: <2C34FE60-DE8F-4F3E-B305-6397882BFC09@ml1.net>
+
+The signature is created using the openssl(1) command-line tool like this:
+
+openssl dgst -sha1 -binary < "$RELEASE_ARCHIVE" \
+| openssl dgst -dss1 -sign "$DSA_PRIVKEY" \
+| openssl enc -base64
+
+It verifies correctly using this command-line:
+
+echo "$SIGNATURE? | openssl enc -base64 -d > /tmp/decoded_signature
+openssl dgst -sha1 -binary < "$RELEASE_ARCHIVE" > /tmp/release_archive_sha1
+openssl dgst -dss1 -verify "$DSA_PUBKEY" -signature /tmp/decoded_signature /tmp/release_archive_sha1
+
+After I wrote my email, I dug around for awhile. After a lot of research I learned
+about ASN.1 DER?s usage in Dss-Sig-Value (http://www.ietf.org/rfc/rfc2459.txt). I
+wrote this code that appeared to decode my Base64 encoded signature correctly (I
+checked against http://lapo.it/asn1js/):
+
+def decode_DSA_signature(signature):
+    raw_signature = base64.b64decode(signature)
+    der = DerSequence()
+    der.decode(raw_signature)
+    return (der[0], der[1])
+
+Unfortunately .verify() returns False on correctly verified signature and hash
+pairs. I am using this new function like so:
+
+
+def validate(dsa_pubkey, signature, zipfile):
+    with open(dsa_pubkey, 'rb') as f:
+        pubkey = DSA.importKey(f.read())
+    with open(zipfile, 'rb') as f:
+        h = SHA1.new()
+        h.update(f.read())
+        zipfile_digest = h.digest()
+    signature = decode_DSA_signature(signature)
+
+    return pubkey.verify(zipfile_digest, signature)
+
+Maybe there is a problem with PyCrypto DSA and my environment?
+>>> sys.version
+'2.7.6 (default, Feb  7 2014, 12:51:34) \n[GCC 4.2.1 Compatible Apple LLVM 5.0 (clang-500.2.79)]'
+
+For the time being I?m invoking openssl(1) for this task.
+
+Thank you for the reply!
+Winston Weinert
+
+
+On Apr 6, 2014, at 4:50, Legrandin <helderijs at gmail.com> wrote:
+
+> How was the signature created exactly?
+> 
+> The .verify() method of a DSA object requires two integers, and there are several ways to encode them into a bytestring. It's very hard to guess the correct one for your case.
+> 
+> FYI, there is a long standing pull request I created to add a saner DSA API:
+> 
+> https://github.com/dlitz/pycrypto/pull/53
+> 
+> The verification method accepts DER or big-endian encoded signatures.
+> 
+> 
+> 
+> 2014-04-05 21:03 GMT+02:00 Winston Weinert <winston at ml1.net>:
+> Hello,
+> 
+> I noticed in Git there is a ?verify? method on Crypto.PublicKey.DSA. How do
+> I go about using this method? It wants a tuple, but unsure how to create
+> the appropriate tuple from my bytestring (which is decoded base64 text).
+> This is git revision 2d1aecd. The relevant code and error:
+> 
+> Code:
+> 
+> def validate(dsa_pubkey, signature, zipfile):
+>     with open(dsa_pubkey, 'rb') as f:
+>         pubkey = DSA.importKey(f.read())
+>     with open(zipfile, 'rb') as f:
+>         h = SHA1.new()
+>         h.update(f.read())
+>         zipfile_digest = h.digest()
+>     decoded_signature = base64.b64decode(signature)
+> 
+>     return pubkey.verify(zipfile_digest, decoded_signature)
+> 
+> Error:
+> 
+> Traceback (most recent call last):
+>   File "sparkle_tool.py", line 67, in <module>
+>     validate_files(appcast, dsa_pubkey)
+>   File "sparkle_tool.py", line 55, in validate_files
+>     if validate(dsa_pubkey, signature, local_file):
+>   File "sparkle_tool.py", line 33, in validate
+>     return pubkey.verify(zipfile_digest, decoded_signature)
+>   File "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py", line 222, in verify
+>     return pubkey.pubkey.verify(self, M, signature)
+>   File "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/pubkey.py", line 126, in verify
+>     return self._verify(M, signature)
+>   File "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py", line 240, in _verify
+>     (r, s) = sig
+> ValueError: too many values to unpack
+> 
+> Thanks a bunch!
+> ?
+> Winston Weinert
+> winston at ml1.net
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From helderijs at gmail.com  Mon Apr  7 04:50:26 2014
+From: helderijs at gmail.com (Legrandin)
+Date: Mon, 7 Apr 2014 13:50:26 +0200
+Subject: [pycrypto] Verify DSA bytestring signature
+In-Reply-To: <2C34FE60-DE8F-4F3E-B305-6397882BFC09@ml1.net>
+References: <11C3813F-BD17-4DCA-A289-49AED7D650B0@ml1.net>
+ <CAGfyce2TeM5cwUcmHc6a8R6ZRRsFiCtkBJ-n5cNuBXx4NwZ_7g@mail.gmail.com>
+ <2C34FE60-DE8F-4F3E-B305-6397882BFC09@ml1.net>
+Message-ID: <CAGfyce0pk6H4n-AHy4yt1_gNBb+xSx081LzoXEL85QhYOcSPGQ@mail.gmail.com>
+
+The openssl code is using SHA-1 twice: once to create the digest of the
+archive (dgst -sha1) and a second time when computing the DSA signature
+(dgst -dss1).
+
+If your goal is to sign the hash, the Python code should actually read:
+
+>> return pubkey.verify(SHA1.new(zipfile_digest).digest(), signature)
+
+If your goal is to sign only the archive, the openssl code should be:
+
+>> | openssl dgst -dss1 -sign "$DSA_PRIVKEY"  < "$RELEASE_ARCHIVE" \
+>> | openssl enc -base64
+
+2014-04-07 0:49 GMT+02:00 Winston Weinert <winston at ml1.net>:
+
+> The signature is created using the openssl(1) command-line tool like this:
+>
+> openssl dgst -sha1 -binary < "$RELEASE_ARCHIVE" \
+> | openssl dgst -dss1 -sign "$DSA_PRIVKEY" \
+> | openssl enc -base64
+>
+> It verifies correctly using this command-line:
+>
+> echo "$SIGNATURE" | openssl enc -base64 -d > /tmp/decoded_signature
+> openssl dgst -sha1 -binary < "$RELEASE_ARCHIVE" > /tmp/release_archive_sha1
+> openssl dgst -dss1 -verify "$DSA_PUBKEY" -signature /tmp/decoded_signature
+> /tmp/release_archive_sha1
+>
+> After I wrote my email, I dug around for awhile. After a lot of research I
+> learned
+> about ASN.1 DER's usage in Dss-Sig-Value (
+> http://www.ietf.org/rfc/rfc2459.txt). I
+> wrote this code that appeared to decode my Base64 encoded signature
+> correctly (I
+> checked against http://lapo.it/asn1js/):
+>
+> def decode_DSA_signature(signature):
+>     raw_signature = base64.b64decode(signature)
+>     der = DerSequence()
+>     der.decode(raw_signature)
+>     return (der[0], der[1])
+>
+> Unfortunately .verify() returns False on correctly verified signature and
+> hash
+> pairs. I am using this new function like so:
+>
+>
+> def validate(dsa_pubkey, signature, zipfile):
+>     with open(dsa_pubkey, 'rb') as f:
+>         pubkey = DSA.importKey(f.read())
+>     with open(zipfile, 'rb') as f:
+>         h = SHA1.new()
+>         h.update(f.read())
+>         zipfile_digest = h.digest()
+>     signature = decode_DSA_signature(signature)
+>
+>     return pubkey.verify(zipfile_digest, signature)
+>
+> Maybe there is a problem with PyCrypto DSA and my environment?
+> >>> sys.version
+> '2.7.6 (default, Feb  7 2014, 12:51:34) \n[GCC 4.2.1 Compatible Apple LLVM
+> 5.0 (clang-500.2.79)]'
+>
+> For the time being I'm invoking openssl(1) for this task.
+>
+> Thank you for the reply!
+> Winston Weinert
+>
+>
+> On Apr 6, 2014, at 4:50, Legrandin <helderijs at gmail.com> wrote:
+>
+> > How was the signature created exactly?
+> >
+> > The .verify() method of a DSA object requires two integers, and there
+> are several ways to encode them into a bytestring. It's very hard to guess
+> the correct one for your case.
+> >
+> > FYI, there is a long standing pull request I created to add a saner DSA
+> API:
+> >
+> > https://github.com/dlitz/pycrypto/pull/53
+> >
+> > The verification method accepts DER or big-endian encoded signatures.
+> >
+> >
+> >
+> > 2014-04-05 21:03 GMT+02:00 Winston Weinert <winston at ml1.net>:
+> > Hello,
+> >
+> > I noticed in Git there is a "verify" method on Crypto.PublicKey.DSA. How
+> do
+> > I go about using this method? It wants a tuple, but unsure how to create
+> > the appropriate tuple from my bytestring (which is decoded base64 text).
+> > This is git revision 2d1aecd. The relevant code and error:
+> >
+> > Code:
+> >
+> > def validate(dsa_pubkey, signature, zipfile):
+> >     with open(dsa_pubkey, 'rb') as f:
+> >         pubkey = DSA.importKey(f.read())
+> >     with open(zipfile, 'rb') as f:
+> >         h = SHA1.new()
+> >         h.update(f.read())
+> >         zipfile_digest = h.digest()
+> >     decoded_signature = base64.b64decode(signature)
+> >
+> >     return pubkey.verify(zipfile_digest, decoded_signature)
+> >
+> > Error:
+> >
+> > Traceback (most recent call last):
+> >   File "sparkle_tool.py", line 67, in <module>
+> >     validate_files(appcast, dsa_pubkey)
+> >   File "sparkle_tool.py", line 55, in validate_files
+> >     if validate(dsa_pubkey, signature, local_file):
+> >   File "sparkle_tool.py", line 33, in validate
+> >     return pubkey.verify(zipfile_digest, decoded_signature)
+> >   File
+> "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py",
+> line 222, in verify
+> >     return pubkey.pubkey.verify(self, M, signature)
+> >   File
+> "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/pubkey.py",
+> line 126, in verify
+> >     return self._verify(M, signature)
+> >   File
+> "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py",
+> line 240, in _verify
+> >     (r, s) = sig
+> > ValueError: too many values to unpack
+> >
+> > Thanks a bunch!
+> > --
+> > Winston Weinert
+> > winston at ml1.net
+> > _______________________________________________
+> > pycrypto mailing list
+> > pycrypto at lists.dlitz.net
+> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >
+> > _______________________________________________
+> > pycrypto mailing list
+> > pycrypto at lists.dlitz.net
+> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140407/b61f21b3/attachment.html>
+
+From winston at ml1.net  Tue Apr  8 04:45:23 2014
+From: winston at ml1.net (Winston Weinert)
+Date: Tue, 8 Apr 2014 06:45:23 -0500
+Subject: [pycrypto] Verify DSA bytestring signature
+In-Reply-To: <CAGfyce0pk6H4n-AHy4yt1_gNBb+xSx081LzoXEL85QhYOcSPGQ@mail.gmail.com>
+References: <11C3813F-BD17-4DCA-A289-49AED7D650B0@ml1.net>
+ <CAGfyce2TeM5cwUcmHc6a8R6ZRRsFiCtkBJ-n5cNuBXx4NwZ_7g@mail.gmail.com>
+ <2C34FE60-DE8F-4F3E-B305-6397882BFC09@ml1.net>
+ <CAGfyce0pk6H4n-AHy4yt1_gNBb+xSx081LzoXEL85QhYOcSPGQ@mail.gmail.com>
+Message-ID: <B5B81639-823E-4C99-912A-E89D7E9861D5@ml1.net>
+
+Thank you for your patience.
+
+Unbeknownst to me what I wanted is indeed the sha1 digest of the zipfile?s sha1 digest. (So the first suggestion you wrote is what I needed.) It sounds funny, though is is how the library (the Sparkle Update Framework) I?m writing tools for does it.
+
+Is it worthwhile for me to open a pull request enabling DSA.verify() to accept a base64 or the ASN.1 DER bytestring instead of the (r, s) tuple?
+
+--
+Winston
+
+
+On Apr 7, 2014, at 6:50, Legrandin <helderijs at gmail.com> wrote:
+
+> The openssl code is using SHA-1 twice: once to create the digest of the archive (dgst -sha1) and a second time when computing the DSA signature (dgst -dss1).
+> 
+> If your goal is to sign the hash, the Python code should actually read:
+> 
+> >> return pubkey.verify(SHA1.new(zipfile_digest).digest(), signature)
+> 
+> If your goal is to sign only the archive, the openssl code should be:
+> 
+> >> | openssl dgst -dss1 -sign "$DSA_PRIVKEY"  < "$RELEASE_ARCHIVE" \
+> >> | openssl enc -base64
+> 
+> 2014-04-07 0:49 GMT+02:00 Winston Weinert <winston at ml1.net>:
+> The signature is created using the openssl(1) command-line tool like this:
+> 
+> openssl dgst -sha1 -binary < "$RELEASE_ARCHIVE" \
+> | openssl dgst -dss1 -sign "$DSA_PRIVKEY" \
+> | openssl enc -base64
+> 
+> It verifies correctly using this command-line:
+> 
+> echo "$SIGNATURE? | openssl enc -base64 -d > /tmp/decoded_signature
+> openssl dgst -sha1 -binary < "$RELEASE_ARCHIVE" > /tmp/release_archive_sha1
+> openssl dgst -dss1 -verify "$DSA_PUBKEY" -signature /tmp/decoded_signature /tmp/release_archive_sha1
+> 
+> After I wrote my email, I dug around for awhile. After a lot of research I learned
+> about ASN.1 DER?s usage in Dss-Sig-Value (http://www.ietf.org/rfc/rfc2459.txt). I
+> wrote this code that appeared to decode my Base64 encoded signature correctly (I
+> checked against http://lapo.it/asn1js/):
+> 
+> def decode_DSA_signature(signature):
+>     raw_signature = base64.b64decode(signature)
+>     der = DerSequence()
+>     der.decode(raw_signature)
+>     return (der[0], der[1])
+> 
+> Unfortunately .verify() returns False on correctly verified signature and hash
+> pairs. I am using this new function like so:
+> 
+> 
+> def validate(dsa_pubkey, signature, zipfile):
+>     with open(dsa_pubkey, 'rb') as f:
+>         pubkey = DSA.importKey(f.read())
+>     with open(zipfile, 'rb') as f:
+>         h = SHA1.new()
+>         h.update(f.read())
+>         zipfile_digest = h.digest()
+>     signature = decode_DSA_signature(signature)
+> 
+>     return pubkey.verify(zipfile_digest, signature)
+> 
+> Maybe there is a problem with PyCrypto DSA and my environment?
+> >>> sys.version
+> '2.7.6 (default, Feb  7 2014, 12:51:34) \n[GCC 4.2.1 Compatible Apple LLVM 5.0 (clang-500.2.79)]'
+> 
+> For the time being I?m invoking openssl(1) for this task.
+> 
+> Thank you for the reply!
+> Winston Weinert
+> 
+> 
+> On Apr 6, 2014, at 4:50, Legrandin <helderijs at gmail.com> wrote:
+> 
+> > How was the signature created exactly?
+> >
+> > The .verify() method of a DSA object requires two integers, and there are several ways to encode them into a bytestring. It's very hard to guess the correct one for your case.
+> >
+> > FYI, there is a long standing pull request I created to add a saner DSA API:
+> >
+> > https://github.com/dlitz/pycrypto/pull/53
+> >
+> > The verification method accepts DER or big-endian encoded signatures.
+> >
+> >
+> >
+> > 2014-04-05 21:03 GMT+02:00 Winston Weinert <winston at ml1.net>:
+> > Hello,
+> >
+> > I noticed in Git there is a ?verify? method on Crypto.PublicKey.DSA. How do
+> > I go about using this method? It wants a tuple, but unsure how to create
+> > the appropriate tuple from my bytestring (which is decoded base64 text).
+> > This is git revision 2d1aecd. The relevant code and error:
+> >
+> > Code:
+> >
+> > def validate(dsa_pubkey, signature, zipfile):
+> >     with open(dsa_pubkey, 'rb') as f:
+> >         pubkey = DSA.importKey(f.read())
+> >     with open(zipfile, 'rb') as f:
+> >         h = SHA1.new()
+> >         h.update(f.read())
+> >         zipfile_digest = h.digest()
+> >     decoded_signature = base64.b64decode(signature)
+> >
+> >     return pubkey.verify(zipfile_digest, decoded_signature)
+> >
+> > Error:
+> >
+> > Traceback (most recent call last):
+> >   File "sparkle_tool.py", line 67, in <module>
+> >     validate_files(appcast, dsa_pubkey)
+> >   File "sparkle_tool.py", line 55, in validate_files
+> >     if validate(dsa_pubkey, signature, local_file):
+> >   File "sparkle_tool.py", line 33, in validate
+> >     return pubkey.verify(zipfile_digest, decoded_signature)
+> >   File "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py", line 222, in verify
+> >     return pubkey.pubkey.verify(self, M, signature)
+> >   File "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/pubkey.py", line 126, in verify
+> >     return self._verify(M, signature)
+> >   File "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py", line 240, in _verify
+> >     (r, s) = sig
+> > ValueError: too many values to unpack
+> >
+> > Thanks a bunch!
+> > ?
+> > Winston Weinert
+> > winston at ml1.net
+> > _______________________________________________
+> > pycrypto mailing list
+> > pycrypto at lists.dlitz.net
+> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >
+> > _______________________________________________
+> > pycrypto mailing list
+> > pycrypto at lists.dlitz.net
+> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140408/68897330/attachment.html>
+
+From helderijs at gmail.com  Tue Apr  8 08:44:19 2014
+From: helderijs at gmail.com (Legrandin)
+Date: Tue, 8 Apr 2014 17:44:19 +0200
+Subject: [pycrypto] Verify DSA bytestring signature
+In-Reply-To: <B5B81639-823E-4C99-912A-E89D7E9861D5@ml1.net>
+References: <11C3813F-BD17-4DCA-A289-49AED7D650B0@ml1.net>
+ <CAGfyce2TeM5cwUcmHc6a8R6ZRRsFiCtkBJ-n5cNuBXx4NwZ_7g@mail.gmail.com>
+ <2C34FE60-DE8F-4F3E-B305-6397882BFC09@ml1.net>
+ <CAGfyce0pk6H4n-AHy4yt1_gNBb+xSx081LzoXEL85QhYOcSPGQ@mail.gmail.com>
+ <B5B81639-823E-4C99-912A-E89D7E9861D5@ml1.net>
+Message-ID: <CAGfyce0fCJCuwudpMhZ4Sg4yfmSqy-eCAb4ojv5-K2tGj_wRgA@mail.gmail.com>
+
+I am glad I could help.
+
+To be honest, I find that the DSA.verify() should be completely avoided. It
+is a really primitive API.
+
+The proposal I captured in the pull request below, accepts DER and pure big
+endian and takes care of hashing internally (plus it allows for
+Deterministic DSA, which is safer than standard DSA).
+
+2014-04-08 13:45 GMT+02:00 Winston Weinert <winston at ml1.net>:
+
+> Thank you for your patience.
+>
+> Unbeknownst to me what I wanted is indeed the sha1 digest of the zipfile's
+> sha1 digest. (So the first suggestion you wrote is what I needed.) It
+> sounds funny, though is is how the library (the Sparkle Update Framework)
+> I'm writing tools for does it.
+>
+> Is it worthwhile for me to open a pull request enabling DSA.verify() to
+> accept a base64 or the ASN.1 DER bytestring instead of the (r, s) tuple?
+>
+> --
+> Winston
+>
+>
+> On Apr 7, 2014, at 6:50, Legrandin <helderijs at gmail.com> wrote:
+>
+> The openssl code is using SHA-1 twice: once to create the digest of the
+> archive (dgst -sha1) and a second time when computing the DSA signature
+> (dgst -dss1).
+>
+> If your goal is to sign the hash, the Python code should actually read:
+>
+> >> return pubkey.verify(SHA1.new(zipfile_digest).digest(), signature)
+>
+> If your goal is to sign only the archive, the openssl code should be:
+>
+> >> | openssl dgst -dss1 -sign "$DSA_PRIVKEY"  < "$RELEASE_ARCHIVE" \
+> >> | openssl enc -base64
+>
+> 2014-04-07 0:49 GMT+02:00 Winston Weinert <winston at ml1.net>:
+>
+>> The signature is created using the openssl(1) command-line tool like this:
+>>
+>> openssl dgst -sha1 -binary < "$RELEASE_ARCHIVE" \
+>> | openssl dgst -dss1 -sign "$DSA_PRIVKEY" \
+>> | openssl enc -base64
+>>
+>> It verifies correctly using this command-line:
+>>
+>> echo "$SIGNATURE" | openssl enc -base64 -d > /tmp/decoded_signature
+>> openssl dgst -sha1 -binary < "$RELEASE_ARCHIVE" >
+>> /tmp/release_archive_sha1
+>> openssl dgst -dss1 -verify "$DSA_PUBKEY" -signature
+>> /tmp/decoded_signature /tmp/release_archive_sha1
+>>
+>> After I wrote my email, I dug around for awhile. After a lot of research
+>> I learned
+>> about ASN.1 DER's usage in Dss-Sig-Value (
+>> http://www.ietf.org/rfc/rfc2459.txt). I
+>> wrote this code that appeared to decode my Base64 encoded signature
+>> correctly (I
+>> checked against http://lapo.it/asn1js/):
+>>
+>> def decode_DSA_signature(signature):
+>>     raw_signature = base64.b64decode(signature)
+>>     der = DerSequence()
+>>     der.decode(raw_signature)
+>>     return (der[0], der[1])
+>>
+>> Unfortunately .verify() returns False on correctly verified signature and
+>> hash
+>> pairs. I am using this new function like so:
+>>
+>>
+>> def validate(dsa_pubkey, signature, zipfile):
+>>     with open(dsa_pubkey, 'rb') as f:
+>>         pubkey = DSA.importKey(f.read())
+>>     with open(zipfile, 'rb') as f:
+>>         h = SHA1.new()
+>>         h.update(f.read())
+>>         zipfile_digest = h.digest()
+>>     signature = decode_DSA_signature(signature)
+>>
+>>     return pubkey.verify(zipfile_digest, signature)
+>>
+>> Maybe there is a problem with PyCrypto DSA and my environment?
+>> >>> sys.version
+>> '2.7.6 (default, Feb  7 2014, 12:51:34) \n[GCC 4.2.1 Compatible Apple
+>> LLVM 5.0 (clang-500.2.79)]'
+>>
+>> For the time being I'm invoking openssl(1) for this task.
+>>
+>> Thank you for the reply!
+>> Winston Weinert
+>>
+>>
+>> On Apr 6, 2014, at 4:50, Legrandin <helderijs at gmail.com> wrote:
+>>
+>> > How was the signature created exactly?
+>> >
+>> > The .verify() method of a DSA object requires two integers, and there
+>> are several ways to encode them into a bytestring. It's very hard to guess
+>> the correct one for your case.
+>> >
+>> > FYI, there is a long standing pull request I created to add a saner DSA
+>> API:
+>> >
+>> > https://github.com/dlitz/pycrypto/pull/53
+>> >
+>> > The verification method accepts DER or big-endian encoded signatures.
+>> >
+>> >
+>> >
+>> > 2014-04-05 21:03 GMT+02:00 Winston Weinert <winston at ml1.net>:
+>> > Hello,
+>> >
+>> > I noticed in Git there is a "verify" method on Crypto.PublicKey.DSA.
+>> How do
+>> > I go about using this method? It wants a tuple, but unsure how to create
+>> > the appropriate tuple from my bytestring (which is decoded base64 text).
+>> > This is git revision 2d1aecd. The relevant code and error:
+>> >
+>> > Code:
+>> >
+>> > def validate(dsa_pubkey, signature, zipfile):
+>> >     with open(dsa_pubkey, 'rb') as f:
+>> >         pubkey = DSA.importKey(f.read())
+>> >     with open(zipfile, 'rb') as f:
+>> >         h = SHA1.new()
+>> >         h.update(f.read())
+>> >         zipfile_digest = h.digest()
+>> >     decoded_signature = base64.b64decode(signature)
+>> >
+>> >     return pubkey.verify(zipfile_digest, decoded_signature)
+>> >
+>> > Error:
+>> >
+>> > Traceback (most recent call last):
+>> >   File "sparkle_tool.py", line 67, in <module>
+>> >     validate_files(appcast, dsa_pubkey)
+>> >   File "sparkle_tool.py", line 55, in validate_files
+>> >     if validate(dsa_pubkey, signature, local_file):
+>> >   File "sparkle_tool.py", line 33, in validate
+>> >     return pubkey.verify(zipfile_digest, decoded_signature)
+>> >   File
+>> "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py",
+>> line 222, in verify
+>> >     return pubkey.pubkey.verify(self, M, signature)
+>> >   File
+>> "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/pubkey.py",
+>> line 126, in verify
+>> >     return self._verify(M, signature)
+>> >   File
+>> "/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py",
+>> line 240, in _verify
+>> >     (r, s) = sig
+>> > ValueError: too many values to unpack
+>> >
+>> > Thanks a bunch!
+>> > --
+>> > Winston Weinert
+>> > winston at ml1.net
+>> > _______________________________________________
+>> > pycrypto mailing list
+>> > pycrypto at lists.dlitz.net
+>> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>> >
+>> > _______________________________________________
+>> > pycrypto mailing list
+>> > pycrypto at lists.dlitz.net
+>> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140408/670eecf2/attachment-0001.html>
+
+From Kristofer.Wempa at sig.com  Thu Apr 10 07:12:22 2014
+From: Kristofer.Wempa at sig.com (Wempa, Kristofer)
+Date: Thu, 10 Apr 2014 14:12:22 +0000
+Subject: [pycrypto] Linking Against Non-Sytem libgmp
+Message-ID: <7178542C389AAE4B9A26C656124E966F3D1AFB@xchmbbal505.ds.susq.com>
+
+
+Since the libgmp on our Linux server (SLES11SP2) has a known vulnerability, I'm trying to build pycrypto against the latest libgmp that I have installed in an alternate location and have the run path set so that it picks up the alternate libgmp without having to set LD_LIBRARY_PATH.  First, I tried modifying include_dirs, library_dirs and runtime_library_dirs in the setup.py.  When that didn't work, I tried only setting CFLAGS/CPPFLAGS/LDFLAGS environment variables.  Neither worked.  In both cases, I see my compiler and linker flags on the command lines, but because "-L/usr/lib64 -L/lib64" always appears first, the library is linked against the system libgmp and not the alternate one.  At this point, my only solution is to build the _fastmath.so and then re-run the link command without the "-L/usr/lib64 -L/lib64" arguments.  Isn't there a cleaner way to accomplish what I need ?  Why don't my LDFLAGS appear first on the link line ?  Any help would be appreciated.  Thank you.
+
+                Kris
+
+
+________________________________
+
+IMPORTANT: The information contained in this email and/or its attachments is confidential. If you are not the intended recipient, please notify the sender immediately by reply and immediately delete this message and all its attachments. Any review, use, reproduction, disclosure or dissemination of this message or any attachment by an unintended recipient is strictly prohibited. Neither this message nor any attachment is intended as or should be construed as an offer, solicitation or recommendation to buy or sell any security or other financial instrument. Neither the sender, his or her employer nor any of their respective affiliates makes any warranties as to the completeness or accuracy of any of the information contained herein or that this message or any of its attachments is free of viruses.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140410/e212d65a/attachment.html>
+
+From helderijs at gmail.com  Sun Apr 13 11:09:04 2014
+From: helderijs at gmail.com (Legrandin)
+Date: Sun, 13 Apr 2014 20:09:04 +0200
+Subject: [pycrypto] Any progress with pycrypto 2.7?
+In-Reply-To: <CAGfyce3Gkov=o1iLBNt+ebM6t++Vw-4m1BFg=8yg4vGysq_gsQ@mail.gmail.com>
+References: <CAGfyce0tbAYya=84b79eNHQVRhFJvNGv6pxUAKsxqpUOPDhG3A@mail.gmail.com>
+ <20140222043409.GA26458@rivest.dlitz.net>
+ <CAGfyce3Gkov=o1iLBNt+ebM6t++Vw-4m1BFg=8yg4vGysq_gsQ@mail.gmail.com>
+Message-ID: <CAGfyce3Obua_R91DjKh3tt+RvFPG9HN_SHGX3n3Q9D3kA8svng@mail.gmail.com>
+
+[ Shameless ping ]
+
+Is there any progress with the release?
+Or any indication about when it could take place?
+
+>> 2) Potential DoS when importing an RSA key (segfault of the interpreter)
+
+> > I assume you mean the floating-point exception that occurs when you pass
+> an
+> > even modulus to RSA.construct?
+>
+> Correct.
+>
+> > https://bugs.launchpad.net/pycrypto/+bug/1193521
+> > https://github.com/dlitz/pycrypto/pull/50
+> >
+> > On pull request #50 ("Add checks to verify correctness of RSA/DSA/ElGamal
+> > keys"), it would be helpful if others could chime in about the potential
+> for
+> > leaking private keys via timing side-channels.
+>
+> In addition to fixing the DoS, PR #50 also replaced the custom
+> KeyFormatError exception with ValueError in the DSA code (I wrote it
+> before you expressed preference for not having custom exceptions at
+> all).
+>
+> I would actually apply first this other PR:
+>
+> https://github.com/dlitz/pycrypto/pull/71
+>
+> Since there are 2 other exception types to fix.
+> Hopefully PR #50 still applies cleanly after it.
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140413/acf7dd3f/attachment.html>
+
+From george at reilly.org  Sat Apr 19 22:22:39 2014
+From: george at reilly.org (George V. Reilly)
+Date: Sat, 19 Apr 2014 22:22:39 -0700
+Subject: [pycrypto] Building a Win32 egg for PyCrypto 2.5
+In-Reply-To: <CAL3j_b-CcoNOtDkY58VUCSMgzimbEgNC9bjg+bBD2F-XbTwKtg@mail.gmail.com>
+References: <CAL3j_b-CcoNOtDkY58VUCSMgzimbEgNC9bjg+bBD2F-XbTwKtg@mail.gmail.com>
+Message-ID: <CAL3j_b-J3yeOpiKtBVEUHndYP-hjwBpyAJP0AZGy9x0yJTSmfw@mail.gmail.com>
+
+Today I needed to install PyCrypto into a virtualenv on a Windows box
+that didn't have a compiler. I found that using easy_install against
+the installer executable worked well.
+
+  REM download a PyCrypto installer from
+http://www.voidspace.org.uk/python/modules.shtml#pycrypto
+  REM say, pycrypto-2.6.win32-py2.7.exe
+
+  MyEnv\Scripts\activate.bat
+  easy_install pycrypto-2.6.win32-py2.7.exe
+
+More than two years later, there's still zero Windows-related
+information on building or installing PyCrypto anywhere on the
+website. Since it's non-trivial, this omission continues to disappoint
+me.
+-- 
+/George V. Reilly  george at reilly.org  Twitter: @georgevreilly
+http://www.georgevreilly.com/blog
+
+
+On Sun, Jan 29, 2012 at 11:18 PM, George V. Reilly <george at reilly.org> wrote:
+>
+> I'm really surprised that there's no information on building Win32 eggs anywhere on the PyCrypto website or in the PyCrypto docs. With all the export regulations, I can understand why you might not want to supply pre-built binaries, but it would be good to explain how to do it. Michael Foord has supplied such binaries for earlier versions of PyCrypto, but there's none available for PyCrypto 2.5 yet.
+>
+> I managed to figure it out today, with an assist from https://tahoe-lafs.org/trac/tahoe-lafs/wiki/HowtoBuildPyCryptoOnWindows
+>
+> Here's the batch file that I used:
+>
+>
+> REM Build a Win32 egg for Python 2.6 or 2.7
+> REM Assumes that you have the Visual Studio 2008 C++ compiler (Express suffices).
+> REM http://www.microsoft.com/visualstudio/en-us/products/2008-editions/express
+>
+> if ["%VCINSTALLDIR%"]==[""] ("%VS90COMNTOOLS%"vsvars32.bat)
+>
+> @REM If package uses setuptools, this can be
+> @REM collapsed to "python setup.py bdist_egg"
+> python setup.py build
+> python -c "import setuptools; execfile('setup.py')" bdist_egg
+>
+>
+> The standard Windows binaries for Python 2.5 and earlier are built with different compilers. http://stackoverflow.com/questions/101061/building-python-c-extension-modules-for-windows gives some hints.
+> --
+> /George V. Reilly  george at reilly.org  Twitter: @georgevreilly
+> http://www.georgevreilly.com/blog  http://blogs.cozi.com/tech
+
+From dave.pawson at gmail.com  Sat Apr 19 23:44:12 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sun, 20 Apr 2014 07:44:12 +0100
+Subject: [pycrypto] Building a Win32 egg for PyCrypto 2.5
+In-Reply-To: <CAL3j_b-J3yeOpiKtBVEUHndYP-hjwBpyAJP0AZGy9x0yJTSmfw@mail.gmail.com>
+References: <CAL3j_b-CcoNOtDkY58VUCSMgzimbEgNC9bjg+bBD2F-XbTwKtg@mail.gmail.com>
+ <CAL3j_b-J3yeOpiKtBVEUHndYP-hjwBpyAJP0AZGy9x0yJTSmfw@mail.gmail.com>
+Message-ID: <CAEncD4f97e3AB0vYheWw+7s8HTw624XXz38nZrdbdYMDRh5xoA@mail.gmail.com>
+
+GIYF?
+
+http://www.voidspace.org.uk/python/modules.shtml#pycrypto
+
+regards
+
+On 20 April 2014 06:22, George V. Reilly <george at reilly.org> wrote:
+> Today I needed to install PyCrypto into a virtualenv on a Windows box
+> that didn't have a compiler. I found that using easy_install against
+> the installer executable worked well.
+>
+>   REM download a PyCrypto installer from
+> http://www.voidspace.org.uk/python/modules.shtml#pycrypto
+>   REM say, pycrypto-2.6.win32-py2.7.exe
+>
+>   MyEnv\Scripts\activate.bat
+>   easy_install pycrypto-2.6.win32-py2.7.exe
+>
+> More than two years later, there's still zero Windows-related
+> information on building or installing PyCrypto anywhere on the
+> website. Since it's non-trivial, this omission continues to disappoint
+> me.
+> --
+> /George V. Reilly  george at reilly.org  Twitter: @georgevreilly
+> http://www.georgevreilly.com/blog
+>
+>
+> On Sun, Jan 29, 2012 at 11:18 PM, George V. Reilly <george at reilly.org> wrote:
+>>
+>> I'm really surprised that there's no information on building Win32 eggs anywhere on the PyCrypto website or in the PyCrypto docs. With all the export regulations, I can understand why you might not want to supply pre-built binaries, but it would be good to explain how to do it. Michael Foord has supplied such binaries for earlier versions of PyCrypto, but there's none available for PyCrypto 2.5 yet.
+>>
+>> I managed to figure it out today, with an assist from https://tahoe-lafs.org/trac/tahoe-lafs/wiki/HowtoBuildPyCryptoOnWindows
+>>
+>> Here's the batch file that I used:
+>>
+>>
+>> REM Build a Win32 egg for Python 2.6 or 2.7
+>> REM Assumes that you have the Visual Studio 2008 C++ compiler (Express suffices).
+>> REM http://www.microsoft.com/visualstudio/en-us/products/2008-editions/express
+>>
+>> if ["%VCINSTALLDIR%"]==[""] ("%VS90COMNTOOLS%"vsvars32.bat)
+>>
+>> @REM If package uses setuptools, this can be
+>> @REM collapsed to "python setup.py bdist_egg"
+>> python setup.py build
+>> python -c "import setuptools; execfile('setup.py')" bdist_egg
+>>
+>>
+>> The standard Windows binaries for Python 2.5 and earlier are built with different compilers. http://stackoverflow.com/questions/101061/building-python-c-extension-modules-for-windows gives some hints.
+>> --
+>> /George V. Reilly  george at reilly.org  Twitter: @georgevreilly
+>> http://www.georgevreilly.com/blog  http://blogs.cozi.com/tech
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From george at reilly.org  Sun Apr 20 10:53:17 2014
+From: george at reilly.org (George V. Reilly)
+Date: Sun, 20 Apr 2014 10:53:17 -0700
+Subject: [pycrypto] Building a Win32 egg for PyCrypto 2.5
+In-Reply-To: <CAEncD4f97e3AB0vYheWw+7s8HTw624XXz38nZrdbdYMDRh5xoA@mail.gmail.com>
+References: <CAL3j_b-CcoNOtDkY58VUCSMgzimbEgNC9bjg+bBD2F-XbTwKtg@mail.gmail.com>
+ <CAL3j_b-J3yeOpiKtBVEUHndYP-hjwBpyAJP0AZGy9x0yJTSmfw@mail.gmail.com>
+ <CAEncD4f97e3AB0vYheWw+7s8HTw624XXz38nZrdbdYMDRh5xoA@mail.gmail.com>
+Message-ID: <CAL3j_b8Zr5c+cPQzOfGHB1P=G8Y0ctFVDox8+eaJ58a0SDvKjw@mail.gmail.com>
+
+Well, I don't know about you, but it wasn't obvious to me that running
+easy_install against an .EXE would (a) work at all or (b) work in a
+virtualenv. And, yes, I do know about the Voidspace page; the same
+link is right there in the middle of my message. Thanks to Michael
+Foord for making the installers available to everyone.
+
+This thread will have some google juice for future searchers.
+--
+/George V. Reilly  george at reilly.org  Twitter: @georgevreilly
+http://www.georgevreilly.com/blog
+
+
+On Sat, Apr 19, 2014 at 11:44 PM, Dave Pawson <dave.pawson at gmail.com> wrote:
+> GIYF?
+>
+> http://www.voidspace.org.uk/python/modules.shtml#pycrypto
+>
+> regards
+>
+> On 20 April 2014 06:22, George V. Reilly <george at reilly.org> wrote:
+>> Today I needed to install PyCrypto into a virtualenv on a Windows box
+>> that didn't have a compiler. I found that using easy_install against
+>> the installer executable worked well.
+>>
+>>   REM download a PyCrypto installer from
+>> http://www.voidspace.org.uk/python/modules.shtml#pycrypto
+>>   REM say, pycrypto-2.6.win32-py2.7.exe
+>>
+>>   MyEnv\Scripts\activate.bat
+>>   easy_install pycrypto-2.6.win32-py2.7.exe
+>>
+>> More than two years later, there's still zero Windows-related
+>> information on building or installing PyCrypto anywhere on the
+>> website. Since it's non-trivial, this omission continues to disappoint
+>> me.
+>> --
+>> /George V. Reilly  george at reilly.org  Twitter: @georgevreilly
+>> http://www.georgevreilly.com/blog
+>>
+>>
+>> On Sun, Jan 29, 2012 at 11:18 PM, George V. Reilly <george at reilly.org> wrote:
+>>>
+>>> I'm really surprised that there's no information on building Win32 eggs anywhere on the PyCrypto website or in the PyCrypto docs. With all the export regulations, I can understand why you might not want to supply pre-built binaries, but it would be good to explain how to do it. Michael Foord has supplied such binaries for earlier versions of PyCrypto, but there's none available for PyCrypto 2.5 yet.
+>>>
+>>> I managed to figure it out today, with an assist from https://tahoe-lafs.org/trac/tahoe-lafs/wiki/HowtoBuildPyCryptoOnWindows
+>>>
+>>> Here's the batch file that I used:
+>>>
+>>>
+>>> REM Build a Win32 egg for Python 2.6 or 2.7
+>>> REM Assumes that you have the Visual Studio 2008 C++ compiler (Express suffices).
+>>> REM http://www.microsoft.com/visualstudio/en-us/products/2008-editions/express
+>>>
+>>> if ["%VCINSTALLDIR%"]==[""] ("%VS90COMNTOOLS%"vsvars32.bat)
+>>>
+>>> @REM If package uses setuptools, this can be
+>>> @REM collapsed to "python setup.py bdist_egg"
+>>> python setup.py build
+>>> python -c "import setuptools; execfile('setup.py')" bdist_egg
+>>>
+>>>
+>>> The standard Windows binaries for Python 2.5 and earlier are built with different compilers. http://stackoverflow.com/questions/101061/building-python-c-extension-modules-for-windows gives some hints.
+>>> --
+>>> /George V. Reilly  george at reilly.org  Twitter: @georgevreilly
+>>> http://www.georgevreilly.com/blog  http://blogs.cozi.com/tech
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From helderijs at gmail.com  Mon Apr 21 12:44:16 2014
+From: helderijs at gmail.com (Legrandin)
+Date: Mon, 21 Apr 2014 21:44:16 +0200
+Subject: [pycrypto] Is PyCrypto dead?
+Message-ID: <CAGfyce2bBbrCV59PEoi8ioa_42stXyrQHMF_exk7CBfAaV_y3g@mail.gmail.com>
+
+Is PyCrypto dead?
+
+If one had to judge from the speed security flaws are recognized,
+fixed and disclosed [1], then no, pycrypto is definitely not dead.
+Other, more active FOSS library should take notes in fact.
+
+However, when it comes to adding new features (as in, catching up with the
+needs of a normal security application in 2014) and refactoring the
+existing ones, pycrypto is deep frozen. Bug reports keep piling up and it
+can easily take a couple of years for a pull request to finally end up in a
+release.
+
+Every now and then, I can read on the ML proposals and intentions for
+major (and IMO, not entirely needed) overhauls, but they never seem to
+translate into anything solid. Worse than that, their completion is set as
+the
+precondition for acceptance of any new feature, which further exacerbates
+the problem.
+
+What can be done to improve on that?
+Would setting up a tip jar help?
+Would a fork of the library be seen as hostile?
+
+Finally, I am aware of the existence of the cryptography project [1].
+It does *not* cover my needs and I do *not* agree with some of the
+principles and motivations behind that design, though its dev and test
+ processes are clearly sound.
+
+[1] http://lists.dlitz.net/pipermail/pycrypto/2013q4/000702.html
+[2] https://cryptography.io
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140421/f3977b6a/attachment.html>
+
+From dave.pawson at gmail.com  Mon Apr 21 13:31:37 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Mon, 21 Apr 2014 21:31:37 +0100
+Subject: [pycrypto] Is PyCrypto dead?
+In-Reply-To: <CAGfyce2bBbrCV59PEoi8ioa_42stXyrQHMF_exk7CBfAaV_y3g@mail.gmail.com>
+References: <CAGfyce2bBbrCV59PEoi8ioa_42stXyrQHMF_exk7CBfAaV_y3g@mail.gmail.com>
+Message-ID: <CAEncD4dOVU1pZapSC9d7ruTaDMqe_SPWoJobgOcDOCxen+Va4Q@mail.gmail.com>
+
+On 21 April 2014 20:44, Legrandin <helderijs at gmail.com> wrote:
+> Is PyCrypto dead?
+>
+
+> However, when it comes to adding new features (as in, catching up with the
+> needs of a normal security application in 2014) and refactoring the
+> existing ones, pycrypto is deep frozen. Bug reports keep piling up and it can easily take a couple of years for a pull request to finally end up in a  release.
+
+>
+> What can be done to improve on that?
+> Would setting up a tip jar help?
+> Would a fork of the library be seen as hostile?
+
+It appears the 'home' page is dead/not supported / updated.
+I don't think a tip jar would help that?
+A fork (new home page /site?) seems right.
+I have seen life on the list, I do find the product good,
+as do others. My gripe is documentation, which I'm willing
+to pick help with, but not if the host of the site is away?
+  Is it GPL?
+
+regards DaveP
+
+>
+> Finally, I am aware of the existence of the cryptography project [1].
+> It does *not* cover my needs and I do *not* agree with some of the
+> principles and motivations behind that design, though its dev and test
+>  processes are clearly sound.
+>
+> [1] http://lists.dlitz.net/pipermail/pycrypto/2013q4/000702.html
+> [2] https://cryptography.io
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From Kristofer.Wempa at sig.com  Mon Apr 21 13:40:03 2014
+From: Kristofer.Wempa at sig.com (Wempa, Kristofer)
+Date: Mon, 21 Apr 2014 20:40:03 +0000
+Subject: [pycrypto] Linking Against Non-Sytem libgmp
+Message-ID: <7178542C389AAE4B9A26C656124E966F3D68A2@xchmbbal505.ds.susq.com>
+
+> Since the libgmp on our Linux server (SLES11SP2) has a known vulnerability
+> , I'm trying to build pycrypto against the latest libgmp that I have installed
+>  in an alternate location and have the run path set so that it picks up the
+> alternate libgmp without having to set LD_LIBRARY_PATH.  First, I tried
+> modifying include_dirs, library_dirs and runtime_library_dirs in the setup.py.
+> When that didn't work, I tried only setting CFLAGS/CPPFLAGS/LDFLAGS
+> environment variables.  Neither worked.  In both cases, I see my compiler
+> and linker flags on the command lines, but because "-L/usr/lib64 -L/lib64"
+> always appears first, the library is linked against the system libgmp and not
+> the alternate one.  At this point, my only solution is to build the _fastmath.so
+> and then re-run the link command without the "-L/usr/lib64 -L/lib64"
+> arguments.  Isn't there a cleaner way to accomplish what I need ?  Why don't
+> my LDFLAGS appear first on the link line ?  Any help would be appreciated.
+> Thank you.
+
+
+Please disregard my posting.  I only see this behavior in Python 2.7.5, so it's either the Python package or the version of distribute/setuptools that is shipped with that specific Python version.  I tried building against a different libgmp with other Python 2.7.X versions and none of them are prepending those system libraries to the link line.
+
+
+________________________________
+
+IMPORTANT: The information contained in this email and/or its attachments is confidential. If you are not the intended recipient, please notify the sender immediately by reply and immediately delete this message and all its attachments. Any review, use, reproduction, disclosure or dissemination of this message or any attachment by an unintended recipient is strictly prohibited. Neither this message nor any attachment is intended as or should be construed as an offer, solicitation or recommendation to buy or sell any security or other financial instrument. Neither the sender, his or her employer nor any of their respective affiliates makes any warranties as to the completeness or accuracy of any of the information contained herein or that this message or any of its attachments is free of viruses.
+
+From pycrypto at mitch.org.uk  Mon Apr 28 09:42:05 2014
+From: pycrypto at mitch.org.uk (Richard Mitchell)
+Date: Mon, 28 Apr 2014 17:42:05 +0100
+Subject: [pycrypto] Pull request to reinstate "Alleged" IDEA
+Message-ID: <CAOHeUHaK9FBuAXD60uW4qz7weP88FXkZghHtRMnkTSn+JGSoLw@mail.gmail.com>
+
+Hi everyone,
+
+Since the patents on IDEA expired in 2012, I've created a pull request to
+reinstate "Alleged" IDEA to the PyCrypto package. The trademark on the name
+"IDEA" remains, hence the "Alleged" prefix, following the precedent set by
+ARC4, etc.
+
+https://github.com/dlitz/pycrypto/pull/76
+
+Thanks,
+Richard Mitchell
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140428/9ce5fddf/attachment.html>
+
+From webe3vt at aim.com  Fri May  2 12:42:04 2014
+From: webe3vt at aim.com (Brent S. Elmer Ph.D.)
+Date: Fri, 02 May 2014 15:42:04 -0400
+Subject: [pycrypto] compile on AIX fails
+Message-ID: <1399059724.25614.4.camel@belmer>
+
+I am trying to compile version 2.6.1 on AIX 6.1.  I am getting the
+following errors:
+
+$ xlc_r -q64 -ma -qmaxmem=-1  -O3 -fomit-frame-pointer -Isrc/
+-I/profit/freeware/python/aix/python2.7.6/include/python2.7 -c src/MD
+2.c -o build/temp.aix-6.1-2.7/src/MD2.o
+"/usr/include/stdio.h", line 528.12: 1506-343 (S) Redeclaration of
+fgetpos64 differs from previous declaration on line 323 of
+"/usr/include/stdio.h".
+"/usr/include/stdio.h", line 528.12: 1506-377 (I) The type "long long*"
+of parameter 2 differs from the previous type "long* restrict".
+"/usr/include/stdio.h", line 531.12: 1506-343 (S) Redeclaration of
+fseeko64 differs from previous declaration on line 471 of
+"/usr/include/stdio.h".
+"/usr/include/stdio.h", line 531.12: 1506-377 (I) The type "long long"
+of parameter 2 differs from the previous type "long".
+"/usr/include/stdio.h", line 532.12: 1506-343 (S) Redeclaration of
+fsetpos64 differs from previous declaration on line 325 of
+"/usr/include/stdio.h".
+"/usr/include/stdio.h", line 532.12: 1506-377 (I) The type "const long
+long*" of parameter 2 differs from the previous type "const long*".
+"/usr/include/stdio.h", line 533.16: 1506-343 (S) Redeclaration of
+ftello64 differs from previous declaration on line 472 of
+"/usr/include/stdio.h".
+"/usr/include/stdio.h", line 533.16: 1506-050 (I) Return type "long
+long" in redeclaration is not compatible with the previous return type
+"long".
+"/usr/include/unistd.h", line 171.17: 1506-343 (S) Redeclaration of
+lseek64 differs from previous declaration on line 169 of
+"/usr/include/unistd.h".
+"/usr/include/unistd.h", line 171.17: 1506-050 (I) Return type "long
+long" in redeclaration is not compatible with the previous return type
+"long".
+"/usr/include/unistd.h", line 171.17: 1506-377 (I) The type "long long"
+of parameter 2 differs from the previous type "long".
+"/usr/include/sys/lockf.h", line 64.20: 1506-343 (S) Redeclaration of
+lockf64 differs from previous declaration on line 62 of
+"/usr/include/sys/lockf.h".
+"/usr/include/sys/lockf.h", line 64.20: 1506-377 (I) The type "long
+long" of parameter 3 differs from the previous type "long".
+"/usr/include/unistd.h", line 809.33: 1506-343 (S) Redeclaration of
+ftruncate64 differs from previous declaration on line 807 of
+"/usr/include/unistd.h".
+"/usr/include/unistd.h", line 809.33: 1506-377 (I) The type "long long"
+of parameter 2 differs from the previous type "long".
+"/usr/include/unistd.h", line 845.33: 1506-343 (S) Redeclaration of
+truncate64 differs from previous declaration on line 843 of
+"/usr/include/unistd.h".
+"/usr/include/unistd.h", line 845.33: 1506-377 (I) The type "long long"
+of parameter 2 differs from the previous type "long".
+"/usr/include/unistd.h", line 862.33: 1506-343 (S) Redeclaration of
+pread64 differs from previous declaration on line 859 of
+"/usr/include/unistd.h".
+"/usr/include/unistd.h", line 862.33: 1506-377 (I) The type "long long"
+of parameter 4 differs from the previous type "long".
+"/usr/include/unistd.h", line 863.33: 1506-343 (S) Redeclaration of
+pwrite64 differs from previous declaration on line 860 of
+"/usr/include/unistd.h".
+"/usr/include/unistd.h", line 863.33: 1506-377 (I) The type "long long"
+of parameter 4 differs from the previous type "long".
+"/usr/include/unistd.h", line 942.25: 1506-343 (S) Redeclaration of
+fclear64 differs from previous declaration on line 939 of
+"/usr/include/unistd.h".
+"/usr/include/unistd.h", line 942.25: 1506-050 (I) Return type "long
+long" in redeclaration is not compatible with the previous return type
+"long".
+"/usr/include/unistd.h", line 942.25: 1506-377 (I) The type "long long"
+of parameter 2 differs from the previous type "long".
+"/usr/include/unistd.h", line 943.25: 1506-343 (S) Redeclaration of
+fsync_range64 differs from previous declaration on line 940 of
+"/usr/include/unistd.h".
+"/usr/include/unistd.h", line 943.25: 1506-377 (I) The type "long long"
+of parameter 3 differs from the previous type "long".
+
+/usr/include/stdio.h has the following at the lines that it says are
+redeclared.
+
+extern int	fgetpos(FILE *__restrict__, fpos_t *__restrict__);
+extern int 	fseek(FILE *, long int, int);
+extern int	fsetpos(FILE *, const fpos_t *);
+extern long	ftell(FILE *);
+...
+
+
+#ifdef _LARGE_FILE_API
+extern int fgetpos64(FILE *, fpos64_t *);
+extern FILE *fopen64(const char *, const char *);
+extern FILE *freopen64(const char *, const char *, FILE *);
+extern int fseeko64(FILE *, off64_t, int);
+extern int fsetpos64(FILE *, const fpos64_t *);
+extern off64_t ftello64(FILE *);
+#endif /* _LARGE_FILE_API */
+
+Anyone have any ideas what the problem is?
+
+
+
+From webe3vt at aim.com  Wed May  7 12:55:22 2014
+From: webe3vt at aim.com (Brent S. Elmer Ph.D.)
+Date: Wed, 07 May 2014 15:55:22 -0400
+Subject: [pycrypto] compiling on AIX patch
+Message-ID: <1399492522.22128.2.camel@belmer>
+
+When building on AIX using the xlc family of compilers, -std=c99 is not
+valid.  Instead it should be -qlanglvl=stdc99.  Here is a patch to
+setup.py to test and apply the change.
+
+$ diff -u setup.py ../../pycrypto-2.6.1/setup.py
+--- setup.py    2013-10-14 17:38:10.000000000 -0400
++++ ../../pycrypto-2.6.1/setup.py       2014-05-07 15:39:32.000000000
+-0400
+@@ -118,8 +118,12 @@
+              self.__add_compiler_option("-std=c99")
+  
+              # ... but don't tell that to the aCC compiler on HP-UX
++             #     or the xlc compiler on AIX
+              if self.compiler.compiler_so[0] == 'cc' and
+sys.platform.startswith('hp-ux'):
+                  self.__remove_compiler_option("-std=c99")
++             elif self.compiler.compiler_so[0].startswith('xlc') and
+sys.platform.startswith('aix'): 
++                 self.__remove_compiler_option("-std=c99")
++                 self.__add_compiler_option("-qlanglvl=stdc99")
+  
+              # Make assert() statements always work
+              self.__remove_compiler_option("-DNDEBUG")
+
+
+
+From webe3vt at aim.com  Fri May  9 09:02:24 2014
+From: webe3vt at aim.com (Brent S. Elmer Ph.D.)
+Date: Fri, 09 May 2014 12:02:24 -0400
+Subject: [pycrypto] #include Python.h
+Message-ID: <1399651344.12870.14.camel@belmer>
+
+I am trying to build pycrypto on AIX.  I am running into a problem.  It
+seems to me that it is a problem with pycrypto.
+
+On AIX, Python defines _LARGE_FILES to handle large files.  This causes
+pycrypto not to compile.  The output looks like this:
+
+"/usr/include/stdio.h", line 528.12: 1506-343 (S) Redeclaration of
+fgetpos64 differs from previous declaration on line 323 of
+"/usr/include/stdio.h".
+"/usr/include/stdio.h", line 528.12: 1506-377 (I) The type "long long*"
+of parameter 2 differs from the previous type "long* restrict".
+"/usr/include/stdio.h", line 531.12: 1506-343 (S) Redeclaration of
+fseeko64 differs from previous declaration on line 471 of
+"/usr/include/stdio.h".
+"/usr/include/stdio.h", line 531.12: 1506-377 (I) The type "long long"
+of parameter 2 differs from the previous type "long".
+"/usr/include/stdio.h", line 532.12: 1506-343 (S) Redeclaration of
+fsetpos64 differs from previous declaration on line 325 of
+"/usr/include/stdio.h".
+"/usr/include/stdio.h", line 532.12: 1506-377 (I) The type "const long
+long*" of parameter 2 differs from the previous type "const long*".
+"/usr/include/stdio.h", line 533.16: 1506-343 (S) Redeclaration of
+ftello64 differs from previous declaration on line 472 of
+"/usr/include/stdio.h".
+"/usr/include/stdio.h", line 533.16: 1506-050 (I) Return type "long
+long" in redeclaration is not compatible with the previous return type
+"long".
+"/usr/include/unistd.h", line 171.17: 1506-343 (S) Redeclaration of
+lseek64 differs from previous declaration on line 169 of
+"/usr/include/unistd.h".
+"/usr/include/unistd.h", line 171.17: 1506-050 (I) Return type "long
+long" in redeclaration is not compatible with the previous return type
+"long".
+"/usr/include/unistd.h", line 171.17: 1506-377 (I) The type "long long"
+of parameter 2 differs from the previous type "long".
+"/usr/include/sys/lockf.h", line 64.20: 1506-343 (S) Redeclaration of
+lockf64 differs from previous declaration on line 62 of
+"/usr/include/sys/lockf.h".
+"/usr/include/sys/lockf.h", line 64.20: 1506-377 (I) The type "long
+long" of parameter 3 differs from the previous type "long".
+"/usr/include/unistd.h", line 809.33: 1506-343 (S) Redeclaration of
+ftruncate64 differs from previous declaration on line 807 of
+"/usr/include/unistd.h".
+"/usr/include/unistd.h", line 809.33: 1506-377 (I) The type "long long"
+of parameter 2 differs from the previous type "long".
+"/usr/include/unistd.h", line 845.33: 1506-343 (S) Redeclaration of
+truncate64 differs from previous declaration on line 843 of
+"/usr/include/unistd.h".
+"/usr/include/unistd.h", line 845.33: 1506-377 (I) The type "long long"
+of parameter 2 differs from the previous type "long".
+"/usr/include/unistd.h", line 862.33: 1506-343 (S) Redeclaration of
+pread64 differs from previous declaration on line 859 of
+"/usr/include/unistd.h".
+"/usr/include/unistd.h", line 862.33: 1506-377 (I) The type "long long"
+of parameter 4 differs from the previous type "long".
+"/usr/include/unistd.h", line 863.33: 1506-343 (S) Redeclaration of
+pwrite64 differs from previous declaration on line 860 of
+"/usr/include/unistd.h".
+"/usr/include/unistd.h", line 863.33: 1506-377 (I) The type "long long"
+of parameter 4 differs from the previous type "long".
+"/usr/include/unistd.h", line 942.25: 1506-343 (S) Redeclaration of
+fclear64 differs from previous declaration on line 939 of
+"/usr/include/unistd.h".
+"/usr/include/unistd.h", line 942.25: 1506-050 (I) Return type "long
+long" in redeclaration is not compatible with the previous return type
+"long".
+"/usr/include/unistd.h", line 942.25: 1506-377 (I) The type "long long"
+of parameter 2 differs from the previous type "long".
+"/usr/include/unistd.h", line 943.25: 1506-343 (S) Redeclaration of
+fsync_range64 differs from previous declaration on line 940 of
+"/usr/include/unistd.h".
+"/usr/include/unistd.h", line 943.25: 1506-377 (I) The type "long long"
+of parameter 3 differs from the previous type "long".
+
+
+The problem is that the pycrypto source files do not #include "Python.h"
+before all other includes.  In general, you would always want to include
+all standard libraries first(i.e. #include <string.h> ...)  However,
+with Python.h this is bad.  The reason is that Python.h includes
+pyconfig.h which has defines intended to define system level compiler
+directives for the particular platform.  These would of course need to
+be defined before all standard header files otherwise, the standard
+header files before the Python.h include would not have the system
+defines and the standard header files after the Python.h include would.
+That causes the errors as demonstrated above.  If you look at all of the
+source files in the Python sources, you will see that they all include
+Python.h for this very reason.
+
+I am going to fix this in my copy of pycrypto so that it will build.  I
+would suggest that this is also done upstream.
+
+Brent
+
+
+From dlitz at dlitz.net  Mon May 12 09:03:48 2014
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Mon, 12 May 2014 09:03:48 -0700
+Subject: [pycrypto] Is PyCrypto dead?
+In-Reply-To: <CAGfyce2bBbrCV59PEoi8ioa_42stXyrQHMF_exk7CBfAaV_y3g@mail.gmail.com>
+References: <CAGfyce2bBbrCV59PEoi8ioa_42stXyrQHMF_exk7CBfAaV_y3g@mail.gmail.com>
+Message-ID: <20140512160347.GA11104@rivest.dlitz.net>
+
+It's not dead.  Due to some personal issues, I just have very little 
+time to work on the project right now, and unfortunately I haven't been 
+able to find someone I trust to hand off maintenance to.  It seems that 
+most contributors either want to add their pet algorithms[1] (increasing 
+maintenance overhead)]---or they introduce potentially serious 
+vulnerabilities[2][3], bizarre[4] or inconsistent[5] APIs, performance 
+issues, etc.
+
+That's fine; Crypto is hard, but it means progress is slow, because I 
+have to go over everything with a fine-toothed comb, and it's hard to 
+find the time do it, and I'm reluctant to merge code that might make 
+things worse for existing end-users, even if this makes some developers 
+unhappy.
+
+If a fork is necessary, Sebastian Ramacher is probably the person I 
+trust the most---at the moment---to maintain it.  His patches have been 
+consistently good, albeit small, and he's the Debian package maintainer, 
+so a lot of people are already implicitly relying on him anyway.
+
+I'm hoping to spend more time on the project soon, but my availability 
+is hard to predict in advance.  Hopefully, things will be better in the 
+next 6-12 months, but I can't promise anything.
+
+In the meantime, there are a few things that might help in the short 
+term:
+
+- Having some process for triage & code review, so that the community 
+   can vet and patches, and also ensure that the master branch remains in 
+   a releasable state.  Right now, I have an unordered set of pull 
+   requests to deal with.  It would be great if this became a queue that 
+   was prioritized according to quality and the current release goals.
+
+- CI infrastructure.  It would be really helpful if all pull requests 
+   were automatically tested against.  Like [6], but actually covering 
+   all currently supported configurations.
+
+- Moving bug tracking to GitHub (from Launchpad).  Using both tools has 
+   been pretty cumbersome, but I've been reluctant to disrupt things.  
+   Any objections to this?
+
+- If anyone is in/near San Francisco and wants to help with this, it 
+   might help if we introduced ourselves in person.
+
+Does anyone want to champion this?
+
+Regards,
+- Dwayne
+
+[1] https://github.com/dlitz/pycrypto/pull/76
+[2] https://github.com/dlitz/pycrypto/pull/50
+[3] https://bugs.launchpad.net/pycrypto/+bug/1176482
+[4] https://github.com/dlitz/pycrypto/blob/f9a0fc77e1c8847c1a17503e5a1b86a409b8cb2d/lib/Crypto/PublicKey/RSA.py#L318
+[5] https://bugs.launchpad.net/pycrypto/+bug/1132550
+[6] https://github.com/dlitz/pycrypto/pull/60
+
+On Mon, Apr 21, 2014 at 09:44:16PM +0200, Legrandin wrote:
+>Is PyCrypto dead?
+>
+>If one had to judge from the speed security flaws are recognized,
+>fixed and disclosed [1], then no, pycrypto is definitely not dead.
+>Other, more active FOSS library should take notes in fact.
+>
+>However, when it comes to adding new features (as in, catching up with the
+>needs of a normal security application in 2014) and refactoring the
+>existing ones, pycrypto is deep frozen. Bug reports keep piling up and it
+>can easily take a couple of years for a pull request to finally end up in a
+>release.
+>
+>Every now and then, I can read on the ML proposals and intentions for
+>major (and IMO, not entirely needed) overhauls, but they never seem to
+>translate into anything solid. Worse than that, their completion is set as
+>the
+>precondition for acceptance of any new feature, which further exacerbates
+>the problem.
+>
+>What can be done to improve on that?
+>Would setting up a tip jar help?
+>Would a fork of the library be seen as hostile?
+>
+>Finally, I am aware of the existence of the cryptography project [1].
+>It does *not* cover my needs and I do *not* agree with some of the
+>principles and motivations behind that design, though its dev and test
+> processes are clearly sound.
+>
+>[1] http://lists.dlitz.net/pipermail/pycrypto/2013q4/000702.html
+>[2] https://cryptography.io
+
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dave.pawson at gmail.com  Mon May 12 10:49:11 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Mon, 12 May 2014 18:49:11 +0100
+Subject: [pycrypto] Is PyCrypto dead?
+In-Reply-To: <20140512160347.GA11104@rivest.dlitz.net>
+References: <CAGfyce2bBbrCV59PEoi8ioa_42stXyrQHMF_exk7CBfAaV_y3g@mail.gmail.com>
+ <20140512160347.GA11104@rivest.dlitz.net>
+Message-ID: <CAEncD4dOhvNMV2K2_b48tboSQ4wkCkMVQ_iiyGiHdKFErZU17Q@mail.gmail.com>
+
+I've insufficient knowledge to tweak code.
+I do believe the documentation could be improved.
+How to split out the documentation into n parts,
+at least one favouring usage, examples, testing etc.
+If I believed the list/site was live, I would work on that
+and submit it for review.
+ The requirement surely is to document fully the API, but
+also provide ... a guidance /usage document set?
+
+Getting no response from the maintainer is not conducive to submitting anything?
+
+
+
+regards
+
+
+
+On 12 May 2014 17:03, Dwayne Litzenberger <dlitz at dlitz.net> wrote:
+> It's not dead.  Due to some personal issues, I just have very little time to
+> work on the project right now, and unfortunately I haven't been able to find
+> someone I trust to hand off maintenance to.  It seems that most contributors
+> either want to add their pet algorithms[1] (increasing maintenance
+> overhead)]---or they introduce potentially serious vulnerabilities[2][3],
+> bizarre[4] or inconsistent[5] APIs, performance issues, etc.
+>
+> That's fine; Crypto is hard, but it means progress is slow, because I have
+> to go over everything with a fine-toothed comb, and it's hard to find the
+> time do it, and I'm reluctant to merge code that might make things worse for
+> existing end-users, even if this makes some developers unhappy.
+>
+> If a fork is necessary, Sebastian Ramacher is probably the person I trust
+> the most---at the moment---to maintain it.  His patches have been
+> consistently good, albeit small, and he's the Debian package maintainer, so
+> a lot of people are already implicitly relying on him anyway.
+>
+> I'm hoping to spend more time on the project soon, but my availability is
+> hard to predict in advance.  Hopefully, things will be better in the next
+> 6-12 months, but I can't promise anything.
+>
+> In the meantime, there are a few things that might help in the short term:
+>
+> - Having some process for triage & code review, so that the community   can
+> vet and patches, and also ensure that the master branch remains in   a
+> releasable state.  Right now, I have an unordered set of pull   requests to
+> deal with.  It would be great if this became a queue that   was prioritized
+> according to quality and the current release goals.
+>
+> - CI infrastructure.  It would be really helpful if all pull requests   were
+> automatically tested against.  Like [6], but actually covering   all
+> currently supported configurations.
+>
+> - Moving bug tracking to GitHub (from Launchpad).  Using both tools has
+> been pretty cumbersome, but I've been reluctant to disrupt things.    Any
+> objections to this?
+>
+> - If anyone is in/near San Francisco and wants to help with this, it   might
+> help if we introduced ourselves in person.
+>
+> Does anyone want to champion this?
+>
+> Regards,
+> - Dwayne
+>
+> [1] https://github.com/dlitz/pycrypto/pull/76
+> [2] https://github.com/dlitz/pycrypto/pull/50
+> [3] https://bugs.launchpad.net/pycrypto/+bug/1176482
+> [4]
+> https://github.com/dlitz/pycrypto/blob/f9a0fc77e1c8847c1a17503e5a1b86a409b8cb2d/lib/Crypto/PublicKey/RSA.py#L318
+> [5] https://bugs.launchpad.net/pycrypto/+bug/1132550
+> [6] https://github.com/dlitz/pycrypto/pull/60
+>
+> On Mon, Apr 21, 2014 at 09:44:16PM +0200, Legrandin wrote:
+>>
+>> Is PyCrypto dead?
+>>
+>> If one had to judge from the speed security flaws are recognized,
+>> fixed and disclosed [1], then no, pycrypto is definitely not dead.
+>> Other, more active FOSS library should take notes in fact.
+>>
+>> However, when it comes to adding new features (as in, catching up with the
+>> needs of a normal security application in 2014) and refactoring the
+>> existing ones, pycrypto is deep frozen. Bug reports keep piling up and it
+>> can easily take a couple of years for a pull request to finally end up in
+>> a
+>> release.
+>>
+>> Every now and then, I can read on the ML proposals and intentions for
+>> major (and IMO, not entirely needed) overhauls, but they never seem to
+>> translate into anything solid. Worse than that, their completion is set as
+>> the
+>> precondition for acceptance of any new feature, which further exacerbates
+>> the problem.
+>>
+>> What can be done to improve on that?
+>> Would setting up a tip jar help?
+>> Would a fork of the library be seen as hostile?
+>>
+>> Finally, I am aware of the existence of the cryptography project [1].
+>> It does *not* cover my needs and I do *not* agree with some of the
+>> principles and motivations behind that design, though its dev and test
+>> processes are clearly sound.
+>>
+>> [1] http://lists.dlitz.net/pipermail/pycrypto/2013q4/000702.html
+>> [2] https://cryptography.io
+>
+>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From tim_grove at sil.org  Wed May 21 01:26:33 2014
+From: tim_grove at sil.org (Timothy W. Grove)
+Date: Wed, 21 May 2014 09:26:33 +0100
+Subject: [pycrypto] implications of export restrictions
+Message-ID: <537C6339.3000703@sil.org>
+
+I'm interested in using pycrypto in my software project but I am unsure 
+of the implications of that short paragraph at the end of the homepage 
+which reads:
+
+"The export of cryptography software is (still) governed by arms control 
+regulations in Canada, the United States, and elsewhere. The export or 
+re-export of this software may be regulated by law in your country."
+
+Does this mean that I would be unable to use pycrypto in an application 
+which potentially could be used in any country?
+
+Thanks for your help.
+
+Best regards,
+Tim
+
+From helderijs at gmail.com  Fri Jun 27 14:18:49 2014
+From: helderijs at gmail.com (Legrandin)
+Date: Fri, 27 Jun 2014 23:18:49 +0200
+Subject: [pycrypto] Is PyCrypto dead?
+In-Reply-To: <20140512160347.GA11104@rivest.dlitz.net>
+References: <CAGfyce2bBbrCV59PEoi8ioa_42stXyrQHMF_exk7CBfAaV_y3g@mail.gmail.com>
+ <20140512160347.GA11104@rivest.dlitz.net>
+Message-ID: <CAGfyce2yx4=++XpUaDTDWxO+BBeb-XjCY_A7EeWbnxytcJ-GQg@mail.gmail.com>
+
+Hi,
+
+I see no indications PyCrypto will get out of the current stalemate in a
+remotely reasonable time. In addition to that, it does not seem like the
+directions it is going to eventually take (if ever) match the usages I (and
+I am sure a few others) make of it.
+
+I have therefore created a fork (called PyCryptodome, hosted at
+http://www.pycryptodome.org ), to at least try to see how the PyCrypto I
+actually needed *four* years ago would look like (well, excluded SHA3 of
+course).
+
+L.
+
+2014-05-12 18:03 GMT+02:00 Dwayne Litzenberger <dlitz at dlitz.net>:
+
+> It's not dead.  Due to some personal issues [...]
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140627/a4ffd9f6/attachment.html>
+
+From dave.pawson at gmail.com  Fri Jun 27 23:49:20 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sat, 28 Jun 2014 07:49:20 +0100
+Subject: [pycrypto] Is PyCrypto dead?
+In-Reply-To: <CAGfyce2yx4=++XpUaDTDWxO+BBeb-XjCY_A7EeWbnxytcJ-GQg@mail.gmail.com>
+References: <CAGfyce2bBbrCV59PEoi8ioa_42stXyrQHMF_exk7CBfAaV_y3g@mail.gmail.com>
+ <20140512160347.GA11104@rivest.dlitz.net>
+ <CAGfyce2yx4=++XpUaDTDWxO+BBeb-XjCY_A7EeWbnxytcJ-GQg@mail.gmail.com>
+Message-ID: <CAEncD4eTvLbhetaVM8=BH4PWxKpwinj6bTaV=q=fEMon9zoMfQ@mail.gmail.com>
+
+Thanks - look forward to more updates and a bit more life in general
+for some great software.
+
+regards DaveP
+
+On 27 June 2014 22:18, Legrandin <helderijs at gmail.com> wrote:
+> Hi,
+>
+> I see no indications PyCrypto will get out of the current stalemate in a
+> remotely reasonable time. In addition to that, it does not seem like the
+> directions it is going to eventually take (if ever) match the usages I (and
+> I am sure a few others) make of it.
+>
+> I have therefore created a fork (called PyCryptodome, hosted at
+> http://www.pycryptodome.org ), to at least try to see how the PyCrypto I
+> actually needed *four* years ago would look like (well, excluded SHA3 of
+> course).
+>
+> L.
+>
+> 2014-05-12 18:03 GMT+02:00 Dwayne Litzenberger <dlitz at dlitz.net>:
+>>
+>> It's not dead.  Due to some personal issues [...]
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+

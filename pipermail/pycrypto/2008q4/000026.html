@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Possible problem in src/_fastmath.c
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Possible%20problem%20in%20src/_fastmath.c&In-Reply-To=20081016121338.GA32540%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000025.html">
+   <LINK REL="Next"  HREF="000027.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Possible problem in src/_fastmath.c</H1>
+    <B>Sergey Chernov</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Possible%20problem%20in%20src/_fastmath.c&In-Reply-To=20081016121338.GA32540%40rivest.dlitz.net"
+       TITLE="[pycrypto] Possible problem in src/_fastmath.c">sergey.chernov at thrift.ru
+       </A><BR>
+    <I>Thu Oct 16 20:03:02 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000025.html">[pycrypto] Possible problem in src/_fastmath.c
+</A></li>
+        <LI>Next message: <A HREF="000027.html">[pycrypto] Test code - Random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#26">[ date ]</a>
+              <a href="thread.html#26">[ thread ]</a>
+              <a href="subject.html#26">[ subject ]</a>
+              <a href="author.html#26">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Sorry, of course, that sould be 
+
+mpz_set_ui( m, 0 );
+
+- ot it will add the value of p to m instead of assigning. I'm not using
+_fastmath myself, but found this function a little strange when writing
+different RSA implementation with GMP. 
+
+-----Original Message-----
+From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>
+[mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>] On Behalf Of Dwayne C.
+Litzenberger
+Sent: Thursday, October 16, 2008 4:14 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] Possible problem in src/_fastmath.c
+
+On Thu, Oct 16, 2008 at 08:08:32AM -0400, Dwayne C. Litzenberger wrote:
+&gt;<i> On Thu, Oct 16, 2008 at 03:39:29AM +0400, Sergey Chernov wrote:
+</I>&gt;&gt;<i> See patch:
+</I>&gt;&gt;<i> ---------------------------------------------------------------------
+</I>&gt;&gt;<i> ------- diff --git a/src/_fastmath.c b/src/_fastmath.c index 
+</I>&gt;&gt;<i> d06d697..a0aa181 100755
+</I>&gt;&gt;<i> --- a/src/_fastmath.c
+</I>&gt;&gt;<i> +++ b/src/_fastmath.c
+</I>&gt;&gt;<i> @@ -28,6 +28,7 @@ longObjToMPZ (mpz_t m, PyLongObject * p)
+</I>&gt;&gt;<i> 		size = p-&gt;ob_size;
+</I>&gt;&gt;<i> 	else
+</I>&gt;&gt;<i> 		size = -p-&gt;ob_size;
+</I>&gt;&gt;<i> +	mpz_clear( m );
+</I>&gt;&gt;<i> 	for (i = 0; i &lt; size; i++)
+</I>&gt;&gt;<i> 	{
+</I>&gt;&gt;<i> 		mpz_set_ui (temp, p-&gt;ob_digit[i]);
+</I>&gt;&gt;<i> ---------------------------------------------------------------------
+</I>&gt;&gt;<i> -------
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Current usage do not discover the bug as 'm' is always just-initialized.
+</I>&gt;&gt;<i> Still it, as I think, may cause trouble later.
+</I>&gt;<i>
+</I>&gt;<i> Sergey,
+</I>&gt;<i>
+</I>&gt;<i> What is the purpose of your patch?  What bug are you referring to?
+</I>&gt;<i>
+</I>&gt;<i> Are you trying to set m to zero at the top of the loop?  Looking at 
+</I>&gt;<i> the GMP documentation 
+</I>&gt;<i> (<A HREF="http://gmplib.org/manual/Initializing-Integers.html">http://gmplib.org/manual/Initializing-Integers.html</A>), I see that 
+</I>&gt;<i> mpz_init() and mpz_clear() have similar usages as malloc() and free(), so
+</I>I'm pretty sure that I do not want to apply your patch as-is.
+
+Perhaps you meant this?
+
+----------------------------------------------------------------------------
+---
+diff --git a/src/_fastmath.c b/src/_fastmath.c index d06d697..caf8e7b 100755
+--- a/src/_fastmath.c
++++ b/src/_fastmath.c
+@@ -28,6 +28,7 @@ longObjToMPZ (mpz_t m, PyLongObject * p)
+                 size = p-&gt;ob_size;
+         else
+                 size = -p-&gt;ob_size;
++       mpz_set_ui (m, 0);
+         for (i = 0; i &lt; size; i++)
+         {
+                 mpz_set_ui (temp, p-&gt;ob_digit[i]);
+----------------------------------------------------------------------------
+---
+
+
+--
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000025.html">[pycrypto] Possible problem in src/_fastmath.c
+</A></li>
+	<LI>Next message: <A HREF="000027.html">[pycrypto] Test code - Random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#26">[ date ]</a>
+              <a href="thread.html#26">[ thread ]</a>
+              <a href="subject.html#26">[ subject ]</a>
+              <a href="author.html#26">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

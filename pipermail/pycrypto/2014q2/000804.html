@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Linking Against Non-Sytem libgmp
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Linking%20Against%20Non-Sytem%20libgmp&In-Reply-To=%3C7178542C389AAE4B9A26C656124E966F3D68A2%40xchmbbal505.ds.susq.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000797.html">
+   <LINK REL="Next"  HREF="000798.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Linking Against Non-Sytem libgmp</H1>
+    <B>Wempa, Kristofer</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Linking%20Against%20Non-Sytem%20libgmp&In-Reply-To=%3C7178542C389AAE4B9A26C656124E966F3D68A2%40xchmbbal505.ds.susq.com%3E"
+       TITLE="[pycrypto] Linking Against Non-Sytem libgmp">Kristofer.Wempa at sig.com
+       </A><BR>
+    <I>Mon Apr 21 13:40:03 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000797.html">[pycrypto] Linking Against Non-Sytem libgmp
+</A></li>
+        <LI>Next message: <A HREF="000798.html">[pycrypto] Any progress with pycrypto 2.7?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#804">[ date ]</a>
+              <a href="thread.html#804">[ thread ]</a>
+              <a href="subject.html#804">[ subject ]</a>
+              <a href="author.html#804">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> Since the libgmp on our Linux server (SLES11SP2) has a known vulnerability
+</I>&gt;<i> , I'm trying to build pycrypto against the latest libgmp that I have installed
+</I>&gt;<i>  in an alternate location and have the run path set so that it picks up the
+</I>&gt;<i> alternate libgmp without having to set LD_LIBRARY_PATH.  First, I tried
+</I>&gt;<i> modifying include_dirs, library_dirs and runtime_library_dirs in the setup.py.
+</I>&gt;<i> When that didn't work, I tried only setting CFLAGS/CPPFLAGS/LDFLAGS
+</I>&gt;<i> environment variables.  Neither worked.  In both cases, I see my compiler
+</I>&gt;<i> and linker flags on the command lines, but because &quot;-L/usr/lib64 -L/lib64&quot;
+</I>&gt;<i> always appears first, the library is linked against the system libgmp and not
+</I>&gt;<i> the alternate one.  At this point, my only solution is to build the _fastmath.so
+</I>&gt;<i> and then re-run the link command without the &quot;-L/usr/lib64 -L/lib64&quot;
+</I>&gt;<i> arguments.  Isn't there a cleaner way to accomplish what I need ?  Why don't
+</I>&gt;<i> my LDFLAGS appear first on the link line ?  Any help would be appreciated.
+</I>&gt;<i> Thank you.
+</I>
+
+Please disregard my posting.  I only see this behavior in Python 2.7.5, so it's either the Python package or the version of distribute/setuptools that is shipped with that specific Python version.  I tried building against a different libgmp with other Python 2.7.X versions and none of them are prepending those system libraries to the link line.
+
+
+________________________________
+
+IMPORTANT: The information contained in this email and/or its attachments is confidential. If you are not the intended recipient, please notify the sender immediately by reply and immediately delete this message and all its attachments. Any review, use, reproduction, disclosure or dissemination of this message or any attachment by an unintended recipient is strictly prohibited. Neither this message nor any attachment is intended as or should be construed as an offer, solicitation or recommendation to buy or sell any security or other financial instrument. Neither the sender, his or her employer nor any of their respective affiliates makes any warranties as to the completeness or accuracy of any of the information contained herein or that this message or any of its attachments is free of viruses.
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000797.html">[pycrypto] Linking Against Non-Sytem libgmp
+</A></li>
+	<LI>Next message: <A HREF="000798.html">[pycrypto] Any progress with pycrypto 2.7?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#804">[ date ]</a>
+              <a href="thread.html#804">[ thread ]</a>
+              <a href="subject.html#804">[ subject ]</a>
+              <a href="author.html#804">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

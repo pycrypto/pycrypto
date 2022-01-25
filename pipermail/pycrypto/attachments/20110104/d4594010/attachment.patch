@@ -1,0 +1,47 @@
+diff --git a/Doc/pycrypt.rst b/Doc/pycrypt.rst
+index 660d29b..20b7c7f 100644
+--- a/Doc/pycrypt.rst
++++ b/Doc/pycrypt.rst
+@@ -188,7 +188,7 @@ Here's an example, using the SHA-256 algorithm::
+     >>> m = SHA256.new()
+     >>> m.update('abc')
+     >>> m.digest()
+-    ''\xbax\x16\xbf\x8f\x01\xcf\xeaAA@\xde]\xae"#\xb0\x03a\xa3\x96\x17z\x9c\xb4\x10\xffa\xf2\x00\x15\xad'
++    '\xbax\x16\xbf\x8f\x01\xcf\xeaAA@\xde]\xae"#\xb0\x03a\xa3\x96\x17z\x9c\xb4\x10\xffa\xf2\x00\x15\xad'
+     >>> m.hexdigest()
+     'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad'
+ 
+diff --git a/lib/Crypto/SelfTest/Random/test_random.py b/lib/Crypto/SelfTest/Random/test_random.py
+index 3ae2142..d25756f 100644
+--- a/lib/Crypto/SelfTest/Random/test_random.py
++++ b/lib/Crypto/SelfTest/Random/test_random.py
+@@ -69,10 +69,13 @@ class SimpleTest(unittest.TestCase):
+             x = random.randrange(start,stop,step)
+             y = random.randrange(start,stop,step)
+             self.assertNotEqual(x, y)
+-            self.assertEqual(start <= x <= stop, True)
+-            self.assertEqual(start <= y <= stop, True)
++            self.assertEqual(start <= x < stop, True)
++            self.assertEqual(start <= y < stop, True)
++            self.assertEqual((x - start) % step, 0)
++            self.assertEqual((y - start) % step, 0)
+         for i in range(10):
+             self.assertEqual(random.randrange(1,2), 1)
++        self.assertRaises(ValueError, random.randrange, start, start)
+         self.assertRaises(ValueError, random.randrange, stop, start, step)
+         self.assertRaises(TypeError, random.randrange, start, stop, step, step)
+         self.assertRaises(TypeError, random.randrange, start, stop, "1")
+@@ -115,9 +118,13 @@ class SimpleTest(unittest.TestCase):
+         random.shuffle(x)
+         random.shuffle(y)
+         self.assertNotEqual(x, y)
++        self.assertEqual(len(seq), len(x))
++        self.assertEqual(len(seq), len(y))
+         for i in range(len(seq)):
+            self.assertEqual(x[i] in seq, True)
+            self.assertEqual(y[i] in seq, True)
++           self.assertEqual(seq[i] in x, True)
++           self.assertEqual(seq[i] in y, True)
+         z = [1]
+         random.shuffle(z)
+         self.assertEqual(z, [1])

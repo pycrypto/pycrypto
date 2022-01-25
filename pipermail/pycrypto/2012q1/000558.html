@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] autoconf error on Windows
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20autoconf%20error%20on%20Windows&In-Reply-To=%3CCAO%2B9iGfbcc8c8hWCcHXJnASNU4EhhehEsykt0bcQTr_9r_O1MQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000549.html">
+   <LINK REL="Next"  HREF="000552.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] autoconf error on Windows</H1>
+    <B>Alec Taylor</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20autoconf%20error%20on%20Windows&In-Reply-To=%3CCAO%2B9iGfbcc8c8hWCcHXJnASNU4EhhehEsykt0bcQTr_9r_O1MQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] autoconf error on Windows">alec.taylor6 at gmail.com
+       </A><BR>
+    <I>Sun Jan 29 03:52:19 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000549.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+        <LI>Next message: <A HREF="000552.html">[pycrypto] Building a Win32 egg for PyCrypto 2.5
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#558">[ date ]</a>
+              <a href="thread.html#558">[ thread ]</a>
+              <a href="subject.html#558">[ subject ]</a>
+              <a href="author.html#558">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>PyCrypto's install is giving an autoconf error on Windows, whether I
+install from the git repo or normally.
+
+Traceback (most recent call last):
+  File &quot;C:\Python27\lib\distutils\dist.py&quot;, line 972, in run_command
+    cmd_obj.run()
+
+  File &quot;C:\Projects\satchmo_test\satchmo_test\src\pycrypto\setup.py&quot;,
+line 274, in run
+    raise RuntimeError(&quot;autoconf error&quot;)
+
+RuntimeError: autoconf error
+
+----------------------------------------
+Command C:\Python27\python.exe -c &quot;import setuptools;
+__file__='C:\\Projects\\satchmo_test\\satchmo_test\\src\\pycrypto\\setup.py';
+exec(compile(open(__file__).read().replace('\r\n', '\n'), __file__,
+'exec'))&quot; develop --no-deps failed with error code 1
+Full output: <A HREF="http://pastebin.com/Dp3aw077">http://pastebin.com/Dp3aw077</A>
+
+How can I get PyCrypto to install?
+
+Thanks for all suggestions,
+
+Alec Taylor
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000549.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+	<LI>Next message: <A HREF="000552.html">[pycrypto] Building a Win32 egg for PyCrypto 2.5
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#558">[ date ]</a>
+              <a href="thread.html#558">[ thread ]</a>
+              <a href="subject.html#558">[ subject ]</a>
+              <a href="author.html#558">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

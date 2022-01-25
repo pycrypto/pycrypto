@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Verifying Signatures on Data and Certifictes
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Verifying%20Signatures%20on%20Data%20and%20Certifictes&In-Reply-To=%3CCAGfyce1pwyCs2yPY1P02tR9wov96h%3DY7G%3D4kVXYoMqR0v2bhPw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000700.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Verifying Signatures on Data and Certifictes</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Verifying%20Signatures%20on%20Data%20and%20Certifictes&In-Reply-To=%3CCAGfyce1pwyCs2yPY1P02tR9wov96h%3DY7G%3D4kVXYoMqR0v2bhPw%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Verifying Signatures on Data and Certifictes">helderijs at gmail.com
+       </A><BR>
+    <I>Tue Oct  1 04:09:26 PDT 2013</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000700.html">[pycrypto] PyCrypto status update &amp; release plans
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#699">[ date ]</a>
+              <a href="thread.html#699">[ thread ]</a>
+              <a href="subject.html#699">[ subject ]</a>
+              <a href="author.html#699">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Kyle,
+
+The code you provide the link for also uses PyOpenSSL; I believe the
+error you are getting originates from that library, not from PyCrypto.
+
+L.
+
+2013/9/27 Kyle Cummings &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">kyle.cummings at forge-corp.com</A>&gt;:
+&gt;<i> I apologize before hand for the long e-mail, but I just wanted to be
+</I>&gt;<i> thorough in what I was doing.
+</I>&gt;<i>
+</I>&gt;<i> I am trying to use the PyCrypto library to achieve two similar things. The
+</I>&gt;<i> first use is to verify that a piece of data has been signed by the private
+</I>&gt;<i> key of a certain certificate. The other use is to verify a certificate chain
+</I>&gt;<i> (verify that certificate A has signed B, and then that B has signed C).
+</I>&gt;<i>
+</I>&gt;<i> The process is as follows:
+</I>&gt;<i> Client generates certificate / key-pairs A, B, C and D. A signs B, and B
+</I>&gt;<i> signs C and D. Then the certificates for A, signed B, signed C and signed D
+</I>&gt;<i> are pushed to a server. The server responds with a randomly generated bit of
+</I>&gt;<i> binary data for each certificate. The client uses each certificate /
+</I>&gt;<i> key-pair to sign the respective binary data, and then pushes the (base64
+</I>&gt;<i> encoded) signed responses back to the server. The server then takes the
+</I>&gt;<i> responses, decodes them and tries to verify the signatures on the
+</I>&gt;<i>
+</I>&gt;<i> Code / Attempts:
+</I>&gt;<i> My first attempt -
+</I>&gt;<i>
+</I>&gt;<i> ###
+</I>&gt;<i> #Function - verifying the signed challenges
+</I>&gt;<i> ###
+</I>&gt;<i> Astr = storedcertificates[&quot;acert&quot;]
+</I>&gt;<i> Achallenge = storedchallenges[&quot;achallenge&quot;]
+</I>&gt;<i> Signedchallenge = (read in from http post request)
+</I>&gt;<i> Acert = load_certificate(FILETYPE_PEM, Astr)
+</I>&gt;<i>
+</I>&gt;<i> try:
+</I>&gt;<i>    verify (Acert, Signedchallenge, Achallenge, &quot;sha256&quot;)
+</I>&gt;<i> except Exception e:
+</I>&gt;<i>    print &quot;failed to verify for reason:&quot;
+</I>&gt;<i>    print e
+</I>&gt;<i>
+</I>&gt;<i> #Repeat above for B, C and D
+</I>&gt;<i> ###
+</I>&gt;<i>
+</I>&gt;<i> With this code I got the following error response from the verify function:
+</I>&gt;<i> &quot;must be string without null bytes, not str&quot;.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> My second attempt -
+</I>&gt;<i>
+</I>&gt;<i> Having the above code fail, I then found and tried adapting the code here,
+</I>&gt;<i> but I first received that the function &quot;get_signature_algorithm()&quot; does not
+</I>&gt;<i> exists for X509 certificates, and then received the same error response back
+</I>&gt;<i> for the verify function if I commented out the signature algorithm and just
+</I>&gt;<i> manually provided the digest.
+</I>&gt;<i> ###
+</I>&gt;<i> #Function - verify the signed challenges modified example
+</I>&gt;<i> ###
+</I>&gt;<i> Acert = load_certificate(FILETYPE_PEM, storedcerts[&quot;root&quot;])
+</I>&gt;<i> challenge = (original binary challenge sent to client)
+</I>&gt;<i> algorithm = Acert.get_signature_algorithm()
+</I>&gt;<i> dersigin = asn1.DerObject()
+</I>&gt;<i> dersigin.decode(rootchal)
+</I>&gt;<i> sig0 = dersigin.payload
+</I>&gt;<i> if sig0[0] != '\x00':
+</I>&gt;<i> print &quot;sig0 error&quot;
+</I>&gt;<i> print sig0
+</I>&gt;<i> return False
+</I>&gt;<i>
+</I>&gt;<i> signature = sig0[1:]
+</I>&gt;<i> try:
+</I>&gt;<i> verify(Acert, signature, challenge, algorithm)
+</I>&gt;<i> #verify(Acert, signature, challenge, &quot;sha256&quot;) #Alternate without the
+</I>&gt;<i> get_sig_alg()
+</I>&gt;<i> except:
+</I>&gt;<i> print &quot;verifcation failed&quot;
+</I>&gt;<i> return False
+</I>&gt;<i> print &quot;THE VERIFICATION WORKED?!?!?!?!?!?!??!&quot;
+</I>&gt;<i> return True
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> For the chain verification stuff, I followed the example code from the above
+</I>&gt;<i> link exactly, but received the same errors as the second example code
+</I>&gt;<i> (algorithm and string / str).
+</I>&gt;<i>
+</I>&gt;<i> What am I doing wrong / How am I using the library incorrectly?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Kyle Cummings
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000700.html">[pycrypto] PyCrypto status update &amp; release plans
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#699">[ date ]</a>
+              <a href="thread.html#699">[ thread ]</a>
+              <a href="subject.html#699">[ subject ]</a>
+              <a href="author.html#699">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

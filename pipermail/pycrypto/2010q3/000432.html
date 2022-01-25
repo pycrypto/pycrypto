@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] winrandom alternative
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20winrandom%20alternative&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000265.html">
+   <LINK REL="Next"  HREF="000266.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] winrandom alternative</H1>
+    <B>Gregory Taylor</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20winrandom%20alternative&In-Reply-To="
+       TITLE="[pycrypto] winrandom alternative">gtaylor at duointeractive.com
+       </A><BR>
+    <I>Mon Aug 16 08:59:05 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000265.html">[pycrypto] Help on PyCrypto errors on 64-bit Windows
+</A></li>
+        <LI>Next message: <A HREF="000266.html">[pycrypto] winrandom alternative (Namely for 64-bit Windows)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#432">[ date ]</a>
+              <a href="thread.html#432">[ thread ]</a>
+              <a href="subject.html#432">[ subject ]</a>
+              <a href="author.html#432">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I'm not sure if this is the best place for something like this, but I figured I'd share a workaround and a suggestion for others to take or leave. I'm currently running a 64-bit Windows 7 machine for testing some of our codebase on Windows, and ran into a snag while installing PyCrypto (so I could use Fabric, which depends on Paramiko, which depends on PyCrypto). 
+
+As you are probably aware of, PyCrypto tries to download/compile winrandom, which can be a problem for many that lack a compiler. As an alternative for those who can't/won't install winrandom, I put together a ctypes equivalent that doesn't require compilation like the original winrandom. This new module aims to be functionally equivalent in every way to winrandom, but accesses the Windows-specific cryptography library through ctypes rather than a compiled Python C extension module.
+
+The PyPi page can be found at: <A HREF="http://pypi.python.org/pypi/winrandom-ctypes/">http://pypi.python.org/pypi/winrandom-ctypes/</A>
+The Github page can be found at: <A HREF="http://github.com/duointeractive/winrandom-ctypes">http://github.com/duointeractive/winrandom-ctypes</A>
+
+I understand that going the ctypes route might raise the minimum Python version required (2.4 or 2.5?), so this probably isn't a one-size-fits-all solution. However, if there was anything that could be done to make it easier for a user to elect to use the ctypes version, that'd be great. Perhaps PyCrypto could check at install time whether winrandom is already installed, and skip trying to compile/re-install it (winrandom-ctypes provides winrandom) to allow a user to plug something else in (winrandom-ctypes?).
+
+Just thought I'd throw this out here for those who might find it useful in the painful situation that they have to develop on Windows.
+
+Greg Taylor
+<A HREF="http://duointeractive.com">http://duointeractive.com</A>
+DUO Interactive, LLC
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000265.html">[pycrypto] Help on PyCrypto errors on 64-bit Windows
+</A></li>
+	<LI>Next message: <A HREF="000266.html">[pycrypto] winrandom alternative (Namely for 64-bit Windows)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#432">[ date ]</a>
+              <a href="thread.html#432">[ thread ]</a>
+              <a href="subject.html#432">[ subject ]</a>
+              <a href="author.html#432">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

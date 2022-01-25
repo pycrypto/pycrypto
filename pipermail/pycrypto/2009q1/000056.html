@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Can pycrypt do a key exchange?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Can%20pycrypt%20do%20a%20key%20exchange%3F&In-Reply-To=497AA183.5090201%40echeque.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000055.html">
+   <LINK REL="Next"  HREF="000057.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Can pycrypt do a key exchange?</H1>
+    <B>Bill Broadley</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Can%20pycrypt%20do%20a%20key%20exchange%3F&In-Reply-To=497AA183.5090201%40echeque.com"
+       TITLE="[pycrypto] Can pycrypt do a key exchange?">bill at broadley.org
+       </A><BR>
+    <I>Wed Jan 28 22:57:12 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000055.html">[pycrypto] Can pycrypt do a key exchange?
+</A></li>
+        <LI>Next message: <A HREF="000057.html">[pycrypto] synchronisation 2 computers'databases
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#56">[ date ]</a>
+              <a href="thread.html#56">[ thread ]</a>
+              <a href="subject.html#56">[ subject ]</a>
+              <a href="author.html#56">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>James A. Donald wrote:
+&gt;<i> Gre7g Luterman wrote:
+</I>&gt;<i>  &gt; Hey list -
+</I>&gt;<i>  &gt;
+</I>&gt;<i>  &gt; I'm working on a Python application where clients will
+</I>&gt;<i>  &gt; open encrypted connections to a custom server
+</I>&gt;<i>  &gt; application. The data isn't something super-important,
+</I>&gt;<i>  &gt; like credit card numbers, but I'd rather not have it
+</I>&gt;<i>  &gt; snooped or otherwise mucked with by outsiders.
+</I>
+How controlled is the client environment, can you just setup a VPN?  Stunnel?
+SSH port forwarding?  Certainly using an existing encryption system is is
+likely to be the most secure, granted it might not be a good fit for your
+application.  There's at least two python wrappers/bindings for openssl.
+
+Are you writing the client software or is it via some published API where
+other clients might want to connect?
+
+&gt;<i>  &gt; pycrypt makes this easy, but how do I share the key
+</I>&gt;<i>  &gt; securely? pycrypt has code for calculating
+</I>&gt;<i>  &gt; public/private keys, encrypting with them, decrypting
+</I>&gt;<i>  &gt; with them, etc., but I don't see an obvious way to do
+</I>&gt;<i>  &gt; an exchange with it.
+</I>&gt;<i> 
+</I>&gt;<i> Key distribution is in the general case a major unsolved
+</I>&gt;<i> problem
+</I>
+Openssl, SSH, PGP/GPG, and various p2p related libraries have implemented
+various approaches.  I guess maybe not sufficiently general case, IMO a
+pychrypto DH implementation would be a big step in the right direction.  Not
+that key exchange is the same as key distribution.
+
+&gt;<i>, and there are no libraries to handle it -
+</I>&gt;<i> worse, there are no protocols to handle it, worse still,
+</I>&gt;<i> there are no successful examples to imitate, other than
+</I>&gt;<i> SSH.
+</I>
+Well the SSL approach of distributing numerous root public keys with every
+client and then having a chain of trust is a reasonable approach... as is ssh
+of course.  x509 certs is another common approach, especially for network
+services that publish and API and allow for random clients to connect (see
+ec2, libvert, enomaly, s3, etc).
+
+Certainly write no more code then you have to, there are many pitfalls, but
+that doesn't mean you shouldn't try.  I found a reasonably looking perl
+implementation of DH in 110 lines of code or so:
+ <A HREF="http://package-import.ubuntu.com/libc/libcrypt-dh-perl/intrepid-upstream/annotate/head%3A/lib/Crypt/DH.pm">http://package-import.ubuntu.com/libc/libcrypt-dh-perl/intrepid-upstream/annotate/head%3A/lib/Crypt/DH.pm</A>
+
+I can't vouch for the implementation, but it certainly looks reasonably close
+to what I'd expect for a DH implementation.
+
+&gt;<i> You, however, are not solving the general case, so might
+</I>&gt;<i> hand roll your own custom solution, perhaps starting
+</I>&gt;<i> with a single widely known trusted master public key
+</I>&gt;<i> embedded in both client and server, whose secret key,
+</I>&gt;<i> which you alone possess, is used to sign durable client
+</I>&gt;<i> keys and server keys, which are used in combination with
+</I>&gt;<i> transient client keys and transient server keys - the
+</I>&gt;<i> skype solution.
+</I>
+Sure, although I personally prefer the ssh approach, granted to avoid a man in
+the middle attack you have to personally verify the remote key via a back
+channel.  Granted I suspect 99.9% of ssh users just assume the first
+connection is safe, certainly getting an alarm if someone else claims to be
+the server is a very good thing.
+
+&gt;<i> Now, of course, all the experts say &quot;never hand roll
+</I>&gt;<i> your own custom solution&quot;, which is true if the experts
+</I>&gt;<i> have something ready to roll that actually works. Which,
+</I>&gt;<i> for key distribution, they generally do not.
+</I>&gt;<i> 
+</I>&gt;<i> The particular special case solution will depend on the
+</I>&gt;<i> particulars of your particular special case.
+</I>
+Indeed, even generating a random number can be fraught with peril.  Certainly
+if you write a python DH implementation (like the 110 lines of Perl at the
+URL) certainly let the list know.  I've similar needs and might even be
+willing to help depending on the timing and implementation details.
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000055.html">[pycrypto] Can pycrypt do a key exchange?
+</A></li>
+	<LI>Next message: <A HREF="000057.html">[pycrypto] synchronisation 2 computers'databases
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#56">[ date ]</a>
+              <a href="thread.html#56">[ thread ]</a>
+              <a href="subject.html#56">[ subject ]</a>
+              <a href="author.html#56">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

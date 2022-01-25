@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Test code - Random
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Test%20code%20-%20Random&In-Reply-To=20081107221215.GA9445%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000029.html">
+   <LINK REL="Next"  HREF="000031.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Test code - Random</H1>
+    <B>Sergey Chernov</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Test%20code%20-%20Random&In-Reply-To=20081107221215.GA9445%40rivest.dlitz.net"
+       TITLE="[pycrypto] Test code - Random">sergey.chernov at thrift.ru
+       </A><BR>
+    <I>Fri Nov  7 20:29:02 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000029.html">[pycrypto] Test code - Random
+</A></li>
+        <LI>Next message: <A HREF="000031.html">[pycrypto] Test code - Random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#30">[ date ]</a>
+              <a href="thread.html#30">[ thread ]</a>
+              <a href="subject.html#30">[ subject ]</a>
+              <a href="author.html#30">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm sorry if I'm telling something stupid, since I was not working  
+with RNGs analysis for about 18 years, but from what I still remember.  
+There was a test (in fact, series of tests) that surprisingly failed  
+lot of these old times RNGs. It's sort of N-dimensial bins histogram.
+
+The simplest was easy. Let's talk pairs of N-bit randoms as (x,y)  
+coordinates in a finite rectangle (using N or mod) and see whether  
+they would tend to cluster. I've seen in my own eyes that one RNG that  
+was supposed to be sufficient, was constantly generating a few small  
+triangles leaving the rest clear :)
+
+So, the general test we were performed was kind of following. Let's  
+take N-dimensional cube and fill it with RNG series of size L, then  
+check how even it fills the cube. Simplest case is to divide it to  
+equal clusters (bins), so there should be, say, L/1000 clusters least,  
+calculate how many pseudo-random points hit each bin and see how plain  
+is this histogram. It should not vary too much if the RNG is ok and L  
+is big. We can, say, check the standard deviation. Better to check  
+several bins size, using various random primes as factors for bins  
+sizes. Then increment N and check it again.
+
+I've read in late 80s that such test failed on some very famous RDBMS  
+system of these old good times (as I remember, all dots filed 64 plans  
+in the 3(?)D cube or so).
+
+For sure there must be a plenty of better tests by now, but I'm not  
+familiar with them.
+
+The probability you mentioned should be, as for me, 1e-256. One famous  
+mathematician, namely Kolmogorov, once said, that there is no such  
+things as 1e-100 probability, there is only the impossibility :)
+
+Sergey Chernov
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">sergey.chernov at thrift.ru</A>
+
+
+
+08.11.2008, &#1074; 1:12, Dwayne C. Litzenberger &#1085;&#1072;&#1087;&#1080;&#1089;&#1072;&#1083;(&#1072;):
+
+&gt;<i> I'm not sure what your proposed TestNotAlwaysEqual test offers that  
+</I>&gt;<i> SimpleTest does.  Presumably the purpose of this new test is to  
+</I>&gt;<i> avoid the case where a correctly-functioning RNG returns two  
+</I>&gt;<i> identical 128-bit numbers in a row.  While that may be possible, I'm  
+</I>&gt;<i> really not concerned about it, since according to my calculations*,  
+</I>&gt;<i> the probability that SimpleTest fails is 2**-128.   
+</I>&gt;<i> TestNotAlwaysEqual adds another test that can  fail in the same way,  
+</I>&gt;<i> but with a probability of 2**-1280.  I don't see why that would be  
+</I>&gt;<i> necessary.
+</I>&gt;<i>
+</I>&gt;<i> (* Someone please correct me if I'm wrong, since I'm still not very  
+</I>&gt;<i> good at reasoning with probability.)
+</I>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 2193 bytes
+Desc: not available
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20081108/35822f32/attachment-0001.bin">http://lists.dlitz.net/pipermail/pycrypto/attachments/20081108/35822f32/attachment-0001.bin</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000029.html">[pycrypto] Test code - Random
+</A></li>
+	<LI>Next message: <A HREF="000031.html">[pycrypto] Test code - Random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#30">[ date ]</a>
+              <a href="thread.html#30">[ thread ]</a>
+              <a href="subject.html#30">[ subject ]</a>
+              <a href="author.html#30">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

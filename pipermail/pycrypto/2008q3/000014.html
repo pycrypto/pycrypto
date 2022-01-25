@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Bug in Crypto.PublicKey.RSA?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To=20080908144627.GB7041%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000012.html">
+   <LINK REL="Next"  HREF="000015.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Bug in Crypto.PublicKey.RSA?</H1>
+    <B>Bill Broadley</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To=20080908144627.GB7041%40rivest.dlitz.net"
+       TITLE="[pycrypto] Bug in Crypto.PublicKey.RSA?">bill at broadley.org
+       </A><BR>
+    <I>Mon Sep  8 22:29:08 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000012.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+        <LI>Next message: <A HREF="000015.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#14">[ date ]</a>
+              <a href="thread.html#14">[ thread ]</a>
+              <a href="subject.html#14">[ subject ]</a>
+              <a href="author.html#14">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dwayne C. Litzenberger wrote:
+&gt;<i> On Mon, Sep 08, 2008 at 10:42:01AM -0400, Dwayne C. Litzenberger wrote:
+</I>&gt;&gt;<i> On Sun, Sep 07, 2008 at 10:48:49PM -0700, Bill Broadley wrote:
+</I>&gt;&gt;&gt;<i> Shouldn't RSA.generate(keysize, rpool.get_bytes) generate a key that is
+</I>&gt;&gt;&gt;<i> keysize bits and that can encrypt that many bits?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> No.  RSA with an N-bit modulus can only guarantee encryption of up to 
+</I>&gt;&gt;<i> N-1 bits.
+</I>&gt;<i> 
+</I>&gt;<i> I should also add that you should not be encrypting user data directly 
+</I>&gt;<i> using RSA.  You _need_ padding like PKCS#1 if you want any security.
+</I>
+Hmm, I was not aware of padding issues.  What is the attack?  How much is the 
+ideal padding?  Is the attack related to guessing the plain text based on the 
+file size?  Is the padding supposed to be random extra bytes?  Filled to some 
+boundary like the next 16 bytes?  More?  Does compressing the plain text help?
+
+&gt;<i> There are a ton of attacks on direct RSA encryption.
+</I>
+I'm blissfully unaware, I'll do some digging around, but any recommendations 
+are welcome.
+
+I'm basically trying to handle 2 encryption related problems:
+#1 backing up files that are distributed to untrusted (as much as possible)
+    peers.  Only the one encrypting should ever be able to decrypt the files.
+    I was planning on using RSA with a user selected key size.  Possibilities
+    for implementations include Crypto.PublicKey.RSA, a wrapper around GPG,
+    and a wrapper/bindings for openssl.
+#2 Securely communications between peers (of encrypted files).  Possibly
+    with out of band communication of public keys (I.e. manual peer
+    introduction by the admin).
+
+Ideally recovery of all backed up files could be managed with only a copy of 
+the the public/private keys.
+
+&gt;<i> Like most of the things in PyCrypto, Crypto.PublicKey.RSA is a primitive 
+</I>&gt;<i> that can be used to *build* a secure cryptosystem, but it doesn't 
+</I>&gt;<i> provide any meaningful security by itself.
+</I>
+Sounds very reasonable.  Thanks for the advice on the padding, I'll try to 
+track down the reasons why and what an ideal implementation would be.
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000012.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+	<LI>Next message: <A HREF="000015.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#14">[ date ]</a>
+              <a href="thread.html#14">[ thread ]</a>
+              <a href="subject.html#14">[ subject ]</a>
+              <a href="author.html#14">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -	SHA1withRSA
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Create%20a%20Digital%20Signature%20%28DER%20Encoded%20PKCS%231%29%20-%0A%09SHA1withRSA&In-Reply-To=f2f79a9a-4c56-4a7a-a0ba-22c91e84defd%40email.android.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000346.html">
+   <LINK REL="Next"  HREF="000336.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -	SHA1withRSA</H1>
+    <B>Anurag Chourasia</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Create%20a%20Digital%20Signature%20%28DER%20Encoded%20PKCS%231%29%20-%0A%09SHA1withRSA&In-Reply-To=f2f79a9a-4c56-4a7a-a0ba-22c91e84defd%40email.android.com"
+       TITLE="[pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -	SHA1withRSA">anurag.chourasia at gmail.com
+       </A><BR>
+    <I>Wed Dec 29 07:47:40 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000346.html">[pycrypto] Create a Digital Signature (DER Encoded PKCS#1)	-	SHA1withRSA
+</A></li>
+        <LI>Next message: <A HREF="000336.html">[pycrypto] SHA Vs SHA1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#349">[ date ]</a>
+              <a href="thread.html#349">[ thread ]</a>
+              <a href="subject.html#349">[ subject ]</a>
+              <a href="author.html#349">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Dwayne,
+
+I have added a comment to the existing report at
+<A HREF="https://bugs.launchpad.net/pycrypto/+bug/502291">https://bugs.launchpad.net/pycrypto/+bug/502291</A>
+
+Appreciate your help in getting this into the mainstream.
+
+&lt;<A HREF="https://bugs.launchpad.net/pycrypto/+bug/502291">https://bugs.launchpad.net/pycrypto/+bug/502291</A>&gt;Regards,
+Anurag
+
+On Wed, Dec 29, 2010 at 12:11 PM, Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;wrote:
+
+&gt;<i> I'll have to look at this when I get back from my vacation.  Maybe file a
+</I>&gt;<i> bug report, or add a comment to an existing report if there is one already?
+</I>&gt;<i>
+</I>&gt;<i> &quot;Anurag Chourasia&quot; &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">anurag.chourasia at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt;Hi Thorsten,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;Thanks for the information. I believe that the patch that you mentioned
+</I>&gt;<i> &gt;will
+</I>&gt;<i> &gt;help me :-)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;The patch mentioned in your email was from January 2010 and is in the
+</I>&gt;<i> &gt;form
+</I>&gt;<i> &gt;of a diff between files.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;Are we supposed to make those modifications manually or is there a
+</I>&gt;<i> &gt;downloadable somewhere? I am wondering if there is any specific reason
+</I>&gt;<i> &gt;that
+</I>&gt;<i> &gt;the change is not a part of the mainstream that a user like me should
+</I>&gt;<i> &gt;be
+</I>&gt;<i> &gt;aware of or better if the files are going to be included in the Trunk
+</I>&gt;<i> &gt;anytime soon :-)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;Thanks again for your help today.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;Regards,
+</I>&gt;<i> &gt;Anurag
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;On Wed, Dec 29, 2010 at 3:39 AM, Thorsten Behrens &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">sbehrens at gmx.li</A>&gt;
+</I>&gt;<i> &gt;wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt;  &gt;&gt; It wasn't for Home Work :-)
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Okay :D
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; &gt; m.digest()
+</I>&gt;<i> &gt;&gt; &gt; or
+</I>&gt;<i> &gt;&gt; &gt; m.hexdigest() as the computed hash value.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; That depends on what you want to do next. m.digest() returns the
+</I>&gt;<i> &gt;digest
+</I>&gt;<i> &gt;&gt; in binary form, ready to be used for further manipulation, such as
+</I>&gt;<i> &gt;&gt; having it signed. m.hexdigest() returns it in a form suitable for
+</I>&gt;<i> &gt;&gt; inclusion in a text transmission, such as email.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; &gt; Following this, how can i use Crypto again to Sign the computed
+</I>&gt;<i> &gt;Hash
+</I>&gt;<i> &gt;&gt; &gt; Value using the Private Key?
+</I>&gt;<i> &gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt; PKCS #1 has not been integrated into trunk yet. There is a patch
+</I>&gt;<i> &gt;&gt; available, though, here:
+</I>&gt;<i> &gt;<A HREF="https://bugs.launchpad.net/pycrypto/+bug/502291">https://bugs.launchpad.net/pycrypto/+bug/502291</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Thorsten
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; pycrypto mailing list
+</I>&gt;<i> &gt;&gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> &gt;&gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;_______________________________________________
+</I>&gt;<i> &gt;pycrypto mailing list
+</I>&gt;<i> &gt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> &gt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20101229/688b4f28/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20101229/688b4f28/attachment.htm</A> 
+</PRE>
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000346.html">[pycrypto] Create a Digital Signature (DER Encoded PKCS#1)	-	SHA1withRSA
+</A></li>
+	<LI>Next message: <A HREF="000336.html">[pycrypto] SHA Vs SHA1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#349">[ date ]</a>
+              <a href="thread.html#349">[ thread ]</a>
+              <a href="subject.html#349">[ subject ]</a>
+              <a href="author.html#349">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

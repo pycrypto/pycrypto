@@ -1,0 +1,1719 @@
+From hafeliel at yahoo.com  Thu Jan 22 11:28:15 2009
+From: hafeliel at yahoo.com (Gre7g Luterman)
+Date: Thu, 22 Jan 2009 09:28:15 -0800 (PST)
+Subject: [pycrypto] Can pycrypt do a key exchange?
+Message-ID: <848354.88310.qm@web62506.mail.re1.yahoo.com>
+
+Hey list -
+
+I'm working on a Python application where clients will open encrypted connections to a custom server application. The data isn't something super-important, like credit card numbers, but I'd rather not have it snooped or otherwise mucked with by outsiders.
+
+pycrypt makes this easy, but how do I share the key securely? pycrypt has code for calculating public/private keys, encrypting with them, decrypting with them, etc., but I don't see an obvious way to do an exchange with it.
+
+I can find instructions online on how to do a Diffie-Hellman key exchange, but I really don't want to reinvent the wheel -- especially when the encryption isn't IMPORTANT.
+
+I'm guessing this sort of thing has been done many times already, so can anyone point me to an example?
+
+Many thanks, and my apologies if this is the wrong place to ask this question or if the answer is easier to find than I am making it out to be! :)
+
+Gre7g
+
+
+
+      
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090122/72b610eb/attachment.htm 
+
+From jamesd at echeque.com  Fri Jan 23 23:05:07 2009
+From: jamesd at echeque.com (James A. Donald)
+Date: Sat, 24 Jan 2009 15:05:07 +1000
+Subject: [pycrypto] Can pycrypt do a key exchange?
+In-Reply-To: <848354.88310.qm@web62506.mail.re1.yahoo.com>
+References: <848354.88310.qm@web62506.mail.re1.yahoo.com>
+Message-ID: <497AA183.5090201@echeque.com>
+
+Gre7g Luterman wrote:
+ > Hey list -
+ >
+ > I'm working on a Python application where clients will
+ > open encrypted connections to a custom server
+ > application. The data isn't something super-important,
+ > like credit card numbers, but I'd rather not have it
+ > snooped or otherwise mucked with by outsiders.
+ >
+ > pycrypt makes this easy, but how do I share the key
+ > securely? pycrypt has code for calculating
+ > public/private keys, encrypting with them, decrypting
+ > with them, etc., but I don't see an obvious way to do
+ > an exchange with it.
+
+Key distribution is in the general case a major unsolved
+problem, and there are no libraries to handle it -
+worse, there are no protocols to handle it, worse still,
+there are no successful examples to imitate, other than
+SSH.
+
+You, however, are not solving the general case, so might
+hand roll your own custom solution, perhaps starting
+with a single widely known trusted master public key
+embedded in both client and server, whose secret key,
+which you alone possess, is used to sign durable client
+keys and server keys, which are used in combination with
+transient client keys and transient server keys - the
+skype solution.
+
+Now, of course, all the experts say "never hand roll
+your own custom solution", which is true if the experts
+have something ready to roll that actually works. Which,
+for key distribution, they generally do not.
+
+The particular special case solution will depend on the
+particulars of your particular special case.
+
+From bill at broadley.org  Wed Jan 28 22:57:12 2009
+From: bill at broadley.org (Bill Broadley)
+Date: Wed, 28 Jan 2009 20:57:12 -0800
+Subject: [pycrypto] Can pycrypt do a key exchange?
+In-Reply-To: <497AA183.5090201@echeque.com>
+References: <848354.88310.qm@web62506.mail.re1.yahoo.com>
+	<497AA183.5090201@echeque.com>
+Message-ID: <49813728.7030009@broadley.org>
+
+James A. Donald wrote:
+> Gre7g Luterman wrote:
+>  > Hey list -
+>  >
+>  > I'm working on a Python application where clients will
+>  > open encrypted connections to a custom server
+>  > application. The data isn't something super-important,
+>  > like credit card numbers, but I'd rather not have it
+>  > snooped or otherwise mucked with by outsiders.
+
+How controlled is the client environment, can you just setup a VPN?  Stunnel?
+SSH port forwarding?  Certainly using an existing encryption system is is
+likely to be the most secure, granted it might not be a good fit for your
+application.  There's at least two python wrappers/bindings for openssl.
+
+Are you writing the client software or is it via some published API where
+other clients might want to connect?
+
+>  > pycrypt makes this easy, but how do I share the key
+>  > securely? pycrypt has code for calculating
+>  > public/private keys, encrypting with them, decrypting
+>  > with them, etc., but I don't see an obvious way to do
+>  > an exchange with it.
+> 
+> Key distribution is in the general case a major unsolved
+> problem
+
+Openssl, SSH, PGP/GPG, and various p2p related libraries have implemented
+various approaches.  I guess maybe not sufficiently general case, IMO a
+pychrypto DH implementation would be a big step in the right direction.  Not
+that key exchange is the same as key distribution.
+
+>, and there are no libraries to handle it -
+> worse, there are no protocols to handle it, worse still,
+> there are no successful examples to imitate, other than
+> SSH.
+
+Well the SSL approach of distributing numerous root public keys with every
+client and then having a chain of trust is a reasonable approach... as is ssh
+of course.  x509 certs is another common approach, especially for network
+services that publish and API and allow for random clients to connect (see
+ec2, libvert, enomaly, s3, etc).
+
+Certainly write no more code then you have to, there are many pitfalls, but
+that doesn't mean you shouldn't try.  I found a reasonably looking perl
+implementation of DH in 110 lines of code or so:
+ http://package-import.ubuntu.com/libc/libcrypt-dh-perl/intrepid-upstream/annotate/head%3A/lib/Crypt/DH.pm
+
+I can't vouch for the implementation, but it certainly looks reasonably close
+to what I'd expect for a DH implementation.
+
+> You, however, are not solving the general case, so might
+> hand roll your own custom solution, perhaps starting
+> with a single widely known trusted master public key
+> embedded in both client and server, whose secret key,
+> which you alone possess, is used to sign durable client
+> keys and server keys, which are used in combination with
+> transient client keys and transient server keys - the
+> skype solution.
+
+Sure, although I personally prefer the ssh approach, granted to avoid a man in
+the middle attack you have to personally verify the remote key via a back
+channel.  Granted I suspect 99.9% of ssh users just assume the first
+connection is safe, certainly getting an alarm if someone else claims to be
+the server is a very good thing.
+
+> Now, of course, all the experts say "never hand roll
+> your own custom solution", which is true if the experts
+> have something ready to roll that actually works. Which,
+> for key distribution, they generally do not.
+> 
+> The particular special case solution will depend on the
+> particulars of your particular special case.
+
+Indeed, even generating a random number can be fraught with peril.  Certainly
+if you write a python DH implementation (like the 110 lines of Perl at the
+URL) certainly let the list know.  I've similar needs and might even be
+willing to help depending on the timing and implementation details.
+
+
+From zhang_killer at hotmail.com  Thu Jan 29 19:40:00 2009
+From: zhang_killer at hotmail.com (frendy zhang)
+Date: Fri, 30 Jan 2009 09:40:00 +0800
+Subject: [pycrypto] synchronisation 2 computers'databases
+Message-ID: <BAY118-W3181B57F053E79E4459CD7FFC60@phx.gbl>
+
+
+i am currently working on synchronisation. I have 2 or more "projectA" in different computers and i would like to synchronise all the entries in the database from different computers when few entries are added into database. 
+so at the end, all the computer would have the same entries in the database 
+Do u have any example that could help me with this function? 
+Thanks in Advance 
+_________________________________________________________________
+NEW! Get Windows Live FREE.
+http://www.get.live.com/wl/all
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090130/cdc4381f/attachment.htm 
+
+From bill at broadley.org  Fri Jan 30 00:34:47 2009
+From: bill at broadley.org (Bill Broadley)
+Date: Thu, 29 Jan 2009 22:34:47 -0800
+Subject: [pycrypto] synchronisation 2 computers'databases
+In-Reply-To: <BAY118-W3181B57F053E79E4459CD7FFC60@phx.gbl>
+References: <BAY118-W3181B57F053E79E4459CD7FFC60@phx.gbl>
+Message-ID: <49829F87.8070700@broadley.org>
+
+frendy zhang wrote:
+> i am currently working on synchronisation. I have 2 or more "projectA" in different computers and i would like to synchronise all the entries in the database from different computers when few entries are added into database. 
+> so at the end, all the computer would have the same entries in the database 
+> Do u have any example that could help me with this function? 
+> Thanks in Advance 
+
+Not sure how this relates to pycrypto.  But if you keep a unique UID per row,
+and a last updated field per row it becomes very straight forward to do a:
+select from table where update_time>last_sync
+
+So server A says:
+  server B, send me all records updated since X
+
+Then server B says:
+  server A, send me all records updated since X
+
+Then you can use a flag for deleted records, an additional table, or even just
+a queue, then don't purge a record till you are sure both sides are aware of the.
+
+You didn't mention your database, but be careful not to use auto increment, or
+if you do don't use that as a key/index.
+
+From jamesd at echeque.com  Fri Jan 30 23:12:29 2009
+From: jamesd at echeque.com (James A. Donald)
+Date: Sat, 31 Jan 2009 15:12:29 +1000
+Subject: [pycrypto] synchronisation 2 computers'databases
+In-Reply-To: <49829F87.8070700@broadley.org>
+References: <BAY118-W3181B57F053E79E4459CD7FFC60@phx.gbl>
+	<49829F87.8070700@broadley.org>
+Message-ID: <4983DDBD.2060100@echeque.com>
+
+Bill Broadley wrote:
+ > So server A says:
+ >   server B, send me all records updated since X
+ >
+ > Then server B says:
+ >   server A, send me all records updated since X
+
+But if something goes wrong - if B incorrectly thinks it
+has an accurate account of A's records up to time Y, and
+it does not, situation will never be corrected.
+
+I suggest a patricia hash tree of transactions with the
+time of update of the transaction creating or changing a
+record being the high order part of the patricia key.
+Then a small number of hashes near the root of the tree
+will guarantee that the past of A's tree agrees with the
+past of B's tree.  So A and B can guarantee that they
+agree on a very large database by exchanging a very
+small number of hashes - and if any discrepancy shows
+up, can ask for hashes further from the root and closer
+to the leaves, eventually leading to the discrepant
+leaves of the tree.
+
+From macquigg at ece.arizona.edu  Sun Feb  1 17:30:21 2009
+From: macquigg at ece.arizona.edu (David MacQuigg)
+Date: Sun, 01 Feb 2009 16:30:21 -0700
+Subject: [pycrypto] Quick and Easy Email Authentication
+Message-ID: <5.2.1.1.0.20090201143122.03f7e130@plus.pop.mail.yahoo.com>
+
+Hello,
+
+I'm working on an email authentication system that needs a little more security.  The idea is that a sender will include an authentication code in the very first command to request an email session.  For example, arizona.edu might include the code 'f33faf76' as in:  
+HELO IDf33faf76.mailout09.arizona.edu 
+The receiver can then verify that this is not a forgery by getting a DNS record from mailout09.arizona.edu.  The simplest way to do this is for arizona.edu to publish that code verbatim, and change it frequently.  It won't take long, however, for the crooks to modify their zombies to query the DNS records at the victim domain, and use the same code in their forged HELO commands.
+
+So what we really need in the sender's DNS record is not the actual code, but a public key that can be used to decrypt the code and prove not only that it was generated by the alleged sender, but it was generated recently, like within a few seconds of when the HELO command was sent.
+
+I'm trying to figure out how to do this with PyCrypto, but the API documentation is not much help.  It would be nice to have an example showing encryption and decryption using RSA.
+
+Here are the stub functions I'm using:  
+def encrypt(plaintext, privkey): 
+    return 'f33faf76'
+
+def decrypt(authcode, pubkey): 
+    return '315:14:45:03'     # day:hour:minute:second 
+Help will be greatly appreciated.  I'll be glad to help with documentation, once I understand how this package is used.
+
+-- Dave
+
+************************************************************     *
+* David MacQuigg, PhD    email: macquigg at ece.arizona.edu   *  *
+* Research Associate                phone: USA 520-721-4583   *  *  *
+* ECE Department, University of Arizona                       *  *  *
+*                                 9320 East Mikelyn Lane       * * *
+* http://purl.net/macquigg        Tucson, Arizona 85710          *
+************************************************************     * 
+
+
+
+From mauricioarozi at gmail.com  Fri Feb  6 12:53:14 2009
+From: mauricioarozi at gmail.com (Mauricio Arozi)
+Date: Fri, 6 Feb 2009 16:53:14 -0200
+Subject: [pycrypto] PyCrypto AND Crypt_RSA integration
+Message-ID: <3c5f192d0902061053o4c00c796k8a440b9f62b4efb7@mail.gmail.com>
+
+Hello,
+I'm trying to import/export keys from/to
+Crypt_RSA<http://pear.php.net/package/Crypt_RSA>,
+using PyCrypto <http://www.dlitz.net/software/pycrypto/>. My problem is that
+while using PyCrypto to generate both public and private keys, the
+e(exponent?) is always the same.
+According to this site: http://pajhome.org.uk/crypt/rsa/rsa.html, and yet
+others, the e(exponent?) is used for the public key, and d for the private
+key.
+ Public Key
+
+n = 133
+e = 5
+ Secret Key
+
+n = 133
+d = 65
+
+With Crypt_RSA  the e(exponent!) does change. And, currently, Crypt_RSA
+'should' import a key with:
+
+function Crypt_RSA_Key
+<http://pear.php.net/package/Crypt_RSA/docs/latest/Crypt_RSA/Crypt_RSA_Key.html#methodCrypt_RSA_Key>*(**$modulus**,
+**$exp**, **$key_type**, **$wrapper_name *= 'default'*,
+**$error_handler *= ''*)*
+
+
+I've made some examples to find out why it's no working, I couldn't find
+anything besides what I'm telling here, I'm getting:
+
+**
+
+I'm getting:
+
+*php output:*
+public:
+e = 576770076438170600293020230006
+11111558980619493053522755045300999066282094579
+n =
+8181236468479469953170512321145304204212043012891758446155743461774497958816815322484398388795674807728198188380330393972375008693925124720339387183472981
+
+private:
+e =
+437180361711592053741873121324365600858808727935298705094471030803249044470609246732980373383618106117311336729585366532974229499133803473168583498751419
+n =
+8181236468479469953170512321145304204212043012891758446155743461774497958816815322484398388795674807728198188380330393972375008693925124720339387183472981
+
+plain text:             This is the secret phrase testing.
+key:
+YTozOntpOjA7czo2NDoiVSFbfK0ZrvVUOUo/EejHR7YO4F8ugtRGrDPSjrTZEMYZqLUuiZhNhxr2ZdSyvoBN/2wfVnYJzqqYrYT/BA01nCI7aToxO3M6MzI6IvPv6+fj39vXU1DMyMRAvbk1sq4qpyOgHJkVkg6LB4R/IjtpOjI7czo2OiJwdWJsaWMiO30=
+encrypted text:
+mBL6f3pRyFX34nB/0H5jL3VOwylAjJzGx32UKS11EOhtooAVjdiYZHGh5jUOAUWj3GD9+ccPPyh5afXmGrq3UA==
+decrypted text:         This is the secret phrase testing.
+
+*python output:*
+privkey
+
+n=6725954312330247844957820045120819261330667638399165421086669714474128366894973621051940873915934423533814876921018123156635212781400913635892080927069649
+        e=65537
+
+d=4335534734949590616144210259946732528112578457728805761841499642766064251636039038235790562167224376876190746808970727821310520543898873435686861965120773
+
+p=67052724006509355618909096968505962144329319327659728670702224750645922227811
+
+q=100308442527663820502897858910213458115962396303231005493840992047817473580859
+
+u=49237107846093262220122150056829317849796914810691525815572680169759496162772
+
+pubkey
+
+n=6725954312330247844957820045120819261330667638399165421086669714474128366894973621051940873915934423533814876921018123156635212781400913635892080927069649
+        e=65537
+
+msg=            This is the secret phrase testing.
+data=           Sh'f??a??!_?T??\~1rA??G!?bS(e?(R)e{]???<P?L?,$h
+strdata=
+("Sh'f\x12\xe2\xaa\x82a\xd3\xcf\x98!_\xcd\x94T\xca\x05\xc5\\~\x7f1r\x95\x9eA\xb2\xb5G!\x15\xf0bS(e\x94\xa8\x90\xaee\x01{]\xc8\xee\xac<\x07P\xcd\x87\x8eL\x84\x8e\x8f\xb3,\x9a$h",)
+decrypted=   This is the secret phrase testing.
+
+here are the sources:
+*cryp.py
+*from Crypto.PublicKey import RSA
+from Crypto.Util.randpool import RandomPool
+import os
+rpool = RandomPool()
+
+# Generate keys
+print os.urandom(0);
+privkeyA = RSA.generate(512, rpool.get_bytes)
+pubkeyA = privkeyA.publickey()
+
+msg = 'This is the secret phrase testing.'
+msgc = pubkeyA.encrypt(msg, '')
+msgf = privkeyA.decrypt(msgc)
+
+print 'privkey\n\tn=%s\n\te=%s\n\td=%s\n\tp=%s\n\tq=%s\n\tu=%s\n' %
+(privkeyA.n, privkeyA.e, privkeyA.d, privkeyA.p, privkeyA.q, privkeyA.u)
+print 'pubkey\n\tn=%s\n\te=%s\n' % (pubkeyA.n, pubkeyA.e)
+print 'msg=\t\t%s\ndata=\t\t%s\nstrdata=\t%s\ndecrypted=\t%s\n' % (msg,
+msgc[0],str(msgc),msgf)
+
+*cryp.php
+*<?php
+    require_once 'Crypt/RSA.php';
+    require_once 'Crypt/RSA/MathLoader.php';
+
+    //Generates the pair keys
+    function generate_key_pair()
+    {
+        global $public_key,$private_key;
+        $obj = &Crypt_RSA_MathLoader::loadWrapper('default');
+
+        $key_pair = new Crypt_RSA_KeyPair(512);
+
+        //Returns public key from the pair
+        $public_key = $key_pair->getPublicKey();
+        echo "public:\ne = ".$obj->bin2int($public_key->getExponent())."\nn
+= ".$obj->bin2int($public_key->getModulus())."\n\n";
+
+        //Returns private key from the pair
+        $private_key = $key_pair->getPrivateKey();
+        echo "private:\ne =
+".$obj->bin2int($private_key->getExponent())."\nn =
+".$obj->bin2int($private_key->getModulus())."\n\n";
+    }
+
+    //Check runtime errors
+    function check_error(&$obj)
+    {
+        if (PEAR::isError($obj)) {
+            echo "error: ", $obj->getMessage(), "\n";
+        }
+        if ($obj->isError()){
+         $error = $obj->getLastError();
+         switch ($error->getCode()) {
+         case CRYPT_RSA_ERROR_WRONG_TAIL :
+            // nothing to do
+            break;
+         default:
+            // echo error message and exit
+            echo 'error: ', $error->getMessage();
+            exit;
+         }
+        }
+    }
+
+    generate_key_pair();
+    $plain_text = 'This is the secret phrase testing.';
+    echo "plain text:\t\t".$plain_text."\n";
+
+    //get string represenation of the public key
+    $key = Crypt_RSA_Key::fromString($public_key->toString());
+    echo "key:\t\t\t".$public_key->toString()."\n";
+
+    $rsa_obj = new Crypt_RSA;
+    check_error($rsa_obj);
+
+    //Ecnrypts $plain_text by the key $key.
+    $encrypted = $rsa_obj->encrypt($plain_text, $key);
+
+    $enc_text = $encrypted;
+    echo "encrypted text:\t\t".$enc_text."\n";
+
+    //Get string represenation of the private key
+    $key2 = Crypt_RSA_Key::fromString($private_key->toString());
+    check_error($key2);
+
+    //Check encrypting/decrypting function's behaviour
+    $rsa_obj->setParams(array('dec_key' => $key2));
+    check_error($rsa_obj);
+
+    //Decrypts $enc_text
+    $decrypted = $rsa_obj->decrypt($enc_text);
+    echo "decrypted text:\t\t".$decrypted."\n";
+
+?>
+
+Thanks in advance.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090206/f0613e03/attachment.htm 
+
+From dlitz at dlitz.net  Fri Feb  6 18:39:14 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 6 Feb 2009 19:39:14 -0500
+Subject: [pycrypto] Buffer overflow in ARC2.new() with len(key) > 128 bytes
+Message-ID: <20090207003914.GA28184@rivest.dlitz.net>
+
+Mike Wiacek from the Google Security Team pointed out a buffer overflow in 
+PyCrypto's ARC2 cipher module, which occurs when attempting to initialize 
+ARC2 with a key longer than 128 bytes.
+
+The test case is at: http://gitweb2.dlitz.net/?p=crypto/pycrypto-2.x.git;a=commitdiff;h=fd73731dfad451a81056fbb01e09aa78ab82eb5d
+
+The fix is at: http://gitweb2.dlitz.net/?p=crypto/pycrypto-2.x.git;a=commitdiff;h=d1c4875e1f220652fe7ff8358f56dee3b2aba31b
+
+Thanks, Mike!
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+
+From mads at kiilerich.com  Fri Feb  6 18:56:50 2009
+From: mads at kiilerich.com (Mads Kiilerich)
+Date: Sat, 07 Feb 2009 01:56:50 +0100
+Subject: [pycrypto] PyCrypto AND Crypt_RSA integration
+In-Reply-To: <3c5f192d0902061053o4c00c796k8a440b9f62b4efb7@mail.gmail.com>
+References: <3c5f192d0902061053o4c00c796k8a440b9f62b4efb7@mail.gmail.com>
+Message-ID: <498CDC52.7010709@kiilerich.com>
+
+Mauricio Arozi wrote, On 02/06/2009 07:53 PM:
+> Hello,
+> I'm trying to import/export keys from/to Crypt_RSA 
+> <http://pear.php.net/package/Crypt_RSA>, using PyCrypto 
+> <http://www.dlitz.net/software/pycrypto/>. My problem is that while 
+> using PyCrypto to generate both public and private keys, the 
+> e(exponent?) is always the same.
+> According to this site: http://pajhome.org.uk/crypt/rsa/rsa.html, and 
+> yet others, the e(exponent?) is used for the public key, and d for the 
+> private key.
+
+Yes, many implementations and applications of RSA uses a fixed exponent 
+- very often 65537 (F4). Usually that is a good decision and no problem 
+- perhaps except for interoperability.
+
+And yes, interoperability is often very hard when implementing crypto 
+stuff. IMHO an important criteria when selecting a crypto library is 
+having examples / proof of how it interoperates with other implementations.
+
+It is not clear to me exactly what you are asking for, so I can't answer 
+that directly - I hope someone else can do that.
+
+/Mads
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 3435 bytes
+Desc: S/MIME Cryptographic Signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20090207/8b240f70/attachment.bin 
+
+From mauricioarozi at gmail.com  Fri Feb  6 22:37:04 2009
+From: mauricioarozi at gmail.com (Mauricio Arozi)
+Date: Sat, 7 Feb 2009 02:37:04 -0200
+Subject: [pycrypto] PyCrypto AND Crypt_RSA integration
+In-Reply-To: <498CDC52.7010709@kiilerich.com>
+References: <3c5f192d0902061053o4c00c796k8a440b9f62b4efb7@mail.gmail.com>
+	<498CDC52.7010709@kiilerich.com>
+Message-ID: <3c5f192d0902062037n3e9f670bpddf81c525904de25@mail.gmail.com>
+
+'I'm trying to *import/export keys* from/to
+Crypt_RSA<http://pear.php.net/package/Crypt_RSA>,
+using PyCrypto <http://www.dlitz.net/software/pycrypto/>. '
+and
+'I've made some examples to find out why *it's not working*'
+
+I want to import/export keys directly from/to
+Crypt_RSA<http://pear.php.net/package/Crypt_RSA>and
+PyCrypto <http://www.dlitz.net/software/pycrypto/>." I'm not able to use the
+same keys, so I can't verify signatures, or encrypt/decrypt stuff from php
+to python and vice-versa. I want to know how to do it, actually I only need
+a way to go with php, I don't depend on Crypt_RSA, it was already there
+only.
+
+So in simple words, I only need to be able to encrypt/decrypt sign and
+verify signs on php and python, simultaneously, if possible, using RSA algo.
+
+On Fri, Feb 6, 2009 at 10:56 PM, Mads Kiilerich <mads at kiilerich.com> wrote:
+
+> Mauricio Arozi wrote, On 02/06/2009 07:53 PM:
+>
+>> Hello,
+>> I'm trying to import/export keys from/to Crypt_RSA <
+>> http://pear.php.net/package/Crypt_RSA>, using PyCrypto <
+>> http://www.dlitz.net/software/pycrypto/>. My problem is that while using
+>> PyCrypto to generate both public and private keys, the e(exponent?) is
+>> always the same.
+>> According to this site: http://pajhome.org.uk/crypt/rsa/rsa.html, and yet
+>> others, the e(exponent?) is used for the public key, and d for the private
+>> key.
+>>
+>
+> Yes, many implementations and applications of RSA uses a fixed exponent -
+> very often 65537 (F4). Usually that is a good decision and no problem -
+> perhaps except for interoperability.
+>
+> And yes, interoperability is often very hard when implementing crypto
+> stuff. IMHO an important criteria when selecting a crypto library is having
+> examples / proof of how it interoperates with other implementations.
+>
+> It is not clear to me exactly what you are asking for, so I can't answer
+> that directly - I hope someone else can do that.
+>
+> /Mads
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090207/3d2e1449/attachment-0001.htm 
+
+From mauricioarozi at gmail.com  Mon Feb  9 06:36:40 2009
+From: mauricioarozi at gmail.com (Mauricio Arozi)
+Date: Mon, 9 Feb 2009 10:36:40 -0200
+Subject: [pycrypto] PyCrypto AND Crypt_RSA integration
+In-Reply-To: <3c5f192d0902062037n3e9f670bpddf81c525904de25@mail.gmail.com>
+References: <3c5f192d0902061053o4c00c796k8a440b9f62b4efb7@mail.gmail.com>
+	<498CDC52.7010709@kiilerich.com>
+	<3c5f192d0902062037n3e9f670bpddf81c525904de25@mail.gmail.com>
+Message-ID: <3c5f192d0902090436r3e9c905n2edd78019033118@mail.gmail.com>
+
+Am I helpless?
+
+On Sat, Feb 7, 2009 at 2:37 AM, Mauricio Arozi <mauricioarozi at gmail.com>wrote:
+
+> 'I'm trying to *import/export keys* from/to Crypt_RSA<http://pear.php.net/package/Crypt_RSA>,
+> using PyCrypto <http://www.dlitz.net/software/pycrypto/>. '
+> and
+> 'I've made some examples to find out why *it's not working*'
+>
+> I want to import/export keys directly from/to Crypt_RSA<http://pear.php.net/package/Crypt_RSA>and
+> PyCrypto <http://www.dlitz.net/software/pycrypto/>." I'm not able to use
+> the same keys, so I can't verify signatures, or encrypt/decrypt stuff from
+> php to python and vice-versa. I want to know how to do it, actually I only
+> need a way to go with php, I don't depend on Crypt_RSA, it was already there
+> only.
+>
+> So in simple words, I only need to be able to encrypt/decrypt sign and
+> verify signs on php and python, simultaneously, if possible, using RSA algo.
+>
+> On Fri, Feb 6, 2009 at 10:56 PM, Mads Kiilerich <mads at kiilerich.com>wrote:
+>
+>> Mauricio Arozi wrote, On 02/06/2009 07:53 PM:
+>>
+>>> Hello,
+>>> I'm trying to import/export keys from/to Crypt_RSA <
+>>> http://pear.php.net/package/Crypt_RSA>, using PyCrypto <
+>>> http://www.dlitz.net/software/pycrypto/>. My problem is that while using
+>>> PyCrypto to generate both public and private keys, the e(exponent?) is
+>>> always the same.
+>>> According to this site: http://pajhome.org.uk/crypt/rsa/rsa.html, and
+>>> yet others, the e(exponent?) is used for the public key, and d for the
+>>> private key.
+>>>
+>>
+>> Yes, many implementations and applications of RSA uses a fixed exponent -
+>> very often 65537 (F4). Usually that is a good decision and no problem -
+>> perhaps except for interoperability.
+>>
+>> And yes, interoperability is often very hard when implementing crypto
+>> stuff. IMHO an important criteria when selecting a crypto library is having
+>> examples / proof of how it interoperates with other implementations.
+>>
+>> It is not clear to me exactly what you are asking for, so I can't answer
+>> that directly - I hope someone else can do that.
+>>
+>> /Mads
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090209/6d1a9760/attachment.htm 
+
+From real.sergeych at gmail.com  Mon Feb  9 07:07:53 2009
+From: real.sergeych at gmail.com (Sergey Chernov)
+Date: Mon, 9 Feb 2009 16:07:53 +0300
+Subject: [pycrypto] PyCrypto AND Crypt_RSA integration
+In-Reply-To: <3c5f192d0902090436r3e9c905n2edd78019033118@mail.gmail.com>
+References: <3c5f192d0902061053o4c00c796k8a440b9f62b4efb7@mail.gmail.com>
+	<498CDC52.7010709@kiilerich.com>
+	<3c5f192d0902062037n3e9f670bpddf81c525904de25@mail.gmail.com>
+	<3c5f192d0902090436r3e9c905n2edd78019033118@mail.gmail.com>
+Message-ID: <2B0AA194-3913-4482-B45F-A836EBB7B24C@thrift.ru>
+
+Some time ago I wrote RSA implementation inspired by pycripto, but  
+with some improvements, strictly conforming to RSAES-OAEP standard,  
+with proper padding and (ey generation speedup. It is practically  
+ready to public tests and I use it in one project. I wrote  
+correspondig part for php that works in the project, but it is not yet  
+well tested and is so far in pure php. That means not too fast, by  
+without server-side key generation it is fast enough for my needs. If  
+you are interested I can send you this staff. I intend to make it  
+public under LGPL.
+
+
+
+
+09.02.2009, ? 15:36, Mauricio Arozi <mauricioarozi at gmail.com>  
+???????(?):
+
+> Am I helpless?
+>
+> On Sat, Feb 7, 2009 at 2:37 AM, Mauricio Arozi <mauricioarozi at gmail.com 
+> > wrote:
+> 'I'm trying to import/export keys from/to Crypt_RSA, using PyCrypto. '
+> and
+> 'I've made some examples to find out why it's not working'
+>
+> I want to import/export keys directly from/to Crypt_RSA and  
+> PyCrypto." I'm not able to use the same keys, so I can't verify  
+> signatures, or encrypt/decrypt stuff from php to python and vice- 
+> versa. I want to know how to do it, actually I only need a way to go  
+> with php, I don't depend on Crypt_RSA, it was already there only.
+>
+> So in simple words, I only need to be able to encrypt/decrypt sign  
+> and verify signs on php and python, simultaneously, if possible,  
+> using RSA algo.
+>
+> On Fri, Feb 6, 2009 at 10:56 PM, Mads Kiilerich <mads at kiilerich.com>  
+> wrote:
+> Mauricio Arozi wrote, On 02/06/2009 07:53 PM:
+> Hello,
+> I'm trying to import/export keys from/to Crypt_RSA <http://pear.php.net/package/Crypt_RSA 
+> >, using PyCrypto <http://www.dlitz.net/software/pycrypto/>. My  
+> problem is that while using PyCrypto to generate both public and  
+> private keys, the e(exponent?) is always the same.
+>
+> According to this site: http://pajhome.org.uk/crypt/rsa/rsa.html,  
+> and yet others, the e(exponent?) is used for the public key, and d  
+> for the private key.
+>
+> Yes, many implementations and applications of RSA uses a fixed  
+> exponent - very often 65537 (F4). Usually that is a good decision  
+> and no problem - perhaps except for interoperability.
+>
+> And yes, interoperability is often very hard when implementing  
+> crypto stuff. IMHO an important criteria when selecting a crypto  
+> library is having examples / proof of how it interoperates with  
+> other implementations.
+>
+> It is not clear to me exactly what you are asking for, so I can't  
+> answer that directly - I hope someone else can do that.
+>
+> /Mads
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090209/1d2de4d5/attachment.htm 
+
+From dlitz at dlitz.net  Tue Feb 10 18:32:53 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Tue, 10 Feb 2009 19:32:53 -0500
+Subject: [pycrypto] PyCrypto AND Crypt_RSA integration
+In-Reply-To: <3c5f192d0902090436r3e9c905n2edd78019033118@mail.gmail.com>
+References: <3c5f192d0902061053o4c00c796k8a440b9f62b4efb7@mail.gmail.com>
+	<498CDC52.7010709@kiilerich.com>
+	<3c5f192d0902062037n3e9f670bpddf81c525904de25@mail.gmail.com>
+	<3c5f192d0902090436r3e9c905n2edd78019033118@mail.gmail.com>
+Message-ID: <20090211003252.GA14085@rivest.dlitz.net>
+
+On Mon, Feb 09, 2009 at 10:36:40AM -0200, Mauricio Arozi wrote:
+>Am I helpless?
+
+I think the problem is that you're asking the mailing list for the *Python* 
+Cryptography Toolkit about how to use an obscure *PHP* library.
+
+We can help with the Python side of things.  I wouldn't expect the people 
+here to know and/or care much about PHP.
+
+> According to this site: http://pajhome.org.uk/crypt/rsa/rsa.html, and
+> yet others, the e(exponent?) is used for the public key, and d for the
+> private key.
+
+The notation I've seen most often is something like this:
+
+     n - modulus (public)
+     e - public exponent
+     d - private exponent
+     (n, e) - public key
+     (n, d) - private key
+     (p, q) - the (private) primes from which the keypair is derived.
+
+PyCrypto uses a similar notation:
+
+     from Crypto.PublicKey import RSA
+     import os
+
+     # DO NOT USE RandomPool (see below)
+     keypair = RSA.generate(2048, os.urandom)
+
+     print "PRIVATE KEYPAIR:"
+     print "n:", keypair.n   # modulus (public)
+     print "e:", keypair.e   # public exponent
+     print "d:", keypair.d   # private exponent
+     print "p:", keypair.p   # prime (private)
+     print "q:", keypair.q   # other prime (private)
+     print "u:", keypair.u   # I forget what this for (but it's private)
+
+     pub = keypair.publickey()
+     print ""
+     print "PUBLIC KEY:"
+     print "n (pub):", pub.n     # modulus (public)
+     print "e (pub):", pub.e     # public exponent
+     print "d (pub):", pub.d     # raises an exception
+     print "p (pub):", pub.p     # raises an exception
+     print "q (pub):", pub.q     # raises an exception
+     print "u (pub):", pub.u     # raises an exception
+
+This outputs the following:
+
+     PRIVATE KEYPAIR:
+     n: 277...[truncated]
+     e: 65537
+     d: 232...[truncated]
+     p: 159...[truncated]
+     q: 174...[truncated]
+     u: 125...[truncated]
+
+     PUBLIC KEY:
+     n (pub): 277...[truncated]
+     e (pub): 65537
+     d (pub):
+     Traceback (most recent call last):
+       File "x.py", line 21, in ?
+         print "d (pub):", pub.d
+       File "/usr/lib/python2.4/site-packages/Crypto/PublicKey/RSA.py", line 154, in __getattr__
+         return getattr(self.key, attr)
+     AttributeError: rsaKey instance has no attribute 'd'
+
+> My problem is that while using PyCrypto to generate both public and 
+> private keys, the e(exponent?) is always the same.
+
+Mads Kiilerich already talked a bit about this, but I won't go into detail.  
+What you're describing here is normal, and it really helps improve the 
+performance of encryption/verification.
+
+If you're concerned about the security of using RSA, I suggest reading Dan 
+Boneh's 1999 article, "Twenty years of attacks on the RSA cryptosystem":
+
+     http://crypto.stanford.edu/~dabo/abstracts/RSAattack-survey.html
+
+>So in simple words, I only need to be able to encrypt/decrypt sign and 
+>verify signs on php and python, simultaneously, if possible, using RSA 
+>algo.
+
+PyCrypto's PublicKey package is very low-level, so people shouldn't use it 
+directly unless they REALLY know what they are doing.  Mere mortals should 
+use a separate library in addition to PyCrypto for that.  You should never 
+do anything like this:
+
+>privkeyA = RSA.generate(512, rpool.get_bytes)
+>pubkeyA = privkeyA.publickey()
+>
+>msg = 'This is the secret phrase testing.'
+>msgc = pubkeyA.encrypt(msg, '')
+
+That is called "textbook RSA", and it's insecure.  (Also, it uses a 512-bit   
+key, which is way too short, but I assume that's just for demonstration.)  
+I strongly recommend looking at PKCS#1v2 (also known as RSAES-OAEP).  
+PyCrypto doesn't include an implementation yet, but Sergey Chernov 
+mentioned that he is working on one.
+
+Also, I noticed in your code that you used RandomPool.  Don't.  RandomPool 
+is a security disaster, and it will be removed from future versions.  See 
+the following messages:
+
+     http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html
+     http://lists.dlitz.net/pipermail/pycrypto/2008q3/000020.html
+
+I hope you find the above information helpful.
+
+Cheers,
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+
+From macquigg at ece.arizona.edu  Wed Feb 11 09:41:54 2009
+From: macquigg at ece.arizona.edu (David MacQuigg)
+Date: Wed, 11 Feb 2009 08:41:54 -0700
+Subject: [pycrypto] Quick and Easy Email Authentication
+In-Reply-To: <5.2.1.1.0.20090201143122.03f7e130@plus.pop.mail.yahoo.com>
+Message-ID: <5.2.1.1.0.20090211075934.03ae4478@mail.ece.arizona.edu>
+
+I think there is a fundamental problem with what I am proposing below.
+The cipher text (authcode) has to be much longer than the four bytes I've
+shown in the example, or it will be trivial to break.  Before giving up
+on this approach, I thought I would check with the crypto experts on this
+list.  Am I missing something simple, maybe a different algorithm than
+RSA, maybe some way to do this with hashcodes?  If we can solve this
+problem, it could lead to a robust, no-exceptions policy on
+authentication of SMTP mail sessions.
+
+Let me try to state the problem in more fundamental terms.  A stranger
+says HELO this is f33faf76.mailout09.arizona.edu.  The only other
+information you have to verify that claim is a DNS text record at
+mailout09.arizona.edu. That record can hold up to 480 bytes of text.
+
+The authcode can be a little longer than f33faf76, but the longer we make
+it, the less likely senders will use it in their HELO commands.  The
+shorter we make it, the more likely forgers will be able to produce a
+valid authcode by brute force methods.  A lot depends on how long we
+expect the authcode to remain valid.  The scheme I suggested below
+returned a timestamp valid for only a few seconds, making it impractical
+to try 2**32 possible authcodes. Yes, I know it can be done with
+massively parallel processors, but our requirement is only enough
+security to quickly screen out 99% of the forged IDs presented by petty
+criminals.  More secure sites can add additional checks, including a
+digital signature on the entire message.
+
+-- Dave
+************************************************************     *
+* David MacQuigg, PhD    email: macquigg at ece.arizona.edu   *  *
+* Research Associate                phone: USA 520-721-4583   *  *  *
+* ECE Department, University of Arizona                       *  *  *
+*                                 9320 East Mikelyn Lane       * * *
+* http://purl.net/macquigg        Tucson, Arizona 85710          *
+************************************************************     *
+
+
+At 04:30 PM 2/1/2009 -0700, David MacQuigg wrote:
+
+>I'm working on an email authentication system that needs a little more
+>security.  The idea is that a sender will include an authentication code
+>in the very first command to request an email session.  For example,
+>arizona.edu might include the code 'f33faf76' as in:
+>.
+>.   HELO IDf33faf76.mailout09.arizona.edu
+>.
+>The receiver can then verify that this is not a forgery by getting a DNS
+>record from mailout09.arizona.edu.  The simplest way to do this is for
+>arizona.edu to publish that code verbatim, and change it frequently.  It
+>won't take long, however, for the crooks to modify their zombies to query
+>the DNS records at the victim domain, and use the same code in their
+>forged HELO commands.
+>
+>So what we really need in the sender's DNS record is not the actual code,
+>but a public key that can be used to decrypt the code and prove not only
+>that it was generated by the alleged sender, but it was generated
+>recently, like within a few seconds of when the HELO command was sent.
+>
+>I'm trying to figure out how to do this with PyCrypto, but the API
+>documentation is not much help.  It would be nice to have an example
+>showing encryption and decryption using RSA.
+>
+>Here are the stub functions I'm using:
+>.
+>.   def encrypt(plaintext, privkey):
+>.       return 'f33faf76'
+>.
+>.   def decrypt(authcode, pubkey):
+>.       return '315:14:45:03'     # day:hour:minute:second
+>.
+>Help will be greatly appreciated.  I'll be glad to help with
+>documentation, once I understand how this package is used.
+
+
+
+From mads at kiilerich.com  Wed Feb 11 15:34:58 2009
+From: mads at kiilerich.com (Mads Kiilerich)
+Date: Wed, 11 Feb 2009 22:34:58 +0100
+Subject: [pycrypto] Quick and Easy Email Authentication
+In-Reply-To: <5.2.1.1.0.20090211075934.03ae4478@mail.ece.arizona.edu>
+References: <5.2.1.1.0.20090211075934.03ae4478@mail.ece.arizona.edu>
+Message-ID: <49934482.4020605@kiilerich.com>
+
+David MacQuigg wrote, On 02/11/2009 04:41 PM:
+> RSA, maybe some way to do this with hashcodes?  If we can solve this
+> problem, it could lead to a robust, no-exceptions policy on
+> authentication of SMTP mail sessions.
+>   
+
+Such systems already exists, designed and peer reviewed by experts. The 
+primarily problem they face is acceptance - and the lack of acceptance 
+because of the trade-offs made to make the protocols acceptable. And 
+nobody with real-world need for email can rely on such protocols before 
+everybody else uses them, and thus there is no need to deploy the 
+protocols before everybody else uses them.
+
+> Let me try to state the problem in more fundamental terms.  A stranger
+> says HELO this is f33faf76.mailout09.arizona.edu.  The only other
+> information you have to verify that claim is a DNS text record at
+> mailout09.arizona.edu. That record can hold up to 480 bytes of text.
+>   
+
+The DNS system is fundamentally broken and insecure. You shouldn't rely 
+on it at all. Secure DNS is really a must but unfortunately not widely 
+deployed, so we must rely on DNS for functionality but shouldn't rely on 
+it for security.
+
+> criminals.  More secure sites can add additional checks, including a
+> digital signature on the entire message.
+>   
+
+IMHO the right solution to the problem you are trying to solve lies in 
+that direction. Why try to find another and less perfect solution?
+
+But ... this is a (silent) list for python crypto, not for protocol 
+design and email systems. Other lists might be more appropriate.
+
+/Mads
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 3435 bytes
+Desc: S/MIME Cryptographic Signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20090211/5f5d77af/attachment.bin 
+
+From macquigg at ece.arizona.edu  Thu Feb 12 16:58:35 2009
+From: macquigg at ece.arizona.edu (David MacQuigg)
+Date: Thu, 12 Feb 2009 15:58:35 -0700
+Subject: [pycrypto] Quick and Easy Email Authentication
+In-Reply-To: <49934482.4020605@kiilerich.com>
+References: <5.2.1.1.0.20090211075934.03ae4478@mail.ece.arizona.edu>
+	<5.2.1.1.0.20090211075934.03ae4478@mail.ece.arizona.edu>
+Message-ID: <5.2.1.1.0.20090212125722.03b08b48@mail.ece.arizona.edu>
+
+At 10:34 PM 2/11/2009 +0100, Mads Kiilerich wrote:
+
+>David MacQuigg wrote, On 02/11/2009 04:41 PM:
+>>RSA, maybe some way to do this with hashcodes?  If we can solve this
+>>problem, it could lead to a robust, no-exceptions policy on
+>>authentication of SMTP mail sessions.
+>
+>Such systems already exists, designed and peer reviewed by experts. The primarily problem they face is acceptance - and the lack of acceptance because of the trade-offs made to make the protocols acceptable. And nobody with real-world need for email can rely on such protocols before everybody else uses them, and thus there is no need to deploy the protocols before everybody else uses them.
+
+I'm familiar with this problem.  What the protocol experts have missed, or prefer not to deal with, is the importance of motivating senders.  That's why we need to pay attention to such simple things as the length of the authcode.  If we could dictate a solution, it would be very easy to add a simple extension to SMTP, and make the authcode as long as we like.  Senders would be required to upgrade their mail servers, and the world would be a nice place.
+
+>>Let me try to state the problem in more fundamental terms.  A stranger
+>>says HELO this is f33faf76.mailout09.arizona.edu.  The only other
+>>information you have to verify that claim is a DNS text record at
+>>mailout09.arizona.edu. That record can hold up to 480 bytes of text. 
+>
+>The DNS system is fundamentally broken and insecure. You shouldn't rely on it at all. Secure DNS is really a must but unfortunately not widely deployed, so we must rely on DNS for functionality but shouldn't rely on it for security.
+
+You are being too pessimistic.  DNS security is good enough to screen out almost all the petty forgers.  Banks, of course, should not rely on DNS for high-value transactions.
+
+>>criminals.  More secure sites can add additional checks, including a
+>>digital signature on the entire message.
+>
+>IMHO the right solution to the problem you are trying to solve lies in that direction. Why try to find another and less perfect solution?
+
+The existing solutions are not enough, and there is no one perfect solution.  It will take a combination of several methods, starting with a simple HELO check, like what I am proposing, and moving on to more secure and time-consuming methods, for those few messages that pass the initial checks.
+
+>But ... this is a (silent) list for python crypto, not for protocol design and email systems. Other lists might be more appropriate.
+
+You are right.  We should stick to crypto on this list.  I'll be glad to discuss email and DNS security offlist.
+
+Back to the crypto discussion.  Let me try one more time to formulate a pure crypto problem, free of the complexities of the application.  I have a feeling that what I am looking for is possible.  I just don't know enough about crypto algorithms to figure it out.
+
+Alice wants to ask Bob for some confidential information.  Bob needs to make sure it really is Alice, not Eve.  Alice gives Bob her ID and a short authentication code, like 'f33faf76'.  She also has a public record where Bob can retrieve up to 480 bytes of text that Alice has published.  There is no prior arrangement, or other out-of-band information available to Bob.
+
+The authcode must remain valid and secure for as long as it takes Bob to run the authentication (a few seconds).  The public record can be changed only once every few days.  Eve can't intercept the communication between Alice and Bob, and she can't alter Alice's public record, but she can trick Alice into sending messages to Eve, complete with authentication codes.  Eve also has access to a fast PC, and can test authcodes a thousand times faster than Bob.
+
+-- Dave
+************************************************************     *
+* David MacQuigg, PhD    email: macquigg at ece.arizona.edu   *  *
+* Research Associate                phone: USA 520-721-4583   *  *  *
+* ECE Department, University of Arizona                       *  *  *
+*                                 9320 East Mikelyn Lane       * * *
+* http://purl.net/macquigg        Tucson, Arizona 85710          *
+************************************************************     *
+
+
+
+From mads at kiilerich.com  Thu Feb 12 19:06:07 2009
+From: mads at kiilerich.com (Mads Kiilerich)
+Date: Fri, 13 Feb 2009 02:06:07 +0100
+Subject: [pycrypto] Quick and Easy Email Authentication
+In-Reply-To: <5.2.1.1.0.20090212125722.03b08b48@mail.ece.arizona.edu>
+References: <5.2.1.1.0.20090211075934.03ae4478@mail.ece.arizona.edu>	<5.2.1.1.0.20090211075934.03ae4478@mail.ece.arizona.edu>
+	<5.2.1.1.0.20090212125722.03b08b48@mail.ece.arizona.edu>
+Message-ID: <4994C77F.40200@kiilerich.com>
+
+Yes, I'm pessimistic - but I would call it realistic. And I think you 
+are too optimistic. I'm not trying to demotivate, just trying to help by 
+sharing what I think is insight. Feel free to ignore me. Let's hope you 
+are right and I'm wrong ;-)
+
+FWIW I disagree with most of what you are saying, so continuing the 
+discussion would probably be a waste of time. (For example, as the 
+problem/solution is described it relies on the "short authentication 
+code" which contains only 32 bits of information! Nuff said.)
+
+/Mads
+
+ps: it is my understanding that this list is for "PyCrypto - The Python 
+Cryptography Toolkit", not for general crypto design discussion. But as 
+far as I am concerned feel free to continue here.
+
+
+
+David MacQuigg wrote, On 02/12/2009 11:58 PM:
+> At 10:34 PM 2/11/2009 +0100, Mads Kiilerich wrote:
+>
+>   
+>> David MacQuigg wrote, On 02/11/2009 04:41 PM:
+>>     
+>>> RSA, maybe some way to do this with hashcodes?  If we can solve this
+>>> problem, it could lead to a robust, no-exceptions policy on
+>>> authentication of SMTP mail sessions.
+>>>       
+>> Such systems already exists, designed and peer reviewed by experts. The primarily problem they face is acceptance - and the lack of acceptance because of the trade-offs made to make the protocols acceptable. And nobody with real-world need for email can rely on such protocols before everybody else uses them, and thus there is no need to deploy the protocols before everybody else uses them.
+>>     
+>
+> I'm familiar with this problem.  What the protocol experts have missed, or prefer not to deal with, is the importance of motivating senders.  That's why we need to pay attention to such simple things as the length of the authcode.  If we could dictate a solution, it would be very easy to add a simple extension to SMTP, and make the authcode as long as we like.  Senders would be required to upgrade their mail servers, and the world would be a nice place.
+>
+>   
+>>> Let me try to state the problem in more fundamental terms.  A stranger
+>>> says HELO this is f33faf76.mailout09.arizona.edu.  The only other
+>>> information you have to verify that claim is a DNS text record at
+>>> mailout09.arizona.edu. That record can hold up to 480 bytes of text. 
+>>>       
+>> The DNS system is fundamentally broken and insecure. You shouldn't rely on it at all. Secure DNS is really a must but unfortunately not widely deployed, so we must rely on DNS for functionality but shouldn't rely on it for security.
+>>     
+>
+> You are being too pessimistic.  DNS security is good enough to screen out almost all the petty forgers.  Banks, of course, should not rely on DNS for high-value transactions.
+>
+>   
+>>> criminals.  More secure sites can add additional checks, including a
+>>> digital signature on the entire message.
+>>>       
+>> IMHO the right solution to the problem you are trying to solve lies in that direction. Why try to find another and less perfect solution?
+>>     
+>
+> The existing solutions are not enough, and there is no one perfect solution.  It will take a combination of several methods, starting with a simple HELO check, like what I am proposing, and moving on to more secure and time-consuming methods, for those few messages that pass the initial checks.
+>
+>   
+>> But ... this is a (silent) list for python crypto, not for protocol design and email systems. Other lists might be more appropriate.
+>>     
+>
+> You are right.  We should stick to crypto on this list.  I'll be glad to discuss email and DNS security offlist.
+>
+> Back to the crypto discussion.  Let me try one more time to formulate a pure crypto problem, free of the complexities of the application.  I have a feeling that what I am looking for is possible.  I just don't know enough about crypto algorithms to figure it out.
+>
+> Alice wants to ask Bob for some confidential information.  Bob needs to make sure it really is Alice, not Eve.  Alice gives Bob her ID and a short authentication code, like 'f33faf76'.  She also has a public record where Bob can retrieve up to 480 bytes of text that Alice has published.  There is no prior arrangement, or other out-of-band information available to Bob.
+>
+> The authcode must remain valid and secure for as long as it takes Bob to run the authentication (a few seconds).  The public record can be changed only once every few days.  Eve can't intercept the communication between Alice and Bob, and she can't alter Alice's public record, but she can trick Alice into sending messages to Eve, complete with authentication codes.  Eve also has access to a fast PC, and can test authcodes a thousand times faster than Bob.
+>
+> -- Dave
+> ************************************************************     *
+> * David MacQuigg, PhD    email: macquigg at ece.arizona.edu   *  *
+> * Research Associate                phone: USA 520-721-4583   *  *  *
+> * ECE Department, University of Arizona                       *  *  *
+> *                                 9320 East Mikelyn Lane       * * *
+> * http://purl.net/macquigg        Tucson, Arizona 85710          *
+> ************************************************************     *
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>   
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 3435 bytes
+Desc: S/MIME Cryptographic Signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20090213/107a5fbf/attachment.bin 
+
+From mauricioarozi at gmail.com  Thu Feb 12 21:47:15 2009
+From: mauricioarozi at gmail.com (Mauricio Arozi)
+Date: Fri, 13 Feb 2009 01:47:15 -0200
+Subject: [pycrypto] PyCrypto AND Crypt_RSA integration
+In-Reply-To: <20090211003252.GA14085@rivest.dlitz.net>
+References: <3c5f192d0902061053o4c00c796k8a440b9f62b4efb7@mail.gmail.com>
+	<498CDC52.7010709@kiilerich.com>
+	<3c5f192d0902062037n3e9f670bpddf81c525904de25@mail.gmail.com>
+	<3c5f192d0902090436r3e9c905n2edd78019033118@mail.gmail.com>
+	<20090211003252.GA14085@rivest.dlitz.net>
+Message-ID: <3c5f192d0902121947g189e32b7sfc2874b7cc83a9f@mail.gmail.com>
+
+Yes, I noticed that, I'm using 2048 in production, and I'll start using
+urandom too. But that's not my problem, currently I'm focusing on other
+things, so I'll just wait, meanwhile if someone find anything, it's all
+good, otherwise when I need I'll ask for that other RSA implementation.
+
+On Tue, Feb 10, 2009 at 10:32 PM, Dwayne C. Litzenberger <dlitz at dlitz.net>wrote:
+
+> On Mon, Feb 09, 2009 at 10:36:40AM -0200, Mauricio Arozi wrote:
+> >Am I helpless?
+>
+> I think the problem is that you're asking the mailing list for the *Python*
+> Cryptography Toolkit about how to use an obscure *PHP* library.
+>
+> We can help with the Python side of things.  I wouldn't expect the people
+> here to know and/or care much about PHP.
+>
+> > According to this site: http://pajhome.org.uk/crypt/rsa/rsa.html, and
+> > yet others, the e(exponent?) is used for the public key, and d for the
+> > private key.
+>
+> The notation I've seen most often is something like this:
+>
+>     n - modulus (public)
+>     e - public exponent
+>     d - private exponent
+>     (n, e) - public key
+>     (n, d) - private key
+>     (p, q) - the (private) primes from which the keypair is derived.
+>
+> PyCrypto uses a similar notation:
+>
+>     from Crypto.PublicKey import RSA
+>      import os
+>
+>     # DO NOT USE RandomPool (see below)
+>     keypair = RSA.generate(2048, os.urandom)
+>
+>     print "PRIVATE KEYPAIR:"
+>     print "n:", keypair.n   # modulus (public)
+>     print "e:", keypair.e   # public exponent
+>     print "d:", keypair.d   # private exponent
+>     print "p:", keypair.p   # prime (private)
+>     print "q:", keypair.q   # other prime (private)
+>     print "u:", keypair.u   # I forget what this for (but it's private)
+>
+>     pub = keypair.publickey()
+>     print ""
+>     print "PUBLIC KEY:"
+>     print "n (pub):", pub.n     # modulus (public)
+>     print "e (pub):", pub.e     # public exponent
+>     print "d (pub):", pub.d     # raises an exception
+>     print "p (pub):", pub.p     # raises an exception
+>     print "q (pub):", pub.q     # raises an exception
+>     print "u (pub):", pub.u     # raises an exception
+>
+> This outputs the following:
+>
+>     PRIVATE KEYPAIR:
+>     n: 277...[truncated]
+>     e: 65537
+>     d: 232...[truncated]
+>     p: 159...[truncated]
+>     q: 174...[truncated]
+>     u: 125...[truncated]
+>
+>     PUBLIC KEY:
+>     n (pub): 277...[truncated]
+>     e (pub): 65537
+>     d (pub):
+>     Traceback (most recent call last):
+>       File "x.py", line 21, in ?
+>         print "d (pub):", pub.d
+>       File "/usr/lib/python2.4/site-packages/Crypto/PublicKey/RSA.py", line
+> 154, in __getattr__
+>         return getattr(self.key, attr)
+>     AttributeError: rsaKey instance has no attribute 'd'
+>
+> > My problem is that while using PyCrypto to generate both public and
+> > private keys, the e(exponent?) is always the same.
+>
+> Mads Kiilerich already talked a bit about this, but I won't go into detail.
+> What you're describing here is normal, and it really helps improve the
+> performance of encryption/verification.
+>
+> If you're concerned about the security of using RSA, I suggest reading Dan
+> Boneh's 1999 article, "Twenty years of attacks on the RSA cryptosystem":
+>
+>     http://crypto.stanford.edu/~dabo/abstracts/RSAattack-survey.html<http://crypto.stanford.edu/%7Edabo/abstracts/RSAattack-survey.html>
+>
+> >So in simple words, I only need to be able to encrypt/decrypt sign and
+> >verify signs on php and python, simultaneously, if possible, using RSA
+> >algo.
+>
+> PyCrypto's PublicKey package is very low-level, so people shouldn't use it
+> directly unless they REALLY know what they are doing.  Mere mortals should
+> use a separate library in addition to PyCrypto for that.  You should never
+> do anything like this:
+>
+> >privkeyA = RSA.generate(512, rpool.get_bytes)
+> >pubkeyA = privkeyA.publickey()
+> >
+> >msg = 'This is the secret phrase testing.'
+> >msgc = pubkeyA.encrypt(msg, '')
+>
+> That is called "textbook RSA", and it's insecure.  (Also, it uses a 512-bit
+> key, which is way too short, but I assume that's just for demonstration.)
+> I strongly recommend looking at PKCS#1v2 (also known as RSAES-OAEP).
+> PyCrypto doesn't include an implementation yet, but Sergey Chernov
+> mentioned that he is working on one.
+>
+> Also, I noticed in your code that you used RandomPool.  Don't.  RandomPool
+> is a security disaster, and it will be removed from future versions.  See
+> the following messages:
+>
+>     http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html
+>     http://lists.dlitz.net/pipermail/pycrypto/2008q3/000020.html
+>
+> I hope you find the above information helpful.
+>
+> Cheers,
+>  - Dwayne
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+>  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090213/d009e7ea/attachment-0001.htm 
+
+From tannhauser at nerdshack.com  Sat Feb 14 13:37:11 2009
+From: tannhauser at nerdshack.com (tannhauser)
+Date: Sat, 14 Feb 2009 20:37:11 +0100
+Subject: [pycrypto] jibberish output with blowfish cbc
+Message-ID: <20090214193711.GB13702@nerdshack.com>
+
+hello,
+
+i use the latest release of amk.ca, v2.0.1 and python 2.6.1. 
+i have a problem when using blowfish with the cbc-mode. 
+
+some example code:
+
+[code]
+#!/usr/bin/env python
+from Crypto.Cipher import Blowfish
+
+key = 'xyz123'
+iv = 'aaaaaaaa'
+obj = Blowfish.new(key, Blowfish.MODE_CBC, iv)
+# use misspelling as padding technique
+plain = 'yet another test sentenc'
+#encrypt
+ciph = obj.encrypt(plain)
+# decrypt
+plain = obj.decrypt(ciph)
+print plain
+[/code]
+
+obviously, "print plain" should give me "yet another test sentenc"
+well, it does not, instead the first 8 characters are something
+jibberish, the rest is ok: "??obf?her test sentenc". i don't have that
+problem with MODE_ECB.
+
+any ideas?
+
+th
+
+
+From tannhauser at nerdshack.com  Sat Feb 14 13:59:04 2009
+From: tannhauser at nerdshack.com (tannhauser)
+Date: Sat, 14 Feb 2009 20:59:04 +0100
+Subject: [pycrypto]  Re: jibberish output with blowfish cbc
+In-Reply-To: <20090214193711.GB13702@nerdshack.com>
+References: <20090214193711.GB13702@nerdshack.com>
+Message-ID: <20090214195904.GA4581@nerdshack.com>
+
+okay, 
+
+another case, where i had to write to a list before i see my error. 
+if i see this right, when i decrypted, decrypt() had no idea what the iv is.
+si, changing this solved my problem.
+
+thanks anyway.
+
+
+On Sat, 14.02, 20:37, tannhauser wrote:
+> hello,
+
+> i use the latest release of amk.ca, v2.0.1 and python 2.6.1. 
+> i have a problem when using blowfish with the cbc-mode. 
+
+> some example code:
+
+> [code]
+> #!/usr/bin/env python
+> from Crypto.Cipher import Blowfish
+
+> key = 'xyz123'
+> iv = 'aaaaaaaa'
+> obj = Blowfish.new(key, Blowfish.MODE_CBC, iv)
+> # use misspelling as padding technique
+> plain = 'yet another test sentenc'
+> #encrypt
+> ciph = obj.encrypt(plain)
+> # decrypt
+> plain = obj.decrypt(ciph)
+> print plain
+> [/code]
+
+> obviously, "print plain" should give me "yet another test sentenc"
+> well, it does not, instead the first 8 characters are something
+> jibberish, the rest is ok: "??obf?her test sentenc". i don't have that
+> problem with MODE_ECB.
+
+> any ideas?
+
+> th
+
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+---end quoted text---
+
+
+From Chris.Pella at safenet-inc.com  Tue Feb 17 13:07:41 2009
+From: Chris.Pella at safenet-inc.com (Pella,Chris)
+Date: Tue, 17 Feb 2009 14:07:41 -0500
+Subject: [pycrypto] building pycrypto on AIX fails
+Message-ID: <CFB2ECBE984593449C4015F0F97C593101CF76CC@bel1exch002.sfnt.local>
+
+Not a development issue per se, but I'm trying to build pycrypto on AIX
+5.3 for python 2.6. I have ActivePython 2.6 installed. When I run python
+setup.py build it fails with a bunch of compiler errors (default
+compiler on AIX is cc_r). I wonder if anybody else has any experience
+building pcrypto using this OS and compiler. I had no issues building on
+solaris, HP-UX,  and other linux platforms. 
+
+ 
+
+cc_r -qlanglvl=ansi -DNDEBUG -O -Isrc/
+-I/usr/ActivePython-2.6/include/python2.6 -c src/RIPEMD.c -o
+build/temp.aix-5.3-2.6/src/RIPEMD.o
+
+"src/RIPEMD.c", line 51.9: 1506-213 (S) Macro name FF1 cannot be
+redefined.
+
+"src/RIPEMD.c", line 51.9: 1506-358 (I) "FF1" is defined on line 235 of
+/usr/include/sys/ioctl.h.
+
+"src/RIPEMD.c", line 218.43: 1506-280 (E) Function argument assignment
+between types "const char*" and "unsigned char*" is not allowed.
+
+"src/RIPEMD.c", line 264.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/RIPEMD.c", line 265.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/RIPEMD.c", line 266.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/RIPEMD.c", line 267.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/RIPEMD.c", line 268.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/RIPEMD.c", line 269.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/RIPEMD.c", line 270.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/RIPEMD.c", line 271.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/RIPEMD.c", line 272.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/RIPEMD.c", line 273.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/RIPEMD.c", line 274.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/RIPEMD.c", line 275.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/RIPEMD.c", line 276.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/RIPEMD.c", line 277.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/RIPEMD.c", line 278.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/RIPEMD.c", line 279.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+"src/hash_template.c", line 108.20: 1506-068 (E) Operation between types
+"unsigned char*" and "char*" is not allowed.
+
+"src/hash_template.c", line 112.20: 1506-068 (E) Operation between types
+"unsigned char*" and "char*" is not allowed.
+
+"src/hash_template.c", line 139.34: 1506-280 (E) Function argument
+assignment between types "char*" and "unsigned char*" is not allowed.
+
+"src/hash_template.c", line 211.41: 1506-280 (E) Function argument
+assignment between types "char*" and "unsigned char*" is not allowed.
+
+error: command 'cc_r' failed with exit status 1
+
+ 
+
+ 
+
+ 
+
+ 
+
+Chris Pella
+
+
+The information contained in this electronic mail transmission 
+may be privileged and confidential, and therefore, protected 
+from disclosure. If you have received this communication in 
+error, please notify us immediately by replying to this 
+message and deleting it from your computer without copying 
+or disclosing it.
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090217/6332b706/attachment.htm 
+
+From dlitz at dlitz.net  Sat Feb 28 11:36:30 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sat, 28 Feb 2009 12:36:30 -0500
+Subject: [pycrypto] building pycrypto on AIX fails
+In-Reply-To: <CFB2ECBE984593449C4015F0F97C593101CF76CC@bel1exch002.sfnt.local>
+References: <CFB2ECBE984593449C4015F0F97C593101CF76CC@bel1exch002.sfnt.local>
+Message-ID: <20090228173629.GA15543@rivest.dlitz.net>
+
+On Tue, Feb 17, 2009 at 02:07:41PM -0500, Pella,Chris wrote:
+>Not a development issue per se, but I'm trying to build pycrypto on AIX
+>5.3 for python 2.6. I have ActivePython 2.6 installed. When I run python
+>setup.py build it fails with a bunch of compiler errors (default
+>compiler on AIX is cc_r). I wonder if anybody else has any experience
+>building pcrypto using this OS and compiler. I had no issues building on
+>solaris, HP-UX,  and other linux platforms. 
+
+Thanks for the heads-up.
+
+RIPEMD.c is being replaced in the next release.  Does the latest 
+development version of pycrypto (from the git repository) build on your 
+platform?
+
+Cheers,
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+
+From dlitz at dlitz.net  Sat Feb 28 12:06:26 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sat, 28 Feb 2009 13:06:26 -0500
+Subject: [pycrypto] Buffer overflow in ARC2.new() with len(key) > 128
+	bytes
+In-Reply-To: <20090207003914.GA28184@rivest.dlitz.net>
+References: <20090207003914.GA28184@rivest.dlitz.net>
+Message-ID: <20090228180626.GA1968@rivest.dlitz.net>
+
+On Fri, Feb 06, 2009 at 07:39:14PM -0500, Dwayne C. Litzenberger wrote:
+>Mike Wiacek from the Google Security Team pointed out a buffer overflow in 
+>PyCrypto's ARC2 cipher module, which occurs when attempting to initialize 
+>ARC2 with a key longer than 128 bytes.
+
+For future reference, this issue has been assigned CVE-2009-0544, and 
+Debian DSA 1726:
+
+     http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0544
+     http://www.debian.org/security/2009/dsa-1726
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+
+From honstain at gmail.com  Wed Mar 11 23:47:03 2009
+From: honstain at gmail.com (Anthony Honstain)
+Date: Wed, 11 Mar 2009 22:47:03 -0700
+Subject: [pycrypto] Crypto.PublicKey.RSA and number.py
+Message-ID: <b2a653cf0903112247v43f39530ya5c995f2e591e9a7@mail.gmail.com>
+
+I am working towards using the Crypto.PublicKey.RSA encryption and
+eventually padding like PKCS#1. I have observed that the leading
+'\000' are removed. Is this the desired behavior of bytes_to_long and
+long_to_bytes? Or is this not an issue once a good padding scheme is
+implemented?
+
+For example: from lib/Crypto/Util/number.py module, using
+bytes_to_long and long_to_bytes.
+>>> teststring
+'\x00\x00test\x00\x00'
+>>> result = bytes_to_long(teststring)
+>>> result
+127979077500928L
+>>> long_to_bytes(result)
+'test\x00\x00'
+
+Thanks,
+Anthony Honstain
+
+From mads at kiilerich.com  Thu Mar 12 20:33:59 2009
+From: mads at kiilerich.com (Mads Kiilerich)
+Date: Fri, 13 Mar 2009 03:33:59 +0100
+Subject: [pycrypto] Crypto.PublicKey.RSA and number.py
+In-Reply-To: <b2a653cf0903112247v43f39530ya5c995f2e591e9a7@mail.gmail.com>
+References: <b2a653cf0903112247v43f39530ya5c995f2e591e9a7@mail.gmail.com>
+Message-ID: <49B9C617.405@kiilerich.com>
+
+Anthony Honstain wrote, On 03/12/2009 06:47 AM:
+> I am working towards using the Crypto.PublicKey.RSA encryption and
+> eventually padding like PKCS#1. I have observed that the leading
+> '\000' are removed. Is this the desired behavior of bytes_to_long and
+> long_to_bytes? Or is this not an issue once a good padding scheme is
+> implemented?
+>   
+
+Yes, kind of.
+
+RSA basically uses big numbers. The numbers are often encoded as byte 
+strings, and any (not too long) string can be interpreted as a number. 
+But just like in decimal numbers the leading zeroes doesn't matter; you 
+can't see from the value how many leading zeroes it was written with, 
+and an arbitrary number of leading zeroes can be added without changing 
+the value.
+
+Yes, a good padding scheme will "fix" that; not so much in order to 
+preserve a string length, but more in order to ensure that the number is 
+big enough to preserve the assumed computational complexity of RSA.
+
+/Mads
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 3435 bytes
+Desc: S/MIME Cryptographic Signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20090313/a0d0891b/attachment.bin 
+
+From tzury.by at reguluslabs.com  Mon Mar 30 02:36:57 2009
+From: tzury.by at reguluslabs.com (Tzury Bar Yochay)
+Date: Mon, 30 Mar 2009 11:36:57 +0300
+Subject: [pycrypto] reusing private key for sign or decryption
+Message-ID: <10128ef10903300136j5d7f5cdbv52ebda9b9c52a051@mail.gmail.com>
+
+Hi,
+
+I found that there is RSAobj.has_private but not RSAobj.set_private nor
+.RSAobj.set_private
+
+Am I suppose to assign 'd' and 'n' manually?
+
+please help,
+Tzury
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090330/80cb02e0/attachment.htm 
+
+From tzury.by at reguluslabs.com  Mon Mar 30 02:38:17 2009
+From: tzury.by at reguluslabs.com (Tzury Bar Yochay)
+Date: Mon, 30 Mar 2009 11:38:17 +0300
+Subject: [pycrypto] reusing private key for sign or decryption
+Message-ID: <10128ef10903300138o62cf3a1ahcf8fc90d38e047cc@mail.gmail.com>
+
+Hi,
+
+I found that there is RSAobj.has_private but not RSAobj.set_private nor
+.RSAobj.set_private
+
+Am I suppose to assign 'd' and 'n' manually?
+
+please help,
+Tzury
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090330/c3cccf38/attachment.htm 
+
+From tzury.by at reguluslabs.com  Mon Mar 30 02:40:53 2009
+From: tzury.by at reguluslabs.com (Tzury Bar Yochay)
+Date: Mon, 30 Mar 2009 11:40:53 +0300
+Subject: [pycrypto] reusing private key for sign or decryption
+Message-ID: <10128ef10903300140j4b100c4qec0d6635e02f4640@mail.gmail.com>
+
+Hi,
+
+I found that there is RSAobj.has_private but not RSAobj.set_private nor
+.RSAobj.set_private
+
+Am I suppose to assign 'd' and 'n' manually?
+
+please help,
+Tzury
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090330/0e1cf2f3/attachment.htm 
+
+From dlitz at dlitz.net  Tue Mar 31 05:44:34 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Tue, 31 Mar 2009 07:44:34 -0400
+Subject: [pycrypto] reusing private key for sign or decryption
+In-Reply-To: <10128ef10903300140j4b100c4qec0d6635e02f4640@mail.gmail.com>
+References: <10128ef10903300140j4b100c4qec0d6635e02f4640@mail.gmail.com>
+Message-ID: <20090331114434.GA4587@rivest.dlitz.net>
+
+On Mon, Mar 30, 2009 at 11:40:53AM +0300, Tzury Bar Yochay wrote:
+>Hi,
+>
+>I found that there is RSAobj.has_private but not RSAobj.set_private nor
+>.RSAobj.set_private
+>
+>Am I suppose to assign 'd' and 'n' manually?
+
+Use RSA.construct, which has the following signature:
+
+     construct(n, e, d=None, p=None, q=None, u=None)
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+

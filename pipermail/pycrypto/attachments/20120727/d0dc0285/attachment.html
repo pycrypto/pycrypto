@@ -1,0 +1,48 @@
+<tt>
+Fantastic!&nbsp;Thank&nbsp;you&nbsp;very&nbsp;much,&nbsp;this&nbsp;sounds&nbsp;like&nbsp;exactly&nbsp;what&nbsp;I&nbsp;was&nbsp;looking&nbsp;for!&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Fri,&nbsp;Jul&nbsp;27,&nbsp;2012&nbsp;at&nbsp;3:15&nbsp;AM,&nbsp;Sebastian&nbsp;Ramacher&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&lt;&lt;a&nbsp;href=&quot;mailto:sebastian+lists@ramacher.at&quot;&nbsp;target=&quot;_blank&quot;&gt;sebastian+lists@ramacher.at&lt;/a&gt;&gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;Running&nbsp;the&nbsp;tests&nbsp;fails&nbsp;most&nbsp;of&nbsp;the&nbsp;time&nbsp;with:&lt;br&gt;<br>
+&lt;br&gt;<br>
+$&nbsp;python&nbsp;-m&nbsp;ejtp.rsatest&lt;br&gt;<br>
+key1&nbsp;&gt;&gt;&nbsp;key2&lt;br&gt;<br>
+Traceback&nbsp;(most&nbsp;recent&nbsp;call&nbsp;last):&lt;br&gt;<br>
+ &nbsp;File&nbsp;&quot;/usr/lib/python2.7/runpy.py&quot;,&nbsp;line&nbsp;162,&nbsp;in&nbsp;_run_module_as_main&lt;br&gt;<br>
+ &nbsp; &nbsp;&quot;__main__&quot;,&nbsp;fname,&nbsp;loader,&nbsp;pkg_name)&lt;br&gt;<br>
+ &nbsp;File&nbsp;&quot;/usr/lib/python2.7/runpy.py&quot;,&nbsp;line&nbsp;72,&nbsp;in&nbsp;_run_code&lt;br&gt;<br>
+ &nbsp; &nbsp;exec&nbsp;code&nbsp;in&nbsp;run_globals&lt;br&gt;<br>
+ &nbsp;File&nbsp;&quot;/tmp/EJTP-lib-python/ejtp/rsatest.py&quot;,&nbsp;line&nbsp;33,&nbsp;in&nbsp;&lt;module&gt;&lt;br&gt;<br>
+ &nbsp; &nbsp;test_run(key1,&nbsp;key2)&lt;br&gt;<br>
+ &nbsp;File&nbsp;&quot;/tmp/EJTP-lib-python/ejtp/rsatest.py&quot;,&nbsp;line&nbsp;27,&nbsp;in&nbsp;test_run&lt;br&gt;<br>
+ &nbsp; &nbsp;ciphertext&nbsp;=&nbsp;encode(plaintext,&nbsp;key1,&nbsp;key2)&lt;br&gt;<br>
+ &nbsp;File&nbsp;&quot;/tmp/EJTP-lib-python/ejtp/rsatest.py&quot;,&nbsp;line&nbsp;19,&nbsp;in&nbsp;encode&lt;br&gt;<br>
+ &nbsp; &nbsp;return&nbsp;reciever.encrypt(sender.decrypt(msg))&lt;br&gt;<br>
+ &nbsp;File&nbsp;&quot;ejtp/util/crypto/rsa.py&quot;,&nbsp;line&nbsp;44,&nbsp;in&nbsp;encrypt&lt;br&gt;<br>
+ &nbsp; &nbsp;value[marker:marker+self.blocksize],&nbsp;&quot;&quot;)[0])&lt;br&gt;<br>
+ &nbsp;File&nbsp;&quot;/usr/lib/python2.7/dist-packages/Crypto/PublicKey/RSA.py&quot;,&nbsp;line&nbsp;150,&nbsp;in&lt;br&gt;<br>
+encrypt&lt;br&gt;<br>
+ &nbsp; &nbsp;return&nbsp;pubkey.pubkey.encrypt(self,&nbsp;plaintext,&nbsp;K)&lt;br&gt;<br>
+ &nbsp;File&nbsp;&quot;/usr/lib/python2.7/dist-packages/Crypto/PublicKey/pubkey.py&quot;,&nbsp;line&nbsp;75,&lt;br&gt;<br>
+in&nbsp;encrypt&lt;br&gt;<br>
+ &nbsp; &nbsp;ciphertext=self._encrypt(plaintext,&nbsp;K)&lt;br&gt;<br>
+ &nbsp;File&nbsp;&quot;/usr/lib/python2.7/dist-packages/Crypto/PublicKey/RSA.py&quot;,&nbsp;line&nbsp;224,&nbsp;in&lt;br&gt;<br>
+_encrypt&lt;br&gt;<br>
+ &nbsp; &nbsp;return&nbsp;(self.key._encrypt(c),)&lt;br&gt;<br>
+ValueError:&nbsp;Plaintext&nbsp;too&nbsp;large&lt;br&gt;<br>
+&lt;br&gt;<br>
+The&nbsp;code&nbsp;in&nbsp;ejtp/util/crypto/rsa.py&nbsp;looks&nbsp;like&nbsp;you&#39;re&nbsp;not&nbsp;doing&nbsp;proper&nbsp;padding&lt;br&gt;<br>
+and&nbsp;using&nbsp;fixed&nbsp;sized&nbsp;blocks&nbsp;that&nbsp;don&#39;t&nbsp;depend&nbsp;on&nbsp;the&nbsp;key&nbsp;parameters.&nbsp;That&nbsp;won&#39;t&lt;br&gt;<br>
+work.&lt;br&gt;<br>
+&lt;br&gt;<br>
+You&nbsp;might&nbsp;want&nbsp;to&nbsp;have&nbsp;a&nbsp;look&nbsp;at&nbsp;PKCS#1&nbsp;OAEP&nbsp;and&nbsp;pycrypto&#39;s&lt;br&gt;<br>
+Crypto.Cipher.PKCS1_OAEP&nbsp;module&nbsp;[1].&lt;br&gt;<br>
+&lt;br&gt;<br>
+Kind&nbsp;regards&lt;br&gt;<br>
+&lt;br&gt;<br>
+[1]&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.PKCS1_OAEP-module.html&quot;&nbsp;target=&quot;_blank&quot;&gt;https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.PKCS1_OAEP-module.html&lt;/a&gt;&lt;br&gt;<br>
+_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;<br>
+
+</tt>

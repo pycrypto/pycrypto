@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] DES/DES3/XOR/etc removal
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20DES/DES3/XOR/etc%20removal&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000092.html">
+   <LINK REL="Next"  HREF="000094.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] DES/DES3/XOR/etc removal</H1>
+    <B>Jean-Paul Calderone</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20DES/DES3/XOR/etc%20removal&In-Reply-To="
+       TITLE="[pycrypto] DES/DES3/XOR/etc removal">exarkun at twistedmatrix.com
+       </A><BR>
+    <I>Wed Apr 22 11:23:35 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000092.html">[pycrypto] Library design philosophy
+</A></li>
+        <LI>Next message: <A HREF="000094.html">[pycrypto] DES/DES3/XOR/etc removal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#93">[ date ]</a>
+              <a href="thread.html#93">[ thread ]</a>
+              <a href="subject.html#93">[ subject ]</a>
+              <a href="author.html#93">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+Someone pointed out that XOR and several other ciphers [1] have been
+removed from PyCrypto.  This has the consequence that Twisted Conch,
+and SSH client and server implementation which depends on PyCrypto,
+no longer works with the latest development version of PyCrypto, and
+I assume that when the next release of PyCrypto is made, Conch also
+won't work with that.
+
+I'm curious how important backwards compatibility is deemed with the
+new PyCrypto development going on.  A change like the one referenced
+above is going to break users of PyCrypto (and that seems like it is
+really obvious, to me - as opposed to a change which only accidentally
+breaks applications).  The added maintenance burden this causes makes
+PyCrypto less attractive (one nice thing about PyCrypto having been
+unmaintained for a long time is that Conch's use of it stayed as
+correct (or incorrect) as it was when it was written).  Basically, the
+question is whether I should expect more PyCrypto changes like this
+as development proceeds, or whether I can make the argument that backwards
+compatibility is a *good* thing compelling.
+
+Of course it's one thing to say &quot;more backwards compatibility please&quot;.
+Actually deciding how that can be accomplished while allowing development
+to proceed in a useful direction is another.  However, I'm intentionally
+omitting details of that discussion from this message to keep things
+simple.  I'm convinced that some degree of backwards compatibility is
+always possible, regardless of the changes desired, so the details of how
+it works aren't as important as deciding whether backwards compatibility
+will be maintained.
+
+So, what do you say?  Can we decide that backwards compatibility is a good
+thing?
+
+Jean-Paul
+
+[1] - <A HREF="http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git;a=commit;h=5b5b496c0f81f3595d0aebb8da5196492abae429">http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git;a=commit;h=5b5b496c0f81f3595d0aebb8da5196492abae429</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000092.html">[pycrypto] Library design philosophy
+</A></li>
+	<LI>Next message: <A HREF="000094.html">[pycrypto] DES/DES3/XOR/etc removal
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#93">[ date ]</a>
+              <a href="thread.html#93">[ thread ]</a>
+              <a href="subject.html#93">[ subject ]</a>
+              <a href="author.html#93">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

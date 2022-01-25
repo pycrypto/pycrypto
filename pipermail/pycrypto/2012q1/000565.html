@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Problems installing pycrypto 2.5 on Ununtu Linux
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Problems%20installing%20pycrypto%202.5%20on%20Ununtu%20Linux&In-Reply-To=%3C87F388FF-CB70-4178-8E2A-77BEAA6147AF%40panix.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000564.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Problems installing pycrypto 2.5 on Ununtu Linux</H1>
+    <B>Roy Smith</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Problems%20installing%20pycrypto%202.5%20on%20Ununtu%20Linux&In-Reply-To=%3C87F388FF-CB70-4178-8E2A-77BEAA6147AF%40panix.com%3E"
+       TITLE="[pycrypto] Problems installing pycrypto 2.5 on Ununtu Linux">roy at panix.com
+       </A><BR>
+    <I>Sat Mar 17 13:26:23 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000564.html">[pycrypto] Problems installing pycrypto 2.5 on Ununtu Linux
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#565">[ date ]</a>
+              <a href="thread.html#565">[ thread ]</a>
+              <a href="subject.html#565">[ subject ]</a>
+              <a href="author.html#565">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Duh, of course.  That did the trick.  Thanks.
+
+
+On Mar 17, 2012, at 12:26 PM, Legrandin wrote:
+
+&gt;&gt;<i>   building 'Crypto.Hash._MD2' extension
+</I>&gt;&gt;<i>    gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/python2.6 -c src/MD2.c -o build/temp.linux-x86_64-2.6/src/MD2.o
+</I>&gt;&gt;<i>    src/MD2.c:31:20: error: Python.h: No such file or directory
+</I>&gt;<i> 
+</I>&gt;<i> You need the library for building python modules:
+</I>&gt;<i> 
+</I>&gt;<i> sudo apt-get install python-dev
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i> 
+</I>
+
+--
+Roy Smith
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">roy at panix.com</A>
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000564.html">[pycrypto] Problems installing pycrypto 2.5 on Ununtu Linux
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#565">[ date ]</a>
+              <a href="thread.html#565">[ thread ]</a>
+              <a href="subject.html#565">[ subject ]</a>
+              <a href="author.html#565">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

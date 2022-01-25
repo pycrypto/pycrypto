@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Python%203.x%20vs.%20Python%202.1%20-%20prep%20the%20axe&In-Reply-To=4D1426D5.80400%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000344.html">
+   <LINK REL="Next"  HREF="000331.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Python 3.x vs. Python 2.1 - prep the axe</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Python%203.x%20vs.%20Python%202.1%20-%20prep%20the%20axe&In-Reply-To=4D1426D5.80400%40gmx.li"
+       TITLE="[pycrypto] Python 3.x vs. Python 2.1 - prep the axe">sbehrens at gmx.li
+       </A><BR>
+    <I>Mon Dec 27 23:16:18 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000344.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000331.html">[pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#330">[ date ]</a>
+              <a href="thread.html#330">[ thread ]</a>
+              <a href="subject.html#330">[ subject ]</a>
+              <a href="author.html#330">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 12/23/2010 11:51 PM, Thorsten Behrens wrote:
+&gt;<i> On 12/23/2010 9:18 PM, Dwayne C. Litzenberger wrote:
+</I>&gt;&gt;<i> Also, down the road, I could be convinced to drop Python 2.1 support, if I
+</I>&gt;&gt;<i> had some concrete examples showing that the result would be substantially
+</I>&gt;&gt;<i> less error-prone, easier to maintain, etc.
+</I>&gt;<i> So far, it doesn't look like that's needed. dict.has_key() cannot be
+</I>&gt;<i> replaced with &quot;in&quot; for 2.1, but 2to3 seems to handle it fine.
+</I>
+I've run into a bit of a snag. The / operator in 2.x returns an int, and 
+in 3.x it can return a float. This causes an infinite loop in 
+numbers.py. I can solve it with //, which is supported from 2.2 on, but 
+not in 2.1.
+
+I've pasted the offending code snippet from numbers.py below, in the 
+form that doesn't cause an infinite loop in 3.x.
+
+I'm at a bit of a loss here. int(math.floor(a/b)) is not an option due 
+to the size of the operands - it actually fails on 2.1, and gives 
+incorrect results on 3.x. That means I am stuck with //.
+
+I don't know how to &quot;import something&quot; and have &quot;something&quot; show up in 
+the namespace above. I don't think it works that way, unlike a C 
+#include. That means I can't just bring the right function in depending 
+on version. And even if I could, 2.1 doesn't have the &quot;as&quot; keyword, so 
+it would never show up with the right numbers.getStrongPrime name 
+anyway, even _if_ such nested namespace manipulations were supported. 
+Which I don't think they are.
+
+I can't just &quot;if sys.version&quot; the offending code snippet, either: 2.1 
+will still complain that // is a syntax error.
+
+We could duplicate the code and have setup.py bring in a special-cased 
+numbers.py for 2.1. I'm not sure how to do that with setup.py, but 
+there's got to be a way, even if it's just renaming files as needed.
+
+But that means duplicating an entire module, which is ugly. And I can't 
+guarantee that this is the only occurrence of / that causes issues. In 
+fact, I'd wager some beer that it likely isn't.
+
+If you can think of a reasonably clean way of handling the &quot;/&quot; vs. &quot;//&quot; 
+issue - or if anyone else can - please share.
+
+Barring that, I think my message is: If Python 3.x is to be supported 
+without code duplication, Python 2.1 support may have to go.
+
+Yours
+
+Thorsten
+
+         # if e is given make sure that e and X-1 are coprime
+         # this is not necessarily a strong prime criterion but useful when
+         # creating them for RSA where the p-1 and q-1 should be coprime to
+         # the public exponent e
+         if e and is_possible_prime:
+             if e &amp; 1:
+                 if GCD (e, X-1) != 1:
+                     is_possible_prime = 0
+             else:
+                 # Python 2.1 does not understand //, and 3.x returns a 
+float on /
+                 # Infinite loop, wheee!!!
+                 if GCD (e, (X-1)//2) != 1:
+                     is_possible_prime = 0
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000344.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000331.html">[pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#330">[ date ]</a>
+              <a href="thread.html#330">[ thread ]</a>
+              <a href="subject.html#330">[ subject ]</a>
+              <a href="author.html#330">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

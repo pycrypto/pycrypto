@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] python 3, crypto installation issue?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20python%203%2C%20crypto%20installation%20issue%3F&In-Reply-To=%3CCAEncD4dupamGPo36sb_V9YK6NJyd0c%3DjrVs%3D3EJtvX1mcMP4wA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000835.html">
+   <LINK REL="Next"  HREF="000837.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] python 3, crypto installation issue?</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20python%203%2C%20crypto%20installation%20issue%3F&In-Reply-To=%3CCAEncD4dupamGPo36sb_V9YK6NJyd0c%3DjrVs%3D3EJtvX1mcMP4wA%40mail.gmail.com%3E"
+       TITLE="[pycrypto] python 3, crypto installation issue?">dave.pawson at gmail.com
+       </A><BR>
+    <I>Fri May  8 11:09:09 PDT 2015</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000835.html">[pycrypto] python 3, crypto installation issue?
+</A></li>
+        <LI>Next message: <A HREF="000837.html">[pycrypto] Windows64, pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#836">[ date ]</a>
+              <a href="thread.html#836">[ thread ]</a>
+              <a href="subject.html#836">[ subject ]</a>
+              <a href="author.html#836">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks, but I worked round it.
+I installed via the download / setup.py method,  worked fine.
+
+
+Tried to install on Windows 7, 64 bit.
+1. When I select 'all users' for Python 3.4, then pycrypto fails to
+find Python and exits.
+2. When I select 'just current user', then pycrypto installs fine.
+
+crypto seems to look in the 'wrong' place (windows view)
+
+regards
+
+
+On 8 May 2015 at 18:40, mark grandi &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">markgrandi at gmail.com</A>&gt; wrote:
+&gt;<i> The pyyaml package tries to see if yaml.h is installed for optional
+</I>&gt;<i> speedups, but i know the pyyaml package can work without the c extensions,
+</I>&gt;<i> maybe the pycrypto installer doesn't handle that case?
+</I>&gt;<i>
+</I>&gt;<i> ~mark
+</I>&gt;<i> ________________________________
+</I>&gt;<i> From: Dave Pawson
+</I>&gt;<i> Sent: &#8206;5/&#8206;8/&#8206;2015 4:23 AM
+</I>&gt;<i> To: Pycrypto List
+</I>&gt;<i> Subject: [pycrypto] python 3, crypto installation issue?
+</I>&gt;<i>
+</I>&gt;<i> Linux, as root.
+</I>&gt;<i> $ pip3 install Crypto
+</I>&gt;<i> ...
+</I>&gt;<i>
+</I>&gt;<i> Installing collected packages: Crypto, Naked, pyyaml
+</I>&gt;<i>   Running setup.py install for pyyaml
+</I>&gt;<i>     checking if libyaml is compilable
+</I>&gt;<i>     gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1
+</I>&gt;<i> -DNDEBUG -O2 -g -pipe -Wall -Werror=format-security
+</I>&gt;<i> -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+</I>&gt;<i> --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic
+</I>&gt;<i> -D_GNU_SOURCE -fPIC -fwrapv -fPIC -I/usr/include/python3.4m -c
+</I>&gt;<i> build/temp.linux-x86_64-3.4/check_libyaml.c -o
+</I>&gt;<i> build/temp.linux-x86_64-3.4/check_libyaml.o
+</I>&gt;<i>     build/temp.linux-x86_64-3.4/check_libyaml.c:2:18: fatal error:
+</I>&gt;<i> yaml.h: No such file or directory
+</I>&gt;<i>      #include &lt;yaml.h&gt;
+</I>&gt;<i>                       ^
+</I>&gt;<i>     compilation terminated.
+</I>&gt;<i>
+</I>&gt;<i>     libyaml is not found or a compiler error: forcing --without-libyaml
+</I>&gt;<i>     (if libyaml is installed correctly, you may need to
+</I>&gt;<i>      specify the option --include-dirs or uncomment and
+</I>&gt;<i>      modify the parameter include_dirs in setup.cfg)
+</I>&gt;<i>
+</I>&gt;<i> Suggestions please?
+</I>&gt;<i>
+</I>&gt;<i> $pip3 search pyyaml
+</I>&gt;<i> pyaml                     - PyYAML-based module to produce
+</I>&gt;<i>                             pretty and readable YAML-
+</I>&gt;<i>                             serialized data
+</I>&gt;<i> PyYAML                    - YAML parser and emitter for
+</I>&gt;<i>                             Python
+</I>&gt;<i>   INSTALLED: 3.11 (latest)
+</I>&gt;<i>
+</I>&gt;<i> So it seems I have pyyaml installed?
+</I>&gt;<i>
+</I>&gt;<i> TiA
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dave Pawson
+</I>&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;<i> Docbook FAQ.
+</I>&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000835.html">[pycrypto] python 3, crypto installation issue?
+</A></li>
+	<LI>Next message: <A HREF="000837.html">[pycrypto] Windows64, pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#836">[ date ]</a>
+              <a href="thread.html#836">[ thread ]</a>
+              <a href="subject.html#836">[ subject ]</a>
+              <a href="author.html#836">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

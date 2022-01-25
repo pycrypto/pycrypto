@@ -1,0 +1,319 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RandomPool
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20RandomPool&In-Reply-To=19094.51606.668990.39731%40pkoning-laptop.equallogic.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000126.html">
+   <LINK REL="Next"  HREF="000129.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RandomPool</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20RandomPool&In-Reply-To=19094.51606.668990.39731%40pkoning-laptop.equallogic.com"
+       TITLE="[pycrypto] RandomPool">dlitz at dlitz.net
+       </A><BR>
+    <I>Sun Sep  6 11:54:42 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000126.html">[pycrypto] RandomPool
+</A></li>
+        <LI>Next message: <A HREF="000129.html">[pycrypto] Elliptic curve cryptography and group signature
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#128">[ date ]</a>
+              <a href="thread.html#128">[ thread ]</a>
+              <a href="subject.html#128">[ subject ]</a>
+              <a href="author.html#128">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Aug 27, 2009 at 01:59:50PM -0400, Paul Koning wrote:
+&gt;<i>Hi...
+</I>&gt;<i>
+</I>&gt;<i>My first post to this list, though I've used pycrypto for 2-3 years
+</I>&gt;<i>now.
+</I>
+Hello and welcome!
+
+&gt;<i>RFC 4086, &quot;Randomness Requirements for Security&quot; is very much worth
+</I>&gt;<i>studying for a discussion of this subject.
+</I>
+Agreed.  In addition, it is worth looking at the papers listed in the 
+&quot;references&quot; section below.
+
+&gt;<i>Dwayne comments &quot;Also, after looking a bit more at OS-provided random
+</I>&gt;<i>generators, I'm starting to think that just returning their output
+</I>&gt;<i>might not be such a great idea.  There just doesn't seem to be any
+</I>&gt;<i>reason to trust them very far.&quot;  I don't know what OS is at issue
+</I>&gt;<i>here; it would be good for a general statement like that to be
+</I>&gt;<i>accompanied by specific evidence.  For example, I spent quite a while
+</I>&gt;<i>looking at the Linux /dev/random code by Ted Ts'o, and my conclusion
+</I>&gt;<i>is just the opposite.  It looks strong and well constructed.  So could
+</I>&gt;<i>you spell which OS you were talking about, and why you concluded it
+</I>&gt;<i>should not be trusted?
+</I>
+I assume you are referring to this post:
+
+     <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2008q3/000002.html">http://lists.dlitz.net/pipermail/pycrypto/2008q3/000002.html</A>
+
+There is no single OS at issue here.  Since PyCrypto runs on more platforms 
+than just Linux, I would need to trust the OS-provided random number 
+generators on *all* of those platforms before I could feel comfortable 
+making Crypto.Random.new an alias for Crypto.Random.OSRNG.new.
+
+Here are some of the reasons why I'm not comforable with doing that:
+
+
+=== 1. MS Windows (XP and earlier) ===
+
+Practical vulnerabilities to state compromise extension attacks on a 
+platform where the likelihood of malicious code being executed at *some* 
+point in time is relatively high.
+
+See <A HREF="http://eprint.iacr.org/2007/419">http://eprint.iacr.org/2007/419</A> [4].
+
+
+=== 2. MS Windows (Later than XP) ===
+
+As far as I know, the algorithm that replaced the previous Windows RNG 
+remains unpublished.  I see no reason to trust it.
+
+
+=== 3. Anything that implements Dual_EC_DRBG (from NIST SP800-90) ===
+
+See [5]:
+<A HREF="http://en.wikipedia.org/w/index.php?title=Dual_EC_DRBG&amp;oldid=306143447#Controversy">http://en.wikipedia.org/w/index.php?title=Dual_EC_DRBG&amp;oldid=306143447#Controversy</A> 
+
+I don't know if Dual_EC_DRBG is ever used as an OS-provided random number 
+generator, but if so, it could be a trivial back-door if its output is 
+provided directly to an attacker.  Mixing its output with other sources of 
+entropy (or even truncating the output, apparently) should help prevent an  
+attacker from reversing the algorithm.
+
+
+=== 4. Solaris, *BSD, proprietary *nix, Minix, HURD ===
+
+No idea, but if these excerpts from Wikipedia [6] are true, they don't help 
+earn my trust:
+
+- &quot;In 2004, Landon Curt Noll tested the FreeBSD 5.2.1 version of 
+   /dev/random and found that it was not a cryptographically strong random 
+   number generator because its output had multiple uniformity flaws 
+   according to the Billion bit test. Similar flaws were found in the Linux 
+   2.4.21-20, Solaris 8 patch 108528-18, and Mac OS X 10.3.5 implementations 
+   of /dev/random.&quot;
+
+- &quot;... as with FreeBSD, AIX implements its own Yarrow-based design which 
+   uses considerably fewer entropy sources than the standard /dev/random 
+   implementation and stops refilling the pool when it thinks it contains 
+   enough entropy.&quot;
+
+
+=== 5. Linux ===
+
+Linux's random.c is probably the most trustworthy of the bunch, but some 
+elements of its design and implememntation remain controversial.  Quoting 
+the comments in drivers/char/random.c:
+
+|<i> There are three exported interfaces; the first is one designed to
+</I>|<i> be used from within the kernel:
+</I>|<i>
+</I>|<i>      void get_random_bytes(void *buf, int nbytes);
+</I>|<i>
+</I>|<i> This interface will return the requested number of random bytes,
+</I>|<i> and place it in the requested buffer.
+</I>|<i>
+</I>|<i> The two other interfaces are two character devices /dev/random and
+</I>|<i> /dev/urandom.  /dev/random is suitable for use when very high
+</I>|<i> quality randomness is desired (for example, for key generation or
+</I>|<i> one-time pads), as it will only return a maximum of the number of
+</I>|<i> bits of randomness (as estimated by the random number generator)
+</I>|<i> contained in the entropy pool.
+</I>|<i>
+</I>|<i> The /dev/urandom device does not have this limit, and will return
+</I>|<i> as many bytes as are requested.  As more and more random bytes are
+</I>|<i> requested without giving time for the entropy pool to recharge,
+</I>|<i> this will result in random numbers that are merely cryptographically
+</I>|<i> strong.  For many applications, however, this is acceptable.
+</I>
+The designers of Linux's /dev/random claim that it provides 
+information-theoretic security based on entropy estimates.
+
+As noted by John Viega [2], entropy estimation is problematic:
+
+   &quot;One significant problem is a lack of methodology for deriving reasonable 
+   estimates.
+   . . .
+   &quot;Information theory does provide ways to measure entropy, but they are 
+   not practical, because one can only model how much entropy is in data if 
+   one has a complete understanding of how the data is produced and all 
+   possible channels an attacker may use to measure information about the 
+   data.  Considering that there are a broad range of possible threat 
+   models, and considering that machines behave deterministically yet are 
+   still incredibly complex in practice, one should expect data to tend to 
+   be predictable (the only times where significant new entropy can really 
+   added be to a system are when the machine receives external input), yet 
+   it is incredibly difficult to figure out just how predictable.&quot;
+
+However, the comments in drivers/char/random.c make it sound as if using 
+/dev/random is the preferred, but /dev/urandom can be used as a last 
+resort, since it provides &quot;merely cryptographically strong&quot; output.
+
+In reality, /dev/random is a red herring for two reasons:
+
+   a) It provides information-theoretic security *only* *if* the 
+   implementation does not overestimate the information available to an 
+   attacker.  As noted above, whether that's even possible is debatable.
+
+   b) Applications need the ability to get cryptographically-strong random 
+   numbers in a timely manner.  /dev/random blocks when it runs out of 
+   (estimated) entropy, so it's useless in most situations.  Worse still, 
+   since the entropy is finite, the more it gets used, the longer 
+   applications must wait to have their requests satisfied.  As a result, 
+   hardly anything uses /dev/random.
+
+Furthermore, Ted Ts'o posted a criticism that makes the accusation that 
+with Fortuna, entropy is &quot;thoughtlessly squandered&quot;.  
+(<A HREF="http://lkml.indiana.edu/hypermail/linux/kernel/0409.3/0646.html">http://lkml.indiana.edu/hypermail/linux/kernel/0409.3/0646.html</A>)
+However, look at this (again in drivers/char/random.c):
+
+|<i> add_input_randomness() uses the input layer interrupt timing, as well as
+</I>|<i> the event type information from the hardware.
+</I>|<i>
+</I>|<i> add_interrupt_randomness() uses the inter-interrupt timing as random
+</I>|<i> inputs to the entropy pool.  Note that not all interrupts are good
+</I>|<i> sources of randomness!  For example, the timer interrupts is not a
+</I>|<i> good choice, because the periodicity of the interrupts is too
+</I>|<i> regular, and hence predictable to an attacker.  Disk interrupts are
+</I>|<i> a better measure, since the timing of the disk interrupts are more
+</I>|<i> unpredictable.
+</I>
+The recommendation is to avoid sources of randomness that *might* be 
+predictable to an attacker.  But disk interrupts might be predictable if 
+you're using solid-state drives, and input-layer interrupts might be 
+predictable if you're using a wireless keyboard and mouse.  Apparently, a 
+conservative user should patch his kernel to remove all of these sources of 
+entropy!
+
+Linux's RNG also wastes entropy, simply by disregarding it.  With Fortuna, 
+you can use all of these sources of randomness, and it won't matter as long 
+as *any* of them remains unpredictable to an attacker.
+
+Further:
+
+|<i> All of these routines try to estimate how many bits of randomness a
+</I>|<i> particular randomness source.  They do this by keeping track of the
+</I>|<i> first and second order deltas of the event timings.
+</I>
+I would love to see an analysis of how much information could be leaked via 
+the world-readable /proc/sys/kernel/random/entropy_avail file, and whether 
+that information could be used in an attack (either a real attack, or an 
+attack by a computationally unbounded attacker.)
+
+To summarize, while I think Linux's RNG is probably the best OS-provided 
+RNG I've seen, there are still several things that make me raise my 
+eyebrows:
+
+- The claims about &quot;information-theoretic security&quot;, which are both 
+   questionable (since they might not even be possible) and irrelevant 
+   (since /dev/random is mostly unusable anyway).
+
+- The apparent preference of /dev/random over /dev/urandom, even though the 
+   former is nearly unusable in real-world applications.
+
+- Ted Ts'o claims that Fortuna wastes entropy, while ignoring the entropy 
+   in thousands of timer interrupts that Linux has to ignore due to the 
+   design of his RNG.
+
+- The world-readable /proc/sys/kernel/random/entropy_avail file, which is 
+   apparently derived from the input into the entropy pool.
+
+===========
+
+On Thu, Aug 27, 2009 at 01:59:50PM -0400, Paul Koning wrote:
+&gt;<i>What is Fortuna?  What makes it good enough that an application-level
+</I>&gt;<i>RNG can be safely layered on top of it?
+</I>
+<A HREF="http://en.wikipedia.org/wiki/Fortuna_(PRNG">http://en.wikipedia.org/wiki/Fortuna_(PRNG</A>)
+
+Fortuna was designed by Niels Ferguson and Bruce Schneier, and is described 
+in their book, /Practical Cryptography/ [7].
+
+Fortuna consists of two parts: a series of 32 SHA256-based entropy pools 
+(collectively called the &quot;accumulator&quot;) and a PRNG (the &quot;generator&quot;) that 
+basically just runs AES in counter mode.  The generator is periodically 
+re-seeded from the accumulator.
+
+Fortuna is designed to resist state compromise extension attacks without 
+any need to estimate entropy, and it works well in situations where you 
+have several sources of randomness that may or may not be known or 
+controlled by an attacker.
+
+PyCrypto's Crypto.Random implementation currently seeds Fortuna from three 
+sources: the OS-provided RNG (abstracted by Crypto.Random.OSRNG), 
+time.time(), and time.clock().  One of the latter two is usually a 
+high-resolution timer, depending on the platform you're on.
+
+I hope that helps to clear things up.
+
+Cheers,
+  - Dwayne
+
+
+References:
+
+[1] &quot;Cryptanalytic Attacks on Pseudorandom Number Generators&quot; (1998) by 
+John Kelsey, Bruce Schneier, David Wagner, and Chris Hall.  
+<A HREF="http://www.schneier.com/paper-prngs.html">http://www.schneier.com/paper-prngs.html</A>
+
+[2] &quot;Practical Random Number Generation in Software&quot; (2003) by John Viega 
+<A HREF="http://www.acsac.org/2003/abstracts/79.html">http://www.acsac.org/2003/abstracts/79.html</A>
+
+[3] &quot;Analysis of the Linux Random Number Generator&quot; (2006) by Zvi 
+Gutterman, Benny Pinkas, and Tzachy Reinman.
+<A HREF="http://www.pinkas.net/PAPERS/gpr06.pdf">http://www.pinkas.net/PAPERS/gpr06.pdf</A>
+
+[4] &quot;Cryptanalysis of the Random Number Generator of the Windows Operating 
+System&quot; (Nov 2007) by Leo Dorrendorf, Zvi Gutterman, and Benny Pinkas 
+<A HREF="http://eprint.iacr.org/2007/419">http://eprint.iacr.org/2007/419</A>
+
+[5] &quot;Dual_EC_DRBG - Controversy&quot; on Wikipedia
+<A HREF="http://en.wikipedia.org/w/index.php?title=Dual_EC_DRBG&amp;oldid=306143447#Controversy">http://en.wikipedia.org/w/index.php?title=Dual_EC_DRBG&amp;oldid=306143447#Controversy</A>
+
+[6] &quot;/dev/random&quot; on Wikipedia
+<A HREF="http://en.wikipedia.org/w/index.php?title=/dev/random&amp;oldid=300118729">http://en.wikipedia.org/w/index.php?title=/dev/random&amp;oldid=300118729</A>
+
+[7] /Practical Cryptography/ (2003) by Niels Ferguson and Bruce Schneier.  
+ISBN 0-471-22357-3.  <A HREF="http://www.schneier.com/book-practical.html">http://www.schneier.com/book-practical.html</A>
+
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000126.html">[pycrypto] RandomPool
+</A></li>
+	<LI>Next message: <A HREF="000129.html">[pycrypto] Elliptic curve cryptography and group signature
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#128">[ date ]</a>
+              <a href="thread.html#128">[ thread ]</a>
+              <a href="subject.html#128">[ subject ]</a>
+              <a href="author.html#128">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,1203 @@
+From dlitz at dlitz.net  Wed Oct 10 05:15:06 2012
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Wed, 10 Oct 2012 02:15:06 -0700
+Subject: [pycrypto] random.uniform() method
+In-Reply-To: <3562448.YMP7aB9TP8@artem-portable>
+References: <3562448.YMP7aB9TP8@artem-portable>
+Message-ID: <20121010091506.GB6940@goedel.dlitz.net>
+
+On Fri, Jul 13, 2012 at 09:05:07AM -0700, Artem wrote:
+>Tell me please, is there a way to use random.uniform() or 
+>random.random() with PyCrypto?
+
+No.  We deliberately omitted all of the functions that return 
+floating-point values from Crypto.Random.random, because they are not 
+suitable for cryptographic purposes.
+
+For example, you might think that 2**128 * random.random() has 128 bits 
+of entropy, but the entropy is actually limited to the length of the 
+mantissa of the double-precision binary floating-point format 
+(approximately 52 bits), minus any bits lost during the conversion or 
+the multiplication.
+
+If you really wanted floating-point values, you could perhaps do 
+something like this:
+
+     random.randrange(100000) / 100.0
+
+That will give one of 100,000 different possible floating-point numbers 
+between 0 and 999.99.  However, this still doesn't work when you want 
+the large numbers of possibilities that you need for cryptographic 
+purposes.
+
+A better idea might be to feed the result of random.randrange() into 
+decimal.Decimal (paying close attention to the notes about precision 
+settings).
+
+But really, if you need strong random numbers, it's best to just avoid 
+decimal points altogether.
+
+What is this for?  Maybe, with more context, we could be more helpful.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From luoshoufu at gmail.com  Mon Nov  5 00:26:46 2012
+From: luoshoufu at gmail.com (Shoufu Luo)
+Date: Mon, 5 Nov 2012 00:26:46 -0500
+Subject: [pycrypto] Confused about some code in PubKey/RSA/_slowmath.py
+Message-ID: <F73CAB77-85F3-4E98-BAAA-052A95B4CCF2@gmail.com>
+
+Hi all,
+
+I'm trying to encrypt a message with my private key and release the encrypted to others who will use my public key to decrypt. But, I failed. 
+
+I was confused by the follwing code from PubKey/RSA/_slowmath.py of pyCrypto-2.6. If anyone can give any clues to answer the following questions, I will appreciate. 
+
+1. Theoretically, if I encrypt date using private key, I can decrypt the encrypted data using public key, and vice versa. Why the key must be a private key in decryption function, line 51-52? Can't I use private key to decrypt?
+
+2. _sign() should be the signature process using private key to encrypt a piece of data, why it is trying to decrypt at line 70, and it should be decryption in '_verify', but why it is _encrypt()? 
+
+ 49     def _decrypt(self, c):
+ 50         # compute c**d (mod n)
+ 51         if not self.has_private():
+ 52             raise TypeError("No private key")
+ 53         if (hasattr(self,'p') and hasattr(self,'q') and hasattr(self,'u')):
+ 54             m1 = pow(c, self.d % (self.p-1), self.p)
+ 55             m2 = pow(c, self.d % (self.q-1), self.q)
+ 56             h = m2 - m1
+ 57             if (h<0):
+ 58                 h = h + self.q
+ 59             h = h*self.u % self.q
+ 60             return h*self.p+m1
+ 61         return pow(c, self.d, self.n)
+ 62 
+ 63     def _encrypt(self, m):
+ 64         # compute m**d (mod n)
+ 65         return pow(m, self.e, self.n)
+ 66 
+ 67     def _sign(self, m):   # alias for _decrypt
+ 68         if not self.has_private():
+ 69             raise TypeError("No private key")
+ 70         return self._decrypt(m)
+ 71 
+ 72     def _verify(self, m, sig):
+ 73         return self._encrypt(sig) == m
+
+
+Thanks,
+Shoufu
+
+
+From don at amberfisharts.com  Tue Nov  6 14:59:44 2012
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Tue, 06 Nov 2012 20:59:44 +0100
+Subject: [pycrypto] Confused about some code in PubKey/RSA/_slowmath.py
+In-Reply-To: <F73CAB77-85F3-4E98-BAAA-052A95B4CCF2@gmail.com>
+References: <F73CAB77-85F3-4E98-BAAA-052A95B4CCF2@gmail.com>
+Message-ID: <50996C30.4080407@amberfisharts.com>
+
+Hi Shoufu,
+
+first things first:
+A) Cryptography is *very* hard to get right even if use a crypto library. So if
+you ask these questions out of curiosity or educational purposes that is fine but
+please don't use your own crypto in production code where you really need security!
+
+B) I'm myself not a cryptography expert so take my answers with a grain of salt.
+
+First some general explanations that might be helpful.
+For answers to your actual questions scroll down to the "---" mark.
+
+ From a mathematical standpoint encryption and decryption are the same operation.
+Namely raise a number (this is either your plain text "m" or your cipher text "c")
+to an exponent modulo a large number (usually called "n"). The only difference is
+what you take as the exponent. So in RSA you have two different exponents a private
+one (let us call it "d") and a public one (let us call it "e"). combined with "n"
+these are in essence your private and public key. So now we have one mathematical
+operation but four variables ("m", "c", "d", and "e") giving you these combinations:
+
+1) m**e mod n    --> encryption
+2) m**d mod n    --> sign
+3) c**e mod n    --> verify
+4) c**d mod n    --> decryption
+
+---
+
+so to answer your first question:
+"encrypting" using your private key is called signing. Think of it this way. if you
+"encrypt" with your private key everybody would be able to decrypt it because what
+could be done with your public key which is ... well *public*
+
+as for the second question:
+this question seems to stem from the same misconception as the first one.
+encryption happens with the *public* key and decryption with the *private* key.
+Everybody (i.e. the public) is allowed to send you encrypted messages but only you
+should be able to decrypt them in private!
+
+I hope that answers your questions.
+
+Sincerely yours,
+Lorenz
+
+
+
+On 11/05/2012 06:26 AM, Shoufu Luo wrote:
+> Hi all,
+>
+> I'm trying to encrypt a message with my private key and release the encrypted to
+> others who will use my public key to decrypt. But, I failed.
+>
+> I was confused by the follwing code from PubKey/RSA/_slowmath.py of pyCrypto-2.6.
+> If anyone can give any clues to answer the following questions, I will appreciate.
+>
+> 1. Theoretically, if I encrypt date using private key, I can decrypt the encrypted
+> data using public key, and vice versa. Why the key must be a private key in
+> decryption function, line 51-52? Can't I use private key to decrypt?
+>
+> 2. _sign() should be the signature process using private key to encrypt a piece of
+> data, why it is trying to decrypt at line 70, and it should be decryption in
+> '_verify', but why it is _encrypt()?
+>
+>   49     def _decrypt(self, c):
+>   50         # compute c**d (mod n)
+>   51         if not self.has_private():
+>   52             raise TypeError("No private key")
+>   53         if (hasattr(self,'p') and hasattr(self,'q') and hasattr(self,'u')):
+>   54             m1 = pow(c, self.d % (self.p-1), self.p)
+>   55             m2 = pow(c, self.d % (self.q-1), self.q)
+>   56             h = m2 - m1
+>   57             if (h<0):
+>   58                 h = h + self.q
+>   59             h = h*self.u % self.q
+>   60             return h*self.p+m1
+>   61         return pow(c, self.d, self.n)
+>   62
+>   63     def _encrypt(self, m):
+>   64         # compute m**d (mod n)
+>   65         return pow(m, self.e, self.n)
+>   66
+>   67     def _sign(self, m):   # alias for _decrypt
+>   68         if not self.has_private():
+>   69             raise TypeError("No private key")
+>   70         return self._decrypt(m)
+>   71
+>   72     def _verify(self, m, sig):
+>   73         return self._encrypt(sig) == m
+>
+>
+> Thanks,
+> Shoufu
+>
+
+
+From luoshoufu at gmail.com  Tue Nov  6 17:24:42 2012
+From: luoshoufu at gmail.com (Shoufu Luo)
+Date: Tue, 6 Nov 2012 17:24:42 -0500
+Subject: [pycrypto] Confused about some code in PubKey/RSA/_slowmath.py
+In-Reply-To: <50996C30.4080407@amberfisharts.com>
+References: <F73CAB77-85F3-4E98-BAAA-052A95B4CCF2@gmail.com>
+ <50996C30.4080407@amberfisharts.com>
+Message-ID: <014FF57C-5925-48A9-A611-23CDB11AD4AC@gmail.com>
+
+Hi Lorenz,
+
+Thank you so much for explanation. Now, I think I understand the code. 
+
+The private key is only for decryption and sign, and public key is for encryption and verify. The _sign procedure calls the decryption (which I though should be encryption function), because decrypt and encrypt are the same operation from mathematical standpoint. Yes, that is the confusing part, but diligent! Now, I'm clear.Thank you!
+
+And thank you for advice, I use private key for signature in the standard way not for encryption. My problem was solved. Thanks again.
+
+
+Yours sincerely,
+Shoufu 
+
+On Nov 6, 2012, at 2:59 PM, Lorenz Quack wrote:
+
+Hi Shoufu,
+
+first things first:
+A) Cryptography is *very* hard to get right even if use a crypto library. So if
+you ask these questions out of curiosity or educational purposes that is fine but
+please don't use your own crypto in production code where you really need security!
+
+B) I'm myself not a cryptography expert so take my answers with a grain of salt.
+
+First some general explanations that might be helpful.
+For answers to your actual questions scroll down to the "---" mark.
+
+From a mathematical standpoint encryption and decryption are the same operation.
+Namely raise a number (this is either your plain text "m" or your cipher text "c")
+to an exponent modulo a large number (usually called "n"). The only difference is
+what you take as the exponent. So in RSA you have two different exponents a private
+one (let us call it "d") and a public one (let us call it "e"). combined with "n"
+these are in essence your private and public key. So now we have one mathematical
+operation but four variables ("m", "c", "d", and "e") giving you these combinations:
+
+1) m**e mod n    --> encryption
+2) m**d mod n    --> sign
+3) c**e mod n    --> verify
+4) c**d mod n    --> decryption
+
+---
+
+so to answer your first question:
+"encrypting" using your private key is called signing. Think of it this way. if you
+"encrypt" with your private key everybody would be able to decrypt it because what
+could be done with your public key which is ... well *public*
+
+as for the second question:
+this question seems to stem from the same misconception as the first one.
+encryption happens with the *public* key and decryption with the *private* key.
+Everybody (i.e. the public) is allowed to send you encrypted messages but only you
+should be able to decrypt them in private!
+
+I hope that answers your questions.
+
+Sincerely yours,
+Lorenz
+
+
+
+On 11/05/2012 06:26 AM, Shoufu Luo wrote:
+> Hi all,
+> 
+> I'm trying to encrypt a message with my private key and release the encrypted to
+> others who will use my public key to decrypt. But, I failed.
+> 
+> I was confused by the follwing code from PubKey/RSA/_slowmath.py of pyCrypto-2.6.
+> If anyone can give any clues to answer the following questions, I will appreciate.
+> 
+> 1. Theoretically, if I encrypt date using private key, I can decrypt the encrypted
+> data using public key, and vice versa. Why the key must be a private key in
+> decryption function, line 51-52? Can't I use private key to decrypt?
+> 
+> 2. _sign() should be the signature process using private key to encrypt a piece of
+> data, why it is trying to decrypt at line 70, and it should be decryption in
+> '_verify', but why it is _encrypt()?
+> 
+>  49     def _decrypt(self, c):
+>  50         # compute c**d (mod n)
+>  51         if not self.has_private():
+>  52             raise TypeError("No private key")
+>  53         if (hasattr(self,'p') and hasattr(self,'q') and hasattr(self,'u')):
+>  54             m1 = pow(c, self.d % (self.p-1), self.p)
+>  55             m2 = pow(c, self.d % (self.q-1), self.q)
+>  56             h = m2 - m1
+>  57             if (h<0):
+>  58                 h = h + self.q
+>  59             h = h*self.u % self.q
+>  60             return h*self.p+m1
+>  61         return pow(c, self.d, self.n)
+>  62
+>  63     def _encrypt(self, m):
+>  64         # compute m**d (mod n)
+>  65         return pow(m, self.e, self.n)
+>  66
+>  67     def _sign(self, m):   # alias for _decrypt
+>  68         if not self.has_private():
+>  69             raise TypeError("No private key")
+>  70         return self._decrypt(m)
+>  71
+>  72     def _verify(self, m, sig):
+>  73         return self._encrypt(sig) == m
+> 
+> 
+> Thanks,
+> Shoufu
+> 
+
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From nahumoz at gmail.com  Wed Dec  5 22:49:04 2012
+From: nahumoz at gmail.com (Oz Nahum Tiram)
+Date: Thu, 6 Dec 2012 07:49:04 +0100
+Subject: [pycrypto] Inovking Depreciation warnings in Python
+In-Reply-To: <CADKMUwkza4deyQ-ySR7=xFnzUMXZ5KLcXHPS212JL2Nu=ZsXQw@mail.gmail.com>
+References: <CADKMUwkza4deyQ-ySR7=xFnzUMXZ5KLcXHPS212JL2Nu=ZsXQw@mail.gmail.com>
+Message-ID: <CADKMUwn9G9VdNSCcjV7dSmVaPccR4dyBEsQ0EReiDt6d=aqd7Q@mail.gmail.com>
+
+Hi,
+
+I am writing a software that uses Pycrypto. The library's ebsite it says that:
+
+> RandomPool is now deprecated
+
+Older version would issue a depreciation warning. Now the code simply says:
+
+    class RandomPool:
+        """Deprecated.  Use Random.new() instead.
+
+        See http://www.pycrypto.org/randpool-broken
+        """
+        def __init__(self, numbytes = 160, cipher=None, hash=None, file=None):
+            warnings.warn("This application uses RandomPool, which is
+BROKEN in older releases.  See
+http://www.pycrypto.org/randpool-broken",
+RandomPool_DeprecationWarning)
+
+When I  instantiate  RandomPool I don't see any waring ...
+
+    >>> RandomPool()
+    <Crypto.Util.randpool.RandomPool instance at 0x7f498dac80e0>
+
+If I create a Class with `RandomPool_DeprecationWarning` I also don't
+see a warning:
+
+    >>> class Test():
+    ...    def __init__(self):
+    ...        warnings.warn("This tests
+RandomPool_DeprecationWarning", RandomPool_DeprecationWarning)
+    ...
+    >>> Test
+    <class __main__.Test at 0x7f498daecdb8>
+
+Compare to:
+
+    >>> class Test2():
+    ...    def __init__(self):
+    ...        warnings.warn("This application uses RandomPool, which
+is BROKEN in older releases.  See
+http://www.pycrypto.org/randpool-broken", DeprecationWarning)
+    ...
+    >>> Test2()
+    <__main__.Test2 instance at 0x7f498dac8098>
+
+The code to `RandomPool_DeprecationWarning`
+
+    class CryptoWarning(Warning):
+        """Base class for PyCrypto warnings"""
+
+    class CryptoDeprecationWarning(DeprecationWarning, CryptoWarning):
+        """Base PyCrypto DeprecationWarning class"""
+
+    class CryptoRuntimeWarning(RuntimeWarning, CryptoWarning):
+        """Base PyCrypto RuntimeWarning class"""
+
+    #
+    # Warnings that we might actually use
+    #
+
+    class RandomPool_DeprecationWarning(CryptoDeprecationWarning):
+        """Issued when Crypto.Util.randpool.RandomPool is instantiated."""
+
+So my question is:
+Why is `RandomPool_DeprecationWarning` quietly passing while
+`DeprecationWarning` is not?
+
+(I am using Debian  Wheezy, and Python 2.7.3)
+
+
+Thanks,
+Oz
+
+From sebastian+lists at ramacher.at  Thu Dec  6 02:18:36 2012
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Thu, 6 Dec 2012 11:18:36 +0100
+Subject: [pycrypto] Inovking Depreciation warnings in Python
+In-Reply-To: <CADKMUwn9G9VdNSCcjV7dSmVaPccR4dyBEsQ0EReiDt6d=aqd7Q@mail.gmail.com>
+References: <CADKMUwkza4deyQ-ySR7=xFnzUMXZ5KLcXHPS212JL2Nu=ZsXQw@mail.gmail.com>
+ <CADKMUwn9G9VdNSCcjV7dSmVaPccR4dyBEsQ0EReiDt6d=aqd7Q@mail.gmail.com>
+Message-ID: <20121206101835.GA18820@earth.ramacher.at>
+
+Hi,
+
+On 2012-12-06 07:49:04, Oz Nahum Tiram wrote:
+> When I  instantiate  RandomPool I don't see any waring ...
+>
+> [snip]
+>
+> (I am using Debian  Wheezy, and Python 2.7.3)
+
+Starting with Python 2.7 and 3.2 warnings are ignored by default. See
+[1] for details.
+
+Regards
+
+[1] http://docs.python.org/dev/whatsnew/2.7.html
+-- 
+Sebastian Ramacher
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: Digital signature
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20121206/7e94f3e1/attachment.sig>
+
+From nahumoz at gmail.com  Thu Dec  6 07:23:23 2012
+From: nahumoz at gmail.com (Oz Nahum Tiram)
+Date: Thu, 6 Dec 2012 16:23:23 +0100
+Subject: [pycrypto] Inovking Depreciation warnings in Python
+Message-ID: <CADKMUwn7sXORQaEhTVOMt0pJu5avP8_8J5vWJYp8XuPMNqFF8Q@mail.gmail.com>
+
+Hi Sebastian,
+
+Thanks for the notice!
+I obviously missed it!
+
+Should, I worry about using RandomPool?
+Shall I used the class which is wrapped by RandomPool directly?
+
+How do I proceed in the safest way?
+
+Vielen Dank,
+Best Regards,
+
+Oz
+
+>Hi,
+
+>On 2012-12-06 07:49:04, Oz Nahum Tiram wrote:
+>> When I  instantiate  RandomPool I don't see any waring ...
+>>
+>> [snip]
+>>
+>> (I am using Debian  Wheezy, and Python 2.7.3)
+
+>Starting with Python 2.7 and 3.2 warnings are ignored by default. See
+>[1] for details.
+
+>Regards
+
+>[1] http://docs.python.org/dev/whatsnew/2.7.html
+>--
+>Sebastian Ramacher
+
+From dlitz at dlitz.net  Thu Dec  6 14:16:12 2012
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Thu, 6 Dec 2012 14:16:12 -0800
+Subject: [pycrypto] Inovking Depreciation warnings in Python
+In-Reply-To: <CADKMUwn7sXORQaEhTVOMt0pJu5avP8_8J5vWJYp8XuPMNqFF8Q@mail.gmail.com>
+References: <CADKMUwn7sXORQaEhTVOMt0pJu5avP8_8J5vWJYp8XuPMNqFF8Q@mail.gmail.com>
+Message-ID: <20121206221612.GA13725@goedel.dlitz.net>
+
+On Thu, Dec 06, 2012 at 04:23:23PM +0100, Oz Nahum Tiram wrote:
+>Should, I worry about using RandomPool?
+>Shall I used the class which is wrapped by RandomPool directly?
+>
+>How do I proceed in the safest way?
+
+Just use the Crypto.Random API.  If you need random bytes, do:
+
+     from Crypto.Random import get_random_bytes
+
+     rndbytes = get_random_bytes(32)     # returns random 256-bit string
+
+You can also get a file-like object from Crypto.Random:
+
+     from Crypto import Random
+
+     f = Random.new()
+     f.read(32)              # 32 random bytes
+     f.read(32)              # another 32 random bytes
+
+We also provide a stdlib-like "random" module:
+
+     from Crypto.Random import random
+
+     # print a random lowercase letter
+     print random.choice("abcdefghijklmnopqrstuvwxyz")
+
+Of course, you can also just use os.urandom:
+
+     import os
+
+     rndbytes = os.urandom(32)       # returns random 256-bit string
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From nahumoz at gmail.com  Thu Dec 13 01:16:10 2012
+From: nahumoz at gmail.com (Oz Nahum Tiram)
+Date: Thu, 13 Dec 2012 10:16:10 +0100
+Subject: [pycrypto] Inovking Depreciation warnings in Python
+Message-ID: <CADKMUwn0JvtNpnLFez_tv5oKNBYY2+pP16DiPApiO9bfWmrA=A@mail.gmail.com>
+
+Hi Dwayne,
+
+First, thanks for the answer and sorry for the late reply.
+
+So, I replace the following code with your example:
+
+    # in the past:
+    >>> from Crypto.Util.randpool import RandomPool
+    >>> random = RandomPool()
+    >>> key = str(random.get_bytes(32)).encode('base64')
+
+    # current:
+    from Crypto.Random import get_random_bytes
+    key = str(get_random_bytes(32).encode('base64'))
+
+Is this correct? If so, that is sweet, an one line shorter!
+
+Thanks,
+
+Oz
+
+From pearu.peterson at gmail.com  Tue Dec 25 03:48:05 2012
+From: pearu.peterson at gmail.com (Pearu Peterson)
+Date: Tue, 25 Dec 2012 13:48:05 +0200
+Subject: [pycrypto] Pickling AES cipher objects - any reasons not to support
+	this?
+Message-ID: <CAPpwKcwtgkjU-ap1x7H+4a1fd9Tabbhph2Wb84+BMh4j7wdmQQ@mail.gmail.com>
+
+Hi,
+
+Currently pickling cipher objects fail (Pycrypto v2.6):
+
+>>> import pickle
+>>> from Crypto.Cipher import AES
+>>> cipher = AES.new('mysecret'*2)
+>>> dump=pickle.dumps(cipher)
+PicklingError: Can't pickle '_AES' object: <_AES object at 0x1fe0bd0>
+
+I wonder if there are any fundamental reasons why pickling cipher objects
+cannot
+be pickled? Otherwise I would look into implementing pickling support for
+cipher objects.
+
+Background:
+I am using Pycrypt in web2py and I need to temporarily store cipher
+information within a session
+without opening any security holes. I would presume that storing cipher
+object is safer (would it be?)
+than storing an encryption key used to create the cipher object.
+
+Thanks,
+Pearu
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20121225/43eecd9e/attachment.html>
+
+From steve.yi at 139.com  Fri Dec 28 01:15:53 2012
+From: steve.yi at 139.com (steve.yi)
+Date: Fri, 28 Dec 2012 17:15:53 +0800 (CST)
+Subject: [pycrypto] Ask help for java2python rewrite for AES decrypto
+Message-ID: <2b1050dd5ed6871-0000c.Richmail.00015303835181145768@139.com>
+
+
+
+
+
+Hi Pycryptors,
+
+
+
+
+I got some requests from my clients, his requests are xml formatted encrypted by AES with Java.
+
+
+
+
+I decide to use pycrypto to decrypt these xml requests. But i am not familiar with Java.
+
+
+
+
+Someone can help? Thanks a lot. Java codes as follows,
+
+
+
+
+
+
+
+
+Encrypt.java
+
+============
+
+
+
+
+
+
+
+import java.io.UnsupportedEncodingException;
+
+import java.security.SecureRandom;
+
+
+
+
+import javax.crypto.Cipher;
+
+import javax.crypto.KeyGenerator;
+
+import javax.crypto.SecretKey;
+
+import javax.crypto.spec.SecretKeySpec;
+
+
+
+
+public class Encrypt {
+
+	public password = "123456";
+
+	
+
+    public Encrypt(String password) {
+
+		super();
+
+		this.password = password;
+
+	}
+
+	/** 
+
+     * ?? 
+
+     *  
+
+     * @param content ??????? 
+
+     * @param password  ???? 
+
+     * @return 
+
+     */  
+
+    public static byte[] encrypt(String content, String password) {  
+
+            try {             
+
+            	
+
+                    KeyGenerator kgen = KeyGenerator.getInstance("AES"); //AES?????
+
+                    //128??????  SecureRandom??????  ????????????
+
+                    kgen.init(128, new SecureRandom(password.getBytes()));//?????
+
+                    SecretKey secretKey = kgen.generateKey(); //?????????????????
+
+                    byte[] enCodeFormat = secretKey.getEncoded();  
+
+                    SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES"); //??????????? 
+
+                    Cipher cipher = Cipher.getInstance("AES");// ?????   
+
+                    byte[] byteContent = content.getBytes("utf-8");  //????utf-8????????
+
+                    cipher.init(Cipher.ENCRYPT_MODE, key);// ?????   Cipher.ENCRYPT_MODE???
+
+                    byte[] result = cipher.doFinal(byteContent);  //??????? ?????????
+
+                    return result; // ??   
+
+            } catch (Exception e) {  
+
+                    e.printStackTrace();  
+
+            } 
+
+            return null;  
+
+    }  
+
+    /**?? 
+
+     * @param content  ????? 
+
+     * @param password ???? 
+
+     * @return 
+
+     */  
+
+    public static String decrypt(byte[] content, String password) {  
+
+            try {  
+
+                     KeyGenerator kgen = KeyGenerator.getInstance("AES");  //AES?????
+
+                     //128??????  SecureRandom??????  ????????????
+
+                     kgen.init(128, new SecureRandom(password.getBytes()));  //?????
+
+                     SecretKey secretKey = kgen.generateKey();  //?????????????????
+
+                     byte[] enCodeFormat = secretKey.getEncoded();  
+
+                     SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");  //???????????             
+
+                     Cipher cipher = Cipher.getInstance("AES");// ?????   
+
+                    cipher.init(Cipher.DECRYPT_MODE, key);// ?????   Cipher.DECRYPT_MODE???
+
+                    byte[] result = cipher.doFinal(content);  //???????? ??????????
+
+                    return new String(result); // ??   
+
+            } catch (Exception e) {  
+
+                    e.printStackTrace();  
+
+            } 
+
+            return null;  
+
+    }  
+
+    
+
+
+
+
+    public static String parseByte2HexStr(byte buf[]){
+
+    	StringBuffer sb=new StringBuffer();
+
+    	for(int i=0;i<buf.length;i++){
+
+    		String hex=Integer.toHexString(buf[i]&0xFF);
+
+    		if(hex.length()==1){
+
+    			hex='0' + hex;
+
+    		}
+
+    		sb.append(hex.toUpperCase());
+
+    		}
+
+    	return sb.toString();
+
+    }
+
+    
+
+
+
+
+    public static byte[] parseHexStr2Byte(String hexStr){
+
+    	if(hexStr.length()<1)
+
+    		return null;
+
+    	byte[]result=new byte[hexStr.length()/2];
+
+    	for(int i=0;i<hexStr.length()/2;i++){
+
+    		int high=Integer.parseInt(hexStr.substring(i*2,i*2+1),16);
+
+    		int low=Integer.parseInt(hexStr.substring(i*2+1,i*2+2),16);
+
+    		result[i]=(byte)(high*16+low);
+
+    		}
+
+    	return result;
+
+    	}
+
+     
+
+    public static void main(String args[]) throws UnsupportedEncodingException {
+
+    	String content = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
+
+    	"<request>"+
+
+    	  "<company>1</company>"+
+
+    		"<requestId>2</requestId>"+
+
+    		"<Create>"+
+
+    			"<CreateHost>"+
+
+    				"<userId>3</userId>"+
+
+    				"<transactionId>4</transactionId>"+
+
+    				"<timestamp>5</timestamp>"+
+
+    				"<core>6</core>"+
+
+    				"<memory>7</memory>"+
+
+    				"<os>4</os>"+
+
+    				"<groupName>5</groupName>"+
+
+    				"<hostSpecId>5</hostSpecId>"+
+
+    				"<path>6</path>"+
+
+    			"</CreateHost>"+
+
+    			"<CreateIp>"+
+
+    				"<transactionId>6</transactionId>"+
+
+    				"<netSpeed>6</netSpeed>"+
+
+    				"<ip>7</ip>"+
+
+    			"</CreateIp >"+
+
+    			"<CreateDisk>"+
+
+    				"<transactionId>7</transactionId>"+
+
+    				"<disk>7</disk>"+
+
+    			"</CreateDisk>"+
+
+    		"</Create>"+
+
+    	"</request>";
+
+    	System.out.println("content:"+content);
+
+    	System.out.println("encrypted:"+(parseByte2HexStr(Encrypt.encrypt(content, "123456"))));
+
+    	System.out.println("decrypted:"+Encrypt.decrypt(parseHexStr2Byte(parseByte2HexStr(Encrypt.encrypt(content, "123456"))),"123456"));
+
+    }
+
+    
+
+
+
+
+}
+
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20121228/c0202dac/attachment-0001.html>
+
+From joeledwards at gmail.com  Fri Dec 28 04:16:42 2012
+From: joeledwards at gmail.com (Joel Edwards)
+Date: Fri, 28 Dec 2012 05:16:42 -0700
+Subject: [pycrypto] Ask help for java2python rewrite for AES decrypto
+In-Reply-To: <2b1050dd5ed6871-0000c.Richmail.00015303835181145768@139.com>
+References: <2b1050dd5ed6871-0000c.Richmail.00015303835181145768@139.com>
+Message-ID: <8287917590106489675@unknownmsgid>
+
+There is a good implementation available on the AES Crypt website.
+
+Java version overview
+http://www.aescrypt.com/java_aes_crypt.html
+
+Download page
+https://www.aescrypt.com/download/
+
+A lot of the code is designed around AES Crypt's file format, but as long
+as you evaluate that first, you should be able to get a good idea of how to
+set things up correctly.
+
+Keep in mind that only 128-bit encryption is available with the standard
+Java lib, and AES Crypt is written for 256-bit encryption. So you will need
+to either adapt their work to a 128-bit key size, or (assuming no
+restrictions apply) download the "Java Cryptography Extension (JCE)
+Unlimited Strength Jurisdiction Policy Files" from
+Oracle<http://www.oracle.com/technetwork/java/javase/downloads/index.html>
+.
+
+Let me know if you have additional questions. You may contact me directly
+if you wish, seeing as this is a pycrypto group.
+
+Joel (Via Mobile)
+
+On Dec 28, 2012, at 2:16, "steve.yi" <steve.yi at 139.com> wrote:
+
+
+Hi Pycryptors,
+
+I got some requests from my clients, his requests are xml formatted
+encrypted by AES with Java.
+
+I decide to use pycrypto to decrypt these xml requests. But i am not
+familiar with Java.
+
+Someone can help? Thanks a lot. Java codes as follows,
+
+
+Encrypt.java
+============
+
+
+import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
+public class Encrypt {
+public password = "123456";
+    public Encrypt(String password) {
+super();
+this.password = password;
+}
+/**
+     * ??
+     *
+     * @param content ???????
+     * @param password  ????
+     * @return
+     */
+    public static byte[] encrypt(String content, String password) {
+            try {
+
+                    KeyGenerator kgen = KeyGenerator.getInstance("AES");
+//AES?????
+                    //128??????  SecureRandom??????  ????????????
+                    kgen.init(128, new
+SecureRandom(password.getBytes()));//?????
+                    SecretKey secretKey = kgen.generateKey();
+//?????????????????
+                    byte[] enCodeFormat = secretKey.getEncoded();
+                    SecretKeySpec key = new SecretKeySpec(enCodeFormat,
+"AES"); //???????????
+                    Cipher cipher = Cipher.getInstance("AES");// ?????
+                    byte[] byteContent = content.getBytes("utf-8");
+ //????utf-8????????
+                    cipher.init(Cipher.ENCRYPT_MODE, key);// ?????
+Cipher.ENCRYPT_MODE???
+                    byte[] result = cipher.doFinal(byteContent);  //???????
+?????????
+                    return result; // ??
+            } catch (Exception e) {
+                    e.printStackTrace();
+            }
+            return null;
+    }
+    /**??
+     * @param content  ?????
+     * @param password ????
+     * @return
+     */
+    public static String decrypt(byte[] content, String password) {
+            try {
+                     KeyGenerator kgen = KeyGenerator.getInstance("AES");
+ //AES?????
+                     //128??????  SecureRandom??????  ????????????
+                     kgen.init(128, new SecureRandom(password.getBytes()));
+ //?????
+                     SecretKey secretKey = kgen.generateKey();
+ //?????????????????
+                     byte[] enCodeFormat = secretKey.getEncoded();
+                     SecretKeySpec key = new SecretKeySpec(enCodeFormat,
+"AES");  //???????????
+                     Cipher cipher = Cipher.getInstance("AES");// ?????
+                    cipher.init(Cipher.DECRYPT_MODE, key);// ?????
+Cipher.DECRYPT_MODE???
+                    byte[] result = cipher.doFinal(content);  //????????
+??????????
+                    return new String(result); // ??
+            } catch (Exception e) {
+                    e.printStackTrace();
+            }
+            return null;
+    }
+
+
+    public static String parseByte2HexStr(byte buf[]){
+    StringBuffer sb=new StringBuffer();
+    for(int i=0;i<buf.length;i++){
+    String hex=Integer.toHexString(buf[i]&0xFF);
+    if(hex.length()==1){
+    hex='0' + hex;
+    }
+    sb.append(hex.toUpperCase());
+    }
+    return sb.toString();
+    }
+
+
+    public static byte[] parseHexStr2Byte(String hexStr){
+    if(hexStr.length()<1)
+    return null;
+    byte[]result=new byte[hexStr.length()/2];
+    for(int i=0;i<hexStr.length()/2;i++){
+    int high=Integer.parseInt(hexStr.substring(i*2,i*2+1),16);
+    int low=Integer.parseInt(hexStr.substring(i*2+1,i*2+2),16);
+    result[i]=(byte)(high*16+low);
+    }
+    return result;
+    }
+
+    public static void main(String args[]) throws
+UnsupportedEncodingException {
+    String content = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
+    "<request>"+
+      "<company>1</company>"+
+    "<requestId>2</requestId>"+
+    "<Create>"+
+    "<CreateHost>"+
+    "<userId>3</userId>"+
+    "<transactionId>4</transactionId>"+
+    "<timestamp>5</timestamp>"+
+    "<core>6</core>"+
+    "<memory>7</memory>"+
+    "<os>4</os>"+
+    "<groupName>5</groupName>"+
+    "<hostSpecId>5</hostSpecId>"+
+    "<path>6</path>"+
+    "</CreateHost>"+
+    "<CreateIp>"+
+    "<transactionId>6</transactionId>"+
+    "<netSpeed>6</netSpeed>"+
+    "<ip>7</ip>"+
+    "</CreateIp >"+
+    "<CreateDisk>"+
+    "<transactionId>7</transactionId>"+
+    "<disk>7</disk>"+
+    "</CreateDisk>"+
+    "</Create>"+
+    "</request>";
+    System.out.println("content:"+content);
+     System.out.println("encrypted:"+(parseByte2HexStr(Encrypt.encrypt(content,
+"123456"))));
+     System.out.println("decrypted:"+Encrypt.decrypt(parseHexStr2Byte(parseByte2HexStr(Encrypt.encrypt(content,
+"123456"))),"123456"));
+    }
+
+
+}
+
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20121228/941a20fe/attachment-0001.html>
+
+From nahumoz at gmail.com  Wed Dec  5 22:42:14 2012
+From: nahumoz at gmail.com (Oz Nahum Tiram)
+Date: Thu, 06 Dec 2012 06:42:14 -0000
+Subject: [pycrypto] Inovking Depreciation warnings in Python
+Message-ID: <CADKMUwkza4deyQ-ySR7=xFnzUMXZ5KLcXHPS212JL2Nu=ZsXQw@mail.gmail.com>
+
+Hi,
+
+I am writing a software that uses Pycrypto. The library's ebsite it says that:
+
+> RandomPool is now deprecated
+
+Older version would issue a depreciation warning. Now the code simply says:
+
+    class RandomPool:
+        """Deprecated.  Use Random.new() instead.
+
+        See http://www.pycrypto.org/randpool-broken
+        """
+        def __init__(self, numbytes = 160, cipher=None, hash=None, file=None):
+            warnings.warn("This application uses RandomPool, which is
+BROKEN in older releases.  See
+http://www.pycrypto.org/randpool-broken",
+RandomPool_DeprecationWarning)
+
+When I  instantiate  RandomPool I don't see any waring ...
+
+    >>> RandomPool()
+    <Crypto.Util.randpool.RandomPool instance at 0x7f498dac80e0>
+
+If I create a Class with `RandomPool_DeprecationWarning` I also don't
+see a warning:
+
+    >>> class Test():
+    ...    def __init__(self):
+    ...        warnings.warn("This tests
+RandomPool_DeprecationWarning", RandomPool_DeprecationWarning)
+    ...
+    >>> Test
+    <class __main__.Test at 0x7f498daecdb8>
+
+Compare to:
+
+    >>> class Test2():
+    ...    def __init__(self):
+    ...        warnings.warn("This application uses RandomPool, which
+is BROKEN in older releases.  See
+http://www.pycrypto.org/randpool-broken", DeprecationWarning)
+    ...
+    >>> Test2()
+    <__main__.Test2 instance at 0x7f498dac8098>
+
+The code to `RandomPool_DeprecationWarning`
+
+    class CryptoWarning(Warning):
+        """Base class for PyCrypto warnings"""
+
+    class CryptoDeprecationWarning(DeprecationWarning, CryptoWarning):
+        """Base PyCrypto DeprecationWarning class"""
+
+    class CryptoRuntimeWarning(RuntimeWarning, CryptoWarning):
+        """Base PyCrypto RuntimeWarning class"""
+
+    #
+    # Warnings that we might actually use
+    #
+
+    class RandomPool_DeprecationWarning(CryptoDeprecationWarning):
+        """Issued when Crypto.Util.randpool.RandomPool is instantiated."""
+
+So my question is:
+Why is `RandomPool_DeprecationWarning` quietly passing while
+`DeprecationWarning` is not?
+
+(I am using Debian  Wheezy, and Python 2.7.3)
+
+
+Thanks,
+Oz
+
+From dcMhOYBdpZkH at web.de  Wed Dec 12 00:38:29 2012
+From: dcMhOYBdpZkH at web.de (.)
+Date: Wed, 12 Dec 2012 08:38:29 -0000
+Subject: [pycrypto] Remove DSA because 1024bit is not safe
+Message-ID: <50C8427F.4040002@web.de>
+
+It is important to consider 1024bit DSA - NIST says this too - not
+secure anymore, or do you want your messages to be readable within your lifetime?. 
+Since DSA max. key size is 1024bit it's time to think
+about removing it completely from pycrypto and use RSA or ECC (with your
+own curves, not NIST's untrustable ones).
+
+
+From Stephen_Peterson at cable.comcast.com  Wed Dec  5 10:00:18 2012
+From: Stephen_Peterson at cable.comcast.com (Peterson, Stephen)
+Date: Wed, 05 Dec 2012 18:00:18 -0000
+Subject: [pycrypto] jython and pycrpto installation on windows
+Message-ID: <08708A1F6A48C745870F8A51E9C002D223007F4A@PACDCEXMB14.cable.comcast.com>
+
+When I try to install pycrpto on windows with jython I get the "chmod" error. When I comment that out in the setup.py file I get the "sh" error. Both of these errors point to this package being only for Linux OS's.
+
+So I used a distro package that was installed on a Python Linux install. I dropped it in my Jython\Lib\site-package directory and imported it. It didn't complain.
+
+But then when I try to run celery with django (jython manage.py celery worker -E --loglevel=debug)  I get the following error pointing back to the Crypto install:
+java.lang.ClassFormatError: java.lang.ClassFormatError: Invalid method Code length 101115 in class file Crypto/Util/number$py
+
+So how can I get this to install correctly on Jython, Djangon, and Windows?
+
+Thanks.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20121205/ac456464/attachment.html>
+

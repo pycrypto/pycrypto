@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Test code - Random
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Test%20code%20-%20Random&In-Reply-To=20081107210626.GA8797%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000028.html">
+   <LINK REL="Next"  HREF="000030.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Test code - Random</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Test%20code%20-%20Random&In-Reply-To=20081107210626.GA8797%40rivest.dlitz.net"
+       TITLE="[pycrypto] Test code - Random">dlitz at dlitz.net
+       </A><BR>
+    <I>Fri Nov  7 16:12:15 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000028.html">[pycrypto] Test code - Random
+</A></li>
+        <LI>Next message: <A HREF="000030.html">[pycrypto] Test code - Random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#29">[ date ]</a>
+              <a href="thread.html#29">[ thread ]</a>
+              <a href="subject.html#29">[ subject ]</a>
+              <a href="author.html#29">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Nov 07, 2008 at 04:06:26PM -0500, Dwayne C. Litzenberger wrote:
+&gt;<i>  class SimpleTest(unittest.TestCase):
+</I>&gt;<i>      def runTest(self):
+</I>&gt;<i>          &quot;&quot;&quot;Crypto.Random.new()&quot;&quot;&quot;
+</I>&gt;<i>          # Import the OSRNG module and try to use it
+</I>&gt;<i>          from Crypto import Random
+</I>&gt;<i>          randobj = Random.new()
+</I>&gt;<i>          x = randobj.read(16)
+</I>&gt;<i>          y = randobj.read(16)
+</I>&gt;<i>          self.assertNotEqual(x, y)
+</I>&gt;<i> +class TestNotAlwaysEqual(unittest.TestCase):
+</I>&gt;<i> +    def runTest(self):
+</I>&gt;<i> +        from Crypto import Random
+</I>&gt;<i> +        randobj = Random.new()
+</I>&gt;<i> +        k = 10
+</I>&gt;<i> +        DataArray = []
+</I>&gt;<i> +        x = randobj.read(16)
+</I>&gt;<i> +        count = 0
+</I>&gt;<i> +        for i in range(0,k):
+</I>&gt;<i> +            y = randobj.read(16)
+</I>&gt;<i> +            if x == y:
+</I>&gt;<i> +                count += 1
+</I>&gt;<i> +        self.assertNotEqual(count,k)
+</I>
+I'm not sure what your proposed TestNotAlwaysEqual test offers that 
+SimpleTest does.  Presumably the purpose of this new test is to avoid the 
+case where a correctly-functioning RNG returns two identical 128-bit 
+numbers in a row.  While that may be possible, I'm really not concerned 
+about it, since according to my calculations*, the probability that 
+SimpleTest fails is 2**-128.  TestNotAlwaysEqual adds another test that can  
+fail in the same way, but with a probability of 2**-1280.  I don't see why 
+that would be necessary.
+
+(* Someone please correct me if I'm wrong, since I'm still not very good at 
+reasoning with probability.)
+
+&gt;<i> +class TestAverage(unittest.TestCase):
+</I>&gt;<i> +    def runTest(self):
+</I>&gt;<i> +        from Crypto import Random
+</I>&gt;<i> +        randobj = Random.new()
+</I>&gt;<i> +        x = randobj.read(2**15)
+</I>&gt;<i> +        values = []
+</I>&gt;<i> +        for i in x:
+</I>&gt;<i> +            values.append(ord(i))
+</I>&gt;<i> +        total = 0
+</I>&gt;<i> +        for i in values:
+</I>&gt;<i> +            total += i
+</I>&gt;<i> +        average = total/len(values)
+</I>&gt;<i> +        print average
+</I>&gt;<i> +        self.assertEqual(average in range((256/2)-28,(256/2)+28),True)
+</I>&gt;<i> +
+</I>
+This looks like the beginning of a statistical test suite, but it seems out 
+of place here on its own, and I fear that it might cause more confusion 
+than anything else.  Why did you choose the constants 2**15 and +/- 28, for 
+example?  What's the likelihood that this fails under normal circumstances.  
+I don't want to end up with bug reports and confused users (or worse: users 
+who learn to ignore test failures) as a result of too many false positives, 
+for example.  Also, I want to avoid adding unnecessary tests to SelfTest, 
+since SelfTest should be fairly quick to run.
+
+It might be better to implement a full set of statistical tests like the 
+ones specified in FIPS 140-2.  I would consider such a thing for a future 
+release.  If someone were to tackle this, I would suggest adding it as a 
+module under Crypto.Random or Crypto.Util, and then calling it from 
+SelfTest.  i.e. It should provide a usable, well-documented API, not just 
+be buried in the SelfTest module.
+
+We definitely could use a more comprehensive set of self-tests, especially 
+for the random number generators.
+
+Cheers,
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20081107/cc393bc9/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20081107/cc393bc9/attachment.pgp</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000028.html">[pycrypto] Test code - Random
+</A></li>
+	<LI>Next message: <A HREF="000030.html">[pycrypto] Test code - Random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#29">[ date ]</a>
+              <a href="thread.html#29">[ thread ]</a>
+              <a href="subject.html#29">[ subject ]</a>
+              <a href="author.html#29">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

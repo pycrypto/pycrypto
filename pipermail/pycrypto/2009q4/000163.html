@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Public key algos usage
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20key%20algos%20usage&In-Reply-To=bc7b5ef50911161542w25d3a35cp9af43c141dd047ac%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000162.html">
+   <LINK REL="Next"  HREF="000165.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Public key algos usage</H1>
+    <B>don at amberfisharts.com</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20key%20algos%20usage&In-Reply-To=bc7b5ef50911161542w25d3a35cp9af43c141dd047ac%40mail.gmail.com"
+       TITLE="[pycrypto] Public key algos usage">don at amberfisharts.com
+       </A><BR>
+    <I>Tue Nov 17 03:49:02 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000162.html">[pycrypto] Public key algos usage
+</A></li>
+        <LI>Next message: <A HREF="000165.html">[pycrypto] Public key algos usage
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#163">[ date ]</a>
+              <a href="thread.html#163">[ thread ]</a>
+              <a href="subject.html#163">[ subject ]</a>
+              <a href="author.html#163">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+
+On Tue, 17 Nov 2009 00:42:23 +0100, Kiwi &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">spiky.kiwi at gmail.com</A>&gt; wrote:
+&gt;<i> On Mon, Nov 16, 2009 at 6:26 PM, Lorenz Quack &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">don at amberfisharts.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;&gt;<i> Hi Stefano,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> As far as I know the API remains the same whether the key is a
+</I>&gt;<i> private/public key pair
+</I>&gt;&gt;<i> or only the public key. So this should work (However, I didn't test this
+</I>&gt;<i> code):
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>  &gt;&gt;&gt; message = &quot;this is a secret&quot;
+</I>&gt;&gt;<i>  &gt;&gt;&gt; pub_key = key_pair.publickey()
+</I>&gt;&gt;<i>  &gt;&gt;&gt; cipher_text = pub_key.encrypt(message, &quot;&quot;)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I also think that the API-Reference [1] is fairly accurate.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I hope that helps. If not, maybe you show some code how you try to use
+</I>&gt;<i> it.
+</I>&gt;&gt;<i>
+</I>&gt;<i> 
+</I>&gt;<i> Thank you for the fast answer.
+</I>&gt;<i> I understand the code above.
+</I>&gt;<i> Still something is not clear to me.
+</I>&gt;<i> And how do I export the public key (or a keypair) to a string? 
+</I>
+Again, I didn't test any of this because I don't have pycrypto installed 
+on this machine. So take it with a grain of salt.
+
+You can access the different components of a key object via normal attribute
+access. For example you can get the RSA Modulus n from an RSA key object k 
+like this:
+
+&gt;&gt;&gt;<i> rsa_modulus = k.n
+</I>
+this way you should be able to access all necessary attributes. If for example
+you try to access the private exponent of a public key it will fail (probably 
+with an AttributeError I would assume) because public keys obviously don't 
+have a private exponent.
+The different names of the attributes can be looked up in the API reference.
+The names correspond to the canonical ones virtually everybody uses.
+However, this returns the values as python longs but it should be trivial to 
+convert these into strings.
+
+&gt;<i> How do I import it back?
+</I>
+You should look at the &quot;construct&quot; method.
+If however you only want to export/import from/to pycrypto you could use the
+python pickle mechanism. The keys all implement __getstate__ and __setstate__
+
+&gt;<i> I want just the key so it can be reused by other libraries and future
+</I>&gt;<i> versions of this one, so I cannot just serialize the object.
+</I>
+I don't 100% get what you are saying here. You know that at least in RSA there
+isn't &quot;just the key&quot;. A key is a tuple of at least 2 numbers. If you did *not*
+know this, you probably should do some reading of the basics before proceeding.
+If on the other hand you did know that and meant the tuple than I think I 
+provided the answer above.
+
+
+cheers
+//Lorenz
+
+
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000162.html">[pycrypto] Public key algos usage
+</A></li>
+	<LI>Next message: <A HREF="000165.html">[pycrypto] Public key algos usage
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#163">[ date ]</a>
+              <a href="thread.html#163">[ thread ]</a>
+              <a href="subject.html#163">[ subject ]</a>
+              <a href="author.html#163">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

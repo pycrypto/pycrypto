@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Help on PyCrypto errors on 64-bit Windows
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Help%20on%20PyCrypto%20errors%20on%2064-bit%20Windows&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000431.html">
+   <LINK REL="Next"  HREF="000432.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Help on PyCrypto errors on 64-bit Windows</H1>
+    <B>Peter Bee</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Help%20on%20PyCrypto%20errors%20on%2064-bit%20Windows&In-Reply-To="
+       TITLE="[pycrypto] Help on PyCrypto errors on 64-bit Windows">ybi10 at yahoo.com
+       </A><BR>
+    <I>Fri Aug 13 18:11:54 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000431.html">[pycrypto] Py3k Support
+</A></li>
+        <LI>Next message: <A HREF="000432.html">[pycrypto] winrandom alternative
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#265">[ date ]</a>
+              <a href="thread.html#265">[ thread ]</a>
+              <a href="subject.html#265">[ subject ]</a>
+              <a href="author.html#265">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I am setting Fabric on my 64-bit Win (2008 Server R2, with Python 2.6.5 installed, also have paramiko-1.7.6, pycrypto 2.2, and Fabric-0.9.1 on the system) system, and ran into the famous error below:
+&#160;
+&#160;
+Traceback (most recent call last):
+&#160; File &quot;C:\Python26\Scripts\fab-script.py&quot;, line 9, in &lt;module&gt;
+&#160;&#160;&#160; load_entry_point('Fabric==0.9.1', 'console_scripts', 'fab')()
+&#160; File &quot;C:\Python26\lib\site-packages\pkg_resources.py&quot;, line 305, in load_entry
+_point
+&#160;&#160;&#160; return get_distribution(dist).load_entry_point(group, name)
+&#160; File &quot;C:\Python26\lib\site-packages\pkg_resources.py&quot;, line 2244, in load_entr
+y_point
+&#160;&#160;&#160; return ep.load()
+&#160; File &quot;C:\Python26\lib\site-packages\pkg_resources.py&quot;, line 1954, in load
+&#160;&#160;&#160; entry = __import__(self.module_name, globals(),globals(), ['__name__'])
+&#160; File &quot;C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\main.py&quot;, li
+ne 17, in &lt;module&gt;
+&#160;&#160;&#160; from fabric import api # For checking callables against the API
+&#160; File &quot;C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\api.py&quot;, lin
+e 9, in &lt;module&gt;
+&#160;&#160;&#160; from fabric.context_managers import cd, hide, settings, show
+&#160; File &quot;C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\context_mana
+gers.py&quot;, line 12, in &lt;module&gt;
+&#160;&#160;&#160; from fabric.state import env, output
+&#160; File &quot;C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\state.py&quot;, l
+ine 9, in &lt;module&gt;
+&#160;&#160;&#160; from fabric.network import HostConnectionCache
+&#160; File &quot;C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\network.py&quot;,
+&#160;line 19, in &lt;module&gt;
+&#160;&#160;&#160; abort(&quot;paramiko is a required module. Please install it:\n\t$ sudo easy_inst
+all paramiko&quot;)
+&#160; File &quot;C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\utils.py&quot;, l
+ine 21, in abort
+&#160;&#160;&#160; from fabric.state import output
+ImportError: cannot import name output
+&#160;
+I was pointed to <A HREF="http://code.fabfile.org/issues/show/194,">http://code.fabfile.org/issues/show/194,</A> which mentioned that I need a 64-bit precompiled winrandom. 
+&#160;
+I have been trying to search and create one, but no luch so far. Can any of you help me locate one, or provide information on how to build one?
+&#160;
+Your help is very appreciated.
+
+
+Thanks,
+Peter
+
+
+      
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100813/51d29d5a/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100813/51d29d5a/attachment.htm</A> 
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000431.html">[pycrypto] Py3k Support
+</A></li>
+	<LI>Next message: <A HREF="000432.html">[pycrypto] winrandom alternative
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#265">[ date ]</a>
+              <a href="thread.html#265">[ thread ]</a>
+              <a href="subject.html#265">[ subject ]</a>
+              <a href="author.html#265">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

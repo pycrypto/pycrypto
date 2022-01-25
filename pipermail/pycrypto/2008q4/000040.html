@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] the sad state of pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=20081109153410.GB24879%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000039.html">
+   <LINK REL="Next"  HREF="000041.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] the sad state of pycrypto</H1>
+    <B>Paul Hoffman</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=20081109153410.GB24879%40rivest.dlitz.net"
+       TITLE="[pycrypto] the sad state of pycrypto">paul.hoffman at gmail.com
+       </A><BR>
+    <I>Sun Nov  9 09:54:22 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000039.html">[pycrypto] the sad state of pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000041.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#40">[ date ]</a>
+              <a href="thread.html#40">[ thread ]</a>
+              <a href="subject.html#40">[ subject ]</a>
+              <a href="author.html#40">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Small notes.
+
+On Sun, Nov 9, 2008 at 7:34 AM, Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt; wrote:
+&gt;<i> Yeah, it's a nice architecture.  Unfortunately, it also requires that
+</I>&gt;<i> algorithms be hand-written in (error-prone) C, so I want to keep the amount
+</I>&gt;<i> of C code in PyCrypto to a minimum.
+</I>
+That seems like a good choice. Those of us who want crypto code that
+comes from C have many other ways of getting it.
+
+&gt;<i> My thoughts mirror the ideas presented in D. J. Bernstein's paper, &quot;Some
+</I>&gt;<i> thoughts on security after ten years of qmail 1.0&quot;
+</I>&gt;<i> &lt;<A HREF="http://cr.yp.to/qmail/qmailsec-20071101.pdf">http://cr.yp.to/qmail/qmailsec-20071101.pdf</A>&gt;.  I encourage everyone here to
+</I>&gt;<i> read it, if you have not already.
+</I>
+A strong &quot;me too&quot; on having everyone read that paper.
+
+&gt;<i> Which algorithms are you referring to?  Just MD2?  I'm willing to drop MD2
+</I>&gt;<i> if there are no objections.  I'm not going to be removing MD5 or SHA-1 any
+</I>&gt;<i> time soon; They're just wrappers around the Python standard library anyway.
+</I>
+The idea of dropping support for &quot;weak&quot; algorithms is silly. No
+developer looks through the list of algorithms in a library and say
+&quot;I'll pick, um, er, that one&quot; without knowing what it is. There is no
+security problem with a library having weak algorithms, only with
+clueless people using them without understanding the consequences.
+Old, weak hash algorithms are still needed for validating old
+signatures and certificates.
+
+&gt;&gt;<i> With respect to the recommendations of the NIST and others I propose to
+</I>&gt;&gt;<i> offer the following algorithm additionally and directly over the distributed
+</I>&gt;&gt;<i> library interface: SHA-224, SHA-256 (C file is allready included), SHA-384,
+</I>&gt;&gt;<i> SHA-512, RIPEMD-128, RIPEMD-160, RIPEMD-256, RIPEMD-320, Tiger and
+</I>&gt;&gt;<i> WHIRLPOOL.
+</I>
+Just a note on that sentence: NIST only recommends the members of the
+SHA family; all the rest are recommended by &quot;and others&quot;.
+
+&gt;<i> My understanding is that SHA-224 and SHA-384 are encumbered by software
+</I>&gt;<i> patents
+</I>
+The entire SHA-2 family is encumbered by a patent (US 6,829,355) that
+is licensed royalty-free (see
+&lt;<A HREF="https://datatracker.ietf.org/ipr/858/">https://datatracker.ietf.org/ipr/858/</A>&gt;). It applies to SHA-256 and
+SHA-512 as well.
+
+&gt;<i> and provide no performance advantages over SHA-256 and SHA-512,
+</I>&gt;<i> respectively.
+</I>
+Quite true.
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000039.html">[pycrypto] the sad state of pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000041.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#40">[ date ]</a>
+              <a href="thread.html#40">[ thread ]</a>
+              <a href="subject.html#40">[ subject ]</a>
+              <a href="author.html#40">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

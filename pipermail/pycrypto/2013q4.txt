@@ -1,0 +1,3704 @@
+From helderijs at gmail.com  Tue Oct  1 04:09:26 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Tue, 1 Oct 2013 13:09:26 +0200
+Subject: [pycrypto] Verifying Signatures on Data and Certifictes
+In-Reply-To: <CACx543ZySfJ2kncoVTk+en4Y1jTtqw_oBsJ27mcH4GR=mfhLUg@mail.gmail.com>
+References: <CACx543ZySfJ2kncoVTk+en4Y1jTtqw_oBsJ27mcH4GR=mfhLUg@mail.gmail.com>
+Message-ID: <CAGfyce1pwyCs2yPY1P02tR9wov96h=Y7G=4kVXYoMqR0v2bhPw@mail.gmail.com>
+
+Hi Kyle,
+
+The code you provide the link for also uses PyOpenSSL; I believe the
+error you are getting originates from that library, not from PyCrypto.
+
+L.
+
+2013/9/27 Kyle Cummings <kyle.cummings at forge-corp.com>:
+> I apologize before hand for the long e-mail, but I just wanted to be
+> thorough in what I was doing.
+>
+> I am trying to use the PyCrypto library to achieve two similar things. The
+> first use is to verify that a piece of data has been signed by the private
+> key of a certain certificate. The other use is to verify a certificate chain
+> (verify that certificate A has signed B, and then that B has signed C).
+>
+> The process is as follows:
+> Client generates certificate / key-pairs A, B, C and D. A signs B, and B
+> signs C and D. Then the certificates for A, signed B, signed C and signed D
+> are pushed to a server. The server responds with a randomly generated bit of
+> binary data for each certificate. The client uses each certificate /
+> key-pair to sign the respective binary data, and then pushes the (base64
+> encoded) signed responses back to the server. The server then takes the
+> responses, decodes them and tries to verify the signatures on the
+>
+> Code / Attempts:
+> My first attempt -
+>
+> ###
+> #Function - verifying the signed challenges
+> ###
+> Astr = storedcertificates["acert"]
+> Achallenge = storedchallenges["achallenge"]
+> Signedchallenge = (read in from http post request)
+> Acert = load_certificate(FILETYPE_PEM, Astr)
+>
+> try:
+>    verify (Acert, Signedchallenge, Achallenge, "sha256")
+> except Exception e:
+>    print "failed to verify for reason:"
+>    print e
+>
+> #Repeat above for B, C and D
+> ###
+>
+> With this code I got the following error response from the verify function:
+> "must be string without null bytes, not str".
+>
+>
+> My second attempt -
+>
+> Having the above code fail, I then found and tried adapting the code here,
+> but I first received that the function "get_signature_algorithm()" does not
+> exists for X509 certificates, and then received the same error response back
+> for the verify function if I commented out the signature algorithm and just
+> manually provided the digest.
+> ###
+> #Function - verify the signed challenges modified example
+> ###
+> Acert = load_certificate(FILETYPE_PEM, storedcerts["root"])
+> challenge = (original binary challenge sent to client)
+> algorithm = Acert.get_signature_algorithm()
+> dersigin = asn1.DerObject()
+> dersigin.decode(rootchal)
+> sig0 = dersigin.payload
+> if sig0[0] != '\x00':
+> print "sig0 error"
+> print sig0
+> return False
+>
+> signature = sig0[1:]
+> try:
+> verify(Acert, signature, challenge, algorithm)
+> #verify(Acert, signature, challenge, "sha256") #Alternate without the
+> get_sig_alg()
+> except:
+> print "verifcation failed"
+> return False
+> print "THE VERIFICATION WORKED?!?!?!?!?!?!??!"
+> return True
+>
+>
+>
+> For the chain verification stuff, I followed the example code from the above
+> link exactly, but received the same errors as the second example code
+> (algorithm and string / str).
+>
+> What am I doing wrong / How am I using the library incorrectly?
+>
+>
+> Thanks,
+> Kyle Cummings
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+From helderijs at gmail.com  Thu Oct  3 23:57:49 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Fri, 4 Oct 2013 08:57:49 +0200
+Subject: [pycrypto] PyCrypto status update & release plans
+In-Reply-To: <20130909070306.GA7288@rivest.dlitz.net>
+References: <20130909070306.GA7288@rivest.dlitz.net>
+Message-ID: <CAGfyce0GcuAhwgirxvVNzUabEg4gAFuAHvv8_7kx3ZqXTzSGuw@mail.gmail.com>
+
+Hi,
+
+I would strecht it a bit further and stop supporting anything below python 2.4.
+I doubt a lot of people are still using a version of Python older than
+10 years for active development. I also know no OS that comes with
+Python and that is officially supported for longer than that (RHEL
+certainly not).
+
+On the other hand, 2.4 assures presence of several fundamental tools
+(I am thinking of sets, generators and decorators). 2.4 still does not
+support the b"" syntax though.
+
+Mind that there are 2 outstanding bugs you might want to fix sooner
+rather than later: 1209399 (regression on SHA2 on master) and 1193521
+(interpreter crash when importing an incorrect RSA key, applicable to
+2.6).
+
+L.
+
+2013/9/9 Dwayne Litzenberger <dlitz at dlitz.net>:
+> Hi folks!  I've begun work on clearing my backlog, and it's been a while
+> since I've sent a status update, so here goes:
+>
+> == Where we are right now ==
+>
+> I've received pull requests for a bunch of new features, including AEAD
+> modes (CCM, EAX, GCM, and SIV), HKDF (HMAC KDF), SHA-3 (Keccak),
+> Diffie-Hellman, a better DSA API, scrypt, Salsa20, encrypted PKCS#8 private
+> keys, AES-NI support, ElGamal blinding, and ARC4-drop[n].  There have also
+> been many bugfixes and documentation improvements.
+>
+> However, I don't think PyCrypto's core is in good enough shape for me to
+> feel comfortable adding a lot of new features.  I think I made a few
+> mistakes in some of our newer APIs, which I want to fix before they get too
+> entrenched:
+>
+> - .verify methods that return False instead of raising an exception
+> - PBKDF1 and PBKDF2 default to using SHA1.
+>
+> We also have a number of overall design issues that affect performance
+> and/or maintainability:
+>
+> - Our PBKDF2 implementation is about 8.5x slower than OpenSSL[1].  That
+> means users are going to use 8.5x lower iteration counts than they   should,
+> thus giving attackers who use a faster PBKDF2 implementation a   sizeable
+> advantage.  I've tested a C-based implementation of PBKDF2,   but that
+> currently doesn't help much, because our coding style has   been to write
+> Python wrappers around all of our C code.[2]
+>
+> - The `b()` function in Python 3 can also be expensive, since it   allocates
+> memory for a new bytestring on every invocation.
+>
+> My solutions to both of these problems require Python 2.2 or later.
+>
+> == Roadmap ==
+>
+> My rough near-term plan looks something like this:
+>
+> * "2.6.x" branch - Bugfixes & general quality improvements
+>     - Last version to support Python 2.1
+>     - DeprecationWarnings on some things that suck (e.g. HMAC without
+> digestmod)
+>     - (Maybe) Do something about .verify not raising an exception.
+>     - (Maybe) AES-NI and ElGamal blinding
+>
+> * 2.7 - Remove Python 2.1 compatibility stuff.
+>     - Python 2.2 or later required.
+>     - New-style classes in C, with the Python code inheriting from them.
+> (This can be much faster than proxying.)
+>     - Replace b() function calls with b"" literals in Python.
+>     - Use better idioms for reference counting in C.
+>     - Do something about .verify not raising an exception by default.
+>     - Fix the remaining bugs that couldn't be fixed in the 2.6.x
+> series.
+>     - (Maybe) Fix the docs.  We need a user FAQ and some contributor
+> guidelines.
+>     - (Maybe) Run cpychecker and/or Coverity Scan.
+>
+> * 2.8 and beyond - Major new functionality, such as:
+>     - AEAD modes
+>     - ARC4-drop[n]
+>     - Crypto.Random.random performance improvements
+>     - Diffie-Hellman support
+>     - Encrypted PKCS#8 keys
+>     - HKDF
+>     - Performance improvements for Crypto.Random.random
+>     - scrypt, Salsa20, Camellia, new DSA API
+>     - SHA-3 (assuming the standard is released by this time)
+>     - Some PyPy-related improvements
+>     - etc.
+>
+> Hopefully I can get to v2.8 fairly quickly.  Depending on how things go, I
+> might release some things sooner (e.g. AEAD support), because I've been
+> promising my colleagues that I'd finish it for a while now, and the major
+> API design work is almost done.
+>
+> Anyway, that's the current thinking.  This should help me get the project to
+> a point where I'm not so nervous about merging people's contributions.
+>
+> == Dropping support for Python 2.1 ==
+>
+> In case you're only reading the headings: I'm planning to drop support for
+> Python 2.1 in PyCrypto 2.7 and later; The 2.6.x series will be the last
+> versions to support Python 2.1.
+>
+> == Bug tracker migration: Launchpad -> GitHub ===
+>
+> At some point, I'm thinking of moving the bug tracker from Launchpad to
+> GitHub.  It's weird that some people might have to create accounts on two
+> separate services in order to report a bug and submit a fix for the bug.  On
+> the other hand, GitHub's bug tracker is a lot more immature than
+> Launchpad's, but I think it will be good enough.
+>
+> == I've moved to the USA ==
+>
+> I moved to San Francisco last year (July 7, 2012) to work at Dropbox:
+>
+> - I don't think this affects anyone as far as export control regulations
+> are concerned (I had already been accepting US-origin patches for a   while
+> before I moved), but just in case---now you know.
+>
+> - I'll occasionally be getting contributions from my co-workers or other
+> people that I meet in the Bay Area, so there will inevitably be more
+> conversations that happen off-list.  I will be encouraging people to  move
+> these conversations online (or at least to summarize the  important points
+> online) so that online contributors are not left in  the dark.
+>
+> == Conclusion ==
+>
+> That's it for now.
+>
+> Cheers!
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>     OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+>
+> [1] I compared three PBKDF2-HMAC-SHA1 implementations on my laptop.  For a
+> 48-byte output with 1,000,000 iterations, I got:
+>
+>     OpenSSL:                   3.9 seconds
+>     PyCrypto v2.6:             44.0 seconds    (11x OpenSSL)
+>     PyCrypto master:           33.2 seconds    (8.5x OpenSSL)
+>     PyCrypto master PBKDF2.c:  32.1 seconds    (8.5x OpenSSL)
+>
+> [2] See some of the discussion at
+> https://github.com/dlitz/pycrypto/commit/fd398a28e3a227a539b264a9f1e11287b904c7da#commitcomment-2669743
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From arfrever.fta at gmail.com  Sat Oct  5 23:44:10 2013
+From: arfrever.fta at gmail.com (Arfrever Frehtes Taifersar Arahesis)
+Date: Sun, 6 Oct 2013 08:44:10 +0200
+Subject: [pycrypto] PyCrypto status update & release plans
+In-Reply-To: <20130909070306.GA7288@rivest.dlitz.net>
+References: <20130909070306.GA7288@rivest.dlitz.net>
+Message-ID: <201310060844.11250.Arfrever.FTA@gmail.com>
+
+2013-09-09 09:03 Dwayne Litzenberger napisa?(a):
+> - The `b()` function in Python 3 can also be expensive, since it 
+>    allocates memory for a new bytestring on every invocation.
+> 
+> My solutions to both of these problems require Python 2.2 or later.
+> 
+> ...
+> 
+> * 2.7 - Remove Python 2.1 compatibility stuff.
+>      - Python 2.2 or later required.
+>      ...
+>      - Replace b() function calls with b"" literals in Python.
+
+b"" literals require Python >=2.6, not >=2.2.
+
+--
+Arfrever Frehtes Taifersar Arahesis
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: This is a digitally signed message part.
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20131006/2491f0f6/attachment.sig>
+
+From dlitz at dlitz.net  Thu Oct 17 09:28:41 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Thu, 17 Oct 2013 09:28:41 -0700
+Subject: [pycrypto] CVE-2013-1445 python-crypto: PRNG not correctly reseeded
+ in some situations
+Message-ID: <20131017162841.GA22758@rivest.dlitz.net>
+
+In PyCrypto before v2.6.1, the Crypto.Random pseudo-random number
+generator (PRNG) exhibits a race condition that may cause it to generate
+the same 'random' output in multiple processes that are forked from each
+other.  Depending on the application, this could reveal sensitive
+information or cryptographic keys to remote attackers.
+
+An application may be affected if, within 100 milliseconds, it performs
+the following steps (which may be summarized as "read-fork-read-read"):
+
+1. Read from the Crypto.Random PRNG, causing an internal reseed;
+2. Fork the process and invoke Crypto.Random.atfork() in the child;
+3. Read from the Crypto.Random PRNG again, in at least two different
+     processes (parent and child, or multiple children).
+
+Only applications that invoke Crypto.Random.atfork() and perform the
+above steps are affected by this issue.  Other applications are
+unaffected.
+
+Note: Some PyCrypto functions, such as key generation and PKCS#1-related
+functions, implicitly read from the Crypto.Random PRNG.
+
+== Technical details ==
+
+Crypto.Random uses Fortuna[1] to generate random numbers.  The flow of
+entropy looks something like this:
+
+      /dev/urandom  -\
+                      +-> "accumulator" --> "generator" --> output
+      other sources -/   (entropy pools)     (AES-CTR)
+
+- The "accumulator" maintains several pools that collect entropy from
+    the environment.
+
+- The "generator" is a deterministic PRNG that is reseeded by the
+    accumulator.  Reseeding normally occurs during each request for random
+    numbers, but never more than once every 100 ms (the "minimum reseed
+    interval").
+
+When a process is forked, the parent's state is duplicated in the child.
+In order to continue using the PRNG, the child process must invoke
+Crypto.Random.atfork(), which collects new entropy from /dev/urandom and
+adds it to the accumulator.  When new PRNG output is subsequently
+requested, some of the new entropy in the accumulator is used to reseed
+the generator, causing the output of the child to diverge from its
+parent.
+
+However, in previous versions of PyCrypto, Crypto.Random.atfork() did
+not explicitly reset the child's rate-limiter, so if the child requested
+PRNG output before the minimum reseed interval of 100 ms had elapsed, it
+would generate its output using state inherited from its parent.
+
+This created a race condition between the parent process and its forked
+children that could cause them to produce identical PRNG output for the
+duration of the 100 ms minimum reseed interval.
+
+== Demonstration ==
+
+Here is some sample code that illustrates the problem:
+
+      from binascii import hexlify
+      import multiprocessing, pprint, time
+      import Crypto.Random
+
+      def task_main(arg):
+          a = Crypto.Random.get_random_bytes(8)
+          time.sleep(0.1)
+          b = Crypto.Random.get_random_bytes(8)
+          rdy, ack = arg
+          rdy.set()
+          ack.wait()
+          return "%s,%s" % (hexlify(a).decode(),
+                            hexlify(b).decode())
+
+      n_procs = 4
+      manager = multiprocessing.Manager()
+      rdys = [manager.Event() for i in range(n_procs)]
+      acks = [manager.Event() for i in range(n_procs)]
+      Crypto.Random.get_random_bytes(1)
+      pool = multiprocessing.Pool(processes=n_procs,
+                                  initializer=Crypto.Random.atfork)
+      res_async = pool.map_async(task_main, zip(rdys, acks))
+      pool.close()
+      [rdy.wait() for rdy in rdys]
+      [ack.set() for ack in acks]
+      res = res_async.get()
+      pprint.pprint(sorted(res))
+      pool.join()
+
+The output should be random, but it looked like this:
+
+      ['c607803ae01aa8c0,2e4de6457a304b34',
+       'c607803ae01aa8c0,af80d08942b4c987',
+       'c607803ae01aa8c0,b0e4c0853de927c4',
+       'c607803ae01aa8c0,f0362585b3fceba4']
+
+== Solution ==
+
+The solution is to upgrade to PyCrypto v2.6.1 or later, which properly
+resets the rate-limiter when Crypto.Random.atfork() is invoked in the
+child.
+
+== Files ==
+
+PyCrypto v2.6.1 may be downloaded from the PyCrypto website[2], from 
+PyPI, or using your operating system's package manager or ports tree.  
+
+The official tarball has the following SHA256 sums:
+
+f2ce1e989b272cfcb677616763e0a2e7ec659effa67a88aa92b3a65528f60a3c *pycrypto-2.6.1.tar.gz
+c2ab0516cc55321e6543ae75e2aa6f6e56e97432870f32a7799f3b89f467dc1b *pycrypto-2.6.1.tar.gz.asc
+
+The git repository is here: https://github.com/dlitz/pycrypto/
+The v2.6.1 tag id is: ebb470d3f0982702e3e9b7fb9ebdaeed95903aaf
+The v2.6.1 commit id is: 7fd528d03b5eae58eef6fd219af5d9ac9c83fa50
+
+For informational purposes, patches against pycrypto v2.6 and v2.1.0 are 
+attached.  Distributors patching older versions of the library, please 
+remember to run the test suite before releasing a modified package:
+
+    # From the source tree
+    python setup.py build test
+
+    # After installation
+    python -m Crypto.SelfTest.__init__
+
+== Thanks ==
+
+Thanks to Yves-Alexis Perez and Sebastian Ramacher for helping to 
+coordinate the release of this fix.
+
+== References ==
+
+[1] N. Ferguson and B. Schneier, _Practical Cryptography_,
+      Indianapolis: Wiley, 2003, pp. 155-184.
+
+[2] https://www.dlitz.net/software/pycrypto/ or http://www.pycrypto.org/
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+    OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: CVE-2013-1445-pycrypto2.6.patch
+Type: text/x-diff
+Size: 13972 bytes
+Desc: not available
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20131017/05f461ef/attachment-0002.patch>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: CVE-2013-1445-pycrypto2.1.0.patch
+Type: text/x-diff
+Size: 10453 bytes
+Desc: not available
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20131017/05f461ef/attachment-0003.patch>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 222 bytes
+Desc: Digital signature
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20131017/05f461ef/attachment-0001.sig>
+
+From dlitz at dlitz.net  Fri Oct 18 05:20:11 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Fri, 18 Oct 2013 05:20:11 -0700
+Subject: [pycrypto] PyCrypto status update & release plans
+In-Reply-To: <201310060844.11250.Arfrever.FTA@gmail.com>
+References: <20130909070306.GA7288@rivest.dlitz.net>
+ <201310060844.11250.Arfrever.FTA@gmail.com>
+Message-ID: <20131018122011.GA2509@rivest.dlitz.net>
+
+On Sun, Oct 06, 2013 at 08:44:10AM +0200, Arfrever Frehtes Taifersar Arahesis wrote:
+>2013-09-09 09:03 Dwayne Litzenberger napisa?(a):
+>>      - Replace b() function calls with b"" literals in Python.
+>
+>b"" literals require Python >=2.6, not >=2.2.
+
+Not if you're clever: https://github.com/dropbox/pyxl
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From helderijs at gmail.com  Fri Oct 18 06:12:14 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Fri, 18 Oct 2013 15:12:14 +0200
+Subject: [pycrypto] PyCrypto status update & release plans
+In-Reply-To: <20131018122011.GA2509@rivest.dlitz.net>
+References: <20130909070306.GA7288@rivest.dlitz.net>
+ <201310060844.11250.Arfrever.FTA@gmail.com>
+ <20131018122011.GA2509@rivest.dlitz.net>
+Message-ID: <CAGfyce2MZydvNEdHQ_xP9GMq6Gt0PLaM2fZCbYvvgxisL6ZR1A@mail.gmail.com>
+
+>> 2013-09-09 09:03 Dwayne Litzenberger napisa?(a):
+>>>
+>>>      - Replace b() function calls with b"" literals in Python.
+>>
+>> b"" literals require Python >=2.6, not >=2.2.
+>
+> Not if you're clever: https://github.com/dropbox/pyxl
+
+This replacement could be more simply done with 1 line of sed.
+Hardcore pythonistas may still prefer massedit
+(https://github.com/elmotec/massedit) though.
+
+From dlitz at dlitz.net  Sun Oct 20 13:24:22 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Sun, 20 Oct 2013 13:24:22 -0700
+Subject: [pycrypto] RSA exportKey() changes set in stone for 2.7?
+In-Reply-To: <CAGwD-jZFHWmOqw0U5XzemnF+ERZxwoE+SgqkGxx_1JxJAoty6A@mail.gmail.com>
+References: <CAGwD-jYXxfVKyDyB6d+CV1uMSmo_v2C-j_FV=_qaHJ_rvjHqtQ@mail.gmail.com>
+ <20130930015211.GB31413@rivest.dlitz.net>
+ <CAGwD-jZFHWmOqw0U5XzemnF+ERZxwoE+SgqkGxx_1JxJAoty6A@mail.gmail.com>
+Message-ID: <20131020202422.GA30415@rivest.dlitz.net>
+
+On Mon, Sep 30, 2013 at 10:28:20PM -0700, Kurt Vogel wrote:
+>On Sun, Sep 29, 2013 at 6:52 PM, Dwayne Litzenberger 
+><dlitz at dlitz.net>wrote:
+>> The exportKey API should be considered experimental at this point.  
+>> There are things about it that don't really make sense (e.g. the 
+>> `pkcs=1` parameter, which doesn't make any sense if you want to 
+>> expoer in OpenPGP format, for example).  Realistically, it should 
+>> probably be removed from Crypto.PublicKey and placed into Crypto.IO, 
+>> but I'm not sure of exactly when that will happen.
+[snip]
+>Thanks, that is what I was assuming.  If we move import/export to 
+>Crypto.IO it will break backwards compatibility, no?  Is that 
+>important?
+>
+>Is anyone working on this issue?  If backwards compatibility is 
+>important I say keep what we have there now (2.6) and have a 
+>deprecation comment and/or stderr output?
+
+Yes, that's the idea.  Even with a move to Crypto.IO, RSA.exportKey and 
+RSA.importKey should continue to work during a deprecation period---but 
+only to the extent that they work in PyCrypto 2.6.1.  I make no promises 
+about what's in the master branch of the git repo.
+
+>Also does Pycrypto have deprecation/error transition plan?  To ease 
+>transition some packages first do a deprecation warning, second major 
+>release it becomes an error/exception, then third major release the 
+>code is completely removed.  Would that work with pycrypto users?
+
+That's what I usually aim to do, but the very few people who work on 
+PyCrypto are volunteers, so we can't make hard promises.  Obviously, 
+compatibility is important to us (or we wouldn't be supporting really 
+old versions of Python), but I weigh it against other factors.  For 
+example:
+
+1. I only worry about backward compatibility between stable releases, 
+and only for public interfaces. (If it starts with an underscore, expect 
+it to change.  Ditto if something has been introduced in an "alpha" 
+release.)  Absolutely no guarantees are made about any part of the git 
+repo that hasn't been tagged as a 'final' release.  I'm not *opposed* to 
+a few people using the master branch in their own projects (the early 
+feedback is helpful), but things will break and you'll need to be 
+prepared to fix them.
+
+2. I'm willing to break backward compatibility to fix a regression that 
+broke backward compatibility with a previous version.  For example, v2.6 
+silently changed the semantics of the Cipher .IV attribute.  I'm willing 
+to undo that in v2.7 (any maybe even v2.6.2) without a deprecation 
+period.
+
+3. I'm willing to break applications that were already insecure anyway.  
+(For example, making IVs mandatory for CBC/CFB/OFB modes in PyCrypto 
+v2.6.)  My view is that the security of end-users is more important than 
+convenience of developers using PyCrypto, and it's better to break an 
+insecure application than to let it continue to give users a false sense 
+of security.
+
+3.a. If an interface is highly error-prone and has relatively few users, 
+I might be willing to break existing applications in order to prevent 
+new applications from being written than use the error-prone interface, 
+especially if there's a trivial fix that will work with both the old and 
+the new versions of PyCrypto.
+
+4. I'm willing to remove features that I don't think are used much 
+(especially if they're broken).  They can always be re-introduced if 
+people complain (nobody has complained about any removed features, so 
+far).
+
+5. I'm willing to remove legally problematic code.
+
+6. I'm more willing to break things in a "fail-safe" manner than a 
+"fail-open" manner.  (For example, I might consider changing 
+PKCS1_PSS.verify() to raise an exception instead of returning False on a 
+signature verification failure, but I would go from raising an exception 
+to returning False.)
+
+In general, I think it's better for end-users if everyone collaborates 
+on the same tree, so I try to make things easy for developers and 
+distros.  However, my priorities are the security of end-users and 
+keeping the code complexity manageable.  Every change can potentially 
+break something for somebody, so I try to weigh the impact of each 
+change on a case-by-case basis, taking everything into account.
+
+The more information I get about how PyCrypto is being used, the better 
+my decisions can be.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+   OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Thu Oct 24 09:59:12 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Thu, 24 Oct 2013 09:59:12 -0700
+Subject: [pycrypto] Crypto.Random crashes due to unaligned access
+In-Reply-To: <CAFCC3ett8+noOoFvEGitKYuZ6du_Ge3Fc39OOTx-xoYcm=zACA@mail.gmail.com>
+References: <CAFCC3ett8+noOoFvEGitKYuZ6du_Ge3Fc39OOTx-xoYcm=zACA@mail.gmail.com>
+Message-ID: <270d53e0-550d-49fc-a6ab-3f12c7b61b40@email.android.com>
+
+Hi Greg!
+
+What version/build of GCC is this?  Does "setup.py test" crash for you as well?
+
+I'd rather figure out how to fix the problem than to start making copies of the key.
+
+Greg Price <gnprice at gmail.com> wrote:
+>I get the following crash in a PyCrypto built from the current master,
+>af058ee (aka v2.6.1-136-gaf058ee):
+>
+>>>> import Crypto.Random
+>>>> Crypto.Random.new().read(1)
+>Segmentation fault (core dumped)
+>
+>This is on i686.  I compiled with GCC 4.6.3 (or "Ubuntu/Linaro
+>4.6.3-1ubuntu5".)
+>
+>GDB shows the crash is here:
+>
+>Program received signal SIGSEGV, Segmentation fault.
+>aes_key_setup_enc (keylen=32, cipherKey=
+>0x841b1bc
+>"L\fB2\244\225\235\206^\242\305\305b\201\200\335?{d\240\343\262;m\361\243\276u~\337&",
+>rk=
+>    0x84900a8) at src/AESNI.c:122
+>122            rk[0] = _mm_loadu_si128((const __m128i*) cipherKey);
+>
+>at which the instruction is
+>
+>(gdb) x/i $pc
+>=> 0xb78f2600 <ALGnew+2160>: movdqa %xmm0,0x40(%esi)
+>
+>This is an aligned store.  The documentation of MOVDQA says it should
+>be 16-byte aligned.  The value of rk (aka %esi + 0x40) is only 8-byte
+>aligned:
+>
+>(gdb) p rk
+>$5 = (__m128i *) 0x84900a8
+>(gdb) p/x $esi
+>$9 = 0x8490068
+>
+>It's not clear to me why GCC generated an aligned instruction here --
+>in fact, the definition of _mm_loadu_si128 in my emmintrin.h appears
+>to be
+>
+>extern __inline __m128i __attribute__((__gnu_inline__,
+>__always_inline__, __artificial__))
+>_mm_loadu_si128 (__m128i const *__P)
+>{
+>  return (__m128i) __builtin_ia32_loaddqu ((char const *)__P);
+>}
+>
+>and the name of that builtin sure sounds more like MOVDQU than MOVDQA.
+> Perhaps GCC somehow decides that it can prove the pointer is aligned
+>here.
+>
+>I don't know why GCC makes this mistake, or (since it's never the
+>compiler's fault) which code is lying to it about something being
+>aligned. Anyone know how to investigate this kind of question?
+>
+>A workaround would be to make sure that the cipherKey argument to
+>aes_key_setup_enc() in src/AESNI.c is always 16-byte aligned.  At
+>present, that argument comes straight from the first Python-level
+>argument to _AESNI.new(); see the PyArg_ParseTupleAndKeywords() call
+>in src/block_template.c.  I guess to implement this workaround we'd
+>copy the key to a new, aligned buffer if it's not aligned.
+>
+>I can send a patch for that workaround if it seems like the best
+>approach.  Happy to hear alternatives, and of course it'd be most
+>satisfying if we can understand why the compiler is emitting this
+>output in the first place.
+>
+>Greg
+
+-- 
+Sent from my Android device with K-9 Mail. Please excuse my brevity.
+
+From andyhhp at gmail.com  Thu Oct 24 13:10:29 2013
+From: andyhhp at gmail.com (Andrew Cooper)
+Date: Thu, 24 Oct 2013 21:10:29 +0100
+Subject: [pycrypto] Crypto.Random crashes due to unaligned access
+In-Reply-To: <270d53e0-550d-49fc-a6ab-3f12c7b61b40@email.android.com>
+References: <CAFCC3ett8+noOoFvEGitKYuZ6du_Ge3Fc39OOTx-xoYcm=zACA@mail.gmail.com>
+ <270d53e0-550d-49fc-a6ab-3f12c7b61b40@email.android.com>
+Message-ID: <52697EB5.7070106@gmail.com>
+
+
+On 24/10/2013 17:59, Dwayne Litzenberger wrote:
+> Hi Greg!
+>
+> What version/build of GCC is this?  Does "setup.py test" crash for you as well?
+>
+> I'd rather figure out how to fix the problem than to start making copies of the key.
+>
+> Greg Price <gnprice at gmail.com> wrote:
+>> I get the following crash in a PyCrypto built from the current master,
+>> af058ee (aka v2.6.1-136-gaf058ee):
+>>
+>>>>> import Crypto.Random
+>>>>> Crypto.Random.new().read(1)
+>> Segmentation fault (core dumped)
+>>
+>> This is on i686.  I compiled with GCC 4.6.3 (or "Ubuntu/Linaro
+>> 4.6.3-1ubuntu5".)
+>>
+>> GDB shows the crash is here:
+>>
+>> Program received signal SIGSEGV, Segmentation fault.
+>> aes_key_setup_enc (keylen=32, cipherKey=
+>> 0x841b1bc
+>> "L\fB2\244\225\235\206^\242\305\305b\201\200\335?{d\240\343\262;m\361\243\276u~\337&",
+>> rk=
+>>    0x84900a8) at src/AESNI.c:122
+>> 122            rk[0] = _mm_loadu_si128((const __m128i*) cipherKey);
+>>
+>> at which the instruction is
+>>
+>> (gdb) x/i $pc
+>> => 0xb78f2600 <ALGnew+2160>: movdqa %xmm0,0x40(%esi)
+>>
+>> This is an aligned store.  The documentation of MOVDQA says it should
+>> be 16-byte aligned.  The value of rk (aka %esi + 0x40) is only 8-byte
+>> aligned:
+>>
+>> (gdb) p rk
+>> $5 = (__m128i *) 0x84900a8
+>> (gdb) p/x $esi
+>> $9 = 0x8490068
+>>
+>> It's not clear to me why GCC generated an aligned instruction here --
+>> in fact, the definition of _mm_loadu_si128 in my emmintrin.h appears
+>> to be
+>>
+>> extern __inline __m128i __attribute__((__gnu_inline__,
+>> __always_inline__, __artificial__))
+>> _mm_loadu_si128 (__m128i const *__P)
+>> {
+>>  return (__m128i) __builtin_ia32_loaddqu ((char const *)__P);
+>> }
+
+http://gcc.gnu.org/onlinedocs/gcc/X86-Built_002din-Functions.html  would
+suggest that __builtin_ia32_loaddqu is specified to generate movdqu
+rather than movdqa.
+
+There is certainly nothing I can see in the code which would allow GCC
+to presume that the address is 16  byte aligned.
+
+~Andrew
+
+>>
+>> and the name of that builtin sure sounds more like MOVDQU than MOVDQA.
+>> Perhaps GCC somehow decides that it can prove the pointer is aligned
+>> here.
+>>
+>> I don't know why GCC makes this mistake, or (since it's never the
+>> compiler's fault) which code is lying to it about something being
+>> aligned. Anyone know how to investigate this kind of question?
+>>
+>> A workaround would be to make sure that the cipherKey argument to
+>> aes_key_setup_enc() in src/AESNI.c is always 16-byte aligned.  At
+>> present, that argument comes straight from the first Python-level
+>> argument to _AESNI.new(); see the PyArg_ParseTupleAndKeywords() call
+>> in src/block_template.c.  I guess to implement this workaround we'd
+>> copy the key to a new, aligned buffer if it's not aligned.
+>>
+>> I can send a patch for that workaround if it seems like the best
+>> approach.  Happy to hear alternatives, and of course it'd be most
+>> satisfying if we can understand why the compiler is emitting this
+>> output in the first place.
+>>
+>> Greg
+
+
+From Paul_Koning at Dell.com  Thu Oct 24 13:16:42 2013
+From: Paul_Koning at Dell.com (Paul_Koning at Dell.com)
+Date: Thu, 24 Oct 2013 20:16:42 +0000
+Subject: [pycrypto] Crypto.Random crashes due to unaligned access
+In-Reply-To: <52697EB5.7070106@gmail.com>
+References: <CAFCC3ett8+noOoFvEGitKYuZ6du_Ge3Fc39OOTx-xoYcm=zACA@mail.gmail.com>
+ <270d53e0-550d-49fc-a6ab-3f12c7b61b40@email.android.com>
+ <52697EB5.7070106@gmail.com>
+Message-ID: <C75A84166056C94F84D238A44AF9F6AD0375818A@AUSX10MPC102.AMER.DELL.COM>
+
+
+On Oct 24, 2013, at 4:10 PM, Andrew Cooper <andyhhp at gmail.com> wrote:
+
+> 
+> On 24/10/2013 17:59, Dwayne Litzenberger wrote:
+>> Hi Greg!
+>> 
+>> What version/build of GCC is this?  Does "setup.py test" crash for you as well?
+>> 
+>> I'd rather figure out how to fix the problem than to start making copies of the key.
+>> 
+>> Greg Price <gnprice at gmail.com> wrote:
+>>> I get the following crash in a PyCrypto built from the current master,
+>>> af058ee (aka v2.6.1-136-gaf058ee):
+>>> 
+>>>>>> import Crypto.Random
+>>>>>> Crypto.Random.new().read(1)
+>>> Segmentation fault (core dumped)
+>>> 
+>>> This is on i686.  I compiled with GCC 4.6.3 (or "Ubuntu/Linaro
+>>> 4.6.3-1ubuntu5".)
+>>> 
+>>> GDB shows the crash is here:
+>>> 
+>>> Program received signal SIGSEGV, Segmentation fault.
+>>> aes_key_setup_enc (keylen=32, cipherKey=
+>>> 0x841b1bc
+>>> "L\fB2\244\225\235\206^\242\305\305b\201\200\335?{d\240\343\262;m\361\243\276u~\337&",
+>>> rk=
+>>>   0x84900a8) at src/AESNI.c:122
+>>> 122            rk[0] = _mm_loadu_si128((const __m128i*) cipherKey);
+>>> 
+>>> at which the instruction is
+>>> 
+>>> (gdb) x/i $pc
+>>> => 0xb78f2600 <ALGnew+2160>: movdqa %xmm0,0x40(%esi)
+>>> 
+>>> This is an aligned store.  The documentation of MOVDQA says it should
+>>> be 16-byte aligned.  The value of rk (aka %esi + 0x40) is only 8-byte
+>>> aligned:
+>>> 
+>>> (gdb) p rk
+>>> $5 = (__m128i *) 0x84900a8
+>>> (gdb) p/x $esi
+>>> $9 = 0x8490068
+>>> 
+>>> It's not clear to me why GCC generated an aligned instruction here --
+>>> in fact, the definition of _mm_loadu_si128 in my emmintrin.h appears
+>>> to be
+>>> 
+>>> extern __inline __m128i __attribute__((__gnu_inline__,
+>>> __always_inline__, __artificial__))
+>>> _mm_loadu_si128 (__m128i const *__P)
+>>> {
+>>> return (__m128i) __builtin_ia32_loaddqu ((char const *)__P);
+>>> }
+> 
+> http://gcc.gnu.org/onlinedocs/gcc/X86-Built_002din-Functions.html  would
+> suggest that __builtin_ia32_loaddqu is specified to generate movdqu
+> rather than movdqa.
+> 
+> There is certainly nothing I can see in the code which would allow GCC
+> to presume that the address is 16  byte aligned.
+> 
+> ~Andrew
+
+Indeed.  You can certainly tell GCC about alignment (with the __aligned__ attribute) but that is not specified here.  The fact that the machinery is willing to generate an instruction that requires alignment, without marking the addresses in question as such, is a type error?
+
+	paul
+
+From sebastian+lists at ramacher.at  Sun Oct 27 15:07:10 2013
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Sun, 27 Oct 2013 23:07:10 +0100
+Subject: [pycrypto] Crypto.Random crashes due to unaligned access
+In-Reply-To: <270d53e0-550d-49fc-a6ab-3f12c7b61b40@email.android.com>
+References: <CAFCC3ett8+noOoFvEGitKYuZ6du_Ge3Fc39OOTx-xoYcm=zACA@mail.gmail.com>
+ <270d53e0-550d-49fc-a6ab-3f12c7b61b40@email.android.com>
+Message-ID: <20131027220710.GB11300@ramacher.at>
+
+Hi,
+
+On 2013-10-24 09:59:12, Dwayne Litzenberger wrote:
+> Hi Greg!
+> 
+> What version/build of GCC is this?  Does "setup.py test" crash for you as well?
+> 
+> I'd rather figure out how to fix the problem than to start making copies of the key.
+> 
+> Greg Price <gnprice at gmail.com> wrote:
+> >I get the following crash in a PyCrypto built from the current master,
+> >af058ee (aka v2.6.1-136-gaf058ee):
+> >
+> >>>> import Crypto.Random
+> >>>> Crypto.Random.new().read(1)
+> >Segmentation fault (core dumped)
+> >
+> >This is on i686.  I compiled with GCC 4.6.3 (or "Ubuntu/Linaro
+> >4.6.3-1ubuntu5".)
+> >
+> >GDB shows the crash is here:
+> >
+> >Program received signal SIGSEGV, Segmentation fault.
+> >aes_key_setup_enc (keylen=32, cipherKey=
+> >0x841b1bc
+> >"L\fB2\244\225\235\206^\242\305\305b\201\200\335?{d\240\343\262;m\361\243\276u~\337&",
+> >rk=
+> >    0x84900a8) at src/AESNI.c:122
+> >122            rk[0] = _mm_loadu_si128((const __m128i*) cipherKey);
+> >
+> >at which the instruction is
+> >
+> >(gdb) x/i $pc
+> >=> 0xb78f2600 <ALGnew+2160>: movdqa %xmm0,0x40(%esi)
+> >
+> >This is an aligned store.  The documentation of MOVDQA says it should
+> >be 16-byte aligned.  The value of rk (aka %esi + 0x40) is only 8-byte
+> >aligned:
+> >
+> >(gdb) p rk
+> >$5 = (__m128i *) 0x84900a8
+> >(gdb) p/x $esi
+> >$9 = 0x8490068
+> >
+> >It's not clear to me why GCC generated an aligned instruction here --
+> >in fact, the definition of _mm_loadu_si128 in my emmintrin.h appears
+> >to be
+> >
+> >extern __inline __m128i __attribute__((__gnu_inline__,
+> >__always_inline__, __artificial__))
+> >_mm_loadu_si128 (__m128i const *__P)
+> >{
+> >  return (__m128i) __builtin_ia32_loaddqu ((char const *)__P);
+> >}
+> >
+> >and the name of that builtin sure sounds more like MOVDQU than MOVDQA.
+> > Perhaps GCC somehow decides that it can prove the pointer is aligned
+> >here.
+> >
+> >I don't know why GCC makes this mistake, or (since it's never the
+> >compiler's fault) which code is lying to it about something being
+> >aligned. Anyone know how to investigate this kind of question?
+> >
+> >A workaround would be to make sure that the cipherKey argument to
+> >aes_key_setup_enc() in src/AESNI.c is always 16-byte aligned.  At
+> >present, that argument comes straight from the first Python-level
+> >argument to _AESNI.new(); see the PyArg_ParseTupleAndKeywords() call
+> >in src/block_template.c.  I guess to implement this workaround we'd
+> >copy the key to a new, aligned buffer if it's not aligned.
+> >
+> >I can send a patch for that workaround if it seems like the best
+> >approach.  Happy to hear alternatives, and of course it'd be most
+> >satisfying if we can understand why the compiler is emitting this
+> >output in the first place.
+> >
+> >Greg
+
+I debugged this for a while and the problem is not _mm_loadu_si128.
+That's fine. It generates the correct movdqu instruction for that. The
+problem is the rk[0] = ... part. On amd64, ek and dk from block_state
+get aligned at 16 byte boundaries and everything works out properly.
+However, on i386 this does not appear to be true.
+
+I have some ideas how to fix it and will hopefully come up with a patch
+next week.
+
+Regards
+-- 
+Sebastian Ramacher
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: Digital signature
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20131027/2bb05078/attachment.sig>
+
+From gnprice at gmail.com  Sun Oct 27 15:35:21 2013
+From: gnprice at gmail.com (Greg Price)
+Date: Sun, 27 Oct 2013 15:35:21 -0700
+Subject: [pycrypto] Crypto.Random crashes due to unaligned access
+In-Reply-To: <20131027220710.GB11300@ramacher.at>
+References: <CAFCC3ett8+noOoFvEGitKYuZ6du_Ge3Fc39OOTx-xoYcm=zACA@mail.gmail.com>
+ <270d53e0-550d-49fc-a6ab-3f12c7b61b40@email.android.com>
+ <20131027220710.GB11300@ramacher.at>
+Message-ID: <CAFCC3euHRZUPXFOSG3TA2d3gHpCXrwLCx60JKh_qQCThAEmwKw@mail.gmail.com>
+
+On Sun, Oct 27, 2013 at 3:07 PM, Sebastian Ramacher
+<sebastian+lists at ramacher.at> wrote:
+> I debugged this for a while and the problem is not _mm_loadu_si128.
+> That's fine. It generates the correct movdqu instruction for that. The
+> problem is the rk[0] = ... part. On amd64, ek and dk from block_state
+> get aligned at 16 byte boundaries and everything works out properly.
+> However, on i386 this does not appear to be true.
+
+Thanks for looking into this!  That is exactly right.  I debugged this
+further later on the evening of the 23rd and came to the same
+conclusion.  Unfortunately the mailing list has been eating my
+messages. :(  The only one you've seen is the first one, in Dwayne's
+reply to it on-list.
+
+If this message comes through to the list I'll forward my subsequent
+messages to it shortly; in any case I'll forward them to you.
+
+
+> I have some ideas how to fix it and will hopefully come up with a patch
+> next week.
+
+Great!
+
+Greg
+
+From andyhhp at gmail.com  Sun Oct 27 15:50:41 2013
+From: andyhhp at gmail.com (Andrew Cooper)
+Date: Sun, 27 Oct 2013 22:50:41 +0000
+Subject: [pycrypto] Crypto.Random crashes due to unaligned access
+In-Reply-To: <20131027220710.GB11300@ramacher.at>
+References: <CAFCC3ett8+noOoFvEGitKYuZ6du_Ge3Fc39OOTx-xoYcm=zACA@mail.gmail.com>
+ <270d53e0-550d-49fc-a6ab-3f12c7b61b40@email.android.com>
+ <20131027220710.GB11300@ramacher.at>
+Message-ID: <526D98C1.6090707@gmail.com>
+
+On 27/10/2013 22:07, Sebastian Ramacher wrote:
+> Hi,
+>
+> On 2013-10-24 09:59:12, Dwayne Litzenberger wrote:
+>> Hi Greg!
+>>
+>> What version/build of GCC is this?  Does "setup.py test" crash for you as well?
+>>
+>> I'd rather figure out how to fix the problem than to start making copies of the key.
+>>
+>> Greg Price <gnprice at gmail.com> wrote:
+>>> I get the following crash in a PyCrypto built from the current master,
+>>> af058ee (aka v2.6.1-136-gaf058ee):
+>>>
+>>>>>> import Crypto.Random
+>>>>>> Crypto.Random.new().read(1)
+>>> Segmentation fault (core dumped)
+>>>
+>>> This is on i686.  I compiled with GCC 4.6.3 (or "Ubuntu/Linaro
+>>> 4.6.3-1ubuntu5".)
+>>>
+>>> GDB shows the crash is here:
+>>>
+>>> Program received signal SIGSEGV, Segmentation fault.
+>>> aes_key_setup_enc (keylen=32, cipherKey=
+>>> 0x841b1bc
+>>> "L\fB2\244\225\235\206^\242\305\305b\201\200\335?{d\240\343\262;m\361\243\276u~\337&",
+>>> rk=
+>>>    0x84900a8) at src/AESNI.c:122
+>>> 122            rk[0] = _mm_loadu_si128((const __m128i*) cipherKey);
+>>>
+>>> at which the instruction is
+>>>
+>>> (gdb) x/i $pc
+>>> => 0xb78f2600 <ALGnew+2160>: movdqa %xmm0,0x40(%esi)
+>>>
+>>> This is an aligned store.  The documentation of MOVDQA says it should
+>>> be 16-byte aligned.  The value of rk (aka %esi + 0x40) is only 8-byte
+>>> aligned:
+>>>
+>>> (gdb) p rk
+>>> $5 = (__m128i *) 0x84900a8
+>>> (gdb) p/x $esi
+>>> $9 = 0x8490068
+>>>
+>>> It's not clear to me why GCC generated an aligned instruction here --
+>>> in fact, the definition of _mm_loadu_si128 in my emmintrin.h appears
+>>> to be
+>>>
+>>> extern __inline __m128i __attribute__((__gnu_inline__,
+>>> __always_inline__, __artificial__))
+>>> _mm_loadu_si128 (__m128i const *__P)
+>>> {
+>>>  return (__m128i) __builtin_ia32_loaddqu ((char const *)__P);
+>>> }
+>>>
+>>> and the name of that builtin sure sounds more like MOVDQU than MOVDQA.
+>>> Perhaps GCC somehow decides that it can prove the pointer is aligned
+>>> here.
+>>>
+>>> I don't know why GCC makes this mistake, or (since it's never the
+>>> compiler's fault) which code is lying to it about something being
+>>> aligned. Anyone know how to investigate this kind of question?
+>>>
+>>> A workaround would be to make sure that the cipherKey argument to
+>>> aes_key_setup_enc() in src/AESNI.c is always 16-byte aligned.  At
+>>> present, that argument comes straight from the first Python-level
+>>> argument to _AESNI.new(); see the PyArg_ParseTupleAndKeywords() call
+>>> in src/block_template.c.  I guess to implement this workaround we'd
+>>> copy the key to a new, aligned buffer if it's not aligned.
+>>>
+>>> I can send a patch for that workaround if it seems like the best
+>>> approach.  Happy to hear alternatives, and of course it'd be most
+>>> satisfying if we can understand why the compiler is emitting this
+>>> output in the first place.
+>>>
+>>> Greg
+> I debugged this for a while and the problem is not _mm_loadu_si128.
+> That's fine. It generates the correct movdqu instruction for that. The
+> problem is the rk[0] = ... part. On amd64, ek and dk from block_state
+> get aligned at 16 byte boundaries and everything works out properly.
+> However, on i386 this does not appear to be true.
+>
+> I have some ideas how to fix it and will hopefully come up with a patch
+> next week.
+>
+> Regards
+
+The alignment might quite easily be chance, or because of the Red Zone
+mandated for 64bit, which causes stack frame alignment on 128byte
+boundaries.
+
+I accept your argument about the assignment being the problem, but
+still, it is invalid for gcc to be emitting a movdqa instruction in this
+case; the target address is demonstrably not 16 byte aligned.
+
+~Andrew
+
+From gnprice at gmail.com  Sun Oct 27 15:58:52 2013
+From: gnprice at gmail.com (Greg Price)
+Date: Sun, 27 Oct 2013 15:58:52 -0700
+Subject: [pycrypto] Crypto.Random crashes due to unaligned access
+In-Reply-To: <270d53e0-550d-49fc-a6ab-3f12c7b61b40@email.android.com>
+References: <CAFCC3ett8+noOoFvEGitKYuZ6du_Ge3Fc39OOTx-xoYcm=zACA@mail.gmail.com>
+ <270d53e0-550d-49fc-a6ab-3f12c7b61b40@email.android.com>
+Message-ID: <CAFCC3eu0csvktoCMr+G4aEGJFqh+MHBiDbY3vfqwwzDvGOwx6A@mail.gmail.com>
+
+Excellent, Mailman is taking my messages now.  Here's more diagnosis.
+
+Greg
+
+
+---------- Forwarded message ----------
+From: Greg Price <gnprice at gmail.com>
+Date: Thu, Oct 24, 2013 at 1:17 AM
+Subject: Re: Crypto.Random crashes due to unaligned access
+To: pycrypto at lists.dlitz.net, Dwayne Litzenberger <dlitz at dlitz.net>
+
+
+Same behavior with GCC 4.8.1, from the latest Ubuntu release.  Details
+below, but first:
+
+On further inspection, the problem isn't from _mm_loadu_si128.  That
+function is generating a perfectly good MOVDQU unaligned load, which
+is the previous instruction:
+
+$ objdump -dr .../_AESNI.so
+    25fc:       f3 0f 6f 02             movdqu (%edx),%xmm0
+    2600:       66 0f 7f 46 40          movdqa %xmm0,0x40(%esi)
+
+The problem instruction, at 2600 here, is from the "rk[0] =" part of
+the line.  We're storing to an lvalue of type __m128i, which is
+apparently 16 bytes long:
+
+// emmintrin.h
+typedef long long __m128i __attribute__ ((__vector_size__ (16), __may_alias__));
+
+So GCC naturally believes it can do a 16-byte-aligned store.
+
+Fortunately, 'rk' is an address we control.  It's st->ek, where st
+came from newALGobject in src/block_template.c.  The alignment there
+comes from PyObject_New, but we could add an indirection to storage we
+allocate directly to ensure alignment.  (Sadly I don't think the
+Python C API has a cousin of PyObject_New that takes an alignment.)
+
+Alternatively, we could try to avoid promising the compiler it can do
+aligned stores.  I think memcpy() would do it for these assignments,
+but we use rk[i] for various i as arguments to the KEYEXP* macros, and
+the underlying functions for those macros take __m128i arguments, so
+in principle the compiler could generate aligned loads and stores from
+those calls too.  I'm not immediately thinking of a clean way to carry
+out this approach.
+
+Thoughts on the aligned-allocation solution, or others?
+
+Greg
+
+
+
+PS:
+
+$ gcc --version
+gcc (Ubuntu/Linaro 4.8.1-10ubuntu8) 4.8.1
+
+Same crash.  The code generated is slightly different, but
+substantively the same:
+
+(gdb) x/i $pc
+=> 0xb7acb6c5 <ALGnew+2197>: movdqa %xmm2,0x40(%edi)
+(gdb) p/x $edi
+$1 = 0x8417418
+(gdb) p rk
+$2 = (__m128i *) 0x8417458
+
+GCC 4.8.2 just released a week ago; haven't tried it with that.  I
+don't think the compiler is at fault, though, especially after my new
+realization above.
+
+
+On Wed, Oct 23, 2013 at 11:42 PM, Greg Price <gnprice at gmail.com> wrote:
+> I get the following crash in a PyCrypto built from the current master,
+> af058ee (aka v2.6.1-136-gaf058ee):
+>
+>>>> import Crypto.Random
+>>>> Crypto.Random.new().read(1)
+> Segmentation fault (core dumped)
+>
+> This is on i686.  I compiled with GCC 4.6.3 (or "Ubuntu/Linaro 4.6.3-1ubuntu5".)
+>
+> GDB shows the crash is here:
+>
+> Program received signal SIGSEGV, Segmentation fault.
+> aes_key_setup_enc (keylen=32, cipherKey=
+>     0x841b1bc "L\fB2\244\225\235\206^\242\305\305b\201\200\335?{d\240\343\262;m\361\243\276u~\337&",
+> rk=
+>     0x84900a8) at src/AESNI.c:122
+> 122            rk[0] = _mm_loadu_si128((const __m128i*) cipherKey);
+>
+> at which the instruction is
+>
+> (gdb) x/i $pc
+> => 0xb78f2600 <ALGnew+2160>: movdqa %xmm0,0x40(%esi)
+>
+> This is an aligned store.  The documentation of MOVDQA says it should
+> be 16-byte aligned.  The value of rk (aka %esi + 0x40) is only 8-byte
+> aligned:
+>
+> (gdb) p rk
+> $5 = (__m128i *) 0x84900a8
+> (gdb) p/x $esi
+> $9 = 0x8490068
+>
+> It's not clear to me why GCC generated an aligned instruction here --
+> in fact, the definition of _mm_loadu_si128 in my emmintrin.h appears
+> to be
+>
+> extern __inline __m128i __attribute__((__gnu_inline__,
+> __always_inline__, __artificial__))
+> _mm_loadu_si128 (__m128i const *__P)
+> {
+>   return (__m128i) __builtin_ia32_loaddqu ((char const *)__P);
+> }
+>
+> and the name of that builtin sure sounds more like MOVDQU than MOVDQA.
+>  Perhaps GCC somehow decides that it can prove the pointer is aligned
+> here.
+>
+> I don't know why GCC makes this mistake, or (since it's never the
+> compiler's fault) which code is lying to it about something being
+> aligned. Anyone know how to investigate this kind of question?
+>
+> A workaround would be to make sure that the cipherKey argument to
+> aes_key_setup_enc() in src/AESNI.c is always 16-byte aligned.  At
+> present, that argument comes straight from the first Python-level
+> argument to _AESNI.new(); see the PyArg_ParseTupleAndKeywords() call
+> in src/block_template.c.  I guess to implement this workaround we'd
+> copy the key to a new, aligned buffer if it's not aligned.
+>
+> I can send a patch for that workaround if it seems like the best
+> approach.  Happy to hear alternatives, and of course it'd be most
+> satisfying if we can understand why the compiler is emitting this
+> output in the first place.
+>
+> Greg
+
+On Thu, Oct 24, 2013 at 9:59 AM, Dwayne Litzenberger <dlitz at dlitz.net> wrote:
+> Hi Greg!
+>
+> What version/build of GCC is this?  Does "setup.py test" crash for you as well?
+>
+> I'd rather figure out how to fix the problem than to start making copies of the key.
+>
+> Greg Price <gnprice at gmail.com> wrote:
+>>I get the following crash in a PyCrypto built from the current master,
+>>af058ee (aka v2.6.1-136-gaf058ee):
+>>
+>>>>> import Crypto.Random
+>>>>> Crypto.Random.new().read(1)
+>>Segmentation fault (core dumped)
+>>
+>>This is on i686.  I compiled with GCC 4.6.3 (or "Ubuntu/Linaro
+>>4.6.3-1ubuntu5".)
+>>
+>>GDB shows the crash is here:
+>>
+>>Program received signal SIGSEGV, Segmentation fault.
+>>aes_key_setup_enc (keylen=32, cipherKey=
+>>0x841b1bc
+>>"L\fB2\244\225\235\206^\242\305\305b\201\200\335?{d\240\343\262;m\361\243\276u~\337&",
+>>rk=
+>>    0x84900a8) at src/AESNI.c:122
+>>122            rk[0] = _mm_loadu_si128((const __m128i*) cipherKey);
+>>
+>>at which the instruction is
+>>
+>>(gdb) x/i $pc
+>>=> 0xb78f2600 <ALGnew+2160>: movdqa %xmm0,0x40(%esi)
+>>
+>>This is an aligned store.  The documentation of MOVDQA says it should
+>>be 16-byte aligned.  The value of rk (aka %esi + 0x40) is only 8-byte
+>>aligned:
+>>
+>>(gdb) p rk
+>>$5 = (__m128i *) 0x84900a8
+>>(gdb) p/x $esi
+>>$9 = 0x8490068
+>>
+>>It's not clear to me why GCC generated an aligned instruction here --
+>>in fact, the definition of _mm_loadu_si128 in my emmintrin.h appears
+>>to be
+>>
+>>extern __inline __m128i __attribute__((__gnu_inline__,
+>>__always_inline__, __artificial__))
+>>_mm_loadu_si128 (__m128i const *__P)
+>>{
+>>  return (__m128i) __builtin_ia32_loaddqu ((char const *)__P);
+>>}
+>>
+>>and the name of that builtin sure sounds more like MOVDQU than MOVDQA.
+>> Perhaps GCC somehow decides that it can prove the pointer is aligned
+>>here.
+>>
+>>I don't know why GCC makes this mistake, or (since it's never the
+>>compiler's fault) which code is lying to it about something being
+>>aligned. Anyone know how to investigate this kind of question?
+>>
+>>A workaround would be to make sure that the cipherKey argument to
+>>aes_key_setup_enc() in src/AESNI.c is always 16-byte aligned.  At
+>>present, that argument comes straight from the first Python-level
+>>argument to _AESNI.new(); see the PyArg_ParseTupleAndKeywords() call
+>>in src/block_template.c.  I guess to implement this workaround we'd
+>>copy the key to a new, aligned buffer if it's not aligned.
+>>
+>>I can send a patch for that workaround if it seems like the best
+>>approach.  Happy to hear alternatives, and of course it'd be most
+>>satisfying if we can understand why the compiler is emitting this
+>>output in the first place.
+>>
+>>Greg
+>
+> --
+> Sent from my Android device with K-9 Mail. Please excuse my brevity.
+
+From gnprice at gmail.com  Sun Oct 27 16:00:12 2013
+From: gnprice at gmail.com (Greg Price)
+Date: Sun, 27 Oct 2013 16:00:12 -0700
+Subject: [pycrypto] Crypto.Random crashes due to unaligned access
+In-Reply-To: <270d53e0-550d-49fc-a6ab-3f12c7b61b40@email.android.com>
+References: <CAFCC3ett8+noOoFvEGitKYuZ6du_Ge3Fc39OOTx-xoYcm=zACA@mail.gmail.com>
+ <270d53e0-550d-49fc-a6ab-3f12c7b61b40@email.android.com>
+Message-ID: <CAFCC3ev7TbeY_JzdQ6zdgd5eN8MTPDPqdbxZCMvpGEKN-BhP=g@mail.gmail.com>
+
+And the other message that didn't make it before.
+
+Greg
+
+
+---------- Forwarded message ----------
+From: Greg Price <gnprice at gmail.com>
+Date: Thu, Oct 24, 2013 at 12:53 PM
+Subject: Re: Crypto.Random crashes due to unaligned access
+To: Dwayne Litzenberger <dlitz at dlitz.net>
+Cc: pycrypto at lists.dlitz.net
+
+
+GCC 4.6.3, and same with 4.8.1 (see my later message).  "setup.py
+test" crashes too.
+
+See my follow-up last night for more of a diagnosis -- the problem is
+that 'rk', aka st->ek, has a type that implies 16-byte alignment, and
+we don't get that from PyObject_New.  That allocation comes (I think)
+straight from malloc(), which with glibc on a 32-bit x86 system gives
+only 8-byte alignment.
+
+One fix would be to move st->ek and st->dk to a separate buffer we
+allocate with something like posix_memalign().  This wouldn't require
+any copying, as we fill those buffers ourselves in the first place.
+It'd just add a layer of indirection in the AESNI.c block_state
+struct.
+
+Alternatively we could try to eliminate the 16-byte alignment, but I
+don't immediately see a way of doing that without making the code much
+messier, and it'd probably also slow the code down.
+
+Greg
+
+
+On Thu, Oct 24, 2013 at 9:59 AM, Dwayne Litzenberger <dlitz at dlitz.net> wrote:
+> Hi Greg!
+>
+> What version/build of GCC is this?  Does "setup.py test" crash for you as well?
+>
+> I'd rather figure out how to fix the problem than to start making copies of the key.
+>
+> Greg Price <gnprice at gmail.com> wrote:
+>>I get the following crash in a PyCrypto built from the current master,
+>>af058ee (aka v2.6.1-136-gaf058ee):
+>>
+>>>>> import Crypto.Random
+>>>>> Crypto.Random.new().read(1)
+>>Segmentation fault (core dumped)
+>>
+>>This is on i686.  I compiled with GCC 4.6.3 (or "Ubuntu/Linaro
+>>4.6.3-1ubuntu5".)
+>>
+>>GDB shows the crash is here:
+>>
+>>Program received signal SIGSEGV, Segmentation fault.
+>>aes_key_setup_enc (keylen=32, cipherKey=
+>>0x841b1bc
+>>"L\fB2\244\225\235\206^\242\305\305b\201\200\335?{d\240\343\262;m\361\243\276u~\337&",
+>>rk=
+>>    0x84900a8) at src/AESNI.c:122
+>>122            rk[0] = _mm_loadu_si128((const __m128i*) cipherKey);
+>>
+>>at which the instruction is
+>>
+>>(gdb) x/i $pc
+>>=> 0xb78f2600 <ALGnew+2160>: movdqa %xmm0,0x40(%esi)
+>>
+>>This is an aligned store.  The documentation of MOVDQA says it should
+>>be 16-byte aligned.  The value of rk (aka %esi + 0x40) is only 8-byte
+>>aligned:
+>>
+>>(gdb) p rk
+>>$5 = (__m128i *) 0x84900a8
+>>(gdb) p/x $esi
+>>$9 = 0x8490068
+>>
+>>It's not clear to me why GCC generated an aligned instruction here --
+>>in fact, the definition of _mm_loadu_si128 in my emmintrin.h appears
+>>to be
+>>
+>>extern __inline __m128i __attribute__((__gnu_inline__,
+>>__always_inline__, __artificial__))
+>>_mm_loadu_si128 (__m128i const *__P)
+>>{
+>>  return (__m128i) __builtin_ia32_loaddqu ((char const *)__P);
+>>}
+>>
+>>and the name of that builtin sure sounds more like MOVDQU than MOVDQA.
+>> Perhaps GCC somehow decides that it can prove the pointer is aligned
+>>here.
+>>
+>>I don't know why GCC makes this mistake, or (since it's never the
+>>compiler's fault) which code is lying to it about something being
+>>aligned. Anyone know how to investigate this kind of question?
+>>
+>>A workaround would be to make sure that the cipherKey argument to
+>>aes_key_setup_enc() in src/AESNI.c is always 16-byte aligned.  At
+>>present, that argument comes straight from the first Python-level
+>>argument to _AESNI.new(); see the PyArg_ParseTupleAndKeywords() call
+>>in src/block_template.c.  I guess to implement this workaround we'd
+>>copy the key to a new, aligned buffer if it's not aligned.
+>>
+>>I can send a patch for that workaround if it seems like the best
+>>approach.  Happy to hear alternatives, and of course it'd be most
+>>satisfying if we can understand why the compiler is emitting this
+>>output in the first place.
+>>
+>>Greg
+>
+> --
+> Sent from my Android device with K-9 Mail. Please excuse my brevity.
+
+From gnprice at gmail.com  Sun Oct 27 16:15:31 2013
+From: gnprice at gmail.com (Greg Price)
+Date: Sun, 27 Oct 2013 16:15:31 -0700
+Subject: [pycrypto] Crypto.Random crashes due to unaligned access
+In-Reply-To: <20131027220710.GB11300@ramacher.at>
+References: <CAFCC3ett8+noOoFvEGitKYuZ6du_Ge3Fc39OOTx-xoYcm=zACA@mail.gmail.com>
+ <270d53e0-550d-49fc-a6ab-3f12c7b61b40@email.android.com>
+ <20131027220710.GB11300@ramacher.at>
+Message-ID: <CAFCC3es7FOvZ8zK6s67sarhULOZwbHRRQRea0RC80zREEF49KA@mail.gmail.com>
+
+On Sun, Oct 27, 2013 at 3:07 PM, Sebastian Ramacher
+<sebastian+lists at ramacher.at> wrote:
+> I debugged this for a while and the problem is not _mm_loadu_si128.
+> That's fine. It generates the correct movdqu instruction for that. The
+> problem is the rk[0] = ... part. On amd64, ek and dk from block_state
+> get aligned at 16 byte boundaries and everything works out properly.
+> However, on i386 this does not appear to be true.
+
+Now that my messages are making it to the list:
+
+Yes.  The guarantee from malloc(), which PyObject_New() relies on, is
+that the returned pointer is suitably aligned for any built-in type.
+On i386 this means 4-byte alignment; on amd64 8-byte alignment.  The
+actual behavior of glibc malloc() is a little nicer: it's aligned to
+the greater of 2 * sizeof(size_t) and __alignof__ (long double), so 8
+bytes on i386 and 16 bytes on amd64. [1]
+
+This is why on amd64 all is well and on i386 it often fails.
+
+The problem is that 'rk' has a type that implies 16-byte alignment.
+The __m128i type is defined in emmintrin.h:
+
+typedef long long __m128i __attribute__ ((__vector_size__ (16), __may_alias__));
+
+So our choices are (a) place 'rk' 16-byte aligned to match its type,
+or (b) change its type to guarantee no alignment (beyond that of
+built-in types.)  I don't see a way to do (b) without making the code
+significantly messier, and probably slowing it down measurably too
+because of the unaligned loads and stores.  To do (a), we can move
+st->ek and st->dk to a separate buffer which we allocate ourselves
+with something like posix_memalign().  My recommendation is (a).
+
+Thanks for looking at this!
+
+Greg
+
+
+[1] Details at https://git.kernel.org/cgit/docs/man-pages/man-pages.git/commit/?id=25630b276
+.
+
+From sebastian+lists at ramacher.at  Mon Oct 28 10:13:44 2013
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Mon, 28 Oct 2013 18:13:44 +0100
+Subject: [pycrypto] Crypto.Random crashes due to unaligned access
+In-Reply-To: <CAFCC3eu0csvktoCMr+G4aEGJFqh+MHBiDbY3vfqwwzDvGOwx6A@mail.gmail.com>
+References: <CAFCC3ett8+noOoFvEGitKYuZ6du_Ge3Fc39OOTx-xoYcm=zACA@mail.gmail.com>
+ <270d53e0-550d-49fc-a6ab-3f12c7b61b40@email.android.com>
+ <CAFCC3eu0csvktoCMr+G4aEGJFqh+MHBiDbY3vfqwwzDvGOwx6A@mail.gmail.com>
+Message-ID: <20131028171344.GB21873@ramacher.at>
+
+On 2013-10-27 15:58:52, Greg Price wrote:
+> Fortunately, 'rk' is an address we control.  It's st->ek, where st
+> came from newALGobject in src/block_template.c.  The alignment there
+> comes from PyObject_New, but we could add an indirection to storage we
+> allocate directly to ensure alignment.  (Sadly I don't think the
+> Python C API has a cousin of PyObject_New that takes an alignment.)
+
+I've implemented this approach now by allocating ek and dk with one of
+posix_memalign (POSIX), aligned_alloc (C11) or _aligned_malloc
+(Windows/Visual Studio). A pull request is available at
+https://github.com/dlitz/pycrypto/pull/62. I'd appreciate any testing
+and feedback.
+
+Regards
+-- 
+Sebastian Ramacher
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: Digital signature
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20131028/bb5a0193/attachment.sig>
+
+From gnprice at gmail.com  Mon Oct 28 12:00:14 2013
+From: gnprice at gmail.com (Greg Price)
+Date: Mon, 28 Oct 2013 12:00:14 -0700
+Subject: [pycrypto] Crypto.Random crashes due to unaligned access
+In-Reply-To: <20131028171344.GB21873@ramacher.at>
+References: <CAFCC3ett8+noOoFvEGitKYuZ6du_Ge3Fc39OOTx-xoYcm=zACA@mail.gmail.com>
+ <270d53e0-550d-49fc-a6ab-3f12c7b61b40@email.android.com>
+ <CAFCC3eu0csvktoCMr+G4aEGJFqh+MHBiDbY3vfqwwzDvGOwx6A@mail.gmail.com>
+ <20131028171344.GB21873@ramacher.at>
+Message-ID: <CAFCC3etvDY9hTBwV7QL8Nn+RTuD3FE3egz59RFT4NG2Fjm2eww@mail.gmail.com>
+
+On Mon, Oct 28, 2013 at 10:13 AM, Sebastian Ramacher
+<sebastian+lists at ramacher.at> wrote:
+> I've implemented this approach now by allocating ek and dk with one of
+> posix_memalign (POSIX), aligned_alloc (C11) or _aligned_malloc
+> (Windows/Visual Studio). A pull request is available at
+> https://github.com/dlitz/pycrypto/pull/62. I'd appreciate any testing
+> and feedback.
+
+Great!  Looks like a good solution.  I have minor comments I'll make
+over on GitHub.  I'll test it, too.
+
+Greg
+
+From dlitz at dlitz.net  Tue Oct 29 23:09:24 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Tue, 29 Oct 2013 23:09:24 -0700
+Subject: [pycrypto] Need your input: Major modernization;
+	dropping legacy Python support?
+Message-ID: <20131030060924.GC5005@rivest.dlitz.net>
+
+Hi folks,
+
+I'm thinking about making some fairly drastic changes to PyCrypto 
+(compared to what's happened historically) and I'd like to know how 
+these would impact people:
+
+1. How many of you would really care if PyCrypto 2.6 was that last 
+    version to support legacy versions of Python?  By "legacy", I mean 
+    all versions of Python that are NOT one of these:
+
+     - Python 2.6.x
+     - Python 2.7.x
+     - Python 3.3 and above.
+
+    I'd continue to make bugfix releases of PyCrypto 2.6.x, but add no 
+    more substantial new features.
+
+2. I'm thinking of pulling in additional dependencies (e.g. cffi), 
+    requiring setuptools, and basically joining what the rest of the 
+    Python community is doing in 2013.
+
+3. What if src/*.c were removed, and any relevant C code moved into an 
+    independent library, which could be loaded using cffi?  (This is 
+    basically what we need to do to support PyPy properly.)
+
+4. What if Crypto.* became a wrapper around some other crypto library?
+
+5. The Apache License 2.0.  What if PyCrypto were licensed under it, or 
+    included dependencies that are licensed under it?
+
+6. What if src/*.c was mostly replaced with mostly just went away.
+
+Don't panic.  These aren't concrete plans yet, but I'd like to know how 
+this might affect various downstream PyCrypto stakeholders, and problems 
+I might expect to encounter if I went in any of these directions.
+
+Of particular concern is FOSS distributors packaging PyCrypto (e.g.  
+Linux distros, *BSD ports trees, MacPorts/HomeBrew, etc.), and anything 
+else that might impact a large number of downstream end-users.
+
+I've been maintaining backward compatibility in order to protect 
+end-users from bugs introduced in downstream forks of PyCrypto, but 
+that's made it hard to generate interest in working on PyCrypto.  From 
+what I can tell, there are currently several Python crypto libraries, 
+and none of them are particularly great (including PyCrypto).
+
+I'm beginning to wonder how the risk of downstream forks compares to the 
+risks that users face when developers still don't have a highly-visible, 
+easy-to-use Python crypto API.  It might be better to merge PyCrypto 
+with one or more other Python crypto libraries...
+
+Anyway, I'd love to hear what people have to say on this topic.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dave.pawson at gmail.com  Tue Oct 29 23:58:11 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Wed, 30 Oct 2013 06:58:11 +0000
+Subject: [pycrypto] Need your input: Major modernization;
+ dropping legacy Python support?
+In-Reply-To: <20131030060924.GC5005@rivest.dlitz.net>
+References: <20131030060924.GC5005@rivest.dlitz.net>
+Message-ID: <CAEncD4fMdN0tBOwLW=2XiEB-1FRC6ouDQJz3hM2fO282Qbuqww@mail.gmail.com>
+
+On 30 October 2013 06:09, Dwayne Litzenberger <dlitz at dlitz.net> wrote:
+
+> 1. How many of you would really care if PyCrypto 2.6 was that last
+> version to support legacy versions of Python?  By "legacy", I mean    all
+> versions of Python that are NOT one of these:
+>
+>     - Python 2.6.x
+>     - Python 2.7.x
+>     - Python 3.3 and above.
+>
+>    I'd continue to make bugfix releases of PyCrypto 2.6.x, but add no
+> more substantial new features.
+
+For some reason, Fedora is still pushing Python 2.7, so I'd be happy
+with this position.
+
+
+
+
+> 4. What if Crypto.* became a wrapper around some other crypto library?
+
+What logic please?
+
+
+
+> Of particular concern is FOSS distributors packaging PyCrypto (e.g.  Linux
+> distros, *BSD ports trees, MacPorts/HomeBrew, etc.), and anything else that
+> might impact a large number of downstream end-users.
+
+Fedora seems a long way behind with the Python versions.
+
+
+>
+> I'm beginning to wonder how the risk of downstream forks compares to the
+> risks that users face when developers still don't have a highly-visible,
+> easy-to-use Python crypto API.  It might be better to merge PyCrypto with
+> one or more other Python crypto libraries...
+
+I'll leave that to the more knowledgable.
+My position is I'm grateful for the code - meets my needs.
+
+regards
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From campadrenalin at gmail.com  Wed Oct 30 08:44:13 2013
+From: campadrenalin at gmail.com (Philip Horger)
+Date: Wed, 30 Oct 2013 08:44:13 -0700
+Subject: [pycrypto] Need your input: Major modernization;
+ dropping legacy Python support?
+In-Reply-To: <CAEncD4fMdN0tBOwLW=2XiEB-1FRC6ouDQJz3hM2fO282Qbuqww@mail.gmail.com>
+References: <20131030060924.GC5005@rivest.dlitz.net>
+ <CAEncD4fMdN0tBOwLW=2XiEB-1FRC6ouDQJz3hM2fO282Qbuqww@mail.gmail.com>
+Message-ID: <CAHAkNZ1ZtpQc1zDoVz3Zeaqrj8gjsoBBGEWNKuZmxxKiWU=RLw@mail.gmail.com>
+
+I think you're going to get mostly anecdotal answers to this, fairly
+personal to whoever is answering it, but here's what I consider important:
+
+   - Clean, modern, easy-to-use API (that limits your ability to
+   accidentally misuse stuff)
+   - Modularity
+   - Rapid development/developer-friendly codebase
+   - Nice documentation (willing to contribute to this personally)
+   - Elliptic curve cryptography (ECC)
+   - Ability to install via pip, even on machines that don't already have
+   libsomething installed.
+
+Conversely, I don't care about the following (although some/many probably
+will):
+
+   - Backwards compatibility. As long as there's documentation, I'd rather
+   deal with the byproducts of progress than a crippled interface.
+   - Distro packaging.
+   - Internal details of how PyCrypto works, as long as it fulfills the
+   above wishlist.
+   - Legacy Python versions (your definition matches mine).
+   - License, so long as I can use it from an LGPL package (which seems
+   compatible with Apache2)
+
+
+Hopefully this feedback helps!
+
+Philip Horger
+
+
+On Tue, Oct 29, 2013 at 11:58 PM, Dave Pawson <dave.pawson at gmail.com> wrote:
+
+> On 30 October 2013 06:09, Dwayne Litzenberger <dlitz at dlitz.net> wrote:
+>
+> > 1. How many of you would really care if PyCrypto 2.6 was that last
+> > version to support legacy versions of Python?  By "legacy", I mean    all
+> > versions of Python that are NOT one of these:
+> >
+> >     - Python 2.6.x
+> >     - Python 2.7.x
+> >     - Python 3.3 and above.
+> >
+> >    I'd continue to make bugfix releases of PyCrypto 2.6.x, but add no
+> > more substantial new features.
+>
+> For some reason, Fedora is still pushing Python 2.7, so I'd be happy
+> with this position.
+>
+>
+>
+>
+> > 4. What if Crypto.* became a wrapper around some other crypto library?
+>
+> What logic please?
+>
+>
+>
+> > Of particular concern is FOSS distributors packaging PyCrypto (e.g.
+>  Linux
+> > distros, *BSD ports trees, MacPorts/HomeBrew, etc.), and anything else
+> that
+> > might impact a large number of downstream end-users.
+>
+> Fedora seems a long way behind with the Python versions.
+>
+>
+> >
+> > I'm beginning to wonder how the risk of downstream forks compares to the
+> > risks that users face when developers still don't have a highly-visible,
+> > easy-to-use Python crypto API.  It might be better to merge PyCrypto with
+> > one or more other Python crypto libraries...
+>
+> I'll leave that to the more knowledgable.
+> My position is I'm grateful for the code - meets my needs.
+>
+> regards
+>
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20131030/fecad754/attachment.html>
+
+From don at amberfisharts.com  Wed Oct 30 09:03:30 2013
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Wed, 30 Oct 2013 16:03:30 +0000
+Subject: [pycrypto] Need your input: Major modernization;
+ dropping legacy Python support?
+In-Reply-To: <20131030060924.GC5005@rivest.dlitz.net>
+References: <20131030060924.GC5005@rivest.dlitz.net>
+Message-ID: <52712DD2.4050109@amberfisharts.com>
+
+Hi,
+
+On 30/10/13 06:09, Dwayne Litzenberger wrote:
+ > Hi folks,
+ >
+ > I'm thinking about making some fairly drastic changes to PyCrypto (compared to what's happened historically) and I'd
+ > like to know how these would impact people:
+
+I'm only a very, very casual user but for what it's worth here come my 2 cents:
+
+ >
+> 1. How many of you would really care if PyCrypto 2.6 was that last    version to support legacy versions of Python?  By
+> "legacy", I mean    all versions of Python that are NOT one of these:
+>
+>      - Python 2.6.x
+>      - Python 2.7.x
+>      - Python 3.3 and above.
+>
+>     I'd continue to make bugfix releases of PyCrypto 2.6.x, but add no    more substantial new features.
+
++1
+
+>
+> 2. I'm thinking of pulling in additional dependencies (e.g. cffi),    requiring setuptools, and basically joining what
+> the rest of the    Python community is doing in 2013.
+>
+
+I like to keep dependencies as low as possible. Obviously, you always have to weigh the pros and cons. So I guess what I 
+am saying is that is depends and should be decided on a case by case basis.
+
+> 3. What if src/*.c were removed, and any relevant C code moved into an    independent library, which could be loaded
+> using cffi?  (This is    basically what we need to do to support PyPy properly.)
+>
+
+depends on what exactly you mean by "independent library". If you mean "maintained and shipped separately and added as a 
+dependency" then I'm -1. There are enough crypto c-libs out there why add another one?
+If you mean "have it in the pycrypto tree but compile it to a lib and use it via cffi just to make pypy happy" then I 
+would like to see some performance analysis. The main reason to have stuff in C is performance if I am not mistaken. By 
+hearsay I think that ctypes has quite a significant impact. what about cffi?
+
+> 4. What if Crypto.* became a wrapper around some other crypto library?
+
+I believe most crypto libs already have a python wrapper. How would pycrypto be differnet?
+
+>
+> 5. The Apache License 2.0.  What if PyCrypto were licensed under it, or    included dependencies that are licensed under
+> it?
+>
+
+Why? What would that achieve/improve? What's wrong with the current state (more or less public domain)? Wouldn't you 
+need to get the consent of every contributor?
+
+> 6. What if src/*.c was mostly replaced with mostly just went away.
+>
+
+Wouldn't that totally kill performance? If the parts you want to kill are not security or performance sensitive: go for it!
+
+That it.
+Cheers and thanks for all your great work Dwayne!
+
+//Lorenz
+
+
+> Don't panic.  These aren't concrete plans yet, but I'd like to know how this might affect various downstream PyCrypto
+> stakeholders, and problems I might expect to encounter if I went in any of these directions.
+>
+> Of particular concern is FOSS distributors packaging PyCrypto (e.g. Linux distros, *BSD ports trees, MacPorts/HomeBrew,
+> etc.), and anything else that might impact a large number of downstream end-users.
+>
+> I've been maintaining backward compatibility in order to protect end-users from bugs introduced in downstream forks of
+> PyCrypto, but that's made it hard to generate interest in working on PyCrypto.  From what I can tell, there are
+> currently several Python crypto libraries, and none of them are particularly great (including PyCrypto).
+>
+> I'm beginning to wonder how the risk of downstream forks compares to the risks that users face when developers still
+> don't have a highly-visible, easy-to-use Python crypto API.  It might be better to merge PyCrypto with one or more other
+> Python crypto libraries...
+>
+> Anyway, I'd love to hear what people have to say on this topic.
+>
+
+
+From sebastian+lists at ramacher.at  Wed Oct 30 10:24:48 2013
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Wed, 30 Oct 2013 18:24:48 +0100
+Subject: [pycrypto] Need your input: Major modernization;
+ dropping legacy Python support?
+In-Reply-To: <20131030060924.GC5005@rivest.dlitz.net>
+References: <20131030060924.GC5005@rivest.dlitz.net>
+Message-ID: <20131030172448.GB17774@ramacher.at>
+
+Hi
+
+On 2013-10-29 23:09:24, Dwayne Litzenberger wrote:
+> 1. How many of you would really care if PyCrypto 2.6 was that last
+> version to support legacy versions of Python?  By "legacy", I mean
+> all versions of Python that are NOT one of these:
+> 
+>     - Python 2.6.x
+>     - Python 2.7.x
+>     - Python 3.3 and above.
+> 
+>    I'd continue to make bugfix releases of PyCrypto 2.6.x, but add
+> no    more substantial new features.
+
+No objection from me here. As I understand it, Python 2.6 got it's last
+release yesterday, so I wouldn't mind if Python 2.6 got dropped too.
+
+> 2. I'm thinking of pulling in additional dependencies (e.g. cffi),
+> requiring setuptools, and basically joining what the rest of the
+> Python community is doing in 2013.
+> 
+> 3. What if src/*.c were removed, and any relevant C code moved into
+> an    independent library, which could be loaded using cffi?  (This
+> is    basically what we need to do to support PyPy properly.)
+
+I wouldn't mind if the C code is moved into a library, however cffi
+doesn't seem to be ready to be used in binary distributions without
+resorting to hacks ([1] for the upstream bug, [2] for a very short
+thread on debian-python). I'm told that this will be fixed in cffi at
+some point.
+
+I've always had a good experience with Cython. What do you thinkg about
+that?
+
+Anyway, as long as we are not starting to use ctypes, I'll be fine.
+Depending on the timeframe of this change, I'd prefer PyCrypto to use
+someting that does not require hacks in binary distributions. If cffi is
+fixed until the change happens, I won't complain.
+
+[1] https://bitbucket.org/cffi/cffi/issue/109/enable-sane-packaging-for-cffi
+[2] https://lists.debian.org/debian-python/2013/10/msg00070.html
+
+> 4. What if Crypto.* became a wrapper around some other crypto library?
+
+This depends on the crypto library you're thinking of. If it's openssl,
+then all the GPL licensed reverse dependencies might have a problem (at
+least in Debian).
+
+> 5. The Apache License 2.0.  What if PyCrypto were licensed under it,
+> or    included dependencies that are licensed under it?
+
+With my Debian maintainer hat on, this would be a problem for me. We
+still ship software that is GPL 2 only that depends on PyCrypto.
+However, GPL 2 and the Apache License 2.0 are incompatible.
+
+Examples of these packages include revelation and pymsnt (I stopped
+searching for GPL 2 only reverse dependencies after I've found two).
+
+Of course, if the license changes or python-crypto starts depending on
+something licensed under Apache 2.0 this needs to be checked on a case by
+case basis, but I'd rather avoid it if there is no really good reason to
+do so.
+
+Regards
+-- 
+Sebastian Ramacher
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: Digital signature
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20131030/85cca8a8/attachment.sig>
+
+From helderijs at gmail.com  Wed Oct 30 14:43:08 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Wed, 30 Oct 2013 22:43:08 +0100
+Subject: [pycrypto] Need your input: Major modernization;
+ dropping legacy Python support?
+In-Reply-To: <20131030060924.GC5005@rivest.dlitz.net>
+References: <20131030060924.GC5005@rivest.dlitz.net>
+Message-ID: <CAGfyce29BXvhs=s_aM54aSN3W2UnKVWttVPUkgvtk53TNe+uwg@mail.gmail.com>
+
+> 1. How many of you would really care if PyCrypto 2.6 was that last
+> version to support legacy versions of Python?  By "legacy", I mean    all
+> versions of Python that are NOT one of these:
+>
+>     - Python 2.6.x
+>     - Python 2.7.x
+>     - Python 3.3 and above.
+>
+>    I'd continue to make bugfix releases of PyCrypto 2.6.x, but add no
+> more substantial new features.
+
+That would be the wisest decision.
+It is fair to say that there are a lot of production servers and
+embedded platforms out there that are stuck to something as old as
+Python 2.4, but they are hardly target for new developments. A
+bugfixed PyCrypto 2.6.x is probably good enough for them.
+
+> 2. I'm thinking of pulling in additional dependencies (e.g. cffi),
+> requiring setuptools, and basically joining what the rest of the    Python
+> community is doing in 2013.
+
+cffi is awesome. Is it friendly to cross-compile environments though?
+That's rather important (to me at least).
+For the same reason, I would be happy if autoconf was removed.
+
+> 3. What if src/*.c were removed, and any relevant C code moved into an
+> independent library, which could be loaded using cffi?  (This is
+> basically what we need to do to support PyPy properly.)
+
+If by "independent" you mean a library not packaged with pycrypto,
+then it would be bad. One of the strong points of pycrypto is that it
+is self-contained.
+
+If you mean that C code is compiled into a library which is not a
+python module as today, then it does not make any difference unless
+the build becomes more complicated.
+
+> 4. What if Crypto.* became a wrapper around some other crypto library?
+
+I would probably stop using pycrypto. There are already M2Crypto,
+pycryptopp and a bunch of others. They are good enough and battle
+tested. There is no need for another one.
+
+> 5. The Apache License 2.0.  What if PyCrypto were licensed under it, or
+> included dependencies that are licensed under it?
+
+To me, it wouldn't make much difference.
+
+> 6. What if src/*.c was mostly replaced with mostly just went away.
+
+I don't understand this statement.
+
+> I'm beginning to wonder how the risk of downstream forks compares to the
+> risks that users face when developers still don't have a highly-visible,
+> easy-to-use Python crypto API.
+
+The pycryto API is already easy to use actually and it has the right
+level of abstraction (=medium/low).
+The main criticism one can move is that there are several booby traps
+that a first-time user will surely trip on.
+
+> It might be better to merge PyCrypto with
+> one or more other Python crypto libraries...
+
+"Merge with" as in "become a facade for" ?
+I would stop using pycrypto too and just use to the other library.
+
+From nahumoz at gmail.com  Thu Oct 31 12:12:54 2013
+From: nahumoz at gmail.com (Oz Nahum Tiram)
+Date: Thu, 31 Oct 2013 20:12:54 +0100
+Subject: [pycrypto] Need your input: Major modernization;
+	dropping legacy Python support?
+In-Reply-To: <CADKMUw=37xzKMTs651yOCgN2-aV+eK5imnkqn3MKrCzZ3wzNeQ@mail.gmail.com>
+References: <CADKMUw=37xzKMTs651yOCgN2-aV+eK5imnkqn3MKrCzZ3wzNeQ@mail.gmail.com>
+Message-ID: <CADKMUwn0NiBvJPr3n=dkrvtortxKKCQcciVfcqUkcYLYx3Czjg@mail.gmail.com>
+
+Hi Dwayne and everyone,
+
+>1. How many of you would really care if PyCrypto 2.6 was that last
+>    version to support legacy versions of Python?  By "legacy", I mean
+>   all versions of Python that are NOT one of these:
+
+>     - Python 2.6.x
+>     - Python 2.7.x
+>    - Python 3.3 and above.
+
+>    I'd continue to make bugfix releases of PyCrypto 2.6.x, but add no
+>    more substantial new features.
+
++1 for that, assuming it will make other efforts in PyCrypto easier.
+
+>2. I'm thinking of pulling in additional dependencies (e.g. cffi),
+>    requiring setuptools, and basically joining what the rest of the
+>   Python community is doing in 2013.
+
+Like people said before me, it seems very immature, and Cython is not a bad
+alternative at all.
+There is a lot of know how out there with Cython. I would be willing to
+help with the efforts.
+
+
+>3. What if src/*.c were removed, and any relevant C code moved into an
+>    independent library, which could be loaded using cffi?  (This is
+>   basically what we need to do to support PyPy properly.)
+
+An independent library, sounds good. But it seems that Cython supports pypy
+too.
+
+>4. What if Crypto.* became a wrapper around some other crypto library?
+
+Why ? what is the benefit here?
+
+>5. The Apache License 2.0.  What if PyCrypto were licensed under it, or
+>    included dependencies that are licensed under it?
+
+As the maintainer of a small project and humble project (pwman3) that uses
+pycrypto, and it is
+licensed unde GPL I would have a problem with it. I think the better choice
+would be LGPL, as said
+also before me.
+
+I would love to have support for pypi, pip and setuptools, until now
+installing pycrypto
+was always a pain.
+
+Best Regards,
+Oz
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20131031/8f35bc3d/attachment.html>
+
+From dave.pawson at gmail.com  Fri Nov 15 00:10:16 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 15 Nov 2013 08:10:16 +0000
+Subject: [pycrypto] Installation on python3
+Message-ID: <CAEncD4dMQz4FK6_6wUf_UHteF1cVDv4KJyBn384CocXBP93hNQ@mail.gmail.com>
+
+setup is Fedora 19, 64 bit.
+
+cmd was pip-python3 install pycrypto
+
+result
+
+...
+creating build/temp.linux-x86_64-3.3
+
+creating build/temp.linux-x86_64-3.3/src
+
+gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe
+-Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector
+--param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.3m -c src/MD2.c -o
+build/temp.linux-x86_64-3.3/src/MD2.o
+
+src/MD2.c:31:20: fatal error: Python.h: No such file or directory
+
+ #include "Python.h"
+
+                    ^
+
+compilation terminated.
+
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+
+error: command 'gcc' failed with exit status 1
+
+Any suggestions please?
+pycrypto installed fine on python 2.7
+
+regards
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From campadrenalin at gmail.com  Fri Nov 15 08:05:55 2013
+From: campadrenalin at gmail.com (Philip Horger)
+Date: Fri, 15 Nov 2013 08:05:55 -0800
+Subject: [pycrypto] Installation on python3
+In-Reply-To: <CAEncD4dMQz4FK6_6wUf_UHteF1cVDv4KJyBn384CocXBP93hNQ@mail.gmail.com>
+References: <CAEncD4dMQz4FK6_6wUf_UHteF1cVDv4KJyBn384CocXBP93hNQ@mail.gmail.com>
+Message-ID: <CAHAkNZ3WY0TT4MeroqByqiHAtzj1Q5CB39aQgHbB9_97ydzGfA@mail.gmail.com>
+
+Hi Dave,
+
+
+You are missing the python3-dev package, or whatever it's called in
+Fedora-Land. That contains the headers that the compiler needs to compile C
+extensions for Python (specifically, Python.h). Without that header
+information, you can't compile the C extensions that are part of PyCrypto
+(or any other Python module that makes use of compiled extensions).
+
+Basically, you just need to find and install that package from the Fedora
+repos.
+
+Hope that helps,
+Philip Horger
+
+
+On Fri, Nov 15, 2013 at 12:10 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+
+> setup is Fedora 19, 64 bit.
+>
+> cmd was pip-python3 install pycrypto
+>
+> result
+>
+> ...
+> creating build/temp.linux-x86_64-3.3
+>
+> creating build/temp.linux-x86_64-3.3/src
+>
+> gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe
+> -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector
+> --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic
+> -D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+> -Isrc/ -I/usr/include/python3.3m -c src/MD2.c -o
+> build/temp.linux-x86_64-3.3/src/MD2.o
+>
+> src/MD2.c:31:20: fatal error: Python.h: No such file or directory
+>
+>  #include "Python.h"
+>
+>                     ^
+>
+> compilation terminated.
+>
+> warning: GMP or MPIR library not found; Not building
+> Crypto.PublicKey._fastmath.
+>
+> error: command 'gcc' failed with exit status 1
+>
+> Any suggestions please?
+> pycrypto installed fine on python 2.7
+>
+> regards
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20131115/a3da9740/attachment.html>
+
+From dave.pawson at gmail.com  Sat Nov 16 02:09:26 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sat, 16 Nov 2013 10:09:26 +0000
+Subject: [pycrypto] Installation on python3
+In-Reply-To: <CAHAkNZ3WY0TT4MeroqByqiHAtzj1Q5CB39aQgHbB9_97ydzGfA@mail.gmail.com>
+References: <CAEncD4dMQz4FK6_6wUf_UHteF1cVDv4KJyBn384CocXBP93hNQ@mail.gmail.com>
+ <CAHAkNZ3WY0TT4MeroqByqiHAtzj1Q5CB39aQgHbB9_97ydzGfA@mail.gmail.com>
+Message-ID: <CAEncD4eUrf1gtuXfwxpadrB=Z6xn+C-TRoxC+YzepQ_2oKgTfw@mail.gmail.com>
+
+Thanks.
+
+# yum info python3-dev
+Loaded plugins: langpacks, refresh-packagekit
+Error: No matching Packages to list
+[root at homer ~]# yum info python3-devel
+Loaded plugins: langpacks, refresh-packagekit
+Available Packages
+Name        : python3-devel
+Arch        : i686
+Version     : 3.3.2
+Release     : 7.fc19
+Size        : 171 k
+Repo        : updates/19/x86_64
+Summary     : Libraries and header files needed for Python 3 development
+URL         : http://www.python.org/
+Licence     : Python
+Description : This package contains libraries and header files used to build
+            : applications with and native libraries for Python 3
+
+Name        : python3-devel
+Arch        : x86_64
+Version     : 3.3.2
+Release     : 7.fc19
+Size        : 171 k
+Repo        : updates/19/x86_64
+Summary     : Libraries and header files needed for Python 3 development
+URL         : http://www.python.org/
+Licence     : Python
+Description : This package contains libraries and header files used to build
+            : applications with and native libraries for Python 3
+
+
+now runs
+  warning: GMP or MPIR library not found; Not building
+Crypto.PublicKey._fastmath.
+
+Successfully installed pycrypto
+Cleaning up...
+
+Seems fine. Thanks, DaveP
+
+
+On 15 November 2013 16:05, Philip Horger <campadrenalin at gmail.com> wrote:
+> Hi Dave,
+>
+>
+> You are missing the python3-dev package, or whatever it's called in
+> Fedora-Land. That contains the headers that the compiler needs to compile C
+> extensions for Python (specifically, Python.h). Without that header
+> information, you can't compile the C extensions that are part of PyCrypto
+> (or any other Python module that makes use of compiled extensions).
+>
+> Basically, you just need to find and install that package from the Fedora
+> repos.
+>
+> Hope that helps,
+> Philip Horger
+>
+>
+> On Fri, Nov 15, 2013 at 12:10 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+>>
+>> setup is Fedora 19, 64 bit.
+>>
+>> cmd was pip-python3 install pycrypto
+>>
+>> result
+>>
+>> ...
+>> creating build/temp.linux-x86_64-3.3
+>>
+>> creating build/temp.linux-x86_64-3.3/src
+>>
+>> gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe
+>> -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector
+>> --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic
+>> -D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+>> -Isrc/ -I/usr/include/python3.3m -c src/MD2.c -o
+>> build/temp.linux-x86_64-3.3/src/MD2.o
+>>
+>> src/MD2.c:31:20: fatal error: Python.h: No such file or directory
+>>
+>>  #include "Python.h"
+>>
+>>                     ^
+>>
+>> compilation terminated.
+>>
+>> warning: GMP or MPIR library not found; Not building
+>> Crypto.PublicKey._fastmath.
+>>
+>> error: command 'gcc' failed with exit status 1
+>>
+>> Any suggestions please?
+>> pycrypto installed fine on python 2.7
+>>
+>> regards
+>>
+>> --
+>> Dave Pawson
+>> XSLT XSL-FO FAQ.
+>> Docbook FAQ.
+>> http://www.dpawson.co.uk
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Sun Nov 17 03:16:40 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sun, 17 Nov 2013 11:16:40 +0000
+Subject: [pycrypto] ARC4 examples
+Message-ID: <CAEncD4dxZ0eW_b+qDMHKk0fSj1eDgkUK=tSZ8QCYn4ryzE=m6A@mail.gmail.com>
+
+https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.ARC4-module.html#new
+
+from which
+
+>>> from Crypto.Cipher import ARC4
+>>> from Crypto.Hash import SHA
+>>> from Crypto import Random
+>>>
+>>> key = b'Very long and confidential key'
+>>> nonce = Random.new().read(16)
+>>> tempkey = SHA.new(key+nonce).digest()
+>>> cipher = ARC4.new(tempkey)
+>>> msg = nonce + cipher.encrypt(b'Open the pod bay doors, HAL')
+
+I cannot get that to decrypt to the plaintext.
+What is the point of adding the nonce to the ciphertext please, and
+how to decrypt?
+
+TiA
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Thu Nov 21 01:58:18 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Thu, 21 Nov 2013 09:58:18 +0000
+Subject: [pycrypto] ARC4 problems?
+Message-ID: <CAEncD4fVmuK60f-n4SbC+hS5R5rigrOxf667iHRan7V8hFWt1Q@mail.gmail.com>
+
+Using Python 3
+
+    def test_ARC4_2(self):
+        key = b'A long and confidential key'
+        msg =b'My secret message'
+        nonce = b'Another secret'#Crypto.Random.new().read(16)
+        tempkey=SHA.new(key + nonce).digest()
+        cipher = ARC4.new(tempkey)
+        ciphertext = cipher.encrypt(msg)
+        plain      = cipher.decrypt(ciphertext)
+        print(plain)
+
+The print is showing
+b'\x06\xd6\x96\xe7BEF\xe2\x11\xae\xff\xa5"3nJ1'
+which str() won't convert to a string?
+  An ecryption problem or encoding?
+Am I doing something wrong please?
+(just trying to get my head round each of the classes)
+
+regards
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From helderijs at gmail.com  Wed Nov 20 13:19:33 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Wed, 20 Nov 2013 22:19:33 +0100
+Subject: [pycrypto] ARC4 examples
+In-Reply-To: <CAEncD4dxZ0eW_b+qDMHKk0fSj1eDgkUK=tSZ8QCYn4ryzE=m6A@mail.gmail.com>
+References: <CAEncD4dxZ0eW_b+qDMHKk0fSj1eDgkUK=tSZ8QCYn4ryzE=m6A@mail.gmail.com>
+Message-ID: <CAGfyce0XedrA=pCxWaF9CMA9V_ptzhsP0bXJF6FRg3N_qx7-UQ@mail.gmail.com>
+
+>>>> from Crypto.Cipher import ARC4
+>>>> from Crypto.Hash import SHA
+>>>> from Crypto import Random
+>>>>
+>>>> key = b'Very long and confidential key'
+>>>> nonce = Random.new().read(16)
+>>>> tempkey = SHA.new(key+nonce).digest()
+>>>> cipher = ARC4.new(tempkey)
+>>>> msg = nonce + cipher.encrypt(b'Open the pod bay doors, HAL')
+>
+> I cannot get that to decrypt to the plaintext.
+> What is the point of adding the nonce to the ciphertext please, and
+> how to decrypt?
+
+It is just one of the many possible ways for delivering the nonce (or
+IV) to the receiver.
+
+If you receive msg, and you have the key, you can decrypt using these steps:
+
+from Crypto.Cipher import ARC4
+from Crypto.Hash import SHA
+
+nonce = msg[:16]
+tempkey = SHA.new(key+nonce).digest()
+cipher = ARC4.new(tempkey)
+plaintext = cipher.decrypt(msg[16:])
+
+From parke.nexus at gmail.com  Fri Nov 22 18:01:12 2013
+From: parke.nexus at gmail.com (Parke)
+Date: Fri, 22 Nov 2013 18:01:12 -0800
+Subject: [pycrypto] ARC4 problems?
+In-Reply-To: <CAEncD4fVmuK60f-n4SbC+hS5R5rigrOxf667iHRan7V8hFWt1Q@mail.gmail.com>
+References: <CAEncD4fVmuK60f-n4SbC+hS5R5rigrOxf667iHRan7V8hFWt1Q@mail.gmail.com>
+Message-ID: <CAPxz1+a3B1pnJYC4-irEzcZPDZq=2pZ1ikBSgMrrWg-Am36Fgg@mail.gmail.com>
+
+On Thu, Nov 21, 2013 at 1:58 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+> Using Python 3
+>
+>     def test_ARC4_2(self):
+>         key = b'A long and confidential key'
+>         msg =b'My secret message'
+>         nonce = b'Another secret'#Crypto.Random.new().read(16)
+>         tempkey=SHA.new(key + nonce).digest()
+>         cipher = ARC4.new(tempkey)
+>         ciphertext = cipher.encrypt(msg)
+>         plain      = cipher.decrypt(ciphertext)
+>         print(plain)
+>
+> The print is showing
+> b'\x06\xd6\x96\xe7BEF\xe2\x11\xae\xff\xa5"3nJ1'
+> which str() won't convert to a string?
+>   An ecryption problem or encoding?
+> Am I doing something wrong please?
+> (just trying to get my head round each of the classes)
+
+In Python 3, strings are Unicode, so str() probably needs to know
+which encoding to use.  Your plaintext msg is bytes (not str).  Why do
+you (think you) want/need str?
+
+Also, nonces do not need to be secret, just unique (per key).
+
+You may need to create a new/fresh ARC4 instance for the decryption.
+ARC4 is a stream cipher, and you reset it by installing the key+nonce.
+
+Block ciphers in ECB and CTR mode do not need to be reset between
+encryption and decryption.  But most other ciphers/modes do.
+
+-Parke
+
+From dave.pawson at gmail.com  Sat Nov 23 01:40:12 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sat, 23 Nov 2013 09:40:12 +0000
+Subject: [pycrypto] ARC4 examples
+In-Reply-To: <CAGfyce0XedrA=pCxWaF9CMA9V_ptzhsP0bXJF6FRg3N_qx7-UQ@mail.gmail.com>
+References: <CAEncD4dxZ0eW_b+qDMHKk0fSj1eDgkUK=tSZ8QCYn4ryzE=m6A@mail.gmail.com>
+ <CAGfyce0XedrA=pCxWaF9CMA9V_ptzhsP0bXJF6FRg3N_qx7-UQ@mail.gmail.com>
+Message-ID: <CAEncD4d=NVHZQgUGcnMn3svRNThv3bn=fhQhfU-T+5JM+Z8O_Q@mail.gmail.com>
+
+On 20 November 2013 21:19, Legrandin <helderijs at gmail.com> wrote:
+>>>>> from Crypto.Cipher import ARC4
+>>>>> from Crypto.Hash import SHA
+>>>>> from Crypto import Random
+>>>>>
+>>>>> key = b'Very long and confidential key'
+>>>>> nonce = Random.new().read(16)
+>>>>> tempkey = SHA.new(key+nonce).digest()
+>>>>> cipher = ARC4.new(tempkey)
+>>>>> msg = nonce + cipher.encrypt(b'Open the pod bay doors, HAL')
+>>
+>> I cannot get that to decrypt to the plaintext.
+>> What is the point of adding the nonce to the ciphertext please, and
+>> how to decrypt?
+>
+> It is just one of the many possible ways for delivering the nonce (or
+> IV) to the receiver.
+
+But what is it please - what purpose does it serve?
+
+
+
+>
+> If you receive msg, and you have the key, you can decrypt using these steps:
+>
+> from Crypto.Cipher import ARC4
+> from Crypto.Hash import SHA
+>
+> nonce = msg[:16]
+> tempkey = SHA.new(key+nonce).digest()
+> cipher = ARC4.new(tempkey)
+> plaintext = cipher.decrypt(msg[16:])
+
+Since I input text, I'm hoping to get text out?
+
+Using this code I'm seeing
+plaintext = str(cipher.decrypt(msg[:16]),'utf-8')
+which gives
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd7 in position
+1: invalid continuation byte
+
+under python 3.
+
+regards
+
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Sat Nov 23 01:54:36 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sat, 23 Nov 2013 09:54:36 +0000
+Subject: [pycrypto] ARC4 problems?
+In-Reply-To: <CAPxz1+a3B1pnJYC4-irEzcZPDZq=2pZ1ikBSgMrrWg-Am36Fgg@mail.gmail.com>
+References: <CAEncD4fVmuK60f-n4SbC+hS5R5rigrOxf667iHRan7V8hFWt1Q@mail.gmail.com>
+ <CAPxz1+a3B1pnJYC4-irEzcZPDZq=2pZ1ikBSgMrrWg-Am36Fgg@mail.gmail.com>
+Message-ID: <CAEncD4dJ9W0iyeG_UFa-qyOLBTV_+Ax0AEdSMZz+TKzDTi-HHA@mail.gmail.com>
+
+On 23 November 2013 02:01, Parke <parke.nexus at gmail.com> wrote:
+> On Thu, Nov 21, 2013 at 1:58 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+>> Using Python 3
+>>
+>>     def test_ARC4_2(self):
+>>         key = b'A long and confidential key'
+>>         msg =b'My secret message'
+>>         nonce = b'Another secret'#Crypto.Random.new().read(16)
+>>         tempkey=SHA.new(key + nonce).digest()
+>>         cipher = ARC4.new(tempkey)
+>>         ciphertext = cipher.encrypt(msg)
+>>         plain      = cipher.decrypt(ciphertext)
+>>         print(plain)
+>>
+>> The print is showing
+>> b'\x06\xd6\x96\xe7BEF\xe2\x11\xae\xff\xa5"3nJ1'
+>> which str() won't convert to a string?
+>>   An ecryption problem or encoding?
+>> Am I doing something wrong please?
+>> (just trying to get my head round each of the classes)
+>
+> In Python 3, strings are Unicode, so str() probably needs to know
+> which encoding to use.  Your plaintext msg is bytes (not str).  Why do
+> you (think you) want/need str?
+
+<grin/> To provide a readable output....
+   You imply I can use a byte array as easily as a string.....
+   With input and output as bytes I'm seeing
+
+RTFM? OK, https://www.dlitz.net/software/pycrypto/api/current/
+the input message, key etc are byte strings. My bad.
+(Other block messages work fine with strings/u'string' .... )
+
+
+
+ self.assertEqual(msg,plaintext,'arc4,2 failed')
+AssertionError: b'My secret message' !=
+b'd\xd7\xd2\ty\xfc\xc0v\xa2\xc3\xc5\xcd\x12\xf0\xf7\xea' : arc4,2
+failed
+
+So something is wrong?
+
+>
+> Also, nonces do not need to be secret, just unique (per key).
+>
+> You may need to create a new/fresh ARC4 instance for the decryption.
+
+
+Sorry I don't understand that? May, or must? Or when must I?
+Why please?
+
+> ARC4 is a stream cipher, and you reset it by installing the key+nonce.
+Defined by the 'block_size=1' in docs?
+
+
+
+>
+> Block ciphers in ECB and CTR mode do not need to be reset between
+> encryption and decryption.  But most other ciphers/modes do.
+
+Is this documented anywhere please?
+Which do / which don't?
+
+
+
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Sat Nov 23 03:11:51 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sat, 23 Nov 2013 11:11:51 +0000
+Subject: [pycrypto] Documentation
+Message-ID: <CAEncD4c3kU9Eff6r8EoR9RW2oZERJdUdjtpHV0YZri_KxQRVVw@mail.gmail.com>
+
+Reading
+https://www.dlitz.net/software/pycrypto/doc/
+
+I read
+
+All ciphering objects have the following methods:
+
+decrypt(string): ....
+
+encrypt(string):
+
+This isn't true is it?
+Many take byte strings?
+
+For me, there needs to be some differentiation
+between the two since it seems to mess up
+the working of the library?
+
+regards
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Sat Nov 23 03:28:29 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sat, 23 Nov 2013 11:28:29 +0000
+Subject: [pycrypto] ARC4 examples
+In-Reply-To: <CAGfyce0XedrA=pCxWaF9CMA9V_ptzhsP0bXJF6FRg3N_qx7-UQ@mail.gmail.com>
+References: <CAEncD4dxZ0eW_b+qDMHKk0fSj1eDgkUK=tSZ8QCYn4ryzE=m6A@mail.gmail.com>
+ <CAGfyce0XedrA=pCxWaF9CMA9V_ptzhsP0bXJF6FRg3N_qx7-UQ@mail.gmail.com>
+Message-ID: <CAEncD4d51YANzLJVu84PYX4RDkUm-Ozq3KMXAQqFy_=5t3_sLQ@mail.gmail.com>
+
+Thanks for that Legrandin,
+Once I got my head round it...
+
+For compleness
+
+        #
+        # Test again, bearing in mind warning at
+        # https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.ARC4-module.html
+        # Need to deal in byte strings
+    def test_ARC4_2(self):
+        key = b'Very long and confidential key'
+        nonce = Random.new().read(16)
+        tempkey = SHA.new(key+nonce).digest()
+
+        cipher = ARC4.new(tempkey)
+        ciphertext = nonce + cipher.encrypt(b'Open the pod bay doors, HAL')
+
+        # decrypt with new cipher
+        nonce = ciphertext[:16] # strip off nonce
+        tempkey = SHA.new(key+nonce).digest()
+
+        cipher = ARC4.new(tempkey)
+        plaintext = cipher.decrypt(ciphertext[16:]) # Only decrypt the
+msg after nonce.
+        print(plaintext)
+        self.assertEqual(b'Open the pod bay doors,
+HAL',plaintext,'arc4,2 failed')
+
+regard DaveP
+
+
+
+On 20 November 2013 21:19, Legrandin <helderijs at gmail.com> wrote:
+>>>>> from Crypto.Cipher import ARC4
+>>>>> from Crypto.Hash import SHA
+>>>>> from Crypto import Random
+>>>>>
+>>>>> key = b'Very long and confidential key'
+>>>>> nonce = Random.new().read(16)
+>>>>> tempkey = SHA.new(key+nonce).digest()
+>>>>> cipher = ARC4.new(tempkey)
+>>>>> msg = nonce + cipher.encrypt(b'Open the pod bay doors, HAL')
+>>
+>> I cannot get that to decrypt to the plaintext.
+>> What is the point of adding the nonce to the ciphertext please, and
+>> how to decrypt?
+>
+> It is just one of the many possible ways for delivering the nonce (or
+> IV) to the receiver.
+>
+> If you receive msg, and you have the key, you can decrypt using these steps:
+>
+> from Crypto.Cipher import ARC4
+> from Crypto.Hash import SHA
+>
+> nonce = msg[:16]
+> tempkey = SHA.new(key+nonce).digest()
+> cipher = ARC4.new(tempkey)
+> plaintext = cipher.decrypt(msg[16:])
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Sun Nov 24 01:00:05 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sun, 24 Nov 2013 09:00:05 +0000
+Subject: [pycrypto] Oddity?
+Message-ID: <CAEncD4fesv06XS+f3A3wv2y-_v5Zph8v8t+YL81YojcQiJdWMQ@mail.gmail.com>
+
+https://www.dlitz.net/software/pycrypto/doc/#introduction
+says
+
+key_size: An integer value; the size of the keys required by this module.
+
+Yet iterating over [AES,ARC2,Blowfish,CAST,DES,DES3]
+I get
+print("Alg: %s, key size %s" % (name, type(alg.key_size)))
+Alg: AES, key size <class 'tuple'>
+Alg: ARC2, key size <class 'range'>
+Alg: Blowfish, key size <class 'range'>
+Alg: CAST, key size <class 'range'>
+Alg: DES, key size <class 'int'>
+Alg: DES3, key size <class 'tuple'>
+
+is this work outstanding?
+
+regards
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Sun Nov 24 06:50:27 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sun, 24 Nov 2013 14:50:27 +0000
+Subject: [pycrypto] DES3 problem
+Message-ID: <CAEncD4dSn=2MdEu6AuKq6ZbvNPXbsS=v6gEQ_fGjaeZJjs7yGA@mail.gmail.com>
+
+https://www.dlitz.net/software/pycrypto/api/current/ states DES3 requires an iv.
+
+in the api docs the example uses DES not DES3?
+
+As an example, encryption can be done as follows:
+
+>>> from Crypto.Cipher import DES
+>>> from Crypto import Random
+>>> from Crypto.Util import Counter
+>>>
+>>> key = b'-8B key-'
+>>> nonce = Random.new().read(DES.block_size/2)
+>>> ctr = Counter.new(DES.block_size*8/2, prefix=nonce)
+>>> cipher = DES.new(key, DES.MODE_CTR, counter=ctr)
+>>> plaintext = b'We are no longer the knights who say ni!'
+>>> msg = nonce + cipher.encrypt(plaintext)
+
+Using
+        iv=Random.new().read(DES3.block_size)
+        ciphere = DES3.new(key,mode,IV=iv)
+
+I'm getting
+Traceback (most recent call last):
+  File "./tester.py", line 405, in testBlock5
+    ciphere = DES3.new(key,mode,IV=iv)
+  File "/usr/lib64/python3.3/site-packages/Crypto/Cipher/DES3.py",
+line 114, in new
+    return DES3Cipher(key, *args, **kwargs)
+  File "/usr/lib64/python3.3/site-packages/Crypto/Cipher/DES3.py",
+line 76, in __init__
+    blockalgo.BlockAlgo.__init__(self, _DES3, key, *args, **kwargs)
+  File "/usr/lib64/python3.3/site-packages/Crypto/Cipher/blockalgo.py",
+line 155, in __init__
+    raise ValueError("MODE_OPENPGP requires an IV")
+ValueError: MODE_OPENPGP requires an IV
+
+Am I wrong in my usage or is the code incorrect please
+wrt iv parameter?
+
+
+Tia
+
+
+
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Wed Nov 27 01:15:40 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Wed, 27 Nov 2013 09:15:40 +0000
+Subject: [pycrypto] DES3 problem
+In-Reply-To: <CAEncD4dSn=2MdEu6AuKq6ZbvNPXbsS=v6gEQ_fGjaeZJjs7yGA@mail.gmail.com>
+References: <CAEncD4dSn=2MdEu6AuKq6ZbvNPXbsS=v6gEQ_fGjaeZJjs7yGA@mail.gmail.com>
+Message-ID: <CAEncD4e3vq=y0Xksc58+4x3j=i-nuyVBw2eZdA-+M0w56QgdOg@mail.gmail.com>
+
+>From the lack of response, should I assume that DES3 isn't yet working?
+
+TiA, DaveP
+
+On 24 November 2013 14:50, Dave Pawson <dave.pawson at gmail.com> wrote:
+> https://www.dlitz.net/software/pycrypto/api/current/ states DES3 requires an iv.
+>
+> in the api docs the example uses DES not DES3?
+>
+> As an example, encryption can be done as follows:
+>
+>>>> from Crypto.Cipher import DES
+>>>> from Crypto import Random
+>>>> from Crypto.Util import Counter
+>>>>
+>>>> key = b'-8B key-'
+>>>> nonce = Random.new().read(DES.block_size/2)
+>>>> ctr = Counter.new(DES.block_size*8/2, prefix=nonce)
+>>>> cipher = DES.new(key, DES.MODE_CTR, counter=ctr)
+>>>> plaintext = b'We are no longer the knights who say ni!'
+>>>> msg = nonce + cipher.encrypt(plaintext)
+>
+> Using
+>         iv=Random.new().read(DES3.block_size)
+>         ciphere = DES3.new(key,mode,IV=iv)
+>
+> I'm getting
+> Traceback (most recent call last):
+>   File "./tester.py", line 405, in testBlock5
+>     ciphere = DES3.new(key,mode,IV=iv)
+>   File "/usr/lib64/python3.3/site-packages/Crypto/Cipher/DES3.py",
+> line 114, in new
+>     return DES3Cipher(key, *args, **kwargs)
+>   File "/usr/lib64/python3.3/site-packages/Crypto/Cipher/DES3.py",
+> line 76, in __init__
+>     blockalgo.BlockAlgo.__init__(self, _DES3, key, *args, **kwargs)
+>   File "/usr/lib64/python3.3/site-packages/Crypto/Cipher/blockalgo.py",
+> line 155, in __init__
+>     raise ValueError("MODE_OPENPGP requires an IV")
+> ValueError: MODE_OPENPGP requires an IV
+>
+> Am I wrong in my usage or is the code incorrect please
+> wrt iv parameter?
+>
+>
+> Tia
+>
+>
+>
+>
+>
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From helderijs at gmail.com  Fri Nov 29 07:16:47 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Fri, 29 Nov 2013 16:16:47 +0100
+Subject: [pycrypto] DES3 problem
+In-Reply-To: <CAEncD4e3vq=y0Xksc58+4x3j=i-nuyVBw2eZdA-+M0w56QgdOg@mail.gmail.com>
+References: <CAEncD4dSn=2MdEu6AuKq6ZbvNPXbsS=v6gEQ_fGjaeZJjs7yGA@mail.gmail.com>
+ <CAEncD4e3vq=y0Xksc58+4x3j=i-nuyVBw2eZdA-+M0w56QgdOg@mail.gmail.com>
+Message-ID: <CAGfyce1cOR4OSbW9aaoQC4gTPeav1BY-RY0AXq4gMnSZp-mQgw@mail.gmail.com>
+
+Hi Dave,
+
+DES3 (which is TripleDES) works correctly.
+It just happens that the examples for DES (Single DES) and DES3
+modules got swapped by mistake.
+The DES3 example you are looking for is actually here:
+
+https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.DES-module.html
+
+It was a while back but I recall docs have been fixed in the meanwhile
+and they are on git.
+
+2013/11/27 Dave Pawson <dave.pawson at gmail.com>:
+> From the lack of response, should I assume that DES3 isn't yet working?
+>
+> TiA, DaveP
+>
+> On 24 November 2013 14:50, Dave Pawson <dave.pawson at gmail.com> wrote:
+>> https://www.dlitz.net/software/pycrypto/api/current/ states DES3 requires an iv.
+>>
+>> in the api docs the example uses DES not DES3?
+>>
+>> As an example, encryption can be done as follows:
+>>
+>>>>> from Crypto.Cipher import DES
+>>>>> from Crypto import Random
+>>>>> from Crypto.Util import Counter
+>>>>>
+>>>>> key = b'-8B key-'
+>>>>> nonce = Random.new().read(DES.block_size/2)
+>>>>> ctr = Counter.new(DES.block_size*8/2, prefix=nonce)
+>>>>> cipher = DES.new(key, DES.MODE_CTR, counter=ctr)
+>>>>> plaintext = b'We are no longer the knights who say ni!'
+>>>>> msg = nonce + cipher.encrypt(plaintext)
+>>
+>> Using
+>>         iv=Random.new().read(DES3.block_size)
+>>         ciphere = DES3.new(key,mode,IV=iv)
+>>
+>> I'm getting
+>> Traceback (most recent call last):
+>>   File "./tester.py", line 405, in testBlock5
+>>     ciphere = DES3.new(key,mode,IV=iv)
+>>   File "/usr/lib64/python3.3/site-packages/Crypto/Cipher/DES3.py",
+>> line 114, in new
+>>     return DES3Cipher(key, *args, **kwargs)
+>>   File "/usr/lib64/python3.3/site-packages/Crypto/Cipher/DES3.py",
+>> line 76, in __init__
+>>     blockalgo.BlockAlgo.__init__(self, _DES3, key, *args, **kwargs)
+>>   File "/usr/lib64/python3.3/site-packages/Crypto/Cipher/blockalgo.py",
+>> line 155, in __init__
+>>     raise ValueError("MODE_OPENPGP requires an IV")
+>> ValueError: MODE_OPENPGP requires an IV
+>>
+>> Am I wrong in my usage or is the code incorrect please
+>> wrt iv parameter?
+>>
+>>
+>> Tia
+>>
+>>
+>>
+>>
+>>
+>>
+>> --
+>> Dave Pawson
+>> XSLT XSL-FO FAQ.
+>> Docbook FAQ.
+>> http://www.dpawson.co.uk
+>
+>
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From dave.pawson at gmail.com  Fri Nov 29 07:29:49 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 29 Nov 2013 15:29:49 +0000
+Subject: [pycrypto] DES3 problem
+In-Reply-To: <CAGfyce1cOR4OSbW9aaoQC4gTPeav1BY-RY0AXq4gMnSZp-mQgw@mail.gmail.com>
+References: <CAEncD4dSn=2MdEu6AuKq6ZbvNPXbsS=v6gEQ_fGjaeZJjs7yGA@mail.gmail.com>
+ <CAEncD4e3vq=y0Xksc58+4x3j=i-nuyVBw2eZdA-+M0w56QgdOg@mail.gmail.com>
+ <CAGfyce1cOR4OSbW9aaoQC4gTPeav1BY-RY0AXq4gMnSZp-mQgw@mail.gmail.com>
+Message-ID: <CAEncD4dO3rNz0SWipzftoQWKGg=xRRi-TuHsdspPbE5JdQKEfw@mail.gmail.com>
+
+On 29 November 2013 15:16, Legrandin <helderijs at gmail.com> wrote:
+> Hi Dave,
+>
+> DES3 (which is TripleDES) works correctly.
+> It just happens that the examples for DES (Single DES) and DES3
+> modules got swapped by mistake.
+> The DES3 example you are looking for is actually here:
+>
+> https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.DES-module.html
+
+thanks. I'll move on a bit.
+(My goal is a unit test for all the algo's, I'll post it if I finish it)
+
+
+>
+> It was a while back but I recall docs have been fixed in the meanwhile
+> and they are on git.
+
+... downloadable as a package or some other way?
+
+regards
+
+
+>
+> 2013/11/27 Dave Pawson <dave.pawson at gmail.com>:
+>> From the lack of response, should I assume that DES3 isn't yet working?
+>>
+>> TiA, DaveP
+>>
+>> On 24 November 2013 14:50, Dave Pawson <dave.pawson at gmail.com> wrote:
+>>> https://www.dlitz.net/software/pycrypto/api/current/ states DES3 requires an iv.
+>>>
+>>> in the api docs the example uses DES not DES3?
+>>>
+>>> As an example, encryption can be done as follows:
+>>>
+>>>>>> from Crypto.Cipher import DES
+>>>>>> from Crypto import Random
+>>>>>> from Crypto.Util import Counter
+>>>>>>
+>>>>>> key = b'-8B key-'
+>>>>>> nonce = Random.new().read(DES.block_size/2)
+>>>>>> ctr = Counter.new(DES.block_size*8/2, prefix=nonce)
+>>>>>> cipher = DES.new(key, DES.MODE_CTR, counter=ctr)
+>>>>>> plaintext = b'We are no longer the knights who say ni!'
+>>>>>> msg = nonce + cipher.encrypt(plaintext)
+>>>
+>>> Using
+>>>         iv=Random.new().read(DES3.block_size)
+>>>         ciphere = DES3.new(key,mode,IV=iv)
+>>>
+>>> I'm getting
+>>> Traceback (most recent call last):
+>>>   File "./tester.py", line 405, in testBlock5
+>>>     ciphere = DES3.new(key,mode,IV=iv)
+>>>   File "/usr/lib64/python3.3/site-packages/Crypto/Cipher/DES3.py",
+>>> line 114, in new
+>>>     return DES3Cipher(key, *args, **kwargs)
+>>>   File "/usr/lib64/python3.3/site-packages/Crypto/Cipher/DES3.py",
+>>> line 76, in __init__
+>>>     blockalgo.BlockAlgo.__init__(self, _DES3, key, *args, **kwargs)
+>>>   File "/usr/lib64/python3.3/site-packages/Crypto/Cipher/blockalgo.py",
+>>> line 155, in __init__
+>>>     raise ValueError("MODE_OPENPGP requires an IV")
+>>> ValueError: MODE_OPENPGP requires an IV
+>>>
+>>> Am I wrong in my usage or is the code incorrect please
+>>> wrt iv parameter?
+>>>
+>>>
+>>> Tia
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>> --
+>>> Dave Pawson
+>>> XSLT XSL-FO FAQ.
+>>> Docbook FAQ.
+>>> http://www.dpawson.co.uk
+>>
+>>
+>>
+>> --
+>> Dave Pawson
+>> XSLT XSL-FO FAQ.
+>> Docbook FAQ.
+>> http://www.dpawson.co.uk
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Fri Nov 29 07:49:07 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 29 Nov 2013 15:49:07 +0000
+Subject: [pycrypto] DES3 problem
+In-Reply-To: <CAGfyce1cOR4OSbW9aaoQC4gTPeav1BY-RY0AXq4gMnSZp-mQgw@mail.gmail.com>
+References: <CAEncD4dSn=2MdEu6AuKq6ZbvNPXbsS=v6gEQ_fGjaeZJjs7yGA@mail.gmail.com>
+ <CAEncD4e3vq=y0Xksc58+4x3j=i-nuyVBw2eZdA-+M0w56QgdOg@mail.gmail.com>
+ <CAGfyce1cOR4OSbW9aaoQC4gTPeav1BY-RY0AXq4gMnSZp-mQgw@mail.gmail.com>
+Message-ID: <CAEncD4cvcMRpxO9diu=J4ixpmPRmz-g7pADQTQPzPjfpb+sBzA@mail.gmail.com>
+
+On 29 November 2013 15:16, Legrandin <helderijs at gmail.com> wrote:
+
+> The DES3 example you are looking for is actually here:
+>
+> https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.DES-module.html
+
+
+I can't get that working.
+
+Request please?
+Assuming I'm not unusual in wanting to both encrypt and then decrypt.
+It would be very helpful to show the decrypt after the encrypt?
+the oddities I'm finding,
+1. Why is it sometimes (I don't know why) shown creating two ciphers,
+one for encrypt, one for decrypt.
+2. The use of a nonce (as per above)
+Is it normal to decrypt using
+
+ciphertext=iv + ciphere.encrypt(plaintext)
+plain = cipherd.decrypt(ciphertext[16:])
+
+Using the example....
+
+>>> from Crypto.Cipher import DES3
+>>> from Crypto import Random
+>>> key = b'Sixteen byte key'
+>>> iv = Random.new().read(DES3.block_size)
+>>> cipher = DES3.new(key, DES3.MODE_OFB, iv)
+>>> plaintext = b'sona si latine loqueris '
+>>> msg = iv + cipher.encrypt(plaintext)
+>>> p = cipher.decrypt(msg[16:])
+>>> print(p)
+b'\xc0/)~\xc1\xa4\xb0\xb3\x0c\x92y_\x9a\xaa\xe3\xa0'
+
+Any ideas please?
+
+
+TiA
+
+
+
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From helderijs at gmail.com  Fri Nov 29 12:16:47 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Fri, 29 Nov 2013 21:16:47 +0100
+Subject: [pycrypto] DES3 problem
+In-Reply-To: <CAEncD4cvcMRpxO9diu=J4ixpmPRmz-g7pADQTQPzPjfpb+sBzA@mail.gmail.com>
+References: <CAEncD4dSn=2MdEu6AuKq6ZbvNPXbsS=v6gEQ_fGjaeZJjs7yGA@mail.gmail.com>
+ <CAEncD4e3vq=y0Xksc58+4x3j=i-nuyVBw2eZdA-+M0w56QgdOg@mail.gmail.com>
+ <CAGfyce1cOR4OSbW9aaoQC4gTPeav1BY-RY0AXq4gMnSZp-mQgw@mail.gmail.com>
+ <CAEncD4cvcMRpxO9diu=J4ixpmPRmz-g7pADQTQPzPjfpb+sBzA@mail.gmail.com>
+Message-ID: <CAGfyce0oB2vFOj0p6U30RdZ2Xks9KyEjuNLyc_R_Q47f3mYQXg@mail.gmail.com>
+
+Hi,
+
+Since a cipher object is stateful, it can be used for either
+encryption or decryption but not both.
+In order to simulate both ends of a communication, you need two cipher objects.
+Your code should be:
+
+>>> from Crypto.Cipher import DES3
+>>> from Crypto import Random
+>>> key = b'Sixteen byte key'
+>>> iv = Random.new().read(DES3.block_size)
+>>> cipher = DES3.new(key, DES3.MODE_OFB, iv)
+>>> plaintext = b'sona si latine loqueris '
+>>> msg = iv + cipher.encrypt(plaintext)
+>>>
+>>>
+>>>
+>>> iv = msg[:16]
+>>> cipher = DES3.new(key, DES3.MODE_OFB, iv)
+>>> p = cipher.decrypt(msg[16:])
+>>> print(p)
+
+The only exception is the ECB mode. Being it stateless, it lets you
+intermix encryption and decryption.
+However, that mode should be avoided when possible because it's very
+tricky to get right.
+
+A nonce (sometimes called IV) is critical a value required by most
+modes (ECB again being an exception).
+It is typically required to be unique per each combination of
+key/message. In some cases - like for CBC - it must also be
+unpredictable to an adversary. The nonce/IV does not need to kept
+secret but it needs to be delivered to the receiver somehow, otherwise
+it wouldn't be able to perform decryption.
+One common choice is to generate the nonce/IV randomly and prepend it
+to the ciphertext (that is, the result of a call to .encrypt() ) but
+nothing stops you from sending it afterwards.
+
+
+2013/11/29 Dave Pawson <dave.pawson at gmail.com>:
+> On 29 November 2013 15:16, Legrandin <helderijs at gmail.com> wrote:
+>
+>> The DES3 example you are looking for is actually here:
+>>
+>> https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.DES-module.html
+>
+>
+> I can't get that working.
+>
+> Request please?
+> Assuming I'm not unusual in wanting to both encrypt and then decrypt.
+> It would be very helpful to show the decrypt after the encrypt?
+> the oddities I'm finding,
+> 1. Why is it sometimes (I don't know why) shown creating two ciphers,
+> one for encrypt, one for decrypt.
+> 2. The use of a nonce (as per above)
+> Is it normal to decrypt using
+>
+> ciphertext=iv + ciphere.encrypt(plaintext)
+> plain = cipherd.decrypt(ciphertext[16:])
+>
+> Using the example....
+>
+>>>> from Crypto.Cipher import DES3
+>>>> from Crypto import Random
+>>>> key = b'Sixteen byte key'
+>>>> iv = Random.new().read(DES3.block_size)
+>>>> cipher = DES3.new(key, DES3.MODE_OFB, iv)
+>>>> plaintext = b'sona si latine loqueris '
+>>>> msg = iv + cipher.encrypt(plaintext)
+>>>> p = cipher.decrypt(msg[16:])
+>>>> print(p)
+> b'\xc0/)~\xc1\xa4\xb0\xb3\x0c\x92y_\x9a\xaa\xe3\xa0'
+>
+> Any ideas please?
+>
+>
+> TiA
+>
+>
+>
+>
+>
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From dave.pawson at gmail.com  Sat Nov 30 01:09:02 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sat, 30 Nov 2013 09:09:02 +0000
+Subject: [pycrypto] DES3 problem
+In-Reply-To: <CAGfyce0oB2vFOj0p6U30RdZ2Xks9KyEjuNLyc_R_Q47f3mYQXg@mail.gmail.com>
+References: <CAEncD4dSn=2MdEu6AuKq6ZbvNPXbsS=v6gEQ_fGjaeZJjs7yGA@mail.gmail.com>
+ <CAEncD4e3vq=y0Xksc58+4x3j=i-nuyVBw2eZdA-+M0w56QgdOg@mail.gmail.com>
+ <CAGfyce1cOR4OSbW9aaoQC4gTPeav1BY-RY0AXq4gMnSZp-mQgw@mail.gmail.com>
+ <CAEncD4cvcMRpxO9diu=J4ixpmPRmz-g7pADQTQPzPjfpb+sBzA@mail.gmail.com>
+ <CAGfyce0oB2vFOj0p6U30RdZ2Xks9KyEjuNLyc_R_Q47f3mYQXg@mail.gmail.com>
+Message-ID: <CAEncD4d0HsBypa_74X0xrWkpqPBufizFfmKWhyfdJQdyH_=aDg@mail.gmail.com>
+
+On 29 November 2013 20:16, Legrandin <helderijs at gmail.com> wrote:
+> Hi,
+>
+> Since a cipher object is stateful, it can be used for either
+> encryption or decryption but not both.
+
+I don't understand that. In what way does it maintain state please?
+
+
+> The only exception is the ECB mode. Being it stateless, it lets you
+> intermix encryption and decryption.
+
+Thanks.
+(Nothing that I've found in the docs explains this?)
+
+
+
+
+> However, that mode should be avoided when possible because it's very
+> tricky to get right.
+>
+> A nonce (sometimes called IV) is critical a value required by most
+> modes (ECB again being an exception).
+> It is typically required to be unique per each combination of
+> key/message. In some cases - like for CBC - it must also be
+> unpredictable to an adversary. The nonce/IV does not need to kept
+> secret but it needs to be delivered to the receiver somehow, otherwise
+> it wouldn't be able to perform decryption.
+
+Ping! The light goes on. Thank you.
+
+> One common choice is to generate the nonce/IV randomly and prepend it
+> to the ciphertext (that is, the result of a call to .encrypt() ) but
+> nothing stops you from sending it afterwards.
+
+Again missing from the documentation (or I missed it).
+I've pointed out the DES/DES3 reversal to the github owner.
+
+
+regards
+
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From helderijs at gmail.com  Sun Dec  1 13:26:12 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Sun, 1 Dec 2013 22:26:12 +0100
+Subject: [pycrypto] DES3 problem
+In-Reply-To: <CAEncD4d0HsBypa_74X0xrWkpqPBufizFfmKWhyfdJQdyH_=aDg@mail.gmail.com>
+References: <CAEncD4dSn=2MdEu6AuKq6ZbvNPXbsS=v6gEQ_fGjaeZJjs7yGA@mail.gmail.com>
+ <CAEncD4e3vq=y0Xksc58+4x3j=i-nuyVBw2eZdA-+M0w56QgdOg@mail.gmail.com>
+ <CAGfyce1cOR4OSbW9aaoQC4gTPeav1BY-RY0AXq4gMnSZp-mQgw@mail.gmail.com>
+ <CAEncD4cvcMRpxO9diu=J4ixpmPRmz-g7pADQTQPzPjfpb+sBzA@mail.gmail.com>
+ <CAGfyce0oB2vFOj0p6U30RdZ2Xks9KyEjuNLyc_R_Q47f3mYQXg@mail.gmail.com>
+ <CAEncD4d0HsBypa_74X0xrWkpqPBufizFfmKWhyfdJQdyH_=aDg@mail.gmail.com>
+Message-ID: <CAGfyce23HW0PLM1x+iFOp34PaL3qFPKOuPKz5+eEz4exyqDOnQ@mail.gmail.com>
+
+>> Since a cipher object is stateful, it can be used for either
+>> encryption or decryption but not both.
+>
+> I don't understand that. In what way does it maintain state please?
+
+If the data to encrypt is very long, you may need to invoke the method
+encrypt() of a cipher on one smaller piece at a time. The object
+maintains the state of the last encryption performed, so that it can
+correctly process the data that will come next. If you call decrypt()
+after encrypt(), the cipher will interpret its state as if it was a
+"decryption" state, even though it is actually an "encryption" state.
+
+Same applies if you start with decrypt() and then use encrypt().
+
+That is really a flaw of the pycrypto API: it shouldn't allow one to
+switch mid air between encryption and decryption.
+
+>> The only exception is the ECB mode. Being it stateless, it lets you
+>> intermix encryption and decryption.
+>
+> Thanks.
+> (Nothing that I've found in the docs explains this?)
+
+A little bit hidden here:
+
+https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.blockalgo.BlockAlgo-class.html#encrypt
+
+From dave.pawson at gmail.com  Mon Dec  2 00:18:06 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Mon, 2 Dec 2013 08:18:06 +0000
+Subject: [pycrypto] DES3 problem
+In-Reply-To: <CAGfyce23HW0PLM1x+iFOp34PaL3qFPKOuPKz5+eEz4exyqDOnQ@mail.gmail.com>
+References: <CAEncD4dSn=2MdEu6AuKq6ZbvNPXbsS=v6gEQ_fGjaeZJjs7yGA@mail.gmail.com>
+ <CAEncD4e3vq=y0Xksc58+4x3j=i-nuyVBw2eZdA-+M0w56QgdOg@mail.gmail.com>
+ <CAGfyce1cOR4OSbW9aaoQC4gTPeav1BY-RY0AXq4gMnSZp-mQgw@mail.gmail.com>
+ <CAEncD4cvcMRpxO9diu=J4ixpmPRmz-g7pADQTQPzPjfpb+sBzA@mail.gmail.com>
+ <CAGfyce0oB2vFOj0p6U30RdZ2Xks9KyEjuNLyc_R_Q47f3mYQXg@mail.gmail.com>
+ <CAEncD4d0HsBypa_74X0xrWkpqPBufizFfmKWhyfdJQdyH_=aDg@mail.gmail.com>
+ <CAGfyce23HW0PLM1x+iFOp34PaL3qFPKOuPKz5+eEz4exyqDOnQ@mail.gmail.com>
+Message-ID: <CAEncD4cZxL+w6wi22_rbineyo-QmhX-PHJj460OuCp-B0+HWGw@mail.gmail.com>
+
+On 1 December 2013 21:26, Legrandin <helderijs at gmail.com> wrote:
+>>> Since a cipher object is stateful, it can be used for either
+>>> encryption or decryption but not both.
+>>
+>> I don't understand that. In what way does it maintain state please?
+>
+> If the data to encrypt is very long, you may need to invoke the method
+> encrypt() of a cipher on one smaller piece at a time. The object
+> maintains the state of the last encryption performed, so that it can
+> correctly process the data that will come next. If you call decrypt()
+> after encrypt(), the cipher will interpret its state as if it was a
+> "decryption" state, even though it is actually an "encryption" state.
+>
+> Same applies if you start with decrypt() and then use encrypt().
+>
+> That is really a flaw of the pycrypto API: it shouldn't allow one to
+> switch mid air between encryption and decryption.
+
+
+Wow. Is this documented in pycrypto?
+What is the limit to the text length I can send to any one encrypt function?
+
+(very personal, ill informed view) That seems quite illogical to me?
+
+
+>
+>>> The only exception is the ECB mode. Being it stateless, it lets you
+>>> intermix encryption and decryption.
+>>
+>> Thanks.
+>> (Nothing that I've found in the docs explains this?)
+>
+> A little bit hidden here:
+>
+> https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.blockalgo.BlockAlgo-class.html#encrypt
+
+Thanks.
+IMHO the statefulness of the software really should be documented?
+
+
+regards
+
+
+
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Wed Dec  4 02:32:53 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Wed, 4 Dec 2013 10:32:53 +0000
+Subject: [pycrypto] AES, MODE_CTR
+Message-ID: <CAEncD4cJzq11_r_Ssw7Fuhv7tGYxpt3mi_0MB3vCKU32CqTehQ@mail.gmail.com>
+
+Using the (part) example from
+https://www.dlitz.net/software/pycrypto/api/current/Crypto.Util.Counter-module.html
+
+
+    def test_AES5(self):
+        pt=b' '*10
+        ctr=Counter.new(128)
+        cipher = AES.new(b' '*16, AES.MODE_CTR, counter=ctr)
+        ct = cipher.encrypt(pt)
+        decipher = AES.new(b' '*16, AES.MODE_CTR, counter=ctr)
+        ptr = decipher.decrypt(ct)
+        self.assertEqual(pt,ptr)
+
+fails,
+ self.assertEqual(pt,ptr)
+AssertionError: b'          ' != b'\x18k\xf2\x92\xd4\xcc\x15\xd1\r\xb3'
+
+
+Could someone put me right please?
+
+TiA
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From richmoore44 at gmail.com  Wed Dec  4 09:01:34 2013
+From: richmoore44 at gmail.com (Richard Moore)
+Date: Wed, 4 Dec 2013 17:01:34 +0000
+Subject: [pycrypto] AES, MODE_CTR
+In-Reply-To: <CAEncD4cJzq11_r_Ssw7Fuhv7tGYxpt3mi_0MB3vCKU32CqTehQ@mail.gmail.com>
+References: <CAEncD4cJzq11_r_Ssw7Fuhv7tGYxpt3mi_0MB3vCKU32CqTehQ@mail.gmail.com>
+Message-ID: <CAMp7mVvJMG4_jpFba-Km4PrmFD2pYBSPQOYqZBmf3sw=KUg3Kw@mail.gmail.com>
+
+You need to reset the counter (or make a new one) before you start to
+decrypt. You also don't seem to be using an IV which would lead to a
+massive security hole.
+
+Rich.
+
+From dave.pawson at gmail.com  Wed Dec  4 23:58:38 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Thu, 5 Dec 2013 07:58:38 +0000
+Subject: [pycrypto] AES, MODE_CTR
+In-Reply-To: <CAMp7mVvJMG4_jpFba-Km4PrmFD2pYBSPQOYqZBmf3sw=KUg3Kw@mail.gmail.com>
+References: <CAEncD4cJzq11_r_Ssw7Fuhv7tGYxpt3mi_0MB3vCKU32CqTehQ@mail.gmail.com>
+ <CAMp7mVvJMG4_jpFba-Km4PrmFD2pYBSPQOYqZBmf3sw=KUg3Kw@mail.gmail.com>
+Message-ID: <CAEncD4c+jcnyqZPo1WbEiDDUWebPZm2aVWD1o2qr=tYoaFr+zg@mail.gmail.com>
+
+Thanks Richard.
+   I do wish the documentation was more complete.
+
+Is the owner of the git repo no longer interested / around?
+I.e. How to help and straighten it out (or at least improve it)
+
+regards
+
+
+On 4 December 2013 17:01, Richard Moore <richmoore44 at gmail.com> wrote:
+> You need to reset the counter (or make a new one) before you start to
+> decrypt. You also don't seem to be using an IV which would lead to a
+> massive security hole.
+>
+> Rich.
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Thu Dec  5 05:00:30 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Thu, 5 Dec 2013 13:00:30 +0000
+Subject: [pycrypto] AES, MODE_CTR
+In-Reply-To: <CAMp7mVvJMG4_jpFba-Km4PrmFD2pYBSPQOYqZBmf3sw=KUg3Kw@mail.gmail.com>
+References: <CAEncD4cJzq11_r_Ssw7Fuhv7tGYxpt3mi_0MB3vCKU32CqTehQ@mail.gmail.com>
+ <CAMp7mVvJMG4_jpFba-Km4PrmFD2pYBSPQOYqZBmf3sw=KUg3Kw@mail.gmail.com>
+Message-ID: <CAEncD4ei2F0-mYaiN2rsF0Qg0T_=78v790LoNAiiYXd+T7581A@mail.gmail.com>
+
+Thanks Richard. Now working
+    def test_AES5(self):
+        pt=b' '*10
+        ctr=Counter.new(128)
+        iv = Random.new().read(AES.block_size)
+        cipher = AES.new(b' '*16, AES.MODE_CTR, IV=iv, counter=ctr)
+        ct = cipher.encrypt(pt)
+        ctrr=Counter.new(128)
+        decipher = AES.new(b' '*16, AES.MODE_CTR, IV=iv, counter=ctrr)
+        ptr = decipher.decrypt(ct)
+        self.assertEqual(pt,ptr)
+
+iv added as suggested.
+
+Does anyone know of any better documentation for Counter and its use please?
+
+TiA
+
+
+
+On 4 December 2013 17:01, Richard Moore <richmoore44 at gmail.com> wrote:
+> You need to reset the counter (or make a new one) before you start to
+> decrypt. You also don't seem to be using an IV which would lead to a
+> massive security hole.
+>
+> Rich.
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From helderijs at gmail.com  Thu Dec  5 11:41:05 2013
+From: helderijs at gmail.com (Legrandin)
+Date: Thu, 5 Dec 2013 20:41:05 +0100
+Subject: [pycrypto] AES, MODE_CTR
+In-Reply-To: <CAMp7mVvJMG4_jpFba-Km4PrmFD2pYBSPQOYqZBmf3sw=KUg3Kw@mail.gmail.com>
+References: <CAEncD4cJzq11_r_Ssw7Fuhv7tGYxpt3mi_0MB3vCKU32CqTehQ@mail.gmail.com>
+ <CAMp7mVvJMG4_jpFba-Km4PrmFD2pYBSPQOYqZBmf3sw=KUg3Kw@mail.gmail.com>
+Message-ID: <CAGfyce0iDJxF17dUcF26T=1nP+Hs9kDmLmXSN=93yuN4HDF=9Q@mail.gmail.com>
+
+>Thanks Richard. Now working
+>   def test_AES5(self):
+>        pt=b' '*10
+>        ctr=Counter.new(128)
+>        iv = Random.new().read(AES.block_size)
+>        cipher = AES.new(b' '*16, AES.MODE_CTR, IV=iv, counter=ctr)
+>        ct = cipher.encrypt(pt)
+>        ctrr=Counter.new(128)
+>        decipher = AES.new(b' '*16, AES.MODE_CTR, IV=iv, counter=ctrr)
+>        ptr = decipher.decrypt(ct)
+>        self.assertEqual(pt,ptr)
+> iv added as suggested.
+
+Actually, the IV parameter is ignored in Counter mode.
+If you want to add a nonce to the counter block you must pass it to
+the Counter class:
+
+  nonce = Random.new().read(8)
+  ctr = Counter.new(64, nonce)
+  cipher = AES.new(b' '*16, AES.MODE_CTR, counter=ctr)
+
+The counter block is then made up by 64 bits of nonce and 64 bits of counter.
+
+PS: I think I get 1 out of 3 messages out of this mailing list.
+
+From dave.pawson at gmail.com  Thu Dec  5 23:24:42 2013
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 6 Dec 2013 07:24:42 +0000
+Subject: [pycrypto] AES, MODE_CTR
+In-Reply-To: <CAGfyce0iDJxF17dUcF26T=1nP+Hs9kDmLmXSN=93yuN4HDF=9Q@mail.gmail.com>
+References: <CAEncD4cJzq11_r_Ssw7Fuhv7tGYxpt3mi_0MB3vCKU32CqTehQ@mail.gmail.com>
+ <CAMp7mVvJMG4_jpFba-Km4PrmFD2pYBSPQOYqZBmf3sw=KUg3Kw@mail.gmail.com>
+ <CAGfyce0iDJxF17dUcF26T=1nP+Hs9kDmLmXSN=93yuN4HDF=9Q@mail.gmail.com>
+Message-ID: <CAEncD4cEuH4VpEMGRg8=A+tCztfjBtPZpyPvREV2TddOg36TUw@mail.gmail.com>
+
+On 5 December 2013 19:41, Legrandin <helderijs at gmail.com> wrote:
+>>Thanks Richard. Now working
+>>   def test_AES5(self):
+>>        pt=b' '*10
+>>        ctr=Counter.new(128)
+>>        iv = Random.new().read(AES.block_size)
+>>        cipher = AES.new(b' '*16, AES.MODE_CTR, IV=iv, counter=ctr)
+>>        ct = cipher.encrypt(pt)
+>>        ctrr=Counter.new(128)
+>>        decipher = AES.new(b' '*16, AES.MODE_CTR, IV=iv, counter=ctrr)
+>>        ptr = decipher.decrypt(ct)
+>>        self.assertEqual(pt,ptr)
+>> iv added as suggested.
+>
+> Actually, the IV parameter is ignored in Counter mode.
+> If you want to add a nonce to the counter block you must pass it to
+> the Counter class:
+>
+>   nonce = Random.new().read(8)
+>   ctr = Counter.new(64, nonce)
+>   cipher = AES.new(b' '*16, AES.MODE_CTR, counter=ctr)
+>
+> The counter block is then made up by 64 bits of nonce and 64 bits of counter.
+
+Another undocumented feature?
+Sigh.
+
+
+
+
+>
+> PS: I think I get 1 out of 3 messages out of this mailing list.
+
+Your email system or the server?
+It seems that the repo owner and the mailing list are both
+somewhat lax.
+
+regards
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+

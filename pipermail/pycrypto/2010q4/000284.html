@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA importKey
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20RSA%20importKey&In-Reply-To=AANLkTime7egFD%3DVuHy7SztA-qqygqr8tEn%3D9OrQXTKvC%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000283.html">
+   <LINK REL="Next"  HREF="000289.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA importKey</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20RSA%20importKey&In-Reply-To=AANLkTime7egFD%3DVuHy7SztA-qqygqr8tEn%3D9OrQXTKvC%40mail.gmail.com"
+       TITLE="[pycrypto] RSA importKey">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Sun Nov 14 17:04:37 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000283.html">[pycrypto] RSA importKey
+</A></li>
+        <LI>Next message: <A HREF="000289.html">[pycrypto] RSA importKey
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#284">[ date ]</a>
+              <a href="thread.html#284">[ thread ]</a>
+              <a href="subject.html#284">[ subject ]</a>
+              <a href="author.html#284">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Francois,
+
+importKey was included in pycrypto 2.2. Try to print Crypto.__version__
+to see which library your interpreter is picking up (most likely an
+older one).
+
+RSA in pycrypto currently uses no padding: it directly carries out the
+exponentiation. Last year I created a patch to pycrypto 2.1 to support PKCS#1 v1.5
+padding. You can find it here <A HREF="https://bugs.launchpad.net/pycrypto/+bug/502291">https://bugs.launchpad.net/pycrypto/+bug/502291</A> .
+BTW, PKCS#5 is not applicable to RSA.
+
+Legrandin
+
+&gt;<i>    I have another Question concernant PyCrypto's implementation of RSA: which
+</I>&gt;<i>    encryption mode is it using? 
+</I>&gt;<i>    I had to use PyCrypto's implementation of DES recently, and I could easily
+</I>&gt;<i>    choose between several modes (MODE_EBC, MODE_CBC,...), but unfortunatly, I
+</I>&gt;<i>    can't find these modes in RSA.
+</I>&gt;<i>    The same question applied for the Padding options. Can I choose between
+</I>&gt;<i>    PKCS5Padding and PKCS1Padding ?
+</I>&gt;<i>    Thanks !
+</I>&gt;<i> 
+</I>&gt;<i>    2010/11/12 Franc,ois Santy &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">francoissanty at gmail.com</A>&gt;
+</I>&gt;<i> 
+</I>&gt;<i>      Hi everybody !
+</I>&gt;<i>      I'm currently working with pycrypto and I want to import public and
+</I>&gt;<i>      private keys from DER files.
+</I>&gt;<i>      I found a piece of code that shows how to proceed, but it isn't working
+</I>&gt;<i>      anyway !
+</I>&gt;<i>      Here is the code I'm using:
+</I>&gt;<i> 
+</I>&gt;<i>        f = file(&quot;./public_key.der&quot;)
+</I>&gt;<i>        key = RSA.importKey(f.read())
+</I>&gt;<i> 
+</I>&gt;<i>      It tells me 'module' object has no attribute 'importKey'. It's rather
+</I>&gt;<i>      strange since the method appears explicitely in the file
+</I>&gt;<i>      /lib/Crypto/PublicKey/RSA.py.
+</I>&gt;<i>      What am I doing wrong ?
+</I>&gt;<i>      Thanks.
+</I>&gt;<i>      --
+</I>&gt;<i>      Franc,ois S.
+</I>&gt;<i> 
+</I>&gt;<i>    --
+</I>&gt;<i>    Franc,ois S.
+</I>
+&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000283.html">[pycrypto] RSA importKey
+</A></li>
+	<LI>Next message: <A HREF="000289.html">[pycrypto] RSA importKey
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#284">[ date ]</a>
+              <a href="thread.html#284">[ thread ]</a>
+              <a href="subject.html#284">[ subject ]</a>
+              <a href="author.html#284">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

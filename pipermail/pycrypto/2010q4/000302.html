@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Pycrypto openssl interoperability
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20openssl%20interoperability&In-Reply-To=AANLkTimuhEpqmv5kLwW_W04Of6_GsJrL51b_w3Eo73Di%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000301.html">
+   <LINK REL="Next"  HREF="000303.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Pycrypto openssl interoperability</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20openssl%20interoperability&In-Reply-To=AANLkTimuhEpqmv5kLwW_W04Of6_GsJrL51b_w3Eo73Di%40mail.gmail.com"
+       TITLE="[pycrypto] Pycrypto openssl interoperability">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Fri Dec 17 10:18:28 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000301.html">[pycrypto] Pycrypto openssl interoperability
+</A></li>
+        <LI>Next message: <A HREF="000303.html">[pycrypto] Pycrypto openssl interoperability
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#302">[ date ]</a>
+              <a href="thread.html#302">[ thread ]</a>
+              <a href="subject.html#302">[ subject ]</a>
+              <a href="author.html#302">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+My guess is that the openssl option &quot;-pass&quot; allows you to enter
+some arbitrary text from which the actual key is *derived*.
+You should try to use &quot;-K&quot; instead of &quot;-pass&quot;.
+
+Legrandin
+
+&gt;<i> Encrypt the file secrets.txt using openssl, AES 128bit CBC. The
+</I>&gt;<i> password is read from the file pass.txt:
+</I>&gt;<i> 
+</I>&gt;<i> openssl enc -aes-128-cbc -pass file:pass.txt -a -in secrets.txt -out
+</I>&gt;<i> secrets.txt.enc
+</I></PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000301.html">[pycrypto] Pycrypto openssl interoperability
+</A></li>
+	<LI>Next message: <A HREF="000303.html">[pycrypto] Pycrypto openssl interoperability
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#302">[ date ]</a>
+              <a href="thread.html#302">[ thread ]</a>
+              <a href="subject.html#302">[ subject ]</a>
+              <a href="author.html#302">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

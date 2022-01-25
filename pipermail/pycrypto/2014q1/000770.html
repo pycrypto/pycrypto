@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] XML Digital Signature (XML-DSig)
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20XML%20Digital%20Signature%20%28XML-DSig%29&In-Reply-To=%3C20140206171231.GC1152%40rivest.dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000768.html">
+   <LINK REL="Next"  HREF="000771.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] XML Digital Signature (XML-DSig)</H1>
+    <B>Dwayne Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20XML%20Digital%20Signature%20%28XML-DSig%29&In-Reply-To=%3C20140206171231.GC1152%40rivest.dlitz.net%3E"
+       TITLE="[pycrypto] XML Digital Signature (XML-DSig)">dlitz at dlitz.net
+       </A><BR>
+    <I>Thu Feb  6 09:12:31 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000768.html">[pycrypto] XML Digital Signature (XML-DSig)
+</A></li>
+        <LI>Next message: <A HREF="000771.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#770">[ date ]</a>
+              <a href="thread.html#770">[ thread ]</a>
+              <a href="subject.html#770">[ subject ]</a>
+              <a href="author.html#770">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Feb 05, 2014 at 11:54:31PM -0300, Anurag Chourasia wrote:
+&gt;<i>Hi All,
+</I>&gt;<i>
+</I>&gt;<i>Is it possible to digitally sign &lt;<A HREF="http://www.w3.org/TR/xmldsig-core/">http://www.w3.org/TR/xmldsig-core/</A>&gt; a XML
+</I>&gt;<i>document using the PyCrypto library, provided that I have the certificate
+</I>&gt;<i>in .pfx format?
+</I>&gt;<i>
+</I>&gt;<i>A sample signed XML is at <A HREF="http://dpaste.com/1587241">http://dpaste.com/1587241</A>
+</I>&gt;<i>
+</I>&gt;<i>I am a little thin on the concept and appreciate your comments and guidance.
+</I>
+Implementing the XML Security spec is way beyond the scope of PyCrypto.  
+See <A HREF="https://www.cs.auckland.ac.nz/~pgut001/pubs/xmlsec.txt">https://www.cs.auckland.ac.nz/~pgut001/pubs/xmlsec.txt</A>
+
+It's a really terrible idea anyway.  Individually, X.509 and XML 
+Canonicalization are complicated, overengineered specifications.  
+Exposing their *combined* complexity to attackers is not advisable.
+
+If, for legacy reasons, you still need to do this, you might be able to 
+use an external library (such as pyxmlsec or pyxser) to do most of the 
+work, but the only recommendation I can give is &quot;don't do that&quot;.
+
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000768.html">[pycrypto] XML Digital Signature (XML-DSig)
+</A></li>
+	<LI>Next message: <A HREF="000771.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#770">[ date ]</a>
+              <a href="thread.html#770">[ thread ]</a>
+              <a href="subject.html#770">[ subject ]</a>
+              <a href="author.html#770">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

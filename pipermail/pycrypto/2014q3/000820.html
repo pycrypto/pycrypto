@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Error trying to install pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Error%20trying%20to%20install%20pycrypto&In-Reply-To=%3C26eddaa669672a7e04c07a77a6a3b045%40amberfisharts.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000818.html">
+   <LINK REL="Next"  HREF="000821.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Error trying to install pycrypto</H1>
+    <B>don at amberfisharts.com</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Error%20trying%20to%20install%20pycrypto&In-Reply-To=%3C26eddaa669672a7e04c07a77a6a3b045%40amberfisharts.com%3E"
+       TITLE="[pycrypto] Error trying to install pycrypto">don at amberfisharts.com
+       </A><BR>
+    <I>Mon Sep 15 16:41:26 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000818.html">[pycrypto] Error trying to install pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000821.html">[pycrypto] Error trying to install pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#820">[ date ]</a>
+              <a href="thread.html#820">[ thread ]</a>
+              <a href="subject.html#820">[ subject ]</a>
+              <a href="author.html#820">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Am 2014-08-29 20:40, schrieb Jason Kojro-Badziak:
+&gt;<i> Hello all:
+</I>&gt;<i>
+</I>&gt;<i> Sorry to bother you, but can anyone give me some help with the
+</I>&gt;<i> following installation error? I'm not sure how to get this running:
+</I>&gt;<i>
+</I>&gt;<i> [<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">root at snmp-sim</A> pycrypto-2.6.1]# python /opt/pycrypto-2.6.1/setup.py 
+</I>&gt;<i> build
+</I>&gt;<i>
+</I>&gt;<i> running build
+</I>&gt;<i>
+</I>&gt;<i> running build_py
+</I>&gt;<i>
+</I>&gt;<i> running build_ext
+</I>&gt;<i>
+</I>&gt;<i> running build_configure
+</I>&gt;<i>
+</I>&gt;<i> warning: GMP or MPIR library not found; Not building
+</I>&gt;<i> Crypto.PublicKey._fastmath.
+</I>&gt;<i>
+</I>&gt;<i> building 'Crypto.Hash._MD2' extension
+</I>&gt;<i>
+</I>&gt;<i> gcc -pthread -fno-strict-aliasing -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2
+</I>&gt;<i> -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m32
+</I>&gt;<i> -march=i686 -mtune=atom -fasynchronous-unwind-tables -D_GNU_SOURCE
+</I>&gt;<i> -fPIC -fwrapv -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions
+</I>&gt;<i> -fstack-protector --param=ssp-buffer-size=4 -m32 -march=i686
+</I>&gt;<i> -mtune=atom -fasynchronous-unwind-tables -D_GNU_SOURCE -fPIC -fwrapv
+</I>&gt;<i> -fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/
+</I>&gt;<i> -I/usr/include/python2.6 -c src/MD2.c -o
+</I>&gt;<i> build/temp.linux-i686-2.6/src/MD2.o
+</I>&gt;<i>
+</I>&gt;<i> src/MD2.c:31:20: error: Python.h: No such file or directory
+</I>&gt;<i>
+</I>&gt;<i> src/MD2.c:131: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before '*' token
+</I>&gt;<i>
+</I>&gt;<i> In file included from src/MD2.c:147:
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:48: error: expected specifier-qualifier-list
+</I>&gt;<i> before 'PyObject_HEAD'
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:59: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before 'PyTypeObject'
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c: In function 'newALGobject':
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:69: warning: implicit declaration of function
+</I>&gt;<i> 'PyObject_New'
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:69: error: expected expression before 'ALGobject'
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c: At top level:
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:76: error: expected ')' before '*' token
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:91: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before '*' token
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:110: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before '*' token
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:122: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before '*' token
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:162: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before '*' token
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:188: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before '*' token
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:190: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before 'ALG_methods'
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:199: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before '*' token
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:225: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before 'ALGtype'
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:271: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before '*' token
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:304: error: array type has incomplete element 
+</I>&gt;<i> type
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:305: error: 'PyCFunction' undeclared here (not in
+</I>&gt;<i> a function)
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:305: error: expected '}' before 'ALG_new'
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c: In function 'init_MD2':
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:339: error: 'PyObject' undeclared (first use in
+</I>&gt;<i> this function)
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:339: error: (Each undeclared identifier is
+</I>&gt;<i> reported only once
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:339: error: for each function it appears in.)
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:339: error: 'm' undeclared (first use in this 
+</I>&gt;<i> function)
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:351: error: 'ALGtype' undeclared (first use in
+</I>&gt;<i> this function)
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:351: error: 'PyType_Type' undeclared (first use
+</I>&gt;<i> in this function)
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:352: warning: implicit declaration of function
+</I>&gt;<i> 'Py_InitModule'
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:356: error: 'o' undeclared (first use in this 
+</I>&gt;<i> function)
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:356: warning: implicit declaration of function
+</I>&gt;<i> 'PyInt_FromLong'
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:356: warning: implicit declaration of function
+</I>&gt;<i> 'PyDict_SetItemString'
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:356: warning: implicit declaration of function
+</I>&gt;<i> 'PyModule_GetDict'
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:356: warning: implicit declaration of function
+</I>&gt;<i> 'Py_DECREF'
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:360: warning: implicit declaration of function
+</I>&gt;<i> 'PyErr_Occurred'
+</I>&gt;<i>
+</I>&gt;<i> src/hash_template.c:361: warning: implicit declaration of function
+</I>&gt;<i> 'Py_FatalError'
+</I>&gt;<i>
+</I>&gt;<i> error: command 'gcc' failed with exit status 1
+</I>&gt;<i>
+</I>&gt;<i> Thank you!
+</I>&gt;<i>
+</I>&gt;<i> Jason Kojro-Badziak
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+It also seems that you do not have gmp installed.
+Many PyCrypto functions will be very slow so it is highly recommended 
+that you install it if you want any kind of performance.
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000818.html">[pycrypto] Error trying to install pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000821.html">[pycrypto] Error trying to install pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#820">[ date ]</a>
+              <a href="thread.html#820">[ thread ]</a>
+              <a href="subject.html#820">[ subject ]</a>
+              <a href="author.html#820">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

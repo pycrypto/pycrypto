@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] PyCrypto status update &amp; release plans
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20PyCrypto%20status%20update%20%26%20release%20plans&In-Reply-To=%3C20130909070306.GA7288%40rivest.dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000693.html">
+   <LINK REL="Next"  HREF="000695.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] PyCrypto status update &amp; release plans</H1>
+    <B>Dwayne Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20PyCrypto%20status%20update%20%26%20release%20plans&In-Reply-To=%3C20130909070306.GA7288%40rivest.dlitz.net%3E"
+       TITLE="[pycrypto] PyCrypto status update &amp; release plans">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Sep  9 00:03:06 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000693.html">[pycrypto] Failed test compiling on Fedora 19
+</A></li>
+        <LI>Next message: <A HREF="000695.html">[pycrypto] Verifying Signatures on Data and Certifictes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#694">[ date ]</a>
+              <a href="thread.html#694">[ thread ]</a>
+              <a href="subject.html#694">[ subject ]</a>
+              <a href="author.html#694">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi folks!  I've begun work on clearing my backlog, and it's been a while 
+since I've sent a status update, so here goes:
+
+== Where we are right now ==
+
+I've received pull requests for a bunch of new features, including AEAD 
+modes (CCM, EAX, GCM, and SIV), HKDF (HMAC KDF), SHA-3 (Keccak), 
+Diffie-Hellman, a better DSA API, scrypt, Salsa20, encrypted PKCS#8 
+private keys, AES-NI support, ElGamal blinding, and ARC4-drop[n].  There 
+have also been many bugfixes and documentation improvements.
+
+However, I don't think PyCrypto's core is in good enough shape for me to 
+feel comfortable adding a lot of new features.  I think I made a few 
+mistakes in some of our newer APIs, which I want to fix before they get 
+too entrenched:
+
+- .verify methods that return False instead of raising an exception
+- PBKDF1 and PBKDF2 default to using SHA1.
+
+We also have a number of overall design issues that affect performance 
+and/or maintainability:
+
+- Our PBKDF2 implementation is about 8.5x slower than OpenSSL[1].  That 
+   means users are going to use 8.5x lower iteration counts than they 
+   should, thus giving attackers who use a faster PBKDF2 implementation a 
+   sizeable advantage.  I've tested a C-based implementation of PBKDF2, 
+   but that currently doesn't help much, because our coding style has 
+   been to write Python wrappers around all of our C code.[2]
+
+- The `b()` function in Python 3 can also be expensive, since it 
+   allocates memory for a new bytestring on every invocation.
+
+My solutions to both of these problems require Python 2.2 or later.
+
+== Roadmap ==
+
+My rough near-term plan looks something like this:
+
+* &quot;2.6.x&quot; branch - Bugfixes &amp; general quality improvements
+     - Last version to support Python 2.1
+     - DeprecationWarnings on some things that suck (e.g. HMAC without 
+       digestmod)
+     - (Maybe) Do something about .verify not raising an exception.
+     - (Maybe) AES-NI and ElGamal blinding
+
+* 2.7 - Remove Python 2.1 compatibility stuff.
+     - Python 2.2 or later required.
+     - New-style classes in C, with the Python code inheriting from them.  
+       (This can be much faster than proxying.)
+     - Replace b() function calls with b&quot;&quot; literals in Python.
+     - Use better idioms for reference counting in C.
+     - Do something about .verify not raising an exception by default.
+     - Fix the remaining bugs that couldn't be fixed in the 2.6.x 
+       series.
+     - (Maybe) Fix the docs.  We need a user FAQ and some contributor 
+       guidelines.
+     - (Maybe) Run cpychecker and/or Coverity Scan.
+
+* 2.8 and beyond - Major new functionality, such as:
+     - AEAD modes
+     - ARC4-drop[n]
+     - Crypto.Random.random performance improvements
+     - Diffie-Hellman support
+     - Encrypted PKCS#8 keys
+     - HKDF
+     - Performance improvements for Crypto.Random.random
+     - scrypt, Salsa20, Camellia, new DSA API
+     - SHA-3 (assuming the standard is released by this time)
+     - Some PyPy-related improvements
+     - etc.
+
+Hopefully I can get to v2.8 fairly quickly.  Depending on how things go, 
+I might release some things sooner (e.g. AEAD support), because I've 
+been promising my colleagues that I'd finish it for a while now, and the 
+major API design work is almost done.
+
+Anyway, that's the current thinking.  This should help me get the 
+project to a point where I'm not so nervous about merging people's 
+contributions.
+
+== Dropping support for Python 2.1 ==
+
+In case you're only reading the headings: I'm planning to drop support 
+for Python 2.1 in PyCrypto 2.7 and later; The 2.6.x series will be the 
+last versions to support Python 2.1.
+
+== Bug tracker migration: Launchpad -&gt; GitHub ===
+
+At some point, I'm thinking of moving the bug tracker from Launchpad to 
+GitHub.  It's weird that some people might have to create accounts on 
+two separate services in order to report a bug and submit a fix for the 
+bug.  On the other hand, GitHub's bug tracker is a lot more immature 
+than Launchpad's, but I think it will be good enough.
+
+== I've moved to the USA ==
+
+I moved to San Francisco last year (July 7, 2012) to work at Dropbox:
+
+- I don't think this affects anyone as far as export control regulations 
+   are concerned (I had already been accepting US-origin patches for a 
+   while before I moved), but just in case---now you know.
+
+- I'll occasionally be getting contributions from my co-workers or other 
+  people that I meet in the Bay Area, so there will inevitably be more 
+  conversations that happen off-list.  I will be encouraging people to 
+  move these conversations online (or at least to summarize the 
+  important points online) so that online contributors are not left in 
+  the dark.
+
+== Conclusion ==
+
+That's it for now.
+
+Cheers!
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+     OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+[1] I compared three PBKDF2-HMAC-SHA1 implementations on my laptop.  For 
+a 48-byte output with 1,000,000 iterations, I got:
+
+     OpenSSL:                   3.9 seconds
+     PyCrypto v2.6:             44.0 seconds    (11x OpenSSL)
+     PyCrypto master:           33.2 seconds    (8.5x OpenSSL)
+     PyCrypto master PBKDF2.c:  32.1 seconds    (8.5x OpenSSL)
+
+[2] See some of the discussion at 
+<A HREF="https://github.com/dlitz/pycrypto/commit/fd398a28e3a227a539b264a9f1e11287b904c7da#commitcomment-2669743">https://github.com/dlitz/pycrypto/commit/fd398a28e3a227a539b264a9f1e11287b904c7da#commitcomment-2669743</A>
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000693.html">[pycrypto] Failed test compiling on Fedora 19
+</A></li>
+	<LI>Next message: <A HREF="000695.html">[pycrypto] Verifying Signatures on Data and Certifictes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#694">[ date ]</a>
+              <a href="thread.html#694">[ thread ]</a>
+              <a href="subject.html#694">[ subject ]</a>
+              <a href="author.html#694">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

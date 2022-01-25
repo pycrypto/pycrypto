@@ -1,0 +1,237 @@
+From dirkx at webweaving.org  Tue Apr 14 20:05:53 2020
+From: dirkx at webweaving.org (Dirk-Willem van Gulik)
+Date: Tue, 14 Apr 2020 22:05:53 +0200
+Subject: [pycrypto] AES128 Countermode in Cryptodome vs
+ OpenSSL/BouncyCastle/Erlang
+Message-ID: <7B5FB5D5-BE14-4850-8D23-EB0683B51FA8@webweaving.org>
+
+I've got a very simple bit of cryptography (part of the Covid-19 european DP3T standard for good privacy/anonymisation[1]).
+
+The key bit of code is just a AES128 used in counter mode; starting at 0.
+
+And I am having a hard time to understand why Cryptodome gives me a different answer than OpenSSL, a 'trivial' AES suite and various other languages. 
+
+I cannot get things to be interoperable.
+
+The code is shown below. The output is:
+
+python/Cryptodome			erlang, java, openssl, tiny-AES, ruby-2.6.3p62
+3b8ce20e3f4601b69aa203ba54873ce0	66e94bd4ef8a2c3b884cfa59ca342b2e
+11587022bd9ee188eb39f367e84bf520	58e2fccefa7e3061367f1d57a4e7455a
+21ea107085daaf10646369d06e1671af	0388dace60b6a392f328c2b971b2fe78
+0a8408cef8f06c19f6a482a0c10f2151	f795aaab494b5923f7fd89ff948bc1e0
+
+Does that ring a bell with anyone ? 
+
+Is there something special with Cryptodome AES ? Some key rounds ? Or am I misreading how the AES call in python works versus  AES_init_ctx_iv().
+
+Any and all help much appreciated !
+
+With kind regards,
+
+
+Dw.
+
+1: https://github.com/DP-3T/documents
+
+
+PYHTON CODE
+
+#!/usr/bin/env python3
+
+from Cryptodome.Util import Counter
+from Cryptodome.Cipher import AES
+
+key = b"0" * 32
+
+prg = AES.new(key, AES.MODE_CTR, counter = Counter.new(128, initial_value=0))
+
+plaintext = b"\0" * 16 * 4
+
+cipher = prg.encrypt(plaintext)
+
+for i in range(4):
+   print("{}".format(cipher[ i * 16: i * 16 + 16 ].hex()))
+
+
+
+C code (openssl, tiny-AES)
+
+#include <stdio.h>
+#include <unistd.h>
+#include <strings.h>
+
+#include <openssl/sha.h>
+#include <openssl/err.h>
+#include <openssl/rand.h>
+#include <openssl/hmac.h>
+#include <openssl/crypto.h>
+
+#include <assert.h>
+#include <strings.h>
+#include <stdlib.h>
+
+// https://github.com/kokke/tiny-AES-c.git - AES128 is de default
+#include "tiny-AES-c/aes.h"
+#else
+#include <openssl/evp.h>
+#endif
+
+    
+int main(int argc, const char * argv[]) {
+
+    unsigned char key[16]; 
+    unsigned char inoutbuf[16*4]; 
+    unsigned char iv[16];
+
+    bzero(key,16);
+    bzero(inoutbuf, 16*4);
+    bzero(iv,16);
+
+#ifdef TINY
+    struct AES_ctx ctx;
+    AES_init_ctx_iv(&ctx, key, iv);
+
+    AES_CTR_xcrypt_buffer(&ctx, inoutbuf, 16*4);
+
+    for(int i = 0; i < 4; i++) {
+        for(int j = 0; j < 16; j++) 
+		printf("%02x", inoutbuf[ i*16+j ]);
+        printf("\n");
+    };
+#else    
+    unsigned char * out = malloc(16*4);
+    assert(out);
+
+    const EVP_CIPHER * cipher = EVP_aes_128_ctr();
+    assert(EVP_CIPHER_key_length(cipher) == 128/8);
+    assert(EVP_CIPHER_iv_length(cipher) == 128/8);
+    
+    EVP_CIPHER_CTX * ctx;
+    assert(ctx = EVP_CIPHER_CTX_new());
+    EVP_CIPHER_CTX_init(ctx);
+    
+    assert(1 == EVP_EncryptInit(ctx, cipher, key, iv));
+    EVP_CIPHER_CTX_set_padding(ctx, 0);
+
+    int len = 0, len2 = 0;
+        
+    assert(1 == EVP_EncryptUpdate(ctx, out, &len, inoutbuf, 16*4));
+    assert(len == 16*4);
+    assert(1 == EVP_EncryptFinal(ctx, out + len, &len2));
+    assert(len + len2 == 16*4);
+
+    for(int i = 0; i < 4; i++) {
+        for(int j = 0; j < 16; j++) 
+		printf("%02x", out[ i*16+j ]);
+        printf("\n");
+    }
+    
+
+    EVP_CIPHER_CTX_cleanup(ctx);
+    EVP_CIPHER_CTX_free(ctx);
+#endif
+ 
+    return 0;
+}
+
+
+From ajm at flonidan.dk  Wed Apr 15 11:07:25 2020
+From: ajm at flonidan.dk (Anders Munch)
+Date: Wed, 15 Apr 2020 11:07:25 +0000
+Subject: [pycrypto] AES128 Countermode in Cryptodome vs
+ OpenSSL/BouncyCastle/Erlang
+Message-ID: <AM0PR05MB65316709C2D088AD23EDE6A6B4DB0@AM0PR05MB6531.eurprd05.prod.outlook.com>
+
+Dirk-Willem van Gulik wrote:
+> key = b"0" * 32
+
+A 256-bit key for AES-128? You may have better results with:
+
+key = b"\0" * 16
+
+regards, Anders
+
+
+From beargan at hotmail.com  Wed Jul 15 05:58:14 2020
+From: beargan at hotmail.com (=?utf-8?B?5aSp5LiK54Gr?=)
+Date: Wed, 15 Jul 2020 13:58:14 +0800
+Subject: [pycrypto] macOS,
+ pip3 install pycrypto: fatal error: 'gmp.h' file not found?
+Message-ID: <HK0PR06MB3795D97DA2B730358763DAAFB37E0@HK0PR06MB3795.apcprd06.prod.outlook.com>
+
+macOS: 
+pip3 install pycrypto
+
+ fatal error: 'gmp.h' file not found?
+
+
+Error message:
+///////////////////////////////////
+xcrun -sdk macosx clang -arch x86_64 -Wno-unused-result -Wsign-compare -Wunreachable-code -fno-common -dynamic -fwrapv -Wall -iwithsysroot/System/Library/Frameworks/System.framework/PrivateHeaders -iwithsysroot/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.7/Headers -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/ -I/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.7/include/python3.7m -c src/_fastmath.c -o build/temp.macosx-10.14-x86_64-3.7/src/_fastmath.o
+    src/_fastmath.c:36:11: fatal error: 'gmp.h' file not found
+    # include <gmp.h>
+              ^~~~~~~
+    1 error generated.
+    error: command 'xcrun' failed with exit status 1
+
+
+///////////////////////////////////
+
+How to install pycrypto ?
+
+
+--------------------------------------------------
+Best regards
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20200715/4a1588b7/attachment.htm>
+
+From martin at falatic.com  Wed Jul 15 07:57:06 2020
+From: martin at falatic.com (Martin Falatic)
+Date: Wed, 15 Jul 2020 00:57:06 -0700
+Subject: [pycrypto] macOS,
+ pip3 install pycrypto: fatal error: 'gmp.h' file not found?
+In-Reply-To: <HK0PR06MB3795D97DA2B730358763DAAFB37E0@HK0PR06MB3795.apcprd06.prod.outlook.com>
+References: <HK0PR06MB3795D97DA2B730358763DAAFB37E0@HK0PR06MB3795.apcprd06.prod.outlook.com>
+Message-ID: <c10c4018b79431041ea68c8b26361d2a@falatic.com>
+
+The best way to install pycrypto is not to (it hasn't been updated since
+2013).
+
+Instead, use the drop-in replacement pycryptodome! See the docs for more
+information and where to find support for it if needed.
+
+https://www.pycryptodome.org/en/latest/ 
+
+On 2020-07-14 22:58, ??? wrote:
+
+> macOS:  
+> pip3 install pycrypto 
+> 
+> fatal error: 'gmp.h' file not found? 
+> 
+> Error message: 
+> /////////////////////////////////// 
+> 
+> xcrun -sdk macosx clang -arch x86_64 -Wno-unused-result -Wsign-compare -Wunreachable-code -fno-common -dynamic -fwrapv -Wall -iwithsysroot/System/Library/Frameworks/System.framework/PrivateHeaders -iwithsysroot/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.7/Headers -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/ -I/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.7/include/python3.7m -c src/_fastmath.c -o build/temp.macosx-10.14-x86_64-3.7/src/_fastmath.o 
+> src/_fastmath.c:36:11: fatal error: 'gmp.h' file not found 
+> # include <gmp.h> 
+> ^~~~~~~ 
+> 1 error generated. 
+> error: command 'xcrun' failed with exit status 1 
+> 
+> /////////////////////////////////// 
+> 
+> How to install pycrypto ? 
+> 
+> -------------------------------------------------- 
+> Best regards 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20200715/86fc622a/attachment.htm>
+

@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Security Notes for Public-key Algorithms</TITLE>
+<META NAME="description" CONTENT="Security Notes for Public-key Algorithms">
+<META NAME="keywords" CONTENT="pycrypt">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="pycrypt.css">
+
+<LINK REL="previous" HREF="node16.html">
+<LINK REL="up" HREF="node15.html">
+<LINK REL="next" HREF="node18.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html261"
+  HREF="node18.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html257"
+  HREF="node15.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html253"
+  HREF="node16.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html259"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html262"
+  HREF="node18.html">Crypto.Util: Odds and Ends</A>
+<B> Up:</B> <A NAME="tex2html258"
+  HREF="node15.html">Crypto.PublicKey: Public-Key Algorithms</A>
+<B> Previous:</B> <A NAME="tex2html254"
+  HREF="node16.html">The ElGamal and DSA</A>
+ &nbsp; <B>  <A NAME="tex2html260"
+  HREF="node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00062000000000000000">
+Security Notes for Public-key Algorithms</A>
+</H2>
+Any of these algorithms can be trivially broken; for example, RSA can be
+broken by factoring the modulus <SPAN  CLASS="textit">n</SPAN> into its two prime factors.
+This is easily done by the following code:
+
+<P>
+<PRE>
+for i in range(2, n): 
+    if (n%i)==0: 
+        print i, 'is a factor' 
+        break
+</PRE>
+
+<P>
+However, <SPAN  CLASS="textit">n</SPAN> is usually a few hundred bits long, so this simple
+program wouldn't find a solution before the universe comes to an end.
+Smarter algorithms can factor numbers more quickly, but it's still
+possible to choose keys so large that they can't be broken in a
+reasonable amount of time.  For ElGamal and DSA, discrete logarithms are
+used instead of factoring, but the principle is the same.
+
+<P>
+Safe key sizes depend on the current state of number theory and
+computer technology.  At the moment, one can roughly define three
+levels of security: low-security commercial, high-security commercial,
+and military-grade.  For RSA, these three levels correspond roughly to
+768, 1024, and 2048-bit keys.
+
+<P>
+<BR><HR>
+
+</BODY>
+</HTML>

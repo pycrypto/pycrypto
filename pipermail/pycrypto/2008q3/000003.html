@@ -1,0 +1,263 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] thinking of switching to git (was: What to do about	RandomPool)
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20thinking%20of%20switching%20to%20git%20%28was%3A%20What%20to%20do%20about%0A%09RandomPool%29&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000002.html">
+   <LINK REL="Next"  HREF="000004.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] thinking of switching to git (was: What to do about	RandomPool)</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20thinking%20of%20switching%20to%20git%20%28was%3A%20What%20to%20do%20about%0A%09RandomPool%29&In-Reply-To="
+       TITLE="[pycrypto] thinking of switching to git (was: What to do about	RandomPool)">dlitz at dlitz.net
+       </A><BR>
+    <I>Wed Aug  6 12:08:20 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000002.html">[pycrypto] What to do about RandomPool
+</A></li>
+        <LI>Next message: <A HREF="000004.html">[pycrypto] Add support for Camellia block cipher to pycrypto 2.0.1.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3">[ date ]</a>
+              <a href="thread.html#3">[ thread ]</a>
+              <a href="subject.html#3">[ subject ]</a>
+              <a href="author.html#3">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Aug 05, 2008 at 11:48:52PM -0400, Dwayne C. Litzenberger wrote:
+&gt;<i> But first I need to recover my Fortuna implementation from an older copy, 
+</I>&gt;<i> since &quot;bzr rebase&quot; just deleted my current version.  I have tried to be 
+</I>&gt;<i> patient with bzr, but this might be the last straw that makes me finally 
+</I>&gt;<i> switch to git.
+</I>
+Here's the bug report against the Debian bzr-rebase package, if anyone 
+cares:
+
+    <A HREF="http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=493945">http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=493945</A>
+
+I'm really getting fed up with bzr.  Compared to Subversion, bzr was a 
+dream, but I've lately been using git 1.5 for other projects, and now I 
+find that bzr is doing more to interrupt my workflow than to help me get 
+work done.
+
+I'm thinking of dropping bzr and switching PyCrypto over to git 
+&lt;<A HREF="http://git.or.cz/">http://git.or.cz/</A>&gt;.  Would anyone be terribly inconvenienced if I did?  I 
+want to make things easy for you guys, but unless somebody cares, I'd 
+rather be working with git.
+
+There are a few reasons why I'm planning to replace bzr with git:
+
+
+=== 1. Missing/Useless OpenPGP signature support ===
+
+One thing that is important to me for PyCrypto is making sure that users, 
+developers, and distributors actually get the real PyCrypto source code, 
+and not some version that has been tampered with as it travelled over the 
+Internet.  (From what I understand, man-in-the-middle attacks are pretty 
+easy on open Wi-Fi networks, for example, and DNS cache poisoning has 
+recently been a popular topic for discussion.)  As far as I know, such 
+tampering hasn't been much of a problem so far, but I expect active attacks 
+to become more common in the future, and PyCrypto could be a particularly 
+attractive target.  I don't want PyCrypto's users to be the first 
+casualties.
+
+Git has a feature that lets you tag particular revisions, and sign those 
+tags using GnuPG.  Because of the way git is designed (it uses content 
+addressing), this effectively authenticates not only all the files in the 
+tagged commit, but also all previous commits in the branch.
+
+Unfortunately, bzr doesn't support signatures out of the box, and John A 
+Meinel's experimental &quot;bzr-signing&quot; plugin 
+&lt;<A HREF="https://code.launchpad.net/~jameinel/+junk/bzr-signing">https://code.launchpad.net/~jameinel/+junk/bzr-signing</A>&gt; is neither 
+trustworthy (see below) nor suitable for my workflow.
+
+The bzr-signing plugin allows people to sign their *commits* using GnuPG, 
+but as far as I can tell, it doesn't support signing *tags*.  My workflow 
+typically consists of something like this:
+
+    1. bzr branch
+    2. hack hack hack
+    3. bzr commit
+    4. hack hack hack
+    5. bzr commit
+    6. ...
+    7. bzr rebase --interactive
+    8. review the changes
+    9. bzr push to some public repository
+    10. go to step 2
+
+If I want to sign my changes using the bzr-signing plugin, I basically have
+two options:
+    
+    1. sign each individual commit as it happens by changing the policy in 
+       my ~/.bazaar/bazaar.conf file; or
+    
+    2. use the horrible &quot;bzr sign-my-commits&quot; command, which signs every 
+       single commit that happens to have my name attached to it (including 
+       commits incorporated using &quot;bzr merge&quot;), whether I actually made the 
+       commit or not.  
+
+Option #1 is ruled out because I don't want to sign any changes until after 
+I've reviewed them---right before I release them to the world---not every 
+time I make a private commit.  Option #2 is out of the question, because it 
+leaves open a fairly wide security hole: I might end up retroactively 
+signing commits attributed to me that I never actually made.  To make 
+matters worse, it's not clear how to extract signatures from a repository 
+so they can be checked independently, so I doubt anyone will ever rely on 
+signatures generated using bzr-signing anyway.
+
+Rather than giving up and moving everything over to git, I was originally 
+planning to run &quot;bzr testament --long --strict&quot; on my releases, use GnuPG 
+to sign the result, and include the signatures somewhere alongside the 
+PyCrypto source code.  I even wrote a script to convert the output of these 
+files into something that could be (partially) checked using the 
+widely-available &quot;sha1sums&quot; tool.  That still wouldn't protect the revision 
+history, but at least it would give us some reliable checkpoints.  On the 
+other hand, the probability that anyone else would bother checking these 
+signatures is pretty well near zero.
+
+PyCrypto can't provide security if everyone ends up unwittingly running a 
+compromised version.
+
+
+=== 2. No interactive rebase ===
+
+In the previous text, I mentioned the following step in my workflow:
+
+    7. bzr rebase --interactive
+
+Unfortunately, that command doesn't exist; bzr-rebase doesn't support 
+interactive rebasing like git does.
+
+Interactive rebasing allows me to edit the revision history for stuff I 
+haven't published yet.  Why would I want to do that?  To make peer review 
+easier.  When I publish changes to PyCrypto, I want other people to be able 
+to review them easily, but that's going to be hard if they're constantly 
+being distracted by meaningless checkpoints, reverts, and typos that get 
+corrected a few commits later.
+
+
+=== 3. &quot;bzr viz&quot; is clunky compared to gitk ===
+
+Use both tool; You'll see what I mean.  In &quot;bzr viz&quot;, you have to 
+double-click on each change to see *what* changed, which makes reviewing 
+several commits a pain.  I searched Google for &quot;gitk bzr&quot;, and found out 
+that apparently somebody wrote some code to fix this, but the bzr-gtk 
+developers weren't interested in it because they weren't sure if it was a 
+good idea.
+
+Again, this impacts peer review.  PyCrypto will suffer if it's not easy to 
+review.
+
+
+=== 4. No support for cherry picking ===
+
+When I started working on PyCrypto, I decided to go back to the latest 
+release (pycrypto-2.0.1) and start my work from there.  The idea was to 
+cherry-pick patches from a several people's trees, reviewing them in the 
+process.  I used &quot;bzr merge -c&quot;, only to find out that bzr doesn't actually 
+track cherry-picked merges.  To work around this, I ended up copying chunks 
+of other people's commit logs into my commit messages by hand.  That will 
+probably make a mess for anyone who already has a PyCrypto bzr tree and 
+wants to pull in my changes.
+
+
+=== 5. bzr-rebase deleted my Fortuna implementation ===
+
+See the beginning of this post.  This might be the proverbial straw that 
+broke the camel's back.
+
+
+=== Conclusion ===
+
+I originally started using bzr because of an article by Mark Shuttleworth:
+
+    &quot;Choose lossless VCS tools if you have that luxury&quot;
+    <A HREF="http://www.markshuttleworth.com/archives/125">http://www.markshuttleworth.com/archives/125</A>
+
+Unfortunately, bzr doesn't support cherry-picking, it doesn't try to 
+guarantee data integrity through content addressing, and now it just 
+deleted my files.  I don't think explicitly tracking renames is enough to 
+make bzr qualify a &quot;lossless VCS tool&quot;.  Besides, what good is a lossless 
+VCS tool if the information it stores isn't readily available when I need 
+it?
+
+While searching for ways to do certain things in bzr, I found an 
+interesting article by someone who goes by the name &quot;Casey&quot;:
+
+    <A HREF="http://screwyouenterpriseedition.blogspot.com/2008/06/i-cant-stand-second-best.html">http://screwyouenterpriseedition.blogspot.com/2008/06/i-cant-stand-second-best.html</A>
+
+While I might disagree with the author's evaluation of Python, I think his 
+analysis of bzr was spot-on (quoted here):
+
+    &quot;Bzr does not have cherry pick. It does not have interactive rebase.  
+    There were ways to pull the changes out of my working tree, but no way 
+    to rearrange the history to be a strict superset of my upstream. The 
+    operation seemed so trivial, and yet it was impossible. Suddenly it was 
+    all so clear to me. The &quot;advanced features&quot; that bzr admitted to 
+    lacking and claimed it was just as well off without weren't advanced at 
+    all. They were the whole point! Git's history manipulation was the 
+    reason I used it. All bzr does is track your changes. Git actually lets 
+    you *manage* them.&quot;
+
+Whatever you might think about the Linux kernel, Linux developers have a 
+lot of experience coping with complex workflows.  I think their experience 
+is evident in git.  By contrast, bzr seems immature, and I'm not convinced 
+that bzr developers are going to change that any time soon.
+
+Bart Trojanowski made a nice video tutorial about working with git.  It's a 
+little over two hours, but I highly recommend it if you've never used git 
+before:
+
+    <A HREF="http://excess.org/article/2008/07/ogre-git-tutorial/">http://excess.org/article/2008/07/ogre-git-tutorial/</A>
+
+Also, if you used versions of git prior to 1.5 but hated the interface, I 
+suggest looking at git 1.5.  Coming from a bzr background, git 1.5 was easy 
+for me to learn, but I'm told that that previous versions had a much uglier 
+interface with a steeper learning curve.
+
+At this point, I might still be able to be convinced to stay with bzr for a 
+few releases, or maybe to try Mercurial, but unless somebody convinces me 
+otherwise, I'm switching to git.
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20080806/b6369da8/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20080806/b6369da8/attachment.pgp</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000002.html">[pycrypto] What to do about RandomPool
+</A></li>
+	<LI>Next message: <A HREF="000004.html">[pycrypto] Add support for Camellia block cipher to pycrypto 2.0.1.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#3">[ date ]</a>
+              <a href="thread.html#3">[ thread ]</a>
+              <a href="subject.html#3">[ subject ]</a>
+              <a href="author.html#3">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

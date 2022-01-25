@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20/%20OAEP%20-%20ValueError%3A%20Plaintext%20is%20too%20long.&In-Reply-To=%3C09787EF419216C41A903FD14EE5506DD0313F5F7AD%40AUSX7MCPC103.AMER.DELL.COM%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000573.html">
+   <LINK REL="Next"  HREF="000575.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.</H1>
+    <B>Paul_Koning at Dell.com</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20/%20OAEP%20-%20ValueError%3A%20Plaintext%20is%20too%20long.&In-Reply-To=%3C09787EF419216C41A903FD14EE5506DD0313F5F7AD%40AUSX7MCPC103.AMER.DELL.COM%3E"
+       TITLE="[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.">Paul_Koning at Dell.com
+       </A><BR>
+    <I>Fri Apr 20 12:59:36 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000573.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+        <LI>Next message: <A HREF="000575.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#574">[ date ]</a>
+              <a href="thread.html#574">[ thread ]</a>
+              <a href="subject.html#574">[ subject ]</a>
+              <a href="author.html#574">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I assume you meant in step 4 &quot;encrypt the secret (but NOT the payload) with RSA&quot;.  Otherwise you've double-encrypted stuff and consumed vast quantities of time doing bulk encryption with RSA.
+
+If so, you have recreated approximately what PGP does, because it too doesn't rely on a real time session.  You might take a look at the PGP RFC for a detailed recipe to follow.
+
+               paul
+
+From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A> [mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>] On Behalf Of Antonio Teixeira
+Sent: Friday, April 20, 2012 12:49 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+
+Hello Legrandin &amp; Others.
+
+I'm currently trying to implement the following :
+
+The &quot;proper&quot; way to do encryption would be to create a random AES
+session key (16 bytes), encrypt it with RSA (hopefully at least 2048
+bit long), send it, pad the data, encrypt it with AES, send it.
+
+Ok So ..
+ - Create A Random AES 16 Bytes ( I'm assuming this will be the &quot;secret&quot;)
+- Pad The Payload
+- Encrypt Using AES
+- Encrypt The Secret +  Payload With the RSA Key
+- Make A Signature Of The Entire &quot;Encrypted Payload&quot;
+- Append it to the &quot;Encrypted Payload&quot;
+Send it ....
+
+Recv it ..
+Make the reverse process.
+
+One thing i can't use the Normal SSL/TLS type of &quot;session key&quot; since there is no state across requests or during the handshake.
+Meaning &quot;one worker can receive the request but another one can answer it and there is no shared memory between the two.&quot;
+2012/4/12 Antonio Teixeira &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">eagle.antonio at gmail.com</A>&lt;mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">eagle.antonio at gmail.com</A>&gt;&gt;
+Legrandin thank you for your help.
+When i have time i will put something on pastebin so it can serve as example for future members that require this type of solution :)
+
+Regards
+A/T
+
+2012/4/11 Legrandin &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">gooksankoo at hoiptorrow.mailexpire.com</A>&lt;mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">gooksankoo at hoiptorrow.mailexpire.com</A>&gt;&gt;
+&gt;<i> So after a small search i found out that if i increase the RSA Modulus i'm
+</I>&gt;<i> able to encrypt larger number of bits ( makes sense )  but this feels dirty.
+</I>&gt;<i>
+</I>&gt;<i> What do your guys recommend ?
+</I>&gt;<i>
+</I>&gt;<i> Breaking the data in chunks and encrypting part by part joining it all in a
+</I>&gt;<i> buffer and send it down the socket all in one with the other server
+</I>&gt;<i> decrypting part by part and merging the data again ?
+</I>&gt;<i>
+</I>&gt;<i> P.S - I dont mind fishing by myself just trying to understand the best &quot;way
+</I>&gt;<i> / more correct way &quot; to do it :)
+</I>Hi Antonio,
+
+Increasing the RSA key length is not &quot;dirty&quot;: it simply increases
+security (and incidentally useful payload size) at the expense of
+decryption speed.
+If decryption speed is not that important to you, and you have a clear
+idea on how long you data can be at most, go ahead and increase the
+key size. The time you gain by taking this approach can be spent on
+important tasks like making the private key secure, or adding some
+form of authentication to your protocol.
+
+The &quot;proper&quot; way to do encryption would be to create a random AES
+session key (16 bytes), encrypt it with RSA (hopefully at least 2048
+bit long), send it, pad the data, encrypt it with AES, send it.
+Additionally, you should also sign the data and send the signature
+along.
+
+At the receiving end, you decrypt the session key with RSA, decrypt
+the data with AES, unpad the data, and verify its signature.
+_______________________________________________
+pycrypto mailing list
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>&lt;mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>&gt;
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20120420/130e2f16/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20120420/130e2f16/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000573.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+	<LI>Next message: <A HREF="000575.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#574">[ date ]</a>
+              <a href="thread.html#574">[ thread ]</a>
+              <a href="subject.html#574">[ subject ]</a>
+              <a href="author.html#574">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

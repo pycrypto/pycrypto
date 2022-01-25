@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] same RSA.construct fails on OSX
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20same%20RSA.construct%20fails%20on%20OSX&In-Reply-To=%3C4F197876.8030000%40nagafix.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000542.html">
+   <LINK REL="Next"  HREF="000544.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] same RSA.construct fails on OSX</H1>
+    <B>Antoine Martin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20same%20RSA.construct%20fails%20on%20OSX&In-Reply-To=%3C4F197876.8030000%40nagafix.co.uk%3E"
+       TITLE="[pycrypto] same RSA.construct fails on OSX">antoine at nagafix.co.uk
+       </A><BR>
+    <I>Fri Jan 20 09:21:42 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000542.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+        <LI>Next message: <A HREF="000544.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#543">[ date ]</a>
+              <a href="thread.html#543">[ thread ]</a>
+              <a href="subject.html#543">[ subject ]</a>
+              <a href="author.html#543">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 01/20/2012 08:33 PM, Legrandin wrote:
+&gt;<i> Hi Antoine,
+</I>&gt;<i> 
+</I>&gt;&gt;<i> The following code runs fine on a number of platforms, but fails on OSX
+</I>&gt;&gt;<i> (I believe it may have started failing after I added gmp/fastmath)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> m = 6297666796491112384985580404233259073480862181882692247331293512441057109594629677274269303703414891974879&gt; e = 65537
+</I>&gt;&gt;<i> p = 0
+</I>&gt;&gt;<i> k = RSA.construct((long(m), long(e), long(p)))
+</I>&gt;&gt;<i> print(&quot;recreate_key=%s&quot; % k)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On OSX I get:
+</I>&gt;&gt;<i> ValueError: Unable to compute factors p and q from exponent d.
+</I>&gt;<i> 
+</I>&gt;<i> This is the correct behavior with current pycrypto version (2.5), no
+</I>&gt;<i> matter if you use fast or slow math.
+</I>&gt;<i> Your code is trying to reconstruct an RSA private key, but you pass a
+</I>&gt;<i> private exponent (which you call p, even if typically is called d)
+</I>&gt;<i> with value 0. That is an error, the private exponent must be e^{-1}
+</I>&gt;<i> mod phi(m), which clearly cannot be zero.
+</I>I am re-constructing only the public part of the RSA key as the private
+exponent is not available to this code (which runs on the client)
+
+I've just found that simply removing p (or 'd' as it should be called..)
+is enough to fix it, so the code becomes:
+if d==0:
+  k = RSA.construct((long(m), long(e)))
+else:
+  k = RSA.construct((long(m), long(e), long(d)))
+
+&gt;<i> API is described here
+</I>&gt;<i> <A HREF="https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA-module.html#construct">https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA-module.html#construct</A>
+</I>&gt;<i> .
+</I>&gt;<i> 
+</I>&gt;<i> With previous version you had to provide at least 5 elements,
+</I>&gt;<i> m+e+d+p+q (I don't recall how they complain if you provide only 3).
+</I>According to the docs, it's 2 minimum (as above), anyone know if the
+code above is going to have problems running on distros with old
+versions of pycrypto?
+
+&gt;&gt;<i> What can I do to correct this (and still use fastmath)?
+</I>&gt;&gt;<i> Shouldn't this be detected as a problem with fastmath, at build time?
+</I>&gt;<i> 
+</I>&gt;<i> There is nothing to correct I think.
+</I>You are right, I was misled by the fastmath when in fact it was pycrypto
+2.5 on osx and 2.4.1 elsewhere..
+
+Thanks
+Antoine
+</PRE>
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000542.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+	<LI>Next message: <A HREF="000544.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#543">[ date ]</a>
+              <a href="thread.html#543">[ thread ]</a>
+              <a href="subject.html#543">[ subject ]</a>
+              <a href="author.html#543">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

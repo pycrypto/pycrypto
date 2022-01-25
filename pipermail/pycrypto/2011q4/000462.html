@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20setup.py%20fails%20to%20find%20gmp%20on%20Debian/Ubuntu&In-Reply-To=20111011040738.GA30325%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000461.html">
+   <LINK REL="Next"  HREF="000481.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] setup.py fails to find gmp on Debian/Ubuntu</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20setup.py%20fails%20to%20find%20gmp%20on%20Debian/Ubuntu&In-Reply-To=20111011040738.GA30325%40rivest.dlitz.net"
+       TITLE="[pycrypto] setup.py fails to find gmp on Debian/Ubuntu">sebastian+lists at ramacher.at
+       </A><BR>
+    <I>Tue Oct 11 07:39:41 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000461.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+        <LI>Next message: <A HREF="000481.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#462">[ date ]</a>
+              <a href="thread.html#462">[ thread ]</a>
+              <a href="subject.html#462">[ subject ]</a>
+              <a href="author.html#462">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 10/11/2011 06:07 AM, Dwayne C. Litzenberger wrote:
+&gt;<i> Ok, this looks a lot like something an autoconf would do.  Rather than 
+</I>&gt;<i> writing our own custom version of autoconf in setup.py, I've just added a 
+</I>&gt;<i> configure script.  Can you try it out?
+</I>&gt;<i> 
+</I>&gt;<i>      <A HREF="https://github.com/dlitz/pycrypto.git">https://github.com/dlitz/pycrypto.git</A>
+</I>&gt;<i> 
+</I>&gt;<i> It works for me on Debian wheezy amd64 with libgmp-dev installed.
+</I>
+I tested it on a bunch of different systems (including systems with and without
+Multiarch) and GMP has been detected correctly all the time.
+
+In configure.ac:5: shouldn't FULL-PACKAGE-NAME, VERSION and BUG-REPORT-ADDRESS
+be replaced with the actual values?
+
+Regards
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000461.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+	<LI>Next message: <A HREF="000481.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#462">[ date ]</a>
+              <a href="thread.html#462">[ thread ]</a>
+              <a href="subject.html#462">[ subject ]</a>
+              <a href="author.html#462">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

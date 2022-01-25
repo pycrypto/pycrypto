@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto]  Re: jibberish output with blowfish cbc
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20%20Re%3A%20jibberish%20output%20with%20blowfish%20cbc&In-Reply-To=20090214193711.GB13702%40nerdshack.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000073.html">
+   <LINK REL="Next"  HREF="000075.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto]  Re: jibberish output with blowfish cbc</H1>
+    <B>tannhauser</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20%20Re%3A%20jibberish%20output%20with%20blowfish%20cbc&In-Reply-To=20090214193711.GB13702%40nerdshack.com"
+       TITLE="[pycrypto]  Re: jibberish output with blowfish cbc">tannhauser at nerdshack.com
+       </A><BR>
+    <I>Sat Feb 14 13:59:04 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000073.html">[pycrypto] jibberish output with blowfish cbc
+</A></li>
+        <LI>Next message: <A HREF="000075.html">[pycrypto] building pycrypto on AIX fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#74">[ date ]</a>
+              <a href="thread.html#74">[ thread ]</a>
+              <a href="subject.html#74">[ subject ]</a>
+              <a href="author.html#74">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>okay, 
+
+another case, where i had to write to a list before i see my error. 
+if i see this right, when i decrypted, decrypt() had no idea what the iv is.
+si, changing this solved my problem.
+
+thanks anyway.
+
+
+On Sat, 14.02, 20:37, tannhauser wrote:
+&gt;<i> hello,
+</I>
+&gt;<i> i use the latest release of amk.ca, v2.0.1 and python 2.6.1. 
+</I>&gt;<i> i have a problem when using blowfish with the cbc-mode. 
+</I>
+&gt;<i> some example code:
+</I>
+&gt;<i> [code]
+</I>&gt;<i> #!/usr/bin/env python
+</I>&gt;<i> from Crypto.Cipher import Blowfish
+</I>
+&gt;<i> key = 'xyz123'
+</I>&gt;<i> iv = 'aaaaaaaa'
+</I>&gt;<i> obj = Blowfish.new(key, Blowfish.MODE_CBC, iv)
+</I>&gt;<i> # use misspelling as padding technique
+</I>&gt;<i> plain = 'yet another test sentenc'
+</I>&gt;<i> #encrypt
+</I>&gt;<i> ciph = obj.encrypt(plain)
+</I>&gt;<i> # decrypt
+</I>&gt;<i> plain = obj.decrypt(ciph)
+</I>&gt;<i> print plain
+</I>&gt;<i> [/code]
+</I>
+&gt;<i> obviously, &quot;print plain&quot; should give me &quot;yet another test sentenc&quot;
+</I>&gt;<i> well, it does not, instead the first 8 characters are something
+</I>&gt;<i> jibberish, the rest is ok: &quot;&#1702;&#188;obf&#178;her test sentenc&quot;. i don't have that
+</I>&gt;<i> problem with MODE_ECB.
+</I>
+&gt;<i> any ideas?
+</I>
+&gt;<i> th
+</I>
+&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>---end quoted text---
+
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000073.html">[pycrypto] jibberish output with blowfish cbc
+</A></li>
+	<LI>Next message: <A HREF="000075.html">[pycrypto] building pycrypto on AIX fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#74">[ date ]</a>
+              <a href="thread.html#74">[ thread ]</a>
+              <a href="subject.html#74">[ subject ]</a>
+              <a href="author.html#74">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

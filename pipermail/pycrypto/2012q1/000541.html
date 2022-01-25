@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] same RSA.construct fails on OSX
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20same%20RSA.construct%20fails%20on%20OSX&In-Reply-To=%3C4F1941D0.90208%40nagafix.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000540.html">
+   <LINK REL="Next"  HREF="000542.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] same RSA.construct fails on OSX</H1>
+    <B>Antoine Martin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20same%20RSA.construct%20fails%20on%20OSX&In-Reply-To=%3C4F1941D0.90208%40nagafix.co.uk%3E"
+       TITLE="[pycrypto] same RSA.construct fails on OSX">antoine at nagafix.co.uk
+       </A><BR>
+    <I>Fri Jan 20 05:28:32 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000540.html">[pycrypto] install error on cygwin
+</A></li>
+        <LI>Next message: <A HREF="000542.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#541">[ date ]</a>
+              <a href="thread.html#541">[ thread ]</a>
+              <a href="subject.html#541">[ subject ]</a>
+              <a href="author.html#541">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+The following code runs fine on a number of platforms, but fails on OSX
+(I believe it may have started failing after I added gmp/fastmath)
+What can I do to correct this (and still use fastmath)?
+Shouldn't this be detected as a problem with fastmath, at build time?
+
+Thanks
+Antoine
+
+
+m =
+629766679649111238498558040423325907348086218188269224733129351244105710959462967727426930370341489197487946708238066556950578682517049084284627148972264605113784747720130519177869497267020924781291790094997339549869355397073918186703997176049088081511002407747280387474188814155322164004592203947956666446679911079370919628553292414758816236523143813172270937087998526202784084227959216322573574920327890370816769330319071839804199047829276060309808407656446194514703386443902285279304515506032724512568174086418987683597624024690041934271950407353689186026761674435601472279820132018723994638638529218654802253328472835286703009191472742728455750164235974198637976472189699792868379926131317325356465106086680100646821821963737031575472348883325664261297004666339615802496152784519118880977755533563685101845377964168060854967493445250284560343344168403344027494999240899050527363920884229396569625853414836205347273737760224895919785039743043508962881271486966985770223818841929372538297
+575813176170657958303457980304808701531164558151473508424104792451710536820408218767935005638215286167267770783159179267710364049115204912542321635413000325087202501078130431808508191077784643242019514039713356650998482225916863499677850018987
+e = 65537
+p = 0
+k = RSA.construct((long(m), long(e), long(p)))
+print(&quot;recreate_key=%s&quot; % k)
+
+On OSX I get:
+ValueError: Unable to compute factors p and q from exponent d.
+</PRE>
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000540.html">[pycrypto] install error on cygwin
+</A></li>
+	<LI>Next message: <A HREF="000542.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#541">[ date ]</a>
+              <a href="thread.html#541">[ thread ]</a>
+              <a href="subject.html#541">[ subject ]</a>
+              <a href="author.html#541">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

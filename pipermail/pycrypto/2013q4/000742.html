@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] DES3 problem
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20DES3%20problem&In-Reply-To=%3CCAEncD4d0HsBypa_74X0xrWkpqPBufizFfmKWhyfdJQdyH_%3DaDg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000741.html">
+   <LINK REL="Next"  HREF="000743.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] DES3 problem</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20DES3%20problem&In-Reply-To=%3CCAEncD4d0HsBypa_74X0xrWkpqPBufizFfmKWhyfdJQdyH_%3DaDg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] DES3 problem">dave.pawson at gmail.com
+       </A><BR>
+    <I>Sat Nov 30 01:09:02 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000741.html">[pycrypto] DES3 problem
+</A></li>
+        <LI>Next message: <A HREF="000743.html">[pycrypto] DES3 problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#742">[ date ]</a>
+              <a href="thread.html#742">[ thread ]</a>
+              <a href="subject.html#742">[ subject ]</a>
+              <a href="author.html#742">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 29 November 2013 20:16, Legrandin &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">helderijs at gmail.com</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> Since a cipher object is stateful, it can be used for either
+</I>&gt;<i> encryption or decryption but not both.
+</I>
+I don't understand that. In what way does it maintain state please?
+
+
+&gt;<i> The only exception is the ECB mode. Being it stateless, it lets you
+</I>&gt;<i> intermix encryption and decryption.
+</I>
+Thanks.
+(Nothing that I've found in the docs explains this?)
+
+
+
+
+&gt;<i> However, that mode should be avoided when possible because it's very
+</I>&gt;<i> tricky to get right.
+</I>&gt;<i>
+</I>&gt;<i> A nonce (sometimes called IV) is critical a value required by most
+</I>&gt;<i> modes (ECB again being an exception).
+</I>&gt;<i> It is typically required to be unique per each combination of
+</I>&gt;<i> key/message. In some cases - like for CBC - it must also be
+</I>&gt;<i> unpredictable to an adversary. The nonce/IV does not need to kept
+</I>&gt;<i> secret but it needs to be delivered to the receiver somehow, otherwise
+</I>&gt;<i> it wouldn't be able to perform decryption.
+</I>
+Ping! The light goes on. Thank you.
+
+&gt;<i> One common choice is to generate the nonce/IV randomly and prepend it
+</I>&gt;<i> to the ciphertext (that is, the result of a call to .encrypt() ) but
+</I>&gt;<i> nothing stops you from sending it afterwards.
+</I>
+Again missing from the documentation (or I missed it).
+I've pointed out the DES/DES3 reversal to the github owner.
+
+
+regards
+
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000741.html">[pycrypto] DES3 problem
+</A></li>
+	<LI>Next message: <A HREF="000743.html">[pycrypto] DES3 problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#742">[ date ]</a>
+              <a href="thread.html#742">[ thread ]</a>
+              <a href="subject.html#742">[ subject ]</a>
+              <a href="author.html#742">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

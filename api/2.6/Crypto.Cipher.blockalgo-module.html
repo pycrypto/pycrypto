@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Crypto.Cipher.blockalgo</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="Crypto-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a href="http://www.pycrypto.org/">PyCrypto.org</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="Crypto-module.html">Package&nbsp;Crypto</a> ::
+        <a href="Crypto.Cipher-module.html">Package&nbsp;Cipher</a> ::
+        Module&nbsp;blockalgo
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="Crypto.Cipher.blockalgo-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module blockalgo</h1><p class="nomargin-top"></p>
+Module with definitions common to all block ciphers.
+
+<!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Classes</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="Crypto.Cipher.blockalgo.BlockAlgo-class.html" class="summary-name">BlockAlgo</a><br />
+      Class modelling an abstract block cipher.
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="Crypto.Cipher.blockalgo-module.html#MODE_ECB" class="summary-name">MODE_ECB</a> = <code title="1">1</code><br />
+      <em>Electronic Code Book (ECB)</em>.
+This is the simplest encryption mode. Each of the plaintext blocks
+is directly encrypted into a ciphertext block, independently of
+any other block. This mode exposes frequency of symbols
+in your plaintext. Other modes (e.g. <em>CBC</em>) should be used instead.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="Crypto.Cipher.blockalgo-module.html#MODE_CBC" class="summary-name">MODE_CBC</a> = <code title="2">2</code><br />
+      <em>Cipher-Block Chaining (CBC)</em>. Each of the ciphertext blocks depends
+on the current and all previous plaintext blocks. An Initialization Vector
+(<em>IV</em>) is required.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="Crypto.Cipher.blockalgo-module.html#MODE_CFB" class="summary-name">MODE_CFB</a> = <code title="3">3</code><br />
+      <em>Cipher FeedBack (CFB)</em>. This mode is similar to CBC, but it transforms
+the underlying block cipher into a stream cipher. Plaintext and ciphertext
+are processed in <em>segments</em> of <strong>s</strong> bits. The mode is therefore sometimes
+labelled <strong>s</strong>-bit CFB. An Initialization Vector (<em>IV</em>) is required.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="MODE_PGP"></a><span class="summary-name">MODE_PGP</span> = <code title="4">4</code><br />
+      This mode should not be used.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="Crypto.Cipher.blockalgo-module.html#MODE_OFB" class="summary-name">MODE_OFB</a> = <code title="5">5</code><br />
+      <em>Output FeedBack (OFB)</em>. This mode is very similar to CBC, but it
+transforms the underlying block cipher into a stream cipher.
+The keystream is the iterated block encryption of an Initialization Vector (<em>IV</em>).
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="Crypto.Cipher.blockalgo-module.html#MODE_CTR" class="summary-name">MODE_CTR</a> = <code title="6">6</code><br />
+      <em>CounTeR (CTR)</em>. This mode is very similar to ECB, in that
+encryption of one block is done independently of all other blocks.
+Unlike ECB, the block <em>position</em> contributes to the encryption and no
+information leaks about symbol frequency.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="Crypto.Cipher.blockalgo-module.html#MODE_OPENPGP" class="summary-name">MODE_OPENPGP</a> = <code title="7">7</code><br />
+      OpenPGP. This mode is a variant of CFB, and it is only used in PGP and <a class="rst-reference external" href="http://tools.ietf.org/html/rfc4880" target="_top">OpenPGP</a> applications.
+An Initialization Vector (<em>IV</em>) is required.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="'Crypto.Cipher'"><code class="variable-quote">'</code><code class="variable-string">Crypto.Cipher</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables Details</span></td>
+</tr>
+</table>
+<a name="MODE_ECB"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">MODE_ECB</h3>
+  <p><em>Electronic Code Book (ECB)</em>.
+This is the simplest encryption mode. Each of the plaintext blocks
+is directly encrypted into a ciphertext block, independently of
+any other block. This mode exposes frequency of symbols
+in your plaintext. Other modes (e.g. <em>CBC</em>) should be used instead.</p>
+<p>See <a class="rst-reference external" href="http://csrc.nist.gov/publications/nistpubs/800-38a/sp800-38a.pdf" target="_top">NIST SP800-38A</a> , Section 6.1 .</p>
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+1
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MODE_CBC"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">MODE_CBC</h3>
+  <p><em>Cipher-Block Chaining (CBC)</em>. Each of the ciphertext blocks depends
+on the current and all previous plaintext blocks. An Initialization Vector
+(<em>IV</em>) is required.</p>
+<p>The <em>IV</em> is a data block to be transmitted to the receiver.
+The <em>IV</em> can be made public, but it must be authenticated by the receiver and
+it should be picked randomly.</p>
+<p>See <a class="rst-reference external" href="http://csrc.nist.gov/publications/nistpubs/800-38a/sp800-38a.pdf" target="_top">NIST SP800-38A</a> , Section 6.2 .</p>
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+2
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MODE_CFB"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">MODE_CFB</h3>
+  <p><em>Cipher FeedBack (CFB)</em>. This mode is similar to CBC, but it transforms
+the underlying block cipher into a stream cipher. Plaintext and ciphertext
+are processed in <em>segments</em> of <strong>s</strong> bits. The mode is therefore sometimes
+labelled <strong>s</strong>-bit CFB. An Initialization Vector (<em>IV</em>) is required.</p>
+<p>When encrypting, each ciphertext segment contributes to the encryption of
+the next plaintext segment.</p>
+<p>This <em>IV</em> is a data block to be transmitted to the receiver.
+The <em>IV</em> can be made public, but it should be picked randomly.
+Reusing the same <em>IV</em> for encryptions done with the same key lead to
+catastrophic cryptographic failures.</p>
+<p>See <a class="rst-reference external" href="http://csrc.nist.gov/publications/nistpubs/800-38a/sp800-38a.pdf" target="_top">NIST SP800-38A</a> , Section 6.3 .</p>
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+3
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MODE_OFB"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">MODE_OFB</h3>
+  <p><em>Output FeedBack (OFB)</em>. This mode is very similar to CBC, but it
+transforms the underlying block cipher into a stream cipher.
+The keystream is the iterated block encryption of an Initialization Vector (<em>IV</em>).</p>
+<p>The <em>IV</em> is a data block to be transmitted to the receiver.
+The <em>IV</em> can be made public, but it should be picked randomly.</p>
+<p>Reusing the same <em>IV</em> for encryptions done with the same key lead to
+catastrophic cryptograhic failures.</p>
+<p>See <a class="rst-reference external" href="http://csrc.nist.gov/publications/nistpubs/800-38a/sp800-38a.pdf" target="_top">NIST SP800-38A</a> , Section 6.4 .</p>
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+5
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MODE_CTR"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">MODE_CTR</h3>
+  <p><em>CounTeR (CTR)</em>. This mode is very similar to ECB, in that
+encryption of one block is done independently of all other blocks.
+Unlike ECB, the block <em>position</em> contributes to the encryption and no
+information leaks about symbol frequency.</p>
+<p>Each message block is associated to a <em>counter</em> which must be unique
+across all messages that get encrypted with the same key (not just within
+the same message). The counter is as big as the block size.</p>
+<p>Counters can be generated in several ways. The most straightword one is
+to choose an <em>initial counter block</em> (which can be made public, similarly
+to the <em>IV</em> for the other modes) and increment its lowest <strong>m</strong> bits by
+one (modulo <em>2^m</em>) for each block. In most cases, <strong>m</strong> is chosen to be half
+the block size.</p>
+<p>Reusing the same <em>initial counter block</em> for encryptions done with the same
+key lead to catastrophic cryptograhic failures.</p>
+<p>See <a class="rst-reference external" href="http://csrc.nist.gov/publications/nistpubs/800-38a/sp800-38a.pdf" target="_top">NIST SP800-38A</a> , Section 6.5 (for the mode) and Appendix B (for how
+to manage the <em>initial counter block</em>).</p>
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+6
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MODE_OPENPGP"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">MODE_OPENPGP</h3>
+  <p>OpenPGP. This mode is a variant of CFB, and it is only used in PGP and <a class="rst-rst-reference external rst-reference external" href="http://tools.ietf.org/html/rfc4880" target="_top">OpenPGP</a> applications.
+An Initialization Vector (<em>IV</em>) is required.</p>
+<p>Unlike CFB, the IV is not transmitted to the receiver. Instead, the <em>encrypted</em> IV is.
+The IV is a random data block. Two of its bytes are duplicated to act as a checksum
+for the correctness of the key. The encrypted IV is therefore 2 bytes longer than
+the clean IV.</p>
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+7
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="Crypto-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a href="http://www.pycrypto.org/">PyCrypto.org</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu May 24 09:02:36 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

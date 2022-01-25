@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Comments on Elgamal,	and a broader question: Whither pycrypto?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Comments%20on%20Elgamal%2C%0A%09and%20a%20broader%20question%3A%20Whither%20pycrypto%3F&In-Reply-To=4D1DEF9F.7020101%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000364.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Comments on Elgamal,	and a broader question: Whither pycrypto?</H1>
+    <B>Paul Hoffman</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Comments%20on%20Elgamal%2C%0A%09and%20a%20broader%20question%3A%20Whither%20pycrypto%3F&In-Reply-To=4D1DEF9F.7020101%40gmx.li"
+       TITLE="[pycrypto] Comments on Elgamal,	and a broader question: Whither pycrypto?">paul.hoffman at gmail.com
+       </A><BR>
+    <I>Sun Jan  2 10:06:57 CST 2011</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000364.html">[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#363">[ date ]</a>
+              <a href="thread.html#363">[ thread ]</a>
+              <a href="subject.html#363">[ subject ]</a>
+              <a href="author.html#363">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Dec 31, 2010 at 6:58 AM, Thorsten Behrens &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">sbehrens at gmx.li</A>&gt; wrote:
+&gt;<i> I've been looking into writing a unit test for Elgamal. What I was looking
+</I>&gt;<i> for were public test vectors. Those don't exist. What I found instead is
+</I>&gt;<i> that our implementation of Elgamal appears insecure.
+</I>
+No surprise there. I suspect if you look closely at all the primitives
+that require good computation of keys and/or fresh randoms, you will
+find more problems just because these things are hard to get right.
+
+&gt;<i> So far on Elgamal. It makes me reluctant to go through with a unit test for
+</I>&gt;<i> Elgamal. I don't want to validate an implementation that is inherently
+</I>&gt;<i> insecure. Changing Elgamal to be more secure is out of scope of my current
+</I>&gt;<i> effort on the code base. I'll leave that to others.
+</I>
+Given that you suspect (with good evidence) that it is insecure, you
+should instead strongly consider commenting out all the code and links
+to it, with a notation why of course.
+
+&gt;<i> Should pycrypto continue to offer its own implementations of crypto
+</I>&gt;<i> algorithms? Or should it be a Python wrapper for existing implementations
+</I>&gt;<i> such as tomlib, Crypto++ or NSS, relying on those implementations to have
+</I>&gt;<i> been coded in a secure manner?
+</I>
+My personal feeling is pycrypto should *not* offer its own
+implementation of crypto algorithms. The need for a pure-Python crypto
+library is probably small but real, but so is the need for that
+library to be secure. You have shown that the latter need is not being
+met. Instead, I think that a good, really Pythonic interface to a
+known-good library has a much higher value. If someone is going to do
+this, I would prefer Crypto++ to NSS just because of the bindings, but
+either would be useful, and certainly more useful than a crypto
+library without sufficient checking.
+
+--Paul Hoffman
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000364.html">[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#363">[ date ]</a>
+              <a href="thread.html#363">[ thread ]</a>
+              <a href="subject.html#363">[ subject ]</a>
+              <a href="author.html#363">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

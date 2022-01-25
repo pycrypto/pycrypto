@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Run test suite with /dev/random
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To=%3C20120131044540.GA5208%40rivest.dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000551.html">
+   <LINK REL="Next"  HREF="000554.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Run test suite with /dev/random</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To=%3C20120131044540.GA5208%40rivest.dlitz.net%3E"
+       TITLE="[pycrypto] Run test suite with /dev/random">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Jan 30 23:45:40 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000551.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+        <LI>Next message: <A HREF="000554.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#553">[ date ]</a>
+              <a href="thread.html#553">[ thread ]</a>
+              <a href="subject.html#553">[ subject ]</a>
+              <a href="author.html#553">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Jan 28, 2012 at 02:14:10AM +0100, Sebastian Ramacher wrote:
+&gt;<i>There is no file object anymore. The I/O stack got rewritten in Python 3.  
+</I>&gt;<i>If open would be called without buffering=0, all the assumptions would be 
+</I>&gt;<i>correct again (and one would have fread like behavior). But since 
+</I>&gt;<i>buffering equals 0, open returns a FileIO instance. And FileIO.read just 
+</I>&gt;<i>behaves as the underlying syscall which is read(2). [1, 2]
+</I>&gt;<i>
+</I>&gt;<i>[1] <A HREF="http://docs.python.org/py3k/library/io.html#raw-i-o">http://docs.python.org/py3k/library/io.html#raw-i-o</A>
+</I>&gt;<i>[2] <A HREF="http://docs.python.org/py3k/library/io.html#io.RawIOBase">http://docs.python.org/py3k/library/io.html#io.RawIOBase</A>
+</I>
+What the hell?  So, open() returns an object that *isn't* a file-like 
+object (according to the definition of a file-like object) just because I 
+asked for a zero-length buffer?  What happened to &quot;explicit is better than 
+implicit&quot;?  &quot;Special cases aren't special enough to break the rules&quot;?
+
+*Sigh* I still consider this to be a bug in Python, but I guess it's 
+unlikely to ever be fixed... :-/
+
+Ok, I'm willing to accept a patch that implements your workaround, if you 
+can address a few remaining issues:
+
+1. BlockingIOError needs to be handled.  If the signal occurs immediately 
+    after the read(2) syscall is invoked, it will set errno=EAGAIN and 
+    Python will raise BlockingIOError.  (At least, that's what the 
+    documentation says.)
+
+2. If EOF is encountered for some reason, your loop would never terminate.  
+    This shouldn't happen normally, but the RNG is a critical piece of 
+    essentially untestable code, so it's okay to code it a little more
+    defensively than usual.  (Who knows?  We might encounter a broken 
+    /dev/urandom implementation, or somebody might build a broken chroot 
+    environment).
+
+    If DevURandomRNG._read gets an EOF, it should behave like a normal 
+    file-like object.  That is, it should return the truncated string, and 
+    subsequently always return b&quot;&quot;.  Basically, if self.__file.read(...) == 
+    b&quot;&quot;, then return data.
+
+    There's no BlockingIOError defined in Python 2.x, so that will need to 
+    be taken into account.
+
+3. Please also include a comment in the code that explains why this needs 
+    to be done.
+
+Cheers,
+- Dwayne
+
+P.S.  Thank you for tracking this down.  As a packager, I guess you receive 
+more than your fair share of flak for problems created by other people!  
+Even though I enthusiastically reject some of your patches, I (and probably 
+many users of PyCrypto) appreciate the work that you are doing. :)
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000551.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+	<LI>Next message: <A HREF="000554.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#553">[ date ]</a>
+              <a href="thread.html#553">[ thread ]</a>
+              <a href="subject.html#553">[ subject ]</a>
+              <a href="author.html#553">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

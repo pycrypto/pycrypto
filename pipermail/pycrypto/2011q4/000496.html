@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Patch for build failures with PyCrypto 2.4 and easy_install
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Patch%20for%20build%20failures%20with%20PyCrypto%202.4%20and%0A%20easy_install&In-Reply-To=4EAC3340.8030108%40ramacher.at">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000490.html">
+   <LINK REL="Next"  HREF="000493.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Patch for build failures with PyCrypto 2.4 and easy_install</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Patch%20for%20build%20failures%20with%20PyCrypto%202.4%20and%0A%20easy_install&In-Reply-To=4EAC3340.8030108%40ramacher.at"
+       TITLE="[pycrypto] Patch for build failures with PyCrypto 2.4 and easy_install">dlitz at dlitz.net
+       </A><BR>
+    <I>Fri Nov  4 13:34:14 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000490.html">[pycrypto] Patch for build failures with PyCrypto 2.4 and	easy_install
+</A></li>
+        <LI>Next message: <A HREF="000493.html">[pycrypto] IMP : reg current work in twisted matrix
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#496">[ date ]</a>
+              <a href="thread.html#496">[ thread ]</a>
+              <a href="subject.html#496">[ subject ]</a>
+              <a href="author.html#496">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Oct 29, 2011 at 07:09:20PM +0200, Sebastian Ramacher wrote:
+&gt;<i>attached is a patch that fixes the build issues with the new method to 
+</I>&gt;<i>detect
+</I>&gt;<i>libgmp and easy_install. The problem is that easy_install builds with bdist_egg
+</I>&gt;<i>which manually calls the build_[py|ext] targets but not build itself. Thus
+</I>&gt;<i>build_configure will not be called and the build fails.
+</I>&gt;<i>
+</I>&gt;<i>With the patach build_ext calls build_configure as sub command.
+</I>&gt;<i>
+</I>&gt;<i>The second patch fixes setup.py sdist. configure, configure.ac and
+</I>&gt;<i>src/config.h.in are missing in a tarball created with setup.py sdist with out
+</I>&gt;<i>this patch.
+</I>
+Thanks!  I've applied the patch and released PyCrypto 2.4.1.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000490.html">[pycrypto] Patch for build failures with PyCrypto 2.4 and	easy_install
+</A></li>
+	<LI>Next message: <A HREF="000493.html">[pycrypto] IMP : reg current work in twisted matrix
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#496">[ date ]</a>
+              <a href="thread.html#496">[ thread ]</a>
+              <a href="subject.html#496">[ subject ]</a>
+              <a href="author.html#496">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

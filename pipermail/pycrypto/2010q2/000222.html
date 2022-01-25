@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Pycrypto question.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20question.&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000250.html">
+   <LINK REL="Next"  HREF="000223.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Pycrypto question.</H1>
+    <B>jd</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20question.&In-Reply-To="
+       TITLE="[pycrypto] Pycrypto question.">jdsw2002 at yahoo.com
+       </A><BR>
+    <I>Sun May  2 14:02:29 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000250.html">[pycrypto] Cheeseshop submission?
+</A></li>
+        <LI>Next message: <A HREF="000223.html">[pycrypto] Pycrypto question.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#222">[ date ]</a>
+              <a href="thread.html#222">[ thread ]</a>
+              <a href="subject.html#222">[ subject ]</a>
+              <a href="author.html#222">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi everyone, 
+   
+   I am trying to implement a simple pub/private key scheme. Want to encrypt bunch of things and decrypt it using public key (which will be distributed). Pycrypto seems to be perfect. Here is the sample code.. butit fails when I try to decrypt using public key part. Any pointers/suggestions appreciated.
+
+Thanks in advance.
+/Jd
+
+===
+Traceback (most recent call last):
+  File &quot;pub.py&quot;, line 24, in &lt;module&gt;
+    pub.decrypt(x)
+  File &quot;build/bdist.linux-i686/egg/Crypto/PublicKey/pubkey.py&quot;, line 63, in decrypt
+  File &quot;build/bdist.linux-i686/egg/Crypto/PublicKey/RSA.py&quot;, line 184, in _decrypt
+_fastmath.error: Private key not available in this object
+
+
+
+
+===
+
+
+
+from Crypto.Hash import MD5
+from Crypto.PublicKey import RSA
+from Crypto.Util.randpool import RandomPool
+
+#Randomize
+pool =  RandomPool()
+pool.randomize()
+pool.stir_n(5)
+
+# Generate keypair
+RSAkey = RSA.generate(384, pool.get_bytes)   # This will take a while...
+hash = MD5.new(&quot;AbCdEf1234&quot;).digest()
+signature = RSAkey.sign(hash, &quot;&quot;)
+print signature
+print RSAkey.verify(hash, signature)     # This sig will check out
+print RSAkey.verify(hash[:-1], signature)# This sig will fai
+
+x=RSAkey.encrypt(&quot;FooBar&quot;,0)
+print &quot;Encrypted bytes&quot; ,x
+print &quot;Decrypted again&quot;, RSAkey.decrypt(x)
+
+# Got the public key part
+pub = RSAkey.publickey()
+pub.decrypt(x)
+
+
+
+      
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000250.html">[pycrypto] Cheeseshop submission?
+</A></li>
+	<LI>Next message: <A HREF="000223.html">[pycrypto] Pycrypto question.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#222">[ date ]</a>
+              <a href="thread.html#222">[ thread ]</a>
+              <a href="subject.html#222">[ subject ]</a>
+              <a href="author.html#222">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

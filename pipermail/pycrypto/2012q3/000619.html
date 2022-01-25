@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA output on long inputs can sometimes be gibberish
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20output%20on%20long%20inputs%20can%20sometimes%20be%20gibberish&In-Reply-To=%3C50126A5E.2050407%40ramacher.at%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000618.html">
+   <LINK REL="Next"  HREF="000620.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA output on long inputs can sometimes be gibberish</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20output%20on%20long%20inputs%20can%20sometimes%20be%20gibberish&In-Reply-To=%3C50126A5E.2050407%40ramacher.at%3E"
+       TITLE="[pycrypto] RSA output on long inputs can sometimes be gibberish">sebastian+lists at ramacher.at
+       </A><BR>
+    <I>Fri Jul 27 03:15:58 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000618.html">[pycrypto] RSA output on long inputs can sometimes be gibberish
+</A></li>
+        <LI>Next message: <A HREF="000620.html">[pycrypto] RSA output on long inputs can sometimes be gibberish
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#619">[ date ]</a>
+              <a href="thread.html#619">[ thread ]</a>
+              <a href="subject.html#619">[ subject ]</a>
+              <a href="author.html#619">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Running the tests fails most of the time with:
+
+$ python -m ejtp.rsatest
+key1 &gt;&gt; key2
+Traceback (most recent call last):
+  File &quot;/usr/lib/python2.7/runpy.py&quot;, line 162, in _run_module_as_main
+    &quot;__main__&quot;, fname, loader, pkg_name)
+  File &quot;/usr/lib/python2.7/runpy.py&quot;, line 72, in _run_code
+    exec code in run_globals
+  File &quot;/tmp/EJTP-lib-python/ejtp/rsatest.py&quot;, line 33, in &lt;module&gt;
+    test_run(key1, key2)
+  File &quot;/tmp/EJTP-lib-python/ejtp/rsatest.py&quot;, line 27, in test_run
+    ciphertext = encode(plaintext, key1, key2)
+  File &quot;/tmp/EJTP-lib-python/ejtp/rsatest.py&quot;, line 19, in encode
+    return reciever.encrypt(sender.decrypt(msg))
+  File &quot;ejtp/util/crypto/rsa.py&quot;, line 44, in encrypt
+    value[marker:marker+self.blocksize], &quot;&quot;)[0])
+  File &quot;/usr/lib/python2.7/dist-packages/Crypto/PublicKey/RSA.py&quot;, line 150, in
+encrypt
+    return pubkey.pubkey.encrypt(self, plaintext, K)
+  File &quot;/usr/lib/python2.7/dist-packages/Crypto/PublicKey/pubkey.py&quot;, line 75,
+in encrypt
+    ciphertext=self._encrypt(plaintext, K)
+  File &quot;/usr/lib/python2.7/dist-packages/Crypto/PublicKey/RSA.py&quot;, line 224, in
+_encrypt
+    return (self.key._encrypt(c),)
+ValueError: Plaintext too large
+
+The code in ejtp/util/crypto/rsa.py looks like you're not doing proper padding
+and using fixed sized blocks that don't depend on the key parameters. That won't
+work.
+
+You might want to have a look at PKCS#1 OAEP and pycrypto's
+Crypto.Cipher.PKCS1_OAEP module [1].
+
+Kind regards
+
+[1]
+<A HREF="https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.PKCS1_OAEP-module.html">https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.PKCS1_OAEP-module.html</A>
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000618.html">[pycrypto] RSA output on long inputs can sometimes be gibberish
+</A></li>
+	<LI>Next message: <A HREF="000620.html">[pycrypto] RSA output on long inputs can sometimes be gibberish
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#619">[ date ]</a>
+              <a href="thread.html#619">[ thread ]</a>
+              <a href="subject.html#619">[ subject ]</a>
+              <a href="author.html#619">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Building a Win32 egg for PyCrypto 2.5
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Building%20a%20Win32%20egg%20for%20PyCrypto%202.5&In-Reply-To=%3CCAL3j_b-CcoNOtDkY58VUCSMgzimbEgNC9bjg%2BbBD2F-XbTwKtg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000558.html">
+   <LINK REL="Next"  HREF="000559.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Building a Win32 egg for PyCrypto 2.5</H1>
+    <B>George V. Reilly</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Building%20a%20Win32%20egg%20for%20PyCrypto%202.5&In-Reply-To=%3CCAL3j_b-CcoNOtDkY58VUCSMgzimbEgNC9bjg%2BbBD2F-XbTwKtg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Building a Win32 egg for PyCrypto 2.5">george at reilly.org
+       </A><BR>
+    <I>Mon Jan 30 02:18:25 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000558.html">[pycrypto] autoconf error on Windows
+</A></li>
+        <LI>Next message: <A HREF="000559.html">[pycrypto] Linker errors when attempting to install PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#552">[ date ]</a>
+              <a href="thread.html#552">[ thread ]</a>
+              <a href="subject.html#552">[ subject ]</a>
+              <a href="author.html#552">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm really surprised that there's no information on building Win32 eggs
+anywhere on the PyCrypto website or in the PyCrypto docs. With all the
+export regulations, I can understand why you might not want to supply
+pre-built binaries, but it would be good to explain how to do it. Michael
+Foord has supplied such binaries for earlier versions of PyCrypto, but
+there's none available for PyCrypto 2.5 yet.
+
+I managed to figure it out today, with an assist from
+<A HREF="https://tahoe-lafs.org/trac/tahoe-lafs/wiki/HowtoBuildPyCryptoOnWindows">https://tahoe-lafs.org/trac/tahoe-lafs/wiki/HowtoBuildPyCryptoOnWindows</A>
+
+Here's the batch file that I used:
+
+
+REM Build a Win32 egg for Python 2.6 or 2.7
+REM Assumes that you have the Visual Studio 2008 C++ compiler (Express
+suffices).
+REM
+<A HREF="http://www.microsoft.com/visualstudio/en-us/products/2008-editions/express">http://www.microsoft.com/visualstudio/en-us/products/2008-editions/express</A>
+
+if [&quot;%VCINSTALLDIR%&quot;]==[&quot;&quot;] (&quot;%VS90COMNTOOLS%&quot;vsvars32.bat)
+
+@REM If package uses setuptools, this can be
+@REM collapsed to &quot;python setup.py bdist_egg&quot;
+python setup.py build
+python -c &quot;import setuptools; execfile('setup.py')&quot; bdist_egg
+
+
+The standard Windows binaries for Python 2.5 and earlier are built with
+different compilers.
+<A HREF="http://stackoverflow.com/questions/101061/building-python-c-extension-modules-for-windowsgives">http://stackoverflow.com/questions/101061/building-python-c-extension-modules-for-windowsgives</A>
+some hints.
+-- 
+/George V. Reilly  <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">george at reilly.org</A>  Twitter: @georgevreilly
+<A HREF="http://www.georgevreilly.com/blog">http://www.georgevreilly.com/blog</A>  <A HREF="http://blogs.cozi.com/tech">http://blogs.cozi.com/tech</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20120129/d9d587a2/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20120129/d9d587a2/attachment.html</A>&gt;
+</PRE>
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000558.html">[pycrypto] autoconf error on Windows
+</A></li>
+	<LI>Next message: <A HREF="000559.html">[pycrypto] Linker errors when attempting to install PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#552">[ date ]</a>
+              <a href="thread.html#552">[ thread ]</a>
+              <a href="subject.html#552">[ subject ]</a>
+              <a href="author.html#552">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] No SHA1?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20No%20SHA1%3F&In-Reply-To=4E9EE9C0.4010302%40co.marshall.ia.us">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000468.html">
+   <LINK REL="Next"  HREF="000473.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] No SHA1?</H1>
+    <B>Dean Macinskas</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20No%20SHA1%3F&In-Reply-To=4E9EE9C0.4010302%40co.marshall.ia.us"
+       TITLE="[pycrypto] No SHA1?">dmacinskas at geobridge.net
+       </A><BR>
+    <I>Wed Oct 19 12:17:09 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000468.html">[pycrypto] Install failure
+</A></li>
+        <LI>Next message: <A HREF="000473.html">[pycrypto] No SHA1?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#471">[ date ]</a>
+              <a href="thread.html#471">[ thread ]</a>
+              <a href="subject.html#471">[ subject ]</a>
+              <a href="author.html#471">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Personally, I just use Michael Foord's PyCrypto Windows builds: <A HREF="http://www.voidspace.org.uk/python/modules.shtml#pycrypto">http://www.voidspace.org.uk/python/modules.shtml#pycrypto</A>
+
+Then I don't need a compiler.
+
+- Mike
+
+I think my problem was trying to run on a 64-bit platform.  Moving to 32-bit XP seems to fix it.  And the Windows build referenced above did the trick.
+
+The documentation says that SHA1 is supported, but I see:
+
+from Crypto.Hash import *
+
+Traceback (most recent call last):
+  File &quot;C:\Documents and Settings\dpm\My Documents\KB\TR31\tr31.py&quot;, line 20, in &lt;module&gt;
+    ho = SHA1.new()
+NameError: name 'SHA1' is not defined
+
+Was it removed?
+
+Thanks,
+dpm
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20111019/d80862bb/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20111019/d80862bb/attachment.htm</A> 
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000468.html">[pycrypto] Install failure
+</A></li>
+	<LI>Next message: <A HREF="000473.html">[pycrypto] No SHA1?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#471">[ date ]</a>
+              <a href="thread.html#471">[ thread ]</a>
+              <a href="subject.html#471">[ subject ]</a>
+              <a href="author.html#471">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

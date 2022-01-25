@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Pycrypto question.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20question.&In-Reply-To=153650.14719.qm%40web114215.mail.gq1.yahoo.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000226.html">
+   <LINK REL="Next"  HREF="000230.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Pycrypto question.</H1>
+    <B>Lorenz Quack</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20question.&In-Reply-To=153650.14719.qm%40web114215.mail.gq1.yahoo.com"
+       TITLE="[pycrypto] Pycrypto question.">don at amberfisharts.com
+       </A><BR>
+    <I>Tue May  4 13:00:39 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000226.html">[pycrypto] Pycrypto question.
+</A></li>
+        <LI>Next message: <A HREF="000230.html">[pycrypto] Pycrypto question.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#228">[ date ]</a>
+              <a href="thread.html#228">[ thread ]</a>
+              <a href="subject.html#228">[ subject ]</a>
+              <a href="author.html#228">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi jd,
+
+some time ago I wrote a small module which provided me with a API that suited me better than that of PyCrypto.
+I attached a slightly modified version of it. I also added a short example to the end of it. I hope you can find the 
+information you want in there.
+
+Concerning the documentation: I agree, it could be improved. I think you were looking for this [1].
+
+Concerning the import of externally generated keys: I think this came up before on the list or bug tracker.
+AFAIK, it is not directly supported by PyCrypto. However, you can create a key pair from a tuple of numbers
+(for example the public and private exponent and the modulus). This is done with construct function [2].
+You just have to find a way to get to those numbers of your externally generated keys.
+
+I probably should also point out that the usage of RandomPool is strongly discouraged [3] and that there is a Random 
+module in PyCrypto-2.1 that you should use instead.
+
+sincerely yours
+//Lorenz
+
+[1] <A HREF="http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.pubkey.pubkey-class.html">http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.pubkey.pubkey-class.html</A>
+[2] <A HREF="http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.RSA-module.html">http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.RSA-module.html</A>
+[3] <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html">http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html</A>
+
+
+
+On 05/04/2010 07:04 PM, jd wrote:
+&gt;<i> Thanks for the response.(Sorry ..for late response. Somehow this went in to my spam folder.)
+</I>&gt;<i>
+</I>&gt;<i> Yes, I indeed want to use private key to encrypt (oops.. sign) and decrypt (verify) using public/private key pairs.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Would anyone point to the example usage/pseudo code that I can try out.
+</I>&gt;<i>
+</I>&gt;<i> Didnt find method details over here.
+</I>&gt;<i> <A HREF="http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.RSA-module.html">http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.RSA-module.html</A>
+</I>&gt;<i>
+</I>&gt;<i> I am assuming that the intent is clear from the example.
+</I>&gt;<i> Some Text ===&gt;  Encrypt (optionally) sign (using private key) ===&gt;  encrypted message
+</I>&gt;<i> encrypted message ==&gt;  (optionally) Verify and decrypt (using public key) ==&gt;  original message (Some Text)
+</I>&gt;<i>
+</I>&gt;<i> Also, would appreciate if instead of generating keys as in sample program, is there a way to use publick/private keys used by ssh-keygen -t rsa.
+</I>&gt;<i>
+</I>&gt;<i> Help is much appreciated.
+</I>&gt;<i> Thanks
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> /Jd
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --- On Sun, 5/2/10, Lorenz Quack&lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">don at amberfisharts.com</A>&gt;  wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> From: Lorenz Quack&lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">don at amberfisharts.com</A>&gt;
+</I>&gt;&gt;<i> Subject: Re: [pycrypto] Pycrypto question.
+</I>&gt;&gt;<i> To: &quot;PyCrypto discussion list&quot;&lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>&gt;
+</I>&gt;&gt;<i> Date: Sunday, May 2, 2010, 1:52 PM
+</I>&gt;&gt;<i> On 05/02/2010 10:36 PM, Glenn
+</I>&gt;&gt;<i> Linderman wrote:
+</I>&gt;&gt;&gt;<i> On 5/2/2010 1:13 PM, Lorenz Quack wrote:
+</I>&gt;&gt;&gt;&gt;<i> Hi Jd,
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On 05/02/2010 10:02 PM, jd wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Hi everyone,
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> I am trying to implement a simple pub/private
+</I>&gt;&gt;<i> key scheme. Want to encrypt bunch of things and decrypt it
+</I>&gt;&gt;<i> using public
+</I>&gt;&gt;&gt;&gt;&gt;<i> key (which will be distributed).
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> You seem to have some misconceptions about how
+</I>&gt;&gt;<i> public key cryptography works.
+</I>&gt;&gt;&gt;&gt;<i> I suggest you (re-)read up on it. Wikipedia will
+</I>&gt;&gt;<i> probably cover the basics.
+</I>&gt;&gt;&gt;&gt;<i> For starters, by definition you use the *public*
+</I>&gt;&gt;<i> key for encrypt and the privat one for decryption.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Indeed, Wikipedia has an article. And in the first
+</I>&gt;&gt;<i> paragraph [1] they
+</I>&gt;&gt;&gt;<i> describe one use case for encrypting by public key,
+</I>&gt;&gt;<i> and decrypting by
+</I>&gt;&gt;&gt;<i> private key, and another use case for encrypting by
+</I>&gt;&gt;<i> private key, and
+</I>&gt;&gt;&gt;<i> decrypting by public key. It might be appropriate to
+</I>&gt;&gt;<i> figure out what use
+</I>&gt;&gt;&gt;<i> case the OP has before declaring definitions for a
+</I>&gt;&gt;<i> particular use case.
+</I>&gt;&gt;&gt;<i> Now as far as what the APIs are called, that might be
+</I>&gt;&gt;<i> a different story :)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> [1] *Public-key cryptography* is a cryptographic
+</I>&gt;&gt;&gt;<i> &lt;<A HREF="http://en.wikipedia.org/wiki/Cryptography">http://en.wikipedia.org/wiki/Cryptography</A>&gt;  approach
+</I>&gt;&gt;<i> which involves the
+</I>&gt;&gt;&gt;<i> use of asymmetric key algorithms instead of or in
+</I>&gt;&gt;<i> addition to symmetric
+</I>&gt;&gt;&gt;<i> key algorithms&lt;<A HREF="http://en.wikipedia.org/wiki/Symmetric_key_algorithm">http://en.wikipedia.org/wiki/Symmetric_key_algorithm</A>&gt;.
+</I>&gt;&gt;&gt;<i> Unlike symmetric key algorithms, it does not require a
+</I>&gt;&gt;<i> secure
+</I>&gt;&gt;&gt;<i> &lt;<A HREF="http://en.wikipedia.org/wiki/Secure_channel">http://en.wikipedia.org/wiki/Secure_channel</A>&gt;  initial
+</I>&gt;&gt;<i> exchange
+</I>&gt;&gt;&gt;<i> &lt;<A HREF="http://en.wikipedia.org/wiki/Key_exchange">http://en.wikipedia.org/wiki/Key_exchange</A>&gt;  of one or
+</I>&gt;&gt;<i> more secret keys
+</I>&gt;&gt;&gt;<i> &lt;<A HREF="http://en.wikipedia.org/wiki/Secret_key">http://en.wikipedia.org/wiki/Secret_key</A>&gt;  to both
+</I>&gt;&gt;<i> sender and receiver.
+</I>&gt;&gt;&gt;<i> The asymmetric key algorithms are used to create a
+</I>&gt;&gt;<i> mathematically
+</I>&gt;&gt;&gt;<i> related key pair: a secret private key and a published
+</I>&gt;&gt;<i> public key. Use
+</I>&gt;&gt;&gt;<i> of these keys allows protection of the authenticity
+</I>&gt;&gt;&gt;<i> &lt;<A HREF="http://en.wikipedia.org/wiki/Authenticity">http://en.wikipedia.org/wiki/Authenticity</A>&gt;  of a
+</I>&gt;&gt;<i> message by creating a
+</I>&gt;&gt;&gt;<i> digital signature&lt;<A HREF="http://en.wikipedia.org/wiki/Digital_signature">http://en.wikipedia.org/wiki/Digital_signature</A>&gt;  of
+</I>&gt;&gt;<i> a
+</I>&gt;&gt;&gt;<i> message using the private key, which can be verified
+</I>&gt;&gt;<i> using the public
+</I>&gt;&gt;&gt;<i> key. It also allows protection of the confidentiality
+</I>&gt;&gt;&gt;<i> &lt;<A HREF="http://en.wikipedia.org/wiki/Confidentiality">http://en.wikipedia.org/wiki/Confidentiality</A>&gt;  and
+</I>&gt;&gt;<i> integrity
+</I>&gt;&gt;&gt;<i> &lt;<A HREF="http://en.wikipedia.org/wiki/Integrity">http://en.wikipedia.org/wiki/Integrity</A>&gt;  of a
+</I>&gt;&gt;<i> message, by public key
+</I>&gt;&gt;&gt;<i> encryption&lt;<A HREF="http://en.wikipedia.org/wiki/Encryption">http://en.wikipedia.org/wiki/Encryption</A>&gt;, encrypting
+</I>&gt;&gt;<i> the
+</I>&gt;&gt;&gt;<i> message using the public key, which can only be
+</I>&gt;&gt;<i> decrypted using the
+</I>&gt;&gt;&gt;<i> private key.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Granted &quot;definition&quot; may have been a poor choice of word.
+</I>&gt;&gt;<i> But AFAIK the use case of &quot;encrypting&quot; via the private key
+</I>&gt;&gt;<i> is generally called signing.
+</I>&gt;&gt;<i> So I assumed that the OP had the wrong idea about how the
+</I>&gt;&gt;<i> scheme is used because he didn't
+</I>&gt;&gt;<i> use the generally accept terminology. If that was
+</I>&gt;&gt;<i> presumptuous I hereby apologize.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> So, to come back to the OPs question:
+</I>&gt;&gt;<i> if you use a RSA key to encrypt a message like you did in
+</I>&gt;&gt;<i> your example internally it uses the public
+</I>&gt;&gt;<i> part of the key pair for encryption. you would then have to
+</I>&gt;&gt;<i> use the private part to decypt it.
+</I>&gt;&gt;<i> If on the other hand you really want to encrypt with the
+</I>&gt;&gt;<i> private part and decrypt with the public part
+</I>&gt;&gt;<i> then know that this is usually refered to as signing and
+</I>&gt;&gt;<i> verifying (verification?).
+</I>&gt;&gt;<i> There is also and API for this in PyCrypto.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hope this is clearer and more helpful than my last
+</I>&gt;&gt;<i> message.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> have a nice day
+</I>&gt;&gt;<i> //Lorenz
+</I>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: crypt.py
+Type: text/x-python
+Size: 3969 bytes
+Desc: not available
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100504/d5ad8e25/attachment.py">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100504/d5ad8e25/attachment.py</A> 
+</PRE>
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000226.html">[pycrypto] Pycrypto question.
+</A></li>
+	<LI>Next message: <A HREF="000230.html">[pycrypto] Pycrypto question.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#228">[ date ]</a>
+              <a href="thread.html#228">[ thread ]</a>
+              <a href="subject.html#228">[ subject ]</a>
+              <a href="author.html#228">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

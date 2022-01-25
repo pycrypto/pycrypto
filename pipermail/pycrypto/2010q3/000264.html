@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] On the future of new ciphers/hashes in PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20On%20the%20future%20of%20new%20ciphers/hashes%20in%20PyCrypto&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000263.html">
+   <LINK REL="Next"  HREF="000431.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] On the future of new ciphers/hashes in PyCrypto</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20On%20the%20future%20of%20new%20ciphers/hashes%20in%20PyCrypto&In-Reply-To="
+       TITLE="[pycrypto] On the future of new ciphers/hashes in PyCrypto">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Aug  2 19:46:37 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000263.html">[pycrypto] Guidelines for Py3k support
+</A></li>
+        <LI>Next message: <A HREF="000431.html">[pycrypto] Py3k Support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#264">[ date ]</a>
+              <a href="thread.html#264">[ thread ]</a>
+              <a href="subject.html#264">[ subject ]</a>
+              <a href="author.html#264">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi folks!
+
+Going through the bug tracker and the mailing list, a lot of the requests 
+are to add new algorithms (Camellia, SHA512, TEA, PKCS#1/OAEP, PBKDF2), or 
+to make changes to the existing implementations (timing attack 
+countermeasures for the AES module, better prime generation for RSA).
+
+They're all good ideas, but I don't have the time or the expertise needed 
+to review C implementations of low-level crypto primitives, and frankly, I 
+have better things to do.
+
+Python does not need its own custom AES implementation.  Neither do Java, 
+Ruby, Perl, JavaScript, PHP, Go, C++, D, Clojure, Haskell.  It's a waste of 
+volunteer time, it's bad engineering, and it means that the FOSS community 
+ends up repeating the same mistakes over and over, year after year, every 
+time a new language comes out.
+
+I'm putting a stop to it.  I'm declaring a permanent feature freeze on the 
+C implementations of &lt;Crypto.Cipher.*&gt; and &lt;Crypto.Hash.*&gt;.  New algortihms   
+will be added only by calling out to existing libraries.  PyCrypto 
+development will be focused on the API.
+
+I haven't yet figured out exactly how this is going to look.  I'm thinking 
+of some kind of pluggable backends, sort of like how Java or CryptoAPI, but 
+with as little API complexity as possible.  Ideas are welcome.
+
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+   OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000263.html">[pycrypto] Guidelines for Py3k support
+</A></li>
+	<LI>Next message: <A HREF="000431.html">[pycrypto] Py3k Support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#264">[ date ]</a>
+              <a href="thread.html#264">[ thread ]</a>
+              <a href="subject.html#264">[ subject ]</a>
+              <a href="author.html#264">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

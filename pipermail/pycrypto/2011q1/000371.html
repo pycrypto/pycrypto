@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] how to handle known security holes Re: Comments	on	Elgamal, and a broader question: Whither pycrypto?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20how%20to%20handle%20known%20security%20holes%20Re%3A%20Comments%0A%09on%09Elgamal%2C%20and%20a%20broader%20question%3A%20Whither%20pycrypto%3F&In-Reply-To=AANLkTinbrh2ed_atX8h6iFwGBUOhzSTkYeBak_KbdERj%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000370.html">
+   <LINK REL="Next"  HREF="000373.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] how to handle known security holes Re: Comments	on	Elgamal, and a broader question: Whither pycrypto?</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20how%20to%20handle%20known%20security%20holes%20Re%3A%20Comments%0A%09on%09Elgamal%2C%20and%20a%20broader%20question%3A%20Whither%20pycrypto%3F&In-Reply-To=AANLkTinbrh2ed_atX8h6iFwGBUOhzSTkYeBak_KbdERj%40mail.gmail.com"
+       TITLE="[pycrypto] how to handle known security holes Re: Comments	on	Elgamal, and a broader question: Whither pycrypto?">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Jan  3 10:54:22 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000370.html">[pycrypto] how to handle known security holes Re: Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+        <LI>Next message: <A HREF="000373.html">[pycrypto] how to handle known security holes Re: Comments	on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#371">[ date ]</a>
+              <a href="thread.html#371">[ thread ]</a>
+              <a href="subject.html#371">[ subject ]</a>
+              <a href="author.html#371">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>+1
+
+Could someone volunteer to do a quick survey of publicly available code that uses PyCrypto to see who (if anyone) is actually using Crypto.PublicKey.ElGamal?
+
+&quot;Paul Hoffman&quot; &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">paul.hoffman at gmail.com</A>&gt; wrote:
+
+&gt;<i>On Mon, Jan 3, 2011 at 7:15 AM, Zooko O'Whielacronx &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">zooko at zooko.com</A>&gt;
+</I>&gt;<i>wrote:
+</I>&gt;&gt;<i> Folks:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> We need to decide what to do when we find flaws in PyCrypto which
+</I>&gt;&gt;<i> would expose a user who relies on PyCrypto to harm.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It wouldn't hurt to send an announcement email in some consistent
+</I>&gt;&gt;<i> format saying something like &quot;security advisory&quot; in the subject line,
+</I>&gt;&gt;<i> and to update the download page or a NEWS page or whatever to warn
+</I>&gt;&gt;<i> about the insecure Elgamal implementation.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Perhaps also delete, comment-out, or disable the Elgamal
+</I>&gt;&gt;<i> implementation and ship a new release of PyCrypto.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It really makes me uncomfortable to see the PyCrypto project ship
+</I>&gt;&gt;<i> software to users which claims on the label that they can rely on it
+</I>&gt;&gt;<i> when we know that if they do, they may be exposed to harm.
+</I>&gt;<i>
+</I>&gt;<i>+1 to commenting out or disabling things which anyone has serious
+</I>&gt;<i>security concerns over.
+</I>&gt;<i>_______________________________________________
+</I>&gt;<i>pycrypto mailing list
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000370.html">[pycrypto] how to handle known security holes Re: Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+	<LI>Next message: <A HREF="000373.html">[pycrypto] how to handle known security holes Re: Comments	on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#371">[ date ]</a>
+              <a href="thread.html#371">[ thread ]</a>
+              <a href="subject.html#371">[ subject ]</a>
+              <a href="author.html#371">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

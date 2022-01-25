@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] AES.Mode_PGP
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20AES.Mode_PGP&In-Reply-To=F1740D29-4982-4EDA-99C3-721A3E6B8C4E%40gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000444.html">
+   <LINK REL="Next"  HREF="000441.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] AES.Mode_PGP</H1>
+    <B>Lorenz Quack</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20AES.Mode_PGP&In-Reply-To=F1740D29-4982-4EDA-99C3-721A3E6B8C4E%40gmail.com"
+       TITLE="[pycrypto] AES.Mode_PGP">don at amberfisharts.com
+       </A><BR>
+    <I>Sun Apr 17 05:22:31 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000444.html">[pycrypto] Python3 and PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000441.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#440">[ date ]</a>
+              <a href="thread.html#440">[ thread ]</a>
+              <a href="subject.html#440">[ subject ]</a>
+              <a href="author.html#440">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi David,
+
+ &gt; def AESdecode(secretkey,message):
+ &gt;     cipher = AES.new(secretkey,AES.MODE_PGP)
+ &gt;     return cipher.decrypt(base64.b64decode(message))
+
+shouldn't that be:
+
+def AESdecode(secretkey,message):
+     cipher = AES.new(secretkey,AES.MODE_PGP)
+     return base64.b64decode(cipher.decrypt(message))
+
+cheers,
+Lorenz
+
+
+On 02/14/2011 08:47 PM, David Arena wrote:
+&gt;<i> Hello All..
+</I>&gt;<i>
+</I>&gt;<i> basically im either stupid or guessing something is wrong with the Mode_PGP of the Cipher AES class..
+</I>&gt;<i>
+</I>&gt;<i> Let me explain..
+</I>&gt;<i>
+</I>&gt;<i> I assumed that the class would follow the rfc 2440 ( OpenPGP Message Format)
+</I>&gt;<i> Basically, in my laymans terms..
+</I>&gt;<i>
+</I>&gt;<i> On encryption...
+</I>&gt;<i> The IV is a random generated number, added  as the first block of the ciphertext and used in CBC mode for the other blocks...
+</I>&gt;<i>
+</I>&gt;<i> On Decryption..
+</I>&gt;<i> The IV added is zero's, The CBC continues finding the IV in the first block, which results in the following blocks to be deciphered correctly.. However  when returning the plaintext it drops the first block of the plaintext  garbage..
+</I>&gt;<i> resulting in a correct message..
+</I>&gt;<i>
+</I>&gt;<i> Im not sure if Pycrypto does this??? I tried and failed.. and i thought i should ask questions..
+</I>&gt;<i>
+</I>&gt;<i> here is my basic code..
+</I>&gt;<i>
+</I>&gt;<i>   def AESencode(secretkey,message,vi):
+</I>&gt;<i>                  cipher = AES.new(secretkey,AES.MODE_PGP,vi)
+</I>&gt;<i>                  return cipher.encrypt(base64.b64encode(message))
+</I>&gt;<i>
+</I>&gt;<i>   def AESdecode(secretkey,message):
+</I>&gt;<i>                  cipher = AES.new(secretkey,AES.MODE_PGP)
+</I>&gt;<i>                  return cipher.decrypt(base64.b64decode(message))
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Any suggestions on where to go????
+</I>&gt;<i>
+</I>&gt;<i> Regards
+</I>&gt;<i> David
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000444.html">[pycrypto] Python3 and PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000441.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#440">[ date ]</a>
+              <a href="thread.html#440">[ thread ]</a>
+              <a href="subject.html#440">[ subject ]</a>
+              <a href="author.html#440">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

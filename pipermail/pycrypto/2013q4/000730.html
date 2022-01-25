@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ARC4 problems?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20ARC4%20problems%3F&In-Reply-To=%3CCAPxz1%2Ba3B1pnJYC4-irEzcZPDZq%3D2pZ1ikBSgMrrWg-Am36Fgg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000728.html">
+   <LINK REL="Next"  HREF="000732.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ARC4 problems?</H1>
+    <B>Parke</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20ARC4%20problems%3F&In-Reply-To=%3CCAPxz1%2Ba3B1pnJYC4-irEzcZPDZq%3D2pZ1ikBSgMrrWg-Am36Fgg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] ARC4 problems?">parke.nexus at gmail.com
+       </A><BR>
+    <I>Fri Nov 22 18:01:12 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000728.html">[pycrypto] ARC4 problems?
+</A></li>
+        <LI>Next message: <A HREF="000732.html">[pycrypto] ARC4 problems?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#730">[ date ]</a>
+              <a href="thread.html#730">[ thread ]</a>
+              <a href="subject.html#730">[ subject ]</a>
+              <a href="author.html#730">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Nov 21, 2013 at 1:58 AM, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt; wrote:
+&gt;<i> Using Python 3
+</I>&gt;<i>
+</I>&gt;<i>     def test_ARC4_2(self):
+</I>&gt;<i>         key = b'A long and confidential key'
+</I>&gt;<i>         msg =b'My secret message'
+</I>&gt;<i>         nonce = b'Another secret'#Crypto.Random.new().read(16)
+</I>&gt;<i>         tempkey=SHA.new(key + nonce).digest()
+</I>&gt;<i>         cipher = ARC4.new(tempkey)
+</I>&gt;<i>         ciphertext = cipher.encrypt(msg)
+</I>&gt;<i>         plain      = cipher.decrypt(ciphertext)
+</I>&gt;<i>         print(plain)
+</I>&gt;<i>
+</I>&gt;<i> The print is showing
+</I>&gt;<i> b'\x06\xd6\x96\xe7BEF\xe2\x11\xae\xff\xa5&quot;3nJ1'
+</I>&gt;<i> which str() won't convert to a string?
+</I>&gt;<i>   An ecryption problem or encoding?
+</I>&gt;<i> Am I doing something wrong please?
+</I>&gt;<i> (just trying to get my head round each of the classes)
+</I>
+In Python 3, strings are Unicode, so str() probably needs to know
+which encoding to use.  Your plaintext msg is bytes (not str).  Why do
+you (think you) want/need str?
+
+Also, nonces do not need to be secret, just unique (per key).
+
+You may need to create a new/fresh ARC4 instance for the decryption.
+ARC4 is a stream cipher, and you reset it by installing the key+nonce.
+
+Block ciphers in ECB and CTR mode do not need to be reset between
+encryption and decryption.  But most other ciphers/modes do.
+
+-Parke
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000728.html">[pycrypto] ARC4 problems?
+</A></li>
+	<LI>Next message: <A HREF="000732.html">[pycrypto] ARC4 problems?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#730">[ date ]</a>
+              <a href="thread.html#730">[ thread ]</a>
+              <a href="subject.html#730">[ subject ]</a>
+              <a href="author.html#730">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

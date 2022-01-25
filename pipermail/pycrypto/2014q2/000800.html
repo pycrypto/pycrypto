@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Building a Win32 egg for PyCrypto 2.5
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Building%20a%20Win32%20egg%20for%20PyCrypto%202.5&In-Reply-To=%3CCAEncD4f97e3AB0vYheWw%2B7s8HTw624XXz38nZrdbdYMDRh5xoA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000799.html">
+   <LINK REL="Next"  HREF="000801.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Building a Win32 egg for PyCrypto 2.5</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Building%20a%20Win32%20egg%20for%20PyCrypto%202.5&In-Reply-To=%3CCAEncD4f97e3AB0vYheWw%2B7s8HTw624XXz38nZrdbdYMDRh5xoA%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Building a Win32 egg for PyCrypto 2.5">dave.pawson at gmail.com
+       </A><BR>
+    <I>Sat Apr 19 23:44:12 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000799.html">[pycrypto] Building a Win32 egg for PyCrypto 2.5
+</A></li>
+        <LI>Next message: <A HREF="000801.html">[pycrypto] Building a Win32 egg for PyCrypto 2.5
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#800">[ date ]</a>
+              <a href="thread.html#800">[ thread ]</a>
+              <a href="subject.html#800">[ subject ]</a>
+              <a href="author.html#800">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>GIYF?
+
+<A HREF="http://www.voidspace.org.uk/python/modules.shtml#pycrypto">http://www.voidspace.org.uk/python/modules.shtml#pycrypto</A>
+
+regards
+
+On 20 April 2014 06:22, George V. Reilly &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">george at reilly.org</A>&gt; wrote:
+&gt;<i> Today I needed to install PyCrypto into a virtualenv on a Windows box
+</I>&gt;<i> that didn't have a compiler. I found that using easy_install against
+</I>&gt;<i> the installer executable worked well.
+</I>&gt;<i>
+</I>&gt;<i>   REM download a PyCrypto installer from
+</I>&gt;<i> <A HREF="http://www.voidspace.org.uk/python/modules.shtml#pycrypto">http://www.voidspace.org.uk/python/modules.shtml#pycrypto</A>
+</I>&gt;<i>   REM say, pycrypto-2.6.win32-py2.7.exe
+</I>&gt;<i>
+</I>&gt;<i>   MyEnv\Scripts\activate.bat
+</I>&gt;<i>   easy_install pycrypto-2.6.win32-py2.7.exe
+</I>&gt;<i>
+</I>&gt;<i> More than two years later, there's still zero Windows-related
+</I>&gt;<i> information on building or installing PyCrypto anywhere on the
+</I>&gt;<i> website. Since it's non-trivial, this omission continues to disappoint
+</I>&gt;<i> me.
+</I>&gt;<i> --
+</I>&gt;<i> /George V. Reilly  <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">george at reilly.org</A>  Twitter: @georgevreilly
+</I>&gt;<i> <A HREF="http://www.georgevreilly.com/blog">http://www.georgevreilly.com/blog</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Sun, Jan 29, 2012 at 11:18 PM, George V. Reilly &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">george at reilly.org</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm really surprised that there's no information on building Win32 eggs anywhere on the PyCrypto website or in the PyCrypto docs. With all the export regulations, I can understand why you might not want to supply pre-built binaries, but it would be good to explain how to do it. Michael Foord has supplied such binaries for earlier versions of PyCrypto, but there's none available for PyCrypto 2.5 yet.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I managed to figure it out today, with an assist from <A HREF="https://tahoe-lafs.org/trac/tahoe-lafs/wiki/HowtoBuildPyCryptoOnWindows">https://tahoe-lafs.org/trac/tahoe-lafs/wiki/HowtoBuildPyCryptoOnWindows</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Here's the batch file that I used:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> REM Build a Win32 egg for Python 2.6 or 2.7
+</I>&gt;&gt;<i> REM Assumes that you have the Visual Studio 2008 C++ compiler (Express suffices).
+</I>&gt;&gt;<i> REM <A HREF="http://www.microsoft.com/visualstudio/en-us/products/2008-editions/express">http://www.microsoft.com/visualstudio/en-us/products/2008-editions/express</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> if [&quot;%VCINSTALLDIR%&quot;]==[&quot;&quot;] (&quot;%VS90COMNTOOLS%&quot;vsvars32.bat)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> @REM If package uses setuptools, this can be
+</I>&gt;&gt;<i> @REM collapsed to &quot;python setup.py bdist_egg&quot;
+</I>&gt;&gt;<i> python setup.py build
+</I>&gt;&gt;<i> python -c &quot;import setuptools; execfile('setup.py')&quot; bdist_egg
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The standard Windows binaries for Python 2.5 and earlier are built with different compilers. <A HREF="http://stackoverflow.com/questions/101061/building-python-c-extension-modules-for-windows">http://stackoverflow.com/questions/101061/building-python-c-extension-modules-for-windows</A> gives some hints.
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> /George V. Reilly  <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">george at reilly.org</A>  Twitter: @georgevreilly
+</I>&gt;&gt;<i> <A HREF="http://www.georgevreilly.com/blog">http://www.georgevreilly.com/blog</A>  <A HREF="http://blogs.cozi.com/tech">http://blogs.cozi.com/tech</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000799.html">[pycrypto] Building a Win32 egg for PyCrypto 2.5
+</A></li>
+	<LI>Next message: <A HREF="000801.html">[pycrypto] Building a Win32 egg for PyCrypto 2.5
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#800">[ date ]</a>
+              <a href="thread.html#800">[ thread ]</a>
+              <a href="subject.html#800">[ subject ]</a>
+              <a href="author.html#800">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

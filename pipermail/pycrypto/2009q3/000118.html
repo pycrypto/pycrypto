@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ERROR%3A%20testRsaUnversionedSignAndVerify%20failed&In-Reply-To=20090821025505.GB22301%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000117.html">
+   <LINK REL="Next"  HREF="000119.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed</H1>
+    <B>Hans-Peter Jansen</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ERROR%3A%20testRsaUnversionedSignAndVerify%20failed&In-Reply-To=20090821025505.GB22301%40rivest.dlitz.net"
+       TITLE="[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed">hpj at urpla.net
+       </A><BR>
+    <I>Fri Aug 21 02:10:19 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000117.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+        <LI>Next message: <A HREF="000119.html">[pycrypto] example
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#118">[ date ]</a>
+              <a href="thread.html#118">[ thread ]</a>
+              <a href="subject.html#118">[ subject ]</a>
+              <a href="author.html#118">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dear Jan,
+
+I found this changelog entry in SuSEs python-crypto package:
+
+* Thu Oct 19 2006 <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">jmatejek at suse.cz</A>
+- minor fixes for better 64bit PEP353 compatibility
+
+and below is a current discussion about this topic.
+
+Am Freitag, 21. August 2009 schrieb Dwayne C. Litzenberger:
+&gt;<i> On Thu, Aug 20, 2009 at 11:11:46AM +0200, Hans-Peter Jansen wrote:
+</I>&gt;<i> &gt; openSUSE incorporated two patches to 2.0.1:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; This one, I ported to trunk:
+</I>&gt;<i> &gt; --- src/hash_template.c~	2009-08-16 23:39:34.053841534 +0200
+</I>&gt;<i> &gt; +++ src/hash_template.c	2009-08-20 10:16:05.877840748 +0200
+</I>&gt;<i> &gt; @@ -111,13 +111,15 @@ ALG_hexdigest(ALGobject *self, PyObject
+</I>&gt;<i> &gt;  	PyObject *value, *retval;
+</I>&gt;<i> &gt;  	unsigned char *raw_digest, *hex_digest;
+</I>&gt;<i> &gt;  	int i, j, size;
+</I>&gt;<i> &gt; +	Py_ssize_t ssize;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;  	if (!PyArg_ParseTuple(args, &quot;&quot;))
+</I>&gt;<i> &gt;  		return NULL;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;  	/* Get the raw (binary) digest value */
+</I>&gt;<i> &gt;  	value = (PyObject *)hash_digest(&amp;(self-&gt;st));
+</I>&gt;<i> &gt; -	size = PyString_Size(value);
+</I>&gt;<i> &gt; +	ssize = PyString_Size(value);
+</I>&gt;<i> &gt; +	size = (ssize &gt; INT_MAX) ? INT_MAX : ssize;
+</I>&gt;<i> &gt;  	raw_digest = (unsigned char *) PyString_AsString(value);
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;  	/* Create a new string */
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Dwayne, is this in order or just plain silly?
+</I>&gt;<i>
+</I>&gt;<i> Hmm...  What's the purpose of this patch?
+</I>&gt;<i>
+</I>&gt;<i> I'm assuming this patch is for 64-bit machines, but even with the patch
+</I>&gt;<i> applied, you will still have other problems if ssize &gt; INT_MAX (or even
+</I>&gt;<i> INT_MAX/2).
+</I>&gt;<i>
+</I>&gt;<i> Here's the code (with that patch applied) in context:
+</I>&gt;<i>
+</I>&gt;<i>   	/* Get the raw (binary) digest value */
+</I>&gt;<i>   	value = (PyObject *)hash_digest(&amp;(self-&gt;st));
+</I>&gt;<i> 	ssize = PyString_Size(value);
+</I>&gt;<i> 	size = (ssize &gt; INT_MAX) ? INT_MAX : ssize;
+</I>&gt;<i> 	raw_digest = (unsigned char *) PyString_AsString(value);
+</I>&gt;<i>
+</I>&gt;<i>         /* Create a new string */
+</I>&gt;<i>         retval = PyString_FromStringAndSize(NULL, size * 2 );
+</I>&gt;<i>         hex_digest = (unsigned char *) PyString_AsString(retval);
+</I>&gt;<i>
+</I>&gt;<i>         /* Make hex version of the digest */
+</I>&gt;<i>         for(i=j=0; i&lt;size; i++)
+</I>&gt;<i>         {
+</I>&gt;<i>                 char c;
+</I>&gt;<i>                 c = raw_digest[i] / 16; c = (c&gt;9) ? c+'a'-10 : c + '0';
+</I>&gt;<i>                 hex_digest[j++] = c;
+</I>&gt;<i>                 c = raw_digest[i] % 16; c = (c&gt;9) ? c+'a'-10 : c + '0';
+</I>&gt;<i>                 hex_digest[j++] = c;
+</I>&gt;<i>         }
+</I>&gt;<i>         Py_DECREF(value);
+</I>&gt;<i>         return retval;
+</I>&gt;<i>
+</I>&gt;<i> If ssize &gt; INT_MAX, then the &quot;size * 2&quot; argument passed to
+</I>&gt;<i> PyString_FromStringAndSize() will overflow, causing one of the following
+</I>&gt;<i> things to happen:
+</I>&gt;<i>
+</I>&gt;<i> - If size*2 overflows to a negative number, PyString_FromStringAndSize
+</I>&gt;<i> will presumably return NULL, causing a null-pointer dereference in the
+</I>&gt;<i> subsequent code.
+</I>&gt;<i>
+</I>&gt;<i> - If size*2 overflows to a positive number, PyString_FromStringAndSize
+</I>&gt;<i> will allocate a smaller buffer than we expect, and the subsequent loop
+</I>&gt;<i> wil overflow this buffer.  Even if we fixed that, if size ended up larger
+</I>&gt;<i> than INT_MAX/2, we would *still* overflow the buffer, since j would wrap
+</I>&gt;<i> around to a negative number.
+</I>&gt;<i>
+</I>&gt;<i> None of PyCrypto's hash functions return anything close to INT_MAX bytes
+</I>&gt;<i> (SHA256 outputs a whopping 32 bytes), so I wonder about the rationale
+</I>&gt;<i> behind this patch.  Does it suppress some lint warning?
+</I>
+Jan, while it's hard to believe, that a hash_digest size will ever come near 
+INT_MAX for ints (&gt;= 32bit), it's going to overflow anyway 5 lines below.
+
+How about limiting it to a sane value (say 1024)? The biggest hash digest 
+size, I found is sha512() with 64 bytes. With 1024, we're raising the limit 
+by factor 16. If hashes are going to get bigger then that, further 
+adjustment is in order.
+
+Dwayne?
+
+&gt;<i> /me runs splint against the code
+</I>&gt;<i>
+</I>&gt;<i> No, I doubt it's that.  The C code isn't even close to being lint-clean.
+</I>&gt;<i>
+</I>&gt;<i> /my adds a TODO item...
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i>  - Dwayne
+</I>
+Cordially,
+Pete
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000117.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+	<LI>Next message: <A HREF="000119.html">[pycrypto] example
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#118">[ date ]</a>
+              <a href="thread.html#118">[ thread ]</a>
+              <a href="subject.html#118">[ subject ]</a>
+              <a href="author.html#118">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

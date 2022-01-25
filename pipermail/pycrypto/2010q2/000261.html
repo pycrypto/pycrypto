@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] [Sks-devel] Help parsing OpenPGP packets and pubkey	&quot;normalization&quot;
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20%5BSks-devel%5D%20Help%20parsing%20OpenPGP%20packets%20and%20pubkey%0A%09%22normalization%22&In-Reply-To=4BF57A2F.3080403%40jcea.es">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000260.html">
+   <LINK REL="Next"  HREF="000249.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] [Sks-devel] Help parsing OpenPGP packets and pubkey	&quot;normalization&quot;</H1>
+    <B>Kim Minh Kaplan</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20%5BSks-devel%5D%20Help%20parsing%20OpenPGP%20packets%20and%20pubkey%0A%09%22normalization%22&In-Reply-To=4BF57A2F.3080403%40jcea.es"
+       TITLE="[pycrypto] [Sks-devel] Help parsing OpenPGP packets and pubkey	&quot;normalization&quot;">kaplan+sks at kim-minh.com
+       </A><BR>
+    <I>Thu May 20 14:08:13 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000260.html">[pycrypto] [Sks-devel] Help parsing OpenPGP packets and pubkey	&quot;normalization&quot;
+</A></li>
+        <LI>Next message: <A HREF="000249.html">[pycrypto] ElGamal - modulo group generator?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#261">[ date ]</a>
+              <a href="thread.html#261">[ thread ]</a>
+              <a href="subject.html#261">[ subject ]</a>
+              <a href="author.html#261">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Jesus Cea writes:
+
+&gt;<i> You can parse the pubkey bundle, extract the packet
+</I>&gt;<i> and sort them in lexicographic order, for instance, paying attention to
+</I>&gt;<i> hierachical considerations.
+</I>&gt;<i>
+</I>&gt;<i> I need to &quot;normalize&quot; the key to ensure that &quot;HASH(pubkey bundle)&quot; is
+</I>&gt;<i> the same everywhere, because that is what is feeded to the hasntree to
+</I>&gt;<i> syncronize.
+</I>&gt;<i>
+</I>&gt;<i> How does SKS solve this issue?.
+</I>
+If my reading is correct, SKS the kind of canonicalization you describe.
+Keys are first parsed with parse_keystr then merged with merge_pkeys.
+See the function merge at
+<A HREF="http://code.google.com/p/sks-keyserver/source/browse/keyMerge.ml#223">http://code.google.com/p/sks-keyserver/source/browse/keyMerge.ml#223</A>
+
+-- 
+Kim Minh
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000260.html">[pycrypto] [Sks-devel] Help parsing OpenPGP packets and pubkey	&quot;normalization&quot;
+</A></li>
+	<LI>Next message: <A HREF="000249.html">[pycrypto] ElGamal - modulo group generator?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#261">[ date ]</a>
+              <a href="thread.html#261">[ thread ]</a>
+              <a href="subject.html#261">[ subject ]</a>
+              <a href="author.html#261">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Bug in Crypto.PublicKey.RSA?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To=48C5FB94.7040609%40broadley.org">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000014.html">
+   <LINK REL="Next"  HREF="000016.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Bug in Crypto.PublicKey.RSA?</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To=48C5FB94.7040609%40broadley.org"
+       TITLE="[pycrypto] Bug in Crypto.PublicKey.RSA?">dlitz at dlitz.net
+       </A><BR>
+    <I>Tue Sep  9 06:24:05 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000014.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+        <LI>Next message: <A HREF="000016.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#15">[ date ]</a>
+              <a href="thread.html#15">[ thread ]</a>
+              <a href="subject.html#15">[ subject ]</a>
+              <a href="author.html#15">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> &gt;&gt;&gt; keysize=368
+</I>&gt;<i> &gt;&gt;&gt; privkeyA = RSA.generate(keysize, rpool.get_bytes)
+</I>&gt;<i>[ finishes in close to zero time ]
+</I>&gt;<i> &gt;&gt;&gt; keysize=369
+</I>&gt;<i> &gt;&gt;&gt; privkeyA = RSA.generate(keysize, rpool.get_bytes)
+</I>&gt;<i>Hangs forever.... well at least 10's of minutes.
+</I>
+I filed a bug report:
+
+     <A HREF="https://bugs.launchpad.net/pycrypto/+bug/268101">https://bugs.launchpad.net/pycrypto/+bug/268101</A>
+
+&gt;&gt;<i> I should also add that you should not be encrypting user data directly 
+</I>&gt;&gt;<i> using RSA.  You _need_ padding like PKCS#1 if you want any security.
+</I>&gt;<i>
+</I>&gt;<i>Hmm, I was not aware of padding issues.  What is the attack?  How much is the 
+</I>&gt;<i>ideal padding?  Is the attack related to guessing the plain text based on the 
+</I>&gt;<i>file size?  Is the padding supposed to be random extra bytes?  Filled to some 
+</I>&gt;<i>boundary like the next 16 bytes?  More?  Does compressing the plain text help?
+</I>
+If you're asking &quot;how much&quot; padding, then you misunderstand what is meant 
+by RSA &quot;padding&quot;.  It is NOT just a simple matter of appending zeros to a 
+message.  Quoting Wikipedia:
+
+     &quot;In public key cryptography, padding is the process of preparing a 
+     message for encryption or signing with a primitive such as RSA. A 
+     popular example is OAEP. This is called &quot;padding&quot; because originally, 
+     random material was simply appended to the message to make it long 
+     enough for the primitive, but this is not a secure form of padding and 
+     is no longer used. A modern padding scheme aims to ensure that the 
+     attacker cannot manipulate the plaintext to exploit the mathematical 
+     structure of the primitive...&quot;
+
+If you want to implement your own RSA encryption, then look at PKCS#1 
+(currently at version 2.1):
+
+     <A HREF="http://www.rsa.com/rsalabs/node.asp?id=2125">http://www.rsa.com/rsalabs/node.asp?id=2125</A>
+
+&gt;&gt;<i> There are a ton of attacks on direct RSA encryption.
+</I>&gt;<i>
+</I>&gt;<i>I'm blissfully unaware, I'll do some digging around, but any recommendations 
+</I>&gt;<i>are welcome.
+</I>
+Dan Boneh's article, &quot;Twenty Years of Attacks on the RSA Cryptosystem&quot;, is 
+a good start:
+
+     <A HREF="http://www.cs.bgu.ac.il/~beimel/Courses/crypto/Boneh.pdf">http://www.cs.bgu.ac.il/~beimel/Courses/crypto/Boneh.pdf</A>
+
+&gt;<i>I'm basically trying to handle 2 encryption related problems:
+</I>&gt;<i>#1 backing up files that are distributed to untrusted (as much as possible)
+</I>&gt;<i>    peers.  Only the one encrypting should ever be able to decrypt the files.
+</I>&gt;<i>    I was planning on using RSA with a user selected key size.  Possibilities
+</I>&gt;<i>    for implementations include Crypto.PublicKey.RSA, a wrapper around GPG,
+</I>&gt;<i>    and a wrapper/bindings for openssl.
+</I>
+If &quot;only the one encrypting should ever be able to decrypt the files&quot;, then 
+why not use symmetric encryption?  It's much faster, and probably stronger 
+in the long run (since most people don't use 8192-bit RSA keys).
+
+If you must use public-key crypto, use GPG.  Avoid X.509:
+
+     <A HREF="http://www.cs.auckland.ac.nz/~pgut001/pubs/x509guide.txt">http://www.cs.auckland.ac.nz/~pgut001/pubs/x509guide.txt</A>
+
+Also, avoid PKCS#12:
+
+     <A HREF="http://www.cs.auckland.ac.nz/~pgut001/pubs/pfx.html">http://www.cs.auckland.ac.nz/~pgut001/pubs/pfx.html</A>
+
+Don't forget to apply an authentication scheme to the data if there's any 
+possibility that the data might be manipulated.
+
+&gt;<i>#2 Securely communications between peers (of encrypted files).  Possibly
+</I>&gt;<i>    with out of band communication of public keys (I.e. manual peer
+</I>&gt;<i>    introduction by the admin).
+</I>
+This is too vague for me to recommend anything, but it sounds like GPG 
+might work here.
+
+And don't forget about random number generation.  All your crypto relies 
+upon it, but people screw up the implementations all the time.  Don't be 
+one of those people!
+
+Good luck,
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20080909/27dc45da/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20080909/27dc45da/attachment.pgp</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000014.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+	<LI>Next message: <A HREF="000016.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#15">[ date ]</a>
+              <a href="thread.html#15">[ thread ]</a>
+              <a href="subject.html#15">[ subject ]</a>
+              <a href="author.html#15">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] a problem when build pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20a%20problem%20when%20build%20pycrypto&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000290.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] a problem when build pycrypto</H1>
+    <B>yu xue</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20a%20problem%20when%20build%20pycrypto&In-Reply-To="
+       TITLE="[pycrypto] a problem when build pycrypto">xueyu7452 at gmail.com
+       </A><BR>
+    <I>Fri Oct  8 02:31:33 CST 2010</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000290.html">[pycrypto] a problem when build pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#275">[ date ]</a>
+              <a href="thread.html#275">[ thread ]</a>
+              <a href="subject.html#275">[ subject ]</a>
+              <a href="author.html#275">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello, everyone:
+I met a problem when trying to build pycrypto on a linux machine, the errors
+which are reported are as follows:
+
+
+gcc -pthread -shared build/temp.linux-i686-2.6/src/MD2.o -o
+build/lib.linux-i686-2.6/Crypto/Hash/MD2.so
+building 'Crypto.Hash.MD4' extension
+gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC
+-std=c99 -O3 -fomit-frame-pointer -Isrc/
+-I/home/xueyu/bin/bin/include/python2.6 -c src/MD4.c -o
+build/temp.linux-i686-2.6/src/MD4.o
+gcc -pthread -shared build/temp.linux-i686-2.6/src/MD4.o -o
+build/lib.linux-i686-2.6/Crypto/Hash/MD4.so
+building 'Crypto.Hash.SHA256' extension
+gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC
+-std=c99 -O3 -fomit-frame-pointer -Isrc/
+-I/home/xueyu/bin/bin/include/python2.6 -c src/SHA256.c -o
+build/temp.linux-i686-2.6/src/SHA256.o
+/tmp/cc8i7etX.s: Assembler messages:
+/tmp/cc8i7etX.s:1692: Error: symbol `fstat64' is already defined
+/tmp/cc8i7etX.s:1710: Error: symbol `lstat64' is already defined
+/tmp/cc8i7etX.s:1728: Error: symbol `stat64' is already defined
+error: command 'gcc' failed with exit status 1
+And everytime I re-built the pycrypto, the directories which has &quot;Error:
+symbol 'fstat64/lstat64/stat64' &quot; are different, e.g. they are maybe
+/tmp/ccHKWjgr.s or /tmp/ccL9eDaZ.s etc...
+
+Gcc is 4.3.2, python is 2.6. And I don't have root priviledge , so I don't
+know whether this is matters. Thank you!
+
+Regards
+   Yu Xue
+
+---
+
+     &#27492;&#33268;
+&#25964;&#31036;!
+                       &#34203;&#23431;
+
+                   &#36523;&#21069;&#36523;&#21518;
+                   &#26159;&#26102;&#38388;&#30340;&#28145;&#28170;
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20101008/783257dc/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20101008/783257dc/attachment.html</A> 
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000290.html">[pycrypto] a problem when build pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#275">[ date ]</a>
+              <a href="thread.html#275">[ thread ]</a>
+              <a href="subject.html#275">[ subject ]</a>
+              <a href="author.html#275">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

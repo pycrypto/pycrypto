@@ -1,0 +1,2252 @@
+From dlitz at dlitz.net  Tue Oct 14 16:07:12 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Tue, 14 Oct 2008 18:07:12 -0400
+Subject: [pycrypto] PyCrypto release plans
+Message-ID: <20081014220712.GA28681@rivest.dlitz.net>
+
+Here's a quick overview of my plans for future PyCrypto releases:
+
+- The current source tree will become the 2.1.x branch.
+
+- After 2.1.0 is released, if there is sufficient demand, I will 
+   backport some of the changes and release 2.0.2.  This will fix stuff 
+   like the "length mod 64 == 55" bug in the SHA256 module.
+
+- The 3.x branch will be designed to work with Python 3.x, and will 
+   probably drop backward-compatibility for some deprecated APIs.
+
+- PyCrypto 2.x will continue to target Python 2.x until Python 3 
+   catches on.
+
+I have no timeline for this yet; The next release will happen When It's 
+Ready (TM), but hopefully no more than two Debian-stable releases will 
+happen in the meantime. ;-)
+
+Cheers,
+  - Dwayne
+
+--
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081014/ff73b3c6/attachment.pgp 
+
+From dlitz at dlitz.net  Wed Oct 15 14:29:41 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Wed, 15 Oct 2008 16:29:41 -0400
+Subject: [pycrypto] PyCrypto release plans
+In-Reply-To: <20081014220712.GA28681@rivest.dlitz.net>
+References: <20081014220712.GA28681@rivest.dlitz.net>
+Message-ID: <20081015202941.GA8072@rivest.dlitz.net>
+
+On Tue, Oct 14, 2008 at 06:07:12PM -0400, Dwayne C. Litzenberger wrote:
+> Here's a quick overview of my plans for future PyCrypto releases:
+>
+> - The current source tree will become the 2.1.x branch.
+
+Accordingly, I have moved the git repository from:
+
+     git://git.pycrypto.org:9419/crypto/pycrypto-2.0.x.git
+to
+     git://git.pycrypto.org:9419/crypto/pycrypto-2.x.git
+
+Please update your working copies.  I updated mine by editing my 
+.git/config file.
+
+Cheers,
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081015/b4fdb567/attachment.pgp 
+
+From sergey.chernov at thrift.ru  Wed Oct 15 17:39:29 2008
+From: sergey.chernov at thrift.ru (Sergey Chernov)
+Date: Thu, 16 Oct 2008 03:39:29 +0400
+Subject: [pycrypto] Possible problem in src/_fastmath.c
+In-Reply-To: <20081015202941.GA8072@rivest.dlitz.net>
+References: <20081014220712.GA28681@rivest.dlitz.net>
+	<20081015202941.GA8072@rivest.dlitz.net>
+Message-ID: <003501c92f1f$447500a0$cd5f01e0$@chernov@thrift.ru>
+
+See patch:
+----------------------------------------------------------------------------
+diff --git a/src/_fastmath.c b/src/_fastmath.c
+index d06d697..a0aa181 100755
+--- a/src/_fastmath.c
++++ b/src/_fastmath.c
+@@ -28,6 +28,7 @@ longObjToMPZ (mpz_t m, PyLongObject * p)
+ 		size = p->ob_size;
+ 	else
+ 		size = -p->ob_size;
++	mpz_clear( m );
+ 	for (i = 0; i < size; i++)
+ 	{
+ 		mpz_set_ui (temp, p->ob_digit[i]);
+----------------------------------------------------------------------------
+
+Current usage do not discover the bug as 'm' is always just-initialized.
+Still it, as I think, may cause trouble later.
+
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net
+[mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dwayne C.
+Litzenberger
+Sent: Thursday, October 16, 2008 12:30 AM
+To: pycrypto at lists.dlitz.net
+Subject: Re: [pycrypto] PyCrypto release plans
+
+On Tue, Oct 14, 2008 at 06:07:12PM -0400, Dwayne C. Litzenberger wrote:
+> Here's a quick overview of my plans for future PyCrypto releases:
+>
+> - The current source tree will become the 2.1.x branch.
+
+Accordingly, I have moved the git repository from:
+
+     git://git.pycrypto.org:9419/crypto/pycrypto-2.0.x.git
+to
+     git://git.pycrypto.org:9419/crypto/pycrypto-2.x.git
+
+Please update your working copies.  I updated mine by editing my .git/config
+file.
+
+Cheers,
+  - Dwayne
+
+--
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+
+
+From dlitz at dlitz.net  Thu Oct 16 06:08:32 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Thu, 16 Oct 2008 08:08:32 -0400
+Subject: [pycrypto] Possible problem in src/_fastmath.c
+Message-ID: <20081016120832.GA31863@rivest.dlitz.net>
+
+On Thu, Oct 16, 2008 at 03:39:29AM +0400, Sergey Chernov wrote:
+>See patch:
+>----------------------------------------------------------------------------
+>diff --git a/src/_fastmath.c b/src/_fastmath.c
+>index d06d697..a0aa181 100755
+>--- a/src/_fastmath.c
+>+++ b/src/_fastmath.c
+>@@ -28,6 +28,7 @@ longObjToMPZ (mpz_t m, PyLongObject * p)
+> 		size = p->ob_size;
+> 	else
+> 		size = -p->ob_size;
+>+	mpz_clear( m );
+> 	for (i = 0; i < size; i++)
+> 	{
+> 		mpz_set_ui (temp, p->ob_digit[i]);
+>----------------------------------------------------------------------------
+>
+>Current usage do not discover the bug as 'm' is always just-initialized.
+>Still it, as I think, may cause trouble later.
+
+Sergey,
+
+What is the purpose of your patch?  What bug are you referring to?
+
+Are you trying to set m to zero at the top of the loop?  Looking at the GMP 
+documentation (http://gmplib.org/manual/Initializing-Integers.html), I see 
+that mpz_init() and mpz_clear() have similar usages as malloc() and free(), 
+so I'm pretty sure that I do not want to apply your patch as-is.
+
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081016/7e4197a5/attachment.pgp 
+
+From dlitz at dlitz.net  Thu Oct 16 06:13:38 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Thu, 16 Oct 2008 08:13:38 -0400
+Subject: [pycrypto] Possible problem in src/_fastmath.c
+In-Reply-To: <20081016120832.GA31863@rivest.dlitz.net>
+References: <20081016120832.GA31863@rivest.dlitz.net>
+Message-ID: <20081016121338.GA32540@rivest.dlitz.net>
+
+On Thu, Oct 16, 2008 at 08:08:32AM -0400, Dwayne C. Litzenberger wrote:
+> On Thu, Oct 16, 2008 at 03:39:29AM +0400, Sergey Chernov wrote:
+>> See patch:
+>> ----------------------------------------------------------------------------
+>> diff --git a/src/_fastmath.c b/src/_fastmath.c
+>> index d06d697..a0aa181 100755
+>> --- a/src/_fastmath.c
+>> +++ b/src/_fastmath.c
+>> @@ -28,6 +28,7 @@ longObjToMPZ (mpz_t m, PyLongObject * p)
+>> 		size = p->ob_size;
+>> 	else
+>> 		size = -p->ob_size;
+>> +	mpz_clear( m );
+>> 	for (i = 0; i < size; i++)
+>> 	{
+>> 		mpz_set_ui (temp, p->ob_digit[i]);
+>> ----------------------------------------------------------------------------
+>>
+>> Current usage do not discover the bug as 'm' is always just-initialized.
+>> Still it, as I think, may cause trouble later.
+>
+> Sergey,
+>
+> What is the purpose of your patch?  What bug are you referring to?
+>
+> Are you trying to set m to zero at the top of the loop?  Looking at the GMP 
+> documentation (http://gmplib.org/manual/Initializing-Integers.html), I see 
+> that mpz_init() and mpz_clear() have similar usages as malloc() and free(), 
+> so I'm pretty sure that I do not want to apply your patch as-is.
+
+Perhaps you meant this?
+
+-------------------------------------------------------------------------------
+diff --git a/src/_fastmath.c b/src/_fastmath.c
+index d06d697..caf8e7b 100755
+--- a/src/_fastmath.c
++++ b/src/_fastmath.c
+@@ -28,6 +28,7 @@ longObjToMPZ (mpz_t m, PyLongObject * p)
+                 size = p->ob_size;
+         else
+                 size = -p->ob_size;
++       mpz_set_ui (m, 0);
+         for (i = 0; i < size; i++)
+         {
+                 mpz_set_ui (temp, p->ob_digit[i]);
+-------------------------------------------------------------------------------
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081016/d0a14b31/attachment.pgp 
+
+From sergey.chernov at thrift.ru  Thu Oct 16 20:03:02 2008
+From: sergey.chernov at thrift.ru (Sergey Chernov)
+Date: Fri, 17 Oct 2008 06:03:02 +0400
+Subject: [pycrypto] Possible problem in src/_fastmath.c
+In-Reply-To: <20081016121338.GA32540@rivest.dlitz.net>
+References: <20081016120832.GA31863@rivest.dlitz.net>
+	<20081016121338.GA32540@rivest.dlitz.net>
+Message-ID: <001101c92ffc$7f6be010$7e43a030$@chernov@thrift.ru>
+
+Sorry, of course, that sould be 
+
+mpz_set_ui( m, 0 );
+
+- ot it will add the value of p to m instead of assigning. I'm not using
+_fastmath myself, but found this function a little strange when writing
+different RSA implementation with GMP. 
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net
+[mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dwayne C.
+Litzenberger
+Sent: Thursday, October 16, 2008 4:14 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] Possible problem in src/_fastmath.c
+
+On Thu, Oct 16, 2008 at 08:08:32AM -0400, Dwayne C. Litzenberger wrote:
+> On Thu, Oct 16, 2008 at 03:39:29AM +0400, Sergey Chernov wrote:
+>> See patch:
+>> ---------------------------------------------------------------------
+>> ------- diff --git a/src/_fastmath.c b/src/_fastmath.c index 
+>> d06d697..a0aa181 100755
+>> --- a/src/_fastmath.c
+>> +++ b/src/_fastmath.c
+>> @@ -28,6 +28,7 @@ longObjToMPZ (mpz_t m, PyLongObject * p)
+>> 		size = p->ob_size;
+>> 	else
+>> 		size = -p->ob_size;
+>> +	mpz_clear( m );
+>> 	for (i = 0; i < size; i++)
+>> 	{
+>> 		mpz_set_ui (temp, p->ob_digit[i]);
+>> ---------------------------------------------------------------------
+>> -------
+>>
+>> Current usage do not discover the bug as 'm' is always just-initialized.
+>> Still it, as I think, may cause trouble later.
+>
+> Sergey,
+>
+> What is the purpose of your patch?  What bug are you referring to?
+>
+> Are you trying to set m to zero at the top of the loop?  Looking at 
+> the GMP documentation 
+> (http://gmplib.org/manual/Initializing-Integers.html), I see that 
+> mpz_init() and mpz_clear() have similar usages as malloc() and free(), so
+I'm pretty sure that I do not want to apply your patch as-is.
+
+Perhaps you meant this?
+
+----------------------------------------------------------------------------
+---
+diff --git a/src/_fastmath.c b/src/_fastmath.c index d06d697..caf8e7b 100755
+--- a/src/_fastmath.c
++++ b/src/_fastmath.c
+@@ -28,6 +28,7 @@ longObjToMPZ (mpz_t m, PyLongObject * p)
+                 size = p->ob_size;
+         else
+                 size = -p->ob_size;
++       mpz_set_ui (m, 0);
+         for (i = 0; i < size; i++)
+         {
+                 mpz_set_ui (temp, p->ob_digit[i]);
+----------------------------------------------------------------------------
+---
+
+
+--
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+
+
+From samphippen at googlemail.com  Fri Nov  7 14:55:10 2008
+From: samphippen at googlemail.com (Sam Phippen)
+Date: Fri, 7 Nov 2008 20:55:10 +0000
+Subject: [pycrypto] Test code - Random
+Message-ID: <b6bc4a080811071255j4eda956fj4aa9d4b1b0e2b6b5@mail.gmail.com>
+
+After reviewing the random number test code I thought some extra functions
+might be useful, attached is said code
+
+
+# -*- coding: utf-8 -*-
+#
+#  SelfTest/Util/test_generic.py: Self-test for the Crypto.Random.new()
+function
+#
+# =======================================================================
+# Copyright (C) 2008  Dwayne C. Litzenberger <dlitz at dlitz.net>
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# =======================================================================
+#
+
+"""Self-test suite for Crypto.Random.new()"""
+
+__revision__ = "$Id$"
+
+import unittest
+
+class SimpleTest(unittest.TestCase):
+    def runTest(self):
+        """Crypto.Random.new()"""
+        # Import the OSRNG module and try to use it
+        from Crypto import Random
+        randobj = Random.new()
+        x = randobj.read(16)
+        y = randobj.read(16)
+        self.assertNotEqual(x, y)
+class TestNotAlwaysEqual(unittest.TestCase):
+    def runTest(self):
+        from Crypto import Random
+        randobj = Random.new()
+        k = 10
+        DataArray = []
+        x = randobj.read(16)
+        count = 0
+        for i in range(0,k):
+            y = randobj.read(16)
+            if x == y:
+                count += 1
+        self.assertNotEqual(count,k)
+class TestAverage(unittest.TestCase):
+    def runTest(self):
+        from Crypto import Random
+        randobj = Random.new()
+        x = randobj.read(2**15)
+        values = []
+        for i in x:
+            values.append(ord(i))
+        total = 0
+        for i in values:
+            total += i
+        average = total/len(values)
+        print average
+        self.assertEqual(average in range((256/2)-28,(256/2)+28),True)
+
+
+def get_tests():
+    return [SimpleTest(),TestNotAlwaysEqual(),TestAverage()]
+
+if __name__ == '__main__':
+    suite = lambda: unittest.TestSuite(get_tests())
+    unittest.main(defaultTest='suite')
+
+# vim:set ts=4 sw=4 sts=4 expandtab:
+
+-- 
+Sam Phippen
+
+Please avoid sending me Word or PowerPoint attachments.
+See http://www.gnu.org/philosophy/no-word-attachments.html
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20081107/3a4c37f9/attachment.htm 
+
+From dlitz at dlitz.net  Fri Nov  7 15:06:26 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 7 Nov 2008 16:06:26 -0500
+Subject: [pycrypto] Test code - Random
+In-Reply-To: <b6bc4a080811071255j4eda956fj4aa9d4b1b0e2b6b5@mail.gmail.com>
+References: <b6bc4a080811071255j4eda956fj4aa9d4b1b0e2b6b5@mail.gmail.com>
+Message-ID: <20081107210626.GA8797@rivest.dlitz.net>
+
+On Fri, Nov 07, 2008 at 08:55:10PM +0000, Sam Phippen wrote:
+>After reviewing the random number test code I thought some extra functions
+>might be useful, attached is said code
+
+Thanks for the patch.  I've reposted it below in unified diff form.
+
+========= BEGIN PATCH =========
+diff --git a/SelfTest/Random/test_random.py b/SelfTest/Random/test_random.py
+index 3b47e9f..0afb963 100644
+--- a/SelfTest/Random/test_random.py
++++ b/SelfTest/Random/test_random.py
+@@ -41,9 +41,37 @@ class SimpleTest(unittest.TestCase):
+          x = randobj.read(16)
+          y = randobj.read(16)
+          self.assertNotEqual(x, y)
++class TestNotAlwaysEqual(unittest.TestCase):
++    def runTest(self):
++        from Crypto import Random
++        randobj = Random.new()
++        k = 10
++        DataArray = []
++        x = randobj.read(16)
++        count = 0
++        for i in range(0,k):
++            y = randobj.read(16)
++            if x == y:
++                count += 1
++        self.assertNotEqual(count,k)
++class TestAverage(unittest.TestCase):
++    def runTest(self):
++        from Crypto import Random
++        randobj = Random.new()
++        x = randobj.read(2**15)
++        values = []
++        for i in x:
++            values.append(ord(i))
++        total = 0
++        for i in values:
++            total += i
++        average = total/len(values)
++        print average
++        self.assertEqual(average in range((256/2)-28,(256/2)+28),True)
++
+  
+  def get_tests():
+-    return [SimpleTest()]
++    return [SimpleTest(),TestNotAlwaysEqual(),TestAverage()]
+  
+  if __name__ == '__main__':
+      suite = lambda: unittest.TestSuite(get_tests())
+========= END PATCH =========
+
+Also, I'll quote our discussion on IRC, for the record:
+
+> <samphippen> dwon, mind if I write some more tests for the rng?
+> <dwon> sure, if you can meet these requirements first: 
+> http://www.dlitz.net/software/pycrypto/submission-requirements/
+> <samphippen> dwon, I meet all those requirements
+> <samphippen> dwon, i'm a uk citizen
+
+This is referring to "PyCrypto Code Submission Requirements - Rev. B", dated 
+2008-09-14.  Thanks for that.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081107/15e8860b/attachment.pgp 
+
+From dlitz at dlitz.net  Fri Nov  7 16:12:15 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 7 Nov 2008 17:12:15 -0500
+Subject: [pycrypto] Test code - Random
+In-Reply-To: <20081107210626.GA8797@rivest.dlitz.net>
+References: <b6bc4a080811071255j4eda956fj4aa9d4b1b0e2b6b5@mail.gmail.com>
+	<20081107210626.GA8797@rivest.dlitz.net>
+Message-ID: <20081107221215.GA9445@rivest.dlitz.net>
+
+On Fri, Nov 07, 2008 at 04:06:26PM -0500, Dwayne C. Litzenberger wrote:
+>  class SimpleTest(unittest.TestCase):
+>      def runTest(self):
+>          """Crypto.Random.new()"""
+>          # Import the OSRNG module and try to use it
+>          from Crypto import Random
+>          randobj = Random.new()
+>          x = randobj.read(16)
+>          y = randobj.read(16)
+>          self.assertNotEqual(x, y)
+> +class TestNotAlwaysEqual(unittest.TestCase):
+> +    def runTest(self):
+> +        from Crypto import Random
+> +        randobj = Random.new()
+> +        k = 10
+> +        DataArray = []
+> +        x = randobj.read(16)
+> +        count = 0
+> +        for i in range(0,k):
+> +            y = randobj.read(16)
+> +            if x == y:
+> +                count += 1
+> +        self.assertNotEqual(count,k)
+
+I'm not sure what your proposed TestNotAlwaysEqual test offers that 
+SimpleTest does.  Presumably the purpose of this new test is to avoid the 
+case where a correctly-functioning RNG returns two identical 128-bit 
+numbers in a row.  While that may be possible, I'm really not concerned 
+about it, since according to my calculations*, the probability that 
+SimpleTest fails is 2**-128.  TestNotAlwaysEqual adds another test that can  
+fail in the same way, but with a probability of 2**-1280.  I don't see why 
+that would be necessary.
+
+(* Someone please correct me if I'm wrong, since I'm still not very good at 
+reasoning with probability.)
+
+> +class TestAverage(unittest.TestCase):
+> +    def runTest(self):
+> +        from Crypto import Random
+> +        randobj = Random.new()
+> +        x = randobj.read(2**15)
+> +        values = []
+> +        for i in x:
+> +            values.append(ord(i))
+> +        total = 0
+> +        for i in values:
+> +            total += i
+> +        average = total/len(values)
+> +        print average
+> +        self.assertEqual(average in range((256/2)-28,(256/2)+28),True)
+> +
+
+This looks like the beginning of a statistical test suite, but it seems out 
+of place here on its own, and I fear that it might cause more confusion 
+than anything else.  Why did you choose the constants 2**15 and +/- 28, for 
+example?  What's the likelihood that this fails under normal circumstances.  
+I don't want to end up with bug reports and confused users (or worse: users 
+who learn to ignore test failures) as a result of too many false positives, 
+for example.  Also, I want to avoid adding unnecessary tests to SelfTest, 
+since SelfTest should be fairly quick to run.
+
+It might be better to implement a full set of statistical tests like the 
+ones specified in FIPS 140-2.  I would consider such a thing for a future 
+release.  If someone were to tackle this, I would suggest adding it as a 
+module under Crypto.Random or Crypto.Util, and then calling it from 
+SelfTest.  i.e. It should provide a usable, well-documented API, not just 
+be buried in the SelfTest module.
+
+We definitely could use a more comprehensive set of self-tests, especially 
+for the random number generators.
+
+Cheers,
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081107/cc393bc9/attachment.pgp 
+
+From sergey.chernov at thrift.ru  Fri Nov  7 20:29:02 2008
+From: sergey.chernov at thrift.ru (Sergey Chernov)
+Date: Sat, 8 Nov 2008 05:29:02 +0300
+Subject: [pycrypto] Test code - Random
+In-Reply-To: <20081107221215.GA9445@rivest.dlitz.net>
+References: <b6bc4a080811071255j4eda956fj4aa9d4b1b0e2b6b5@mail.gmail.com>
+	<20081107210626.GA8797@rivest.dlitz.net>
+	<20081107221215.GA9445@rivest.dlitz.net>
+Message-ID: <51933B5F-5168-403E-965B-9A3A614901D3@thrift.ru>
+
+I'm sorry if I'm telling something stupid, since I was not working  
+with RNGs analysis for about 18 years, but from what I still remember.  
+There was a test (in fact, series of tests) that surprisingly failed  
+lot of these old times RNGs. It's sort of N-dimensial bins histogram.
+
+The simplest was easy. Let's talk pairs of N-bit randoms as (x,y)  
+coordinates in a finite rectangle (using N or mod) and see whether  
+they would tend to cluster. I've seen in my own eyes that one RNG that  
+was supposed to be sufficient, was constantly generating a few small  
+triangles leaving the rest clear :)
+
+So, the general test we were performed was kind of following. Let's  
+take N-dimensional cube and fill it with RNG series of size L, then  
+check how even it fills the cube. Simplest case is to divide it to  
+equal clusters (bins), so there should be, say, L/1000 clusters least,  
+calculate how many pseudo-random points hit each bin and see how plain  
+is this histogram. It should not vary too much if the RNG is ok and L  
+is big. We can, say, check the standard deviation. Better to check  
+several bins size, using various random primes as factors for bins  
+sizes. Then increment N and check it again.
+
+I've read in late 80s that such test failed on some very famous RDBMS  
+system of these old good times (as I remember, all dots filed 64 plans  
+in the 3(?)D cube or so).
+
+For sure there must be a plenty of better tests by now, but I'm not  
+familiar with them.
+
+The probability you mentioned should be, as for me, 1e-256. One famous  
+mathematician, namely Kolmogorov, once said, that there is no such  
+things as 1e-100 probability, there is only the impossibility :)
+
+Sergey Chernov
+sergey.chernov at thrift.ru
+
+
+
+08.11.2008, ? 1:12, Dwayne C. Litzenberger ???????(?):
+
+> I'm not sure what your proposed TestNotAlwaysEqual test offers that  
+> SimpleTest does.  Presumably the purpose of this new test is to  
+> avoid the case where a correctly-functioning RNG returns two  
+> identical 128-bit numbers in a row.  While that may be possible, I'm  
+> really not concerned about it, since according to my calculations*,  
+> the probability that SimpleTest fails is 2**-128.   
+> TestNotAlwaysEqual adds another test that can  fail in the same way,  
+> but with a probability of 2**-1280.  I don't see why that would be  
+> necessary.
+>
+> (* Someone please correct me if I'm wrong, since I'm still not very  
+> good at reasoning with probability.)
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 2193 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081108/35822f32/attachment-0001.bin 
+
+From samphippen at googlemail.com  Sat Nov  8 05:05:41 2008
+From: samphippen at googlemail.com (Sam Phippen)
+Date: Sat, 8 Nov 2008 11:05:41 +0000
+Subject: [pycrypto] Test code - Random
+In-Reply-To: <51933B5F-5168-403E-965B-9A3A614901D3@thrift.ru>
+References: <b6bc4a080811071255j4eda956fj4aa9d4b1b0e2b6b5@mail.gmail.com>
+	<20081107210626.GA8797@rivest.dlitz.net>
+	<20081107221215.GA9445@rivest.dlitz.net>
+	<51933B5F-5168-403E-965B-9A3A614901D3@thrift.ru>
+Message-ID: <b6bc4a080811080305j4549d073tff648973dfc6cfec@mail.gmail.com>
+
+The first test I wrote may be a minor improvement on the simple test, as it
+merely ensures that the value returned by the rng is not always the same.
+(it is plausible that an rng might return the same data twice).
+
+For the second test I chose a large sample so that the average of all the
+data would be roughly 128, I chose the large variation sort of out of the
+air, although the average of a large sample should (statistically speaking)
+be very close to 128. After running about 10 tests the values were never
+outside of 128 +/- 2.
+
+I might try plotting a graph of (x,y) byte pairs and try calculating
+correlation co-efficients.
+
+2008/11/8 Sergey Chernov <sergey.chernov at thrift.ru>
+
+> I'm sorry if I'm telling something stupid, since I was not working with
+> RNGs analysis for about 18 years, but from what I still remember. There was
+> a test (in fact, series of tests) that surprisingly failed lot of these old
+> times RNGs. It's sort of N-dimensial bins histogram.
+>
+> The simplest was easy. Let's talk pairs of N-bit randoms as (x,y)
+> coordinates in a finite rectangle (using N or mod) and see whether they
+> would tend to cluster. I've seen in my own eyes that one RNG that was
+> supposed to be sufficient, was constantly generating a few small triangles
+> leaving the rest clear :)
+>
+> So, the general test we were performed was kind of following. Let's take
+> N-dimensional cube and fill it with RNG series of size L, then check how
+> even it fills the cube. Simplest case is to divide it to equal clusters
+> (bins), so there should be, say, L/1000 clusters least, calculate how many
+> pseudo-random points hit each bin and see how plain is this histogram. It
+> should not vary too much if the RNG is ok and L is big. We can, say, check
+> the standard deviation. Better to check several bins size, using various
+> random primes as factors for bins sizes. Then increment N and check it
+> again.
+>
+> I've read in late 80s that such test failed on some very famous RDBMS
+> system of these old good times (as I remember, all dots filed 64 plans in
+> the 3(?)D cube or so).
+>
+> For sure there must be a plenty of better tests by now, but I'm not
+> familiar with them.
+>
+> The probability you mentioned should be, as for me, 1e-256. One famous
+> mathematician, namely Kolmogorov, once said, that there is no such things as
+> 1e-100 probability, there is only the impossibility :)
+>
+> Sergey Chernov
+> sergey.chernov at thrift.ru
+>
+>
+>
+> 08.11.2008, ? 1:12, Dwayne C. Litzenberger ???????(?):
+>
+>
+>  I'm not sure what your proposed TestNotAlwaysEqual test offers that
+>> SimpleTest does.  Presumably the purpose of this new test is to avoid the
+>> case where a correctly-functioning RNG returns two identical 128-bit numbers
+>> in a row.  While that may be possible, I'm really not concerned about it,
+>> since according to my calculations*, the probability that SimpleTest fails
+>> is 2**-128.  TestNotAlwaysEqual adds another test that can  fail in the same
+>> way, but with a probability of 2**-1280.  I don't see why that would be
+>> necessary.
+>>
+>> (* Someone please correct me if I'm wrong, since I'm still not very good
+>> at reasoning with probability.)
+>>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+
+
+-- 
+Sam Phippen
+
+Please avoid sending me Word or PowerPoint attachments.
+See http://www.gnu.org/philosophy/no-word-attachments.html
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20081108/98650707/attachment.htm 
+
+From samphippen at googlemail.com  Sat Nov  8 10:37:17 2008
+From: samphippen at googlemail.com (Sam Phippen)
+Date: Sat, 8 Nov 2008 16:37:17 +0000
+Subject: [pycrypto] Another layer of testing
+Message-ID: <b6bc4a080811080837l7560c2bblcf1fea941e328dd7@mail.gmail.com>
+
+It seems that the tests currently in SelfTest are fine for asserting that
+the random number generator is not broken, however I propose another set of
+tests (which can be cloned from SelfTest to start wtih) called BuildTest.
+These would be tests run against pycrypto when it is built in order to
+ensure to a greater level of detail that everything is working.
+
+I also include a test I have written for the random number generator that
+ensures that the distribution of generated numbers is relativley flat.
+http://dpaste.com/hold/89494/
+
+-- 
+Sam Phippen
+
+Please avoid sending me Word or PowerPoint attachments.
+See http://www.gnu.org/philosophy/no-word-attachments.html
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20081108/32dc71a9/attachment.htm 
+
+From dlitz at dlitz.net  Sat Nov  8 11:16:35 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sat, 8 Nov 2008 12:16:35 -0500
+Subject: [pycrypto] Test code - Random
+In-Reply-To: <51933B5F-5168-403E-965B-9A3A614901D3@thrift.ru>
+References: <b6bc4a080811071255j4eda956fj4aa9d4b1b0e2b6b5@mail.gmail.com>
+	<20081107210626.GA8797@rivest.dlitz.net>
+	<20081107221215.GA9445@rivest.dlitz.net>
+	<51933B5F-5168-403E-965B-9A3A614901D3@thrift.ru>
+Message-ID: <20081108171635.GA31666@rivest.dlitz.net>
+
+On Sat, Nov 08, 2008 at 05:29:02AM +0300, Sergey Chernov wrote:
+> The probability you mentioned should be, as for me, 1e-256.
+
+I assume you mean 2**-256, not 10**-256.  I don't think that's correct, and 
+I think the birthday paradox might have something to do with it.
+
+Let's say we choose a sequence of randomly-chosen 128-bit numbers, X_1, 
+X_2, X_3, ....
+
+P(X_1 = 0) denotes the probability that X_1 (the first randomly-chosen  
+number) comes out as zero.  We can probably agree that this probability is 
+2**-128.  So we have:
+
+     P(X_1 = 0) = 2**-128
+
+The same is true for P(X_1 = 1), P(X_1 = 2), etc:
+
+     P(X_1 = 0) = 2**-128
+     P(X_1 = 1) = 2**-128
+     P(X_1 = 2) = 2**-128
+     P(X_1 = 3) = 2**-128
+     ...
+     P(X_1 = 2**128-1) = 2**-128
+
+So, in general, for any number a:
+
+     P(X_1 = a) = 2**-128        0 <= a <= 2**128-1
+
+Since the numbers are chosen independently, we have the following 
+conditional probabilities:
+
+     P(X_2 = 0 | X_1 = 0) = 2**-128
+     P(X_2 = 1 | X_1 = 0) = 2**-128
+     P(X_2 = 2 | X_1 = 0) = 2**-128
+     P(X_2 = 3 | X_1 = 0) = 2**-128
+     ...
+     P(X_2 = 2**128-1 | X_1 = 0) = 2**-128
+
+The above probabilities also hold for for X_1 = 1, X_1 = 2, etc.
+
+Restating that generally, for any pair of numbers (a, b), the probability 
+that X_2 = b given X_1 = a is as follows:
+
+     P(X_2 = b | X_1 = a) = 2**-128      0 <= a, b <= 2**128-1
+
+Now, what's the probably that X_2 = b *and* that X_1 = a ?  Conditional 
+probability tells us that P(A and B) = P(A) * P(B | A), so we have:
+
+     P(X_2 = b and X_1 = a) = P(X_1 = a) * P(X_2 = b | X_1 = a)
+
+Substituting, we get:
+
+     P(X_2 = b and X_1 = a) = 2**-128 * 2**-128 = 2**-256
+
+So, like you said, the probability is 2**-256.  However, this isn't the 
+probability we're interested in.  What we want is P(X_2 = X_1).
+
+Let P(Y_n) = P(X_2 = X_1 | X_1 = n).  Then we have:
+
+     P(Y_n) = P(X_2 = X_1 | X_1 = n)
+            = P(X_2 = n and X_1 = n)
+            = 2**-256
+
+We want P(X_2 = X_1), which is equivalent to the probability P(Y_n) for 
+*any* n between 0 and 2**128-1.
+
+     P(X_2 = X_1) = P(Y_0 or Y_1 or Y_2 or ... or Y_{2**128-1})
+                  = 2**128 * P(Y_n)
+                  = 2**128 * 2**-256
+                  = 2**-128
+
+QED, I think.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081108/c6eeb8b2/attachment.pgp 
+
+From paul.hoffman at gmail.com  Sat Nov  8 14:38:31 2008
+From: paul.hoffman at gmail.com (Paul Hoffman)
+Date: Sat, 8 Nov 2008 12:38:31 -0800
+Subject: [pycrypto] Test code - Random
+In-Reply-To: <b6bc4a080811071255j4eda956fj4aa9d4b1b0e2b6b5@mail.gmail.com>
+References: <b6bc4a080811071255j4eda956fj4aa9d4b1b0e2b6b5@mail.gmail.com>
+Message-ID: <1e267dfe0811081238n2547e28ag8e91c4bfcdd00b1f@mail.gmail.com>
+
+There is a well-accepted test suite at
+<http://csrc.nist.gov/publications/nistpubs/800-22/sp-800-22-051501.pdf>.
+
+From spoettl at hotmail.com  Sat Nov  8 14:48:51 2008
+From: spoettl at hotmail.com (Stefan Spoettl)
+Date: Sat, 8 Nov 2008 16:18:51 -0430
+Subject: [pycrypto] the sad state of pycrypto
+Message-ID: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+
+Dear Python Cryptographers,
+
+this is an urgent call for help and the an attempt to convince all participants of the imperative to reconstruct pycrypto from the get-go.
+
+To start with the good points of Kuchling's library:
+
+With respect to the files block_template.c, hash_template.c and stream_template.c one has to state that the Kuchling library has solid fundation. In my eyes the C code is of high quality. Well structured, readable and reusable. Kuchling was avoding C header files, which reduces the amount of files significantly and is very good to keep the overview.
+Furtheron the possibility to add new (not contained) algorithms is impressive, even if I guess that it's not a such trivial job to add one like this is stated in the documentation.
+
+The weak side of Kuchling's library is resulting mainly from the choice of offered algorithms:
+  1.. Hash algorithm
+  Meantimes the main part of the offered hash algorithms is classified as "weak" or "wounded" by the cryptographic community (see http://www.cryptolounge.org/wiki/Category:Algorithm<about:blank>). With respect to the recommendations of the NIST and others I propose to offer the following algorithm additionally and directly over the distributed library interface: SHA-224, SHA-256 (C file is allready included), SHA-384, SHA-512, RIPEMD-128, RIPEMD-160, RIPEMD-256, RIPEMD-320, Tiger and WHIRLPOOL. In my eyes this abundance of offered hash algorithms is necessary since hash algorithms are attacked frequently. 
+  2.. Block ciphers
+  Well the choice of block ciphers looks like the US style of life: The winner takes it all! A serious cryptographic library has to offer all five AES finalists (Mars, RC6, Rijndael, Serpent and Twofish). There is no doubt, that each finalist is a great cipher. This five ciphers are the best block ciphers, which the public cryptographic community is offering to the world. 
+  3.. Stream ciphers
+  The choice of offered stream ciphers appears to me like a bad joke. ARC4 is classified as "weak" by the cryptographic community and this incredible offer of XOR - don't know what to say for this (one could read in the bible [Schneier, Applied Cryptography, second edition] on page 198 how it break it; well, Kuchling has red the bible, but never the less he is offering this XOR). In fact at this time pycrypt is not offering any stream cipher that could be used seriously. What a mess!
+  I propose the direct offering of the following stream ciphers (mainly candidates of the eSTREAM project http://www.ecrypt.eu.org/stream/<about:blank>): HC-128, HC-256, Panama (could be used as hash algorithm but as hash algorithm and only as hash algorithm it is classified as "wounded"), Rabbit (if you want to strike algorithms form my list, then this one frist, because it's patented and so only nocommerical use is free), Salsa20, SOSEMANUK and Phelix (this one is made by Schneier & co., on the eSTREAM project was published an attack against Phelix and in result it was classified as "wounded", but the attack is only working if one uses the "nonce == number used once" (parameter to realize the integrated MAC) more then once. So I think that Phelix is appraised unfair). 
+  4.. Random generator
+  Sorry Dwanye, I disagree with you. A cryptographic library has to offer a cryptographic secure random generator. Without that the library is not useful at all. 
+  5.. Asymmetric algorithms
+  Like stated in Dwanye's wishlist Diffie-Hellman support would be nice.
+To fill the wide algorithmic gap of pycrypt I propose a look at Crypto++ Library of Wei Dai (http://www.cryptopp.com<about:blank>). Crypto++ is licensed like pycrypt and recommanded by the NIST. In this C++ library could be found all to fill the gap. But this library has a damned ugly structur and contains more than 333 file. So it will be a lot of work to extract the useful things.
+
+Let's talk serious Dwanyne! Will you update your wishlist?
+
+Stefan
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20081108/0da0db16/attachment.htm 
+
+From mads at kiilerich.com  Sat Nov  8 18:23:50 2008
+From: mads at kiilerich.com (Mads Kiilerich)
+Date: Sun, 09 Nov 2008 01:23:50 +0100
+Subject: [pycrypto] the sad state of pycrypto
+In-Reply-To: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+References: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+Message-ID: <49162D96.2070509@kiilerich.com>
+
+Stefan Spoettl wrote, On 11/08/2008 09:48 PM:
+> To fill the wide algorithmic gap of pycrypt I propose a look at 
+> Crypto++ Library of Wei Dai (http://www.cryptopp.com). Crypto++ is 
+> licensed like pycrypt and recommanded by the NIST. In this C++ library 
+> could be found all to fill the gap. But this library has a damned ugly 
+> structur and contains more than 333 file. So it will be a lot of work 
+> to extract the useful things.
+
+Ugly or not, it is my impression that Crypto++ has a good reputation and 
+deserves it. It would be a good base, but how would forking it - in your 
+opinion - be an improvement?
+
+Inventing own crypto algorithms or implementations is always bad in 
+itself. Other factors might however make it necessary or worthwhile 
+(factors such as python-cryptos existing and used simple codebase with 
+proper licensing).
+
+If you like Crypto++ then why not use it with an appropriate wrapper? 
+Why not use Zookos pycryptopp? Only because of the licensing?
+
+/Mads
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 3435 bytes
+Desc: S/MIME Cryptographic Signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/0f930dd2/attachment.bin 
+
+From zooko at zooko.com  Sat Nov  8 20:35:53 2008
+From: zooko at zooko.com (zooko)
+Date: Sat, 8 Nov 2008 19:35:53 -0700
+Subject: [pycrypto] the sad state of pycrypto
+In-Reply-To: <49162D96.2070509@kiilerich.com>
+References: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+	<49162D96.2070509@kiilerich.com>
+Message-ID: <4D03BCAE-1FED-4518-A61A-6B0B102CFD24@zooko.com>
+
+On Nov 8, 2008, at 17:23 PM, Mads Kiilerich wrote:
+
+> If you like Crypto++ then why not use it with an appropriate  
+> wrapper? Why not use Zookos pycryptopp? Only because of the licensing?
+
+Pycryptopp [1] offers only a few algorithms -- just the ones we need  
+for the Tahoe project [2] and whatever the Beaker coders asked for  
+[3]: SHA-256, AES, RSA-PSS, and (not quite working right yet) ECDSA.
+
+I would be willing to entertain the prospect of adding wrappers for  
+other algorithms from Crypto++ for other people's use, especially if  
+this increased the chance of other people helping me to audit, test,  
+debug, port, and maintain pycryptopp.
+
+Another option would be to use a code generation tool like SWIG or  
+Boost.Python to create Python interfaces to the full Crypto++ API.   
+This is in contrast to the current pycryptopp approach, which is hand- 
+coded C++ wrapper code.
+
+Regards,
+
+Zooko
+
+[1] http://allmydata.org/trac/pycryptopp
+[2] http://allmydata.org
+
+---
+http://allmydata.org -- Tahoe, the Least-Authority Filesystem
+http://allmydata.com -- back up all your files for $10/month
+
+
+From dlitz at dlitz.net  Sun Nov  9 08:08:43 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 9 Nov 2008 09:08:43 -0500
+Subject: [pycrypto] the sad state of pycrypto
+In-Reply-To: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+References: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+Message-ID: <20081109140843.GA24879@rivest.dlitz.net>
+
+On Sat, Nov 08, 2008 at 04:18:51PM -0430, Stefan Spoettl wrote:
+>  4.. Random generator
+>  Sorry Dwanye, I disagree with you. A cryptographic library has to offer 
+>  a cryptographic secure random generator. Without that the library is not 
+>  useful at all.
+
+Actually, it looks like you agree with me.
+
+PyCrypto (in the git repository) now has a very simple CSPRNG API.  You can 
+write code like this:
+
+     from Crypto import Random
+
+     rng = Random.new()      # returns a file-like object
+     x = rng.read(16)        # read 16 bytes of RNG data
+
+You can also instantiate Crypto.Random.RandomPoolCompat, and use that in 
+the place of old code that expects the RandomPool API.
+
+On the back-end of this, we have the Fortuna PRNG (which runs AES in 
+counter mode), seeded by the operating system, by time.time() and by 
+time.clock() (see Random/_UserFriendlyRNG.py).  The code is kind of ugly, 
+and more complex than I really would like, but that's what happens when we 
+try to implement a robust PRNG in a library.
+
+A strong PRNG realistically needs to be provided by the operating system, 
+or at least by a long-running process.  Doing it in PyCrypto is much more 
+error-prone: PyCrypto has to deal with users invoking os.fork() (thus 
+duplicating the RNG state), access from multiple threads, the lack of 
+permanent storage, and the fact that Python's immutable strings meands that  
+secret data are copied to several places in memory over the life of the 
+process.  It also has to be portable, making it difficult to use 
+platform-specific sources of entropy.   A stand-alone RNG would not have to 
+deal with any of these problems.
+
+Having said that, people still need to generate strong random numbers, and 
+experience with RandomPool shows that they're going to get it wrong unless 
+the library provides a robust API to do it for them.  That's the idea 
+behind Crypto.Random.new().
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/7547df22/attachment.pgp 
+
+From dlitz at dlitz.net  Sun Nov  9 09:34:10 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 9 Nov 2008 10:34:10 -0500
+Subject: [pycrypto] the sad state of pycrypto
+In-Reply-To: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+References: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+Message-ID: <20081109153410.GB24879@rivest.dlitz.net>
+
+On Sat, Nov 08, 2008 at 04:18:51PM -0430, Stefan Spoettl wrote:
+>Dear Python Cryptographers,
+>
+>this is an urgent call for help and the an attempt to convince all 
+>participants of the imperative to reconstruct pycrypto from the get-go.
+
+I agree that PyCrypto needs an overhaul, but I do not consider it "urgent", 
+and rushing would be counter-productive.
+
+>To start with the good points of Kuchling's library:
+>
+>With respect to the files block_template.c, hash_template.c and 
+>stream_template.c one has to state that the Kuchling library has solid 
+>fundation. In my eyes the C code is of high quality. Well structured, 
+>readable and reusable. Kuchling was avoding C header files, which reduces 
+>the amount of files significantly and is very good to keep the overview.
+>
+>Furtheron the possibility to add new (not contained) algorithms is 
+>impressive, even if I guess that it's not a such trivial job to add one 
+>like this is stated in the documentation.
+
+Yeah, it's a nice architecture.  Unfortunately, it also requires that 
+algorithms be hand-written in (error-prone) C, so I want to keep the amount 
+of C code in PyCrypto to a minimum.
+
+Cryptography is a waste of time if an attacker can make your program run 
+arbitrary code, thanks to a buffer overflow or other subtle bug.  I am 
+hesitant to add new algorithms to PyCrypto until they can be developed in a 
+more trustworthy fashion.
+
+(I'm toying with the idea of a restricted subset of C that requires all 
+arrays to be of size 2**n, and requires the appropriate bit-wise AND 
+whenever indexing the array.  However, an implementation is a long way off.  
+I'm also interested in languages like D and BitC, but I'm not sure about 
+the maturity of their compilers.  I could use help here.)
+
+My thoughts mirror the ideas presented in D. J. Bernstein's paper, "Some 
+thoughts on security after ten years of qmail 1.0" 
+<http://cr.yp.to/qmail/qmailsec-20071101.pdf>.  I encourage everyone here 
+to read it, if you have not already.
+
+>The weak side of Kuchling's library is resulting mainly from the choice of offered algorithms:
+>  1.. Hash algorithm
+>  Meantimes the main part of the offered hash algorithms is classified as 
+>  "weak" or "wounded" by the cryptographic community (see 
+>  http://www.cryptolounge.org/wiki/Category:Algorithm<about:blank>).
+
+Which algorithms are you referring to?  Just MD2?  I'm willing to drop MD2   
+if there are no objections.  I'm not going to be removing MD5 or SHA-1 any 
+time soon; They're just wrappers around the Python standard library anyway.  
+
+> With respect to the recommendations of the NIST and others I propose to 
+> offer the following algorithm additionally and directly over the 
+> distributed library interface: SHA-224, SHA-256 (C file is allready 
+> included), SHA-384, SHA-512, RIPEMD-128, RIPEMD-160, RIPEMD-256, 
+> RIPEMD-320, Tiger and WHIRLPOOL.
+
+My understanding is that SHA-224 and SHA-384 are encumbered by software 
+patents and provide no performance advantages over SHA-256 and SHA-512, 
+respectively.
+
+PyCrypto already has RIPEMD-160.  PyCrypto does not have RIPEMD-128, but 
+it's a hash function with a 128-bit output, which means it only provides 
+2**64 security against a birthday attack.  In other words, it's obsolete.
+
+RIPEMD-256 and RIPEMD-320 provide no better security than RIPEMD-160*.  
+Therefore, they are redundant, and can only serve to mislead users into 
+thinking that they provide additional security.
+
+     (* See http://homes.esat.kuleuven.be/~bosselae/ripemd160.html)
+
+> In my eyes this abundance of offered hash algorithms is necessary since 
+> hash algorithms are attacked frequently.
+
+Out of the options on your list, only SHA-512, Tiger and WHIRLPOOL interest 
+me.  I would consider them for inclusion at some later date, but see my 
+concerns above regarding adding lots of new C code.
+
+>  2.. Block ciphers
+>  Well the choice of block ciphers looks like the US style of life: The 
+>  winner takes it all! A serious cryptographic library has to offer all 
+>  five AES finalists (Mars, RC6, Rijndael, Serpent and Twofish). There is 
+>  no doubt, that each finalist is a great cipher. This five ciphers are 
+>  the best block ciphers, which the public cryptographic community is 
+>  offering to the world.
+
+Again, a "serious cryprographic library" has to avoid implementation bugs 
+above all else.  Otherwise, it is just wasting CPU cycles and giving people 
+a false sense of security.
+
+>  3.. Stream ciphers
+>  The choice of offered stream ciphers appears to me like a bad joke. ARC4 
+>  is classified as "weak" by the cryptographic community and this 
+>  incredible offer of XOR - don't know what to say for this (one could 
+>  read in the bible [Schneier, Applied Cryptography, second edition] on 
+>  page 198 how it break it; well, Kuchling has red the bible, but never 
+>  the less he is offering this XOR). In fact at this time pycrypt is not 
+>  offering any stream cipher that could be used seriously. What a mess!
+
+I will drop the XOR module.  It should be unnecessary now that we have 
+Crypto.Util.strxor for speeding up things like HMAC.
+
+>  I propose the direct offering of the following stream ciphers (mainly 
+>  candidates of the eSTREAM project 
+>  http://www.ecrypt.eu.org/stream/<about:blank>): HC-128, HC-256, Panama 
+>  (could be used as hash algorithm but as hash algorithm and only as hash 
+>  algorithm it is classified as "wounded"), Rabbit (if you want to strike 
+>  algorithms form my list, then this one frist, because it's patented and 
+>  so only nocommerical use is free), Salsa20, SOSEMANUK and Phelix (this 
+>  one is made by Schneier & co., on the eSTREAM project was published an 
+>  attack against Phelix and in result it was classified as "wounded", but 
+>  the attack is only working if one uses the "nonce == number used once" 
+>  (parameter to realize the integrated MAC) more then once. So I think 
+>  that Phelix is appraised unfair).
+
+What's the rush to add new stream ciphers?  Stream ciphers are still 
+largely experimental, and using a block cipher in CTR mode works well 
+enough in cases where you need arbitrary-length ciphertexts.
+
+Also, patent-encumbered algorithms are a non-starter.  Accordingly, I will 
+be removing IDEA and RC5 before the next release.
+
+>  4.. Random generator
+>  Sorry Dwanye, I disagree with you. A cryptographic library has to offer 
+>  a cryptographic secure random generator. Without that the library is not 
+>  useful at all
+
+Please avoid the hyperbole.  PyCrypto is quite useful, even if it does not 
+provide its own RNG, especially since Python itself provides os.urandom() 
+since version 2.5.  Having said that, PyCrypto already has a CSPRNG.  See 
+my other email.
+
+>  5.. Asymmetric algorithms
+>  Like stated in Dwanye's wishlist Diffie-Hellman support would be nice.
+
+Have you noticed that the RSA module does not do any padding, and the DSA 
+module does not do the necessary hashing?
+
+PyCrypto still has many "gotchas" like that.  My current priority is to 
+take steps to reduce implementation bugs in PyCrypto and in code that uses 
+PyCrypto.  Adding many new algorithms right now will not further that goal.
+
+>To fill the wide algorithmic gap of pycrypt I propose a look at Crypto++ 
+>Library of Wei Dai (http://www.cryptopp.com). Crypto++ is licensed like 
+>pycrypt and recommanded by the NIST. In this C++ library could be found 
+>all to fill the gap. But this library has a damned ugly structur and 
+>contains more than 333 file. So it will be a lot of work to extract the 
+>useful things.
+
+At this point, I care far more about implementation quality than about the 
+number of available algorithms.  If you think you need lots of new 
+algorithms in your project, then nothing prevents you from using both 
+PyCrypto and Zooko's pycryptopp project:
+
+     http://allmydata.org/trac/pycryptopp
+
+I see no reason to duplicate Zooko's work.
+
+I want to make PyCrypto into a good, reliable, usable crypto library, and I 
+need lots of criticism and feedback to make that happen.  Thanks for your 
+input.  :-)
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/ef808002/attachment-0001.pgp 
+
+From paul.hoffman at gmail.com  Sun Nov  9 09:54:22 2008
+From: paul.hoffman at gmail.com (Paul Hoffman)
+Date: Sun, 9 Nov 2008 07:54:22 -0800
+Subject: [pycrypto] the sad state of pycrypto
+In-Reply-To: <20081109153410.GB24879@rivest.dlitz.net>
+References: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+	<20081109153410.GB24879@rivest.dlitz.net>
+Message-ID: <1e267dfe0811090754n5f96cf22ud92ea02458600505@mail.gmail.com>
+
+Small notes.
+
+On Sun, Nov 9, 2008 at 7:34 AM, Dwayne C. Litzenberger <dlitz at dlitz.net> wrote:
+> Yeah, it's a nice architecture.  Unfortunately, it also requires that
+> algorithms be hand-written in (error-prone) C, so I want to keep the amount
+> of C code in PyCrypto to a minimum.
+
+That seems like a good choice. Those of us who want crypto code that
+comes from C have many other ways of getting it.
+
+> My thoughts mirror the ideas presented in D. J. Bernstein's paper, "Some
+> thoughts on security after ten years of qmail 1.0"
+> <http://cr.yp.to/qmail/qmailsec-20071101.pdf>.  I encourage everyone here to
+> read it, if you have not already.
+
+A strong "me too" on having everyone read that paper.
+
+> Which algorithms are you referring to?  Just MD2?  I'm willing to drop MD2
+> if there are no objections.  I'm not going to be removing MD5 or SHA-1 any
+> time soon; They're just wrappers around the Python standard library anyway.
+
+The idea of dropping support for "weak" algorithms is silly. No
+developer looks through the list of algorithms in a library and say
+"I'll pick, um, er, that one" without knowing what it is. There is no
+security problem with a library having weak algorithms, only with
+clueless people using them without understanding the consequences.
+Old, weak hash algorithms are still needed for validating old
+signatures and certificates.
+
+>> With respect to the recommendations of the NIST and others I propose to
+>> offer the following algorithm additionally and directly over the distributed
+>> library interface: SHA-224, SHA-256 (C file is allready included), SHA-384,
+>> SHA-512, RIPEMD-128, RIPEMD-160, RIPEMD-256, RIPEMD-320, Tiger and
+>> WHIRLPOOL.
+
+Just a note on that sentence: NIST only recommends the members of the
+SHA family; all the rest are recommended by "and others".
+
+> My understanding is that SHA-224 and SHA-384 are encumbered by software
+> patents
+
+The entire SHA-2 family is encumbered by a patent (US 6,829,355) that
+is licensed royalty-free (see
+<https://datatracker.ietf.org/ipr/858/>). It applies to SHA-256 and
+SHA-512 as well.
+
+> and provide no performance advantages over SHA-256 and SHA-512,
+> respectively.
+
+Quite true.
+
+From dlitz at dlitz.net  Sun Nov  9 10:31:40 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 9 Nov 2008 11:31:40 -0500
+Subject: [pycrypto] the sad state of pycrypto
+In-Reply-To: <1e267dfe0811090754n5f96cf22ud92ea02458600505@mail.gmail.com>
+References: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+	<20081109153410.GB24879@rivest.dlitz.net>
+	<1e267dfe0811090754n5f96cf22ud92ea02458600505@mail.gmail.com>
+Message-ID: <20081109163140.GA28028@rivest.dlitz.net>
+
+On Sun, Nov 09, 2008 at 07:54:22AM -0800, Paul Hoffman wrote:
+>> Which algorithms are you referring to?  Just MD2?  I'm willing to drop 
+>> MD2 if there are no objections.  I'm not going to be removing MD5 or 
+>> SHA-1 any time soon; They're just wrappers around the Python standard 
+>> library anyway.
+>
+>The idea of dropping support for "weak" algorithms is silly. No
+>developer looks through the list of algorithms in a library and say
+>"I'll pick, um, er, that one" without knowing what it is. There is no
+>security problem with a library having weak algorithms, only with
+>clueless people using them without understanding the consequences.
+
+Really?  Many developers still use MD5 in new applications.
+
+Overly optimistic developers (or their micro-managing bosses) routinely 
+make design choices favouring speed or portability over security, and it's 
+the _users_ who suffer the consequences.  Following your line of reasoning, 
+there was nothing wrong with RandomPool; It was simply being misused---by 
+practically everyone.  I disagree, and RandomPool is now deprecated.
+
+Many airplane crashes can be written off as "pilot error", but often there 
+are other factors involved, and investigators owe it to the _passengers_ to 
+discover those factors and take steps to avoid similar situations in the 
+future.  The same thing applied to crypto libraries.
+
+>Old, weak hash algorithms are still needed for validating old signatures 
+>and certificates.
+
+Agreed.  Even if the MD5 or SHA-1 libraries weren't wrappers around the 
+Python standard library, I still would not remove them, since that would 
+break nearly every program that uses PyCrypto, I would think.  Having said 
+that, does anybody using PyCrypto actually need MD2, specifically?  Having 
+less code makes PyCrypto more maintainable, and I'm not opposed to removing 
+what is basically "dead code".
+
+>>> With respect to the recommendations of the NIST and others I propose to
+>>> offer the following algorithm additionally and directly over the distributed
+>>> library interface: SHA-224, SHA-256 (C file is allready included), SHA-384,
+>>> SHA-512, RIPEMD-128, RIPEMD-160, RIPEMD-256, RIPEMD-320, Tiger and
+>>> WHIRLPOOL.
+>
+>Just a note on that sentence: NIST only recommends the members of the
+>SHA family; all the rest are recommended by "and others".
+
+Thank you for clarifying that point.
+
+>> My understanding is that SHA-224 and SHA-384 are encumbered by software
+>> patents
+>
+>The entire SHA-2 family is encumbered by a patent (US 6,829,355) that
+>is licensed royalty-free (see
+><https://datatracker.ietf.org/ipr/858/>). It applies to SHA-256 and
+>SHA-512 as well.
+
+If it's licensed to everyone on an automatic, royalty-free basis, then it's 
+not _encumbered_ by a patent, just _covered_ by a patent.  Practically 
+everything is covered by patents.  What I am concerned about is people 
+actually getting sued (especially successfully) for patent infringement.
+
+My understanding was that SHA-224 and SHA-384 had additional patent 
+encumbrances that are did not apply to SHA-256 and SHA-512.  That 
+understanding probably came from Wikipedia, and it may be incorrect.
+
+In any case, SHA-224 and SHA-384 are just weakened versions of SHA-256 and 
+SHA-512, so I'm not inclined to add them without good reason.
+
+Thanks for the feedback,
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/270515a1/attachment.pgp 
+
+From zooko at zooko.com  Sun Nov  9 10:58:00 2008
+From: zooko at zooko.com (zooko)
+Date: Sun, 9 Nov 2008 09:58:00 -0700
+Subject: [pycrypto] the sad state of pycrypto
+In-Reply-To: <1e267dfe0811090754n5f96cf22ud92ea02458600505@mail.gmail.com>
+References: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+	<20081109153410.GB24879@rivest.dlitz.net>
+	<1e267dfe0811090754n5f96cf22ud92ea02458600505@mail.gmail.com>
+Message-ID: <1C67BC02-F259-499C-9AF9-3CA0C27A6CBE@zooko.com>
+
+On Nov 9, 2008, at 8:54 AM, Paul Hoffman wrote:
+
+> The idea of dropping support for "weak" algorithms is silly. No  
+> developer looks through the list of algorithms in a library and say  
+> "I'll pick, um, er, that one" without knowing what it is.
+
+I happen to know a somewhat famous developer who once looked through  
+the Crypto++ API and chose DES-XEX without (I think) realizing that  
+it was DES-X and not Triple-DES.
+
+But yeah, modelling the developers who use your library -- guessing  
+how clueful and careful they will be -- is a black art and is  
+probably doomed to failure.
+
+Regards,
+
+Zooko
+
+From dlitz at dlitz.net  Sun Nov  9 11:50:41 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 9 Nov 2008 12:50:41 -0500
+Subject: [pycrypto] the sad state of pycrypto
+In-Reply-To: <1C67BC02-F259-499C-9AF9-3CA0C27A6CBE@zooko.com>
+References: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+	<20081109153410.GB24879@rivest.dlitz.net>
+	<1e267dfe0811090754n5f96cf22ud92ea02458600505@mail.gmail.com>
+	<1C67BC02-F259-499C-9AF9-3CA0C27A6CBE@zooko.com>
+Message-ID: <20081109175041.GA29011@rivest.dlitz.net>
+
+On Sun, Nov 09, 2008 at 09:58:00AM -0700, zooko wrote:
+>On Nov 9, 2008, at 8:54 AM, Paul Hoffman wrote:
+>
+>> The idea of dropping support for "weak" algorithms is silly. No  
+>> developer looks through the list of algorithms in a library and say  
+>> "I'll pick, um, er, that one" without knowing what it is.
+>
+>I happen to know a somewhat famous developer who once looked through  
+>the Crypto++ API and chose DES-XEX without (I think) realizing that  
+>it was DES-X and not Triple-DES.
+>
+>But yeah, modelling the developers who use your library -- guessing  
+>how clueful and careful they will be -- is a black art and is  
+>probably doomed to failure.
+
+But can we make bad choices more difficult to make?
+
+One think I am considering is to allow the developer to select a 
+pre-defined "policy" (set of constraints), and then raise an exception or a 
+warning whenever the program does something that would violate this policy.  
+The policies themselves would be frozen (so legacy code could still use 
+legacy algorithms), but we could create new policies as necessary, 
+encourage developers to use the latest policies for new code, and provide 
+users with tools (environment variables?) to further constrain the policy 
+selections in order to find places where obsolete policies might be in use.
+
+So, hypothetically, you would have something like this:
+
+     >>> from Crypto import CryptoAPI
+     >>> from Crypto.Policy.p2008v1 import ConservativePolicy
+     >>> api = CryptoAPI(policy=ConservativePolicy)
+     >>> h = api.Hash.MD5.new()
+     Traceback (most recent call last):
+       File "<stdin>", line 1, in <module>
+     PolicyError: MD5 hash not allowed by policy <2008.1.ConservativePolicy>
+
+This would probably involve concentrating all object creation into a single 
+"factory", so I'm not quite sure how to shoehorn the current PyCrypto API 
+into it.
+
+This would also make unit testing easier, since we could substitute dummy 
+functions for real ones.  Also, things like Util.number.isPrime could more 
+easily be made non-deterministic (giving them access to the user's selected 
+RNG) without having to change the external API.
+
+Thoughts?
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/359ab7bf/attachment.pgp 
+
+From zooko at zooko.com  Sun Nov  9 13:45:35 2008
+From: zooko at zooko.com (zooko)
+Date: Sun, 9 Nov 2008 12:45:35 -0700
+Subject: [pycrypto] the sad state of pycrypto
+In-Reply-To: <20081109175041.GA29011@rivest.dlitz.net>
+References: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+	<20081109153410.GB24879@rivest.dlitz.net>
+	<1e267dfe0811090754n5f96cf22ud92ea02458600505@mail.gmail.com>
+	<1C67BC02-F259-499C-9AF9-3CA0C27A6CBE@zooko.com>
+	<20081109175041.GA29011@rivest.dlitz.net>
+Message-ID: <1F509151-C59A-4D64-B72B-7EE2BD247D66@zooko.com>
+
+I wonder if your current ideas, Dwayne Litzenberger, about making a  
+cryptography API that is easier for people to use safely without  
+knowing a lot about crypto details, means you are exploring design  
+space that the Key Czar project has recently jumped into:
+
+http://www.keyczar.org/
+
+Regards,
+
+Zooko
+
+From paul.hoffman at gmail.com  Sun Nov  9 13:49:49 2008
+From: paul.hoffman at gmail.com (Paul Hoffman)
+Date: Sun, 9 Nov 2008 11:49:49 -0800
+Subject: [pycrypto] the sad state of pycrypto
+In-Reply-To: <20081109163140.GA28028@rivest.dlitz.net>
+References: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+	<20081109153410.GB24879@rivest.dlitz.net>
+	<1e267dfe0811090754n5f96cf22ud92ea02458600505@mail.gmail.com>
+	<20081109163140.GA28028@rivest.dlitz.net>
+Message-ID: <1e267dfe0811091149l14844c0elea07219a15918127@mail.gmail.com>
+
+On Sun, Nov 9, 2008 at 8:31 AM, Dwayne C. Litzenberger <dlitz at dlitz.net> wrote:
+> Really?  Many developers still use MD5 in new applications.
+
+MD5 is still perfectly usable in applications that do not rely on the
+collision resistance and only need 128 bits of preimage resistance.
+For example, HMAC-MD5 has been proven to be secure even is the
+collision resistance is near zero. A hashed signature algorithm can
+use MD5 with no problems.
+
+> Overly optimistic developers (or their micro-managing bosses) routinely make
+> design choices favouring speed or portability over security, and it's the
+> _users_ who suffer the consequences.
+
+If someone knows enough about MD5 to know that it is faster than
+SHA-1, or that it is more portable than SHA-1, knows about its
+properties enough to use it.
+
+If you really want the library to be in nanny mode, simply rename the
+function from "MD5" to something like "idontwantyoutouseMD5". This is
+a serious suggestion. Self-documenting function names are surprisingly
+useful.
+
+> Following your line of reasoning,
+> there was nothing wrong with RandomPool; It was simply being misused---by
+> practically everyone.  I disagree, and RandomPool is now deprecated.
+
+That is not my line of reasoning. RandomPool was unsafe at any speed.
+MD5 is safe for many purposes.
+
+> If it's licensed to everyone on an automatic, royalty-free basis, then it's
+> not _encumbered_ by a patent, just _covered_ by a patent.
+
+Some pedants would not slice and dice it that way.
+
+> My understanding was that SHA-224 and SHA-384 had additional patent
+> encumbrances that are did not apply to SHA-256 and SHA-512.  That
+> understanding probably came from Wikipedia, and it may be incorrect.
+
+I see nothing in the current version of the Wikipedia page that says
+that, and I have never heard of any such encumbrances. If there were,
+the NSA would be amazingly remiss in filing an IPR statement with the
+IETF for the family as a whole but not those members.
+
+> In any case, SHA-224 and SHA-384 are just weakened versions of SHA-256 and
+> SHA-512, so I'm not inclined to add them without good reason.
+
+I am not a proponent of either function, but I can channel those who
+are. SHA-224 is designed to have "matched impedance" with TripleDES,
+which has 112 bits of strength. Similarly, SHA-384 is matched to
+AES-196. I find the impedance idea goofy, but some folks like it.
+
+From dlitz at dlitz.net  Sun Nov  9 14:16:46 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 9 Nov 2008 15:16:46 -0500
+Subject: [pycrypto] the sad state of pycrypto
+In-Reply-To: <1F509151-C59A-4D64-B72B-7EE2BD247D66@zooko.com>
+References: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+	<20081109153410.GB24879@rivest.dlitz.net>
+	<1e267dfe0811090754n5f96cf22ud92ea02458600505@mail.gmail.com>
+	<1C67BC02-F259-499C-9AF9-3CA0C27A6CBE@zooko.com>
+	<20081109175041.GA29011@rivest.dlitz.net>
+	<1F509151-C59A-4D64-B72B-7EE2BD247D66@zooko.com>
+Message-ID: <20081109201646.GA1217@rivest.dlitz.net>
+
+On Sun, Nov 09, 2008 at 12:45:35PM -0700, zooko wrote:
+>I wonder if your current ideas, Dwayne Litzenberger, about making a  
+>cryptography API that is easier for people to use safely without  
+>knowing a lot about crypto details, means you are exploring design  
+>space that the Key Czar project has recently jumped into:
+>
+>http://www.keyczar.org/
+
+Yes, I'm aware of Key Czar, and I'm following their mailing list.  It seems 
+to be worth paying attention to.  That said, the impression I get is that 
+the Key Czar guys want to work with their own particular high-level message 
+syntax, whereas PyCrypto allows users (such as the Paramiko or Twisted 
+Conch SSH libraries) to make up their own, arbitrary message syntaxes (even 
+ASN.1, though I don't plan to support ASN.1 directly.)
+
+One day, PyCrypto and Key Czar might even end up merging (or one might make 
+the other redundant).  I guess we'll have to wait and see.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/0c078796/attachment.pgp 
+
+From spoettl at hotmail.com  Sun Nov  9 15:31:15 2008
+From: spoettl at hotmail.com (Stefan Spoettl)
+Date: Sun, 9 Nov 2008 17:01:15 -0430
+Subject: [pycrypto] Why I would be glad to find a plenty of algorithms in
+	pycrypto
+Message-ID: <BAY105-DS60481B5418488371AD402AA1B0@phx.gbl>
+
+ARC4 is fast.
+ARC4 is easy to implement.
+ARC4 is beautiful (my personal Mona Lisa of cryptography)
+
+Some years ago this "arguments" appeared to me as "sufficient" to bank on it during a development of a secure protocol, which is intending to beat the SSL performance (in a concluded VPN).
+
+As you know some "uncultured and barefaced" cryptoanalysts have painted a fat nipple directly is the face of my Mona Lisa. It could be adopted that this people will terminate to do their sacrileges. Futheron this is not desirable.
+
+But what should one do if a development depends on an algorithm. The only way around this edge is to bank on a library that offers equivalent compensation.
+
+By the way: In my point of view a block cipher that is running in CFB, OFB or CTR mode could never be an equivalent compensation for a stream cipher (if you want speed). Dwayne's statement that stream ciphers are still in an "experimental" state sounds in my (european) ears like a simple
+misapprehension. For some reasons the Europeans are never leaving the "experimental" state of exactly nothing. Well, that's a part of our weakness but even a part of our power.
+
+Stefan
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/34e531f1/attachment.htm 
+
+From spoettl at hotmail.com  Sun Nov  9 16:16:53 2008
+From: spoettl at hotmail.com (Stefan Spoettl)
+Date: Sun, 9 Nov 2008 17:46:53 -0430
+Subject: [pycrypto] Batteries included
+Message-ID: <BAY105-DS42C05C5FF7B80F110A6CEAA1B0@phx.gbl>
+
+Paul has writen:
+> "I'll pick, um, er, that one" without knowing what it is.
+
+Well, please blame me as a greenhorn or as what you want. But picking it without knowing it, is exactly what I will do as Python programmer when a new problem appears. It's like that: First trying and only if it's inevitable reading the documentation and then only if it's inevitable intending the hole in deepth.
+
+In my oppinion a "weak flag" in the algorithms interface would be nice for Pythonists. This flag should allow calls of weak ciphers only if it's set. So, some sort of hint for the programmer, but not the deliverance of the duty to study the applied agorithm. We can assume that the programmer is minimal knowing, that a cipher is something special. In this way I am intending the statements of Dwayne 
+
+Stefan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/71656646/attachment.htm 
+
+From dlitz at dlitz.net  Sun Nov  9 17:13:38 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 9 Nov 2008 18:13:38 -0500
+Subject: [pycrypto] Why I would be glad to find a plenty of
+	algorithms	in pycrypto
+In-Reply-To: <BAY105-DS60481B5418488371AD402AA1B0@phx.gbl>
+References: <BAY105-DS60481B5418488371AD402AA1B0@phx.gbl>
+Message-ID: <20081109231338.GA3838@rivest.dlitz.net>
+
+On Sun, Nov 09, 2008 at 05:01:15PM -0430, Stefan Spoettl wrote:
+>ARC4 is fast.
+>ARC4 is easy to implement.
+>ARC4 is beautiful (my personal Mona Lisa of cryptography)
+
+On the topic of "beautiful", you should read this, by Sean O'Neil:
+
+     Most cryptographers are either mathematicians or come from a very
+     strong mathematical background [including myself] and we love
+     beautiful mathematical structures.  We like magic squares, we like
+     fancy patterns, we like cool mathematical properties such as
+     guaranteed long periods, etc. etc. etc.  It is extremely hard to
+     resist the temptation to include an unnecessarily complex but
+     mathematically pretty component in your design that other
+     mathematicians might admire.  We do tend to forget that the beautiful
+     mathematics of it tend to be responsible for the algebraic structures
+     that may turn out to be exploitable to mount successful attacks.  We
+     get attached to our cute little babies and to their beautiful
+     mathematical complexity.
+
+     The truth: The cipher's job is to destroy mathematics as quickly as
+     possible.
+
+     -- http://www.enrupt.com/index.php/2008/09/05/strength_in_complexity
+
+>Some years ago this "arguments" appeared to me as "sufficient" to bank on 
+>it during a development of a secure protocol, which is intending to beat 
+>the SSL performance (in a concluded VPN).
+
+What is a "concluded VPN"?  A search on Google returns nothing useful.
+
+>As you know some "uncultured and barefaced" cryptoanalysts have painted a 
+>fat nipple directly is the face of my Mona Lisa. It could be adopted that 
+>this people will terminate to do their sacrileges. Futheron this is not 
+>desirable.
+>
+>But what should one do if a development depends on an algorithm. The only 
+>way around this edge is to bank on a library that offers equivalent 
+>compensation.
+
+"Fat nipple"?  "Sacrilege"?  "Equivalent compensation"?  What is this, a 
+religious strip show with a bit of Judge Judy mixed in?
+
+Enough with the vague rhetoric.  Please make your arguments directly, 
+clearly, and in English, or don't make them at all.  Although I speak 
+English as a native language, others on this list don't, and if I can't 
+understand you, they surely won't.
+
+Also, please address my responses to your last email, especially my point 
+about keeping the amount of hand-written C code to a minimum.
+
+Furthermore, please actually use the "Reply" function of your mailer (the 
+In-Reply-To header should be set correctly).  By breaking up the threads, 
+you are making this conversation harder to follow in the mailing list 
+archives.
+
+>By the way: In my point of view a block cipher that is running in CFB, OFB 
+>or CTR mode could never be an equivalent compensation for a stream cipher 
+>(if you want speed).
+
+Quoting D. J. Bernstein's paper, which I expect you have read by now:
+
+     I don't like waiting for my computer.  I really don't like waiting for
+     someone else's computer.  A large part of my research is devoted to
+     improving system performance at various levels.  (For example, my paper
+     [6] is titled "Curve25519: new Diffie-Hellman speed records.")  But I
+     find security much more important than speed.  We need invulnerable
+     software systems, and we need them today, even if they are ten times
+     slower than our current systems.  Tomorrow we can start working on
+     making them faster.
+
+     ...
+
+     "To this very day, idiot software managers measure 'programmer
+     productivity' in terms of 'lines of code produced,' whereas the notion
+     of 'lines of code spent' is much more appropriate."
+     ?Dijkstra in [9, page EWD962?4]
+
+If speed is more important to you than security, then I suggest you write 
+all your code in C, and use one of the many widely-available C crypto 
+libraries.  I've heard Crypto++ is quite good, and several people have 
+already mentioned pycryptopp.
+
+My resources are extremely limited, and I choose to devote them toward 
+security, not speed.
+
+>Dwayne's statement that stream ciphers are still in an "experimental" 
+>state sounds in my (european) ears like a simple misapprehension.
+
+Believe it.  All of the six stream ciphers submitted to NESSIE (2000-2003) 
+were broken[1], the recently-published cube attack decimated LFSR-based 
+stream ciphers, and I'm sure somebody else can comment on the status of 
+eSTREAM, but from [2] it looks like the submissions required a lot of 
+last-minute changes in order to avoid newly-discovered attacks.
+
+[1] https://www.cosic.esat.kuleuven.be/nessie/deliverables/decision-final.pdf
+[2] http://cr.yp.to/streamciphers/broken-20080330.pdf
+
+>For some reasons the Europeans are never leaving the "experimental" state 
+>of exactly nothing. Well, that's a part of our weakness but even a part of 
+>our power.
+
+I don't care where you're from unless you're submitting code: 
+http://www.pycrypto.org/submission-requirements/
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/2bc25454/attachment.pgp 
+
+From dlitz at dlitz.net  Sun Nov  9 18:01:56 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 9 Nov 2008 19:01:56 -0500
+Subject: [pycrypto] the sad state of pycrypto
+In-Reply-To: <1e267dfe0811091149l14844c0elea07219a15918127@mail.gmail.com>
+References: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+	<20081109153410.GB24879@rivest.dlitz.net>
+	<1e267dfe0811090754n5f96cf22ud92ea02458600505@mail.gmail.com>
+	<20081109163140.GA28028@rivest.dlitz.net>
+	<1e267dfe0811091149l14844c0elea07219a15918127@mail.gmail.com>
+Message-ID: <20081110000156.GA1276@rivest.dlitz.net>
+
+On Sun, Nov 09, 2008 at 11:49:49AM -0800, Paul Hoffman wrote:
+>On Sun, Nov 9, 2008 at 8:31 AM, Dwayne C. Litzenberger <dlitz at dlitz.net> wrote:
+>> Really?  Many developers still use MD5 in new applications.
+>
+>MD5 is still perfectly usable in applications that do not rely on the
+>collision resistance and only need 128 bits of preimage resistance.
+>For example, HMAC-MD5 has been proven to be secure even is the
+>collision resistance is near zero.
+
+MD5 was _never_ collision-resistant; We just thought it was.  It's possible 
+that MD5 is not safe for any purpose, and that we just currently think it 
+is.  Maybe it's safe, and maybe not, but it's not a conservative choice for 
+new applications.
+
+Also, I'm not sure what security proof you're referring to, but see 
+"Forgery and Partial Key-Recovery Attacks on HMAC and NMAC Using Hash 
+Collisions": http://eprint.iacr.org/2006/319
+
+> A hashed signature algorithm can use MD5 with no problems.
+
+I'm sure you don't mean that.  Any time you someone signs a message 
+provided by a third party (such as when certifying a computer program or 
+when adding a digital timestamping to a document), the hash function they 
+use needs to be collision-resistant.
+
+>> Following your line of reasoning,
+>> there was nothing wrong with RandomPool; It was simply being misused---by
+>> practically everyone.  I disagree, and RandomPool is now deprecated.
+>
+>That is not my line of reasoning. RandomPool was unsafe at any speed.
+>MD5 is safe for many purposes.
+
+No, RandomPool was safe if you used it correctly, which meant you had to 
+feed it entropy from somewhere, and you had to monitor the entropy 
+estimate.  Few people actually did that, but if they did, RandomPool worked 
+fine.
+
+>> Overly optimistic developers (or their micro-managing bosses) routinely 
+>> make design choices favouring speed or portability over security, and 
+>> it's the _users_ who suffer the consequences.
+>
+>If someone knows enough about MD5 to know that it is faster than
+>SHA-1, or that it is more portable than SHA-1, knows about its
+>properties enough to use it.
+
+I still think you're being overly optimistic.  Smart developers still make 
+fatal mistakes with crypto, and I have empirical evidence to back that up:
+
+     1. Zooko said:
+
+         "I happen to know a somewhat famous developer who once looked 
+         through the Crypto++ API and chose DES-XEX without (I think) 
+         realizing that it was DES-X and not Triple-DES."
+
+     2. RandomPool was misused---twice---in Paramiko.  See 
+        http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html
+
+     3. A Google Code Search for RandomPool turned up a bunch of uses, none 
+        of which were correct.
+
+Developers of crypto libraries are in a position to reduce the number of 
+mistakes their downstream users accidentally make.  I intend to make full 
+use of this ability. (But see below.)
+
+>If you really want the library to be in nanny mode, simply rename the
+>function from "MD5" to something like "idontwantyoutouseMD5". This is
+>a serious suggestion. Self-documenting function names are surprisingly
+>useful.
+
+Aside from the maintainability benefits, I don't want to drop algorithms 
+that people need for legacy reasons, even if they would be well-advised not 
+to use them in new applications.  That's why I like the policy idea instead 
+of dropping or renaming modules.  That way, developers can make less 
+conservative choices if they need to, but they'll be less likely to do so 
+accidentally, and reviewers will have an easier time checking for these 
+mistakes.
+
+On the other hand, I don't mind dropping algorithms that nobody actually 
+uses.  It's not just about "nanny mode": Code no longer present is code I 
+don't have to spend my limited time maintaining.  That's why I asked about 
+MD2.  Do you know of anyone who uses PyCrypto who needs MD2 support?
+
+>> If it's licensed to everyone on an automatic, royalty-free basis, then 
+>> it's not _encumbered_ by a patent, just _covered_ by a patent.
+>
+>Some pedants would not slice and dice it that way.
+
+It's not "slicing and dicing"; It's the only way to deal with the insanity 
+of various patent systems around the world and still actually develop 
+anything.
+
+If I take the claims of every patent at face value (which I have to, since 
+the courts say I'm not qualified to do anything else, because I'm not a 
+patent attorney) then I must assume that every program I could possibly 
+write is covered by many patents.  However, most of these patents don't 
+cause any actual problems, for whatever reason (which could be that my 
+reading of the patents is too broad, or that the patents are invalid, or 
+that the patent holder doesn't want to enforce them, or that the patents 
+have been explicitly licenced to everyone on a royalty-free basis).  That's 
+how we manage to write software without getting sued into oblivion.  Well, 
+most of the time.
+
+So, like everybody else, I don't read patents until they have expired.  
+This means I can be wrong about what's patented and what's not, but patent 
+law gives me no other choice.
+
+My policy is that if I think an algorithm is patent-encumbered, then it's 
+not getting included into PyCrypto; If it's already included, then it gets 
+dropped.  Patent holders who create encumbrances will get every bit of 
+exclusivity they ask for, and they deserve whatever lack of market 
+penetration comes with it.
+
+>> My understanding was that SHA-224 and SHA-384 had additional patent
+>> encumbrances that are did not apply to SHA-256 and SHA-512.  That
+>> understanding probably came from Wikipedia, and it may be incorrect.
+>
+>I see nothing in the current version of the Wikipedia page that says
+>that, and I have never heard of any such encumbrances. If there were,
+>the NSA would be amazingly remiss in filing an IPR statement with the
+>IETF for the family as a whole but not those members.
+
+Yeah, it sounds like I might have been mistaken about the patent situation 
+regarding SHA-224 and SHA-384.
+
+>> In any case, SHA-224 and SHA-384 are just weakened versions of SHA-256 and
+>> SHA-512, so I'm not inclined to add them without good reason.
+>
+>I am not a proponent of either function, but I can channel those who
+>are. SHA-224 is designed to have "matched impedance" with TripleDES,
+>which has 112 bits of strength. Similarly, SHA-384 is matched to
+>AES-196. I find the impedance idea goofy, but some folks like it.
+
+I agree that it's goofy.  I really don't see why a person couldn't just 
+truncate an ordinary SHA-256/512 hash if they want "matched impedance", 
+rather than also mucking about with the initial values.  If we want to 
+avoid allowing someone to truncate an SHA-256 hash to make a valid 224-bit 
+hash, then we can define separate hash functions like so:
+
+    H_256(m) := SHA-256("SHA-256" || m)
+    H_224(m) := SHA-256("SHA-224" || m)[:224]
+
+This would have the same effect, and wouldn't involve messing with the 
+internals of the hash function.  SHA-224/384 look like hacks to support 
+some bizarre U.S. government system that PyCrypto will never be approved 
+for anyway.  :-)
+
+I might reconsider adding SHA-224/384 at some point in the future if 
+there's some realistic interoperability need for it (e.g. important 
+free/open-source software that depends on PyCrypto suddenly needs to 
+support it for some reason), but for now I think it would just make 
+PyCrypto more complex than it needs to be.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/bf6b5fcd/attachment-0001.pgp 
+
+From paul.hoffman at gmail.com  Sun Nov  9 18:57:16 2008
+From: paul.hoffman at gmail.com (Paul Hoffman)
+Date: Sun, 9 Nov 2008 16:57:16 -0800
+Subject: [pycrypto] the sad state of pycrypto
+In-Reply-To: <20081110000156.GA1276@rivest.dlitz.net>
+References: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+	<20081109153410.GB24879@rivest.dlitz.net>
+	<1e267dfe0811090754n5f96cf22ud92ea02458600505@mail.gmail.com>
+	<20081109163140.GA28028@rivest.dlitz.net>
+	<1e267dfe0811091149l14844c0elea07219a15918127@mail.gmail.com>
+	<20081110000156.GA1276@rivest.dlitz.net>
+Message-ID: <1e267dfe0811091657j9034874ld7f20eac47c8cfb@mail.gmail.com>
+
+On Sun, Nov 9, 2008 at 4:01 PM, Dwayne C. Litzenberger <dlitz at dlitz.net> wrote:
+> MD5 was _never_ collision-resistant; We just thought it was.  It's possible
+> that MD5 is not safe for any purpose, and that we just currently think it
+> is.  Maybe it's safe, and maybe not, but it's not a conservative choice for
+> new applications.
+
+Indeed. Those platitudes are true for all hash functions.
+
+> Also, I'm not sure what security proof you're referring to, but see "Forgery
+> and Partial Key-Recovery Attacks on HMAC and NMAC Using Hash Collisions":
+> http://eprint.iacr.org/2006/319
+
+I'm referring to <http://eprint.iacr.org/2006/043>, which I consider
+to be more definitive. YMMV.
+
+>> A hashed signature algorithm can use MD5 with no problems.
+>
+> I'm sure you don't mean that.
+
+I'm sure I do.
+
+> Any time you someone signs a message provided
+> by a third party (such as when certifying a computer program or when adding
+> a digital timestamping to a document), the hash function they use needs to
+> be collision-resistant.
+
+...unless the signer can add as much randomness to the signature as
+they want, which is exactly what a hashed signature algorithm does.
+The advantage of a hashed signature algorithm is that it can not only
+compensate for less-than-expected collision resistance, it can make
+the strength of the signature as strong as the preimage resistance of
+the hash, not the collision resistance.
+
+> No, RandomPool was safe if you used it correctly, which meant you had to
+> feed it entropy from somewhere, and you had to monitor the entropy estimate.
+
+So, in order to use it safely, you had to know more about randomness
+than nearly any programmer might. I would not call that safe, but I
+hear that you might. Compare that to MD5, which can be used safely if
+you understand that 64 bits of collision resistance is not enough for
+most applications, and that you will easily get less now that there is
+a proven trivial attack.
+
+> I still think you're being overly optimistic.  Smart developers still make
+> fatal mistakes with crypto, and I have empirical evidence to back that up:
+
+Of course. Removing a hash function will not prevent that. Someone who
+misuses MD5 is just as likely to misuse SHA-1, such as using it where
+collision resistance needs to be more than 2^64. Or were you
+intendeing to remove SHA-1 as well?
+
+>    1. Zooko said:
+>
+>        "I happen to know a somewhat famous developer who once looked
+>  through the Crypto++ API and chose DES-XEX without (I think)
+>  realizing that it was DES-X and not Triple-DES."
+
+If the Crypto++ API allows a user to give 196 bits of key and then
+only use 64 bits, then the problem is mostly with the API. Also, note
+the "I think" there.
+
+>    2. RandomPool was misused---twice---in Paramiko.  See
+> http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html
+
+You have already documented why this function was difficult to use.
+Why blame the users for that?
+
+>    3. A Google Code Search for RandomPool turned up a bunch of uses, none
+>     of which were correct.
+
+Ditto.
+
+> Developers of crypto libraries are in a position to reduce the number of
+> mistakes their downstream users accidentally make.  I intend to make full
+> use of this ability. (But see below.)
+
+That is a good thing, and I fully support you in that. Removing hash
+algorithms that are in wide safe use (as well as wide unsafe use) may
+not be the best way to do that, but it's your library.
+
+>> If you really want the library to be in nanny mode, simply rename the
+>> function from "MD5" to something like "idontwantyoutouseMD5". This is
+>> a serious suggestion. Self-documenting function names are surprisingly
+>> useful.
+>
+> Aside from the maintainability benefits, I don't want to drop algorithms
+> that people need for legacy reasons, even if they would be well-advised not
+> to use them in new applications.  That's why I like the policy idea instead
+> of dropping or renaming modules.  That way, developers can make less
+> conservative choices if they need to, but they'll be less likely to do so
+> accidentally, and reviewers will have an easier time checking for these
+> mistakes.
+
+Sure. However, now you become the enforcer of policy. For hashes,
+that's a very tricky position. Do you call SHA-1 not conservative,
+even though every conservative CA in the world uses it for all their
+certificates? Even if you know that there is an attack that reduces
+its collision resistance to where MD5 was a few years ago? Even though
+there is a preimage attack on it? (The last one is a bit of a red
+herring, but it shows the difficulty of being the arbiter of
+conservativeness.) Again, it's your library, so you get to make the
+judgement calls, but what you think is obvious can be far from it, as
+you have already discovered.
+
+> On the other hand, I don't mind dropping algorithms that nobody actually
+> uses.  It's not just about "nanny mode": Code no longer present is code I
+> don't have to spend my limited time maintaining.
+
+Fully agree here.
+
+>  That's why I asked about
+> MD2.  Do you know of anyone who uses PyCrypto who needs MD2 support?
+
+I'm the wrong person to ask about that. In fact, probably everyone on
+this list is the wrong person to ask about that. You have to ask every
+user "do you use this", which is of course impossible. As library
+maintainer, you can rip it out and see who screams.
+
+> My policy is that if I think an algorithm is patent-encumbered, then it's
+> not getting included into PyCrypto; If it's already included, then it gets
+> dropped.
+
+And now you get to define "encumbered"! :-)
+
+> I agree that it's goofy.  I really don't see why a person couldn't just
+> truncate an ordinary SHA-256/512 hash if they want "matched impedance",
+> rather than also mucking about with the initial values.
+
+...answered by your next sentence...
+
+> If we want to avoid
+> allowing someone to truncate an SHA-256 hash to make a valid 224-bit hash,
+> then we can define separate hash functions like so:
+>
+>   H_256(m) := SHA-256("SHA-256" || m)
+>   H_224(m) := SHA-256("SHA-224" || m)[:224]
+
+...at a cost of one extra round of hashing for all messages that are 7
+octets or less short of a block size boundary. Using a different IV
+prevents that performance hit in those cases. It's a design tradeoff.
+
+From sergey.chernov at thrift.ru  Tue Nov 11 05:27:40 2008
+From: sergey.chernov at thrift.ru (Sergey Chernov)
+Date: Tue, 11 Nov 2008 14:27:40 +0300
+Subject: [pycrypto] the sad state of pycrypto
+In-Reply-To: <20081109153410.GB24879@rivest.dlitz.net>
+References: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+	<20081109153410.GB24879@rivest.dlitz.net>
+Message-ID: <F94A5BBF-7A59-4B85-9113-4F90965E9907@thrift.ru>
+
+If the problem is to avoid buffer overrun in C code and it worth  
+thinking of other languages, try C++. For example, pycrypto C++  
+extension interface may provide safe (handcoded) buffer and vector  
+classes (templates) which could be as safe against overruns as  
+language-backed arrays as in higher level languages. Requirement to  
+use these vector/buffer implementations for future implementation may  
+be better solution than adding another language to C/Python. As C++ is  
+integrated with C compiler on absolutely most platforms and is  
+supported by setuptools be default, we can assume that C++ is already  
+supported in any python C extension.
+
+Moreover, proper C++ infrastructure could make extension writing  
+process quite streamlined and easy and force developers to use safe  
+and wise techniques.
+
+Sergey Chernov
+sergey.chernov at thrift.ru
+
+
+
+09.11.2008, ? 18:34, Dwayne C. Litzenberger ???????(?):
+
+> Cryptography is a waste of time if an attacker can make your program  
+> run arbitrary code, thanks to a buffer overflow or other subtle bug.  
+> I am hesitant to add new algorithms to PyCrypto until they can be  
+> developed in a more trustworthy fashion.
+>
+> (I'm toying with the idea of a restricted subset of C that requires  
+> all arrays to be of size 2**n, and requires the appropriate bit-wise  
+> AND whenever indexing the array.  However, an implementation is a  
+> long way off.  I'm also interested in languages like D and BitC, but  
+> I'm not sure about the maturity of their compilers.  I could use  
+> help here.)
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 2193 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081111/823c8342/attachment.bin 
+
+From sergey.chernov at thrift.ru  Tue Nov 11 06:29:20 2008
+From: sergey.chernov at thrift.ru (Sergey Chernov)
+Date: Tue, 11 Nov 2008 15:29:20 +0300
+Subject: [pycrypto] the sad state of pycrypto
+In-Reply-To: <20081109175041.GA29011@rivest.dlitz.net>
+References: <BAY105-DS6DE1AA2CEEFC3406A72CAAA180@phx.gbl>
+	<20081109153410.GB24879@rivest.dlitz.net>
+	<1e267dfe0811090754n5f96cf22ud92ea02458600505@mail.gmail.com>
+	<1C67BC02-F259-499C-9AF9-3CA0C27A6CBE@zooko.com>
+	<20081109175041.GA29011@rivest.dlitz.net>
+Message-ID: <F27D247F-93CA-4958-A79C-4616829565BC@thrift.ru>
+
++1
+
+policy-checking in existing object creation code will be enough.  
+centralized "any object" factory is (as for me) uglier than policy  
+central used in several object factories.
+
+Sergey Chernov
+sergey.chernov at thrift.ru
+
+
+
+09.11.2008, ? 20:50, Dwayne C. Litzenberger ???????(?):
+
+> So, hypothetically, you would have something like this:
+>
+>    >>> from Crypto import CryptoAPI
+>    >>> from Crypto.Policy.p2008v1 import ConservativePolicy
+>    >>> api = CryptoAPI(policy=ConservativePolicy)
+>    >>> h = api.Hash.MD5.new()
+>    Traceback (most recent call last):
+>      File "<stdin>", line 1, in <module>
+>    PolicyError: MD5 hash not allowed by policy  
+> <2008.1.ConservativePolicy>
+>
+> This would probably involve concentrating all object creation into a  
+> single "factory", so I'm not quite sure how to shoehorn the current  
+> PyCrypto API into it.
+>
+> This would also make unit testing easier, since we could substitute  
+> dummy functions for real ones.  Also, things like  
+> Util.number.isPrime could more easily be made non-deterministic  
+> (giving them access to the user's selected RNG) without having to  
+> change the external API.
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 2193 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20081111/c044e9d9/attachment.bin 
+

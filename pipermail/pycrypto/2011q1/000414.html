@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Initial review of Thorsten's Py3k changes
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Initial%20review%20of%20Thorsten%27s%20Py3k%20changes&In-Reply-To=4D3702C5.7090803%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000408.html">
+   <LINK REL="Next"  HREF="000415.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Initial review of Thorsten's Py3k changes</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Initial%20review%20of%20Thorsten%27s%20Py3k%20changes&In-Reply-To=4D3702C5.7090803%40gmx.li"
+       TITLE="[pycrypto] Initial review of Thorsten's Py3k changes">dlitz at dlitz.net
+       </A><BR>
+    <I>Sat Jan 29 19:47:08 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000408.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+        <LI>Next message: <A HREF="000415.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#414">[ date ]</a>
+              <a href="thread.html#414">[ thread ]</a>
+              <a href="subject.html#414">[ subject ]</a>
+              <a href="author.html#414">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Have a look in the various common.py files.  All of the hex test vectors are   
+being fed through either a2b_hex or b2a_hex.  I think it should be possible 
+to make versions of b2a_hex and a2b_hex that also do bytes-&gt;str and 
+str-&gt;bytes conversions, respectively.
+
+The following code works in both Python 2.1 and Python 3.2b2:
+
+     from binascii import b2a_hex as _b2a_hex, a2b_hex as _a2b_hex
+     from codecs import ascii_decode as _ascii_decode
+     def bin2hex(bts):
+         &quot;&quot;&quot;Like b2a_hex, but returns a str instead of bytes in Python 3.x&quot;&quot;&quot;
+         return _ascii_decode(_b2a_hex(bts))[0]
+     def hex2bin(s):
+         &quot;&quot;&quot;Like a2b_hex, but expects a str instead of bytes in Python 3.x&quot;&quot;&quot;
+         return _a2b_hex(s.encode('ascii'))
+
+That code could, for example, be placed into lib/Crypto/Util/py3compat.py
+
+Then, at the top of lib/Crypto/SelfTest/Cipher/common.py, you could 
+replace:
+
+     from binascii import a2b_hex, b2a_hex
+
+with:
+
+     from Crypto.Util.py3compat import \
+         hex2bin as a2b_hex, bin2hex as b2a_hex
+
+This also revealed a bug in RoundtripTest, which can be fixed as follows:
+
+--------------------- snip -------------------
+@@ -222,9 +224,9 @@ class RoundtripTest(unittest.TestCase):
+          for mode in (self.module.MODE_ECB, self.module.MODE_CBC, self.module.MODE_CFB, self.module.MODE_PGP, self.module.MODE_OFB):
+              encryption_cipher = self.module.new(a2b_hex(self.key), mode, self.iv)
+              decryption_cipher = self.module.new(a2b_hex(self.key), mode, self.iv)
+-            ciphertext = encryption_cipher.encrypt(self.plaintext)
++            ciphertext = encryption_cipher.encrypt(a2b_hex(self.plaintext))
+              decrypted_plaintext = decryption_cipher.decrypt(ciphertext)
+-            self.assertEqual(self.plaintext, decrypted_plaintext)
++            self.assertEqual(self.plaintext, b2a_hex(decrypted_plaintext))
+  
+  def make_block_tests(module, module_name, test_data):
+      tests = []
+--------------------- snip -------------------
+
+I'm not certain whether this makes your patch cleaner overall, but it might 
+be something worth looking at.
+
+Cheers,
+- Dwayne
+
+On Wed, Jan 19, 2011 at 10:27:01AM -0500, Thorsten Behrens wrote:
+&gt;<i>Yes, something like that would work. That's a good idea.
+</I>&gt;<i>
+</I>&gt;<i>I'm happy to make that change. Just waiting on Dwayne to come back on 
+</I>&gt;<i>whether he wants me to scrap my repository and redo it (so he has one 
+</I>&gt;<i>big commit), and then whether he'd rather have the b() wrapping done the 
+</I>&gt;<i>way you suggest.
+</I>&gt;<i>
+</I>&gt;<i>I also have a small change to the blowfish unit test. I added the CBC 
+</I>&gt;<i>vector.
+</I>&gt;<i>
+</I>&gt;<i>Thorsten
+</I>&gt;<i>
+</I>&gt;<i>On 1/19/2011 5:26 AM, Legrandin wrote:
+</I>&gt;&gt;<i> I am not sure if I grasp all new stuff in Python 3, but would it possible to
+</I>&gt;&gt;<i> keep the test vectors as they are, and possibly change the encoding at runtime?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> For instance, in test_AES.py, we have:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> test_data = [
+</I>&gt;&gt;<i> ...
+</I>&gt;&gt;<i> ( '00112233445566778899aabbccddeeff', 'dda97ca4864cdfe06eaf70a0ec0d7191',
+</I>&gt;&gt;<i>    '000102030405060708090a0b0c0d0e0f1011121314151617',
+</I>&gt;&gt;<i>    'FIPS 197 C.2 (AES-192)' ),
+</I>&gt;&gt;<i> ... ]
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The proposed change wraps each string but the last one with b().
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Instead of changing the test vector line, we could have a separate
+</I>&gt;&gt;<i> piece of code that dynamically
+</I>&gt;&gt;<i> adjusts a tuple in the list in case python 3 is detected.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Something along these lines, but possibly more pythonic:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> if python_version&gt;2:
+</I>&gt;&gt;<i>     for t in test_data:
+</I>&gt;&gt;<i>       idx = test_data.index(t)
+</I>&gt;&gt;<i>       newt = tuple(b(t[0), b(t[1]), b(t[2]), t[3])
+</I>&gt;&gt;<i>       test_data[idx] = newt
+</I>
+
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000408.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+	<LI>Next message: <A HREF="000415.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#414">[ date ]</a>
+              <a href="thread.html#414">[ thread ]</a>
+              <a href="subject.html#414">[ subject ]</a>
+              <a href="author.html#414">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

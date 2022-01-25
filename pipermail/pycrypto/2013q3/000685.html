@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA exportKey question with bcrypt?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%20question%20with%20bcrypt%3F&In-Reply-To=%3C51E4ECC3.7050107%40elzevir.fr%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000684.html">
+   <LINK REL="Next"  HREF="000686.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA exportKey question with bcrypt?</H1>
+    <B>Manuel P&#233;gouri&#233;-Gonnard</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%20question%20with%20bcrypt%3F&In-Reply-To=%3C51E4ECC3.7050107%40elzevir.fr%3E"
+       TITLE="[pycrypto] RSA exportKey question with bcrypt?">mpg at elzevir.fr
+       </A><BR>
+    <I>Mon Jul 15 23:48:35 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000684.html">[pycrypto] RSA exportKey question with bcrypt?
+</A></li>
+        <LI>Next message: <A HREF="000686.html">[pycrypto] RSA exportKey question with bcrypt?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#685">[ date ]</a>
+              <a href="thread.html#685">[ thread ]</a>
+              <a href="subject.html#685">[ subject ]</a>
+              <a href="author.html#685">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+On 15/07/2013 22:52, Legrandin wrote:
+&gt;<i> I hope I understand correctly this time.
+</I>&gt;<i> The presence of a header like:
+</I>&gt;<i> 
+</I>&gt;<i> -----BEGIN RSA PRIVATE KEY-----
+</I>&gt;<i> Proc-Type: 4,ENCRYPTED
+</I>&gt;<i> DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+</I>&gt;<i> [...]
+</I>&gt;<i> 
+</I>&gt;<i> indicates that the PEM envelope is encrypted and that the inner PKCS#8
+</I>&gt;<i> structure is clear.
+</I>&gt;<i> 
+</I>I may be mistaken, but I think this header indicates that the key inside the PEM
+envelope is in &quot;naked&quot; PKCS#1 format, not wrapped in PKCS#8.
+
+My understanding is as follows:
+
+-----BEGIN RSA RIVATE KEY----- 	PKCS#1 in a PEM envelope
+-----BEGIN RIVATE KEY----- 	unencrypted PKCS#8 in a PEM envelope
+-----BEGIN RSA RIVATE KEY----- 	encryptedd PKCS#8 in a PEM envelope
+
+I agree with you that the PEM envelope may be encrypted only in the first case.
+
+Manuel.
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000684.html">[pycrypto] RSA exportKey question with bcrypt?
+</A></li>
+	<LI>Next message: <A HREF="000686.html">[pycrypto] RSA exportKey question with bcrypt?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#685">[ date ]</a>
+              <a href="thread.html#685">[ thread ]</a>
+              <a href="subject.html#685">[ subject ]</a>
+              <a href="author.html#685">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

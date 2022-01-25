@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] same RSA.construct fails on OSX
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20same%20RSA.construct%20fails%20on%20OSX&In-Reply-To=%3C4F19908B.4000107%40nagafix.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000544.html">
+   <LINK REL="Next"  HREF="000549.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] same RSA.construct fails on OSX</H1>
+    <B>Antoine Martin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20same%20RSA.construct%20fails%20on%20OSX&In-Reply-To=%3C4F19908B.4000107%40nagafix.co.uk%3E"
+       TITLE="[pycrypto] same RSA.construct fails on OSX">antoine at nagafix.co.uk
+       </A><BR>
+    <I>Fri Jan 20 11:04:27 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000544.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+        <LI>Next message: <A HREF="000549.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#545">[ date ]</a>
+              <a href="thread.html#545">[ thread ]</a>
+              <a href="subject.html#545">[ subject ]</a>
+              <a href="author.html#545">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 01/20/2012 10:22 PM, Legrandin wrote:
+&gt;<i> Hi Antoine,
+</I>&gt;<i> 
+</I>&gt;&gt;<i> I've just found that simply removing p (or 'd' as it should be called..)
+</I>&gt;&gt;<i> is enough to fix it, so the code becomes:
+</I>&gt;&gt;<i> if d==0:
+</I>&gt;&gt;<i>  k = RSA.construct((long(m), long(e)))
+</I>&gt;&gt;<i> else:
+</I>&gt;&gt;<i>  k = RSA.construct((long(m), long(e), long(d)))
+</I>&gt;<i> 
+</I>&gt;<i> In the first case you generate a public key no matter which library
+</I>&gt;<i> you have installed.
+</I>&gt;<i> In the second case you generate a private key, but only if you are on 2.5.
+</I>What do you think is meant to happen with versions prior to 2.5?
+This exact code has been behaving as expected for years. The resulting
+private key has been used with other libraries (bouncy castle for one).
+
+&gt;<i> Do you need a public key or a private key?
+</I>As per above, public if d==0, private otherwise.
+
+&gt;<i> If you need a public key, just use 2 arguments.
+</I>Yes, the only change needed here for 2.5 is that the third argument
+cannot be specified with a value of 0 as was the case previously.
+
+&gt;<i> If you need a private key and you want it to work with all pycrypto
+</I>&gt;<i> versions, go and look for the remaining 2 parameters (p and q)... ;-)
+</I>&gt;<i> 
+</I>&gt;&gt;&gt;<i> With previous version you had to provide at least 5 elements,
+</I>&gt;&gt;&gt;<i> m+e+d+p+q (I don't recall how they complain if you provide only 3).
+</I>&gt;&gt;<i> According to the docs, it's 2 minimum (as above), anyone know if the
+</I>&gt;&gt;<i> code above is going to have problems running on distros with old
+</I>&gt;&gt;<i> versions of pycrypto?
+</I>&gt;<i> 
+</I>&gt;<i> I would simply assume it will have problem with previous versions:
+</I>&gt;<i> it's clearly off spec for them.
+</I>For the record, it works OK with the default values for p and q, even
+with previous versions which is great.
+
+Thanks
+Antoine
+</PRE>
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000544.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+	<LI>Next message: <A HREF="000549.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#545">[ date ]</a>
+              <a href="thread.html#545">[ thread ]</a>
+              <a href="subject.html#545">[ subject ]</a>
+              <a href="author.html#545">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

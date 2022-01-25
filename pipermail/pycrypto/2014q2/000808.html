@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] #include Python.h
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20%23include%20Python.h&In-Reply-To=%3C1399651344.12870.14.camel%40belmer%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000807.html">
+   <LINK REL="Next"  HREF="000811.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] #include Python.h</H1>
+    <B>Brent S. Elmer Ph.D.</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20%23include%20Python.h&In-Reply-To=%3C1399651344.12870.14.camel%40belmer%3E"
+       TITLE="[pycrypto] #include Python.h">webe3vt at aim.com
+       </A><BR>
+    <I>Fri May  9 09:02:24 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000807.html">[pycrypto] compiling on AIX patch
+</A></li>
+        <LI>Next message: <A HREF="000811.html">[pycrypto] implications of export restrictions
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#808">[ date ]</a>
+              <a href="thread.html#808">[ thread ]</a>
+              <a href="subject.html#808">[ subject ]</a>
+              <a href="author.html#808">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I am trying to build pycrypto on AIX.  I am running into a problem.  It
+seems to me that it is a problem with pycrypto.
+
+On AIX, Python defines _LARGE_FILES to handle large files.  This causes
+pycrypto not to compile.  The output looks like this:
+
+&quot;/usr/include/stdio.h&quot;, line 528.12: 1506-343 (S) Redeclaration of
+fgetpos64 differs from previous declaration on line 323 of
+&quot;/usr/include/stdio.h&quot;.
+&quot;/usr/include/stdio.h&quot;, line 528.12: 1506-377 (I) The type &quot;long long*&quot;
+of parameter 2 differs from the previous type &quot;long* restrict&quot;.
+&quot;/usr/include/stdio.h&quot;, line 531.12: 1506-343 (S) Redeclaration of
+fseeko64 differs from previous declaration on line 471 of
+&quot;/usr/include/stdio.h&quot;.
+&quot;/usr/include/stdio.h&quot;, line 531.12: 1506-377 (I) The type &quot;long long&quot;
+of parameter 2 differs from the previous type &quot;long&quot;.
+&quot;/usr/include/stdio.h&quot;, line 532.12: 1506-343 (S) Redeclaration of
+fsetpos64 differs from previous declaration on line 325 of
+&quot;/usr/include/stdio.h&quot;.
+&quot;/usr/include/stdio.h&quot;, line 532.12: 1506-377 (I) The type &quot;const long
+long*&quot; of parameter 2 differs from the previous type &quot;const long*&quot;.
+&quot;/usr/include/stdio.h&quot;, line 533.16: 1506-343 (S) Redeclaration of
+ftello64 differs from previous declaration on line 472 of
+&quot;/usr/include/stdio.h&quot;.
+&quot;/usr/include/stdio.h&quot;, line 533.16: 1506-050 (I) Return type &quot;long
+long&quot; in redeclaration is not compatible with the previous return type
+&quot;long&quot;.
+&quot;/usr/include/unistd.h&quot;, line 171.17: 1506-343 (S) Redeclaration of
+lseek64 differs from previous declaration on line 169 of
+&quot;/usr/include/unistd.h&quot;.
+&quot;/usr/include/unistd.h&quot;, line 171.17: 1506-050 (I) Return type &quot;long
+long&quot; in redeclaration is not compatible with the previous return type
+&quot;long&quot;.
+&quot;/usr/include/unistd.h&quot;, line 171.17: 1506-377 (I) The type &quot;long long&quot;
+of parameter 2 differs from the previous type &quot;long&quot;.
+&quot;/usr/include/sys/lockf.h&quot;, line 64.20: 1506-343 (S) Redeclaration of
+lockf64 differs from previous declaration on line 62 of
+&quot;/usr/include/sys/lockf.h&quot;.
+&quot;/usr/include/sys/lockf.h&quot;, line 64.20: 1506-377 (I) The type &quot;long
+long&quot; of parameter 3 differs from the previous type &quot;long&quot;.
+&quot;/usr/include/unistd.h&quot;, line 809.33: 1506-343 (S) Redeclaration of
+ftruncate64 differs from previous declaration on line 807 of
+&quot;/usr/include/unistd.h&quot;.
+&quot;/usr/include/unistd.h&quot;, line 809.33: 1506-377 (I) The type &quot;long long&quot;
+of parameter 2 differs from the previous type &quot;long&quot;.
+&quot;/usr/include/unistd.h&quot;, line 845.33: 1506-343 (S) Redeclaration of
+truncate64 differs from previous declaration on line 843 of
+&quot;/usr/include/unistd.h&quot;.
+&quot;/usr/include/unistd.h&quot;, line 845.33: 1506-377 (I) The type &quot;long long&quot;
+of parameter 2 differs from the previous type &quot;long&quot;.
+&quot;/usr/include/unistd.h&quot;, line 862.33: 1506-343 (S) Redeclaration of
+pread64 differs from previous declaration on line 859 of
+&quot;/usr/include/unistd.h&quot;.
+&quot;/usr/include/unistd.h&quot;, line 862.33: 1506-377 (I) The type &quot;long long&quot;
+of parameter 4 differs from the previous type &quot;long&quot;.
+&quot;/usr/include/unistd.h&quot;, line 863.33: 1506-343 (S) Redeclaration of
+pwrite64 differs from previous declaration on line 860 of
+&quot;/usr/include/unistd.h&quot;.
+&quot;/usr/include/unistd.h&quot;, line 863.33: 1506-377 (I) The type &quot;long long&quot;
+of parameter 4 differs from the previous type &quot;long&quot;.
+&quot;/usr/include/unistd.h&quot;, line 942.25: 1506-343 (S) Redeclaration of
+fclear64 differs from previous declaration on line 939 of
+&quot;/usr/include/unistd.h&quot;.
+&quot;/usr/include/unistd.h&quot;, line 942.25: 1506-050 (I) Return type &quot;long
+long&quot; in redeclaration is not compatible with the previous return type
+&quot;long&quot;.
+&quot;/usr/include/unistd.h&quot;, line 942.25: 1506-377 (I) The type &quot;long long&quot;
+of parameter 2 differs from the previous type &quot;long&quot;.
+&quot;/usr/include/unistd.h&quot;, line 943.25: 1506-343 (S) Redeclaration of
+fsync_range64 differs from previous declaration on line 940 of
+&quot;/usr/include/unistd.h&quot;.
+&quot;/usr/include/unistd.h&quot;, line 943.25: 1506-377 (I) The type &quot;long long&quot;
+of parameter 3 differs from the previous type &quot;long&quot;.
+
+
+The problem is that the pycrypto source files do not #include &quot;Python.h&quot;
+before all other includes.  In general, you would always want to include
+all standard libraries first(i.e. #include &lt;string.h&gt; ...)  However,
+with Python.h this is bad.  The reason is that Python.h includes
+pyconfig.h which has defines intended to define system level compiler
+directives for the particular platform.  These would of course need to
+be defined before all standard header files otherwise, the standard
+header files before the Python.h include would not have the system
+defines and the standard header files after the Python.h include would.
+That causes the errors as demonstrated above.  If you look at all of the
+source files in the Python sources, you will see that they all include
+Python.h for this very reason.
+
+I am going to fix this in my copy of pycrypto so that it will build.  I
+would suggest that this is also done upstream.
+
+Brent
+
+</PRE>
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000807.html">[pycrypto] compiling on AIX patch
+</A></li>
+	<LI>Next message: <A HREF="000811.html">[pycrypto] implications of export restrictions
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#808">[ date ]</a>
+              <a href="thread.html#808">[ thread ]</a>
+              <a href="subject.html#808">[ subject ]</a>
+              <a href="author.html#808">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

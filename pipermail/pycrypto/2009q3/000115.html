@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ERROR%3A%20testRsaUnversionedSignAndVerify%20failed&In-Reply-To=200908201111.47035.hpj%40urpla.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000114.html">
+   <LINK REL="Next"  HREF="000116.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed</H1>
+    <B>Steve Weis</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ERROR%3A%20testRsaUnversionedSignAndVerify%20failed&In-Reply-To=200908201111.47035.hpj%40urpla.net"
+       TITLE="[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed">steveweis at gmail.com
+       </A><BR>
+    <I>Thu Aug 20 14:42:12 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000114.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+        <LI>Next message: <A HREF="000116.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#115">[ date ]</a>
+              <a href="thread.html#115">[ thread ]</a>
+              <a href="subject.html#115">[ subject ]</a>
+              <a href="author.html#115">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Are there advantages to using Pycrypto's Randpool over
+Random.SystemRandom()?
+In another Keyczar thread, someone reported that Randpool was a performance
+bottleneck and got a big improvement by switching to SystemRandom.
+
+I don't know enough about the underlying implementations to make any
+security judgement. If anyone can comment authoritatively, please do.
+
+On Thu, Aug 20, 2009 at 2:11 AM, Hans-Peter Jansen &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">hpj at urpla.net</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i> Hi S&#233;bastien, hi Steve,
+</I>&gt;<i>
+</I>&gt;<i> first of all, thanks for the instant feedback.
+</I>&gt;<i>
+</I>&gt;<i> Am Donnerstag, 20. August 2009 schrieb S&#233;bastien Martini:
+</I>&gt;<i> &gt; Hi Hans-Peter,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; &gt; /usr/lib/python2.6/site-packages/Crypto/Hash/SHA.py:6:
+</I>&gt;<i> &gt; &gt; DeprecationWarning: the sha module is deprecated; use the hashlib
+</I>&gt;<i> &gt; &gt; module instead
+</I>&gt;<i> &gt; &gt;   from sha import *
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Strange, with pycrypto 2.0.1 on Ubuntu 9.04 (and with Python 2.6.1) I
+</I>&gt;<i> &gt; do not have this warning. Are you sure your system use pycrypto
+</I>&gt;<i> &gt; 2.0.1 ?
+</I>&gt;<i>
+</I>&gt;<i> Yes, I am:
+</I>&gt;<i> $ rpm -qf /usr/lib/python2.6/site-packages/Crypto/PublicKey/RSA.py
+</I>&gt;<i> python-crypto-2.0.1-28.115.1
+</I>&gt;<i>
+</I>&gt;<i> Let me note, that I always generate rpm packages (at least with &quot;python
+</I>&gt;<i> setup.py bdist_rpm&quot;), rather then installing from source directly.
+</I>&gt;<i>
+</I>&gt;<i> Probably, Ubuntu incorporates some patches from Dwaynes trunk, does it?
+</I>&gt;<i> I got rid of the Deprecation warning with updating to Dwaynes version, by
+</I>&gt;<i> the price of a new one. See below.
+</I>&gt;<i>
+</I>&gt;<i> Please let me turn around the question: are you sure, that Ubuntus version
+</I>&gt;<i> isn't a hybrid of Andrews and Dwaynes at least? May I ask you to show me
+</I>&gt;<i> your patches? I show you mine ;-)
+</I>&gt;<i>
+</I>&gt;<i> openSUSE incorporated two patches to 2.0.1:
+</I>&gt;<i>
+</I>&gt;<i> This one, I ported to trunk:
+</I>&gt;<i> --- src/hash_template.c~        2009-08-16 23:39:34.053841534 +0200
+</I>&gt;<i> +++ src/hash_template.c 2009-08-20 10:16:05.877840748 +0200
+</I>&gt;<i> @@ -111,13 +111,15 @@ ALG_hexdigest(ALGobject *self, PyObject
+</I>&gt;<i>        PyObject *value, *retval;
+</I>&gt;<i>        unsigned char *raw_digest, *hex_digest;
+</I>&gt;<i>        int i, j, size;
+</I>&gt;<i> +       Py_ssize_t ssize;
+</I>&gt;<i>
+</I>&gt;<i>        if (!PyArg_ParseTuple(args, &quot;&quot;))
+</I>&gt;<i>                return NULL;
+</I>&gt;<i>
+</I>&gt;<i>        /* Get the raw (binary) digest value */
+</I>&gt;<i>        value = (PyObject *)hash_digest(&amp;(self-&gt;st));
+</I>&gt;<i> -       size = PyString_Size(value);
+</I>&gt;<i> +       ssize = PyString_Size(value);
+</I>&gt;<i> +       size = (ssize &gt; INT_MAX) ? INT_MAX : ssize;
+</I>&gt;<i>        raw_digest = (unsigned char *) PyString_AsString(value);
+</I>&gt;<i>
+</I>&gt;<i>        /* Create a new string */
+</I>&gt;<i>
+</I>&gt;<i> Dwayne, is this in order or just plain silly?
+</I>&gt;<i>
+</I>&gt;<i> The other is the already applied ARC2 fix to check of oversized keys.
+</I>&gt;<i>
+</I>&gt;<i> &gt; &gt; ............................E.
+</I>&gt;<i> &gt; &gt; ======================================================================
+</I>&gt;<i> &gt; &gt; ERROR: testRsaUnversionedSignAndVerify (signer_test.SignerTest)
+</I>&gt;<i> &gt; &gt; ----------------------------------------------------------------------
+</I>&gt;<i> &gt; &gt; Traceback (most recent call last):
+</I>&gt;<i> &gt; &gt;   File &quot;.../keyczar/tests/keyczar/signer_test.py&quot;, line 125, in
+</I>&gt;<i> &gt; &gt; testRsaUnversionedSignAndVerify
+</I>&gt;<i> &gt; &gt; self.__testUnversionedSignAndVerify(&quot;rsa-sign&quot;)
+</I>&gt;<i> &gt; &gt;   File &quot;.../keyczar/tests/keyczar/signer_test.py&quot;, line 67, in
+</I>&gt;<i> &gt; &gt; __testUnversionedSignAndVerify
+</I>&gt;<i> &gt; &gt; self.assertFalse(unversioned_signer.Verify(&quot;Wrong string&quot;, sig)) File
+</I>&gt;<i> &gt; &gt; &quot;/usr/local/lib/python2.6/site-packages/keyczar/keyczar.py&quot;, line 404,
+</I>&gt;<i> &gt; &gt; in Verify result = key.Verify(data, sig_bytes)
+</I>&gt;<i> &gt; &gt;   File &quot;/usr/local/lib/python2.6/site-packages/keyczar/keys.py&quot;, line
+</I>&gt;<i> &gt; &gt; 622, in Verify return self.public_key.Verify(msg, sig)
+</I>&gt;<i> &gt; &gt;   File &quot;/usr/local/lib/python2.6/site-packages/keyczar/keys.py&quot;, line
+</I>&gt;<i> &gt; &gt; 787, in Verify (util.BytesToLong(sig),))
+</I>&gt;<i> &gt; &gt;   File &quot;/usr/lib/python2.6/site-packages/Crypto/PublicKey/pubkey.py&quot;,
+</I>&gt;<i> &gt; &gt; line 84, in verify return self._verify(M, signature)
+</I>&gt;<i> &gt; &gt;   File &quot;/usr/lib/python2.6/site-packages/Crypto/PublicKey/RSA.py&quot;, line
+</I>&gt;<i> &gt; &gt; 103, in _verify m2=self._encrypt(sig[0])
+</I>&gt;<i> &gt; &gt;   File &quot;/usr/lib/python2.6/site-packages/Crypto/PublicKey/RSA.py&quot;, line
+</I>&gt;<i> &gt; &gt; 89, in _encrypt raise error, 'Plaintext too large'
+</I>&gt;<i> &gt; &gt; error: Plaintext too large
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I think this error is related somehow to the hash computation (which
+</I>&gt;<i> &gt; also could be related to the deprecation warning) because this is the
+</I>&gt;<i> &gt; hash value which is signed with a private_encrypt() RSA method. I
+</I>&gt;<i> &gt; might be wrong but I really think this is not currently pycrypto 2.0.1
+</I>&gt;<i> &gt; that your keyczar install calls.
+</I>&gt;<i>
+</I>&gt;<i> No, it _wasn't_ related to SHA.py, since in a first test, I just updated to
+</I>&gt;<i> Dwaynes current SHA.py, which tries to import hashlib.SHA first and got rid
+</I>&gt;<i> of the deprecation, but this error persisted.
+</I>&gt;<i>
+</I>&gt;<i> After updating my python-crypto package to Dwaynes trunk, the tests
+</I>&gt;<i> succeeded:
+</I>&gt;<i>
+</I>&gt;<i> $ python alltests.py
+</I>&gt;<i> ./usr/lib/python2.6/site-packages/Crypto/Util/randpool.py:72:
+</I>&gt;<i> RandomPool_DeprecationWarning: RandomPool is deprecated.  Use Random.new()
+</I>&gt;<i> or Random.RandomPoolCompat instead.
+</I>&gt;<i>  warnings.warn(&quot;RandomPool is deprecated.  Use Random.new() or
+</I>&gt;<i> Random.RandomPoolCompat instead.&quot;, RandomPool_DeprecationWarning)
+</I>&gt;<i> .............................
+</I>&gt;<i> ----------------------------------------------------------------------
+</I>&gt;<i> Ran 30 tests in 1.010s
+</I>&gt;<i>
+</I>&gt;<i> OK
+</I>&gt;<i>
+</I>&gt;<i> I fixed it with this patch:
+</I>&gt;<i>
+</I>&gt;<i> --- util.py.orig        2009-08-20 10:40:19.248702303 +0200
+</I>&gt;<i> +++ util.py     2009-08-20 10:57:27.765198430 +0200
+</I>&gt;<i> @@ -30,7 +30,12 @@ except ImportError:
+</I>&gt;<i>   from sha import sha as sha1
+</I>&gt;<i>   from Crypto.Hash.SHA256 import new as sha256
+</I>&gt;<i>
+</I>&gt;<i> -from Crypto.Util import randpool
+</I>&gt;<i> +try:
+</I>&gt;<i> +  # Import RandomPoolCompat, if available
+</I>&gt;<i> +  from Crypto.Random import RandomPoolCompat as RandomPool
+</I>&gt;<i> +except ImportError:
+</I>&gt;<i> +  from Crypto.Util.randpool import RandomPool
+</I>&gt;<i> +
+</I>&gt;<i>  from pyasn1.codec.der import decoder
+</I>&gt;<i>  from pyasn1.codec.der import encoder
+</I>&gt;<i>  from pyasn1.type import univ
+</I>&gt;<i> @@ -291,7 +296,7 @@ def TrimBytes(bytes):
+</I>&gt;<i>
+</I>&gt;<i>  def RandBytes(n):
+</I>&gt;<i>   &quot;&quot;&quot;Return n random bytes.&quot;&quot;&quot;
+</I>&gt;<i> -  return randpool.RandomPool(512).get_bytes(n)
+</I>&gt;<i> +  return RandomPool(512).get_bytes(n)
+</I>&gt;<i>
+</I>&gt;<i>  def Hash(digest, *inputs):
+</I>&gt;<i>   &quot;&quot;&quot;Return a SHA-1 hash over a variable number of inputs.&quot;&quot;&quot;
+</I>&gt;<i>
+</I>&gt;<i> BTW, is there any reason to fetch 512 bytes always, and use a subset only
+</I>&gt;<i> (if I read the code correctly)? What happens, if n is &gt; 512?
+</I>&gt;<i>
+</I>&gt;<i> &gt; &gt; ----------------------------------------------------------------------
+</I>&gt;<i> &gt; &gt; Ran 30 tests in 3.179s
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; FAILED (errors=1)
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; Since I wanted to use RSA signing and encryption, I'm concerned about
+</I>&gt;<i> &gt; &gt; it.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; System:
+</I>&gt;<i> &gt; &gt; openSUSE 11.1, python 2.6.0, python-crypto-2.0.1, pyasn1-0.0.8a
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Cordially,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; S&#233;bastien
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Pete
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --~--~---------~--~----~------------~-------~--~----~
+</I>&gt;<i> You received this message because you are subscribed to the Google Groups
+</I>&gt;<i> &quot;Keyczar Discuss&quot; group.
+</I>&gt;<i> To post to this group, send email to <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">keyczar-discuss at googlegroups.com</A>
+</I>&gt;<i> To unsubscribe from this group, send email to
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">keyczar-discuss+unsubscribe at googlegroups.com</A>&lt;keyczar-discuss%<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">2Bunsubscribe at googlegroups.com</A>&gt;
+</I>&gt;<i> For more options, visit this group at
+</I>&gt;<i> <A HREF="http://groups.google.com/group/keyczar-discuss?hl=en">http://groups.google.com/group/keyczar-discuss?hl=en</A>
+</I>&gt;<i> -~----------~----~----~----~------~----~------~--~---
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090820/0e1c40fd/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090820/0e1c40fd/attachment.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000114.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+	<LI>Next message: <A HREF="000116.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#115">[ date ]</a>
+              <a href="thread.html#115">[ thread ]</a>
+              <a href="subject.html#115">[ subject ]</a>
+              <a href="author.html#115">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [PATCH 2/2] Also ship configure, configure.ac and src/config.h.in in sdist.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5BPATCH%202/2%5D%20Also%20ship%20configure%2C%20configure.ac%20and%20src/config.h.in%20in%0A%20sdist.&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000491.html">
+   <LINK REL="Next"  HREF="000490.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[PATCH 2/2] Also ship configure, configure.ac and src/config.h.in in sdist.</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5BPATCH%202/2%5D%20Also%20ship%20configure%2C%20configure.ac%20and%20src/config.h.in%20in%0A%20sdist.&In-Reply-To="
+       TITLE="[PATCH 2/2] Also ship configure, configure.ac and src/config.h.in in sdist.">s.ramacher at gmx.at
+       </A><BR>
+    <I>Sat Oct 29 10:28:15 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000491.html">[PATCH 1/2] Run build_configure from build_ext.
+</A></li>
+        <LI>Next message: <A HREF="000490.html">[pycrypto] Patch for build failures with PyCrypto 2.4 and	easy_install
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#492">[ date ]</a>
+              <a href="thread.html#492">[ thread ]</a>
+              <a href="subject.html#492">[ subject ]</a>
+              <a href="author.html#492">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>---
+ MANIFEST.in |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/MANIFEST.in b/MANIFEST.in
+index eac077e..4a456fe 100644
+--- a/MANIFEST.in
++++ b/MANIFEST.in
+@@ -2,4 +2,6 @@ include MANIFEST.in
+ include ACKS ChangeLog COPYRIGHT Doc/* TODO
+ graft LEGAL
+ recursive-include src *.h *.c
++include src/config.h.in
+ include *.py
++include configure configure.ac
+-- 
+1.7.7.1
+
+
+--------------030208040306030506090403--
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000491.html">[PATCH 1/2] Run build_configure from build_ext.
+</A></li>
+	<LI>Next message: <A HREF="000490.html">[pycrypto] Patch for build failures with PyCrypto 2.4 and	easy_install
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#492">[ date ]</a>
+              <a href="thread.html#492">[ thread ]</a>
+              <a href="subject.html#492">[ subject ]</a>
+              <a href="author.html#492">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

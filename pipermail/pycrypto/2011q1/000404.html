@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Base64%20encoded%20output%20differs%20from%20pycrypto%20and%0A%20as3crypto%20libraries.&In-Reply-To=20110112211518.GA10793%40shannon">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000403.html">
+   <LINK REL="Next"  HREF="000405.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.</H1>
+    <B>Joshua Strauss</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Base64%20encoded%20output%20differs%20from%20pycrypto%20and%0A%20as3crypto%20libraries.&In-Reply-To=20110112211518.GA10793%40shannon"
+       TITLE="[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.">joshua.a.strauss at gmail.com
+       </A><BR>
+    <I>Wed Jan 12 15:49:05 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000403.html">[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+</A></li>
+        <LI>Next message: <A HREF="000405.html">[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#404">[ date ]</a>
+              <a href="thread.html#404">[ thread ]</a>
+              <a href="subject.html#404">[ subject ]</a>
+              <a href="author.html#404">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Legrandin,
+
+I think you are on to something here. Removing the initialization vector
+from both pycrypto and as3crypto produces the same b64encoded output. I've
+been playing around with different IV's but I can only get the output to
+match without the presence of an IV.
+
+This does lead me to believe that the IV is the source of my problem but if
+anyone can think of a reason why this might not be, it would be helpful to
+know as I don't want to be on the wrong track.
+
+I haven't done much coding at the byte level (I'm mainly a web developer,
+and not seasoned by any means), I'll keep trucking from here I suppose.
+
+Regards,
+Joshua
+
+On Wed, Jan 12, 2011 at 1:15 PM, Legrandin &lt;
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">gooksankoo at hoiptorrow.mailexpire.com</A>&gt; wrote:
+
+&gt;<i> &gt;    var t_byAry:ByteArray = Hex.toArray( Hex.fromString( t_toEnc ) );
+</I>&gt;<i> &gt;    var t_key:ByteArray = Hex.toArray( Hex.fromString( 'Thisisthekey' ) );
+</I>&gt;<i> &gt;    var t_cbc:CBCMode = new CBCMode( new BlowFishKey( t_key ), new NullPad
+</I>&gt;<i> );
+</I>&gt;<i> &gt;    t_cbc.IV = Hex.toArray( '30313233' );
+</I>&gt;<i> &gt;    t_cbc.encrypt( t_byAry );
+</I>&gt;<i> &gt;    t_enc = Base64.encodeByteArray( t_byAry );
+</I>&gt;<i>
+</I>&gt;<i> &gt;    &gt;&gt;&gt; from Crypto.Cipher import Blowfish
+</I>&gt;<i> &gt;    &gt;&gt;&gt; B = Blowfish.new( 'Thisisthekey', Blowfish.MODE_CBC, '30313233' )
+</I>&gt;<i>
+</I>&gt;<i> Could it be that in you AS code your IV is 4 bytes (0x30,0x31,0x32,0x33)
+</I>&gt;<i> which t_cbc.encrypt() silently pads, whereas in the python code it is 8
+</I>&gt;<i> different bytes (0x33 for '3', 0x30 for '0', etc)?
+</I>&gt;<i>
+</I>&gt;<i> Legrandin
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20110112/037dd794/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20110112/037dd794/attachment.htm</A> 
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000403.html">[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+</A></li>
+	<LI>Next message: <A HREF="000405.html">[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#404">[ date ]</a>
+              <a href="thread.html#404">[ thread ]</a>
+              <a href="subject.html#404">[ subject ]</a>
+              <a href="author.html#404">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Bug in Crypto.PublicKey.RSA?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To=48C73904.80602%40broadley.org">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000017.html">
+   <LINK REL="Next"  HREF="000019.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Bug in Crypto.PublicKey.RSA?</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To=48C73904.80602%40broadley.org"
+       TITLE="[pycrypto] Bug in Crypto.PublicKey.RSA?">dlitz at dlitz.net
+       </A><BR>
+    <I>Wed Sep 10 09:06:46 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000017.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+        <LI>Next message: <A HREF="000019.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#18">[ date ]</a>
+              <a href="thread.html#18">[ thread ]</a>
+              <a href="subject.html#18">[ subject ]</a>
+              <a href="author.html#18">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Sep 09, 2008 at 08:03:32PM -0700, Bill Broadley wrote:
+&gt;&gt;&gt;<i> &gt;&gt;&gt; privkeyA = RSA.generate(keysize, rpool.get_bytes)
+</I>&gt;&gt;&gt;<i> Hangs forever.... well at least 10's of minutes.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> I filed a bug report:
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i>     <A HREF="https://bugs.launchpad.net/pycrypto/+bug/268101">https://bugs.launchpad.net/pycrypto/+bug/268101</A>
+</I>&gt;<i>
+</I>&gt;<i>Ah, do you think that is an ubuntu bug?  Or a pycrypto?  I.e. can I fix it by 
+</I>&gt;<i>installing pycrypto myself.  I had thought I had just misunderstood.
+</I>
+It's a PyCrypto bug.  As far as I know, Ubuntu hasn't made many 
+modifications to PyCrypto.
+
+&gt;&gt;<i> If &quot;only the one encrypting should ever be able to decrypt the files&quot;, 
+</I>&gt;&gt;<i> then why not use symmetric encryption?  It's much faster, and probably 
+</I>&gt;&gt;<i> stronger in the long run (since most people don't use 8192-bit RSA 
+</I>&gt;&gt;<i> keys).
+</I>&gt;<i>
+</I>&gt;<i>Mostly for the added protection of not having your private key on the system.
+</I>&gt;<i>I might even backup systems that aren't even under my control.  Scenarios like 
+</I>&gt;<i>&quot;Hey, user departmental user X, to back up your machine install this program, 
+</I>&gt;<i>and use this public key.&quot;
+</I>
+Ah, that makes sense.
+
+&gt;<i>Oh, as to performance my symmetric vs public key encryption tests didn't 
+</I>&gt;<i>find much difference:
+</I>[snip]
+&gt;<i>So I'm not too concerned about 8.5 seconds 11.5MB/sec vs 10.5MB/sec.
+</I>&gt;<i>
+</I>&gt;<i>Am I missing something?
+</I>
+I was referring to is that if you don't get some benefit from public-key 
+crypto, then you're better off not using it, since, according to NIST, you 
+need a 15360-bit RSA key (!) to get comparable security to AES-256:
+
+     <A HREF="http://csrc.nist.gov/publications/nistpubs/800-57/SP800-57-Part1.pdf">http://csrc.nist.gov/publications/nistpubs/800-57/SP800-57-Part1.pdf</A>
+     (Table 2 on Page 63)
+
+(Curiously, that table lists AES-256 as having 256 &quot;bits of security&quot;, 
+which doesn't sound right to me, but even if you want 128-bit security, 
+it's claimed that you need at least 3072-bit RSA keys.  The number I've 
+heard elsewhere was about 6100 bits, and I've seen others recommend at 
+least 8192-bit RSA keys.)
+
+Regards,
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20080910/06f1ce1e/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20080910/06f1ce1e/attachment.pgp</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000017.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+	<LI>Next message: <A HREF="000019.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#18">[ date ]</a>
+              <a href="thread.html#18">[ thread ]</a>
+              <a href="subject.html#18">[ subject ]</a>
+              <a href="author.html#18">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

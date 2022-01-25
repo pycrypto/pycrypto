@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Pycrypto, New contributor, TODO &amp; Camellia
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%2C%20New%20contributor%2C%20TODO%20%26%20Camellia&In-Reply-To=2c62b1b80911150109t55e1e0aag3c5f08576da1d22e%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000159.html">
+   <LINK REL="Next"  HREF="000160.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Pycrypto, New contributor, TODO &amp; Camellia</H1>
+    <B>Yoshisato YANAGISAWA</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%2C%20New%20contributor%2C%20TODO%20%26%20Camellia&In-Reply-To=2c62b1b80911150109t55e1e0aag3c5f08576da1d22e%40mail.gmail.com"
+       TITLE="[pycrypto] Pycrypto, New contributor, TODO &amp; Camellia">yanagisawa at csg.is.titech.ac.jp
+       </A><BR>
+    <I>Wed Nov 18 09:33:24 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000159.html">[pycrypto] Pycrypto, New contributor, TODO &amp; Camellia
+</A></li>
+        <LI>Next message: <A HREF="000160.html">[pycrypto] Public key algos usage
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#164">[ date ]</a>
+              <a href="thread.html#164">[ thread ]</a>
+              <a href="subject.html#164">[ subject ]</a>
+              <a href="author.html#164">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi Rusydi,
+
+2009/11/15 18:09, rusydi hasan wrote:
+&gt;<i>     I don't want to maintain additional ciphers in my tree unless they are
+</I>&gt;<i>     mature and offer significant advantages over what PyCrypto already has.
+</I>&gt;<i>     I'm even hesitant to add Camellia---The only reason I'm considering
+</I>&gt;<i>     it is
+</I>&gt;<i>     that PyCrypto only has one 128-bit block cipher right now (AES), and
+</I>&gt;<i>     because the proposed candidate, Camellia, made it through the NESSIE
+</I>&gt;<i>     competition.  Even then, I don't consider it a priority, and
+</I>&gt;<i>     PyCrypto 2.1
+</I>&gt;<i>     will be released without it.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Well, i ll still try to work on Camellia.
+</I>
+FYI, I used to write a patch to add support for camellia block cipher 
+for pycrypto 2.0.1:
+<A HREF="https://bugs.launchpad.net/pycrypto/+bug/258561">https://bugs.launchpad.net/pycrypto/+bug/258561</A>
+I do not have much time to maintain it, though.
+It includes new BSD-licensed source code of camellia block cipher 
+distributed by NTT at:
+<A HREF="http://info.isl.ntt.co.jp/crypt/eng/camellia/engine.html">http://info.isl.ntt.co.jp/crypt/eng/camellia/engine.html</A>
+The same codes are in Linux, FreeBSD, OpenSSL, GnuTLS, NSS (Firefox), 
+and so on.
+
+I hope this patch will help you write your new patch.
+
+Thank you,
+
+----
+Yoshisato YANAGISAWA.
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000159.html">[pycrypto] Pycrypto, New contributor, TODO &amp; Camellia
+</A></li>
+	<LI>Next message: <A HREF="000160.html">[pycrypto] Public key algos usage
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#164">[ date ]</a>
+              <a href="thread.html#164">[ thread ]</a>
+              <a href="subject.html#164">[ subject ]</a>
+              <a href="author.html#164">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

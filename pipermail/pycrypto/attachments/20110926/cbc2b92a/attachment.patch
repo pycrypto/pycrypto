@@ -1,0 +1,93 @@
+--- setup.py.orig       2011-09-25 22:04:15.000000000 +0000
++++ setup.py    2011-09-25 22:10:55.000000000 +0000
+@@ -39,6 +39,10 @@
+ from distutils import core
+ from distutils.core import Extension, Command
+ from distutils.command.build_ext import build_ext
++from distutils.errors import CompileError, LinkError
++import distutils.ccompiler
++import distutils.sysconfig
++import tempfile
+ import os, sys
+ import struct
+ 
+@@ -69,42 +73,33 @@
+     ('Crypto.Hash', 'RIPEMD160'),  # Included for your amusement, but the C version is much faster.
+ ]
+ 
+-# Functions for finding libraries and files, copied from Python's setup.py.
+-
+-def find_file(filename, std_dirs, paths):
+-    """Searches for the directory where a given file is located,
+-    and returns a possibly-empty list of additional directories, or None
+-    if the file couldn't be found at all.
+-
+-    'filename' is the name of a file, such as readline.h or libcrypto.a.
+-    'std_dirs' is the list of standard system directories; if the
+-        file is found in one of them, no additional directives are needed.
+-    'paths' is a list of additional locations to check; if the file is
+-        found in one of them, the resulting list will contain the directory.
+-    """
+-
+-    # Check the standard locations
+-    for dir in std_dirs:
+-        f = os.path.join(dir, filename)
+-        if os.path.exists(f): return []
+-
+-    # Check the additional directories
+-    for dir in paths:
+-        f = os.path.join(dir, filename)
+-        if os.path.exists(f):
+-            return [dir]
+-
+-    # Not found anywhere
+-    return None
+-
+-def find_library_file(compiler, libname, std_dirs, paths):
+-    filename = compiler.library_filename(libname, lib_type='shared')
+-    result = find_file(filename, std_dirs, paths)
+-    if result is not None: return result
+-
+-    filename = compiler.library_filename(libname, lib_type='static')
+-    result = find_file(filename, std_dirs, paths)
+-    return result
++def libgmp_exists():
++    fname = tempfile.mktemp(".c")
++    oname = tempfile.mktemp(".out")
++    f = open(fname, 'w')
++    f.write("""
++    #include <gmp.h>
++
++    int main(void)
++    {
++        mpz_init((void*)0);
++        return 0;
++    }
++    """)
++    f.close()
++
++    try:
++        compiler = distutils.ccompiler.new_compiler()
++        distutils.sysconfig.customize_compiler(compiler)
++        objects = compiler.compile([fname])
++        compiler.link_shared_object(objects, oname, libraries=('gmp',) )
++    except (CompileError, LinkError, TypeError):
++        os.remove(fname)
++        return False
++    os.remove(oname)
++    os.remove(objects[0])
++    os.remove(fname)
++    return True
+ 
+ def endianness_macro():
+     s = struct.pack("@I", 0x33221100)
+@@ -157,8 +152,7 @@
+             self.compiler.include_dirs.insert(0, "src/inc-msvc/")
+ 
+         # Detect libgmp and don't build _fastmath if it is missing.
+-        lib_dirs = self.compiler.library_dirs + ['/lib', '/usr/lib']
+-        if not (self.compiler.find_library_file(lib_dirs, 'gmp')):
++        if not libgmp_exists():
+             print >>sys.stderr, "warning: GMP library not found; Not building Crypto.PublicKey._fastmath."
+             self.__remove_extensions(["Crypto.PublicKey._fastmath"])
+ 

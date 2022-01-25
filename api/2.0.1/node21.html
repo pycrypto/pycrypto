@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Crypto.Util.RFC1751</TITLE>
+<META NAME="description" CONTENT="Crypto.Util.RFC1751">
+<META NAME="keywords" CONTENT="pycrypt">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="pycrypt.css">
+
+<LINK REL="previous" HREF="node20.html">
+<LINK REL="up" HREF="node18.html">
+<LINK REL="next" HREF="node22.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html310"
+  HREF="node22.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html306"
+  HREF="node18.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html302"
+  HREF="node20.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html308"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html311"
+  HREF="node22.html">Extending the Toolkit</A>
+<B> Up:</B> <A NAME="tex2html307"
+  HREF="node18.html">Crypto.Util: Odds and Ends</A>
+<B> Previous:</B> <A NAME="tex2html303"
+  HREF="node20.html">Crypto.Util.randpool</A>
+ &nbsp; <B>  <A NAME="tex2html309"
+  HREF="node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00073000000000000000">
+Crypto.Util.RFC1751</A>
+</H2>
+The keys for private-key algorithms should be arbitrary binary data.
+Many systems err by asking the user to enter a password, and then
+using the password as the key.  This limits the space of possible
+keys, as each key byte is constrained within the range of possible
+ASCII characters, 32-127, instead of the whole 0-255 range possible
+with ASCII.  Unfortunately, it's difficult for humans to remember 16
+or 32 hex digits.
+
+<P>
+One solution is to request a lengthy passphrase from the user, and
+then run it through a hash function such as SHA or MD5.  Another
+solution is discussed in RFC 1751, "A Convention for Human-Readable
+128-bit Keys", by Daniel L. McDonald.  Binary keys are transformed
+into a list of short English words that should be easier to remember.
+For example, the hex key EB33F77EE73D4053 is transformed to "TIDE ITCH
+SLOW REIN RULE MOT".
+
+<P>
+<BR>
+51#51
+<BR>
+
+<P>
+<BR>
+52#52
+<BR>
+
+<P>
+<BR><HR>
+
+</BODY>
+</HTML>

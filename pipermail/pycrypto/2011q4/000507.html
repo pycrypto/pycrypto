@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Public Key encryption of files
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20Key%20encryption%20of%20files&In-Reply-To=CAEncD4da%2BOBdO%2BZXnzfX%2BoM7jMd2HApsWrx%2Be1UfNvQB9anVsA%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000506.html">
+   <LINK REL="Next"  HREF="000508.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Public Key encryption of files</H1>
+    <B>Dean Macinskas</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20Key%20encryption%20of%20files&In-Reply-To=CAEncD4da%2BOBdO%2BZXnzfX%2BoM7jMd2HApsWrx%2Be1UfNvQB9anVsA%40mail.gmail.com"
+       TITLE="[pycrypto] Public Key encryption of files">dmacinskas at geobridge.net
+       </A><BR>
+    <I>Thu Nov 10 13:48:14 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000506.html">[pycrypto] Public Key encryption of files
+</A></li>
+        <LI>Next message: <A HREF="000508.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#507">[ date ]</a>
+              <a href="thread.html#507">[ thread ]</a>
+              <a href="subject.html#507">[ subject ]</a>
+              <a href="author.html#507">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dave,
+
+I took a closer look - apparently the code accepts a user string for the key, then pads it to the next higher valid length.  So the procedure you referenced is for padding KEYS, not data.  The example also used CFB mode, which is actually a form of stream cipher, and thus encrypts byte-for-byte and requires no data padding.  But it's really inefficient (you only use 1 byte out of 16); for file encryption CBC is still the best option, IMHO.
+
+Dean
+
+-----Original Message-----
+From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A> [mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>] On Behalf Of Dave Pawson
+Sent: Thursday, November 10, 2011 2:34 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] Public Key encryption of files
+
+On 10 November 2011 19:28, Dean Macinskas &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dmacinskas at geobridge.net</A>&gt; wrote:
+&gt;<i> Dave,
+</I>&gt;<i>
+</I>&gt;<i> An AES key can be 16, 24 or 32 bytes, but the data block size for AES is 16 bytes, regardless of key length.
+</I>&gt;<i>
+</I>&gt;<i> Dean
+</I>
+Sorry, I used the software as is, found it works (still does) and left
+well alone?
+My crypto knowledge is ... minimal!
+
+At the url I included, perhaps that is set at 16 prior to the call?
+
+
+
+regards
+
+
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+_______________________________________________
+pycrypto mailing list
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000506.html">[pycrypto] Public Key encryption of files
+</A></li>
+	<LI>Next message: <A HREF="000508.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#507">[ date ]</a>
+              <a href="thread.html#507">[ thread ]</a>
+              <a href="subject.html#507">[ subject ]</a>
+              <a href="author.html#507">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

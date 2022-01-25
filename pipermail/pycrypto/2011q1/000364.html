@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Comments%20on%20Elgamal%2C%0A%20and%20a%20broader%20question%3A%20Whither%20pycrypto%3F&In-Reply-To=AANLkTimoVprGesa93kNJrhWMYV3M%3DQW_J2ptFsHY7h2s%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000363.html">
+   <LINK REL="Next"  HREF="000365.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Comments%20on%20Elgamal%2C%0A%20and%20a%20broader%20question%3A%20Whither%20pycrypto%3F&In-Reply-To=AANLkTimoVprGesa93kNJrhWMYV3M%3DQW_J2ptFsHY7h2s%40mail.gmail.com"
+       TITLE="[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?">sbehrens at gmx.li
+       </A><BR>
+    <I>Sun Jan  2 14:16:40 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000363.html">[pycrypto] Comments on Elgamal,	and a broader question: Whither pycrypto?
+</A></li>
+        <LI>Next message: <A HREF="000365.html">[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#364">[ date ]</a>
+              <a href="thread.html#364">[ thread ]</a>
+              <a href="subject.html#364">[ subject ]</a>
+              <a href="author.html#364">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 1/2/2011 11:06 AM, Paul Hoffman wrote:
+
+&gt;<i> No surprise there. I suspect if you look closely at all the primitives
+</I>&gt;<i> that require good computation of keys and/or fresh randoms, you will
+</I>&gt;<i> find more problems just because these things are hard to get right.
+</I>No kidding. I am having a hard time just understanding what is needed to 
+get them
+right, never mind attempting to code things in a secure manner.
+
+&gt;<i>
+</I>&gt;<i> Given that you suspect (with good evidence) that it is insecure, you
+</I>&gt;<i> should instead strongly consider commenting out all the code and links
+</I>&gt;<i> to it, with a notation why of course.
+</I>I think I will pass on that. That is more aggressive than I think I have 
+any standing to be.
+I am already changing quite a few things with the Py3k port. I'd like to 
+leave my commit
+at that - Py3k compatibility, additional unit tests for a couple things, 
+updated
+documentation - and then sit down with the all of you to think long and 
+hard about
+the kind of API interface that a &quot;pycrypto-next&quot; should offer, and how 
+to bind it to
+known-good libraries.
+
+&gt;<i>
+</I>&gt;<i> My personal feeling is pycrypto should *not* offer its own
+</I>&gt;<i> implementation of crypto algorithms. [Good justification as to why] If someone is going to do
+</I>&gt;<i> this, I would prefer Crypto++ to NSS just because of the bindings
+</I>Could you elaborate on that comment regarding bindings, please? I am
+dreaming about crypto APIs now (this may be a sign, of what I am
+not sure :/), and any additional input as to what constitutes a good one
+is very welcome.
+
+I happen to be strongly biased towards Crypto++, btw - it's comprehensive,
+it looks to receive a lot of attention on secure implementation, and
+it's public domain.
+I also like the idea of having a design that is flexible enough to support
+multiple libraries, with a separate translation layer/shim each, chosen
+at build time. That way, pycrypto doesn't bind itself too closely to any
+one implementation, and it gives people choice, though that choice may
+be theoretical at first - say if no one feels motivated enough to write an
+NSS shim. Still the option would be there. Choice is good.
+
+Yours
+
+Thorsten
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000363.html">[pycrypto] Comments on Elgamal,	and a broader question: Whither pycrypto?
+</A></li>
+	<LI>Next message: <A HREF="000365.html">[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#364">[ date ]</a>
+              <a href="thread.html#364">[ thread ]</a>
+              <a href="subject.html#364">[ subject ]</a>
+              <a href="author.html#364">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

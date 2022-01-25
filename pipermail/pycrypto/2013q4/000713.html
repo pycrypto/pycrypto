@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Crypto.Random crashes due to unaligned access
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Crypto.Random%20crashes%20due%20to%20unaligned%20access&In-Reply-To=%3CCAFCC3ev7TbeY_JzdQ6zdgd5eN8MTPDPqdbxZCMvpGEKN-BhP%3Dg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000716.html">
+   <LINK REL="Next"  HREF="000717.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Crypto.Random crashes due to unaligned access</H1>
+    <B>Greg Price</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Crypto.Random%20crashes%20due%20to%20unaligned%20access&In-Reply-To=%3CCAFCC3ev7TbeY_JzdQ6zdgd5eN8MTPDPqdbxZCMvpGEKN-BhP%3Dg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Crypto.Random crashes due to unaligned access">gnprice at gmail.com
+       </A><BR>
+    <I>Sun Oct 27 16:00:12 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000716.html">[pycrypto] Crypto.Random crashes due to unaligned access
+</A></li>
+        <LI>Next message: <A HREF="000717.html">[pycrypto] Need your input: Major modernization;	dropping legacy Python support?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#713">[ date ]</a>
+              <a href="thread.html#713">[ thread ]</a>
+              <a href="subject.html#713">[ subject ]</a>
+              <a href="author.html#713">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>And the other message that didn't make it before.
+
+Greg
+
+
+---------- Forwarded message ----------
+From: Greg Price &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">gnprice at gmail.com</A>&gt;
+Date: Thu, Oct 24, 2013 at 12:53 PM
+Subject: Re: Crypto.Random crashes due to unaligned access
+To: Dwayne Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+Cc: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+
+
+GCC 4.6.3, and same with 4.8.1 (see my later message).  &quot;setup.py
+test&quot; crashes too.
+
+See my follow-up last night for more of a diagnosis -- the problem is
+that 'rk', aka st-&gt;ek, has a type that implies 16-byte alignment, and
+we don't get that from PyObject_New.  That allocation comes (I think)
+straight from malloc(), which with glibc on a 32-bit x86 system gives
+only 8-byte alignment.
+
+One fix would be to move st-&gt;ek and st-&gt;dk to a separate buffer we
+allocate with something like posix_memalign().  This wouldn't require
+any copying, as we fill those buffers ourselves in the first place.
+It'd just add a layer of indirection in the AESNI.c block_state
+struct.
+
+Alternatively we could try to eliminate the 16-byte alignment, but I
+don't immediately see a way of doing that without making the code much
+messier, and it'd probably also slow the code down.
+
+Greg
+
+
+On Thu, Oct 24, 2013 at 9:59 AM, Dwayne Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt; wrote:
+&gt;<i> Hi Greg!
+</I>&gt;<i>
+</I>&gt;<i> What version/build of GCC is this?  Does &quot;setup.py test&quot; crash for you as well?
+</I>&gt;<i>
+</I>&gt;<i> I'd rather figure out how to fix the problem than to start making copies of the key.
+</I>&gt;<i>
+</I>&gt;<i> Greg Price &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">gnprice at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>I get the following crash in a PyCrypto built from the current master,
+</I>&gt;&gt;<i>af058ee (aka v2.6.1-136-gaf058ee):
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> import Crypto.Random
+</I>&gt;&gt;&gt;&gt;&gt;<i> Crypto.Random.new().read(1)
+</I>&gt;&gt;<i>Segmentation fault (core dumped)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>This is on i686.  I compiled with GCC 4.6.3 (or &quot;Ubuntu/Linaro
+</I>&gt;&gt;<i>4.6.3-1ubuntu5&quot;.)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>GDB shows the crash is here:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>Program received signal SIGSEGV, Segmentation fault.
+</I>&gt;&gt;<i>aes_key_setup_enc (keylen=32, cipherKey=
+</I>&gt;&gt;<i>0x841b1bc
+</I>&gt;&gt;<i>&quot;L\fB2\244\225\235\206^\242\305\305b\201\200\335&#326;{d\240\343\262;m\361\243\276u~\337&amp;&quot;,
+</I>&gt;&gt;<i>rk=
+</I>&gt;&gt;<i>    0x84900a8) at src/AESNI.c:122
+</I>&gt;&gt;<i>122            rk[0] = _mm_loadu_si128((const __m128i*) cipherKey);
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>at which the instruction is
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>(gdb) x/i $pc
+</I>&gt;&gt;<i>=&gt; 0xb78f2600 &lt;ALGnew+2160&gt;: movdqa %xmm0,0x40(%esi)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>This is an aligned store.  The documentation of MOVDQA says it should
+</I>&gt;&gt;<i>be 16-byte aligned.  The value of rk (aka %esi + 0x40) is only 8-byte
+</I>&gt;&gt;<i>aligned:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>(gdb) p rk
+</I>&gt;&gt;<i>$5 = (__m128i *) 0x84900a8
+</I>&gt;&gt;<i>(gdb) p/x $esi
+</I>&gt;&gt;<i>$9 = 0x8490068
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>It's not clear to me why GCC generated an aligned instruction here --
+</I>&gt;&gt;<i>in fact, the definition of _mm_loadu_si128 in my emmintrin.h appears
+</I>&gt;&gt;<i>to be
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>extern __inline __m128i __attribute__((__gnu_inline__,
+</I>&gt;&gt;<i>__always_inline__, __artificial__))
+</I>&gt;&gt;<i>_mm_loadu_si128 (__m128i const *__P)
+</I>&gt;&gt;<i>{
+</I>&gt;&gt;<i>  return (__m128i) __builtin_ia32_loaddqu ((char const *)__P);
+</I>&gt;&gt;<i>}
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>and the name of that builtin sure sounds more like MOVDQU than MOVDQA.
+</I>&gt;&gt;<i> Perhaps GCC somehow decides that it can prove the pointer is aligned
+</I>&gt;&gt;<i>here.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>I don't know why GCC makes this mistake, or (since it's never the
+</I>&gt;&gt;<i>compiler's fault) which code is lying to it about something being
+</I>&gt;&gt;<i>aligned. Anyone know how to investigate this kind of question?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>A workaround would be to make sure that the cipherKey argument to
+</I>&gt;&gt;<i>aes_key_setup_enc() in src/AESNI.c is always 16-byte aligned.  At
+</I>&gt;&gt;<i>present, that argument comes straight from the first Python-level
+</I>&gt;&gt;<i>argument to _AESNI.new(); see the PyArg_ParseTupleAndKeywords() call
+</I>&gt;&gt;<i>in src/block_template.c.  I guess to implement this workaround we'd
+</I>&gt;&gt;<i>copy the key to a new, aligned buffer if it's not aligned.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>I can send a patch for that workaround if it seems like the best
+</I>&gt;&gt;<i>approach.  Happy to hear alternatives, and of course it'd be most
+</I>&gt;&gt;<i>satisfying if we can understand why the compiler is emitting this
+</I>&gt;&gt;<i>output in the first place.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>Greg
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Sent from my Android device with K-9 Mail. Please excuse my brevity.
+</I></PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000716.html">[pycrypto] Crypto.Random crashes due to unaligned access
+</A></li>
+	<LI>Next message: <A HREF="000717.html">[pycrypto] Need your input: Major modernization;	dropping legacy Python support?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#713">[ date ]</a>
+              <a href="thread.html#713">[ thread ]</a>
+              <a href="subject.html#713">[ subject ]</a>
+              <a href="author.html#713">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

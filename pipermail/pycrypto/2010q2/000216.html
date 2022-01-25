@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto]  Pycrypto working with python 3.0 or 3.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20%20Pycrypto%20working%20with%20python%203.0%20or%203.1&In-Reply-To=4BC218FC.6090106%40gmx.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000215.html">
+   <LINK REL="Next"  HREF="000252.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto]  Pycrypto working with python 3.0 or 3.1</H1>
+    <B>Grail Dane</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20%20Pycrypto%20working%20with%20python%203.0%20or%203.1&In-Reply-To=4BC218FC.6090106%40gmx.net"
+       TITLE="[pycrypto]  Pycrypto working with python 3.0 or 3.1">grail69 at hotmail.com
+       </A><BR>
+    <I>Mon Apr 12 23:31:59 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000215.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+        <LI>Next message: <A HREF="000252.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#216">[ date ]</a>
+              <a href="thread.html#216">[ thread ]</a>
+              <a href="subject.html#216">[ subject ]</a>
+              <a href="author.html#216">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi Christoph
+I seem to have been unable to send emails to this list for a while so I hope this one gets through.
+Firstly, great news below and yes please send me patch.
+I have also been working on this but my issue has been that the tests(I have been using test_AES as my test case) have been finishing abruptly witha segfault :(
+I am currently trying to use pdb to step through the code to try and find where it isrunning into problems. Attached is my current patch I am using.
+I am still able to run small test scripts that I have written, like the password one I senta while back.
+I look forward to our collaboration to get this out of the way as it has brought a dependentproject of mine to its knees until I resolve this one :(
+CheersGrail
+
+&gt;<i> Date: Sun, 11 Apr 2010 20:46:20 +0200
+</I>&gt;<i> From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">christoph.tapler at gmx.net</A>
+</I>&gt;<i> To: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+</I>&gt;<i> 
+</I>&gt;<i> Hi,
+</I>&gt;<i> 
+</I>&gt;<i> Short update - a missing string/byte conversion in the test suite caused 
+</I>&gt;<i> the high FAIL rate. With the conversion, the PASS/FAIL ratio looks way 
+</I>&gt;<i> better (&gt;70% PASS). I assume that the rest of the FAILs have a similar 
+</I>&gt;<i> reason. Just tell me if some of you wants the patch.
+</I>&gt;<i> 
+</I>&gt;<i> Cheers,
+</I>&gt;<i> Christoph
+</I>&gt;<i> 
+</I>&gt;<i> -------- Original Message --------
+</I>&gt;<i> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+</I>&gt;<i> Date: Sun, 11 Apr 2010 12:32:58 +0200
+</I>&gt;<i> From: Christoph Tapler &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">christoph.tapler at gmx.net</A>&gt;
+</I>&gt;<i> To: PyCrypto discussion list &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>&gt;
+</I>&gt;<i> 
+</I>&gt;<i> Hi,
+</I>&gt;<i> 
+</I>&gt;<i> Fyi, I have adapted the test suite and now I am at least able to execute
+</I>&gt;<i> it on Python 3.1. However, around 99% of all tests are fail. Moreover,
+</I>&gt;<i> at the end of the test suite execution, Python crashes.
+</I>&gt;<i> 
+</I>&gt;<i> Hope to find some time to look into the issues. Anyway, if somebody
+</I>&gt;<i> wants to have the patch, please let me know.
+</I>&gt;<i> 
+</I>&gt;<i> Cheers,
+</I>&gt;<i> Christoph
+</I>&gt;<i> 
+</I>&gt;<i> On 18.03.2010 02:57, Grail Dane wrote:
+</I>&gt;<i> 
+</I>&gt;<i> &gt; Hi Christoph
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; So I tried the suggestion below but still received the error about
+</I>&gt;<i> &gt; import from non-package :(
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I changed it to read:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; from Crypto.SelfTest.Cipher import common
+</I>&gt;<i> &gt; return common.make_block_tests(AES, &quot;AES&quot;, test_data)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; and it does not error on that but now presents me with a segfault :(
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; So I seem to have gone from bad to worse. So I am hoping someone on this
+</I>&gt;<i> &gt; list might be able to suggest how I can track the fault to find out what
+</I>&gt;<i> &gt; is wrong now??
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Cheers
+</I>&gt;<i> &gt; Grail
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I> 		 	   		  
+Looking for a hot date? View photos of singles in your area! 		 	   		  
+_________________________________________________________________
+If It Exists, You'll Find it on SEEK. Australia's #1 job site
+<A HREF="http://clk.atdmt.com/NMN/go/157639755/direct/01/">http://clk.atdmt.com/NMN/go/157639755/direct/01/</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100413/277a0678/attachment-0001.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100413/277a0678/attachment-0001.htm</A> 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: pycrypto-2.1.0-python3-1.patch.lzma
+Type: application/octet-stream
+Size: 19859 bytes
+Desc: not available
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100413/277a0678/attachment-0001.obj">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100413/277a0678/attachment-0001.obj</A> 
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000215.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+	<LI>Next message: <A HREF="000252.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#216">[ date ]</a>
+              <a href="thread.html#216">[ thread ]</a>
+              <a href="subject.html#216">[ subject ]</a>
+              <a href="author.html#216">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

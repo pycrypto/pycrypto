@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] _fastmath None !!
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20_fastmath%20None%20%21%21&In-Reply-To=681951.67356.qm%40web114214.mail.gq1.yahoo.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000239.html">
+   <LINK REL="Next"  HREF="000241.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] _fastmath None !!</H1>
+    <B>Lorenz Quack</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20_fastmath%20None%20%21%21&In-Reply-To=681951.67356.qm%40web114214.mail.gq1.yahoo.com"
+       TITLE="[pycrypto] _fastmath None !!">don at amberfisharts.com
+       </A><BR>
+    <I>Mon May 17 09:40:50 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000239.html">[pycrypto] _fastmath None !!
+</A></li>
+        <LI>Next message: <A HREF="000241.html">[pycrypto] _fastmath None !!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#240">[ date ]</a>
+              <a href="thread.html#240">[ thread ]</a>
+              <a href="subject.html#240">[ subject ]</a>
+              <a href="author.html#240">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi again,
+
+no idea what's going wrong. normally pycrypto should fall back to _slowmath (a pure python implementation) when gmp is 
+not installed meaning _fastmath is not available (_fastmath is a C implementation using gmp).
+
+Maybe you could prvide some more information, like python version, pycrypto version, is gmp installed?
+Also it would be a good idea to provide a small/minimalistic example demonstrating the problem.
+That way it is easyier to figure out if it's a bug in pycrypto or in your code.
+
+cheers,
+//Lorenz
+
+
+
+On 05/17/2010 04:48 PM, jd wrote:
+&gt;<i> Hi Guys
+</I>&gt;<i>      I am serializing the pycrypto keys using pickle.. as suggested in one of recent posts. It is working fine, but giving following problem on cenos 5.1. (stack at the bottom of email)
+</I>&gt;<i>
+</I>&gt;<i> 'NoneType' object has no attribute 'rsa_construct'
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>      I looked at the code.. it seems while constructing _fastmath is used. Any workarounds / fixes ? I do not think changing to saving tuple would help as it would also need to use __setstate__..
+</I>&gt;<i>
+</I>&gt;<i> Help is greatly appreciated.
+</I>&gt;<i> Thanks
+</I>&gt;<i> /Jd
+</I>&gt;<i>
+</I>&gt;<i> File &quot;/tg2env/bin/paster&quot;, line 7, in ?
+</I>&gt;<i>      sys.exit(
+</I>&gt;<i>    File &quot;/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py&quot;, line 84, in run
+</I>&gt;<i>      invoke(command, command_name, options, args[1:])
+</I>&gt;<i>    File &quot;/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py&quot;, line 123, in invoke
+</I>&gt;<i>      exit_code = runner.run(args)
+</I>&gt;<i>    File &quot;/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py&quot;, line 218, in run
+</I>&gt;<i>      result = self.command()
+</I>&gt;<i>    File &quot;/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py&quot;, line 276, in command
+</I>&gt;<i>      relative_to=base, global_conf=vars)
+</I>&gt;<i>    File &quot;/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py&quot;, line 311, in loadapp
+</I>&gt;<i>      return loadapp(
+</I>&gt;<i>    File &quot;/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py&quot;, line 204, in loadapp
+</I>&gt;<i>      return loadobj(APP, uri, name=name, **kw)
+</I>&gt;<i>    File &quot;/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py&quot;, line 225, in loadobj
+</I>&gt;<i>      return context.create()
+</I>&gt;<i>    File &quot;/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py&quot;, line 625, in create
+</I>&gt;<i>      return self.object_type.invoke(self)
+</I>&gt;<i>    File &quot;/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py&quot;, line 110, in invoke
+</I>&gt;<i>      return fix_call(context.object, context.global_conf, **context.local_conf)
+</I>&gt;<i>    File &quot;/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/util/fixtypeerror.py&quot;, line 57, in fix_call
+</I>&gt;<i>      val = callable(*args, **kw)
+</I>&gt;<i>    File &quot;/m2svn/trunk/src/app/web/app/app/config/middleware.py&quot;, line 46, in make_app
+</I>&gt;<i>      if verify_license():
+</I>&gt;<i>    File &quot;/m2svn/trunk/src/app/web/app/app/core/utils/utils.py&quot;, line 2221, in verify_license
+</I>&gt;<i>      l_info = read_license_using_embeded(license_file)
+</I>&gt;<i>    File &quot;/m2svn/trunk/src/app/web/app/app/core/utils/utils.py&quot;, line 2202, in read_license_using_embeded
+</I>&gt;<i>      pub_key =get_embeded_key()
+</I>&gt;<i>    File &quot;/m2svn/trunk/src/app/web/app/app/core/utils/utils.py&quot;, line 2197, in get_embeded_key
+</I>&gt;<i>      key = pickle.loads(str)
+</I>&gt;<i>    File &quot;/usr/lib64/python2.4/pickle.py&quot;, line 1394, in loads
+</I>&gt;<i>      return Unpickler(file).load()
+</I>&gt;<i>    File &quot;/usr/lib64/python2.4/pickle.py&quot;, line 872, in load
+</I>&gt;<i>      dispatch[key](self)
+</I>&gt;<i>    File &quot;/usr/lib64/python2.4/pickle.py&quot;, line 1237, in load_build
+</I>&gt;<i>      setstate(state)
+</I>&gt;<i>    File &quot;build/bdist.linux-x86_64/egg/Crypto/PublicKey/RSA.py&quot;, line 171, in __setstate__
+</I>&gt;<i> AttributeError: 'NoneType' object has no attribute 'rsa_construct'
+</I>&gt;<i>
+</I>
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000239.html">[pycrypto] _fastmath None !!
+</A></li>
+	<LI>Next message: <A HREF="000241.html">[pycrypto] _fastmath None !!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#240">[ date ]</a>
+              <a href="thread.html#240">[ thread ]</a>
+              <a href="subject.html#240">[ subject ]</a>
+              <a href="author.html#240">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

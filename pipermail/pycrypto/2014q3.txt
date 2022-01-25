@@ -1,0 +1,635 @@
+From dlitz at dlitz.net  Tue Jul  1 17:16:59 2014
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Tue, 1 Jul 2014 17:16:59 -0700
+Subject: [pycrypto] Need your input: Major modernization;
+ dropping legacy Python support?
+In-Reply-To: <20140222205050.GC7112@ramacher.at>
+References: <20131030060924.GC5005@rivest.dlitz.net>
+ <20131030172448.GB17774@ramacher.at>
+ <20140206175139.GA1741@rivest.dlitz.net>
+ <20140222205050.GC7112@ramacher.at>
+Message-ID: <20140702001659.GB4351@rivest.dlitz.net>
+
+On Sat, Feb 22, 2014 at 09:50:50PM +0100, Sebastian Ramacher wrote:
+>On 2014-02-06 09:51:39, Dwayne Litzenberger wrote:
+>> I'm thinking of merging with the folks at https://cryptography.io/,
+>> which is covered by an Apache 2.0 license.
+>
+>What is the merge going to look like?
+
+The idea is to remove most of the redundancy between PyCrypto and 
+Cryptography, and combine the two communities that maintain them, so 
+that we have more eyes looking at less code, and it should remove me as 
+the bottleneck in all PyCrypto development.
+
+PyCrypto would provide the Crypto.* API using the Cryptography framework 
+under the hood.  The Cryptography API is divided into high-level Python 
+APIs, and native cipher backends that are pluggable (at least in theory) 
+and accessed using cffi.
+
+Currently, only an OpenSSL backend is actually implemented, which 
+creates a licensing issue for GPLv2-only software, but we could probably 
+put together a backend using either the existing PyCrypto code, or maybe 
+something like libtomcrypt or libgcrypt.
+
+I'm also talking with the Cryptography folks about ways we can resolve 
+the GPLv2-incompatibility of Cryptography itself.  I'll have more on 
+that later.
+
+Cheers,
+ - Dwayne
+
+[1] https://github.com/pyca/cryptography
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 222 bytes
+Desc: Digital signature
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140701/03892ea2/attachment.sig>
+
+From dlitz at dlitz.net  Wed Jul  2 10:31:18 2014
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Wed, 2 Jul 2014 10:31:18 -0700
+Subject: [pycrypto] Need your input: Major modernization;
+ dropping legacy Python support?
+In-Reply-To: <20140702001659.GB4351@rivest.dlitz.net>
+References: <20131030060924.GC5005@rivest.dlitz.net>
+ <20131030172448.GB17774@ramacher.at>
+ <20140206175139.GA1741@rivest.dlitz.net>
+ <20140222205050.GC7112@ramacher.at>
+ <20140702001659.GB4351@rivest.dlitz.net>
+Message-ID: <20140702173118.GB23465@rivest.dlitz.net>
+
+On Tue, Jul 01, 2014 at 05:16:59PM -0700, Dwayne Litzenberger wrote:
+>I'm also talking with the Cryptography folks about ways we can resolve 
+>the GPLv2-incompatibility of Cryptography itself.  I'll have more on 
+>that later.
+
+Update: The Cryptography project is in the process of getting permission 
+from its contributors to relicense from APL2 to dual APL2/BSD 2-clause, 
+to help resolve the incompatibility.  Assuming most contributors are on 
+board, it looks like this will happen:
+
+     https://github.com/pyca/cryptography/issues/1209
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 222 bytes
+Desc: Digital signature
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140702/0ac398a6/attachment.sig>
+
+From dave.pawson at gmail.com  Wed Jul  9 23:28:04 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Thu, 10 Jul 2014 07:28:04 +0100
+Subject: [pycrypto] Need your input: Major modernization;
+ dropping legacy Python support?
+In-Reply-To: <20140702001659.GB4351@rivest.dlitz.net>
+References: <20131030060924.GC5005@rivest.dlitz.net>
+ <20131030172448.GB17774@ramacher.at>
+ <20140206175139.GA1741@rivest.dlitz.net>
+ <20140222205050.GC7112@ramacher.at>
+ <20140702001659.GB4351@rivest.dlitz.net>
+Message-ID: <CAEncD4fA-JC63uo5DnfGqSkZ9vhpNp35prRnq+p5yLGWXvU92Q@mail.gmail.com>
+
+http://tools.ietf.org/html/draft-seantek-text-markdown-media-type-00
+Looks like they are considering formalising the mime type for md
+
+regards
+
+On 2 July 2014 01:16, Dwayne Litzenberger <dlitz at dlitz.net> wrote:
+> On Sat, Feb 22, 2014 at 09:50:50PM +0100, Sebastian Ramacher wrote:
+>>
+>> On 2014-02-06 09:51:39, Dwayne Litzenberger wrote:
+>>>
+>>> I'm thinking of merging with the folks at https://cryptography.io/,
+>>> which is covered by an Apache 2.0 license.
+>>
+>>
+>> What is the merge going to look like?
+>
+>
+> The idea is to remove most of the redundancy between PyCrypto and
+> Cryptography, and combine the two communities that maintain them, so that we
+> have more eyes looking at less code, and it should remove me as the
+> bottleneck in all PyCrypto development.
+>
+> PyCrypto would provide the Crypto.* API using the Cryptography framework
+> under the hood.  The Cryptography API is divided into high-level Python
+> APIs, and native cipher backends that are pluggable (at least in theory) and
+> accessed using cffi.
+>
+> Currently, only an OpenSSL backend is actually implemented, which creates a
+> licensing issue for GPLv2-only software, but we could probably put together
+> a backend using either the existing PyCrypto code, or maybe something like
+> libtomcrypt or libgcrypt.
+>
+> I'm also talking with the Cryptography folks about ways we can resolve the
+> GPLv2-incompatibility of Cryptography itself.  I'll have more on that later.
+>
+> Cheers,
+> - Dwayne
+>
+> [1] https://github.com/pyca/cryptography
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From jbadziak at monolith-software.com  Fri Aug 29 11:40:39 2014
+From: jbadziak at monolith-software.com (Jason Kojro-Badziak)
+Date: Fri, 29 Aug 2014 13:40:39 -0500
+Subject: [pycrypto] Error trying to install pycrypto
+Message-ID: <11FB0A7C2C955741B3706164011FE6511855D03E1F@DFW1MBX22.mex07a.mlsrvr.com>
+
+Hello all:
+
+Sorry to bother you, but can anyone give me some help with the following installation error?  I'm not sure how to get this running:
+
+[root at snmp-sim pycrypto-2.6.1]# python /opt/pycrypto-2.6.1/setup.py build
+running build
+running build_py
+running build_ext
+running build_configure
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+building 'Crypto.Hash._MD2' extension
+gcc -pthread -fno-strict-aliasing -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m32 -march=i686 -mtune=atom -fasynchronous-unwind-tables -D_GNU_SOURCE -fPIC -fwrapv -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m32 -march=i686 -mtune=atom -fasynchronous-unwind-tables -D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/python2.6 -c src/MD2.c -o build/temp.linux-i686-2.6/src/MD2.o
+src/MD2.c:31:20: error: Python.h: No such file or directory
+src/MD2.c:131: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+In file included from src/MD2.c:147:
+src/hash_template.c:48: error: expected specifier-qualifier-list before 'PyObject_HEAD'
+src/hash_template.c:59: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'PyTypeObject'
+src/hash_template.c: In function 'newALGobject':
+src/hash_template.c:69: warning: implicit declaration of function 'PyObject_New'
+src/hash_template.c:69: error: expected expression before 'ALGobject'
+src/hash_template.c: At top level:
+src/hash_template.c:76: error: expected ')' before '*' token
+src/hash_template.c:91: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+src/hash_template.c:110: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+src/hash_template.c:122: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+src/hash_template.c:162: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+src/hash_template.c:188: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+src/hash_template.c:190: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'ALG_methods'
+src/hash_template.c:199: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+src/hash_template.c:225: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'ALGtype'
+src/hash_template.c:271: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+src/hash_template.c:304: error: array type has incomplete element type
+src/hash_template.c:305: error: 'PyCFunction' undeclared here (not in a function)
+src/hash_template.c:305: error: expected '}' before 'ALG_new'
+src/hash_template.c: In function 'init_MD2':
+src/hash_template.c:339: error: 'PyObject' undeclared (first use in this function)
+src/hash_template.c:339: error: (Each undeclared identifier is reported only once
+src/hash_template.c:339: error: for each function it appears in.)
+src/hash_template.c:339: error: 'm' undeclared (first use in this function)
+src/hash_template.c:351: error: 'ALGtype' undeclared (first use in this function)
+src/hash_template.c:351: error: 'PyType_Type' undeclared (first use in this function)
+src/hash_template.c:352: warning: implicit declaration of function 'Py_InitModule'
+src/hash_template.c:356: error: 'o' undeclared (first use in this function)
+src/hash_template.c:356: warning: implicit declaration of function 'PyInt_FromLong'
+src/hash_template.c:356: warning: implicit declaration of function 'PyDict_SetItemString'
+src/hash_template.c:356: warning: implicit declaration of function 'PyModule_GetDict'
+src/hash_template.c:356: warning: implicit declaration of function 'Py_DECREF'
+src/hash_template.c:360: warning: implicit declaration of function 'PyErr_Occurred'
+src/hash_template.c:361: warning: implicit declaration of function 'Py_FatalError'
+error: command 'gcc' failed with exit status 1
+
+
+Thank you!
+
+Jason Kojro-Badziak
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140829/4537f31c/attachment.html>
+
+From plaes at plaes.org  Sun Aug 31 01:42:39 2014
+From: plaes at plaes.org (Priit Laes)
+Date: Sun, 31 Aug 2014 11:42:39 +0300
+Subject: [pycrypto] Error trying to install pycrypto
+In-Reply-To: <11FB0A7C2C955741B3706164011FE6511855D03E1F@DFW1MBX22.mex07a.mlsrvr.com>
+References: <11FB0A7C2C955741B3706164011FE6511855D03E1F@DFW1MBX22.mex07a.mlsrvr.com>
+Message-ID: <1409474559.3214.4.camel@plaes.org>
+
+
+?hel kenal p?eval, R, 29.08.2014 kell 13:40, kirjutas Jason Kojro-Badziak:
+> Hello all:
+>  
+> Sorry to bother you, but can anyone give me some help with the 
+> following installation error?  I?m not sure how to get this running:
+>  
+> [root at snmp-sim pycrypto-2.6.1]# python /opt/pycrypto-2.6.1/setup.py 
+> build
+> running build
+> running build_py
+> running build_ext
+> running build_configure
+> warning: GMP or MPIR library not found; Not building 
+> Crypto.PublicKey._fastmath.
+> building 'Crypto.Hash._MD2' extension
+> gcc -pthread -fno-strict-aliasing -pipe -Wall 
+> -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector 
+> --param=ssp-buffer-size=4 -m32 -march=i686 -mtune=atom 
+> -fasynchronous-unwind-tables -D_GNU_SOURCE -fPIC -fwrapv -pipe -Wall 
+> -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector 
+> --param=ssp-buffer-size=4 -m32 -march=i686 -mtune=atom 
+> -fasynchronous-unwind-tables -D_GNU_SOURCE -fPIC -fwrapv -fPIC 
+> -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/python2.6 -c 
+> src/MD2.c -o build/temp.linux-i686-2.6/src/MD2.o
+> src/MD2.c:31:20: error: Python.h: No such file or directory
+
+Ugh.. ^^
+
+Install Python development headers. It usually comes in a package 
+named like python-dev.
+
+And please try to searching about the compile errors yourself. For 
+example: 'python.h no such file or directory'.
+
+PS. Look up virtualenv.
+
+From zimmicz at gmail.com  Sat Sep 13 06:51:39 2014
+From: zimmicz at gmail.com (Michal Zimmermann)
+Date: Sat, 13 Sep 2014 15:51:39 +0200
+Subject: [pycrypto] Mimicking PHP crypt() with pycrypto
+Message-ID: <CAKgN3YXHbuDAEA9mXTJUr0jS9sfTFUOSVRaJjY8aPbyre3+nHw@mail.gmail.com>
+
+Hi,
+I need to create python implementation of blowfish algorithm similar to PHP's
+crypt <http://php.net/manual/en/function.crypt.php> with CRYPT_BLOWFISH
+algorithm. Is that possible? I went through docs and I am not sure what
+arguments for pycrypt's implementation of blowfish stand for.
+What I would love to achieve is something like
+PHP: crypt(string, salt) == Python: Crypto.Cipher.Blowfish(string, salt)
+
+Any help appreciated.
+
+-- 
+Michal Zimmermann (zimmi)
+WWW: http://www.zimmi.cz
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140913/60d6c68d/attachment.html>
+
+From don at amberfisharts.com  Mon Sep 15 16:41:26 2014
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Tue, 16 Sep 2014 01:41:26 +0200
+Subject: [pycrypto] Error trying to install pycrypto
+In-Reply-To: <11FB0A7C2C955741B3706164011FE6511855D03E1F@DFW1MBX22.mex07a.mlsrvr.com>
+References: <11FB0A7C2C955741B3706164011FE6511855D03E1F@DFW1MBX22.mex07a.mlsrvr.com>
+Message-ID: <26eddaa669672a7e04c07a77a6a3b045@amberfisharts.com>
+
+Am 2014-08-29 20:40, schrieb Jason Kojro-Badziak:
+> Hello all:
+>
+> Sorry to bother you, but can anyone give me some help with the
+> following installation error? I'm not sure how to get this running:
+>
+> [root at snmp-sim pycrypto-2.6.1]# python /opt/pycrypto-2.6.1/setup.py 
+> build
+>
+> running build
+>
+> running build_py
+>
+> running build_ext
+>
+> running build_configure
+>
+> warning: GMP or MPIR library not found; Not building
+> Crypto.PublicKey._fastmath.
+>
+> building 'Crypto.Hash._MD2' extension
+>
+> gcc -pthread -fno-strict-aliasing -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2
+> -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m32
+> -march=i686 -mtune=atom -fasynchronous-unwind-tables -D_GNU_SOURCE
+> -fPIC -fwrapv -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions
+> -fstack-protector --param=ssp-buffer-size=4 -m32 -march=i686
+> -mtune=atom -fasynchronous-unwind-tables -D_GNU_SOURCE -fPIC -fwrapv
+> -fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/
+> -I/usr/include/python2.6 -c src/MD2.c -o
+> build/temp.linux-i686-2.6/src/MD2.o
+>
+> src/MD2.c:31:20: error: Python.h: No such file or directory
+>
+> src/MD2.c:131: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before '*' token
+>
+> In file included from src/MD2.c:147:
+>
+> src/hash_template.c:48: error: expected specifier-qualifier-list
+> before 'PyObject_HEAD'
+>
+> src/hash_template.c:59: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before 'PyTypeObject'
+>
+> src/hash_template.c: In function 'newALGobject':
+>
+> src/hash_template.c:69: warning: implicit declaration of function
+> 'PyObject_New'
+>
+> src/hash_template.c:69: error: expected expression before 'ALGobject'
+>
+> src/hash_template.c: At top level:
+>
+> src/hash_template.c:76: error: expected ')' before '*' token
+>
+> src/hash_template.c:91: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before '*' token
+>
+> src/hash_template.c:110: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before '*' token
+>
+> src/hash_template.c:122: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before '*' token
+>
+> src/hash_template.c:162: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before '*' token
+>
+> src/hash_template.c:188: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before '*' token
+>
+> src/hash_template.c:190: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before 'ALG_methods'
+>
+> src/hash_template.c:199: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before '*' token
+>
+> src/hash_template.c:225: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before 'ALGtype'
+>
+> src/hash_template.c:271: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before '*' token
+>
+> src/hash_template.c:304: error: array type has incomplete element 
+> type
+>
+> src/hash_template.c:305: error: 'PyCFunction' undeclared here (not in
+> a function)
+>
+> src/hash_template.c:305: error: expected '}' before 'ALG_new'
+>
+> src/hash_template.c: In function 'init_MD2':
+>
+> src/hash_template.c:339: error: 'PyObject' undeclared (first use in
+> this function)
+>
+> src/hash_template.c:339: error: (Each undeclared identifier is
+> reported only once
+>
+> src/hash_template.c:339: error: for each function it appears in.)
+>
+> src/hash_template.c:339: error: 'm' undeclared (first use in this 
+> function)
+>
+> src/hash_template.c:351: error: 'ALGtype' undeclared (first use in
+> this function)
+>
+> src/hash_template.c:351: error: 'PyType_Type' undeclared (first use
+> in this function)
+>
+> src/hash_template.c:352: warning: implicit declaration of function
+> 'Py_InitModule'
+>
+> src/hash_template.c:356: error: 'o' undeclared (first use in this 
+> function)
+>
+> src/hash_template.c:356: warning: implicit declaration of function
+> 'PyInt_FromLong'
+>
+> src/hash_template.c:356: warning: implicit declaration of function
+> 'PyDict_SetItemString'
+>
+> src/hash_template.c:356: warning: implicit declaration of function
+> 'PyModule_GetDict'
+>
+> src/hash_template.c:356: warning: implicit declaration of function
+> 'Py_DECREF'
+>
+> src/hash_template.c:360: warning: implicit declaration of function
+> 'PyErr_Occurred'
+>
+> src/hash_template.c:361: warning: implicit declaration of function
+> 'Py_FatalError'
+>
+> error: command 'gcc' failed with exit status 1
+>
+> Thank you!
+>
+> Jason Kojro-Badziak
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+It also seems that you do not have gmp installed.
+Many PyCrypto functions will be very slow so it is highly recommended 
+that you install it if you want any kind of performance.
+
+
+From dave.pawson at gmail.com  Mon Sep 15 23:43:56 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Tue, 16 Sep 2014 07:43:56 +0100
+Subject: [pycrypto] Error trying to install pycrypto
+In-Reply-To: <26eddaa669672a7e04c07a77a6a3b045@amberfisharts.com>
+References: <11FB0A7C2C955741B3706164011FE6511855D03E1F@DFW1MBX22.mex07a.mlsrvr.com>
+ <26eddaa669672a7e04c07a77a6a3b045@amberfisharts.com>
+Message-ID: <CAEncD4fpOJ5STZw2bEEnXs3Fs+cbvQEiiWZoB5EodZMyus-qKA@mail.gmail.com>
+
+src/MD2.c:31:20: error: Python.h: No such file or directory
+
+the file is missing? Guessing it is provided by the python development packages?
+
+Try google?
+
+HTH Dave
+
+On 16 September 2014 00:41,  <don at amberfisharts.com> wrote:
+> Am 2014-08-29 20:40, schrieb Jason Kojro-Badziak:
+>>
+>> Hello all:
+>>
+>> Sorry to bother you, but can anyone give me some help with the
+>> following installation error? I'm not sure how to get this running:
+>>
+>> [root at snmp-sim pycrypto-2.6.1]# python /opt/pycrypto-2.6.1/setup.py build
+>>
+>> running build
+>>
+>> running build_py
+>>
+>> running build_ext
+>>
+>> running build_configure
+>>
+>> warning: GMP or MPIR library not found; Not building
+>> Crypto.PublicKey._fastmath.
+>>
+>> building 'Crypto.Hash._MD2' extension
+>>
+>> gcc -pthread -fno-strict-aliasing -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2
+>> -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m32
+>> -march=i686 -mtune=atom -fasynchronous-unwind-tables -D_GNU_SOURCE
+>> -fPIC -fwrapv -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions
+>> -fstack-protector --param=ssp-buffer-size=4 -m32 -march=i686
+>> -mtune=atom -fasynchronous-unwind-tables -D_GNU_SOURCE -fPIC -fwrapv
+>> -fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/
+>> -I/usr/include/python2.6 -c src/MD2.c -o
+>> build/temp.linux-i686-2.6/src/MD2.o
+>>
+>> src/MD2.c:31:20: error: Python.h: No such file or directory
+>>
+>> src/MD2.c:131: error: expected '=', ',', ';', 'asm' or
+>> '__attribute__' before '*' token
+>>
+>> In file included from src/MD2.c:147:
+>>
+>> src/hash_template.c:48: error: expected specifier-qualifier-list
+>> before 'PyObject_HEAD'
+>>
+>> src/hash_template.c:59: error: expected '=', ',', ';', 'asm' or
+>> '__attribute__' before 'PyTypeObject'
+>>
+>> src/hash_template.c: In function 'newALGobject':
+>>
+>> src/hash_template.c:69: warning: implicit declaration of function
+>> 'PyObject_New'
+>>
+>> src/hash_template.c:69: error: expected expression before 'ALGobject'
+>>
+>> src/hash_template.c: At top level:
+>>
+>> src/hash_template.c:76: error: expected ')' before '*' token
+>>
+>> src/hash_template.c:91: error: expected '=', ',', ';', 'asm' or
+>> '__attribute__' before '*' token
+>>
+>> src/hash_template.c:110: error: expected '=', ',', ';', 'asm' or
+>> '__attribute__' before '*' token
+>>
+>> src/hash_template.c:122: error: expected '=', ',', ';', 'asm' or
+>> '__attribute__' before '*' token
+>>
+>> src/hash_template.c:162: error: expected '=', ',', ';', 'asm' or
+>> '__attribute__' before '*' token
+>>
+>> src/hash_template.c:188: error: expected '=', ',', ';', 'asm' or
+>> '__attribute__' before '*' token
+>>
+>> src/hash_template.c:190: error: expected '=', ',', ';', 'asm' or
+>> '__attribute__' before 'ALG_methods'
+>>
+>> src/hash_template.c:199: error: expected '=', ',', ';', 'asm' or
+>> '__attribute__' before '*' token
+>>
+>> src/hash_template.c:225: error: expected '=', ',', ';', 'asm' or
+>> '__attribute__' before 'ALGtype'
+>>
+>> src/hash_template.c:271: error: expected '=', ',', ';', 'asm' or
+>> '__attribute__' before '*' token
+>>
+>> src/hash_template.c:304: error: array type has incomplete element type
+>>
+>> src/hash_template.c:305: error: 'PyCFunction' undeclared here (not in
+>> a function)
+>>
+>> src/hash_template.c:305: error: expected '}' before 'ALG_new'
+>>
+>> src/hash_template.c: In function 'init_MD2':
+>>
+>> src/hash_template.c:339: error: 'PyObject' undeclared (first use in
+>> this function)
+>>
+>> src/hash_template.c:339: error: (Each undeclared identifier is
+>> reported only once
+>>
+>> src/hash_template.c:339: error: for each function it appears in.)
+>>
+>> src/hash_template.c:339: error: 'm' undeclared (first use in this
+>> function)
+>>
+>> src/hash_template.c:351: error: 'ALGtype' undeclared (first use in
+>> this function)
+>>
+>> src/hash_template.c:351: error: 'PyType_Type' undeclared (first use
+>> in this function)
+>>
+>> src/hash_template.c:352: warning: implicit declaration of function
+>> 'Py_InitModule'
+>>
+>> src/hash_template.c:356: error: 'o' undeclared (first use in this
+>> function)
+>>
+>> src/hash_template.c:356: warning: implicit declaration of function
+>> 'PyInt_FromLong'
+>>
+>> src/hash_template.c:356: warning: implicit declaration of function
+>> 'PyDict_SetItemString'
+>>
+>> src/hash_template.c:356: warning: implicit declaration of function
+>> 'PyModule_GetDict'
+>>
+>> src/hash_template.c:356: warning: implicit declaration of function
+>> 'Py_DECREF'
+>>
+>> src/hash_template.c:360: warning: implicit declaration of function
+>> 'PyErr_Occurred'
+>>
+>> src/hash_template.c:361: warning: implicit declaration of function
+>> 'Py_FatalError'
+>>
+>> error: command 'gcc' failed with exit status 1
+>>
+>> Thank you!
+>>
+>> Jason Kojro-Badziak
+>>
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+> It also seems that you do not have gmp installed.
+> Many PyCrypto functions will be very slow so it is highly recommended that
+> you install it if you want any kind of performance.
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+

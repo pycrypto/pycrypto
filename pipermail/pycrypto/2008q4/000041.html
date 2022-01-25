@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] the sad state of pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=1e267dfe0811090754n5f96cf22ud92ea02458600505%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000040.html">
+   <LINK REL="Next"  HREF="000045.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] the sad state of pycrypto</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=1e267dfe0811090754n5f96cf22ud92ea02458600505%40mail.gmail.com"
+       TITLE="[pycrypto] the sad state of pycrypto">dlitz at dlitz.net
+       </A><BR>
+    <I>Sun Nov  9 10:31:40 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000040.html">[pycrypto] the sad state of pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000045.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#41">[ date ]</a>
+              <a href="thread.html#41">[ thread ]</a>
+              <a href="subject.html#41">[ subject ]</a>
+              <a href="author.html#41">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Nov 09, 2008 at 07:54:22AM -0800, Paul Hoffman wrote:
+&gt;&gt;<i> Which algorithms are you referring to?  Just MD2?  I'm willing to drop 
+</I>&gt;&gt;<i> MD2 if there are no objections.  I'm not going to be removing MD5 or 
+</I>&gt;&gt;<i> SHA-1 any time soon; They're just wrappers around the Python standard 
+</I>&gt;&gt;<i> library anyway.
+</I>&gt;<i>
+</I>&gt;<i>The idea of dropping support for &quot;weak&quot; algorithms is silly. No
+</I>&gt;<i>developer looks through the list of algorithms in a library and say
+</I>&gt;<i>&quot;I'll pick, um, er, that one&quot; without knowing what it is. There is no
+</I>&gt;<i>security problem with a library having weak algorithms, only with
+</I>&gt;<i>clueless people using them without understanding the consequences.
+</I>
+Really?  Many developers still use MD5 in new applications.
+
+Overly optimistic developers (or their micro-managing bosses) routinely 
+make design choices favouring speed or portability over security, and it's 
+the _users_ who suffer the consequences.  Following your line of reasoning, 
+there was nothing wrong with RandomPool; It was simply being misused---by 
+practically everyone.  I disagree, and RandomPool is now deprecated.
+
+Many airplane crashes can be written off as &quot;pilot error&quot;, but often there 
+are other factors involved, and investigators owe it to the _passengers_ to 
+discover those factors and take steps to avoid similar situations in the 
+future.  The same thing applied to crypto libraries.
+
+&gt;<i>Old, weak hash algorithms are still needed for validating old signatures 
+</I>&gt;<i>and certificates.
+</I>
+Agreed.  Even if the MD5 or SHA-1 libraries weren't wrappers around the 
+Python standard library, I still would not remove them, since that would 
+break nearly every program that uses PyCrypto, I would think.  Having said 
+that, does anybody using PyCrypto actually need MD2, specifically?  Having 
+less code makes PyCrypto more maintainable, and I'm not opposed to removing 
+what is basically &quot;dead code&quot;.
+
+&gt;&gt;&gt;<i> With respect to the recommendations of the NIST and others I propose to
+</I>&gt;&gt;&gt;<i> offer the following algorithm additionally and directly over the distributed
+</I>&gt;&gt;&gt;<i> library interface: SHA-224, SHA-256 (C file is allready included), SHA-384,
+</I>&gt;&gt;&gt;<i> SHA-512, RIPEMD-128, RIPEMD-160, RIPEMD-256, RIPEMD-320, Tiger and
+</I>&gt;&gt;&gt;<i> WHIRLPOOL.
+</I>&gt;<i>
+</I>&gt;<i>Just a note on that sentence: NIST only recommends the members of the
+</I>&gt;<i>SHA family; all the rest are recommended by &quot;and others&quot;.
+</I>
+Thank you for clarifying that point.
+
+&gt;&gt;<i> My understanding is that SHA-224 and SHA-384 are encumbered by software
+</I>&gt;&gt;<i> patents
+</I>&gt;<i>
+</I>&gt;<i>The entire SHA-2 family is encumbered by a patent (US 6,829,355) that
+</I>&gt;<i>is licensed royalty-free (see
+</I>&gt;<i>&lt;<A HREF="https://datatracker.ietf.org/ipr/858/">https://datatracker.ietf.org/ipr/858/</A>&gt;). It applies to SHA-256 and
+</I>&gt;<i>SHA-512 as well.
+</I>
+If it's licensed to everyone on an automatic, royalty-free basis, then it's 
+not _encumbered_ by a patent, just _covered_ by a patent.  Practically 
+everything is covered by patents.  What I am concerned about is people 
+actually getting sued (especially successfully) for patent infringement.
+
+My understanding was that SHA-224 and SHA-384 had additional patent 
+encumbrances that are did not apply to SHA-256 and SHA-512.  That 
+understanding probably came from Wikipedia, and it may be incorrect.
+
+In any case, SHA-224 and SHA-384 are just weakened versions of SHA-256 and 
+SHA-512, so I'm not inclined to add them without good reason.
+
+Thanks for the feedback,
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/270515a1/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/270515a1/attachment.pgp</A> 
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000040.html">[pycrypto] the sad state of pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000045.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#41">[ date ]</a>
+              <a href="thread.html#41">[ thread ]</a>
+              <a href="subject.html#41">[ subject ]</a>
+              <a href="author.html#41">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Suggestions for patches
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Suggestions%20for%20patches&In-Reply-To=20101130034636.GA22729%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000286.html">
+   <LINK REL="Next"  HREF="000292.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Suggestions for patches</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Suggestions%20for%20patches&In-Reply-To=20101130034636.GA22729%40rivest.dlitz.net"
+       TITLE="[pycrypto] Suggestions for patches">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Nov 29 22:01:58 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000286.html">[pycrypto] Policy changes - Now accepting patches from the U.S.
+</A></li>
+        <LI>Next message: <A HREF="000292.html">[pycrypto] Policy changes - Now accepting patches from the U.S.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#287">[ date ]</a>
+              <a href="thread.html#287">[ thread ]</a>
+              <a href="subject.html#287">[ subject ]</a>
+              <a href="author.html#287">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Here are some ideas for PyCrypto patches:
+
+- Documentation updates
+
+- Bugfixes
+
+- Python 3.x support, with some sane way of maintaining Python 2.x support 
+   for the forseeable future.  I would like to see somebody champion this, 
+   with discussion on how this could realistically work, rather than just 
+   one-off code dumps.
+
+- Build autoconfiguration improvements
+
+- 64-bit Windows support
+
+- Camellia.  Maybe.  I don't want lots of new algorithms, but having more 
+   than one cipher with a 128-bit block size is probably a good idea, 
+   assuming the code is clean and doesn't carry any substantial copyright 
+   restrictions.
+
+Here are some tips for getting your patches accepted, taken from 
+<A HREF="http://www.pycrypto.org/:">http://www.pycrypto.org/:</A>
+
+- Don't needlessly break compatibility with older versions of PyCrypto. 
+   Patches that break compatibility with older version of PyCrypto, 
+   especially PyCrypto 2.0.1, will need an explanation about why it's worth 
+   breaking compatibility. Exception: Removing buggy code that nobody uses 
+   is fine.
+
+- Don't needlessly break compatibility with older versions of Python. Run 
+   the test suite using Python 2.1 and the latest version of Python 2.x.
+
+- Don't needlessly add complexity. The more complex the code is, the harder 
+   it is to maintain, and the more likely it is to have bugs.
+
+- Don't needlessly add features. Seriously. X.509 doesn't belong in 
+   PyCrypto. Or anywhere, really.
+
+- Don't create copyright headaches. It took me the better part of a year to 
+   sort out the licensing ambiguities in PyCrypto 2.0.1. If you're adding 
+   new files, include the standard PyCrypto public domain dedication at the 
+   top.
+
+- Whatever you do in _fastmath.c, also do in _slowmath.py. PyCrypto has two 
+   math libraries: one that depends on libgmp, and one that doesn't. They 
+   need to be kept synchronized with each other.
+
+- Make small, incremental, well-documented changes. Your commit messages 
+   should be clear and detailed. Include any applicable background 
+   information. Your patches should do one thing. Your code should have 
+   sensible comments.
+
+I still don't have a lot of time to actually write code, but I'm going to 
+try to be more responsive to posts on the mailing list, especially if those 
+posts can be read and responded to on my phone. :-)
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000286.html">[pycrypto] Policy changes - Now accepting patches from the U.S.
+</A></li>
+	<LI>Next message: <A HREF="000292.html">[pycrypto] Policy changes - Now accepting patches from the U.S.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#287">[ date ]</a>
+              <a href="thread.html#287">[ thread ]</a>
+              <a href="subject.html#287">[ subject ]</a>
+              <a href="author.html#287">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

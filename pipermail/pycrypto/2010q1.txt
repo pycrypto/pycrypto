@@ -1,0 +1,3303 @@
+From grail69 at hotmail.com  Thu Jan 14 01:52:59 2010
+From: grail69 at hotmail.com (Grail Dane)
+Date: Thu, 14 Jan 2010 07:52:59 +0000
+Subject: [pycrypto] python crypto with python 3.0 or 3.1
+Message-ID: <SNT132-w24BDC6C45D4D6EB8912BB7B16A0@phx.gbl>
+
+
+Hi GuysI am new to the list but have recently run into this issue.Has there been any movement?Personally I am stuck when gcc tries to compile src/_fastmath.cwhich seems to die with an error about 'ob_size' member not existing :(This seems to be bogus as I traced back the struct's to include PyObject_VAR_HEADwhich does have this as member.Any further help on this would be appreciated ;)Cheers Grail>On Fri, Dec 04, 2009 at 11:44:00AM +0100, Tobias Koeck wrote:>>Is it possible to run python crypto with python 3.0 or 3.1. If not is 
+>>it planed to adjust?
+
+>Sure, and it'll happen sooner if somebody volunteers to do it. :-)
+
+>There will need to be be some strategy for Python 2.x compatibility, and 
+>the contributor(s) need to to meet the PyCrypto Code Submission 
+>Requirements:
+
+>http://www.dlitz.net/software/pycrypto/submission-requirements/
+
+>-- 
+>Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+>  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E 		 	   		  
+_________________________________________________________________
+View photos of singles in your area! Browse profiles for FREE
+http://clk.atdmt.com/NMN/go/150855801/direct/01/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100114/68f4d84d/attachment.htm 
+
+From don at amberfisharts.com  Thu Jan 14 03:07:36 2010
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Thu, 14 Jan 2010 10:07:36 +0100
+Subject: [pycrypto] python crypto with python 3.0 or 3.1
+In-Reply-To: <SNT132-w24BDC6C45D4D6EB8912BB7B16A0@phx.gbl>
+References: <SNT132-w24BDC6C45D4D6EB8912BB7B16A0@phx.gbl>
+Message-ID: <b7338e009e16d0bf54dc7a5c34558de6@localhost>
+
+Hi,
+
+as far as I know there hasn't been a move to port pyCrypto to python 3.x
+so simply compiling against python 3.x is bound to fail!
+If you try to port yourself and during that effort ran into this compiler 
+error then if you look at the documentation [1] or this blog post [2]
+(it's
+a bit outdated since the docs have been fixed in the meantime) you will
+see
+that the first few lines (besides other things) of a python extension type
+have
+changed from 
+ 
+  PyObject_HEAD_INIT(NULL)
+  0,                   /* ob_size */
+  "myTypeName",        /* tp_name */
+
+to
+
+  PyVarObject_HEAD_INIT(NULL, 0)
+  "myTypeName",        /* tp_name */
+
+If I recall correctly, the ob_size has be moved to a different structure
+and no longer
+is a member of PyTypeObject.
+So to sum it up:
+ * no porting effort exist so far, AFAIK
+ * no, the error is not bogus
+
+sincerely yours
+//Lorenz
+
+[1] http://docs.python.org/dev/py3k/extending/newtypes.html
+[2]
+http://rhodesmill.org/brandon/2008/porting-a-c-extension-module-to-python-30/
+
+
+
+On Thu, 14 Jan 2010 07:52:59 +0000, Grail Dane <grail69 at hotmail.com>
+wrote:
+> Hi GuysI am new to the list but have recently run into this issue.Has
+> there been any movement?Personally I am stuck when gcc tries to compile
+> src/_fastmath.cwhich seems to die with an error about 'ob_size' member
+not
+> existing :(This seems to be bogus as I traced back the struct's to
+include
+> PyObject_VAR_HEADwhich does have this as member.Any further help on this
+> would be appreciated ;)Cheers Grail>On Fri, Dec 04, 2009 at 11:44:00AM
+> +0100, Tobias Koeck wrote:>>Is it possible to run python crypto with
+python
+> 3.0 or 3.1. If not is 
+>>>it planed to adjust?
+> 
+>>Sure, and it'll happen sooner if somebody volunteers to do it. :-)
+> 
+>>There will need to be be some strategy for Python 2.x compatibility, and
+
+>>the contributor(s) need to to meet the PyCrypto Code Submission 
+>>Requirements:
+> 
+>>http://www.dlitz.net/software/pycrypto/submission-requirements/
+> 
+>>-- 
+>>Dwayne C. Litzenberger <dlitz at dlitz.net>
+>>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+>>  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+>>
+> _________________________________________________________________
+> View photos of singles in your area! Browse profiles for FREE
+> http://clk.atdmt.com/NMN/go/150855801/direct/01/
+
+From grail69 at hotmail.com  Thu Jan 14 18:32:04 2010
+From: grail69 at hotmail.com (Grail Dane)
+Date: Fri, 15 Jan 2010 00:32:04 +0000
+Subject: [pycrypto] python crypto with python 3.0 or 3.1
+In-Reply-To: <b7338e009e16d0bf54dc7a5c34558de6@localhost>
+References: <SNT132-w24BDC6C45D4D6EB8912BB7B16A0@phx.gbl>,
+	<b7338e009e16d0bf54dc7a5c34558de6@localhost>
+Message-ID: <SNT132-w193E74A25DFDF35C5F7184B1690@phx.gbl>
+
+
+Hi
+Thanks for the speedy reply :)
+I am a little confused though as the doco for 3.1 says:
+PyVarObjectThis is an extension of PyObject that adds the ob_size field. This is only used for objects that have some notion of length. This type does not often appear in the Python/C API. It corresponds to the fields defined by the expansion of the PyObject_VAR_HEAD macro.This appears to be the same as what is written in the doco for 2.6.4 as well, which pycrypto seems to work with.
+Well i will keep looking to see what i can find out.
+CheersGrail
+> Date: Thu, 14 Jan 2010 10:07:36 +0100
+> From: don at amberfisharts.com
+> To: pycrypto at lists.dlitz.net
+> Subject: Re: [pycrypto] python crypto with python 3.0 or 3.1
+> 
+> Hi,
+> 
+> as far as I know there hasn't been a move to port pyCrypto to python 3.x
+> so simply compiling against python 3.x is bound to fail!
+> If you try to port yourself and during that effort ran into this compiler 
+> error then if you look at the documentation [1] or this blog post [2]
+> (it's
+> a bit outdated since the docs have been fixed in the meantime) you will
+> see
+> that the first few lines (besides other things) of a python extension type
+> have
+> changed from 
+>  
+>   PyObject_HEAD_INIT(NULL)
+>   0,                   /* ob_size */
+>   "myTypeName",        /* tp_name */
+> 
+> to
+> 
+>   PyVarObject_HEAD_INIT(NULL, 0)
+>   "myTypeName",        /* tp_name */
+> 
+> If I recall correctly, the ob_size has be moved to a different structure
+> and no longer
+> is a member of PyTypeObject.
+> So to sum it up:
+>  * no porting effort exist so far, AFAIK
+>  * no, the error is not bogus
+> 
+> sincerely yours
+> //Lorenz
+> 
+> [1] http://docs.python.org/dev/py3k/extending/newtypes.html
+> [2]
+> http://rhodesmill.org/brandon/2008/porting-a-c-extension-module-to-python-30/
+> 
+> 
+> 
+> On Thu, 14 Jan 2010 07:52:59 +0000, Grail Dane <grail69 at hotmail.com>
+> wrote:
+> > Hi GuysI am new to the list but have recently run into this issue.Has
+> > there been any movement?Personally I am stuck when gcc tries to compile
+> > src/_fastmath.cwhich seems to die with an error about 'ob_size' member
+> not
+> > existing :(This seems to be bogus as I traced back the struct's to
+> include
+> > PyObject_VAR_HEADwhich does have this as member.Any further help on this
+> > would be appreciated ;)Cheers Grail>On Fri, Dec 04, 2009 at 11:44:00AM
+> > +0100, Tobias Koeck wrote:>>Is it possible to run python crypto with
+> python
+> > 3.0 or 3.1. If not is 
+> >>>it planed to adjust?
+> > 
+> >>Sure, and it'll happen sooner if somebody volunteers to do it. :-)
+> > 
+> >>There will need to be be some strategy for Python 2.x compatibility, and
+> 
+> >>the contributor(s) need to to meet the PyCrypto Code Submission 
+> >>Requirements:
+> > 
+> >>http://www.dlitz.net/software/pycrypto/submission-requirements/
+> > 
+> >>-- 
+> >>Dwayne C. Litzenberger <dlitz at dlitz.net>
+> >>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+> >>  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+> >>
+> > _________________________________________________________________
+> > View photos of singles in your area! Browse profiles for FREE
+> > http://clk.atdmt.com/NMN/go/150855801/direct/01/
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+ 		 	   		  
+_________________________________________________________________
+Shopping Trolley Mechanic If It Exists, You'll Find it on SEEK
+http://clk.atdmt.com/NMN/go/157639755/direct/01/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100115/34d3050a/attachment.htm 
+
+From don at amberfisharts.com  Fri Jan 15 03:02:39 2010
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Fri, 15 Jan 2010 10:02:39 +0100
+Subject: [pycrypto] python crypto with python 3.0 or 3.1
+In-Reply-To: <SNT132-w193E74A25DFDF35C5F7184B1690@phx.gbl>
+References: <SNT132-w24BDC6C45D4D6EB8912BB7B16A0@phx.gbl>, 
+	<b7338e009e16d0bf54dc7a5c34558de6@localhost>
+	<SNT132-w193E74A25DFDF35C5F7184B1690@phx.gbl>
+Message-ID: <92a1b6d78a53e29ea2c7149e259405ec@localhost>
+
+Hey,
+
+I don't know about the docs. If you feel they are wrong/misleading/badly
+phrased then you probably 
+should file a bug report with bugs.python.org
+However, the relevant structures are located in pythons source directory
+Include/object.h
+There you will find the following:
+1) A structure called "PyVarObject" containing a field called "ob_size".
+2) A macro called "PyObject_VAR_HEAD" which expands to "PyVarObject
+ob_base;"
+3) The "PyTypeObject" which starts has the "PyObject_VAR_HEAD" macro as
+first field.
+so what does it all mean?
+the "PyTypeObject" as a "PyVarObject" called "ob_base" as first field.
+this field is a structure it self containing the looked for field
+"ob_size".
+so you could (not should!!!) do "myType.ob_base.ob_size" but for this
+purpose there is the "Py_SIZE" macro (also defined in "object.h") which
+should be used if needed.
+
+I hope this helps to clear up your confusion.
+And as I said before. Please file a bug report with bugs.python.org if you
+feel they are insufficient.
+
+sincerely yours
+//Lorenz
+
+
+On Fri, 15 Jan 2010 00:32:04 +0000, Grail Dane <grail69 at hotmail.com>
+wrote:
+> Hi
+> Thanks for the speedy reply :)
+> I am a little confused though as the doco for 3.1 says:
+> PyVarObjectThis is an extension of PyObject that adds the ob_size field.
+> This is only used for objects that have some notion of length. This type
+> does not often appear in the Python/C API. It corresponds to the fields
+> defined by the expansion of the PyObject_VAR_HEAD macro.This appears to
+be
+> the same as what is written in the doco for 2.6.4 as well, which
+pycrypto
+> seems to work with.
+> Well i will keep looking to see what i can find out.
+> CheersGrail
+>> Date: Thu, 14 Jan 2010 10:07:36 +0100
+>> From: don at amberfisharts.com
+>> To: pycrypto at lists.dlitz.net
+>> Subject: Re: [pycrypto] python crypto with python 3.0 or 3.1
+>> 
+>> Hi,
+>> 
+>> as far as I know there hasn't been a move to port pyCrypto to python
+3.x
+>> so simply compiling against python 3.x is bound to fail!
+>> If you try to port yourself and during that effort ran into this
+>> compiler
+>> error then if you look at the documentation [1] or this blog post [2]
+>> (it's
+>> a bit outdated since the docs have been fixed in the meantime) you will
+>> see
+>> that the first few lines (besides other things) of a python extension
+>> type
+>> have
+>> changed from 
+>>  
+>>   PyObject_HEAD_INIT(NULL)
+>>   0,                   /* ob_size */
+>>   "myTypeName",        /* tp_name */
+>> 
+>> to
+>> 
+>>   PyVarObject_HEAD_INIT(NULL, 0)
+>>   "myTypeName",        /* tp_name */
+>> 
+>> If I recall correctly, the ob_size has be moved to a different
+structure
+>> and no longer
+>> is a member of PyTypeObject.
+>> So to sum it up:
+>>  * no porting effort exist so far, AFAIK
+>>  * no, the error is not bogus
+>> 
+>> sincerely yours
+>> //Lorenz
+>> 
+>> [1] http://docs.python.org/dev/py3k/extending/newtypes.html
+>> [2]
+>>
+http://rhodesmill.org/brandon/2008/porting-a-c-extension-module-to-python-30/
+>> 
+>> 
+>> 
+>> On Thu, 14 Jan 2010 07:52:59 +0000, Grail Dane <grail69 at hotmail.com>
+>> wrote:
+>> > Hi GuysI am new to the list but have recently run into this issue.Has
+>> > there been any movement?Personally I am stuck when gcc tries to
+compile
+>> > src/_fastmath.cwhich seems to die with an error about 'ob_size'
+member
+>> not
+>> > existing :(This seems to be bogus as I traced back the struct's to
+>> include
+>> > PyObject_VAR_HEADwhich does have this as member.Any further help on
+>> > this
+>> > would be appreciated ;)Cheers Grail>On Fri, Dec 04, 2009 at
+11:44:00AM
+>> > +0100, Tobias Koeck wrote:>>Is it possible to run python crypto with
+>> python
+>> > 3.0 or 3.1. If not is 
+>> >>>it planed to adjust?
+>> > 
+>> >>Sure, and it'll happen sooner if somebody volunteers to do it. :-)
+>> > 
+>> >>There will need to be be some strategy for Python 2.x compatibility,
+>> >>and
+>> 
+>> >>the contributor(s) need to to meet the PyCrypto Code Submission 
+>> >>Requirements:
+>> > 
+>> >>http://www.dlitz.net/software/pycrypto/submission-requirements/
+>> > 
+>> >>-- 
+>> >>Dwayne C. Litzenberger <dlitz at dlitz.net>
+>> >>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2
+>> >>  5CF7
+>> >>  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2
+>> >>  582E
+>> >>
+>> > _________________________________________________________________
+>> > View photos of singles in your area! Browse profiles for FREE
+>> > http://clk.atdmt.com/NMN/go/150855801/direct/01/
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>  		 	   		  
+> _________________________________________________________________
+> Shopping Trolley Mechanic If It Exists, You'll Find it on SEEK
+> http://clk.atdmt.com/NMN/go/157639755/direct/01/
+
+From grail69 at hotmail.com  Fri Jan 15 03:58:44 2010
+From: grail69 at hotmail.com (Grail Dane)
+Date: Fri, 15 Jan 2010 09:58:44 +0000
+Subject: [pycrypto] FW:  python crypto with python 3.0 or 3.1
+In-Reply-To: <SNT132-w193E74A25DFDF35C5F7184B1690@phx.gbl>
+References: <SNT132-w24BDC6C45D4D6EB8912BB7B16A0@phx.gbl>, ,
+	<b7338e009e16d0bf54dc7a5c34558de6@localhost>,
+	<SNT132-w193E74A25DFDF35C5F7184B1690@phx.gbl>
+Message-ID: <SNT132-w57774C7B2A4F63032BC30EB1690@phx.gbl>
+
+
+ Hi All
+So I am going to go on a limb a little and say I have successfully compiled pycrypto with python 3.1.1
+The attached patch makes the necessary changes to remove any errors during install.If someone would like to give me a small test script, I am happy to see if my tinkering actually worksor is just allowing it to install??
+I am also aware that some of the changes are probably not the best way to do it, but I am happy to investigatefurther once I have it working :)
+CheersGrail
+
+From: grail69 at hotmail.com
+To: pycrypto at lists.dlitz.net
+Date: Fri, 15 Jan 2010 00:32:04 +0000
+Subject: Re: [pycrypto] python crypto with python 3.0 or 3.1
+
+
+
+
+
+
+
+
+Hi
+Thanks for the speedy reply :)
+I am a little confused though as the doco for 3.1 says:
+PyVarObjectThis is an extension of PyObject that adds the ob_size field. This is only used for objects that have some notion of length. This type does not often appear in the Python/C API. It corresponds to the fields defined by the expansion of the PyObject_VAR_HEAD macro.This appears to be the same as what is written in the doco for 2.6.4 as well, which pycrypto seems to work with.
+Well i will keep looking to see what i can find out.
+CheersGrail
+> Date: Thu, 14 Jan 2010 10:07:36 +0100
+> From: don at amberfisharts.com
+> To: pycrypto at lists.dlitz.net
+> Subject: Re: [pycrypto] python crypto with python 3.0 or 3.1
+> 
+> Hi,
+> 
+> as far as I know there hasn't been a move to port pyCrypto to python 3.x
+> so simply compiling against python 3.x is bound to fail!
+> If you try to port yourself and during that effort ran into this compiler 
+> error then if you look at the documentation [1] or this blog post [2]
+> (it's
+> a bit outdated since the docs have been fixed in the meantime) you will
+> see
+> that the first few lines (besides other things) of a python extension type
+> have
+> changed from 
+>  
+>   PyObject_HEAD_INIT(NULL)
+>   0,                   /* ob_size */
+>   "myTypeName",        /* tp_name */
+> 
+> to
+> 
+>   PyVarObject_HEAD_INIT(NULL, 0)
+>   "myTypeName",        /* tp_name */
+> 
+> If I recall correctly, the ob_size has be moved to a different structure
+> and no longer
+> is a member of PyTypeObject.
+> So to sum it up:
+>  * no porting effort exist so far, AFAIK
+>  * no, the error is not bogus
+> 
+> sincerely yours
+> //Lorenz
+> 
+> [1] http://docs.python.org/dev/py3k/extending/newtypes.html
+> [2]
+> http://rhodesmill.org/brandon/2008/porting-a-c-extension-module-to-python-30/
+> 
+> 
+> 
+> On Thu, 14 Jan 2010 07:52:59 +0000, Grail Dane <grail69 at hotmail.com>
+> wrote:
+> > Hi GuysI am new to the list but have recently run into this issue.Has
+> > there been any movement?Personally I am stuck when gcc tries to compile
+> > src/_fastmath.cwhich seems to die with an error about 'ob_size' member
+> not
+> > existing :(This seems to be bogus as I traced back the struct's to
+> include
+> > PyObject_VAR_HEADwhich does have this as member.Any further help on this
+> > would be appreciated ;)Cheers Grail>On Fri, Dec 04, 2009 at 11:44:00AM
+> > +0100, Tobias Koeck wrote:>>Is it possible to run python crypto with
+> python
+> > 3.0 or 3.1. If not is 
+> >>>it planed to adjust?
+> > 
+> >>Sure, and it'll happen sooner if somebody volunteers to do it. :-)
+> > 
+> >>There will need to be be some strategy for Python 2.x compatibility, and
+> 
+> >>the contributor(s) need to to meet the PyCrypto Code Submission 
+> >>Requirements:
+> > 
+> >>http://www.dlitz.net/software/pycrypto/submission-requirements/
+> > 
+> >>-- 
+> >>Dwayne C. Litzenberger <dlitz at dlitz.net>
+> >>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+> >>  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+> >>
+> > _________________________________________________________________
+> > View photos of singles in your area! Browse profiles for FREE
+> > http://clk.atdmt.com/NMN/go/150855801/direct/01/
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+ 		 	   		  
+If It Exists, You'll Find it on SEEK Shopping Trolley Mechanic 		 	   		  
+Sell your old one fast! Time for a new car? 		 	   		  
+_________________________________________________________________
+Shopping Trolley Mechanic If It Exists, You'll Find it on SEEK
+http://clk.atdmt.com/NMN/go/157639755/direct/01/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100115/0432fbaf/attachment-0001.htm 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: pycrypto-2.1.0-python3-1.patch.bz2
+Type: application/x-bzip
+Size: 8119 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20100115/0432fbaf/attachment-0001.bin 
+
+From xuty1985 at gmail.com  Sun Feb 21 16:38:46 2010
+From: xuty1985 at gmail.com (Tianyin Xu)
+Date: Sun, 21 Feb 2010 23:38:46 +0100
+Subject: [pycrypto] Installation Problem
+Message-ID: <42de1d981002211438u629132c9k18027bffeda0693b@mail.gmail.com>
+
+Hello,
+
+I'm new here and I plan to install pycrypto.
+
+I downloaded the pycrypto-2.1.0 and put the command:
+
+python setup.py install
+
+There occur many error, the error log is:
+---------------------------------------------------------------------------------------------------------------------------------------------
+warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+src/MD2.c:31:20: error: Python.h: No such file or directory
+src/MD2.c:118: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__?
+before ?*? token
+In file included from src/MD2.c:134:
+src/hash_template.c:42: error: expected specifier-qualifier-list before
+?PyObject_HEAD?
+src/hash_template.c:46: error: expected ?=?, ?,?, ?;?, ?asm? or
+?__attribute__? before ?PyTypeObject?
+src/hash_template.c: In function ?newALGobject?:
+src/hash_template.c:55: warning: implicit declaration of function
+?PyObject_New?
+src/hash_template.c:55: error: expected expression before ?ALGobject?
+src/hash_template.c:55: warning: assignment makes pointer from integer
+without a cast
+src/hash_template.c: At top level:
+src/hash_template.c:62: error: expected ?)? before ?*? token
+src/hash_template.c:77: error: expected ?=?, ?,?, ?;?, ?asm? or
+?__attribute__? before ?*? token
+src/hash_template.c:96: error: expected ?=?, ?,?, ?;?, ?asm? or
+?__attribute__? before ?*? token
+src/hash_template.c:108: error: expected ?=?, ?,?, ?;?, ?asm? or
+?__attribute__? before ?*? token
+src/hash_template.c:143: error: expected ?=?, ?,?, ?;?, ?asm? or
+?__attribute__? before ?*? token
+src/hash_template.c:160: error: expected ?=?, ?,?, ?;?, ?asm? or
+?__attribute__? before ?ALG_methods?
+src/hash_template.c:169: error: expected ?=?, ?,?, ?;?, ?asm? or
+?__attribute__? before ?*? token
+src/hash_template.c:178: error: expected ?=?, ?,?, ?;?, ?asm? or
+?__attribute__? before ?ALGtype?
+src/hash_template.c:203: error: expected ?=?, ?,?, ?;?, ?asm? or
+?__attribute__? before ?*? token
+src/hash_template.c:237: error: array type has incomplete element type
+src/hash_template.c:238: error: ?PyCFunction? undeclared here (not in a
+function)
+src/hash_template.c:238: error: expected ?}? before ?ALG_new?
+src/hash_template.c: In function ?initMD2?:
+src/hash_template.c:254: error: ?PyObject? undeclared (first use in this
+function)
+src/hash_template.c:254: error: (Each undeclared identifier is reported only
+once
+src/hash_template.c:254: error: for each function it appears in.)
+src/hash_template.c:254: error: ?m? undeclared (first use in this function)
+src/hash_template.c:256: error: ?ALGtype? undeclared (first use in this
+function)
+src/hash_template.c:256: error: ?PyType_Type? undeclared (first use in this
+function)
+src/hash_template.c:257: warning: implicit declaration of function
+?Py_InitModule?
+src/hash_template.c:260: error: ?o? undeclared (first use in this function)
+src/hash_template.c:260: warning: implicit declaration of function
+?PyInt_FromLong?
+src/hash_template.c:260: warning: implicit declaration of function
+?PyDict_SetItemString?
+src/hash_template.c:260: warning: implicit declaration of function
+?PyModule_GetDict?
+src/hash_template.c:260: warning: implicit declaration of function
+?Py_DECREF?
+src/hash_template.c:263: warning: implicit declaration of function
+?PyErr_Occurred?
+src/hash_template.c:264: warning: implicit declaration of function
+?Py_FatalError?
+error: command 'gcc' failed with exit status 1
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+Is this the problem of the GCC version?
+My gcc version is 4.4.1 and my python version is Python-2.6.4.
+
+Thank you for help!!
+
+Best,
+Tianyin
+-- 
+Tianyin XU, ( ??? )
+State Key Laboratory for Novel Software Technology
+Department of Computer Science and Technology, Nanjing University
+No. 22, Hankou Road, Nanjing 210093, P. R. China
+Homepage. http://cs.nju.edu.cn/dislab/xuty/xuty.html
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100221/b87f38ad/attachment.htm 
+
+From myspeme at gmail.com  Tue Feb 23 04:25:57 2010
+From: myspeme at gmail.com (ten speme)
+Date: Tue, 23 Feb 2010 18:25:57 +0800
+Subject: [pycrypto] Installation Problem
+In-Reply-To: <42de1d981002211438u629132c9k18027bffeda0693b@mail.gmail.com>
+References: <42de1d981002211438u629132c9k18027bffeda0693b@mail.gmail.com>
+Message-ID: <fca484051002230225w3099a4bct77d0e914c5f75f94@mail.gmail.com>
+
+src/MD2.c:31:20: error: Python.h: No such file or directory
+you should include python.h
+
+On Mon, Feb 22, 2010 at 6:38 AM, Tianyin Xu <xuty1985 at gmail.com> wrote:
+
+> Hello,
+>
+> I'm new here and I plan to install pycrypto.
+>
+> I downloaded the pycrypto-2.1.0 and put the command:
+>
+> python setup.py install
+>
+> There occur many error, the error log is:
+>
+> ---------------------------------------------------------------------------------------------------------------------------------------------
+> warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+> src/MD2.c:31:20: error: Python.h: No such file or directory
+> src/MD2.c:118: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__?
+> before ?*? token
+> In file included from src/MD2.c:134:
+> src/hash_template.c:42: error: expected specifier-qualifier-list before
+> ?PyObject_HEAD?
+> src/hash_template.c:46: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?PyTypeObject?
+> src/hash_template.c: In function ?newALGobject?:
+> src/hash_template.c:55: warning: implicit declaration of function
+> ?PyObject_New?
+> src/hash_template.c:55: error: expected expression before ?ALGobject?
+> src/hash_template.c:55: warning: assignment makes pointer from integer
+> without a cast
+> src/hash_template.c: At top level:
+> src/hash_template.c:62: error: expected ?)? before ?*? token
+> src/hash_template.c:77: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?*? token
+> src/hash_template.c:96: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?*? token
+> src/hash_template.c:108: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?*? token
+> src/hash_template.c:143: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?*? token
+> src/hash_template.c:160: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?ALG_methods?
+> src/hash_template.c:169: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?*? token
+> src/hash_template.c:178: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?ALGtype?
+> src/hash_template.c:203: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?*? token
+> src/hash_template.c:237: error: array type has incomplete element type
+> src/hash_template.c:238: error: ?PyCFunction? undeclared here (not in a
+> function)
+> src/hash_template.c:238: error: expected ?}? before ?ALG_new?
+> src/hash_template.c: In function ?initMD2?:
+> src/hash_template.c:254: error: ?PyObject? undeclared (first use in this
+> function)
+> src/hash_template.c:254: error: (Each undeclared identifier is reported
+> only once
+> src/hash_template.c:254: error: for each function it appears in.)
+> src/hash_template.c:254: error: ?m? undeclared (first use in this function)
+> src/hash_template.c:256: error: ?ALGtype? undeclared (first use in this
+> function)
+> src/hash_template.c:256: error: ?PyType_Type? undeclared (first use in this
+> function)
+> src/hash_template.c:257: warning: implicit declaration of function
+> ?Py_InitModule?
+> src/hash_template.c:260: error: ?o? undeclared (first use in this function)
+> src/hash_template.c:260: warning: implicit declaration of function
+> ?PyInt_FromLong?
+> src/hash_template.c:260: warning: implicit declaration of function
+> ?PyDict_SetItemString?
+> src/hash_template.c:260: warning: implicit declaration of function
+> ?PyModule_GetDict?
+> src/hash_template.c:260: warning: implicit declaration of function
+> ?Py_DECREF?
+> src/hash_template.c:263: warning: implicit declaration of function
+> ?PyErr_Occurred?
+> src/hash_template.c:264: warning: implicit declaration of function
+> ?Py_FatalError?
+> error: command 'gcc' failed with exit status 1
+>
+> -----------------------------------------------------------------------------------------------------------------------------------------
+>
+> Is this the problem of the GCC version?
+> My gcc version is 4.4.1 and my python version is Python-2.6.4.
+>
+> Thank you for help!!
+>
+> Best,
+> Tianyin
+> --
+> Tianyin XU, ( ??? )
+> State Key Laboratory for Novel Software Technology
+> Department of Computer Science and Technology, Nanjing University
+> No. 22, Hankou Road, Nanjing 210093, P. R. China
+> Homepage. http://cs.nju.edu.cn/dislab/xuty/xuty.html
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100223/e9913ce6/attachment.htm 
+
+From don at amberfisharts.com  Tue Feb 23 05:12:09 2010
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Tue, 23 Feb 2010 12:12:09 +0100
+Subject: [pycrypto] Installation Problem
+In-Reply-To: <42de1d981002211438u629132c9k18027bffeda0693b@mail.gmail.com>
+References: <42de1d981002211438u629132c9k18027bffeda0693b@mail.gmail.com>
+Message-ID: <ed02abf565e990b50a4427567a3568a3@localhost>
+
+Hi,
+
+obviously the problem is
+> src/MD2.c:31:20: error: Python.h: No such file or directory
+
+why it can't find the header is another question. 
+Maybe you are on a system where there are separate developer-version of
+packages 
+like python? One example of such a system is Ubuntu.
+In this case they are usually called python-dev or something similar. You
+always 
+need to install the "-dev" versions of packages you are "#include"-ing in
+source 
+code. 
+
+If this doesn't help, then I guess you might need to provide some more
+information.
+what system are you using? Can you find Python.h manually? Where is it?
+etc...
+
+regards
+//Lorenz
+
+
+On Sun, 21 Feb 2010 23:38:46 +0100, Tianyin Xu <xuty1985 at gmail.com> wrote:
+> Hello,
+> 
+> I'm new here and I plan to install pycrypto.
+> 
+> I downloaded the pycrypto-2.1.0 and put the command:
+> 
+> python setup.py install
+> 
+> There occur many error, the error log is:
+>
+---------------------------------------------------------------------------------------------------------------------------------------------
+> warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+> src/MD2.c:31:20: error: Python.h: No such file or directory
+> src/MD2.c:118: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__?
+> before ?*? token
+> In file included from src/MD2.c:134:
+> src/hash_template.c:42: error: expected specifier-qualifier-list before
+> ?PyObject_HEAD?
+> src/hash_template.c:46: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?PyTypeObject?
+> src/hash_template.c: In function ?newALGobject?:
+> src/hash_template.c:55: warning: implicit declaration of function
+> ?PyObject_New?
+> src/hash_template.c:55: error: expected expression before ?ALGobject?
+> src/hash_template.c:55: warning: assignment makes pointer from integer
+> without a cast
+> src/hash_template.c: At top level:
+> src/hash_template.c:62: error: expected ?)? before ?*? token
+> src/hash_template.c:77: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?*? token
+> src/hash_template.c:96: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?*? token
+> src/hash_template.c:108: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?*? token
+> src/hash_template.c:143: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?*? token
+> src/hash_template.c:160: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?ALG_methods?
+> src/hash_template.c:169: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?*? token
+> src/hash_template.c:178: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?ALGtype?
+> src/hash_template.c:203: error: expected ?=?, ?,?, ?;?, ?asm? or
+> ?__attribute__? before ?*? token
+> src/hash_template.c:237: error: array type has incomplete element type
+> src/hash_template.c:238: error: ?PyCFunction? undeclared here (not in a
+> function)
+> src/hash_template.c:238: error: expected ?}? before ?ALG_new?
+> src/hash_template.c: In function ?initMD2?:
+> src/hash_template.c:254: error: ?PyObject? undeclared (first use in this
+> function)
+> src/hash_template.c:254: error: (Each undeclared identifier is reported
+> only
+> once
+> src/hash_template.c:254: error: for each function it appears in.)
+> src/hash_template.c:254: error: ?m? undeclared (first use in this
+> function)
+> src/hash_template.c:256: error: ?ALGtype? undeclared (first use in this
+> function)
+> src/hash_template.c:256: error: ?PyType_Type? undeclared (first use in
+> this
+> function)
+> src/hash_template.c:257: warning: implicit declaration of function
+> ?Py_InitModule?
+> src/hash_template.c:260: error: ?o? undeclared (first use in this
+> function)
+> src/hash_template.c:260: warning: implicit declaration of function
+> ?PyInt_FromLong?
+> src/hash_template.c:260: warning: implicit declaration of function
+> ?PyDict_SetItemString?
+> src/hash_template.c:260: warning: implicit declaration of function
+> ?PyModule_GetDict?
+> src/hash_template.c:260: warning: implicit declaration of function
+> ?Py_DECREF?
+> src/hash_template.c:263: warning: implicit declaration of function
+> ?PyErr_Occurred?
+> src/hash_template.c:264: warning: implicit declaration of function
+> ?Py_FatalError?
+> error: command 'gcc' failed with exit status 1
+>
+-----------------------------------------------------------------------------------------------------------------------------------------
+> 
+> Is this the problem of the GCC version?
+> My gcc version is 4.4.1 and my python version is Python-2.6.4.
+> 
+> Thank you for help!!
+> 
+> Best,
+> Tianyin
+
+From christoph.tapler at gmx.net  Sun Feb 28 15:04:12 2010
+From: christoph.tapler at gmx.net (Christoph Tapler)
+Date: Sun, 28 Feb 2010 22:04:12 +0100
+Subject: [pycrypto] FW: python crypto with python 3.0 or 3.1
+Message-ID: <4B8ADA4C.1000901@gmx.net>
+
+Hi Grail,
+
+Thanks for your patch! I assume you generated the patch based on a Unix
+environment. Tried to compile pycrypto together with your patch on my
+Windows machine. However, it did not work out.
+After fixing two straightforward errors in setup.py (relevant to Windows 
+only,
+see [1], [2]), I got stuck when linking the module MD4 and other hashing 
+methods
+(MD2, etc).
+
+Now, when I compare the build process against Python 2, I see the following
+difference:
+
+###############################################################################
+[Python 2:]
+C:\Program Files\Microsoft Visual Studio 9.0\VC\BIN\link.exe /DLL 
+/nologo /INCRE
+MENTAL:NO "/LIBPATH:C:\Program Files\Python26\libs" "/LIBPATH:C:\Program 
+Files\P
+ython26\PCbuild" /EXPORT:initMD4 
+build\temp.win32-2.6\Release\src/MD4.obj /OUT:b
+uild\lib.win32-2.6\Crypto\Hash\MD4.pyd 
+/IMPLIB:build\temp.win32-2.6\Release\src\
+MD4.lib /MANIFESTFILE:build\temp.win32-2.6\Release\src\MD4.pyd.manifest
+    Creating library build\temp.win32-2.6\Release\src\MD4.lib and object 
+build\te
+mp.win32-2.6\Release\src\MD4.exp
+C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin\mt.exe -nologo 
+-manifest build
+\temp.win32-2.6\Release\src\MD4.pyd.manifest 
+-outputresource:build\lib.win32-2.6
+\Crypto\Hash\MD4.pyd;2
+
+[Python 3:]
+C:\Program Files\Microsoft Visual Studio 9.0\VC\BIN\link.exe /DLL 
+/nologo /INCRE
+MENTAL:NO "/LIBPATH:C:\Program Files\Python31\libs" "/LIBPATH:C:\Program 
+Files\P
+ython31\PCbuild" /EXPORT:PyInit_MD4 
+build\temp.win32-3.1\Release\src/MD4.obj /OU
+T:build\lib.win32-3.1\Crypto\Hash\MD4.pyd 
+/IMPLIB:build\temp.win32-3.1\Release\s
+rc\MD4.lib /MANIFESTFILE:build\temp.win32-3.1\Release\src\MD4.pyd.manifest
+LINK : error LNK2001: unresolved external symbol PyInit_MD4
+build\temp.win32-3.1\Release\src\MD4.lib : fatal error LNK1120: 1 
+unresolved ext
+ernals
+error: command '"C:\Program Files\Microsoft Visual Studio 
+9.0\VC\BIN\link.exe"'
+failed with exit status 1120
+###############################################################################
+
+It seems that the /EXPORT argument for the Windows Linker is assembled in a
+different way. This leads to an export name, which does not exist as 
+function.
+Hence the linker terminates with an error.
+
+Any idea what I need to change to get the /EXPORT name fixed? Is this 
+problem
+located in pycrypto or in the Python distutils?
+
+
+##### Regarding the changes in setup.py:
+[1] Changed the following stmt:
+From
+print << sys.stderr "warning: GMP library not found; Not building 
+Crypto.PublicKey._fastmath."
+to
+print("warning: GMP library not found; Not building 
+Crypto.PublicKey._fastmath.", sys.stderr)
+
+[2] (Temporarily) disabled winrand.c which is included when using the 
+Windows platform.
+
+Cheers, Christoph
+
+
+From grail69 at hotmail.com  Sun Feb 28 18:02:27 2010
+From: grail69 at hotmail.com (Grail Dane)
+Date: Mon, 1 Mar 2010 00:02:27 +0000
+Subject: [pycrypto] FW: python crypto with python 3.0 or 3.1
+In-Reply-To: <4B8ADA4C.1000901@gmx.net>
+References: <4B8ADA4C.1000901@gmx.net>
+Message-ID: <SNT132-w2669B1935D0D65EE9F7B9FB13C0@phx.gbl>
+
+
+Hello Christoph
+I have made more head way since that one (and made a lot more changes).I found that the module creation required a few more steps and I have come up with two solutions (in attached patches):
+1. First patch follows most of the online info I could find related to PyModuleDef and the related PyTypeObject.   This required that all tp_getattr functions be removed and set to 0 (zero) in the PyTypeObject definition.
+2. The second patch retained the already created tp_getattr functions.
+With either applied I am able to compile but when running a test program with the following lines only:
+#!/usr/bin/env python
+from Crypto.Cipher import AESimport base64import os
+
+When run I receive the following error:
+Traceback (most recent call last):  File "./cypher.py", line 3, in <module>    from Crypto.Cipher import AESSystemError: NULL result without error in PyObject_Call
+So apply patches (and make necessary changes for Windows) and we will see if I can help further :)
+Cheers Grail
+
+Get straight to the Point Find a great deal on your next car. 		 	   		  
+_________________________________________________________________
+View photos of singles in your area! Browse profiles for FREE
+http://clk.atdmt.com/NMN/go/150855801/direct/01/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100301/8a257c4e/attachment-0001.htm 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: pycrypto-patches.zip
+Type: application/octet-stream
+Size: 27460 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20100301/8a257c4e/attachment-0001.obj 
+
+From christoph.tapler at gmx.net  Mon Mar  1 14:37:42 2010
+From: christoph.tapler at gmx.net (Christoph Tapler)
+Date: Mon, 01 Mar 2010 21:37:42 +0100
+Subject: [pycrypto] FW: python crypto with python 3.0 or 3.1
+In-Reply-To: <SNT132-w2669B1935D0D65EE9F7B9FB13C0@phx.gbl>
+References: <4B8ADA4C.1000901@gmx.net>
+	<SNT132-w2669B1935D0D65EE9F7B9FB13C0@phx.gbl>
+Message-ID: <4B8C2596.7040809@gmx.net>
+
+Hi Grail!
+
+I think in you need to return the pointer from the newly created module. 
+Currently the return value seems to be a dangling pointer.
+A "return m" at the end of the generic init function in block_template.c 
+may help.
+
+Btw, in Windows, there are still a few issues which prevent successful 
+compilation.
+Should I generate a patch? If yes, could you probably give me a hint how 
+to generate this patch?
+
+Btw, there seems to be a test suite included (python setup.py test). 
+However, at that stage it is not too much of
+help, because the test suite itself needs to be adapted as well. In 
+Python 2 the test suite works perfectly fine.
+
+Cheers,
+Christoph
+
+On 01.03.2010 01:02, Grail Dane wrote:
+> Hello Christoph
+>
+> I have made more head way since that one (and made a lot more changes).
+> I found that the module creation required a few more steps and I have 
+> come up
+> with two solutions (in attached patches):
+>
+> 1. First patch follows most of the online info I could find related 
+> to PyModuleDef and the related PyTypeObject.
+>    This required that all tp_getattr functions be removed and set to 0 
+> (zero) in the PyTypeObject definition.
+>
+> 2. The second patch retained the already created tp_getattr functions.
+>
+> With either applied I am able to compile but when running a test 
+> program with the following lines only:
+>
+> #!/usr/bin/env python
+>
+> from Crypto.Cipher import AES
+> import base64
+> import os
+>
+>
+> When run I receive the following error:
+>
+> Traceback (most recent call last):
+>   File "./cypher.py", line 3, in <module>
+>     from Crypto.Cipher import AES
+> SystemError: NULL result without error in PyObject_Call
+>
+> So apply patches (and make necessary changes for Windows) and we will 
+> see if I can help further :)
+>
+> Cheers Grail
+>
+> ------------------------------------------------------------------------
+> Get straight to the Point Find a great deal on your next car. 
+> <http://clk.atdmt.com/NMN/go/157637060/direct/01/>
+> ------------------------------------------------------------------------
+> Browse profiles for free! View photos of singles in your area. 
+> <http://clk.atdmt.com/NMN/go/150855801/direct/01/>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>    
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100301/3605d7c4/attachment.htm 
+
+From grail69 at hotmail.com  Tue Mar  2 03:28:40 2010
+From: grail69 at hotmail.com (Grail Dane)
+Date: Tue, 2 Mar 2010 09:28:40 +0000
+Subject: [pycrypto] FW: python crypto with python 3.0 or 3.1
+In-Reply-To: <4B8C2596.7040809@gmx.net>
+References: <4B8ADA4C.1000901@gmx.net>,
+	<SNT132-w2669B1935D0D65EE9F7B9FB13C0@phx.gbl>,
+	<4B8C2596.7040809@gmx.net>
+Message-ID: <SNT132-w6F87B260DCC9FA0899787B13B0@phx.gbl>
+
+
+Hi Christoph
+
+I did a quick search and found this:
+
+http://gnuwin32.sourceforge.net/packages/diffutils.htm
+
+diff is what is used to create the patch file. You then simply need to run patch to execute it on the necessary files.
+
+Hope that helps.
+
+If you still need help on fixing the issues let me know and I will see what I can do :)
+
+Grail
+
+Date: Mon, 1 Mar 2010 21:37:42 +0100
+From: christoph.tapler at gmx.net
+To: pycrypto at lists.dlitz.net
+Subject: Re: [pycrypto] FW: python crypto with python 3.0 or 3.1
+
+
+
+
+
+
+  
+
+
+Hi Grail!
+
+
+
+I think in you need to return the pointer from the newly created
+module. Currently the return value seems to be a dangling pointer.
+
+A "return m" at the end of the generic init function in
+block_template.c may help.
+
+
+
+Btw, in Windows, there are still a few issues which prevent successful
+compilation. 
+
+Should I generate a patch? If yes, could you probably give me a hint
+how to generate this patch?
+
+
+
+Btw, there seems to be a test suite included (python setup.py test).
+However, at that stage it is not too much of 
+
+help, because the test suite itself needs to be adapted as well. In
+Python 2 the test suite works perfectly fine.
+
+
+
+Cheers,
+
+Christoph
+
+
+
+On 01.03.2010 01:02, Grail Dane wrote:
+
+  Hello
+Christoph
+  
+
+  
+  I have made more head way since that one (and made a lot more
+changes).
+  I found that the module creation required a few more steps and I
+have come up 
+  with two solutions (in attached patches):
+  
+
+  
+  1. First patch follows most of the online info I could find
+related to PyModuleDef and the related PyTypeObject.
+     This required that all tp_getattr functions be removed and
+set to 0 (zero) in the PyTypeObject definition.
+  
+
+  
+  2. The second patch retained the already created tp_getattr
+functions.
+  
+
+  
+  With either applied I am able to compile but when running a test
+program with the following lines only:
+  
+
+  
+  #!/usr/bin/env python
+  
+
+  
+  from Crypto.Cipher import AES
+  import base64
+  import os
+  
+
+  
+  
+
+  
+  When run I receive the following error:
+  
+
+  
+  Traceback (most recent call last):
+    File "./cypher.py", line 3, in <module>
+      from Crypto.Cipher import AES
+  SystemError: NULL result without error in PyObject_Call
+  
+
+  
+  So apply patches (and make necessary changes for Windows) and we
+will see if I can help further :)
+  
+
+  
+  Cheers Grail
+
+  
+
+  
+  Get straight to the Point Find a great
+deal on your next car. 
+
+   Browse profiles for free! View
+photos of singles in your area.
+  
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+  
+
+
+ 		 	   		  
+_________________________________________________________________
+Looking for a new home? With all the latest places, searching has never been easier.
+http://clk.atdmt.com/NMN/go/157631292/direct/01/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100302/6f5ea7a8/attachment.htm 
+
+From grail69 at hotmail.com  Tue Mar  2 20:48:38 2010
+From: grail69 at hotmail.com (Grail Dane)
+Date: Wed, 3 Mar 2010 02:48:38 +0000
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <SNT132-w6F87B260DCC9FA0899787B13B0@phx.gbl>
+References: <4B8ADA4C.1000901@gmx.net>, ,
+	<SNT132-w2669B1935D0D65EE9F7B9FB13C0@phx.gbl>, ,
+	<4B8C2596.7040809@gmx.net>,
+	<SNT132-w6F87B260DCC9FA0899787B13B0@phx.gbl>
+Message-ID: <SNT132-w30CB2407DB2D69BC3370C8B13A0@phx.gbl>
+
+
+OK ... OK ... OK - stop the presses
+Well, maybe not just yet, anyhoo, the attached patch allows the source to compileand run the attached script <woohoo>
+CheersGrail 		 	   		  
+_________________________________________________________________
+Browse profiles for FREE! Meet local singles online.
+http://clk.atdmt.com/NMN/go/150855801/direct/01/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100303/e3bad03a/attachment.htm 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: pycrypto-2.1.0.tar.bz2
+Type: application/octet-stream
+Size: 14781 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20100303/e3bad03a/attachment.obj 
+
+From gooksankoo at hoiptorrow.mailexpire.com  Wed Mar  3 11:32:33 2010
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Wed, 3 Mar 2010 18:32:33 +0100
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <SNT132-w30CB2407DB2D69BC3370C8B13A0@phx.gbl>
+References: <4B8ADA4C.1000901@gmx.net>
+	<SNT132-w2669B1935D0D65EE9F7B9FB13C0@phx.gbl>
+	<4B8C2596.7040809@gmx.net>
+	<SNT132-w6F87B260DCC9FA0899787B13B0@phx.gbl>
+	<SNT132-w30CB2407DB2D69BC3370C8B13A0@phx.gbl>
+Message-ID: <20100303173233.GA25390@shannon>
+
+Given all this nice work you guys are doing, what is the
+outlook for Python 3.x support in pycrypto?
+
+Do you think it possible to tweak the current version and have it
+to compile and work smoothly with *all* python versions from
+2.1 to 3.1? Or will there be two versions?
+
+I am not using 3.x myself, but I guess that more and more
+people will be adopting it. Of course this looks like a problem
+common to all third-party libraries.
+
+>    OK ... OK ... OK - stop the presses
+>    Well, maybe not just yet, anyhoo, the attached patch allows the source to
+>    compile
+>    and run the attached script <woohoo>
+>    Cheers
+>    Grail
+> 
+>      ----------------------------------------------------------------------
+> 
+>    Meet local singles online. Browse profiles for FREE!
+
+
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From v+python at g.nevcal.com  Wed Mar  3 13:54:56 2010
+From: v+python at g.nevcal.com (Glenn Linderman)
+Date: Wed, 03 Mar 2010 11:54:56 -0800
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <20100303173233.GA25390@shannon>
+References: <4B8ADA4C.1000901@gmx.net>	<SNT132-w2669B1935D0D65EE9F7B9FB13C0@phx.gbl>	<4B8C2596.7040809@gmx.net>	<SNT132-w6F87B260DCC9FA0899787B13B0@phx.gbl>	<SNT132-w30CB2407DB2D69BC3370C8B13A0@phx.gbl>
+	<20100303173233.GA25390@shannon>
+Message-ID: <4B8EBE90.1070302@g.nevcal.com>
+
+I'm delighted to hear of progress making pycrypto work with Python 3 !
+
+I am using Python 3 for all new application development, but still have 
+web server stuff on Python 2, partly because it needs PyCrypto...
+
+On approximately 3/3/2010 9:32 AM, came the following characters from 
+the keyboard of Legrandin:
+> Given all this nice work you guys are doing, what is the
+> outlook for Python 3.x support in pycrypto?
+>
+> Do you think it possible to tweak the current version and have it
+> to compile and work smoothly with *all* python versions from
+> 2.1 to 3.1? Or will there be two versions?
+>
+> I am not using 3.x myself, but I guess that more and more
+> people will be adopting it. Of course this looks like a problem
+> common to all third-party libraries.
+>
+>    
+>>     OK ... OK ... OK - stop the presses
+>>     Well, maybe not just yet, anyhoo, the attached patch allows the source to
+>>     compile
+>>     and run the attached script<woohoo>
+>>     Cheers
+>>     Grail
+>>      
+
+-- 
+Glenn -- http://nevcal.com/
+===========================
+A protocol is complete when there is nothing left to remove.
+-- Stuart Cheshire, Apple Computer, regarding Zero Configuration Networking
+
+
+From christoph.tapler at gmx.net  Wed Mar  3 14:58:09 2010
+From: christoph.tapler at gmx.net (Christoph Tapler)
+Date: Wed, 03 Mar 2010 21:58:09 +0100
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <SNT132-w30CB2407DB2D69BC3370C8B13A0@phx.gbl>
+References: <4B8ADA4C.1000901@gmx.net>, ,
+	<SNT132-w2669B1935D0D65EE9F7B9FB13C0@phx.gbl>, ,
+	<4B8C2596.7040809@gmx.net>,
+	<SNT132-w6F87B260DCC9FA0899787B13B0@phx.gbl>
+	<SNT132-w30CB2407DB2D69BC3370C8B13A0@phx.gbl>
+Message-ID: <4B8ECD61.9010805@gmx.net>
+
+Hi Grail,
+
+I have applied your patch on my Windows machine. Your AES encryption /
+decryption seems to work well - In case
+AZCkZ1wU5d0psrwlaoS5R4tz1dRL6rBBNzjIvK9NHSo= is the result ;-)
+Moreover, I have tried the diff tool. Not sure if the output is usable 
+for you. Just
+let me know if this format is okay or not. The patch contains a few 
+rather trivial
+fixes for the Windows environment. With those fixes the build is successful.
+However, the test suite doesn't build, needs adaptions as well (but I 
+think only
+in Python).
+
+Cheers,
+Christoph
+
+On 03.03.2010 03:48, Grail Dane wrote:
+> OK ... OK ... OK - stop the presses
+>
+> Well, maybe not just yet, anyhoo, the attached patch allows the source 
+> to compile
+> and run the attached script <woohoo>
+>
+> Cheers
+> Grail
+>
+> ------------------------------------------------------------------------
+> Meet local singles online. Browse profiles for FREE! 
+> <http://clk.atdmt.com/NMN/go/150855801/direct/01/>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>    
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100303/0ec61fb2/attachment.htm 
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: win_patch_1.patch
+Url: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100303/0ec61fb2/attachment.txt 
+
+From don at amberfisharts.com  Wed Mar  3 15:13:49 2010
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Wed, 03 Mar 2010 22:13:49 +0100
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <4B8ECD61.9010805@gmx.net>
+References: <4B8ADA4C.1000901@gmx.net>, ,
+	<SNT132-w2669B1935D0D65EE9F7B9FB13C0@phx.gbl>, ,
+	<4B8C2596.7040809@gmx.net>,
+	<SNT132-w6F87B260DCC9FA0899787B13B0@phx.gbl>	<SNT132-w30CB2407DB2D69BC3370C8B13A0@phx.gbl>
+	<4B8ECD61.9010805@gmx.net>
+Message-ID: <4B8ED10D.20109@amberfisharts.com>
+
+Hi,
+
+On 03/03/2010 09:58 PM, Christoph Tapler wrote:
+[...]
+> Moreover, I have tried the diff tool. Not sure if the output is usable
+> for you. Just
+> let me know if this format is okay or not.
+[...]
+
+usually it is common to provide a patch as a so called "unified diff".
+For tools like subversion and git this is AFAIK the default. for some other
+tools (like the one you are using) you need to specify some flag. usually "-u"
+so try something like
+diff -u -r <old_version> <new_version>
+Also note that you normally put the old version first (called a "forward diff").
+
+cheers
+//Lorenz
+
+From grail69 at hotmail.com  Wed Mar  3 20:28:01 2010
+From: grail69 at hotmail.com (Grail Dane)
+Date: Thu, 4 Mar 2010 02:28:01 +0000
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <20100303173233.GA25390@shannon>
+References: <4B8ADA4C.1000901@gmx.net>,
+	<SNT132-w2669B1935D0D65EE9F7B9FB13C0@phx.gbl>,
+	<4B8C2596.7040809@gmx.net>,
+	<SNT132-w6F87B260DCC9FA0899787B13B0@phx.gbl>,
+	<SNT132-w30CB2407DB2D69BC3370C8B13A0@phx.gbl>,
+	<20100303173233.GA25390@shannon>
+Message-ID: <SNT132-w1821612E5C5DD3D08DE0CB1390@phx.gbl>
+
+
+Hi
+I believe I can make it so it can be 3+ or lower, but this will take some time.One other issue of course is that once pycrypto is installed you will stillneed to make adjustments to previously created python code using theencryption/decryption stuff as it would need to be v3 compliant as well.
+Will update back here once I have a version capable of installing on both python versions.
+CheersGrail
+
+> Date: Wed, 3 Mar 2010 18:32:33 +0100
+> From: gooksankoo at hoiptorrow.mailexpire.com
+> To: pycrypto at lists.dlitz.net
+> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+> 
+> Given all this nice work you guys are doing, what is the
+> outlook for Python 3.x support in pycrypto?
+> 
+> Do you think it possible to tweak the current version and have it
+> to compile and work smoothly with *all* python versions from
+> 2.1 to 3.1? Or will there be two versions?
+> 
+> I am not using 3.x myself, but I guess that more and more
+> people will be adopting it. Of course this looks like a problem
+> common to all third-party libraries.
+> 
+> >    OK ... OK ... OK - stop the presses
+> >    Well, maybe not just yet, anyhoo, the attached patch allows the source to
+> >    compile
+> >    and run the attached script <woohoo>
+> >    Cheers
+> >    Grail
+> > 
+> >      ----------------------------------------------------------------------
+> > 
+> >    Meet local singles online. Browse profiles for FREE!
+> 
+> 
+> > _______________________________________________
+> > pycrypto mailing list
+> > pycrypto at lists.dlitz.net
+> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+ 		 	   		  
+_________________________________________________________________
+Looking for a new home? With all the latest places, searching has never been easier.
+http://clk.atdmt.com/NMN/go/157631292/direct/01/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100304/6a55c15a/attachment.htm 
+
+From grail69 at hotmail.com  Wed Mar  3 20:37:49 2010
+From: grail69 at hotmail.com (Grail Dane)
+Date: Thu, 4 Mar 2010 02:37:49 +0000
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <4B8ECD61.9010805@gmx.net>
+References: <4B8ADA4C.1000901@gmx.net>,
+	,,<SNT132-w2669B1935D0D65EE9F7B9FB13C0@phx.gbl>,
+	, , <4B8C2596.7040809@gmx.net>, ,
+	<SNT132-w6F87B260DCC9FA0899787B13B0@phx.gbl>,
+	<SNT132-w30CB2407DB2D69BC3370C8B13A0@phx.gbl>,
+	<4B8ECD61.9010805@gmx.net>
+Message-ID: <SNT132-w4220C660F45FBA7DDE87F1B1390@phx.gbl>
+
+
+Hi Christoph
+Good to see this is coming together for you, and as one of the users mentions,using the unified option is a general rule of thumb for patches / diffs.
+You are correct about the test suite as I have not had a chance to alterthe tests to Python 3 context.
+CheersGrail
+
+Date: Wed, 3 Mar 2010 21:58:09 +0100
+From: christoph.tapler at gmx.net
+To: pycrypto at lists.dlitz.net
+Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+
+
+
+
+
+
+  
+
+
+Hi Grail,
+
+
+
+I have applied your patch on my Windows machine. Your AES encryption / 
+
+decryption seems to work well - In case 
+
+AZCkZ1wU5d0psrwlaoS5R4tz1dRL6rBBNzjIvK9NHSo= is the result ;-)
+
+Moreover, I have tried the diff tool. Not sure if the output is usable
+for you. Just
+
+let me know if this format is okay or not. The patch contains a few
+rather trivial
+
+fixes for the Windows environment. With those fixes the build is
+successful.
+
+However, the test suite doesn't build, needs adaptions as well (but I
+think only
+
+in Python).
+
+
+
+Cheers,
+
+Christoph
+
+
+
+On 03.03.2010 03:48, Grail Dane wrote:
+
+  OK
+... OK ... OK - stop the presses
+  
+
+  
+  Well, maybe not just yet, anyhoo, the attached patch allows the
+source to compile
+  and run the attached script <woohoo>
+  
+
+  
+  Cheers
+  Grail
+  
+
+  Meet local singles online. Browse
+profiles for FREE!
+  
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+  
+
+
+ 		 	   		  
+_________________________________________________________________
+Link all your email accounts and social updates with Hotmail. Find out now.
+http://windowslive.ninemsn.com.au/oneinbox?ocid=T162MSN05A0710G
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100304/24661ce5/attachment.htm 
+
+From djlawler at aol.com  Sun Mar  7 00:07:19 2010
+From: djlawler at aol.com (djlawler at aol.com)
+Date: Sun, 07 Mar 2010 01:07:19 -0500
+Subject: [pycrypto] port for IronPython
+Message-ID: <8CC8BD39429FD01-2F3C-11EB5@webmail-m050.sysops.aol.com>
+
+I have programmed a port of the parts of PyCrypto that are written in c 
+to c#.  The basic approach was to wrap c# routines from BouncyCastle in 
+a PyCrypto-like interface.  The python part of PyCrypto is mostly 
+unchanged, except for code like this:
+
+import sys
+if sys.platform == "cli":
+    import clr
+    clr.AddReference("IronPyCrypto.dll")
+    import IronPyCrypto_Util_strxor as strxor
+
+in some of the __init__.py files.  Basically all the pyd files get 
+replaced by a single dll  I don't know if you are interested in 
+incorporating this into PyCrypto.  I think that is unlikely as first, I 
+am American and second, it's really a different animal.  Would there be 
+any objections to me putting this up on bitbucket?  Any problems with 
+the name IronPyCrypto (very unoriginal I know).  It still needs a 
+little work....but currently passes all of the existing tests.
+
+Regards,
+
+David Lawler
+
+From grail69 at hotmail.com  Fri Jan 15 03:20:20 2010
+From: grail69 at hotmail.com (Grail Dane)
+Date: Fri, 15 Jan 2010 09:20:20 -0000
+Subject: [pycrypto] python crypto with python 3.0 or 3.1
+In-Reply-To: <SNT132-w193E74A25DFDF35C5F7184B1690@phx.gbl>
+References: <SNT132-w24BDC6C45D4D6EB8912BB7B16A0@phx.gbl>, ,
+	<b7338e009e16d0bf54dc7a5c34558de6@localhost>,
+	<SNT132-w193E74A25DFDF35C5F7184B1690@phx.gbl>
+Message-ID: <SNT132-w143E41C3E92B860257D9DB1690@phx.gbl>
+
+
+Hi All
+So I am going to go on a limb a little and say I have successfully compiled pycrypto with python 3.1.1
+The attached patch makes the necessary changes to remove any errors during install.If someone would like to give me a small test script, I am happy to see if my tinkering actually worksor is just allowing it to install??
+I am also aware that some of the changes are probably not the best way to do it, but I am happy to investigatefurther once I have it working :)
+CheersGrail
+
+From: grail69 at hotmail.com
+To: pycrypto at lists.dlitz.net
+Date: Fri, 15 Jan 2010 00:32:04 +0000
+Subject: Re: [pycrypto] python crypto with python 3.0 or 3.1
+
+
+
+
+
+
+
+
+Hi
+Thanks for the speedy reply :)
+I am a little confused though as the doco for 3.1 says:
+PyVarObjectThis is an extension of PyObject that adds the ob_size field. This is only used for objects that have some notion of length. This type does not often appear in the Python/C API. It corresponds to the fields defined by the expansion of the PyObject_VAR_HEAD macro.This appears to be the same as what is written in the doco for 2.6.4 as well, which pycrypto seems to work with.
+Well i will keep looking to see what i can find out.
+CheersGrail
+> Date: Thu, 14 Jan 2010 10:07:36 +0100
+> From: don at amberfisharts.com
+> To: pycrypto at lists.dlitz.net
+> Subject: Re: [pycrypto] python crypto with python 3.0 or 3.1
+> 
+> Hi,
+> 
+> as far as I know there hasn't been a move to port pyCrypto to python 3.x
+> so simply compiling against python 3.x is bound to fail!
+> If you try to port yourself and during that effort ran into this compiler 
+> error then if you look at the documentation [1] or this blog post [2]
+> (it's
+> a bit outdated since the docs have been fixed in the meantime) you will
+> see
+> that the first few lines (besides other things) of a python extension type
+> have
+> changed from 
+>  
+>   PyObject_HEAD_INIT(NULL)
+>   0,                   /* ob_size */
+>   "myTypeName",        /* tp_name */
+> 
+> to
+> 
+>   PyVarObject_HEAD_INIT(NULL, 0)
+>   "myTypeName",        /* tp_name */
+> 
+> If I recall correctly, the ob_size has be moved to a different structure
+> and no longer
+> is a member of PyTypeObject.
+> So to sum it up:
+>  * no porting effort exist so far, AFAIK
+>  * no, the error is not bogus
+> 
+> sincerely yours
+> //Lorenz
+> 
+> [1] http://docs.python.org/dev/py3k/extending/newtypes.html
+> [2]
+> http://rhodesmill.org/brandon/2008/porting-a-c-extension-module-to-python-30/
+> 
+> 
+> 
+> On Thu, 14 Jan 2010 07:52:59 +0000, Grail Dane <grail69 at hotmail.com>
+> wrote:
+> > Hi GuysI am new to the list but have recently run into this issue.Has
+> > there been any movement?Personally I am stuck when gcc tries to compile
+> > src/_fastmath.cwhich seems to die with an error about 'ob_size' member
+> not
+> > existing :(This seems to be bogus as I traced back the struct's to
+> include
+> > PyObject_VAR_HEADwhich does have this as member.Any further help on this
+> > would be appreciated ;)Cheers Grail>On Fri, Dec 04, 2009 at 11:44:00AM
+> > +0100, Tobias Koeck wrote:>>Is it possible to run python crypto with
+> python
+> > 3.0 or 3.1. If not is 
+> >>>it planed to adjust?
+> > 
+> >>Sure, and it'll happen sooner if somebody volunteers to do it. :-)
+> > 
+> >>There will need to be be some strategy for Python 2.x compatibility, and
+> 
+> >>the contributor(s) need to to meet the PyCrypto Code Submission 
+> >>Requirements:
+> > 
+> >>http://www.dlitz.net/software/pycrypto/submission-requirements/
+> > 
+> >>-- 
+> >>Dwayne C. Litzenberger <dlitz at dlitz.net>
+> >>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+> >>  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+> >>
+> > _________________________________________________________________
+> > View photos of singles in your area! Browse profiles for FREE
+> > http://clk.atdmt.com/NMN/go/150855801/direct/01/
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+ 		 	   		  
+If It Exists, You'll Find it on SEEK Shopping Trolley Mechanic 		 	   		  
+_________________________________________________________________
+Time for a new car? Sell your old one fast!
+http://clk.atdmt.com/NMN/go/157637060/direct/01/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100115/b2b73d11/attachment-0001.htm 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: pycrypto-2.1.0-python3-1.patch
+Type: application/octet-stream
+Size: 31263 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20100115/b2b73d11/attachment-0001.obj 
+
+From grail69 at hotmail.com  Sun Feb 28 17:58:44 2010
+From: grail69 at hotmail.com (Grail Dane)
+Date: Sun, 28 Feb 2010 23:58:44 +0000
+Subject: [pycrypto] FW: python crypto with python 3.0 or 3.1
+In-Reply-To: <4B8ADA4C.1000901@gmx.net>
+References: <4B8ADA4C.1000901@gmx.net>
+Message-ID: <SNT132-w248C025937AA713A212C7AB13D0@phx.gbl>
+
+
+Hello Christoph
+I have made more head way since that one (and made a lot more changes).I found that the module creation required a few more steps and I have come up with two solutions (in attached patches):
+1. First patch follows most of the online info I could find related to PyModuleDef and the related PyTypeObject.   This required that all tp_getattr functions be removed and set to 0 (zero) in the PyTypeObject definition.
+2. The second patch retained the already created tp_getattr functions.
+With either applied I am able to compile but when running a test program with the following lines only:
+#!/usr/bin/env python
+from Crypto.Cipher import AESimport base64import os
+
+When run I receive the following error:
+Traceback (most recent call last):  File "./cypher.py", line 3, in <module>    from Crypto.Cipher import AESSystemError: NULL result without error in PyObject_Call
+So apply patches (and make necessary changes for Windows) and we will see if I can help further :)
+Cheers Grail
+
+> Date: Sun, 28 Feb 2010 22:04:12 +0100
+> From: christoph.tapler at gmx.net
+> To: pycrypto at lists.dlitz.net
+> Subject: Re: [pycrypto] FW: python crypto with python 3.0 or 3.1
+> 
+> Hi Grail,
+> 
+> Thanks for your patch! I assume you generated the patch based on a Unix
+> environment. Tried to compile pycrypto together with your patch on my
+> Windows machine. However, it did not work out.
+> After fixing two straightforward errors in setup.py (relevant to Windows 
+> only,
+> see [1], [2]), I got stuck when linking the module MD4 and other hashing 
+> methods
+> (MD2, etc).
+> 
+> Now, when I compare the build process against Python 2, I see the following
+> difference:
+> 
+> ###############################################################################
+> [Python 2:]
+> C:\Program Files\Microsoft Visual Studio 9.0\VC\BIN\link.exe /DLL 
+> /nologo /INCRE
+> MENTAL:NO "/LIBPATH:C:\Program Files\Python26\libs" "/LIBPATH:C:\Program 
+> Files\P
+> ython26\PCbuild" /EXPORT:initMD4 
+> build\temp.win32-2.6\Release\src/MD4.obj /OUT:b
+> uild\lib.win32-2.6\Crypto\Hash\MD4.pyd 
+> /IMPLIB:build\temp.win32-2.6\Release\src\
+> MD4.lib /MANIFESTFILE:build\temp.win32-2.6\Release\src\MD4.pyd.manifest
+>     Creating library build\temp.win32-2.6\Release\src\MD4.lib and object 
+> build\te
+> mp.win32-2.6\Release\src\MD4.exp
+> C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin\mt.exe -nologo 
+> -manifest build
+> \temp.win32-2.6\Release\src\MD4.pyd.manifest 
+> -outputresource:build\lib.win32-2.6
+> \Crypto\Hash\MD4.pyd;2
+> 
+> [Python 3:]
+> C:\Program Files\Microsoft Visual Studio 9.0\VC\BIN\link.exe /DLL 
+> /nologo /INCRE
+> MENTAL:NO "/LIBPATH:C:\Program Files\Python31\libs" "/LIBPATH:C:\Program 
+> Files\P
+> ython31\PCbuild" /EXPORT:PyInit_MD4 
+> build\temp.win32-3.1\Release\src/MD4.obj /OU
+> T:build\lib.win32-3.1\Crypto\Hash\MD4.pyd 
+> /IMPLIB:build\temp.win32-3.1\Release\s
+> rc\MD4.lib /MANIFESTFILE:build\temp.win32-3.1\Release\src\MD4.pyd.manifest
+> LINK : error LNK2001: unresolved external symbol PyInit_MD4
+> build\temp.win32-3.1\Release\src\MD4.lib : fatal error LNK1120: 1 
+> unresolved ext
+> ernals
+> error: command '"C:\Program Files\Microsoft Visual Studio 
+> 9.0\VC\BIN\link.exe"'
+> failed with exit status 1120
+> ###############################################################################
+> 
+> It seems that the /EXPORT argument for the Windows Linker is assembled in a
+> different way. This leads to an export name, which does not exist as 
+> function.
+> Hence the linker terminates with an error.
+> 
+> Any idea what I need to change to get the /EXPORT name fixed? Is this 
+> problem
+> located in pycrypto or in the Python distutils?
+> 
+> 
+> ##### Regarding the changes in setup.py:
+> [1] Changed the following stmt:
+> From
+> print << sys.stderr "warning: GMP library not found; Not building 
+> Crypto.PublicKey._fastmath."
+> to
+> print("warning: GMP library not found; Not building 
+> Crypto.PublicKey._fastmath.", sys.stderr)
+> 
+> [2] (Temporarily) disabled winrand.c which is included when using the 
+> Windows platform.
+> 
+> Cheers, Christoph
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+ 		 	   		  
+_________________________________________________________________
+Find a great deal on your next car. Get straight to the Point.
+http://clk.atdmt.com/NMN/go/157637060/direct/01/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100228/349e8dc6/attachment-0001.htm 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: pycrypto-patches.zip
+Type: application/octet-stream
+Size: 27460 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20100228/349e8dc6/attachment-0001.obj 
+
+From don at amberfisharts.com  Wed Mar 10 06:40:12 2010
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Wed, 10 Mar 2010 13:40:12 +0100
+Subject: [pycrypto] python crypto with python 3.0 or 3.1
+In-Reply-To: <SNT132-w143E41C3E92B860257D9DB1690@phx.gbl>
+References: <SNT132-w24BDC6C45D4D6EB8912BB7B16A0@phx.gbl>, , 
+	<b7338e009e16d0bf54dc7a5c34558de6@localhost>, 
+	<SNT132-w193E74A25DFDF35C5F7184B1690@phx.gbl>
+	<SNT132-w143E41C3E92B860257D9DB1690@phx.gbl>
+Message-ID: <879b416252d43d563b9525f9f5b49c67@localhost>
+
+Hi Grail,
+
+I just looked at your patch and have some comments.
+I haven't tested the patch. I only read it.
+
+1) In AllOrNothing.py you replace:
+-    except getopt.error, msg:
++    except getopt.error:
+At first glance that looks wrong. If msg is used in the exception block
+with your patch it would be undefined.
+What you probably want to do is:
+-    except getopt.error, msg:
++    except getopt.error as msg:
+
+2) Is there a reason why you don't use the Py_SIZE and Py_TYPE macros in
+the C extension modules?
+In various places you do something like this:
+-       ALGtype.ob_type = &PyType_Type;
++       ALGtype.ob_base.ob_base.ob_type = &PyType_Type;
+I would try:
+-       ALGtype.ob_type = &PyType_Type;
++       Py_TYPE(ALGtype) = &PyType_Type;
+and similarly instead of 
+-               size = -p->ob_size;
++               size = -p->ob_base.ob_size;
+I would try
+-               size = -p->ob_size;
++               size = -Py_SIZE(p);
+These Macros are defined in pythons source Include/object.h
+
+Note that I didn't try any of this. So you should try this out before you
+change anything.
+
+sincerely yours
+//Lorenz
+
+
+
+On Fri, 15 Jan 2010 09:19:14 +0000, Grail Dane <grail69 at hotmail.com>
+wrote:
+> Hi All
+> So I am going to go on a limb a little and say I have successfully
+> compiled pycrypto with python 3.1.1
+> The attached patch makes the necessary changes to remove any errors
+during
+> install.If someone would like to give me a small test script, I am happy
+to
+> see if my tinkering actually worksor is just allowing it to install??
+> I am also aware that some of the changes are probably not the best way
+to
+> do it, but I am happy to investigatefurther once I have it working :)
+> CheersGrail
+> 
+> From: grail69 at hotmail.com
+> To: pycrypto at lists.dlitz.net
+> Date: Fri, 15 Jan 2010 00:32:04 +0000
+> Subject: Re: [pycrypto] python crypto with python 3.0 or 3.1
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> Hi
+> Thanks for the speedy reply :)
+> I am a little confused though as the doco for 3.1 says:
+> PyVarObjectThis is an extension of PyObject that adds the ob_size field.
+> This is only used for objects that have some notion of length. This type
+> does not often appear in the Python/C API. It corresponds to the fields
+> defined by the expansion of the PyObject_VAR_HEAD macro.This appears to
+be
+> the same as what is written in the doco for 2.6.4 as well, which
+pycrypto
+> seems to work with.
+> Well i will keep looking to see what i can find out.
+> CheersGrail
+>> Date: Thu, 14 Jan 2010 10:07:36 +0100
+>> From: don at amberfisharts.com
+>> To: pycrypto at lists.dlitz.net
+>> Subject: Re: [pycrypto] python crypto with python 3.0 or 3.1
+>> 
+>> Hi,
+>> 
+>> as far as I know there hasn't been a move to port pyCrypto to python
+3.x
+>> so simply compiling against python 3.x is bound to fail!
+>> If you try to port yourself and during that effort ran into this
+>> compiler
+>> error then if you look at the documentation [1] or this blog post [2]
+>> (it's
+>> a bit outdated since the docs have been fixed in the meantime) you will
+>> see
+>> that the first few lines (besides other things) of a python extension
+>> type
+>> have
+>> changed from 
+>>  
+>>   PyObject_HEAD_INIT(NULL)
+>>   0,                   /* ob_size */
+>>   "myTypeName",        /* tp_name */
+>> 
+>> to
+>> 
+>>   PyVarObject_HEAD_INIT(NULL, 0)
+>>   "myTypeName",        /* tp_name */
+>> 
+>> If I recall correctly, the ob_size has be moved to a different
+structure
+>> and no longer
+>> is a member of PyTypeObject.
+>> So to sum it up:
+>>  * no porting effort exist so far, AFAIK
+>>  * no, the error is not bogus
+>> 
+>> sincerely yours
+>> //Lorenz
+>> 
+>> [1] http://docs.python.org/dev/py3k/extending/newtypes.html
+>> [2]
+>>
+http://rhodesmill.org/brandon/2008/porting-a-c-extension-module-to-python-30/
+>> 
+>> 
+>> 
+>> On Thu, 14 Jan 2010 07:52:59 +0000, Grail Dane <grail69 at hotmail.com>
+>> wrote:
+>> > Hi GuysI am new to the list but have recently run into this issue.Has
+>> > there been any movement?Personally I am stuck when gcc tries to
+compile
+>> > src/_fastmath.cwhich seems to die with an error about 'ob_size'
+member
+>> not
+>> > existing :(This seems to be bogus as I traced back the struct's to
+>> include
+>> > PyObject_VAR_HEADwhich does have this as member.Any further help on
+>> > this
+>> > would be appreciated ;)Cheers Grail>On Fri, Dec 04, 2009 at
+11:44:00AM
+>> > +0100, Tobias Koeck wrote:>>Is it possible to run python crypto with
+>> python
+>> > 3.0 or 3.1. If not is 
+>> >>>it planed to adjust?
+>> > 
+>> >>Sure, and it'll happen sooner if somebody volunteers to do it. :-)
+>> > 
+>> >>There will need to be be some strategy for Python 2.x compatibility,
+>> >>and
+>> 
+>> >>the contributor(s) need to to meet the PyCrypto Code Submission 
+>> >>Requirements:
+>> > 
+>> >>http://www.dlitz.net/software/pycrypto/submission-requirements/
+>> > 
+>> >>-- 
+>> >>Dwayne C. Litzenberger <dlitz at dlitz.net>
+>> >>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2
+>> >>  5CF7
+>> >>  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2
+>> >>  582E
+>> >>
+>> > _________________________________________________________________
+>> > View photos of singles in your area! Browse profiles for FREE
+>> > http://clk.atdmt.com/NMN/go/150855801/direct/01/
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>  		 	   		  
+> If It Exists, You'll Find it on SEEK Shopping Trolley Mechanic 		 	   		
+
+> _________________________________________________________________
+> Time for a new car? Sell your old one fast!
+> http://clk.atdmt.com/NMN/go/157637060/direct/01/
+
+From don at amberfisharts.com  Wed Mar 10 06:58:39 2010
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Wed, 10 Mar 2010 13:58:39 +0100
+Subject: [pycrypto] python crypto with python 3.0 or 3.1
+In-Reply-To: <879b416252d43d563b9525f9f5b49c67@localhost>
+References: <SNT132-w24BDC6C45D4D6EB8912BB7B16A0@phx.gbl>, , 
+	<b7338e009e16d0bf54dc7a5c34558de6@localhost>, 
+	<SNT132-w193E74A25DFDF35C5F7184B1690@phx.gbl>
+	<SNT132-w143E41C3E92B860257D9DB1690@phx.gbl>
+	<879b416252d43d563b9525f9f5b49c67@localhost>
+Message-ID: <61f6620a5064fa33cc6b68b4b3175fc6@localhost>
+
+Hi,
+
+I just realized, that it seems that I just received your mail from January
+for some odd reason.
+And back then I already replied with almost the same points so feel free
+to ignore my last message.
+Though I'm not sure I noticed the thing with the exception back then.
+
+So again. sorry for the noise.
+
+yours
+//Lorenz
+ 
+
+On Wed, 10 Mar 2010 13:40:12 +0100, <don at amberfisharts.com> wrote:
+> Hi Grail,
+> 
+> I just looked at your patch and have some comments.
+> I haven't tested the patch. I only read it.
+> 
+> 1) In AllOrNothing.py you replace:
+> -    except getopt.error, msg:
+> +    except getopt.error:
+> At first glance that looks wrong. If msg is used in the exception block
+> with your patch it would be undefined.
+> What you probably want to do is:
+> -    except getopt.error, msg:
+> +    except getopt.error as msg:
+> 
+> 2) Is there a reason why you don't use the Py_SIZE and Py_TYPE macros in
+> the C extension modules?
+> In various places you do something like this:
+> -       ALGtype.ob_type = &PyType_Type;
+> +       ALGtype.ob_base.ob_base.ob_type = &PyType_Type;
+> I would try:
+> -       ALGtype.ob_type = &PyType_Type;
+> +       Py_TYPE(ALGtype) = &PyType_Type;
+> and similarly instead of 
+> -               size = -p->ob_size;
+> +               size = -p->ob_base.ob_size;
+> I would try
+> -               size = -p->ob_size;
+> +               size = -Py_SIZE(p);
+> These Macros are defined in pythons source Include/object.h
+> 
+> Note that I didn't try any of this. So you should try this out before
+you
+> change anything.
+> 
+> sincerely yours
+> //Lorenz
+> 
+> 
+> 
+> On Fri, 15 Jan 2010 09:19:14 +0000, Grail Dane <grail69 at hotmail.com>
+> wrote:
+>> Hi All
+>> So I am going to go on a limb a little and say I have successfully
+>> compiled pycrypto with python 3.1.1
+>> The attached patch makes the necessary changes to remove any errors
+> during
+>> install.If someone would like to give me a small test script, I am
+happy
+> to
+>> see if my tinkering actually worksor is just allowing it to install??
+>> I am also aware that some of the changes are probably not the best way
+> to
+>> do it, but I am happy to investigatefurther once I have it working :)
+>> CheersGrail
+>> 
+>> From: grail69 at hotmail.com
+>> To: pycrypto at lists.dlitz.net
+>> Date: Fri, 15 Jan 2010 00:32:04 +0000
+>> Subject: Re: [pycrypto] python crypto with python 3.0 or 3.1
+>> 
+>> 
+>> 
+>> 
+>> 
+>> 
+>> 
+>> 
+>> Hi
+>> Thanks for the speedy reply :)
+>> I am a little confused though as the doco for 3.1 says:
+>> PyVarObjectThis is an extension of PyObject that adds the ob_size
+field.
+>> This is only used for objects that have some notion of length. This
+type
+>> does not often appear in the Python/C API. It corresponds to the fields
+>> defined by the expansion of the PyObject_VAR_HEAD macro.This appears to
+> be
+>> the same as what is written in the doco for 2.6.4 as well, which
+> pycrypto
+>> seems to work with.
+>> Well i will keep looking to see what i can find out.
+>> CheersGrail
+>>> Date: Thu, 14 Jan 2010 10:07:36 +0100
+>>> From: don at amberfisharts.com
+>>> To: pycrypto at lists.dlitz.net
+>>> Subject: Re: [pycrypto] python crypto with python 3.0 or 3.1
+>>> 
+>>> Hi,
+>>> 
+>>> as far as I know there hasn't been a move to port pyCrypto to python
+> 3.x
+>>> so simply compiling against python 3.x is bound to fail!
+>>> If you try to port yourself and during that effort ran into this
+>>> compiler
+>>> error then if you look at the documentation [1] or this blog post [2]
+>>> (it's
+>>> a bit outdated since the docs have been fixed in the meantime) you
+will
+>>> see
+>>> that the first few lines (besides other things) of a python extension
+>>> type
+>>> have
+>>> changed from 
+>>>  
+>>>   PyObject_HEAD_INIT(NULL)
+>>>   0,                   /* ob_size */
+>>>   "myTypeName",        /* tp_name */
+>>> 
+>>> to
+>>> 
+>>>   PyVarObject_HEAD_INIT(NULL, 0)
+>>>   "myTypeName",        /* tp_name */
+>>> 
+>>> If I recall correctly, the ob_size has be moved to a different
+> structure
+>>> and no longer
+>>> is a member of PyTypeObject.
+>>> So to sum it up:
+>>>  * no porting effort exist so far, AFAIK
+>>>  * no, the error is not bogus
+>>> 
+>>> sincerely yours
+>>> //Lorenz
+>>> 
+>>> [1] http://docs.python.org/dev/py3k/extending/newtypes.html
+>>> [2]
+>>>
+>
+http://rhodesmill.org/brandon/2008/porting-a-c-extension-module-to-python-30/
+>>> 
+>>> 
+>>> 
+>>> On Thu, 14 Jan 2010 07:52:59 +0000, Grail Dane <grail69 at hotmail.com>
+>>> wrote:
+>>> > Hi GuysI am new to the list but have recently run into this
+issue.Has
+>>> > there been any movement?Personally I am stuck when gcc tries to
+> compile
+>>> > src/_fastmath.cwhich seems to die with an error about 'ob_size'
+> member
+>>> not
+>>> > existing :(This seems to be bogus as I traced back the struct's to
+>>> include
+>>> > PyObject_VAR_HEADwhich does have this as member.Any further help on
+>>> > this
+>>> > would be appreciated ;)Cheers Grail>On Fri, Dec 04, 2009 at
+> 11:44:00AM
+>>> > +0100, Tobias Koeck wrote:>>Is it possible to run python crypto with
+>>> python
+>>> > 3.0 or 3.1. If not is 
+>>> >>>it planed to adjust?
+>>> > 
+>>> >>Sure, and it'll happen sooner if somebody volunteers to do it. :-)
+>>> > 
+>>> >>There will need to be be some strategy for Python 2.x compatibility,
+>>> >>and
+>>> 
+>>> >>the contributor(s) need to to meet the PyCrypto Code Submission 
+>>> >>Requirements:
+>>> > 
+>>> >>http://www.dlitz.net/software/pycrypto/submission-requirements/
+>>> > 
+>>> >>-- 
+>>> >>Dwayne C. Litzenberger <dlitz at dlitz.net>
+>>> >>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2
+>>> >>  5CF7
+>>> >>  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2
+>>> >>  582E
+>>> >>
+>>> > _________________________________________________________________
+>>> > View photos of singles in your area! Browse profiles for FREE
+>>> > http://clk.atdmt.com/NMN/go/150855801/direct/01/
+>>> _______________________________________________
+>>> pycrypto mailing list
+>>> pycrypto at lists.dlitz.net
+>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>  		 	   		  
+>> If It Exists, You'll Find it on SEEK Shopping Trolley Mechanic 		 	   
+> 
+>> _________________________________________________________________
+>> Time for a new car? Sell your old one fast!
+>> http://clk.atdmt.com/NMN/go/157637060/direct/01/
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From christoph.tapler at gmx.net  Sun Mar 14 09:11:58 2010
+From: christoph.tapler at gmx.net (Christoph Tapler)
+Date: Sun, 14 Mar 2010 16:11:58 +0100
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <SNT132-w4220C660F45FBA7DDE87F1B1390@phx.gbl>
+References: <4B8ADA4C.1000901@gmx.net>, , ,
+	<SNT132-w2669B1935D0D65EE9F7B9FB13C0@phx.gbl>, , ,
+	<4B8C2596.7040809@gmx.net>, ,
+	<SNT132-w6F87B260DCC9FA0899787B13B0@phx.gbl>,
+	<SNT132-w30CB2407DB2D69BC3370C8B13A0@phx.gbl>,
+	<4B8ECD61.9010805@gmx.net>
+	<SNT132-w4220C660F45FBA7DDE87F1B1390@phx.gbl>
+Message-ID: <4B9CFCBE.4020804@gmx.net>
+
+Hi Grail,
+
+I have tried to fix the test suite, but I came across a problem,
+which seems to be specific to Python 3. It seems to me that Python 3 
+behaves differently in terms of hierarchical imports.
+
+To demonstrate this difference, I have attached a small example (just 
+start level_test.py in Python 2 / 3). If you execute this example in 
+Python 2, everything works fine. However, in Python 3, the second 
+(nested) import fails. I don't understand why.
+
+Do you (or anybody else of course ;-) ) have an idea how this issue 
+could be resolved? Btw, this pattern appears several times in the test 
+suite.
+
+Kind Regards,
+Christoph
+
+On 04.03.2010 03:37, Grail Dane wrote:
+> Hi Christoph
+>
+> Good to see this is coming together for you, and as one of the users
+> mentions,
+> using the unified option is a general rule of thumb for patches / diffs.
+>
+> You are correct about the test suite as I have not had a chance to alter
+> the tests to Python 3 context.
+>
+> Cheers
+> Grail
+>
+> ------------------------------------------------------------------------
+> Date: Wed, 3 Mar 2010 21:58:09 +0100
+> From: christoph.tapler at gmx.net
+> To: pycrypto at lists.dlitz.net
+> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+>
+> Hi Grail,
+>
+> I have applied your patch on my Windows machine. Your AES encryption /
+> decryption seems to work well - In case
+> AZCkZ1wU5d0psrwlaoS5R4tz1dRL6rBBNzjIvK9NHSo= is the result ;-)
+> Moreover, I have tried the diff tool. Not sure if the output is usable
+> for you. Just
+> let me know if this format is okay or not. The patch contains a few
+> rather trivial
+> fixes for the Windows environment. With those fixes the build is successful.
+> However, the test suite doesn't build, needs adaptions as well (but I
+> think only
+> in Python).
+>
+> Cheers,
+> Christoph
+>
+> On 03.03.2010 03:48, Grail Dane wrote:
+>
+>     OK ... OK ... OK - stop the presses
+>
+>     Well, maybe not just yet, anyhoo, the attached patch allows the
+>     source to compile
+>     and run the attached script <woohoo>
+>
+>     Cheers
+>     Grail
+>
+>     ------------------------------------------------------------------------
+>     Meet local singles online. Browse profiles for FREE!
+>     <http://clk.atdmt.com/NMN/go/150855801/direct/01/>
+>
+>
+>     _______________________________________________
+>     pycrypto mailing list
+>     pycrypto at lists.dlitz.net  <mailto:pycrypto at lists.dlitz.net>
+>     http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+>
+>
+> ------------------------------------------------------------------------
+> Find out now. Link all your email accounts and social updates with
+> Hotmail. <http://windowslive.ninemsn.com.au/oneinbox?ocid=T162MSN05A0710G>
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: example.zip
+Type: application/x-zip-compressed
+Size: 818 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20100314/13356f06/attachment.bin 
+
+From dlitz at dlitz.net  Sun Mar 14 19:10:41 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 14 Mar 2010 21:10:41 -0400
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <4B9CFCBE.4020804@gmx.net>
+References: <4B8ECD61.9010805@gmx.net>
+	<SNT132-w4220C660F45FBA7DDE87F1B1390@phx.gbl>
+	<4B9CFCBE.4020804@gmx.net>
+Message-ID: <20100315011040.GA1975@rivest.dlitz.net>
+
+Are absolute imports standard in Python 3?
+
+     http://www.python.org/dev/peps/pep-0328/
+
+On Sun, Mar 14, 2010 at 04:11:58PM +0100, Christoph Tapler wrote:
+> Hi Grail,
+>
+> I have tried to fix the test suite, but I came across a problem,
+> which seems to be specific to Python 3. It seems to me that Python 3  
+> behaves differently in terms of hierarchical imports.
+>
+> To demonstrate this difference, I have attached a small example (just  
+> start level_test.py in Python 2 / 3). If you execute this example in  
+> Python 2, everything works fine. However, in Python 3, the second  
+> (nested) import fails. I don't understand why.
+>
+> Do you (or anybody else of course ;-) ) have an idea how this issue  
+> could be resolved? Btw, this pattern appears several times in the test  
+> suite.
+>
+> Kind Regards,
+> Christoph
+>
+> On 04.03.2010 03:37, Grail Dane wrote:
+>> Hi Christoph
+>>
+>> Good to see this is coming together for you, and as one of the users
+>> mentions,
+>> using the unified option is a general rule of thumb for patches / diffs.
+>>
+>> You are correct about the test suite as I have not had a chance to alter
+>> the tests to Python 3 context.
+>>
+>> Cheers
+>> Grail
+>>
+>> ------------------------------------------------------------------------
+>> Date: Wed, 3 Mar 2010 21:58:09 +0100
+>> From: christoph.tapler at gmx.net
+>> To: pycrypto at lists.dlitz.net
+>> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+>>
+>> Hi Grail,
+>>
+>> I have applied your patch on my Windows machine. Your AES encryption /
+>> decryption seems to work well - In case
+>> AZCkZ1wU5d0psrwlaoS5R4tz1dRL6rBBNzjIvK9NHSo= is the result ;-)
+>> Moreover, I have tried the diff tool. Not sure if the output is usable
+>> for you. Just
+>> let me know if this format is okay or not. The patch contains a few
+>> rather trivial
+>> fixes for the Windows environment. With those fixes the build is successful.
+>> However, the test suite doesn't build, needs adaptions as well (but I
+>> think only
+>> in Python).
+>>
+>> Cheers,
+>> Christoph
+>>
+>> On 03.03.2010 03:48, Grail Dane wrote:
+>>
+>>     OK ... OK ... OK - stop the presses
+>>
+>>     Well, maybe not just yet, anyhoo, the attached patch allows the
+>>     source to compile
+>>     and run the attached script <woohoo>
+>>
+>>     Cheers
+>>     Grail
+>>
+>>     ------------------------------------------------------------------------
+>>     Meet local singles online. Browse profiles for FREE!
+>>     <http://clk.atdmt.com/NMN/go/150855801/direct/01/>
+>>
+>>
+>>     _______________________________________________
+>>     pycrypto mailing list
+>>     pycrypto at lists.dlitz.net  <mailto:pycrypto at lists.dlitz.net>
+>>     http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>>
+>>
+>>
+>> ------------------------------------------------------------------------
+>> Find out now. Link all your email accounts and social updates with
+>> Hotmail. <http://windowslive.ninemsn.com.au/oneinbox?ocid=T162MSN05A0710G>
+>>
+>>
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+From christoph.tapler at gmx.net  Mon Mar 15 14:41:05 2010
+From: christoph.tapler at gmx.net (Christoph Tapler)
+Date: Mon, 15 Mar 2010 21:41:05 +0100
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <20100315011040.GA1975@rivest.dlitz.net>
+References: <4B8ECD61.9010805@gmx.net>	<SNT132-w4220C660F45FBA7DDE87F1B1390@phx.gbl>	<4B9CFCBE.4020804@gmx.net>
+	<20100315011040.GA1975@rivest.dlitz.net>
+Message-ID: <4B9E9B61.1090205@gmx.net>
+
+Hi,
+
+I could find the relevant change documented in 
+http://docs.python.org/py3k/whatsnew/3.0.html , "Removed Syntax" section.
+Using "from . import X"  instead of "import X" should fix the issue.
+I will try to adapt the Test Suite asap.
+
+Cheers,
+Christoph
+
+
+On 15.03.2010 02:10, Dwayne C. Litzenberger wrote:
+> Are absolute imports standard in Python 3?
+>
+>       http://www.python.org/dev/peps/pep-0328/
+>
+> On Sun, Mar 14, 2010 at 04:11:58PM +0100, Christoph Tapler wrote:
+>> Hi Grail,
+>>
+>> I have tried to fix the test suite, but I came across a problem,
+>> which seems to be specific to Python 3. It seems to me that Python 3
+>> behaves differently in terms of hierarchical imports.
+>>
+>> To demonstrate this difference, I have attached a small example (just
+>> start level_test.py in Python 2 / 3). If you execute this example in
+>> Python 2, everything works fine. However, in Python 3, the second
+>> (nested) import fails. I don't understand why.
+>>
+>> Do you (or anybody else of course ;-) ) have an idea how this issue
+>> could be resolved? Btw, this pattern appears several times in the test
+>> suite.
+>>
+>> Kind Regards,
+>> Christoph
+>>
+>> On 04.03.2010 03:37, Grail Dane wrote:
+>>> Hi Christoph
+>>>
+>>> Good to see this is coming together for you, and as one of the users
+>>> mentions,
+>>> using the unified option is a general rule of thumb for patches / diffs.
+>>>
+>>> You are correct about the test suite as I have not had a chance to alter
+>>> the tests to Python 3 context.
+>>>
+>>> Cheers
+>>> Grail
+>>>
+>>> ------------------------------------------------------------------------
+>>> Date: Wed, 3 Mar 2010 21:58:09 +0100
+>>> From: christoph.tapler at gmx.net
+>>> To: pycrypto at lists.dlitz.net
+>>> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+>>>
+>>> Hi Grail,
+>>>
+>>> I have applied your patch on my Windows machine. Your AES encryption /
+>>> decryption seems to work well - In case
+>>> AZCkZ1wU5d0psrwlaoS5R4tz1dRL6rBBNzjIvK9NHSo= is the result ;-)
+>>> Moreover, I have tried the diff tool. Not sure if the output is usable
+>>> for you. Just
+>>> let me know if this format is okay or not. The patch contains a few
+>>> rather trivial
+>>> fixes for the Windows environment. With those fixes the build is successful.
+>>> However, the test suite doesn't build, needs adaptions as well (but I
+>>> think only
+>>> in Python).
+>>>
+>>> Cheers,
+>>> Christoph
+>>>
+>>> On 03.03.2010 03:48, Grail Dane wrote:
+>>>
+>>>      OK ... OK ... OK - stop the presses
+>>>
+>>>      Well, maybe not just yet, anyhoo, the attached patch allows the
+>>>      source to compile
+>>>      and run the attached script<woohoo>
+>>>
+>>>      Cheers
+>>>      Grail
+>>>
+>>>      ------------------------------------------------------------------------
+>>>      Meet local singles online. Browse profiles for FREE!
+>>>      <http://clk.atdmt.com/NMN/go/150855801/direct/01/>
+>>>
+>>>
+>>>      _______________________________________________
+>>>      pycrypto mailing list
+>>>      pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+>>>      http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>>
+>>>
+>>>
+>>>
+>>> ------------------------------------------------------------------------
+>>> Find out now. Link all your email accounts and social updates with
+>>> Hotmail.<http://windowslive.ninemsn.com.au/oneinbox?ocid=T162MSN05A0710G>
+>>>
+>>>
+>>>
+>>> _______________________________________________
+>>> pycrypto mailing list
+>>> pycrypto at lists.dlitz.net
+>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>
+>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+
+
+From grail69 at hotmail.com  Tue Mar 16 23:09:52 2010
+From: grail69 at hotmail.com (Grail Dane)
+Date: Wed, 17 Mar 2010 05:09:52 +0000
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <4B9E9B61.1090205@gmx.net>
+References: <4B8ECD61.9010805@gmx.net>
+	<SNT132-w4220C660F45FBA7DDE87F1B1390@phx.gbl>
+	<4B9CFCBE.4020804@gmx.net>, <20100315011040.GA1975@rivest.dlitz.net>,
+	<4B9E9B61.1090205@gmx.net>
+Message-ID: <SNT132-w5A183B01A86ED88B8DCD0B12C0@phx.gbl>
+
+
+Hi Christoph
+Yes I am running into this issue as well. Another similar one is where2to3 suggests the following change:
+from common import make_block_tests
+to
+from .common import make_block_tests 
+In case hard top see the change is to add a full-stop at the start of common which makes thisa relative path reference. The error I get after making this change is:
+ValueError: Attempted relative import in non-package
+So I am trying to get this working as well. Let me know how you go?
+CheersGrail
+
+> Date: Mon, 15 Mar 2010 21:41:05 +0100
+> From: christoph.tapler at gmx.net
+> To: pycrypto at lists.dlitz.net
+> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+> 
+> Hi,
+> 
+> I could find the relevant change documented in 
+> http://docs.python.org/py3k/whatsnew/3.0.html , "Removed Syntax" section.
+> Using "from . import X"  instead of "import X" should fix the issue.
+> I will try to adapt the Test Suite asap.
+> 
+> Cheers,
+> Christoph
+> 
+> 
+> On 15.03.2010 02:10, Dwayne C. Litzenberger wrote:
+> > Are absolute imports standard in Python 3?
+> >
+> >       http://www.python.org/dev/peps/pep-0328/
+> >
+> > On Sun, Mar 14, 2010 at 04:11:58PM +0100, Christoph Tapler wrote:
+> >> Hi Grail,
+> >>
+> >> I have tried to fix the test suite, but I came across a problem,
+> >> which seems to be specific to Python 3. It seems to me that Python 3
+> >> behaves differently in terms of hierarchical imports.
+> >>
+> >> To demonstrate this difference, I have attached a small example (just
+> >> start level_test.py in Python 2 / 3). If you execute this example in
+> >> Python 2, everything works fine. However, in Python 3, the second
+> >> (nested) import fails. I don't understand why.
+> >>
+> >> Do you (or anybody else of course ;-) ) have an idea how this issue
+> >> could be resolved? Btw, this pattern appears several times in the test
+> >> suite.
+> >>
+> >> Kind Regards,
+> >> Christoph
+> >>
+> >> On 04.03.2010 03:37, Grail Dane wrote:
+> >>> Hi Christoph
+> >>>
+> >>> Good to see this is coming together for you, and as one of the users
+> >>> mentions,
+> >>> using the unified option is a general rule of thumb for patches / diffs.
+> >>>
+> >>> You are correct about the test suite as I have not had a chance to alter
+> >>> the tests to Python 3 context.
+> >>>
+> >>> Cheers
+> >>> Grail
+> >>>
+> >>> ------------------------------------------------------------------------
+> >>> Date: Wed, 3 Mar 2010 21:58:09 +0100
+> >>> From: christoph.tapler at gmx.net
+> >>> To: pycrypto at lists.dlitz.net
+> >>> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+> >>>
+> >>> Hi Grail,
+> >>>
+> >>> I have applied your patch on my Windows machine. Your AES encryption /
+> >>> decryption seems to work well - In case
+> >>> AZCkZ1wU5d0psrwlaoS5R4tz1dRL6rBBNzjIvK9NHSo= is the result ;-)
+> >>> Moreover, I have tried the diff tool. Not sure if the output is usable
+> >>> for you. Just
+> >>> let me know if this format is okay or not. The patch contains a few
+> >>> rather trivial
+> >>> fixes for the Windows environment. With those fixes the build is successful.
+> >>> However, the test suite doesn't build, needs adaptions as well (but I
+> >>> think only
+> >>> in Python).
+> >>>
+> >>> Cheers,
+> >>> Christoph
+> >>>
+> >>> On 03.03.2010 03:48, Grail Dane wrote:
+> >>>
+> >>>      OK ... OK ... OK - stop the presses
+> >>>
+> >>>      Well, maybe not just yet, anyhoo, the attached patch allows the
+> >>>      source to compile
+> >>>      and run the attached script<woohoo>
+> >>>
+> >>>      Cheers
+> >>>      Grail
+> >>>
+> >>>      ------------------------------------------------------------------------
+> >>>      Meet local singles online. Browse profiles for FREE!
+> >>>      <http://clk.atdmt.com/NMN/go/150855801/direct/01/>
+> >>>
+> >>>
+> >>>      _______________________________________________
+> >>>      pycrypto mailing list
+> >>>      pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+> >>>      http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >>>
+> >>>
+> >>>
+> >>>
+> >>> ------------------------------------------------------------------------
+> >>> Find out now. Link all your email accounts and social updates with
+> >>> Hotmail.<http://windowslive.ninemsn.com.au/oneinbox?ocid=T162MSN05A0710G>
+> >>>
+> >>>
+> >>>
+> >>> _______________________________________________
+> >>> pycrypto mailing list
+> >>> pycrypto at lists.dlitz.net
+> >>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >>
+> >
+> >
+> >> _______________________________________________
+> >> pycrypto mailing list
+> >> pycrypto at lists.dlitz.net
+> >> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >
+> >
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+ 		 	   		  
+_________________________________________________________________
+Looking for a new home? With all the latest places, searching has never been easier.
+http://clk.atdmt.com/NMN/go/157631292/direct/01/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100317/6a12b5a0/attachment.htm 
+
+From grail69 at hotmail.com  Tue Mar 16 23:18:12 2010
+From: grail69 at hotmail.com (Grail Dane)
+Date: Wed, 17 Mar 2010 05:18:12 +0000
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <4B9CFCBE.4020804@gmx.net>
+References: <4B8ADA4C.1000901@gmx.net>, ,
+	,,<SNT132-w2669B1935D0D65EE9F7B9FB13C0@phx.gbl>, ,
+	,,<4B8C2596.7040809@gmx.net>,
+	, , <SNT132-w6F87B260DCC9FA0899787B13B0@phx.gbl>, ,
+	<SNT132-w30CB2407DB2D69BC3370C8B13A0@phx.gbl>, ,
+	<4B8ECD61.9010805@gmx.net>,
+	<SNT132-w4220C660F45FBA7DDE87F1B1390@phx.gbl>,
+	<4B9CFCBE.4020804@gmx.net>
+Message-ID: <SNT132-w67AF6D8B6DF77F6A5249CB12C0@phx.gbl>
+
+
+Ok ... so had a look at this and the only change to make is in the __init__.py under level1
+change: import level2
+to: from . import level2
+All works good ;)
+
+> Date: Sun, 14 Mar 2010 16:11:58 +0100
+> From: christoph.tapler at gmx.net
+> To: pycrypto at lists.dlitz.net
+> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+> 
+> Hi Grail,
+> 
+> I have tried to fix the test suite, but I came across a problem,
+> which seems to be specific to Python 3. It seems to me that Python 3 
+> behaves differently in terms of hierarchical imports.
+> 
+> To demonstrate this difference, I have attached a small example (just 
+> start level_test.py in Python 2 / 3). If you execute this example in 
+> Python 2, everything works fine. However, in Python 3, the second 
+> (nested) import fails. I don't understand why.
+> 
+> Do you (or anybody else of course ;-) ) have an idea how this issue 
+> could be resolved? Btw, this pattern appears several times in the test 
+> suite.
+> 
+> Kind Regards,
+> Christoph
+> 
+
+ 		 	   		  
+_________________________________________________________________
+Browse profiles for FREE! Meet local singles online.
+http://clk.atdmt.com/NMN/go/150855801/direct/01/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100317/e858551a/attachment.htm 
+
+From grail69 at hotmail.com  Tue Mar 16 23:26:18 2010
+From: grail69 at hotmail.com (Grail Dane)
+Date: Wed, 17 Mar 2010 05:26:18 +0000
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <SNT132-w5A183B01A86ED88B8DCD0B12C0@phx.gbl>
+References: <4B8ECD61.9010805@gmx.net>,
+	<SNT132-w4220C660F45FBA7DDE87F1B1390@phx.gbl>,
+	<4B9CFCBE.4020804@gmx.net>, 
+	<20100315011040.GA1975@rivest.dlitz.net>, , <4B9E9B61.1090205@gmx.net>,
+	<SNT132-w5A183B01A86ED88B8DCD0B12C0@phx.gbl>
+Message-ID: <SNT132-w30932ECAE38A78AECE92CB12C0@phx.gbl>
+
+
+So now I am answering my own question <doh> (after looking at reply I just sent you)
+The issue with the below would appear to be that 'common' is a file (hence not a packagewith a __init__.py to define it) in the same directory.
+So now my question is, how do you import from a file within the same path.Scenario is, directory path looks like:
+Crypto - > SelfTest -> Cipher -> test_AES.pyCrypto - > SelfTest -> Cipher -> common.py
+And here test_AES.py has the line: from .common import make_block_tests
+If I change this back to the original from Python 2.x version (ie remove the dot) how do we know if it calls the correct common.py as it exists in several directories?
+The other alternative I thought of was a full path import:
+from Crypto.SelfTest.Cipher.common import make_block_tests
+but not sure this is correct either???
+Grail
+From: grail69 at hotmail.com
+To: pycrypto at lists.dlitz.net
+Date: Wed, 17 Mar 2010 05:09:52 +0000
+Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+
+
+
+
+
+
+
+
+Hi Christoph
+Yes I am running into this issue as well. Another similar one is where2to3 suggests the following change:
+from common import make_block_tests
+to
+from .common import make_block_tests 
+In case hard top see the change is to add a full-stop at the start of common which makes thisa relative path reference. The error I get after making this change is:
+ValueError: Attempted relative import in non-package
+So I am trying to get this working as well. Let me know how you go?
+CheersGrail
+
+
+ 		 	   		  
+_________________________________________________________________
+Browse profiles for FREE! Meet local singles online.
+http://clk.atdmt.com/NMN/go/150855801/direct/01/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100317/12d450eb/attachment-0001.htm 
+
+From christoph.tapler at gmx.net  Wed Mar 17 13:36:01 2010
+From: christoph.tapler at gmx.net (Christoph Tapler)
+Date: Wed, 17 Mar 2010 20:36:01 +0100
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <4B9E9B61.1090205@gmx.net>
+References: <4B8ECD61.9010805@gmx.net>	<SNT132-w4220C660F45FBA7DDE87F1B1390@phx.gbl>	<4B9CFCBE.4020804@gmx.net>
+	<20100315011040.GA1975@rivest.dlitz.net> <4B9E9B61.1090205@gmx.net>
+Message-ID: <4BA12F21.20100@gmx.net>
+
+Hi Grail,
+
+Following replacement - I have used AES as an example - seems to work
+fine:
+
+From:
+     from common import make_block_tests
+     return make_block_tests(AES, "AES", test_data)
+
+To:
+     from . import common
+     return common.make_block_tests(AES, "AES", test_data)
+
+In some files, you also need to remove the "import common import dict" 
+at the beginning of the files. According to the comment, this was only
+needed for Python 2.1 / 2.2. Hence that removal should not negatively 
+affect functionality.
+
+Unfortunately I don't have enough time to do all the replacements in
+the next days. I could send you a patch on weekend earliest.
+
+Cheers,
+Christoph
+
+On 15.03.2010 21:41, Christoph Tapler wrote:
+> Hi,
+>
+> I could find the relevant change documented in
+> http://docs.python.org/py3k/whatsnew/3.0.html , "Removed Syntax" section.
+> Using "from . import X" instead of "import X" should fix the issue.
+> I will try to adapt the Test Suite asap.
+>
+> Cheers,
+> Christoph
+>
+>
+> On 15.03.2010 02:10, Dwayne C. Litzenberger wrote:
+>> Are absolute imports standard in Python 3?
+>>
+>> http://www.python.org/dev/peps/pep-0328/
+>>
+>> On Sun, Mar 14, 2010 at 04:11:58PM +0100, Christoph Tapler wrote:
+>>> Hi Grail,
+>>>
+>>> I have tried to fix the test suite, but I came across a problem,
+>>> which seems to be specific to Python 3. It seems to me that Python 3
+>>> behaves differently in terms of hierarchical imports.
+>>>
+>>> To demonstrate this difference, I have attached a small example (just
+>>> start level_test.py in Python 2 / 3). If you execute this example in
+>>> Python 2, everything works fine. However, in Python 3, the second
+>>> (nested) import fails. I don't understand why.
+>>>
+>>> Do you (or anybody else of course ;-) ) have an idea how this issue
+>>> could be resolved? Btw, this pattern appears several times in the test
+>>> suite.
+>>>
+>>> Kind Regards,
+>>> Christoph
+>>>
+>>> On 04.03.2010 03:37, Grail Dane wrote:
+>>>> Hi Christoph
+>>>>
+>>>> Good to see this is coming together for you, and as one of the users
+>>>> mentions,
+>>>> using the unified option is a general rule of thumb for patches /
+>>>> diffs.
+>>>>
+>>>> You are correct about the test suite as I have not had a chance to
+>>>> alter
+>>>> the tests to Python 3 context.
+>>>>
+>>>> Cheers
+>>>> Grail
+>>>>
+>>>> ------------------------------------------------------------------------
+>>>>
+>>>> Date: Wed, 3 Mar 2010 21:58:09 +0100
+>>>> From: christoph.tapler at gmx.net
+>>>> To: pycrypto at lists.dlitz.net
+>>>> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+>>>>
+>>>> Hi Grail,
+>>>>
+>>>> I have applied your patch on my Windows machine. Your AES encryption /
+>>>> decryption seems to work well - In case
+>>>> AZCkZ1wU5d0psrwlaoS5R4tz1dRL6rBBNzjIvK9NHSo= is the result ;-)
+>>>> Moreover, I have tried the diff tool. Not sure if the output is usable
+>>>> for you. Just
+>>>> let me know if this format is okay or not. The patch contains a few
+>>>> rather trivial
+>>>> fixes for the Windows environment. With those fixes the build is
+>>>> successful.
+>>>> However, the test suite doesn't build, needs adaptions as well (but I
+>>>> think only
+>>>> in Python).
+>>>>
+>>>> Cheers,
+>>>> Christoph
+>>>>
+>>>> On 03.03.2010 03:48, Grail Dane wrote:
+>>>>
+>>>> OK ... OK ... OK - stop the presses
+>>>>
+>>>> Well, maybe not just yet, anyhoo, the attached patch allows the
+>>>> source to compile
+>>>> and run the attached script<woohoo>
+>>>>
+>>>> Cheers
+>>>> Grail
+>>>>
+>>>> ------------------------------------------------------------------------
+>>>>
+>>>> Meet local singles online. Browse profiles for FREE!
+>>>> <http://clk.atdmt.com/NMN/go/150855801/direct/01/>
+>>>>
+>>>>
+>>>> _______________________________________________
+>>>> pycrypto mailing list
+>>>> pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+>>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>>>
+>>>>
+>>>>
+>>>>
+>>>> ------------------------------------------------------------------------
+>>>>
+>>>> Find out now. Link all your email accounts and social updates with
+>>>> Hotmail.<http://windowslive.ninemsn.com.au/oneinbox?ocid=T162MSN05A0710G>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>> _______________________________________________
+>>>> pycrypto mailing list
+>>>> pycrypto at lists.dlitz.net
+>>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>>
+>>
+>>
+>>> _______________________________________________
+>>> pycrypto mailing list
+>>> pycrypto at lists.dlitz.net
+>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>>
+>
+
+
+From grail69 at hotmail.com  Wed Mar 17 19:57:14 2010
+From: grail69 at hotmail.com (Grail Dane)
+Date: Thu, 18 Mar 2010 01:57:14 +0000
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <4BA12F21.20100@gmx.net>
+References: <4B8ECD61.9010805@gmx.net>
+	<SNT132-w4220C660F45FBA7DDE87F1B1390@phx.gbl>
+	<4B9CFCBE.4020804@gmx.net>,<20100315011040.GA1975@rivest.dlitz.net>
+	<4B9E9B61.1090205@gmx.net>,<4BA12F21.20100@gmx.net>
+Message-ID: <SNT132-w7D83651907ACA4DFEB8C7B12B0@phx.gbl>
+
+
+Hi Christoph
+So I tried the suggestion below but still received the error about import from non-package :(
+I changed it to read:
+from Crypto.SelfTest.Cipher import commonreturn common.make_block_tests(AES, "AES", test_data)
+and it does not error on that but now presents me with a segfault :(
+So I seem to have gone from bad to worse. So I am hoping someone on thislist might be able to suggest how I can track the fault to find out what is wrong now??
+CheersGrail
+
+> Date: Wed, 17 Mar 2010 20:36:01 +0100
+> From: christoph.tapler at gmx.net
+> To: pycrypto at lists.dlitz.net
+> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+> 
+> Hi Grail,
+> 
+> Following replacement - I have used AES as an example - seems to work
+> fine:
+> 
+> From:
+>      from common import make_block_tests
+>      return make_block_tests(AES, "AES", test_data)
+> 
+> To:
+>      from . import common
+>      return common.make_block_tests(AES, "AES", test_data)
+> 
+> In some files, you also need to remove the "import common import dict" 
+> at the beginning of the files. According to the comment, this was only
+> needed for Python 2.1 / 2.2. Hence that removal should not negatively 
+> affect functionality.
+> 
+> Unfortunately I don't have enough time to do all the replacements in
+> the next days. I could send you a patch on weekend earliest.
+> 
+> Cheers,
+> Christoph
+> 
+> On 15.03.2010 21:41, Christoph Tapler wrote:
+> > Hi,
+> >
+> > I could find the relevant change documented in
+> > http://docs.python.org/py3k/whatsnew/3.0.html , "Removed Syntax" section.
+> > Using "from . import X" instead of "import X" should fix the issue.
+> > I will try to adapt the Test Suite asap.
+> >
+> > Cheers,
+> > Christoph
+> >
+> >
+> > On 15.03.2010 02:10, Dwayne C. Litzenberger wrote:
+> >> Are absolute imports standard in Python 3?
+> >>
+> >> http://www.python.org/dev/peps/pep-0328/
+> >>
+> >> On Sun, Mar 14, 2010 at 04:11:58PM +0100, Christoph Tapler wrote:
+> >>> Hi Grail,
+> >>>
+> >>> I have tried to fix the test suite, but I came across a problem,
+> >>> which seems to be specific to Python 3. It seems to me that Python 3
+> >>> behaves differently in terms of hierarchical imports.
+> >>>
+> >>> To demonstrate this difference, I have attached a small example (just
+> >>> start level_test.py in Python 2 / 3). If you execute this example in
+> >>> Python 2, everything works fine. However, in Python 3, the second
+> >>> (nested) import fails. I don't understand why.
+> >>>
+> >>> Do you (or anybody else of course ;-) ) have an idea how this issue
+> >>> could be resolved? Btw, this pattern appears several times in the test
+> >>> suite.
+> >>>
+> >>> Kind Regards,
+> >>> Christoph
+> >>>
+> >>> On 04.03.2010 03:37, Grail Dane wrote:
+> >>>> Hi Christoph
+> >>>>
+> >>>> Good to see this is coming together for you, and as one of the users
+> >>>> mentions,
+> >>>> using the unified option is a general rule of thumb for patches /
+> >>>> diffs.
+> >>>>
+> >>>> You are correct about the test suite as I have not had a chance to
+> >>>> alter
+> >>>> the tests to Python 3 context.
+> >>>>
+> >>>> Cheers
+> >>>> Grail
+> >>>>
+> >>>> ------------------------------------------------------------------------
+> >>>>
+> >>>> Date: Wed, 3 Mar 2010 21:58:09 +0100
+> >>>> From: christoph.tapler at gmx.net
+> >>>> To: pycrypto at lists.dlitz.net
+> >>>> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+> >>>>
+> >>>> Hi Grail,
+> >>>>
+> >>>> I have applied your patch on my Windows machine. Your AES encryption /
+> >>>> decryption seems to work well - In case
+> >>>> AZCkZ1wU5d0psrwlaoS5R4tz1dRL6rBBNzjIvK9NHSo= is the result ;-)
+> >>>> Moreover, I have tried the diff tool. Not sure if the output is usable
+> >>>> for you. Just
+> >>>> let me know if this format is okay or not. The patch contains a few
+> >>>> rather trivial
+> >>>> fixes for the Windows environment. With those fixes the build is
+> >>>> successful.
+> >>>> However, the test suite doesn't build, needs adaptions as well (but I
+> >>>> think only
+> >>>> in Python).
+> >>>>
+> >>>> Cheers,
+> >>>> Christoph
+> >>>>
+> >>>> On 03.03.2010 03:48, Grail Dane wrote:
+> >>>>
+> >>>> OK ... OK ... OK - stop the presses
+> >>>>
+> >>>> Well, maybe not just yet, anyhoo, the attached patch allows the
+> >>>> source to compile
+> >>>> and run the attached script<woohoo>
+> >>>>
+> >>>> Cheers
+> >>>> Grail
+> >>>>
+> >>>> ------------------------------------------------------------------------
+> >>>>
+> >>>> Meet local singles online. Browse profiles for FREE!
+> >>>> <http://clk.atdmt.com/NMN/go/150855801/direct/01/>
+> >>>>
+> >>>>
+> >>>> _______________________________________________
+> >>>> pycrypto mailing list
+> >>>> pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+> >>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >>>>
+> >>>>
+> >>>>
+> >>>>
+> >>>> ------------------------------------------------------------------------
+> >>>>
+> >>>> Find out now. Link all your email accounts and social updates with
+> >>>> Hotmail.<http://windowslive.ninemsn.com.au/oneinbox?ocid=T162MSN05A0710G>
+> >>>>
+> >>>>
+> >>>>
+> >>>>
+> >>>> _______________________________________________
+> >>>> pycrypto mailing list
+> >>>> pycrypto at lists.dlitz.net
+> >>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >>>
+> >>
+> >>
+> >>> _______________________________________________
+> >>> pycrypto mailing list
+> >>> pycrypto at lists.dlitz.net
+> >>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >>
+> >>
+> >
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+ 		 	   		  
+_________________________________________________________________
+Browse profiles for FREE! Meet local singles online.
+http://clk.atdmt.com/NMN/go/150855801/direct/01/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100318/e855e2e2/attachment.htm 
+
+From dlitz at dlitz.net  Sun Mar 28 15:44:20 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 28 Mar 2010 17:44:20 -0400
+Subject: [pycrypto] pycrypto issue
+In-Reply-To: <553991.18822.qm@web55204.mail.re4.yahoo.com>
+References: <20100324054859.GA19555@rivest.dlitz.net>
+	<553991.18822.qm@web55204.mail.re4.yahoo.com>
+Message-ID: <20100328214420.GA16555@rivest.dlitz.net>
+
+Please post on the mailing list so that others who have similar problems 
+can find the answers by searching the archives.
+
+On Sat, Mar 27, 2010 at 09:18:05PM -0700, h nguyen wrote:
+>For the file SHA256.py , I copied from SHA and use sha256 function like 
+>this
+>try:
+>??? # The md5 module is deprecated in Python 2.6, so use hashlib when possible.
+>??? import hashlib
+>??? def new(data=""):
+>??????? return hashlib.sha256(data)
+>??? digest_size = new().digest_size
+>
+>except ImportError:
+>??? from sha256 import *
+>??? import sha256
+
+There is no need to do that.
+
+>ImportError: cannot import name _counter
+>
+>I looked in folder Crypto.Util there's no _counter module...
+
+PyCrypto is partly written in C (in the src/ directory) and partly written 
+in Python.  You are using the Python parts and ignoring the C parts, which 
+is why it's not working.  As I mentioned before, the parts in C will need 
+to be compiled into machine code before they can be used.? You'll either 
+need to build it, or you can get Michael Foord's pre-built binaries for 
+Windows from his website:
+
+     http://www.voidspace.org.uk/python/modules.shtml#pycrypto
+
+>Do you know that paramiko works on Windows XP?
+
+Yes, I have used paramiko on Windows XP before.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 221 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20100328/c14f1b2e/attachment.pgp 
+
+From anders_nauman at hotmail.com  Mon Mar 15 15:02:38 2010
+From: anders_nauman at hotmail.com (Nauman Anders)
+Date: Mon, 15 Mar 2010 21:02:38 -0000
+Subject: [pycrypto] pycrypto with python 3.1 in windows
+Message-ID: <SNT131-w37E5D330A246DEE05B5E7F872E0@phx.gbl>
+
+
+Hi
+
+Ran into this error after patching with various combos of all patches that has been posted here. Always the same place of the error.
+Im also running through MinGW with fullinstallation and Win7 as OS.
+installing though this commando: python setup.py build -c mingw32
+
+Its successfull until this part.
+
+running build_ext
+warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+building 'Crypto.Random.OSRNG.winrandom' extension
+Traceback (most recent call last):
+  File "setup.py", line 335, in <module> core.setup(**kw)
+  File "C:\Program Files\Python31\lib\distutils\core.py", line 149, in setup dist.run_commands()
+  File "C:\Program Files\Python31\lib\distutils\dist.py", line 919, in run_commands self.run_command(cmd)
+  File "C:\Program Files\Python31\lib\distutils\dist.py", line 938, in run_command cmd_obj.run()
+  File "C:\Program Files\Python31\lib\distutils\command\build.py", line 128, in run self.run_command(cmd_name)
+  File "C:\Program Files\Python31\lib\distutils\cmd.py", line 315, in run_command self.distribution.run_command(command)
+  File "C:\Program Files\Python31\lib\distutils\dist.py", line 938, in run_command cmd_obj.run()
+  File "C:\Program Files\Python31\lib\distutils\command\build_ext.py", line 347, in run self.build_extensions()
+
+  File "setup.py", line 147, in build_extensions build_ext.build_extensions(self)
+  File "C:\Program Files\Python31\lib\distutils\command\build_ext.py", line 456, in build_extensions self.build_extension(ext)
+  File "C:\Program Files\Python31\lib\distutils\command\build_ext.py", line 511, in build_extension depends=ext.depends)
+  File "C:\Program Files\Python31\lib\distutils\msvc9compiler.py", line 448, in compile self.initialize()
+  File "C:\Program Files\Python31\lib\distutils\msvc9compiler.py", line 359, in initialize vc_env = query_vcvarsall(VERSION, plat_spec)
+  File "C:\Program Files\Python31\lib\distutils\msvc9compiler.py", line 275, in query_vcvarsall raise ValueError(str(list(result.keys()))) ValueError: ['path']
+
+To be honest im only after the blowfish file to windows since im programing a thing to irc so if someone have the python 3.1 compiled file for windows i would be really glad if u send it to me.
+Or could answer what im missing for having this error :).
+
+Thanks and great work.. Its working fine under linux though ;).
+
+//anders
+ 		 	   		  
+_________________________________________________________________
+Mejla p? krogen! Hotmail i mobilen. 
+http://new.windowslivemobile.msn.com/SE-SE/windows-live-hotmail/default.aspx
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100315/73e60ecc/attachment.htm 
+

@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Failed test compiling on Fedora 19
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Failed%20test%20compiling%20on%20Fedora%2019&In-Reply-To=%3CCAGfyce3Zxqh1R%2Be8So_SMho7Lr1-Cy%3D26oF7VLCwPWX2d3voWA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000692.html">
+   <LINK REL="Next"  HREF="000694.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Failed test compiling on Fedora 19</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Failed%20test%20compiling%20on%20Fedora%2019&In-Reply-To=%3CCAGfyce3Zxqh1R%2Be8So_SMho7Lr1-Cy%3D26oF7VLCwPWX2d3voWA%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Failed test compiling on Fedora 19">helderijs at gmail.com
+       </A><BR>
+    <I>Thu Aug 29 23:05:44 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000692.html">[pycrypto] Failed test compiling on Fedora 19
+</A></li>
+        <LI>Next message: <A HREF="000694.html">[pycrypto] PyCrypto status update &amp; release plans
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#693">[ date ]</a>
+              <a href="thread.html#693">[ thread ]</a>
+              <a href="subject.html#693">[ subject ]</a>
+              <a href="author.html#693">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+It was a known bug on the unit tests:
+
+<A HREF="https://bugs.launchpad.net/pycrypto/+bug/1004781">https://bugs.launchpad.net/pycrypto/+bug/1004781</A>
+
+Try installing libgmp-dev (name may be slightly different) and rebuild.
+Plain GMP library does not contain what's needed to compile and link
+applications based on GMP.
+
+2013/8/30  &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">finid at linuxbsdos.com</A>&gt;:
+&gt;<i> Sorry folks. I posted the wrong output from another program.
+</I>&gt;<i>
+</I>&gt;<i> Here's what happened.
+</I>&gt;<i>
+</I>&gt;<i> On running &quot;python3 setup.py test&quot; I get this
+</I>&gt;<i>
+</I>&gt;<i> &lt;!Start&gt;
+</I>&gt;<i>
+</I>&gt;<i> SelfTest: You can ignore the RandomPool_DeprecationWarning that follows.
+</I>&gt;<i> ........E...................
+</I>&gt;<i> ERROR: test_negative_number_roundtrip_mpzToLongObj_longObjToMPZ
+</I>&gt;<i> (Crypto.SelfTest.Util.test_number.MiscTests)
+</I>&gt;<i> Test that mpzToLongObj and longObjToMPZ (internal functions) roundtrip
+</I>&gt;<i> negative numbers correctly.
+</I>&gt;<i> ----------------------------------------------------------------------
+</I>&gt;<i> Traceback (most recent call last):
+</I>&gt;<i>   File &quot;build/lib.linux-x86_64-3.3/Crypto/SelfTest/Util/test_number.py&quot;,
+</I>&gt;<i> line 283, in test_negative_number_roundtrip_mpzToLongObj_longObjToMPZ
+</I>&gt;<i>     k = number._fastmath.rsa_construct(n, e)
+</I>&gt;<i> AttributeError: 'NoneType' object has no attribute 'rsa_construct'
+</I>&gt;<i>
+</I>&gt;<i> ----------------------------------------------------------------------
+</I>&gt;<i> Ran 1031 tests in 38.282s
+</I>&gt;<i>
+</I>&gt;<i> FAILED (errors=1)
+</I>&gt;<i> Traceback (most recent call last):
+</I>&gt;<i>   File &quot;setup.py&quot;, line 456, in &lt;module&gt;
+</I>&gt;<i>     core.setup(**kw)
+</I>&gt;<i>   File &quot;/usr/lib64/python3.3/distutils/core.py&quot;, line 148, in setup
+</I>&gt;<i>     dist.run_commands()
+</I>&gt;<i>   File &quot;/usr/lib64/python3.3/distutils/dist.py&quot;, line 929, in run_commands
+</I>&gt;<i>     self.run_command(cmd)
+</I>&gt;<i>   File &quot;/usr/lib64/python3.3/distutils/dist.py&quot;, line 948, in run_command
+</I>&gt;<i>     cmd_obj.run()
+</I>&gt;<i>   File &quot;setup.py&quot;, line 336, in run
+</I>&gt;<i>     SelfTest.run(module=moduleObj, verbosity=self.verbose,
+</I>&gt;<i> stream=sys.stdout, config=self.config)
+</I>&gt;<i>   File &quot;build/lib.linux-x86_64-3.3/Crypto/SelfTest/__init__.py&quot;, line 74, in
+</I>&gt;<i> run
+</I>&gt;<i>     raise SelfTestError(&quot;Self-test failed&quot;, result)
+</I>&gt;<i> Crypto.SelfTest.SelfTestError: ('Self-test failed',
+</I>&gt;<i> &lt;unittest.runner.TextTestResult run=1031 errors=1 failures=0&gt;)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> &lt;!/End&gt;
+</I>&gt;<i>
+</I>&gt;<i> On running &quot;python3 setup.py build&quot; I get this:
+</I>&gt;<i>
+</I>&gt;<i> &lt;!Start&gt;
+</I>&gt;<i>
+</I>&gt;<i> python3 setup.py build
+</I>&gt;<i> running build
+</I>&gt;<i> running build_py
+</I>&gt;<i> running build_ext
+</I>&gt;<i> running build_configure
+</I>&gt;<i> warning: GMP or MPIR library not found; Not building
+</I>&gt;<i> Crypto.PublicKey._fastmath.
+</I>&gt;<i>
+</I>&gt;<i> &lt;!/End&gt;
+</I>&gt;<i>
+</I>&gt;<i> But GMP and PMIR are installed.
+</I>&gt;<i>
+</I>&gt;<i> But even with the error on test and the warning on build, &quot;python3 setup.py
+</I>&gt;<i> install&quot; completed successfully, only throwing the same warning I got on the
+</I>&gt;<i> build part.
+</I>&gt;<i>
+</I>&gt;<i> What's with the error on test and the warning message on build? Are those
+</I>&gt;<i> make or break?
+</I>&gt;<i>
+</I>&gt;<i> TIA
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> finid
+</I>&gt;<i> <A HREF="http://linuxbsdos.com">http://linuxbsdos.com</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On 2013-08-29 21:02, <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">finid at linuxbsdos.com</A> wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Folks,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> When I ran &quot;python3 runtests test&quot; on Fedora 19, most of the test were
+</I>&gt;&gt;<i> either SKIPPED or PASSED, and I got a bunch of errors all having to do
+</I>&gt;&gt;<i> with SELinux. Here's the tail end of the test report:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &lt;!Start&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> rsync: rsync_xal_set:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> lsetxattr(&quot;&quot;/tmp/s3ql-mnt-ssn0wz/orig/C!pulseaudio/O&#245;karm/.sort.B3KkHI&quot;&quot;,&quot;security.selinux&quot;)
+</I>&gt;&gt;<i> failed: Operation not supported (95)
+</I>&gt;&gt;<i> rsync: rsync_xal_set:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> lsetxattr(&quot;&quot;/tmp/s3ql-mnt-ssn0wz/orig/C!pulseaudio/O&#245;karm/.&#243;true.WWN7XB&quot;&quot;,&quot;security.selinux&quot;)
+</I>&gt;&gt;<i> failed: Operation not supported (95)
+</I>&gt;&gt;<i> rsync: rsync_xal_set:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> lsetxattr(&quot;&quot;/tmp/s3ql-mnt-ssn0wz/orig/C!pulseaudio/O&#245;karm/.&#208;kinfocenter.lPArfv&quot;&quot;,&quot;security.selinux&quot;)
+</I>&gt;&gt;<i> failed: Operation not supported (95)
+</I>&gt;&gt;<i> rsync error: some files/attrs were not transferred (see previous
+</I>&gt;&gt;<i> errors) (code 23) at main.c(1052) [sender=3.0.9]
+</I>&gt;&gt;<i> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: stopping after 2
+</I>&gt;&gt;<i> failures !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+</I>&gt;&gt;<i> =============== 1 failed, 135 passed, 61 skipped, 1 error in 109.11
+</I>&gt;&gt;<i> seconds========
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &lt;/Stop&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Even with this error, running &quot;python3 setup.py install&quot; completed
+</I>&gt;&gt;<i> successfully.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Any ideas what impact those SELinux-related errors will have on using
+</I>&gt;&gt;<i> S3QL?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> TIA,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> finid
+</I>&gt;&gt;<i> <A HREF="http://linuxbsdos.com">http://linuxbsdos.com</A>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I></PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000692.html">[pycrypto] Failed test compiling on Fedora 19
+</A></li>
+	<LI>Next message: <A HREF="000694.html">[pycrypto] PyCrypto status update &amp; release plans
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#693">[ date ]</a>
+              <a href="thread.html#693">[ thread ]</a>
+              <a href="subject.html#693">[ subject ]</a>
+              <a href="author.html#693">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

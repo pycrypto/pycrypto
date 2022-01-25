@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Once again: Python3 with PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=4D1A5509.2020604%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000338.html">
+   <LINK REL="Next"  HREF="000348.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Once again: Python3 with PyCrypto</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=4D1A5509.2020604%40gmx.li"
+       TITLE="[pycrypto] Once again: Python3 with PyCrypto">dlitz at dlitz.net
+       </A><BR>
+    <I>Wed Dec 29 00:35:58 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000338.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000348.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#343">[ date ]</a>
+              <a href="thread.html#343">[ thread ]</a>
+              <a href="subject.html#343">[ subject ]</a>
+              <a href="author.html#343">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Still on vacation, but.... Awesome!  Good work!
+
+&quot;Thorsten Behrens&quot; &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">sbehrens at gmx.li</A>&gt; wrote:
+
+&gt;<i>How about them apples.
+</I>&gt;<i>
+</I>&gt;<i>D:\Users\Soenke\Documents\Source\pycrypto&gt;python --version
+</I>&gt;<i>Python 3.1.3
+</I>&gt;<i>
+</I>&gt;<i>D:\Users\Soenke\Documents\Source\pycrypto&gt;python setup.py test
+</I>&gt;<i>running test
+</I>&gt;<i>..................................................................................................................................
+</I>&gt;<i>..................................................................................................................................
+</I>&gt;<i>..................................................................................................................................
+</I>&gt;<i>..................................................................................................................................
+</I>&gt;<i>..................................................................................................................................
+</I>&gt;<i>..................................................................................................................................
+</I>&gt;<i>.............................................................................................................SelfTest:
+</I>&gt;<i>
+</I>&gt;<i>You can ign
+</I>&gt;<i>ore the RandomPool_DeprecationWarning that follows.
+</I>&gt;<i>build\lib.win-amd64-3.1\Crypto\Util\randpool.py:40: 
+</I>&gt;<i>RandomPool_DeprecationWarning: This application uses RandomPool, which 
+</I>&gt;<i>is BROK
+</I>&gt;<i>EN in older releases.  See <A HREF="http://www.pycrypto.org/randpool-broken">http://www.pycrypto.org/randpool-broken</A>
+</I>&gt;<i>   RandomPool_DeprecationWarning)
+</I>&gt;<i>.....................
+</I>&gt;<i>----------------------------------------------------------------------
+</I>&gt;<i>Ran 910 tests in 28.723s
+</I>&gt;<i>
+</I>&gt;<i>OK
+</I>&gt;<i>
+</I>&gt;<i>Alright, allow me to bask in this for a second. Okay, I'm good.
+</I>&gt;<i>
+</I>&gt;<i>This also still builds and tests correctly on Python 2.7, 2.2 and2.1.
+</I>&gt;<i>
+</I>&gt;<i>I'll commit this to the py3k branch. It's not ready to be merged yet. 
+</I>&gt;<i>Here's the TODO as I have it:
+</I>&gt;<i>
+</I>&gt;<i>TODO:
+</I>&gt;<i>- Check for type of string in functions and throw an error when it's
+</I>&gt;<i>not 
+</I>&gt;<i>correct. While at it, ensure that functions observe the guidelines
+</I>&gt;<i>below 
+</I>&gt;<i>re type.
+</I>&gt;<i>   This is friendlier than just relying on Python's errors.
+</I>&gt;<i>- Document the expected types for functions. The cipher, the key and
+</I>&gt;<i>the 
+</I>&gt;<i>input texts are byte-strings. Plaintext decodes are byte-strings 
+</I>&gt;<i>currently, this needs review.
+</I>&gt;<i>  In keeping with how Python 3.x's hash functions work, the input MODE 
+</I>&gt;<i>is a text string. hexdigest() returns a text string, and digest() 
+</I>&gt;<i>returns a byte-string.
+</I>&gt;<i>- Compile and test _fastmath.c
+</I>&gt;<i>- Go through test cases and see which modules are not covered
+</I>&gt;<i>
+</I>&gt;<i>Volunteers for any of those?
+</I>&gt;<i>
+</I>&gt;<i>Here is a writeup of what was changed:
+</I>&gt;<i>
+</I>&gt;<i>Py code:
+</I>&gt;<i>
+</I>&gt;<i>setup.py invokes 2to3 automatically. This handles int/long and print 
+</I>&gt;<i>issues, among others.
+</I>&gt;<i>setup.py will touch nt.py on win32 after build and build again. This is
+</I>&gt;<i>
+</I>&gt;<i>necessary so 2to3 can do its magic on that file.
+</I>&gt;<i>
+</I>&gt;<i>There are still a lot of places in the code that need manual attention 
+</I>&gt;<i>even with 2to3. They mostly have to do with string (2.x) vs. 
+</I>&gt;<i>byte/unicode (3.x) representation
+</I>&gt;<i>
+</I>&gt;<i>Use &quot;if sys.version_info[0] is 2:&quot; where needed. Ideally, most of the 
+</I>&gt;<i>conditional code can be in py3compat.
+</I>&gt;<i>
+</I>&gt;<i>Replace str(x) with bstr(x) if bytes were intended. Becomes str(x) in 
+</I>&gt;<i>2.x and bytes(x) in 3.x through py3compat module.
+</I>&gt;<i>Replace chr(x) with bchr(x) if bytes were intended. Becomes chr(x) in 
+</I>&gt;<i>2.x and bytes([x]) in 3.x through py3compat module.
+</I>&gt;<i>Replace ord(x) with bord(x) if bytes were intended. Becomes ord(x) in 
+</I>&gt;<i>2.x and x in 3.x through py3compat module.
+</I>&gt;<i>
+</I>&gt;<i>Comparing a string index to a string literal needs to be changed in
+</I>&gt;<i>3.x, 
+</I>&gt;<i>as b'string'[0] returns an integer, not b's'.
+</I>&gt;<i>The comparison can be fixed by indexing the right side, too: &quot;if 
+</I>&gt;<i>s[0]==b('\x30')[0]:&quot; or &quot;if
+</I>&gt;<i>self.typeTag!=self.typeTags['SEQUENCE'][0]:&quot;
+</I>&gt;<i>
+</I>&gt;<i>String literals need to be bytes if bytes were intended.
+</I>&gt;<i>Replace &quot;x&quot; with b(&quot;x&quot;) if bytes were intended. Becomes &quot;x&quot; in 2.x, and
+</I>&gt;<i>
+</I>&gt;<i>s.encode(&quot;x&quot;,&quot;latin-1&quot;) in 3.x through py3compat module.
+</I>&gt;<i>For example, '&quot;&quot;.join' is replaced by 'b(&quot;&quot;).join', and 's = &quot;&quot;'
+</I>&gt;<i>becomes 
+</I>&gt;<i>'s = b(&quot;&quot;)'.
+</I>&gt;<i>Search for \x to find literals that may have been intended as byte
+</I>&gt;<i>strings
+</I>&gt;<i>!! However, where a human-readable ASCII text string output was 
+</I>&gt;<i>intended, such as in AllOrNothing.undigest(), leave as a string literal
+</I>&gt;<i>!!
+</I>&gt;<i>
+</I>&gt;<i>Only load python_compat.py &quot;if sys.version_info[0] is 2 and 
+</I>&gt;<i>sys.version_info[1] is 1:&quot; .
+</I>&gt;<i>The assignment to True, False generates syntax errors in 3.x, and &gt;=
+</I>&gt;<i>2.2 
+</I>&gt;<i>don't need the compatibility code.
+</I>&gt;<i>
+</I>&gt;<i>Where print is used with &gt;&gt; to redirect, use a separate function 
+</I>&gt;<i>instead. See setup.py for an example
+</I>&gt;<i>
+</I>&gt;<i>The string module has been changed in 3.x. It lost join and split, 
+</I>&gt;<i>maketrans now expects bytes, and so on.
+</I>&gt;<i>Replace string.join(a,b) with b.join(a).
+</I>&gt;<i>Replace string.split(a) with a.split().
+</I>&gt;<i>Replace body of white-space-stripping functions with 'return 
+</I>&gt;<i>&quot;&quot;.join(s.split())'
+</I>&gt;<i>
+</I>&gt;<i>Integer division via the &quot;/&quot; operator can return a float in 3.x. This 
+</I>&gt;<i>causes issues in Util.number.getStrongPrime. As 2.1 does not support
+</I>&gt;<i>the &quot;//&quot; operator, a helper function &quot;floordiv()&quot; is brought in via 'if
+</I>&gt;<i>
+</I>&gt;<i>sys.version_info' from floordiv.py or py21floordiv.py.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>C code:
+</I>&gt;<i>
+</I>&gt;<i>Extended &quot;pycrypto_compat.h&quot;. It handles #define's for Python 3.x 
+</I>&gt;<i>forward compatibility
+</I>&gt;<i>
+</I>&gt;<i>#include &quot;pycrypto_compat.h&quot;
+</I>&gt;<i>// All other local includes after this, so they can benefit from the 
+</I>&gt;<i>definitions in pycrypto_compat.h
+</I>&gt;<i>
+</I>&gt;<i>The compat header #defines IS_PY3K if compiling on 3.x
+</I>&gt;<i>The compat header #defines PyBytes_*, PyUnicode_*, PyBytesObject to 
+</I>&gt;<i>resolve to their PyString* counterparts if compiling on 2.x.
+</I>&gt;<i>PyLong_* can be dangerous depending on code construct (think an if that
+</I>&gt;<i>
+</I>&gt;<i>runs PyInt_* with else PyLong_*),
+</I>&gt;<i>therefore it is #defined in each individual module if needed and safe
+</I>&gt;<i>to 
+</I>&gt;<i>do so.
+</I>&gt;<i>
+</I>&gt;<i>PyString_* has been replaced with PyBytes_* or PyUnicode_* depending on
+</I>&gt;<i>
+</I>&gt;<i>intent
+</I>&gt;<i>PyStringObject has been replaced with PyBytesObject or PyUnicodeObject 
+</I>&gt;<i>depending on intent.
+</I>&gt;<i>PyInt_* has been replaced with PyLong_*, where safe to do (in all cases
+</I>&gt;<i>
+</I>&gt;<i>so far)
+</I>&gt;<i>
+</I>&gt;<i>The C code uses &quot;#ifdef IS_PY3K&quot; liberally.
+</I>&gt;<i>Code duplication has been avoided.
+</I>&gt;<i>
+</I>&gt;<i>Module initialization and module structure differ significantly in 3.x.
+</I>&gt;<i>
+</I>&gt;<i>Conditionals take care of it.
+</I>&gt;<i>
+</I>&gt;<i>myModuleType.ob_type assignment conditionally becomes PyTypeReady for
+</I>&gt;<i>3.x.
+</I>&gt;<i>
+</I>&gt;<i>getattr cannot be used to check against custom attributes in 3.x. For 
+</I>&gt;<i>3.x, conditional code uses getattro
+</I>&gt;<i>and PyUnicode_CompareWithASCIIString instead of strcmp
+</I>&gt;<i>
+</I>&gt;<i>hexdigest() needed to be changed to return a Unicode object with 3.x
+</I>&gt;<i>
+</I>&gt;<i>_______________________________________________
+</I>&gt;<i>pycrypto mailing list
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000338.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000348.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#343">[ date ]</a>
+              <a href="thread.html#343">[ thread ]</a>
+              <a href="subject.html#343">[ subject ]</a>
+              <a href="author.html#343">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

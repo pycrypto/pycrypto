@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ANN: PyCrypto 2.3 released
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ANN%3A%20PyCrypto%202.3%20released&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000267.html">
+   <LINK REL="Next"  HREF="000271.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ANN: PyCrypto 2.3 released</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ANN%3A%20PyCrypto%202.3%20released&In-Reply-To="
+       TITLE="[pycrypto] ANN: PyCrypto 2.3 released">dlitz at dlitz.net
+       </A><BR>
+    <I>Thu Aug 26 23:06:11 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000267.html">[pycrypto] winrandom alternative (Namely for 64-bit Windows)
+</A></li>
+        <LI>Next message: <A HREF="000271.html">[pycrypto] Fixed PyCrypto 2.3 tarball &amp; SHA256-sums
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#268">[ date ]</a>
+              <a href="thread.html#268">[ thread ]</a>
+              <a href="subject.html#268">[ subject ]</a>
+              <a href="author.html#268">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>PyCrypto 2.3 has been released.  This is a minor bugfix release.
+
+This release remains compatible with Python 2.1 through 2.7.  (Python 3.x is not yet supported.)  A C99 compiler may be required.
+
+You can download this release from <A HREF="http://www.pycrypto.org/,">http://www.pycrypto.org/,</A> you can ask for it in the cheeseshop, and it has the following SHA256 sums:
+
+495f68eb37150ead7c778671311975edcc177845a7f019e4e96011678b30666f *pycrypto-2.3.tar.gz
+2cf590e5a96d432a5a13134b558dd3c39ca8949b423f84dbd1e6e7729b9d94df *pycrypto-2.3.tar.gz.asc
+
+Please test it and post your experiences to the PyCrypto mailing list:
+
+      <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+
+and/or file bug reports on Launchpad:
+
+      <A HREF="https://bugs.launchpad.net/pycrypto">https://bugs.launchpad.net/pycrypto</A>
+
+Here is the changelog:
+
+- Fix NameError when attempting to use deprecated getRandomNumber() 
+   function.
+
+- _slowmath: Compute RSA u parameter when it's not given to RSA.construct. 
+   This makes _slowmath behave the same as _fastmath in this regard.
+
+- Make RSA.generate raise a more user-friendly exception message when the 
+   user tries to generate a bogus-length key.
+
+Thanks to everyone who helped make this release possible!
+
+Cheers,
+- Dwayne
+
+--
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+   OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 221 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100827/8bcd7955/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100827/8bcd7955/attachment.pgp</A> 
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000267.html">[pycrypto] winrandom alternative (Namely for 64-bit Windows)
+</A></li>
+	<LI>Next message: <A HREF="000271.html">[pycrypto] Fixed PyCrypto 2.3 tarball &amp; SHA256-sums
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#268">[ date ]</a>
+              <a href="thread.html#268">[ thread ]</a>
+              <a href="subject.html#268">[ subject ]</a>
+              <a href="author.html#268">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

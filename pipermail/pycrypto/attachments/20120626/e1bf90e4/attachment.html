@@ -1,0 +1,18 @@
+<tt>
+&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;&lt;div&gt;&lt;div&nbsp;class=&quot;h5&quot;&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;&lt;/div&gt;I&nbsp;think&nbsp;I&nbsp;have&nbsp;it&nbsp;working....&lt;br&gt;<br>
+&lt;br&gt;<br>
+&nbsp; myiv&nbsp;=&nbsp;&quot;some&nbsp;Random&nbsp;string&quot;&nbsp; &nbsp;#&nbsp;which&nbsp;is&nbsp;16&nbsp;bytes&nbsp;long....&lt;br&gt;<br>
+&nbsp; encobj&nbsp;=&nbsp;AES.new(secret,&nbsp;AES.MODE_CFB,&nbsp;myiv)&lt;br&gt;<br>
+&lt;br&gt;<br>
+Would&nbsp;someone&nbsp;help&nbsp;me&nbsp;understand&nbsp;what&nbsp;is&nbsp;happening&nbsp;here&nbsp;please?&lt;br&gt;<br>
+&lt;br&gt;<br>
+I&#39;m&nbsp;guessing&nbsp;on&nbsp;both&nbsp;encode&nbsp;and&nbsp;decode&nbsp;the&nbsp;&#39;myiv&#39;&nbsp;string&nbsp;should&nbsp;be&nbsp;identical...&lt;br&gt;<br>
+but&nbsp;I&#39;m&nbsp;unsure?&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.AES-module.html#new&quot;&nbsp;target=&quot;_blank&quot;&gt;https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.AES-module.html#new&lt;/a&gt;&lt;br&gt;<br>
+shows&nbsp;it&nbsp;in&nbsp;use,&nbsp;but&nbsp;with&nbsp;no&nbsp;explanation?&lt;br&gt;&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;Choice&nbsp;of&nbsp;the&nbsp;IV&nbsp;is&nbsp;critical&nbsp;for&nbsp;security.&lt;br&gt;For&nbsp;CFB,&nbsp;the&nbsp;combination&nbsp;IV&nbsp;and&nbsp;key&nbsp;must&nbsp;be&nbsp;use&nbsp;only&nbsp;with&nbsp;one&nbsp;message,&nbsp;and&nbsp;never&nbsp;occur&nbsp;again.&lt;br&gt;That&nbsp;is&nbsp;explained&nbsp;here:&lt;br&gt;<br>
+&lt;br&gt;&lt;a&nbsp;href=&quot;https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.blockalgo-module.html#MODE_CFB&quot;&gt;https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.blockalgo-module.html#MODE_CFB&lt;/a&gt;&lt;br&gt;&lt;br&gt;IV&nbsp;needs&nbsp;indeed&nbsp;to&nbsp;be&nbsp;share&nbsp;by&nbsp;the&nbsp;party&nbsp;encrypting&nbsp;and&nbsp;by&nbsp;the&nbsp;party&nbsp;decrypting&nbsp;the&nbsp;message.&lt;br&gt;<br>
+&lt;br&gt;Up&nbsp;to&nbsp;pycrypto&nbsp;2.5,&nbsp;when&nbsp;no&nbsp;iv&nbsp;was&nbsp;provided&nbsp;to&nbsp;new()&nbsp;a&nbsp;string&nbsp;of&nbsp;zeroes&nbsp;was&nbsp;automatically&nbsp;used.&lt;br&gt;Depending&nbsp;on&nbsp;your&nbsp;application,&nbsp;that&nbsp;may&nbsp;or&nbsp;may&nbsp;not&nbsp;be&nbsp;a&nbsp;problem.&nbsp;It&nbsp;is&nbsp;wiser&nbsp;to&nbsp;always&nbsp;make&nbsp;iv&nbsp;explicit.&lt;br&gt;&lt;/div&gt;&lt;/div&gt;<br>
+
+</tt>

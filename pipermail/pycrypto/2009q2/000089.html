@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> No subject
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=No%20subject&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000084.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>No subject</H1>
+    <B></B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=No%20subject&In-Reply-To="
+       TITLE="No subject">
+       </A><BR>
+    <I>Sun Apr 12 08:35:41 CST 2009</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000084.html">[pycrypto] Library design philosophy
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#89">[ date ]</a>
+              <a href="thread.html#89">[ thread ]</a>
+              <a href="subject.html#89">[ subject ]</a>
+              <a href="author.html#89">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>knows how to deal with performance trade-offs, and do not need to be patronized.
+
+Note that we should also define what &quot;too slow&quot; means, 2x? 20x? 50x? What 
+would be an acceptable slow-down, provided that we know that by the time
+performance has become a problem, the *advanced* user would have already
+switched to an optimized library/wrapper?
+
+For instance, the Actionscript crypto library as3crypto is completely written
+in AS:
+
+<A HREF="http://crypto.hurlant.com/demo/srcview/">http://crypto.hurlant.com/demo/srcview/</A>
+
+and one positive performance report:
+
+<A HREF="http://drawlogic.com/2008/02/18/as3-cryptography-libraries/">http://drawlogic.com/2008/02/18/as3-cryptography-libraries/</A>
+
+Note the remark &quot;since most of this is client side and only one user would be
+using it this is not an issue - server side is where this can have scale problems
+from parallel execution but flash is rarely server side if it is too slow,
+but it is quite fast&quot;.
+
+&gt;<i> It would also double the cost  
+</I>&gt;<i> of maintenance of the library. But a pure python implementation would be  
+</I>&gt;<i> convenient for verification of correctness and for documentation 
+</I>&gt;<i> purposes.
+</I>
+Correct, so the cost doesn't double actually. :-)
+
+&gt;<i> (Note: I don't understand your comments about being scriptable and a  
+</I>&gt;<i> command-line crypto workbench. That seems to be features related to  
+</I>&gt;<i> using Python, independent of which crypto library you use.)
+</I>
+I don't use often pycrpto for full-blown applications. Instead, I make several
+small proof-of-concepts prototypes that help in setting up the final (C-based!)
+crypto module of the real application. 
+
+Cheers,
+
+Legrandin
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000084.html">[pycrypto] Library design philosophy
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#89">[ date ]</a>
+              <a href="thread.html#89">[ thread ]</a>
+              <a href="subject.html#89">[ subject ]</a>
+              <a href="author.html#89">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

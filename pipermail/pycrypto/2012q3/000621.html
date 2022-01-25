@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] PyCrypto ElGamal code questions/comments
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20PyCrypto%20ElGamal%20code%20questions/comments&In-Reply-To=%3CCAGfyce3E8CeMkYVmJeigFu5fig%2B6ZnidMFM3aD4SQ%3DyYW6836w%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000615.html">
+   <LINK REL="Next"  HREF="000616.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] PyCrypto ElGamal code questions/comments</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20PyCrypto%20ElGamal%20code%20questions/comments&In-Reply-To=%3CCAGfyce3E8CeMkYVmJeigFu5fig%2B6ZnidMFM3aD4SQ%3DyYW6836w%40mail.gmail.com%3E"
+       TITLE="[pycrypto] PyCrypto ElGamal code questions/comments">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Sun Aug  5 09:55:25 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000615.html">[pycrypto] PyCrypto ElGamal code questions/comments
+</A></li>
+        <LI>Next message: <A HREF="000616.html">[pycrypto] problems with testing PyCrypto Module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#621">[ date ]</a>
+              <a href="thread.html#621">[ thread ]</a>
+              <a href="subject.html#621">[ subject ]</a>
+              <a href="author.html#621">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Yaron,
+
+Some comments inline:
+
+
+&gt;<i>  * The documentation of &quot;generate&quot; says that randfunc returns X random
+</I>&gt;<i>    bytes. I think this should be bits.
+</I>&gt;<i>
+</I>
+I am not 100% sure, but a common idiom in pycrypto is:
+
+&quot;
+if randfunc is None:
+     randfunc = Random.new().read
+&quot;
+
+so randfunc(N) returns N bytes of full entropy.
+
+ * The &quot;generate&quot; function is way too conservative. We construct p as
+&gt;<i>    2*q+1, where both p and q are prime. This makes p a classic &quot;safe
+</I>&gt;<i>    prime&quot;. It also makes two of the checks redundant: g cannot divide
+</I>&gt;<i>    p-1, because only 2 and q divide it. g cannot be 2, and most likely
+</I>&gt;<i>    will not be q during the lifetime of the universe. I believe that
+</I>&gt;<i>    similarly, g**-1 cannot divide p-1, but my algebra skills are too
+</I>&gt;<i>    rusty to prove it.
+</I>&gt;<i>
+</I>
+I contributed to that part with a patch. My intention was actually to list
+in the loop
+as many criteria as possible that a generator safe for both Elgamal
+encryption and Elgamal signatures (because .generate() does not know how
+the key will be used) must fulfill.
+
+It's true they are redundant in practice, but I think it's good to leave a
+track behind with the general conditions that one must check, regardless of
+how the domain parameters are computed.
+
+ * For the same reasons, there is no need for the loop when
+&gt;<i>    constructing K (the secret parameter), e.g. on line #342. You just
+</I>&gt;<i>    need to ensure that it is an odd number, otherwise its GCD with p-1
+</I>&gt;<i>    would be 2. So choose a random t, 2 &lt; t &lt; q-1, and let K=2*t+1. No
+</I>&gt;<i>    need for a loop or for the GCD calculation.
+</I>&gt;<i>
+</I>
+In the _sign() method I see only a loop to ensure that residues remains in
+the range 0..p-1. The loop does not contribute to GDC computation.
+
+
+&gt;<i>  * An important check is missing: the message M needs to be less than
+</I>&gt;<i>    p, both when signing and certainly when encrypting it.
+</I>&gt;<i>
+</I>
+True. Note that M must not the message when signing with PyCrypto's
+Elgamal. It must be really be the cryptographic hash of the message.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20120805/4792d29c/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20120805/4792d29c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000615.html">[pycrypto] PyCrypto ElGamal code questions/comments
+</A></li>
+	<LI>Next message: <A HREF="000616.html">[pycrypto] problems with testing PyCrypto Module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#621">[ date ]</a>
+              <a href="thread.html#621">[ thread ]</a>
+              <a href="subject.html#621">[ subject ]</a>
+              <a href="author.html#621">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Extending the Toolkit</TITLE>
+<META NAME="description" CONTENT="Extending the Toolkit">
+<META NAME="keywords" CONTENT="pycrypt">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="pycrypt.css">
+
+<LINK REL="next" HREF="node26.html">
+<LINK REL="previous" HREF="node18.html">
+<LINK REL="up" HREF="pycrypt.html">
+<LINK REL="next" HREF="node23.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html322"
+  HREF="node23.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html318"
+  HREF="pycrypt.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html312"
+  HREF="node21.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html320"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html323"
+  HREF="node23.html">Adding Hash Algorithms</A>
+<B> Up:</B> <A NAME="tex2html319"
+  HREF="pycrypt.html">Python Cryptography Toolkit</A>
+<B> Previous:</B> <A NAME="tex2html313"
+  HREF="node21.html">Crypto.Util.RFC1751</A>
+ &nbsp; <B>  <A NAME="tex2html321"
+  HREF="node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00080000000000000000">
+Extending the Toolkit</A>
+</H1>
+
+<P>
+Preserving the a common interface for cryptographic routines is a good
+idea.  This chapter explains how to write new modules for the Toolkit.
+
+<P>
+The basic process is as follows:
+
+<OL>
+<LI>Add a new .c file containing an implementation of the new
+algorithm.  
+This file must define 3 or 4 standard functions,
+a few constants, and a C struct encapsulating the state variables required by the algorithm.
+
+<P>
+</LI>
+<LI>Add the new algorithm to setup.py.
+
+<P>
+</LI>
+<LI>Send a copy of the code to me, if you like; code for new
+algorithms will be gratefully accepted.
+</LI>
+</OL>
+
+<P>
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL CLASS="ChildLinks">
+<LI><A NAME="tex2html324"
+  HREF="node23.html">Adding Hash Algorithms</A>
+<LI><A NAME="tex2html325"
+  HREF="node24.html">Adding Block Encryption Algorithms</A>
+<LI><A NAME="tex2html326"
+  HREF="node25.html">Adding Stream Encryption Algorithms</A>
+</UL>
+<!--End of Table of Child-Links-->
+<BR><HR>
+
+</BODY>
+</HTML>

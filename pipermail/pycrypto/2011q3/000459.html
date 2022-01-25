@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20setup.py%20fails%20to%20find%20gmp%20on%20Debian/Ubuntu&In-Reply-To=CAGfyce1rD9TmQSzt7vfhZvsBQpko_jy3UJ33SN6pDfkHiYbYSw%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000458.html">
+   <LINK REL="Next"  HREF="000460.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] setup.py fails to find gmp on Debian/Ubuntu</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20setup.py%20fails%20to%20find%20gmp%20on%20Debian/Ubuntu&In-Reply-To=CAGfyce1rD9TmQSzt7vfhZvsBQpko_jy3UJ33SN6pDfkHiYbYSw%40mail.gmail.com"
+       TITLE="[pycrypto] setup.py fails to find gmp on Debian/Ubuntu">sebastian+lists at ramacher.at
+       </A><BR>
+    <I>Mon Sep 26 15:51:58 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000458.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+        <LI>Next message: <A HREF="000460.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#459">[ date ]</a>
+              <a href="thread.html#459">[ thread ]</a>
+              <a href="subject.html#459">[ subject ]</a>
+              <a href="author.html#459">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+On 09/25/2011 10:48 PM, Legrandin wrote:
+&gt;<i> Hi Sebastian, all,
+</I>&gt;<i> 
+</I>&gt;<i> I think the problem is more deep rooted.
+</I>&gt;<i> 
+</I>&gt;<i> Searching the file system for the gmp library file is not very
+</I>&gt;<i> reliable, in that one has to make a lot of assumptions about how the
+</I>&gt;<i> linker works.
+</I>&gt;<i> Moreover, we don't know if the file we find is actually in the right
+</I>&gt;<i> binary format or not.
+</I>&gt;<i> 
+</I>&gt;<i> I suggest a different approach. We get rid of the searching logic
+</I>&gt;<i> altogether, and we simply try to compile a dummy C file that requires
+</I>&gt;<i> libgmp. If it compiles, we know that the library is somehow reachable,
+</I>&gt;<i> but we don't need to investigate where it actually is.
+</I>
+I like your approach even more.
+
+&gt;<i> That is what has_function() in distutils is supposed to do, but I find
+</I>&gt;<i> it very limited: the sought function can only be one that does not
+</I>&gt;<i> take any argument, whereas ALL functions in libgmp I know of take at
+</I>&gt;<i> least one.
+</I>&gt;<i> 
+</I>&gt;<i> See attached patch.
+</I>
+I've added a call to customize_compiler to your patch. Then CFLAGS and LDFLAGS
+will be honored (as they are during the build). Hence if libgmp is not installed
+in a standard location, the paths can be passed with CFLAGS and LDFLAGS. I've
+also added calls to delete the files that are generated during the test build.
+See the attach patch.
+
+Regards
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: multiarch3.patch
+Type: text/x-diff
+Size: 3220 bytes
+Desc: not available
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20110926/cbc2b92a/attachment.patch">http://lists.dlitz.net/pipermail/pycrypto/attachments/20110926/cbc2b92a/attachment.patch</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000458.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+	<LI>Next message: <A HREF="000460.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#459">[ date ]</a>
+              <a href="thread.html#459">[ thread ]</a>
+              <a href="subject.html#459">[ subject ]</a>
+              <a href="author.html#459">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

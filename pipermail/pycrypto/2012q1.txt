@@ -1,0 +1,2010 @@
+From sebastian+lists at ramacher.at  Sun Jan  1 22:08:32 2012
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Mon, 02 Jan 2012 05:08:32 +0100
+Subject: [pycrypto] Run test suite with /dev/random
+Message-ID: <4F012DC0.3020106@ramacher.at>
+
+Hi,
+
+I'm facing the following issue: in the Debian package of pycrypto we build
+pycrypto for Python 2.6, 2.7 and 3.1 and the debug variants. For all these
+versions and variants the test suite is run during the build. This works fine
+except on the GNU/Hurd build system [1]. There the test suite succeeds for Py
+2.6, 2.7 but fails for Py 3.2 because the system runs out of entropy.
+
+I see two options to fix the issue on the Debian side:
+ * Disable the test suite on GNU/Hurd.
+ * Replace every occurrence of /dev/urandom with /dev/random and run the test
+suite with /dev/random.
+
+I don't like either of these two options. I'd rather prefer an option to specify
+the random number generator that should be used for the test suite. But before
+implementing such an option I'd like to know if this has any chance to be
+accepted into pycrypto.
+
+I'm open to other ideas as well and welcome any help.
+
+Kind regerds
+
+[1]
+https://buildd.debian.org/status/fetch.php?pkg=python-crypto&arch=hurd-i386&ver=2.4.1-1&stamp=1321468390
+
+From grail69 at hotmail.com  Fri Jan  6 16:05:50 2012
+From: grail69 at hotmail.com (Grail Dane)
+Date: Fri, 6 Jan 2012 22:05:50 +0000
+Subject: [pycrypto] amazing!
+Message-ID: <BLU0-SMTP34648B262815F5BF48CA47BB19A0@phx.gbl>
+
+<b><span style="font-size: 23pt;">
+<a  alt="x4j9anmtvz8rw4mpvkm
+8inqau0ej1ozk1k4qltw
+sqkwx09oxzxnnrbi4wxk"
+id="nuicoedr8lzp4bgas9f
+y9u2eedxvxtv2g8waeyy"
+href="amf0slmyjeah73.l82.me/sd_pycrypto at lists.dlitz.net/albx
+8fzpgk0rsr59ymbcqv_ViewMsg" >
+Click here to read this message</a>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20120106/5f5fdc3e/attachment.htm 
+
+From grail69 at hotmail.com  Fri Jan  6 23:05:48 2012
+From: grail69 at hotmail.com (Grail Dane)
+Date: Sat, 7 Jan 2012 05:05:48 +0000
+Subject: [pycrypto] amazing!
+In-Reply-To: <BLU0-SMTP34648B262815F5BF48CA47BB19A0@phx.gbl>
+References: <BLU0-SMTP34648B262815F5BF48CA47BB19A0@phx.gbl>
+Message-ID: <SNT132-W21B7D5E2F4CEB5D8AD83F2B19A0@phx.gbl>
+
+
+Sorry for the crap below guys
+
+From: grail69 at hotmail.com
+Date: Fri, 6 Jan 2012 22:05:50 +0000
+To: pycrypto at lists.dlitz.net
+Subject: [pycrypto] amazing!
+
+
+
+Click here to read this message
+
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto 		 	   		  
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20120107/e7028ad5/attachment.htm 
+
+From grail69 at hotmail.com  Sun Jan  8 07:49:47 2012
+From: grail69 at hotmail.com (Grail Dane)
+Date: Sun, 8 Jan 2012 13:49:47 +0000
+Subject: [pycrypto] wooow!
+Message-ID: <BLU0-SMTP18891F849CBFBFB700A2321B19B0@phx.gbl>
+
+<b><span style="font-size: 20pt;">
+<a  alt="kwnb82ikdmn3osplcjn
+rwqkmfm3m31n2vk3ogns
+idofctrzj46be4oesqfw"
+id="dqjdno5y9s0ek3n2n5u
+4p6tr2ay2imbphzznkyr"
+href="c7c4ej1xm4zo4y.l81.me/sb_pycrypto at lists.dlitz.net/v0bg
+jt5secn2ntw5vi4zmc_ViewMsg" >
+Click here to see the attached video</a>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20120108/3e9ecace/attachment.html 
+
+From dlitz at dlitz.net  Fri Jan 13 10:07:51 2012
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 13 Jan 2012 11:07:51 -0500
+Subject: [pycrypto] Run test suite with /dev/random
+In-Reply-To: <4F012DC0.3020106@ramacher.at>
+References: <4F012DC0.3020106@ramacher.at>
+Message-ID: <20120113160750.GA5544@rivest.dlitz.net>
+
+On Mon, Jan 02, 2012 at 05:08:32AM +0100, Sebastian Ramacher wrote:
+>I'm facing the following issue: in the Debian package of pycrypto we build
+>pycrypto for Python 2.6, 2.7 and 3.1 and the debug variants. For all these
+>versions and variants the test suite is run during the build. This works fine
+>except on the GNU/Hurd build system [1]. There the test suite succeeds for Py
+>2.6, 2.7 but fails for Py 3.2 because the system runs out of entropy.
+>
+>I see two options to fix the issue on the Debian side:
+>
+> * Disable the test suite on GNU/Hurd.
+> * Replace every occurrence of /dev/urandom with /dev/random and run the 
+> test suite with /dev/random.
+>
+>I don't like either of these two options. I'd rather prefer an option to 
+>specify the random number generator that should be used for the test 
+>suite.  But before implementing such an option I'd like to know if this 
+>has any chance to be accepted into pycrypto.
+
+Not likely.  This looks like a HURD bug that should be fixed in HURD.
+
+Historically, /dev/random and /dev/urandom were OS-specific, but as far as 
+I'm aware, all of the other modern Unix-like systems have converged on one 
+de-facto standard:
+
+- /dev/urandom always returns as many cryptographically-secure random bytes 
+   as you request
+
+- /dev/random either behaves exactly like /dev/urandom, or it does "entropy 
+   estimation" (which is silly, IMHO) and blocks whenever the estimate 
+   reaches zero.
+
+Notably, /dev/urandom behaves exactly the same on every system where it 
+exists---except, apparently, on HURD.  What good reason could there 
+possibly be for HURD to be incompatible here?  Why should all *nix 
+developers have to write a HURD-specific protocol switch in their 
+applications?
+
+I'm not interested in patches that encourage such madness.  It would better 
+for you to spend your effort fixing HURD's /dev/urandom implementation.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Fri Jan 13 10:21:00 2012
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 13 Jan 2012 11:21:00 -0500
+Subject: [pycrypto] Using Counter for true 64-bit decryption
+In-Reply-To: <BLU129-W6AF04BF6D210766498095A2BD0@phx.gbl>
+References: <BLU129-W6AF04BF6D210766498095A2BD0@phx.gbl>
+Message-ID: <20120113162059.GB5544@rivest.dlitz.net>
+
+On Tue, Dec 13, 2011 at 07:38:12PM +0000, Lance Ware wrote:
+>
+>Hello,
+>
+>I am trying to use pycrypto to decrypt a file using AES in CTR mode.  Currently I have a file with a counter value store in the first 16 bytes of the file.  I see in most of the examples the first 8 bytes are stored in the counter value as part of a prefix with the last section starting with zero and incrementing up.  My question is that if I want to have a truly random counter value. Do I need to create my own count class to handle the increment or can i use Crypto.Util.counter class.
+>
+>I am trying to use the Crypto.Util.counter class but i keep getting errors on CTR: counter returned not 16 bytes.
+
+AES is a 128-bit block cipher.  Therefore, CTR mode needs a 128-bit 
+counter.
+
+Typically, one would use a 64-bit block counter prefixed with a 64-bit 
+nonce (total: 128 bits).  For example:
+
+     >>> from Crypto import Random
+     >>> from Crypto.Util import Counter
+     >>>
+     >>> nonce = Random.get_random_bytes(8)
+     >>> nonce.encode('hex')
+     'b474f7e74193327b'
+     >>> ctr = Counter.new(64, prefix=nonce)
+     >>> ctr
+     <_counter.CounterBE object at 0x7f73d1688ef8>
+     >>> ctr().encode('hex')
+     'b474f7e74193327b0000000000000001'
+     >>> ctr().encode('hex')
+     'b474f7e74193327b0000000000000002'
+     >>> ctr().encode('hex')
+     'b474f7e74193327b0000000000000003'
+
+Then, you could do something like this:
+
+     >>> from Crypto.Cipher import AES
+     >>> cipher = AES.new(key, AES.MODE_CTR, counter=ctr)
+     >>> ciphertext = cipher.encrypt(...)
+     >>> ciphertext += cipher.encrypt(...)
+
+There's no good reason to use a "truly random counter value".  AES already 
+takes care of scrambling your counter value.  However, if you really wanted 
+to do that, you could make you own ctr object (as above) that implements 
+__call__, but you'll take a pretty large performance penalty.  
+(Crypto.Util.Counter is implemented in C and uses an internal optimization 
+that bypasses the normal Python function-call dispatcher.)
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Fri Jan 13 10:21:38 2012
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 13 Jan 2012 11:21:38 -0500
+Subject: [pycrypto] Reg pycrypto 2.4
+In-Reply-To: <CA+XLstuZnjOnPWEqkqKBxjSd02FGH2xsKoDsCS6JEMqcEoyOSg@mail.gmail.com>
+References: <CA+XLstuZnjOnPWEqkqKBxjSd02FGH2xsKoDsCS6JEMqcEoyOSg@mail.gmail.com>
+Message-ID: <20120113162138.GC5544@rivest.dlitz.net>
+
+On Sun, Nov 27, 2011 at 10:55:25PM +0530, nivedita datta wrote:
+>Does PyCrypto 2.4 support Python 3 also..?
+
+Yes.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Fri Jan 13 10:21:50 2012
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 13 Jan 2012 11:21:50 -0500
+Subject: [pycrypto] reg current work in pycrypto
+In-Reply-To: <CA+XLstsi-2G71nrhY4jo5fEH9j9p-wGGa=vq14m3wDCdC5Ebqw@mail.gmail.com>
+References: <CA+XLstsi-2G71nrhY4jo5fEH9j9p-wGGa=vq14m3wDCdC5Ebqw@mail.gmail.com>
+Message-ID: <20120113162150.GD5544@rivest.dlitz.net>
+
+On Sun, Nov 27, 2011 at 10:59:29PM +0530, nivedita datta wrote:
+>Any ongoing project in pycrypto??
+
+Yes.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Fri Jan 13 10:44:01 2012
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 13 Jan 2012 11:44:01 -0500
+Subject: [pycrypto] Use of Fortuna Algo / Seeding Randomness
+In-Reply-To: <0E8B6772F0104133A4A4CF557BF3074C@wbpsystems.com>
+References: <0E8B6772F0104133A4A4CF557BF3074C@wbpsystems.com>
+Message-ID: <20120113164401.GE5544@rivest.dlitz.net>
+
+On Sat, Nov 19, 2011 at 09:21:43AM -0800, Ben Smith wrote:
+>Hi Everyone -
+>
+>I'm new to this package, so I'm sure I'm just dumb and it is obvious how 
+>to do this.    I want to use the fortuna algo in a simulation environment 
+>(economics if anyone cares), my particular problem I'm trying to solve 
+>would be biased using Mersenne twister (which seems to be the default 
+>everyone uses), and fortuna seems to be the best option given the aspects 
+>of randomness I care about for this problem.
+>
+>Anyhow, I want to seed fortuna with a file I have of atmospheric noise; I 
+>haven't been able to find a doc specifying how to do this.
+
+There's no supported way of doing this in PyCrypto.  The best way to do 
+this, on Linux, would be to just write the data to /dev/random (or install 
+the "entropy-gathering daemon") and just use Crypto.Random normally.  You 
+won't be able to tell the difference (and if you do, it's a security hole 
+that should be disclosed!)
+
+In theory, however, you could edit 
+Crypto/Random/_UserFriendlyRNG._EntropyCollector and add another 
+_EntropySource instance, then invoke the _EntropySource#feed method for 
+each atmospheric noise reading.
+
+Fortuna's accumulator has 32 pools, and the idea is to spread the entropy 
+uniformly across these pools.  This is ultimately done by invoking 
+FortunaAccumulator#add_random_event, which takes the following parameters:
+
+     - source_number
+         A fixed number (from 0 to 255) that is unique for each entropy 
+         source.  PyCrypto selects numbers starting from 255, so I suggest 
+         that you use a numbers starting from 0.
+     - pool_number
+         Every time your entropy source invokes add_random_event, it should 
+         increment this number, starting at 0, 1, ..., 31, and then wrapping 
+         back to 0.
+     - data
+         The bytes representing your random data.
+
+Honestly, though, you should just use Crypto.Random as-is.  If this is a 
+desktop computer with a keyboard and mouse, there's really no reason to 
+delve into the implementation of Crypto.Random.  Your operating system 
+already has enough entropy to generate cryptographically-secure random 
+numbers that are indistinguishable from a truly random source.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Fri Jan 13 11:47:04 2012
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 13 Jan 2012 12:47:04 -0500
+Subject: [pycrypto] ANN: PyCrypto 2.5 released
+Message-ID: <20120113174703.GA6660@rivest.dlitz.net>
+
+PyCrypto 2.5 has been released!
+
+You can download this release from http://www.pycrypto.org/.  It has the 
+following SHA256 sums:
+
+e950a78184e2a7defccf5d45e0c29c1e9edeb29984433f0d110a21e9631e38de *pycrypto-2.5.tar.gz
+d3cf51da0a4536083d3cbac90408411b4373c86a651521ef849178a30ba7d8d1 *pycrypto-2.5.tar.gz.asc
+
+
+The git repository is here: https://github.com/dlitz/pycrypto/
+The v2.5 commit id is: 3245543c8d6e4af046c216b7cb550c632260b31d
+
+Please test it and post your experiences to the PyCrypto mailing list:
+
+    pycrypto at lists.dlitz.net
+
+and/or file bug reports on Launchpad:
+
+    https://bugs.launchpad.net/pycrypto
+
+Here is the changelog:
+
+   * Added PKCS#1 encryption schemes (v1.5 and OAEP).  We now have
+     a decent, easy-to-use non-textbook RSA implementation.  Yay!
+
+   * Added PKCS#1 signature schemes (v1.5 and PSS). v1.5 required some
+     extensive changes to Hash modules to contain the algorithm specific
+     ASN.1 OID. To that end, we now always have a (thin) Python module to
+     hide the one in pure C.
+
+   * Added 2 standard Key Derivation Functions (PBKDF1 and PBKDF2).
+
+   * Added export/import of RSA keys in OpenSSH and PKCS#8 formats.
+
+   * Added password-protected export/import of RSA keys (one old method
+     for PKCS#8 PEM only).
+
+   * Added ability to generate RSA key pairs with configurable public
+     exponent e.
+
+   * Added ability to construct an RSA key pair even if only the private
+     exponent d is known, and not p and q.
+
+   * Added SHA-2 C source code (fully from Lorenz Quack).
+
+   * Unit tests for all the above.
+
+   * Updates to documentation (both inline and in Doc/pycrypt.rst)
+
+   * All of the above changes were put together by Legrandin (Thanks!)
+
+   * Minor bug fixes (setup.py and tests).
+
+
+Thanks to everyone who helped make this release possible, especially to
+Legrandin, who did most of the work.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+   OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 222 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20120113/1e473fdf/attachment.pgp 
+
+From sebastian+lists at ramacher.at  Fri Jan 13 12:59:49 2012
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Fri, 13 Jan 2012 19:59:49 +0100
+Subject: [pycrypto] Run test suite with /dev/random
+In-Reply-To: <20120113160750.GA5544@rivest.dlitz.net>
+References: <4F012DC0.3020106@ramacher.at>
+	<20120113160750.GA5544@rivest.dlitz.net>
+Message-ID: <4F107F25.2020008@ramacher.at>
+
+On 01/13/2012 05:07 PM, Dwayne C. Litzenberger wrote:
+> On Mon, Jan 02, 2012 at 05:08:32AM +0100, Sebastian Ramacher wrote:
+>> I'm facing the following issue: in the Debian package of pycrypto we build
+>> pycrypto for Python 2.6, 2.7 and 3.1 and the debug variants. For all these
+>> versions and variants the test suite is run during the build. This works fine
+>> except on the GNU/Hurd build system [1]. There the test suite succeeds for Py
+>> 2.6, 2.7 but fails for Py 3.2 because the system runs out of entropy.
+>>
+>> I see two options to fix the issue on the Debian side:
+>>
+>> * Disable the test suite on GNU/Hurd.
+>> * Replace every occurrence of /dev/urandom with /dev/random and run the 
+>> test suite with /dev/random.
+>>
+>> I don't like either of these two options. I'd rather prefer an option to 
+>> specify the random number generator that should be used for the test 
+>> suite.  But before implementing such an option I'd like to know if this 
+>> has any chance to be accepted into pycrypto.
+> 
+> Not likely.  This looks like a HURD bug that should be fixed in HURD.
+> 
+> [snip]
+
+Thank you for the explanation. This was a misunderstanding on my side. I'll talk
+with the Hurd Developers then.
+
+Kind regards
+
+From dlitz at dlitz.net  Sun Jan 15 11:47:01 2012
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 15 Jan 2012 12:47:01 -0500
+Subject: [pycrypto] Run test suite with /dev/random
+In-Reply-To: <4F107F25.2020008@ramacher.at>
+References: <4F012DC0.3020106@ramacher.at>
+	<20120113160750.GA5544@rivest.dlitz.net>
+	<4F107F25.2020008@ramacher.at>
+Message-ID: <20120115174701.GA9144@rivest.dlitz.net>
+
+On Fri, Jan 13, 2012 at 07:59:49PM +0100, Sebastian Ramacher wrote:
+>Thank you for the explanation. This was a misunderstanding on my side.  
+>I'll talk with the Hurd Developers then.
+
+Great, thanks!
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From grail69 at hotmail.com  Tue Jan 17 03:51:37 2012
+From: grail69 at hotmail.com (Grail Dane)
+Date: Tue, 17 Jan 2012 09:51:37 +0000
+Subject: [pycrypto] how to make $9597 monthly from home
+Message-ID: <BLU0-SMTP13035ABC2381411AFA7B51FB1800@phx.gbl>
+
+<b><span style="font-size: 12pt;">
+Earn up to $314 per day <a alt="mxj6afihszgu59xdtxh
+u4hzfdzc8jgu6tp3xvde
+pf59lvwa7fopmclnoxkx
+c5278i6zws36b6mvcvz9
+l8vngq0f7n0vjk0b4zri"
+id="lmdxba6z75t0spulegn
+k3ebktemjzbczx5jonrk"
+href="fuocd61wdvoc04.l92.me/op_pycrypto at lists.dlitz.net/d6ve
+lbfwhw10trpxxfg4xp_ViewMsg" >
+register here</a>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20120117/51511012/attachment.html 
+
+From mr at mry4n.net  Tue Jan 17 16:01:03 2012
+From: mr at mry4n.net (Michael Ryan)
+Date: Tue, 17 Jan 2012 17:01:03 -0500
+Subject: [pycrypto] install error on cygwin
+Message-ID: <CAMQvLPdozOL_+crr99hm5pnCcimJNvncGWQ6LU_sBTyfciaB8A@mail.gmail.com>
+
+After running "python setup.py install" I'm getting the following error:
+
+configure: line 18: $'\r': command not found
+configure: line 33: syntax error near unexpected token `newline'
+'onfigure: line 33: `     ;;
+
+Any ideas what might be wrong?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20120117/c58b8f43/attachment.htm 
+
+From mr at mry4n.net  Wed Jan 18 12:23:24 2012
+From: mr at mry4n.net (Michael Ryan)
+Date: Wed, 18 Jan 2012 13:23:24 -0500
+Subject: [pycrypto] install error on cygwin
+Message-ID: <CAMQvLPdYK9_5WtAduBMku=8zHwFeH7wX0fnU=BkwbG8QFh7N6g@mail.gmail.com>
+
+I figured it out. I tried to use winzip to unzip gzip on Windows. Tried
+7-zip instead, and everything installed fine.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20120118/38f7ec67/attachment.htm 
+
+From antoine at nagafix.co.uk  Fri Jan 20 04:28:32 2012
+From: antoine at nagafix.co.uk (Antoine Martin)
+Date: Fri, 20 Jan 2012 17:28:32 +0700
+Subject: [pycrypto] same RSA.construct fails on OSX
+Message-ID: <4F1941D0.90208@nagafix.co.uk>
+
+Hi,
+
+The following code runs fine on a number of platforms, but fails on OSX
+(I believe it may have started failing after I added gmp/fastmath)
+What can I do to correct this (and still use fastmath)?
+Shouldn't this be detected as a problem with fastmath, at build time?
+
+Thanks
+Antoine
+
+
+m =
+629766679649111238498558040423325907348086218188269224733129351244105710959462967727426930370341489197487946708238066556950578682517049084284627148972264605113784747720130519177869497267020924781291790094997339549869355397073918186703997176049088081511002407747280387474188814155322164004592203947956666446679911079370919628553292414758816236523143813172270937087998526202784084227959216322573574920327890370816769330319071839804199047829276060309808407656446194514703386443902285279304515506032724512568174086418987683597624024690041934271950407353689186026761674435601472279820132018723994638638529218654802253328472835286703009191472742728455750164235974198637976472189699792868379926131317325356465106086680100646821821963737031575472348883325664261297004666339615802496152784519118880977755533563685101845377964168060854967493445250284560343344168403344027494999240899050527363920884229396569625853414836205347273737760224895919785039743043508962881271486966985770223818841929372538297
+575813176170657958303457980304808701531164558151473508424104792451710536820408218767935005638215286167267770783159179267710364049115204912542321635413000325087202501078130431808508191077784643242019514039713356650998482225916863499677850018987
+e = 65537
+p = 0
+k = RSA.construct((long(m), long(e), long(p)))
+print("recreate_key=%s" % k)
+
+On OSX I get:
+ValueError: Unable to compute factors p and q from exponent d.
+
+From gooksankoo at hoiptorrow.mailexpire.com  Fri Jan 20 07:33:01 2012
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Fri, 20 Jan 2012 14:33:01 +0100
+Subject: [pycrypto] same RSA.construct fails on OSX
+In-Reply-To: <4F1941D0.90208@nagafix.co.uk>
+References: <4F1941D0.90208@nagafix.co.uk>
+Message-ID: <CAGfyce3gj_0m8QgJa2v+n4753p-vhBG99tpk6C3axCCYGeedTA@mail.gmail.com>
+
+Hi Antoine,
+
+> The following code runs fine on a number of platforms, but fails on OSX
+> (I believe it may have started failing after I added gmp/fastmath)
+>
+> m = 6297666796491112384985580404233259073480862181882692247331293512441057109594629677274269303703414891974879> e = 65537
+> p = 0
+> k = RSA.construct((long(m), long(e), long(p)))
+> print("recreate_key=%s" % k)
+>
+> On OSX I get:
+> ValueError: Unable to compute factors p and q from exponent d.
+
+This is the correct behavior with current pycrypto version (2.5), no
+matter if you use fast or slow math.
+Your code is trying to reconstruct an RSA private key, but you pass a
+private exponent (which you call p, even if typically is called d)
+with value 0. That is an error, the private exponent must be e^{-1}
+mod phi(m), which clearly cannot be zero.
+
+API is described here
+https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA-module.html#construct
+.
+
+With previous version you had to provide at least 5 elements,
+m+e+d+p+q (I don't recall how they complain if you provide only 3).
+
+> What can I do to correct this (and still use fastmath)?
+> Shouldn't this be detected as a problem with fastmath, at build time?
+
+There is nothing to correct I think.
+
+From antoine at nagafix.co.uk  Fri Jan 20 08:21:42 2012
+From: antoine at nagafix.co.uk (Antoine Martin)
+Date: Fri, 20 Jan 2012 21:21:42 +0700
+Subject: [pycrypto] same RSA.construct fails on OSX
+In-Reply-To: <CAGfyce3gj_0m8QgJa2v+n4753p-vhBG99tpk6C3axCCYGeedTA@mail.gmail.com>
+References: <4F1941D0.90208@nagafix.co.uk>
+	<CAGfyce3gj_0m8QgJa2v+n4753p-vhBG99tpk6C3axCCYGeedTA@mail.gmail.com>
+Message-ID: <4F197876.8030000@nagafix.co.uk>
+
+On 01/20/2012 08:33 PM, Legrandin wrote:
+> Hi Antoine,
+> 
+>> The following code runs fine on a number of platforms, but fails on OSX
+>> (I believe it may have started failing after I added gmp/fastmath)
+>>
+>> m = 6297666796491112384985580404233259073480862181882692247331293512441057109594629677274269303703414891974879> e = 65537
+>> p = 0
+>> k = RSA.construct((long(m), long(e), long(p)))
+>> print("recreate_key=%s" % k)
+>>
+>> On OSX I get:
+>> ValueError: Unable to compute factors p and q from exponent d.
+> 
+> This is the correct behavior with current pycrypto version (2.5), no
+> matter if you use fast or slow math.
+> Your code is trying to reconstruct an RSA private key, but you pass a
+> private exponent (which you call p, even if typically is called d)
+> with value 0. That is an error, the private exponent must be e^{-1}
+> mod phi(m), which clearly cannot be zero.
+I am re-constructing only the public part of the RSA key as the private
+exponent is not available to this code (which runs on the client)
+
+I've just found that simply removing p (or 'd' as it should be called..)
+is enough to fix it, so the code becomes:
+if d==0:
+  k = RSA.construct((long(m), long(e)))
+else:
+  k = RSA.construct((long(m), long(e), long(d)))
+
+> API is described here
+> https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA-module.html#construct
+> .
+> 
+> With previous version you had to provide at least 5 elements,
+> m+e+d+p+q (I don't recall how they complain if you provide only 3).
+According to the docs, it's 2 minimum (as above), anyone know if the
+code above is going to have problems running on distros with old
+versions of pycrypto?
+
+>> What can I do to correct this (and still use fastmath)?
+>> Shouldn't this be detected as a problem with fastmath, at build time?
+> 
+> There is nothing to correct I think.
+You are right, I was misled by the fastmath when in fact it was pycrypto
+2.5 on osx and 2.4.1 elsewhere..
+
+Thanks
+Antoine
+
+From gooksankoo at hoiptorrow.mailexpire.com  Fri Jan 20 09:22:50 2012
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Fri, 20 Jan 2012 16:22:50 +0100
+Subject: [pycrypto] same RSA.construct fails on OSX
+In-Reply-To: <4F197876.8030000@nagafix.co.uk>
+References: <4F1941D0.90208@nagafix.co.uk>
+	<CAGfyce3gj_0m8QgJa2v+n4753p-vhBG99tpk6C3axCCYGeedTA@mail.gmail.com>
+	<4F197876.8030000@nagafix.co.uk>
+Message-ID: <CAGfyce0Q=DtQscTAFLD7kqj3DX4DD9HOKksA7tsYDdsArWTATg@mail.gmail.com>
+
+Hi Antoine,
+
+> I've just found that simply removing p (or 'd' as it should be called..)
+> is enough to fix it, so the code becomes:
+> if d==0:
+> ?k = RSA.construct((long(m), long(e)))
+> else:
+> ?k = RSA.construct((long(m), long(e), long(d)))
+
+In the first case you generate a public key no matter which library
+you have installed.
+In the second case you generate a private key, but only if you are on 2.5.
+
+Do you need a public key or a private key?
+
+If you need a public key, just use 2 arguments.
+If you need a private key and you want it to work with all pycrypto
+versions, go and look for the remaining 2 parameters (p and q)... ;-)
+
+>> With previous version you had to provide at least 5 elements,
+>> m+e+d+p+q (I don't recall how they complain if you provide only 3).
+> According to the docs, it's 2 minimum (as above), anyone know if the
+> code above is going to have problems running on distros with old
+> versions of pycrypto?
+
+I would simply assume it will have problem with previous versions:
+it's clearly off spec for them.
+
+From antoine at nagafix.co.uk  Fri Jan 20 10:04:27 2012
+From: antoine at nagafix.co.uk (Antoine Martin)
+Date: Fri, 20 Jan 2012 23:04:27 +0700
+Subject: [pycrypto] same RSA.construct fails on OSX
+In-Reply-To: <CAGfyce0Q=DtQscTAFLD7kqj3DX4DD9HOKksA7tsYDdsArWTATg@mail.gmail.com>
+References: <4F1941D0.90208@nagafix.co.uk>
+	<CAGfyce3gj_0m8QgJa2v+n4753p-vhBG99tpk6C3axCCYGeedTA@mail.gmail.com>
+	<4F197876.8030000@nagafix.co.uk>
+	<CAGfyce0Q=DtQscTAFLD7kqj3DX4DD9HOKksA7tsYDdsArWTATg@mail.gmail.com>
+Message-ID: <4F19908B.4000107@nagafix.co.uk>
+
+On 01/20/2012 10:22 PM, Legrandin wrote:
+> Hi Antoine,
+> 
+>> I've just found that simply removing p (or 'd' as it should be called..)
+>> is enough to fix it, so the code becomes:
+>> if d==0:
+>>  k = RSA.construct((long(m), long(e)))
+>> else:
+>>  k = RSA.construct((long(m), long(e), long(d)))
+> 
+> In the first case you generate a public key no matter which library
+> you have installed.
+> In the second case you generate a private key, but only if you are on 2.5.
+What do you think is meant to happen with versions prior to 2.5?
+This exact code has been behaving as expected for years. The resulting
+private key has been used with other libraries (bouncy castle for one).
+
+> Do you need a public key or a private key?
+As per above, public if d==0, private otherwise.
+
+> If you need a public key, just use 2 arguments.
+Yes, the only change needed here for 2.5 is that the third argument
+cannot be specified with a value of 0 as was the case previously.
+
+> If you need a private key and you want it to work with all pycrypto
+> versions, go and look for the remaining 2 parameters (p and q)... ;-)
+> 
+>>> With previous version you had to provide at least 5 elements,
+>>> m+e+d+p+q (I don't recall how they complain if you provide only 3).
+>> According to the docs, it's 2 minimum (as above), anyone know if the
+>> code above is going to have problems running on distros with old
+>> versions of pycrypto?
+> 
+> I would simply assume it will have problem with previous versions:
+> it's clearly off spec for them.
+For the record, it works OK with the default values for p and q, even
+with previous versions which is great.
+
+Thanks
+Antoine
+
+From sebastian+lists at ramacher.at  Fri Jan 20 10:20:57 2012
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Fri, 20 Jan 2012 17:20:57 +0100
+Subject: [pycrypto] Run test suite with /dev/random
+In-Reply-To: <4F107F25.2020008@ramacher.at>
+References: <4F012DC0.3020106@ramacher.at>
+	<20120113160750.GA5544@rivest.dlitz.net>
+	<4F107F25.2020008@ramacher.at>
+Message-ID: <4F199469.1@ramacher.at>
+
+On 01/13/2012 07:59 PM, Sebastian Ramacher wrote:
+> Thank you for the explanation. This was a misunderstanding on my side. I'll talk
+> with the Hurd Developers then.
+
+Apparently this is a known issue with Hurd's urandom implementation.
+
+Nevertheless there is still an issue in pycrypto left. The assumption that read
+always returns the amount of data requested if there is enough available is not
+true. If the process is interrupted by a signal read will return less. At least
+that's the case for Python3.
+
+The following example illustrates that:
+
+% cat signal.py
+from Crypto.Random import OSRNG
+r = OSRNG.new()
+
+S = 1024**3
+while True:
+  r.read(S)
+
+% python3 signal.py & ; PID=$! ; sleep 2 ; kill -STOP $PID ; sleep 10 ; kill
+-CONT $PID ; sleep 1 ; kill -KILL $PID
+[2] 25862
+[2]  + 25862 suspended (signal)  python3 signal.py
+Traceback (most recent call last):
+  File "signal.py", line 6, in <module>
+    r.read(S)
+  File "/usr/lib/python3/dist-packages/Crypto/Random/OSRNG/rng_base.py", line
+78, in read
+    raise AssertionError("%s produced truncated output (requested %d, got %d)" %
+(self.name, N, len(data)))
+AssertionError: /dev/urandom produced truncated output (requested 1073741824,
+got 20447500)
+kill: kill 25862 failed: no such process
+
+
+I've attached a patch that fixes this issue.
+
+Kind regards
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: posixread.diff
+Type: text/x-diff
+Size: 542 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20120120/7b674eb6/attachment.diff 
+
+From sebastian+lists at ramacher.at  Fri Jan 20 10:40:05 2012
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Fri, 20 Jan 2012 17:40:05 +0100
+Subject: [pycrypto] Run test suite with /dev/random
+In-Reply-To: <4F199469.1@ramacher.at>
+References: <4F012DC0.3020106@ramacher.at>
+	<20120113160750.GA5544@rivest.dlitz.net>
+	<4F107F25.2020008@ramacher.at> <4F199469.1@ramacher.at>
+Message-ID: <4F1998E5.1080406@ramacher.at>
+
+On 01/20/2012 05:20 PM, Sebastian Ramacher wrote:
+> I've attached a patch that fixes this issue.
+
+It doesn't fix the issue. I'll provide a new one.
+
+Kind regards
+
+From sebastian+lists at ramacher.at  Fri Jan 20 10:50:46 2012
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Fri, 20 Jan 2012 17:50:46 +0100
+Subject: [pycrypto] Run test suite with /dev/random
+In-Reply-To: <4F1998E5.1080406@ramacher.at>
+References: <4F012DC0.3020106@ramacher.at>
+	<20120113160750.GA5544@rivest.dlitz.net>
+	<4F107F25.2020008@ramacher.at> <4F199469.1@ramacher.at>
+	<4F1998E5.1080406@ramacher.at>
+Message-ID: <4F199B66.3080004@ramacher.at>
+
+On 01/20/2012 05:40 PM, Sebastian Ramacher wrote:
+> On 01/20/2012 05:20 PM, Sebastian Ramacher wrote:
+>> I've attached a patch that fixes this issue.
+> 
+> It doesn't fix the issue. I'll provide a new one.
+
+Attached.
+
+Kind regards,
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: posixread.diff
+Type: text/x-diff
+Size: 766 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20120120/20f7dd78/attachment.diff 
+
+From gooksankoo at hoiptorrow.mailexpire.com  Sun Jan 22 14:55:42 2012
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Sun, 22 Jan 2012 21:55:42 +0100
+Subject: [pycrypto] same RSA.construct fails on OSX
+In-Reply-To: <4F19908B.4000107@nagafix.co.uk>
+References: <4F1941D0.90208@nagafix.co.uk>
+	<CAGfyce3gj_0m8QgJa2v+n4753p-vhBG99tpk6C3axCCYGeedTA@mail.gmail.com>
+	<4F197876.8030000@nagafix.co.uk>
+	<CAGfyce0Q=DtQscTAFLD7kqj3DX4DD9HOKksA7tsYDdsArWTATg@mail.gmail.com>
+	<4F19908B.4000107@nagafix.co.uk>
+Message-ID: <CAGfyce0UFyJNYgfb6mgAnwofsHzoLGTcoFj2JzMBdnTp4Z1qhQ@mail.gmail.com>
+
+Hi Antoine,
+
+>> Do you need a public key or a private key?
+> As per above, public if d==0, private otherwise.
+
+>> If you need a private key and you want it to work with all pycrypto
+>> versions, go and look for the remaining 2 parameters (p and q)... ;-)
+
+Here I was wrong, I just had a look at the code.
+If you pass three arguments, you always build a private key in any
+version of pycrypto,
+assuming that the third parameter (d) is really the correct private exponent.
+p and q are not strictly needed.
+
+If d is zero though, construct() in pycrypto <2.5 will succeed but you
+will end with a key which may still be potentially used a private key,
+even if it shouldn't.
+In other words, sign&decrypt won't fail but their output will be wrong.
+
+The code you came up with:
+
+>>> if d==0:
+>>>  k = RSA.construct((long(m), long(e)))
+>>> else:
+>>>  k = RSA.construct((long(m), long(e), long(d)))
+
+seems the most correct in your situation.
+
+From dlitz at dlitz.net  Fri Jan 27 13:13:47 2012
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 27 Jan 2012 13:13:47 -0500
+Subject: [pycrypto] Run test suite with /dev/random
+In-Reply-To: <4F199469.1@ramacher.at>
+References: <4F012DC0.3020106@ramacher.at>
+	<20120113160750.GA5544@rivest.dlitz.net>
+	<4F107F25.2020008@ramacher.at> <4F199469.1@ramacher.at>
+Message-ID: <20120127181347.GA8154@rivest.dlitz.net>
+
+On Fri, Jan 20, 2012 at 05:20:57PM +0100, Sebastian Ramacher wrote:
+>Nevertheless there is still an issue in pycrypto left. The assumption that 
+>read always returns the amount of data requested if there is enough 
+>available is not true. If the process is interrupted by a signal read will 
+>return less. At least that's the case for Python3.
+
+That assumption is *correct*.  A Python file object's read() method always 
+returns the requested amount of data, except in two cases:
+
+     1. Non-blocking I/O is selected; or
+     2. End-of-file is reached.
+
+You are confusing this with the read(2) syscall, which *can* return fewer 
+bytes than requested if the process receives a signal.
+
+Here's the relevant Python documentation:
+
+> file.read([<size>])
+>
+>     Read at most <size> bytes from the file (less if the read hits EOF 
+>     before obtaining <size> bytes). If the <size> argument is negative 
+>     or omitted, read all data until EOF is reached. The bytes are 
+>     returned as a string object. An empty string is returned when EOF 
+>     is encountered immediately. (For certain files, like ttys, it makes 
+>     sense to continue reading after an EOF is hit.) Note that this 
+>     method may call the underlying C function fread() more than once in 
+>     an effort to acquire as close to <size> bytes as possible. Also 
+>     note that when in non-blocking mode, less data than was requested 
+>     may be returned, even if no <size> parameter was given.
+>
+>     Note: This function is simply a wrapper for the underlying fread() 
+>     C function, and will behave the same in corner cases, such as 
+>     whether the EOF value is cached.
+>
+> -- http://docs.python.org/library/stdtypes.html#file-objects
+
+You've discovered a Python3 bug.  Good work. :)
+
+I checked, and this works correctly in Python 2.  The problem seems to be 
+(at least in Python 3.2.2) that file.read is no longer a wrapper around 
+fread(), and Python3's implementation doesn't retry read() calls like it's 
+supposed to.
+
+I've attached a C program that allows you to test the behaviour of fread().  
+Here's how to test it (using bash):
+
+    1. Compile it:
+        gcc -O2 -o freadtest freadtest.c
+    2. Run it:
+        ./freadtest /dev/urandom
+    3. Press Ctrl-Z to suspend it.
+    4. Type "fg" to resume the process
+    5. You should not see any output.
+
+So, the problem is that Python3's current implementation of file.read() 
+doesn't behave as documented, and it doesn't behave like it did in Python 
+2.
+
+I suggest reporting this bug against Python itself.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: freadtest.c
+Type: text/x-csrc
+Size: 1290 bytes
+Desc: not available
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120127/d7831cf3/attachment.c>
+
+From sebastian+lists at ramacher.at  Fri Jan 27 20:14:10 2012
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Sat, 28 Jan 2012 02:14:10 +0100
+Subject: [pycrypto] Run test suite with /dev/random
+In-Reply-To: <20120127181347.GA8154@rivest.dlitz.net>
+References: <4F012DC0.3020106@ramacher.at>
+	<20120113160750.GA5544@rivest.dlitz.net>
+	<4F107F25.2020008@ramacher.at> <4F199469.1@ramacher.at>
+	<20120127181347.GA8154@rivest.dlitz.net>
+Message-ID: <4F234BE2.8030503@ramacher.at>
+
+On 01/27/2012 07:13 PM, Dwayne C. Litzenberger wrote:
+> On Fri, Jan 20, 2012 at 05:20:57PM +0100, Sebastian Ramacher wrote:
+>> Nevertheless there is still an issue in pycrypto left. The assumption that
+>> read always returns the amount of data requested if there is enough available
+>> is not true. If the process is interrupted by a signal read will return less.
+>> At least that's the case for Python3.
+> 
+> That assumption is *correct*.  A Python file object's read() method always
+> returns the requested amount of data, except in two cases:
+> 
+>     1. Non-blocking I/O is selected; or
+>     2. End-of-file is reached.
+> 
+> You are confusing this with the read(2) syscall, which *can* return fewer bytes
+> than requested if the process receives a signal.
+> 
+> Here's the relevant Python documentation:
+> 
+>> file.read([<size>])
+>>
+>>     Read at most <size> bytes from the file (less if the read hits EOF    
+>> before obtaining <size> bytes). If the <size> argument is negative     or
+>> omitted, read all data until EOF is reached. The bytes are     returned as a
+>> string object. An empty string is returned when EOF     is encountered
+>> immediately. (For certain files, like ttys, it makes     sense to continue
+>> reading after an EOF is hit.) Note that this     method may call the
+>> underlying C function fread() more than once in     an effort to acquire as
+>> close to <size> bytes as possible. Also     note that when in non-blocking
+>> mode, less data than was requested     may be returned, even if no <size>
+>> parameter was given.
+>>
+>>     Note: This function is simply a wrapper for the underlying fread()     C
+>> function, and will behave the same in corner cases, such as     whether the
+>> EOF value is cached.
+>>
+>> -- http://docs.python.org/library/stdtypes.html#file-objects
+
+There is no file object anymore. The I/O stack got rewritten in Python 3. If
+open would be called without buffering=0, all the assumptions would be correct
+again (and one would have fread like behavior). But since buffering equals 0,
+open returns a FileIO instance. And FileIO.read just behaves as the underlying
+syscall which is read(2). [1, 2]
+
+Kind regards,
+
+[1] http://docs.python.org/py3k/library/io.html#raw-i-o
+[2] http://docs.python.org/py3k/library/io.html#io.RawIOBase
+
+From george at reilly.org  Mon Jan 30 02:18:25 2012
+From: george at reilly.org (George V. Reilly)
+Date: Sun, 29 Jan 2012 23:18:25 -0800
+Subject: [pycrypto] Building a Win32 egg for PyCrypto 2.5
+Message-ID: <CAL3j_b-CcoNOtDkY58VUCSMgzimbEgNC9bjg+bBD2F-XbTwKtg@mail.gmail.com>
+
+I'm really surprised that there's no information on building Win32 eggs
+anywhere on the PyCrypto website or in the PyCrypto docs. With all the
+export regulations, I can understand why you might not want to supply
+pre-built binaries, but it would be good to explain how to do it. Michael
+Foord has supplied such binaries for earlier versions of PyCrypto, but
+there's none available for PyCrypto 2.5 yet.
+
+I managed to figure it out today, with an assist from
+https://tahoe-lafs.org/trac/tahoe-lafs/wiki/HowtoBuildPyCryptoOnWindows
+
+Here's the batch file that I used:
+
+
+REM Build a Win32 egg for Python 2.6 or 2.7
+REM Assumes that you have the Visual Studio 2008 C++ compiler (Express
+suffices).
+REM
+http://www.microsoft.com/visualstudio/en-us/products/2008-editions/express
+
+if ["%VCINSTALLDIR%"]==[""] ("%VS90COMNTOOLS%"vsvars32.bat)
+
+@REM If package uses setuptools, this can be
+@REM collapsed to "python setup.py bdist_egg"
+python setup.py build
+python -c "import setuptools; execfile('setup.py')" bdist_egg
+
+
+The standard Windows binaries for Python 2.5 and earlier are built with
+different compilers.
+http://stackoverflow.com/questions/101061/building-python-c-extension-modules-for-windowsgives
+some hints.
+-- 
+/George V. Reilly  george at reilly.org  Twitter: @georgevreilly
+http://www.georgevreilly.com/blog  http://blogs.cozi.com/tech
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120129/d9d587a2/attachment.html>
+
+From dlitz at dlitz.net  Mon Jan 30 23:45:40 2012
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 30 Jan 2012 23:45:40 -0500
+Subject: [pycrypto] Run test suite with /dev/random
+In-Reply-To: <4F234BE2.8030503@ramacher.at>
+References: <4F012DC0.3020106@ramacher.at>
+	<20120113160750.GA5544@rivest.dlitz.net>
+	<4F107F25.2020008@ramacher.at> <4F199469.1@ramacher.at>
+	<20120127181347.GA8154@rivest.dlitz.net>
+	<4F234BE2.8030503@ramacher.at>
+Message-ID: <20120131044540.GA5208@rivest.dlitz.net>
+
+On Sat, Jan 28, 2012 at 02:14:10AM +0100, Sebastian Ramacher wrote:
+>There is no file object anymore. The I/O stack got rewritten in Python 3.  
+>If open would be called without buffering=0, all the assumptions would be 
+>correct again (and one would have fread like behavior). But since 
+>buffering equals 0, open returns a FileIO instance. And FileIO.read just 
+>behaves as the underlying syscall which is read(2). [1, 2]
+>
+>[1] http://docs.python.org/py3k/library/io.html#raw-i-o
+>[2] http://docs.python.org/py3k/library/io.html#io.RawIOBase
+
+What the hell?  So, open() returns an object that *isn't* a file-like 
+object (according to the definition of a file-like object) just because I 
+asked for a zero-length buffer?  What happened to "explicit is better than 
+implicit"?  "Special cases aren't special enough to break the rules"?
+
+*Sigh* I still consider this to be a bug in Python, but I guess it's 
+unlikely to ever be fixed... :-/
+
+Ok, I'm willing to accept a patch that implements your workaround, if you 
+can address a few remaining issues:
+
+1. BlockingIOError needs to be handled.  If the signal occurs immediately 
+    after the read(2) syscall is invoked, it will set errno=EAGAIN and 
+    Python will raise BlockingIOError.  (At least, that's what the 
+    documentation says.)
+
+2. If EOF is encountered for some reason, your loop would never terminate.  
+    This shouldn't happen normally, but the RNG is a critical piece of 
+    essentially untestable code, so it's okay to code it a little more
+    defensively than usual.  (Who knows?  We might encounter a broken 
+    /dev/urandom implementation, or somebody might build a broken chroot 
+    environment).
+
+    If DevURandomRNG._read gets an EOF, it should behave like a normal 
+    file-like object.  That is, it should return the truncated string, and 
+    subsequently always return b"".  Basically, if self.__file.read(...) == 
+    b"", then return data.
+
+    There's no BlockingIOError defined in Python 2.x, so that will need to 
+    be taken into account.
+
+3. Please also include a comment in the code that explains why this needs 
+    to be done.
+
+Cheers,
+- Dwayne
+
+P.S.  Thank you for tracking this down.  As a packager, I guess you receive 
+more than your fair share of flak for problems created by other people!  
+Even though I enthusiastically reject some of your patches, I (and probably 
+many users of PyCrypto) appreciate the work that you are doing. :)
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From sebastian+lists at ramacher.at  Fri Feb  3 11:35:20 2012
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Fri, 03 Feb 2012 17:35:20 +0100
+Subject: [pycrypto] Run test suite with /dev/random
+In-Reply-To: <20120131044540.GA5208@rivest.dlitz.net>
+References: <4F012DC0.3020106@ramacher.at>
+	<20120113160750.GA5544@rivest.dlitz.net>
+	<4F107F25.2020008@ramacher.at> <4F199469.1@ramacher.at>
+	<20120127181347.GA8154@rivest.dlitz.net>
+	<4F234BE2.8030503@ramacher.at>
+	<20120131044540.GA5208@rivest.dlitz.net>
+Message-ID: <4F2C0CC8.9080402@ramacher.at>
+
+On 01/31/2012 05:45 AM, Dwayne C. Litzenberger wrote:
+> Ok, I'm willing to accept a patch that implements your workaround, if you can
+> address a few remaining issues:
+
+Please have a look at the attached patch. It should fix all the remaining
+issues. Just let me know if there is something left that I've missed.
+
+> 1. BlockingIOError needs to be handled.  If the signal occurs immediately   
+> after the read(2) syscall is invoked, it will set errno=EAGAIN and    Python
+> will raise BlockingIOError.  (At least, that's what the    documentation says.)
+
+I think you meant IOError and errno=EINTR. FileIO won't throw a BlockingIOError
+in any case. That's BufferedReader. If FileIO.read fails and errno=EAGAIN then
+it returns None and otherwise it throws an IOError. At least that's how I
+understand the code and the documentation.
+
+> P.S.  Thank you for tracking this down.
+
+You're welcome.
+
+Kind regards
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fix-DevURandomRNG-to-work-with-Python3-s-new-I-O-sta.patch
+Type: text/x-diff
+Size: 2102 bytes
+Desc: not available
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120203/0576251d/attachment.patch>
+
+From maxpolk at gmail.com  Thu Feb 16 22:54:44 2012
+From: maxpolk at gmail.com (Max Polk)
+Date: Thu, 16 Feb 2012 22:54:44 -0500
+Subject: [pycrypto] Visual Studio Express 2010
+Message-ID: <CADPfvJtRG-h06uWp94ZOG+J2U6AKXQWveU026L=VOonZycKgjw@mail.gmail.com>
+
+To build with Visual Studio Express 2010, edit Python's
+Lib\distutils\msvc9compiler.py, add the top line here above the existing
+next line:
+
+    ld_args.append('/MANIFEST')
+    ld_args.append('/MANIFESTFILE:' + temp_manifest)
+
+( Above discovered at
+http://fuyun.org/2009/12/install-mysql-for-python-on-windows )
+
+Then use this to build a binary distribution:
+
+    set VS90COMNTOOLS=%VS100COMNTOOLS%
+    python setup.py bdist_wininst
+
+The above creates dist\pycrypto-2.5.win32-py2.7.exe
+
+The build, test, install targets work as well as bdist_wininst.
+
+From plaes at plaes.org  Mon Feb 27 18:33:04 2012
+From: plaes at plaes.org (Priit Laes)
+Date: Tue, 28 Feb 2012 01:33:04 +0200
+Subject: [pycrypto] Troubles when porting from m2crypto
+Message-ID: <1330385584.31064.12.camel@localhost.localdomain>
+
+Hey!
+
+I'm currently in process of porting my code from m2crypt to pycrypto,
+but I have run into an issue where pycrypto doesn't seem to be returning
+correct results (tested on 32-bit Gentoo, pycrypto-2.5 + Debian 64bit
+with consistent results):
+
+#/usr/bin/env python
+from M2Crypto import EVP
+
+MSG = u'Hello world'
+
+k = EVP.load_key('private_key.pem')
+k.sign_init()
+k.sign_update(MSG) # default is SHA1
+print k.sign_final().encode('base64').strip()
+
+### pycrypto
+from Crypto.PublicKey import RSA
+from Crypto.Hash import SHA
+from Crypto.Util import number
+
+with open('private_key.pem', 'r') as f:
+    s = SHA.new(MSG).digest()
+    k = RSA.importKey(f).sign(s, None)[0]
+    print number.long_to_bytes(k).encode('base64').strip()
+
+
+And this returns following:
+J8ubNHhDmqMnvY3e1UidBnbQCryVkc45+F47L1jELa6ZQAHhi4mhOuwLc0AuCX+oWf2KRFHA/xt8
+1D1RDoOl4S3Qv49SfLD1S5cwGyJnJsN0CfMxJ3pgQMs5HL9mSTLA8Mk1GOV9JsqbJdFiLj9IHyDS
+k6d/5ZD+iWKjBatMczwB0Rwy0M9YgUogvYWmPLR1fSeEdZ0KeJnRk7TdrAOS52xXNUo4nkps55uJ
+sa35ofdCDiywMIGu09ZRspCHz/fJNkpZb5OMD22N6rZDcTdSYQJQPGdFgOkjpKx/ifSZhdGccQnU
+QPLLftJ9kizMIUsj0AbpRJbsxwW6QidQmoMj2w==
+FKMyYbI/wwAM4DL7Sk/jWKH3Oa4pS1vAFNkQIwagZi2xaHdz+qJIF3tehMBUgKiPsY0DtIKXBPli
+CUlBsOFXeH4VmRG6QGN2MU6+JW3C1NYKHf4iEUZjo6GJf2W1sa/qzvpFND7am8XPlTS7YbwtCVYF
+LHKxjykekFOx4OKgLCon/ISctglbTjpR5nlJDB4N68FHdEcQSb9VTE+JfZV5OWhQP5oEGIKl3EhG
+MqSowHgWOEGFgSo9FnOkrK260bZz+a4ZMH5zU5r2nONcNzEEnHyqBqVUdiB29mqhSrzUoZ2Mto0X
+7J/L/PiXqaGFGhdC/FhM+LZaBnWff1J4z6grpw==
+
+
+Am I doing something wrong? Or is there a bug?
+
+P?ikest,
+Priit Laes :)
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: private_key.pem
+Type: application/x-x509-ca-cert
+Size: 1675 bytes
+Desc: not available
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120228/3e49bcac/attachment.crt>
+
+From plaes at plaes.org  Tue Feb 28 09:40:13 2012
+From: plaes at plaes.org (Priit Laes)
+Date: Tue, 28 Feb 2012 16:40:13 +0200
+Subject: [pycrypto] Troubles when porting from m2crypto
+In-Reply-To: <1330385584.31064.12.camel@localhost.localdomain>
+References: <1330385584.31064.12.camel@localhost.localdomain>
+Message-ID: <1330440013.30978.3.camel@localhost.localdomain>
+
+?hel kenal p?eval, T, 28.02.2012 kell 01:33, kirjutas Priit Laes:
+> Hey!
+> 
+> I'm currently in process of porting my code from m2crypt to pycrypto,
+> but I have run into an issue where pycrypto doesn't seem to be returning
+> correct results (tested on 32-bit Gentoo, pycrypto-2.5 + Debian 64bit
+> with consistent results):
+
+PEBKAC ^_^ :)
+
+After trying with PKCS1_v1_5 signature, thing improved a lot.. \o/
+
+with open('private_key.pem', 'r') as f:
+    k = RSA.importKey(f.read())
+    h = SHA.new(MSG)
+    s = PKCS1_v1_5.new(k).sign(h)
+
+P?ikest,
+Priit Laes :)
+
+From alec.taylor6 at gmail.com  Sun Jan 29 03:52:19 2012
+From: alec.taylor6 at gmail.com (Alec Taylor)
+Date: Sun, 29 Jan 2012 08:52:19 -0000
+Subject: [pycrypto] autoconf error on Windows
+Message-ID: <CAO+9iGfbcc8c8hWCcHXJnASNU4EhhehEsykt0bcQTr_9r_O1MQ@mail.gmail.com>
+
+PyCrypto's install is giving an autoconf error on Windows, whether I
+install from the git repo or normally.
+
+Traceback (most recent call last):
+  File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+    cmd_obj.run()
+
+  File "C:\Projects\satchmo_test\satchmo_test\src\pycrypto\setup.py",
+line 274, in run
+    raise RuntimeError("autoconf error")
+
+RuntimeError: autoconf error
+
+----------------------------------------
+Command C:\Python27\python.exe -c "import setuptools;
+__file__='C:\\Projects\\satchmo_test\\satchmo_test\\src\\pycrypto\\setup.py';
+exec(compile(open(__file__).read().replace('\r\n', '\n'), __file__,
+'exec'))" develop --no-deps failed with error code 1
+Full output: http://pastebin.com/Dp3aw077
+
+How can I get PyCrypto to install?
+
+Thanks for all suggestions,
+
+Alec Taylor
+
+From alec.taylor6 at gmail.com  Fri Feb  3 13:33:57 2012
+From: alec.taylor6 at gmail.com (Alec Taylor)
+Date: Fri, 03 Feb 2012 18:33:57 -0000
+Subject: [pycrypto] Linker errors when attempting to install PyCrypto
+Message-ID: <CAO+9iGdqPj9ApMHST82TAShZ+U4kfbNbpZc+yoy=aTCOu0m5Xg@mail.gmail.com>
+
+I'm getting linker errors when trying to install PyCrypto on Windows:
+
+C:\libraries\MinGW\bin\gcc.exe -mno-cygwin -shared -s
+build\temp.win-amd64-2.7\Release\src\winrand.o
+build\temp.win-amd64-2.7\Release\src\winrandom.def -LC:\Python27\libs
+-LC:\Python27\PCbuild\amd64 -lws2_32 -ladvapi32 -lpython27 -lmsvcr90
+-o "C:\Projects\satchmo_test\Prototype\src\pycrypto\lib\Crypto\Random\OSRNG\winrandom.pyd"
+
+Full output: http://pastebin.com/SYBkFt3h
+
+How can I resolve installation issues to get PyCrypto install properly
+on Python 2.7.2 x64?
+
+Thanks for all suggestions,
+
+Alec Taylor
+
+From alec.taylor6 at gmail.com  Sun Feb  5 09:39:24 2012
+From: alec.taylor6 at gmail.com (Alec Taylor)
+Date: Sun, 05 Feb 2012 14:39:24 -0000
+Subject: [pycrypto] PyCrypto builds neither with MSVC nor MinGW
+Message-ID: <CAO+9iGc2mNLuBEm6S4jyrOJi8=6ardnHsewwBY=SswKbCiMskw@mail.gmail.com>
+
+PIL, PyCrypto and many other modules require a C compiler and linker.
+
+Unfortunately neither install on my computer, with a PATH with the following:
+
+C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC
+C:\libraries\MinGW\msys\1.0\bin
+C:\libraries\MinGW
+C:\Python27\Scripts
+
+Output from G:\pycrypto>vcvarsall.bat
+Setting environment for using Microsoft Visual Studio 2010 x86 tools.
+
+Error output from G:\pycrypto>python setup.py build --compiler msvc
+http://pastebin.com/nBsuXDGg
+
+Error output from G:\pycrypto>python setup.py build --compiler mingw32
+1> log1 2> log2
+Log1: http://pastebin.com/yG3cbdZv
+Log2: http://pastebin.com/qvnshPeh
+
+Will there ever be support for newer MSVC versions? - Also, why
+doesn't even MinGW install PyCrypto for me?
+
+Thanks for all suggestions,
+
+Alec Taylor
+
+From kud.culemann at arcor.de  Mon Feb  6 09:55:17 2012
+From: kud.culemann at arcor.de (kud.culemann at arcor.de)
+Date: Mon, 06 Feb 2012 14:55:17 -0000
+Subject: [pycrypto] problem installing the PyCrypto toolkit
+Message-ID: <1726255851.748074.1328540114420.JavaMail.ngmail@webmail18.arcor-online.net>
+
+Hi,
+
+on a machine with windows XP and python version 2.5.4 I tried to install the PyCrypto toolkit (2.5)
+with command:
+python setup.py install
+
+error: Python was built with Visual Studio 2003;
+extensions must be built with a compiler than can generate compatible binaries.
+Visual Studio 2003 was not found on this system. If you have Cygwin installed,
+you can try compiling with MingW32, by passing "-c mingw32" to setup.py.
+
+I have also CygWin installed so I would like to try the -c mingw32 option.
+However which command line I have to enter to use this -c mingw32 option?
+I tried some variants, but didn't succeed.
+
+Is a special package needed from CygWin, which must be installed?
+
+Thanks a lot and best regards
+Dirk Culemann.
+
+From zooko at zooko.com  Wed Mar 14 02:13:04 2012
+From: zooko at zooko.com (Zooko Wilcox-O'Hearn)
+Date: Tue, 13 Mar 2012 23:13:04 -0700
+Subject: [pycrypto] announcing pycryptopp
+	v0.6.0.1206569328141510525648634803928199668821045408958
+Message-ID: <CANdZDc59RjZEoOzRwqSY6MxgKMGMmmbNiuQ_Wbbk3-6qhLtjvw@mail.gmail.com>
+
+Folks:
+
+Here is the new release of pycryptopp:
+
+https://pypi.python.org/pypi/pycryptopp
+
+It has Ed25519 signatures, using Python wrappers written by Brian
+Warner in his "python-ed25519" project and C code written by Daniel J.
+Bernstein in his "supercop" project. It also has XSalsa20 cipher,
+using Python wrappers written by Yu Xue and Brian Warner for the
+Crypto++ implementation of XSalsa20 written by Wei Dai. There are a
+few other improvements, listed below (from the ChangeLog).
+
+It has come to my attention that "pycryptopp" is a *terrible* name for
+a Python crypto library, since people confuse it with "pycrypto". I
+intend to change the name soon. I'm currently toying with idea of
+naming it "zcryptopy", pronounced "zkripTOPpy".
+
+Bug reports welcome! Please open tickets on the trac --
+https://tahoe-lafs.org/trac/pycryptopp -- or write to this mailing
+list.
+
+Special thanks to Brian Warner for doing a lot of the work to produce
+this release.
+
+Regards,
+
+Zooko
+
+2012-03-13  Zooko Wilcox-O'Hearn  <zooko at zooko.com>
+
+       ? src/pycryptopp/_version.py: release pycryptopp-0.6.0
+       ? add Ed25519 signatures (#75)
+       ? add XSalsa20 cipher (#40)
+       ? switch from darcs to git for revision control
+       ? pycryptopp version numbers now include a decimal encoding of ?
+       ? reorganize the source tree and the version number generation
+       ? aesmodule.cpp: validate size of IV and throw exception if it
+is not 16 (#70)
+       ? fixed compile errors with gcc-4.7.0 (#78)
+       ? fixed compile errors concerning "CryptoPP::g_nullNameValuePairs" (#77)
+       ? suppress warnings from valgrind with new OpenSSL 1.0.1 on Fedora (#82)
+       ? raise Python exception instead of uncaught C++ exception
+         (resulting in abort) when deserializing malformed RSA keys (#83)
+
+From roy at panix.com  Sat Mar 17 12:14:50 2012
+From: roy at panix.com (Roy Smith)
+Date: Sat, 17 Mar 2012 12:14:50 -0400
+Subject: [pycrypto] Problems installing pycrypto 2.5 on Ununtu Linux
+Message-ID: <A26E884D-02C6-438C-9C40-26AF443D9572@panix.com>
+
+I'm trying to upgrade my old copy of pycrypto 2.0.1 (probably installed with apt-get).  I'm running python 2.6.5 on Ubuntu 10.04.3.  When I run "pip install --upgrade pycrypto" with a virtualenv enabled, everything seems to go fine until it gets up to "   building "Crypto.Hash._MD2' extension" (see below).  Any suggestions for what might be wrong?
+
+   building 'Crypto.Hash._MD2' extension
+    gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/python2.6 -c src/MD2.c -o build/temp.linux-x86_64-2.6/src/MD2.o
+    src/MD2.c:31:20: error: Python.h: No such file or directory
+    src/MD2.c:131: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+    In file included from src/MD2.c:147:
+    src/hash_template.c:48: error: expected specifier-qualifier-list before ?PyObject_HEAD?
+    src/hash_template.c:59: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?PyTypeObject?
+    src/hash_template.c: In function ?newALGobject?:
+    src/hash_template.c:69: warning: implicit declaration of function ?PyObject_New?
+    src/hash_template.c:69: error: expected expression before ?ALGobject?
+    src/hash_template.c: At top level:
+    src/hash_template.c:76: error: expected ?)? before ?*? token
+    src/hash_template.c:91: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+    src/hash_template.c:110: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+    src/hash_template.c:122: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+    src/hash_template.c:162: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+    src/hash_template.c:188: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+    src/hash_template.c:190: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?ALG_methods?
+    src/hash_template.c:199: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+    src/hash_template.c:225: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?ALGtype?
+    src/hash_template.c:271: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+    src/hash_template.c:304: error: array type has incomplete element type
+    src/hash_template.c:305: error: ?PyCFunction? undeclared here (not in a function)
+    src/hash_template.c:305: error: expected ?}? before ?ALG_new?
+    src/hash_template.c: In function ?init_MD2?:
+    src/hash_template.c:339: error: ?PyObject? undeclared (first use in this function)
+    src/hash_template.c:339: error: (Each undeclared identifier is reported only once
+    src/hash_template.c:339: error: for each function it appears in.)
+    src/hash_template.c:339: error: ?m? undeclared (first use in this function)
+    src/hash_template.c:351: error: ?ALGtype? undeclared (first use in this function)
+    src/hash_template.c:351: error: ?PyType_Type? undeclared (first use in this function)
+    src/hash_template.c:352: warning: implicit declaration of function ?Py_InitModule?
+    src/hash_template.c:356: error: ?o? undeclared (first use in this function)
+    src/hash_template.c:356: warning: implicit declaration of function ?PyInt_FromLong?
+    src/hash_template.c:356: warning: implicit declaration of function ?PyDict_SetItemString?
+    src/hash_template.c:356: warning: implicit declaration of function ?PyModule_GetDict?
+    src/hash_template.c:356: warning: implicit declaration of function ?Py_DECREF?
+    src/hash_template.c:360: warning: implicit declaration of function ?PyErr_Occurred?
+    src/hash_template.c:361: warning: implicit declaration of function ?Py_FatalError?
+    error: command 'gcc' failed with exit status 1
+    Complete output from command /home/roy/production/python/bin/python -c "import setuptools;__file__='/home/roy/production/python/build/pycrypto/setup.py';execfile(__file__)" install --single-version-externally-managed --record /tmp/pip-jmWK8k-record/install-record.txt --install-headers /home/roy/production/python/include/site/python2.6:
+    running install
+
+running build
+
+running build_py
+
+creating build
+
+creating build/lib.linux-x86_64-2.6
+
+creating build/lib.linux-x86_64-2.6/Crypto
+
+copying lib/Crypto/__init__.py -> build/lib.linux-x86_64-2.6/Crypto
+
+copying lib/Crypto/pct_warnings.py -> build/lib.linux-x86_64-2.6/Crypto
+
+creating build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/RIPEMD.py -> build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/SHA224.py -> build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/SHA384.py -> build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/SHA.py -> build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/SHA256.py -> build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/HMAC.py -> build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/MD4.py -> build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/MD2.py -> build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/SHA512.py -> build/lib.linux-x86_64-2.6/Crypto/Hash
+
+copying lib/Crypto/Hash/MD5.py -> build/lib.linux-x86_64-2.6/Crypto/Hash
+
+creating build/lib.linux-x86_64-2.6/Crypto/Cipher
+
+copying lib/Crypto/Cipher/PKCS1_v1_5.py -> build/lib.linux-x86_64-2.6/Crypto/Cipher
+
+copying lib/Crypto/Cipher/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/Cipher
+
+copying lib/Crypto/Cipher/PKCS1_OAEP.py -> build/lib.linux-x86_64-2.6/Crypto/Cipher
+
+creating build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/py3compat.py -> build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/Counter.py -> build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/asn1.py -> build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/winrandom.py -> build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/randpool.py -> build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/number.py -> build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/RFC1751.py -> build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/_number_new.py -> build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/wrapper.py -> build/lib.linux-x86_64-2.6/Crypto/Util
+
+copying lib/Crypto/Util/py21compat.py -> build/lib.linux-x86_64-2.6/Crypto/Util
+
+creating build/lib.linux-x86_64-2.6/Crypto/Random
+
+copying lib/Crypto/Random/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/Random
+
+copying lib/Crypto/Random/random.py -> build/lib.linux-x86_64-2.6/Crypto/Random
+
+copying lib/Crypto/Random/_UserFriendlyRNG.py -> build/lib.linux-x86_64-2.6/Crypto/Random
+
+creating build/lib.linux-x86_64-2.6/Crypto/Random/Fortuna
+
+copying lib/Crypto/Random/Fortuna/SHAd256.py -> build/lib.linux-x86_64-2.6/Crypto/Random/Fortuna
+
+copying lib/Crypto/Random/Fortuna/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/Random/Fortuna
+
+copying lib/Crypto/Random/Fortuna/FortunaAccumulator.py -> build/lib.linux-x86_64-2.6/Crypto/Random/Fortuna
+
+copying lib/Crypto/Random/Fortuna/FortunaGenerator.py -> build/lib.linux-x86_64-2.6/Crypto/Random/Fortuna
+
+creating build/lib.linux-x86_64-2.6/Crypto/Random/OSRNG
+
+copying lib/Crypto/Random/OSRNG/posix.py -> build/lib.linux-x86_64-2.6/Crypto/Random/OSRNG
+
+copying lib/Crypto/Random/OSRNG/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/Random/OSRNG
+
+copying lib/Crypto/Random/OSRNG/nt.py -> build/lib.linux-x86_64-2.6/Crypto/Random/OSRNG
+
+copying lib/Crypto/Random/OSRNG/fallback.py -> build/lib.linux-x86_64-2.6/Crypto/Random/OSRNG
+
+copying lib/Crypto/Random/OSRNG/rng_base.py -> build/lib.linux-x86_64-2.6/Crypto/Random/OSRNG
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest
+
+copying lib/Crypto/SelfTest/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest
+
+copying lib/Crypto/SelfTest/st_common.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_pkcs1_15.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_CAST.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/common.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_DES3.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_ARC2.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_DES.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_AES.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_XOR.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_Blowfish.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_pkcs1_oaep.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+copying lib/Crypto/SelfTest/Cipher/test_ARC4.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Cipher
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_SHA224.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_MD2.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_MD4.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/common.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_RIPEMD.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_HMAC.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_SHA.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_SHA512.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_SHA384.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_MD5.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+copying lib/Crypto/SelfTest/Hash/test_SHA256.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Hash
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Protocol
+
+copying lib/Crypto/SelfTest/Protocol/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Protocol
+
+copying lib/Crypto/SelfTest/Protocol/test_rfc1751.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Protocol
+
+copying lib/Crypto/SelfTest/Protocol/test_AllOrNothing.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Protocol
+
+copying lib/Crypto/SelfTest/Protocol/test_KDF.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Protocol
+
+copying lib/Crypto/SelfTest/Protocol/test_chaffing.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Protocol
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/PublicKey
+
+copying lib/Crypto/SelfTest/PublicKey/test_RSA.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/PublicKey
+
+copying lib/Crypto/SelfTest/PublicKey/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/PublicKey
+
+copying lib/Crypto/SelfTest/PublicKey/test_DSA.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/PublicKey
+
+copying lib/Crypto/SelfTest/PublicKey/test_importKey.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/PublicKey
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random
+
+copying lib/Crypto/SelfTest/Random/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random
+
+copying lib/Crypto/SelfTest/Random/test_random.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random
+
+copying lib/Crypto/SelfTest/Random/test_rpoolcompat.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/Fortuna
+
+copying lib/Crypto/SelfTest/Random/Fortuna/test_FortunaAccumulator.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/Fortuna
+
+copying lib/Crypto/SelfTest/Random/Fortuna/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/Fortuna
+
+copying lib/Crypto/SelfTest/Random/Fortuna/test_FortunaGenerator.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/Fortuna
+
+copying lib/Crypto/SelfTest/Random/Fortuna/test_SHAd256.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/Fortuna
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/OSRNG
+
+copying lib/Crypto/SelfTest/Random/OSRNG/test_posix.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/OSRNG
+
+copying lib/Crypto/SelfTest/Random/OSRNG/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/OSRNG
+
+copying lib/Crypto/SelfTest/Random/OSRNG/test_generic.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/OSRNG
+
+copying lib/Crypto/SelfTest/Random/OSRNG/test_nt.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/OSRNG
+
+copying lib/Crypto/SelfTest/Random/OSRNG/test_winrandom.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/OSRNG
+
+copying lib/Crypto/SelfTest/Random/OSRNG/test_fallback.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Random/OSRNG
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Util
+
+copying lib/Crypto/SelfTest/Util/test_asn1.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Util
+
+copying lib/Crypto/SelfTest/Util/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Util
+
+copying lib/Crypto/SelfTest/Util/test_winrandom.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Util
+
+copying lib/Crypto/SelfTest/Util/test_Counter.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Util
+
+copying lib/Crypto/SelfTest/Util/test_number.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Util
+
+creating build/lib.linux-x86_64-2.6/Crypto/SelfTest/Signature
+
+copying lib/Crypto/SelfTest/Signature/test_pkcs1_15.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Signature
+
+copying lib/Crypto/SelfTest/Signature/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Signature
+
+copying lib/Crypto/SelfTest/Signature/test_pkcs1_pss.py -> build/lib.linux-x86_64-2.6/Crypto/SelfTest/Signature
+
+creating build/lib.linux-x86_64-2.6/Crypto/Protocol
+
+copying lib/Crypto/Protocol/Chaffing.py -> build/lib.linux-x86_64-2.6/Crypto/Protocol
+
+copying lib/Crypto/Protocol/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/Protocol
+
+copying lib/Crypto/Protocol/AllOrNothing.py -> build/lib.linux-x86_64-2.6/Crypto/Protocol
+
+copying lib/Crypto/Protocol/KDF.py -> build/lib.linux-x86_64-2.6/Crypto/Protocol
+
+creating build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/qNEW.py -> build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/ElGamal.py -> build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/_RSA.py -> build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/RSA.py -> build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/pubkey.py -> build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/_slowmath.py -> build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/_DSA.py -> build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+copying lib/Crypto/PublicKey/DSA.py -> build/lib.linux-x86_64-2.6/Crypto/PublicKey
+
+creating build/lib.linux-x86_64-2.6/Crypto/Signature
+
+copying lib/Crypto/Signature/PKCS1_v1_5.py -> build/lib.linux-x86_64-2.6/Crypto/Signature
+
+copying lib/Crypto/Signature/PKCS1_PSS.py -> build/lib.linux-x86_64-2.6/Crypto/Signature
+
+copying lib/Crypto/Signature/__init__.py -> build/lib.linux-x86_64-2.6/Crypto/Signature
+
+running build_ext
+
+running build_configure
+
+checking for gcc... gcc
+
+checking whether the C compiler works... yes
+
+checking for C compiler default output file name... a.out
+
+checking for suffix of executables...
+
+checking whether we are cross compiling... no
+
+checking for suffix of object files... o
+
+checking whether we are using the GNU C compiler... yes
+
+checking whether gcc accepts -g... yes
+
+checking for gcc option to accept ISO C89... none needed
+
+checking for __gmpz_init in -lgmp... no
+
+checking for __gmpz_init in -lmpir... no
+
+checking whether mpz_powm is declared... no
+
+checking whether mpz_powm_sec is declared... no
+
+checking how to run the C preprocessor... gcc -E
+
+checking for grep that handles long lines and -e... /bin/grep
+
+checking for egrep... /bin/grep -E
+
+checking for ANSI C header files... yes
+
+checking for sys/types.h... yes
+
+checking for sys/stat.h... yes
+
+checking for stdlib.h... yes
+
+checking for string.h... yes
+
+checking for memory.h... yes
+
+checking for strings.h... yes
+
+checking for inttypes.h... yes
+
+checking for stdint.h... yes
+
+checking for unistd.h... yes
+
+checking for inttypes.h... (cached) yes
+
+checking limits.h usability... yes
+
+checking limits.h presence... yes
+
+checking for limits.h... yes
+
+checking stddef.h usability... yes
+
+checking stddef.h presence... yes
+
+checking for stddef.h... yes
+
+checking for stdint.h... (cached) yes
+
+checking for stdlib.h... (cached) yes
+
+checking for string.h... (cached) yes
+
+checking wchar.h usability... yes
+
+checking wchar.h presence... yes
+
+checking for wchar.h... yes
+
+checking for inline... inline
+
+checking for int16_t... yes
+
+checking for int32_t... yes
+
+checking for int64_t... yes
+
+checking for int8_t... yes
+
+checking for size_t... yes
+
+checking for uint16_t... yes
+
+checking for uint32_t... yes
+
+checking for uint64_t... yes
+
+checking for uint8_t... yes
+
+checking for stdlib.h... (cached) yes
+
+checking for GNU libc compatible malloc... yes
+
+checking for memmove... yes
+
+checking for memset... yes
+
+configure: creating ./config.status
+
+config.status: creating src/config.h
+
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+
+building 'Crypto.Hash._MD2' extension
+
+creating build/temp.linux-x86_64-2.6
+
+creating build/temp.linux-x86_64-2.6/src
+
+gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/python2.6 -c src/MD2.c -o build/temp.linux-x86_64-2.6/src/MD2.o
+
+src/MD2.c:31:20: error: Python.h: No such file or directory
+
+src/MD2.c:131: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+
+In file included from src/MD2.c:147:
+
+src/hash_template.c:48: error: expected specifier-qualifier-list before ?PyObject_HEAD?
+
+src/hash_template.c:59: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?PyTypeObject?
+
+src/hash_template.c: In function ?newALGobject?:
+
+src/hash_template.c:69: warning: implicit declaration of function ?PyObject_New?
+
+src/hash_template.c:69: error: expected expression before ?ALGobject?
+
+src/hash_template.c: At top level:
+
+src/hash_template.c:76: error: expected ?)? before ?*? token
+
+src/hash_template.c:91: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+
+src/hash_template.c:110: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+
+src/hash_template.c:122: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+
+src/hash_template.c:162: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+
+src/hash_template.c:188: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+
+src/hash_template.c:190: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?ALG_methods?
+
+src/hash_template.c:199: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+
+src/hash_template.c:225: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?ALGtype?
+
+src/hash_template.c:271: error: expected ?=?, ?,?, ?;?, ?asm? or ?__attribute__? before ?*? token
+
+src/hash_template.c:304: error: array type has incomplete element type
+
+src/hash_template.c:305: error: ?PyCFunction? undeclared here (not in a function)
+
+src/hash_template.c:305: error: expected ?}? before ?ALG_new?
+
+src/hash_template.c: In function ?init_MD2?:
+
+src/hash_template.c:339: error: ?PyObject? undeclared (first use in this function)
+
+src/hash_template.c:339: error: (Each undeclared identifier is reported only once
+
+src/hash_template.c:339: error: for each function it appears in.)
+
+src/hash_template.c:339: error: ?m? undeclared (first use in this function)
+
+src/hash_template.c:351: error: ?ALGtype? undeclared (first use in this function)
+
+src/hash_template.c:351: error: ?PyType_Type? undeclared (first use in this function)
+
+src/hash_template.c:352: warning: implicit declaration of function ?Py_InitModule?
+
+src/hash_template.c:356: error: ?o? undeclared (first use in this function)
+
+src/hash_template.c:356: warning: implicit declaration of function ?PyInt_FromLong?
+
+src/hash_template.c:356: warning: implicit declaration of function ?PyDict_SetItemString?
+
+src/hash_template.c:356: warning: implicit declaration of function ?PyModule_GetDict?
+
+src/hash_template.c:356: warning: implicit declaration of function ?Py_DECREF?
+
+src/hash_template.c:360: warning: implicit declaration of function ?PyErr_Occurred?
+
+src/hash_template.c:361: warning: implicit declaration of function ?Py_FatalError?
+
+error: command 'gcc' failed with exit status 1
+
+----------------------------------------
+  Can't roll back pycrypto; was not uninstalled
+Command /home/roy/production/python/bin/python -c "import setuptools;__file__='/home/roy/production/python/build/pycrypto/setup.py';execfile(__file__)" install --single-version-externally-managed --record /tmp/pip-jmWK8k-record/install-record.txt --install-headers /home/roy/production/python/include/site/python2.6 failed with error code 1
+Storing complete log in /home/roy/.pip/pip.log
+(python)roy at gilbert:~$ 
+
+
+--
+Roy Smith
+roy at panix.com
+
+
+
+
+From gooksankoo at hoiptorrow.mailexpire.com  Sat Mar 17 12:26:46 2012
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Sat, 17 Mar 2012 17:26:46 +0100
+Subject: [pycrypto] Problems installing pycrypto 2.5 on Ununtu Linux
+In-Reply-To: <A26E884D-02C6-438C-9C40-26AF443D9572@panix.com>
+References: <A26E884D-02C6-438C-9C40-26AF443D9572@panix.com>
+Message-ID: <CAGfyce0W6-5TwtEk-CwhJSw0k4pAT40Z6ZDkx+--eJ+3X7oaHA@mail.gmail.com>
+
+> ? building 'Crypto.Hash._MD2' extension
+> ? ?gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/python2.6 -c src/MD2.c -o build/temp.linux-x86_64-2.6/src/MD2.o
+> ? ?src/MD2.c:31:20: error: Python.h: No such file or directory
+
+You need the library for building python modules:
+
+sudo apt-get install python-dev
+
+From roy at panix.com  Sat Mar 17 13:26:23 2012
+From: roy at panix.com (Roy Smith)
+Date: Sat, 17 Mar 2012 13:26:23 -0400
+Subject: [pycrypto] Problems installing pycrypto 2.5 on Ununtu Linux
+In-Reply-To: <CAGfyce0W6-5TwtEk-CwhJSw0k4pAT40Z6ZDkx+--eJ+3X7oaHA@mail.gmail.com>
+References: <A26E884D-02C6-438C-9C40-26AF443D9572@panix.com>
+	<CAGfyce0W6-5TwtEk-CwhJSw0k4pAT40Z6ZDkx+--eJ+3X7oaHA@mail.gmail.com>
+Message-ID: <87F388FF-CB70-4178-8E2A-77BEAA6147AF@panix.com>
+
+Duh, of course.  That did the trick.  Thanks.
+
+
+On Mar 17, 2012, at 12:26 PM, Legrandin wrote:
+
+>>   building 'Crypto.Hash._MD2' extension
+>>    gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/python2.6 -c src/MD2.c -o build/temp.linux-x86_64-2.6/src/MD2.o
+>>    src/MD2.c:31:20: error: Python.h: No such file or directory
+> 
+> You need the library for building python modules:
+> 
+> sudo apt-get install python-dev
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> 
+
+
+--
+Roy Smith
+roy at panix.com
+
+
+
+

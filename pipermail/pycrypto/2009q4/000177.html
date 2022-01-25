@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] [problem]There's difference between pycrypto to	crypt a string and cryptoPP to crypt a string with AES by CFB mode.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20%5Bproblem%5DThere%27s%20difference%20between%20pycrypto%20to%0A%09crypt%20a%20string%20and%20cryptoPP%20to%20crypt%20a%20string%20with%20AES%20by%20CFB%20mode.&In-Reply-To=20091228083223.GA347%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000173.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] [problem]There's difference between pycrypto to	crypt a string and cryptoPP to crypt a string with AES by CFB mode.</H1>
+    <B>ten speme</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20%5Bproblem%5DThere%27s%20difference%20between%20pycrypto%20to%0A%09crypt%20a%20string%20and%20cryptoPP%20to%20crypt%20a%20string%20with%20AES%20by%20CFB%20mode.&In-Reply-To=20091228083223.GA347%40rivest.dlitz.net"
+       TITLE="[pycrypto] [problem]There's difference between pycrypto to	crypt a string and cryptoPP to crypt a string with AES by CFB mode.">myspeme at gmail.com
+       </A><BR>
+    <I>Mon Dec 28 18:46:20 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000173.html">[pycrypto] [problem]There's difference between pycrypto	to	crypt a string and cryptoPP to crypt a string with AES by	CFB mode.
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#177">[ date ]</a>
+              <a href="thread.html#177">[ thread ]</a>
+              <a href="subject.html#177">[ subject ]</a>
+              <a href="author.html#177">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thank you, I get the right answer. CryptoPP is default to 128 bit mode. and
+I set it to be 8 bit mode and solved.
+
+On Mon, Dec 28, 2009 at 4:32 PM, Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;wrote:
+
+&gt;<i> On Mon, Dec 28, 2009 at 02:19:06PM +0800, ten speme wrote:
+</I>&gt;<i> &gt;I using cryptoPP to crypt a string with key:&quot;aaaaaaaaaaaaaaa&quot;
+</I>&gt;<i> &gt;,iv:&quot;bbbbbbbbbbbbbbbb&quot;,data&quot;abcdefghijklmnopqrstuvwxyz&quot;, and its encrypted
+</I>&gt;<i> &gt;string is [hex]&quot;9FE673D419DD3256B6A206FE7004660F11BAFCE5B2106E2BA39A&quot;
+</I>&gt;<i>
+</I>&gt;<i> Please be careful when posting troubleshooting requests.  &quot;aaaaaaaaaaaaaaa&quot;
+</I>&gt;<i> is 15 bytes long, so it's impossible as an AES key.  Can you post example
+</I>&gt;<i> code that builds against cryptoPP (or uses pycryptopp) and produces this
+</I>&gt;<i> result?
+</I>&gt;<i>
+</I>&gt;<i> &gt;by pycrypto , I also using the same key, vi, and data. but get difference
+</I>&gt;<i> &gt;result:[hex]&quot;78bf5fc7d6a87dd6533d028725cb206cf54dbca6e5ea9a852885&quot;.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;All these using AES with CFB mode.
+</I>&gt;<i>
+</I>&gt;<i> Which CFB mode are you talking about?  CFB is a family of modes.  You can
+</I>&gt;<i> have e.g. 1-bit CFB, 8-bit CFB, 64-bit CFB, 128-bit CFB, etc.  PyCrypto
+</I>&gt;<i> defaults to 8-bit CFB, I believe, but will accept any multiple of 8 bits.
+</I>&gt;<i> (It's set by the segment_size keyword argument to AES.new.)
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+</I>&gt;<i>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</I>&gt;<i>  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20091229/17371e60/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20091229/17371e60/attachment.htm</A> 
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000173.html">[pycrypto] [problem]There's difference between pycrypto	to	crypt a string and cryptoPP to crypt a string with AES by	CFB mode.
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#177">[ date ]</a>
+              <a href="thread.html#177">[ thread ]</a>
+              <a href="subject.html#177">[ subject ]</a>
+              <a href="author.html#177">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

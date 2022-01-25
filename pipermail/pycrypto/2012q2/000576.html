@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20/%20OAEP%20-%20ValueError%3A%20Plaintext%20is%20too%20long.&In-Reply-To=%3CF13DB5B7-0AEC-475C-A7B3-C9BB794416C5%40panix.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000575.html">
+   <LINK REL="Next"  HREF="000570.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.</H1>
+    <B>Roy Smith</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20/%20OAEP%20-%20ValueError%3A%20Plaintext%20is%20too%20long.&In-Reply-To=%3CF13DB5B7-0AEC-475C-A7B3-C9BB794416C5%40panix.com%3E"
+       TITLE="[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.">roy at panix.com
+       </A><BR>
+    <I>Fri Apr 20 14:38:13 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000575.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+        <LI>Next message: <A HREF="000570.html">[pycrypto] unsubscribe address=imran.azad at bradfordhospitals.nhs.uk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#576">[ date ]</a>
+              <a href="thread.html#576">[ thread ]</a>
+              <a href="subject.html#576">[ subject ]</a>
+              <a href="author.html#576">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Apr 20, 2012, at 2:35 PM, Lorenz Quack wrote:
+
+&gt;<i> first of all I want to point out that Cryptography is *hard*! There are innumerable things you can get wrong.
+</I>&gt;<i> So if you are trying to implement crypto stuff for a production system I would suggest: Don't! Use existing established software instead.
+</I>
+Another thing about crypto is that some customers are paranoid about it (perhaps rightfully so).  If you are writing a commercial product, you may discover that you can't sell into some markets unless your crypto is certified by some random certification authority.  It won't matter if it works or not, if you don't have the right paperwork, the sale isn't happening.
+
+I used to work for a Fortune-500 company.  At the time I left, one of the big projects was tearing out all the home-grown crypto which had been working for years and replacing it with a FIPS-certified crypto library so they could sell into government accounts.  The effort was measured in person-years.
+
+Just something to be aware of if you even suspect you might want to play in that space someday.
+
+---
+Roy Smith
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">roy at panix.com</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000575.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+	<LI>Next message: <A HREF="000570.html">[pycrypto] unsubscribe address=imran.azad at bradfordhospitals.nhs.uk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#576">[ date ]</a>
+              <a href="thread.html#576">[ thread ]</a>
+              <a href="subject.html#576">[ subject ]</a>
+              <a href="author.html#576">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

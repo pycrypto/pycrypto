@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Crypto.Cipher: Encryption Algorithms</TITLE>
+<META NAME="description" CONTENT="Crypto.Cipher: Encryption Algorithms">
+<META NAME="keywords" CONTENT="pycrypt">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="pycrypt.css">
+
+<LINK REL="next" HREF="node12.html">
+<LINK REL="previous" HREF="node5.html">
+<LINK REL="up" HREF="pycrypt.html">
+<LINK REL="next" HREF="node9.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html152"
+  HREF="node9.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html148"
+  HREF="pycrypt.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html142"
+  HREF="node7.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html150"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html153"
+  HREF="node9.html">Algorithm-specific Notes for Encryption</A>
+<B> Up:</B> <A NAME="tex2html149"
+  HREF="pycrypt.html">Python Cryptography Toolkit</A>
+<B> Previous:</B> <A NAME="tex2html143"
+  HREF="node7.html">Credits</A>
+ &nbsp; <B>  <A NAME="tex2html151"
+  HREF="node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00040000000000000000">
+Crypto.Cipher: Encryption Algorithms</A>
+</H1>
+
+<P>
+Encryption algorithms transform their input data, or plaintext,
+in some way that is dependent on a variable key, producing
+ciphertext. This transformation can easily be reversed, if (and,
+hopefully, only if) one knows the key.  The key can be varied by the
+user or application and chosen from some very large space of possible
+keys.
+
+<P>
+For a secure encryption algorithm, it should be very difficult to
+determine the original plaintext without knowing the key; usually, no
+clever attacks on the algorithm are known, so the only way of breaking
+the algorithm is to try all possible keys. Since the number of possible
+keys is usually of the order of 2 to the power of 56 or 128, this is not
+a serious threat, although 2 to the power of 56 is now considered
+insecure in the face of custom-built parallel computers and distributed
+key guessing efforts.
+
+<P>
+Block ciphers take multibyte inputs of a fixed size
+(frequently 8 or 16 bytes long) and encrypt them.  Block ciphers can
+be operated in various modes.  The simplest is Electronic Code Book
+(or ECB) mode.  In this mode, each block of plaintext is simply
+encrypted to produce the ciphertext.  This mode can be dangerous,
+because many files will contain patterns greater than the block size;
+for example, the comments in a C program may contain long strings of
+asterisks intended to form a box.  All these identical blocks will
+encrypt to identical ciphertext; an adversary may be able to use this
+structure to obtain some information about the text.
+
+<P>
+To eliminate this weakness, there are various feedback modes in which
+the plaintext is combined with the previous ciphertext before
+encrypting; this eliminates any repetitive structure in the
+ciphertext.   
+
+<P>
+One mode is Cipher Block Chaining (CBC mode); another is Cipher
+FeedBack (CFB mode).  CBC mode still encrypts in blocks, and thus is
+only slightly slower than ECB mode.  CFB mode encrypts on a
+byte-by-byte basis, and is much slower than either of the other two
+modes.  The chaining feedback modes require an initialization value to
+start off the encryption; this is a string of the same length as the
+ciphering algorithm's block size, and is passed to the new()
+function.  There is also a special PGP mode, which is an oddball
+variant of CFB used by the PGP program.  While you can use it in
+non-PGP programs, it's quite non-standard.
+
+<P>
+The currently available block ciphers are listed in the following table,
+and are in the Crypto.Cipher package:
+
+<P>
+<BR>
+8#8
+<BR>
+
+<P>
+In a strict formal sense, stream ciphers encrypt data bit-by-bit;
+practically, stream ciphers work on a character-by-character basis.
+Stream ciphers use exactly the
+same interface as block ciphers, with a block length that will always
+be 1; this is how block and stream ciphers can be distinguished. 
+The only feedback mode available for stream ciphers is ECB mode. 
+
+<P>
+The currently available stream ciphers are listed in the following table:
+
+<P>
+<BR>
+9#9
+<BR>
+
+<P>
+ARC4 is short for `Alleged RC4'.  In September of 1994, someone posted
+C code to both the Cypherpunks mailing list and to the Usenet
+newsgroup sci.crypt, claiming that it implemented the RC4
+algorithm.  This claim turned out to be correct.  Note that there's a
+damaging class of weak RC4 keys; this module won't warn you about such keys.
+
+<P>
+A similar anonymous posting was made for Alleged RC2 in January, 1996.
+
+<P>
+An example usage of the DES module:
+<PRE>
+&gt;&gt;&gt; from Crypto.Cipher import DES
+&gt;&gt;&gt; obj=DES.new('abcdefgh', DES.MODE_ECB)
+&gt;&gt;&gt; plain="Guido van Rossum is a space alien."
+&gt;&gt;&gt; len(plain)
+34
+&gt;&gt;&gt; obj.encrypt(plain)
+Traceback (innermost last):
+  File "&lt;stdin&gt;", line 1, in ?
+ValueError: Strings for DES must be a multiple of 8 in length
+&gt;&gt;&gt; ciph=obj.encrypt(plain+'XXXXXX')
+&gt;&gt;&gt; ciph
+'\021,\343Nq\214DY\337T\342pA\372\255\311s\210\363,\300j\330\250\312\347\342I\3215w\03561\303dgb/\006'
+&gt;&gt;&gt; obj.decrypt(ciph)
+'Guido van Rossum is a space alien.XXXXXX'
+</PRE>
+
+<P>
+All cipher algorithms share a common interface.  After importing a
+given module, there is exactly one function and two variables
+available.
+
+<P>
+<BR>
+10#10
+<BR>
+
+<P>
+<BR>
+11#11
+<BR>
+
+<P>
+<BR>
+12#12
+<BR>
+
+<P>
+All cipher objects have at least three attributes:
+
+<P>
+<BR>
+13#13
+<BR>
+
+<P>
+<BR>
+14#14
+<BR>
+
+<P>
+<BR>
+15#15
+<BR>
+
+<P>
+All ciphering objects have the following methods:
+
+<P>
+<BR>
+16#16
+<BR>
+
+<P>
+<BR>
+17#17
+<BR>
+
+<P>
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL CLASS="ChildLinks">
+<LI><A NAME="tex2html154"
+  HREF="node9.html">Algorithm-specific Notes for Encryption Algorithms</A>
+<LI><A NAME="tex2html155"
+  HREF="node10.html">Security Notes</A>
+<LI><A NAME="tex2html156"
+  HREF="node11.html">Credits</A>
+</UL>
+<!--End of Table of Child-Links-->
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html152"
+  HREF="node9.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html148"
+  HREF="pycrypt.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html142"
+  HREF="node7.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html150"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html153"
+  HREF="node9.html">Algorithm-specific Notes for Encryption</A>
+<B> Up:</B> <A NAME="tex2html149"
+  HREF="pycrypt.html">Python Cryptography Toolkit</A>
+<B> Previous:</B> <A NAME="tex2html143"
+  HREF="node7.html">Credits</A>
+ &nbsp; <B>  <A NAME="tex2html151"
+  HREF="node1.html">Contents</A></B> </DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

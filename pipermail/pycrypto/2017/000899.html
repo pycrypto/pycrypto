@@ -1,0 +1,407 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Build error, 2.6.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Build%20error%2C%202.6.1&In-Reply-To=%3CCAEncD4eeTyw6KwrsW47JKvox49zcUFwNQ9am21As6MvTcXQa1Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <LINK REL="Previous"  HREF="000898.html">
+   <LINK REL="Next"  HREF="000900.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Build error, 2.6.1</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Build%20error%2C%202.6.1&In-Reply-To=%3CCAEncD4eeTyw6KwrsW47JKvox49zcUFwNQ9am21As6MvTcXQa1Q%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Build error, 2.6.1">dave.pawson at gmail.com
+       </A><BR>
+    <I>Fri Jul 21 14:46:26 UTC 2017</I>
+    <P><UL>
+        <LI>Previous message (by thread): <A HREF="000898.html">[pycrypto] Build error, 2.6.1
+</A></li>
+        <LI>Next message (by thread): <A HREF="000900.html">[pycrypto] Build error, 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#899">[ date ]</a>
+              <a href="thread.html#899">[ thread ]</a>
+              <a href="subject.html#899">[ subject ]</a>
+              <a href="author.html#899">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>(long) output is
+
+[<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">root at localhost</A> pycrypto-2.6.1]# python3 setup.py build
+running build
+running build_py
+running build_ext
+running build_configure
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+building 'Crypto.Hash._MD2' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/MD2.c -o
+build/temp.linux-x86_64-3.6/src/MD2.o
+src/MD2.c: In function ‘hash_update’:
+src/MD2.c:101:22: warning: comparison between signed and unsigned
+integer expressions [-Wsign-compare]
+   L=(16-self-&gt;count) &lt; len ? (16-self-&gt;count) : len;
+                      ^
+src/MD2.c:101:47: warning: signed and unsigned type in conditional
+expression [-Wsign-compare]
+   L=(16-self-&gt;count) &lt; len ? (16-self-&gt;count) : len;
+                                               ^
+src/MD2.c: In function ‘hash_digest’:
+src/MD2.c:141:12: warning: comparison between signed and unsigned
+integer expressions [-Wsign-compare]
+  for(i=0; i&lt;padlen; i++) padding[i]=padlen;
+            ^
+At top level:
+src/MD2.c:44:19: warning: ‘md2_oid’ defined but not used
+[-Wunused-const-variable=]
+ static const char md2_oid[] = { 0x06, 0x08, 0x2a, 0x86, 0x48, 0x86,
+0xf7, 0x0d, 0x02, 0x02 };
+                   ^~~~~~~
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/MD2.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Hash/_MD2.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Hash._MD4' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/MD4.c -o
+build/temp.linux-x86_64-3.6/src/MD4.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/MD4.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Hash/_MD4.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Hash._SHA256' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/SHA256.c -o
+build/temp.linux-x86_64-3.6/src/SHA256.o
+In file included from src/SHA256.c:72:0:
+src/hash_SHA2_template.c: In function ‘add_length’:
+src/hash_SHA2_template.c:97:30: warning: self-comparison always
+evaluates to false [-Wtautological-compare]
+         if (hs-&gt;length_upper &gt; hs-&gt;length_upper)
+                              ^
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/SHA256.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Hash/_SHA256.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Hash._SHA224' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/SHA224.c -o
+build/temp.linux-x86_64-3.6/src/SHA224.o
+In file included from src/SHA224.c:73:0:
+src/hash_SHA2_template.c: In function ‘add_length’:
+src/hash_SHA2_template.c:97:30: warning: self-comparison always
+evaluates to false [-Wtautological-compare]
+         if (hs-&gt;length_upper &gt; hs-&gt;length_upper)
+                              ^
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/SHA224.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Hash/_SHA224.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Hash._SHA384' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/SHA384.c -o
+build/temp.linux-x86_64-3.6/src/SHA384.o
+In file included from src/SHA384.c:80:0:
+src/hash_SHA2_template.c: In function ‘add_length’:
+src/hash_SHA2_template.c:97:30: warning: self-comparison always
+evaluates to false [-Wtautological-compare]
+         if (hs-&gt;length_upper &gt; hs-&gt;length_upper)
+                              ^
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/SHA384.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Hash/_SHA384.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Hash._SHA512' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/SHA512.c -o
+build/temp.linux-x86_64-3.6/src/SHA512.o
+In file included from src/SHA512.c:80:0:
+src/hash_SHA2_template.c: In function ‘add_length’:
+src/hash_SHA2_template.c:97:30: warning: self-comparison always
+evaluates to false [-Wtautological-compare]
+         if (hs-&gt;length_upper &gt; hs-&gt;length_upper)
+                              ^
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/SHA512.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Hash/_SHA512.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Hash._RIPEMD160' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-DPCT_LITTLE_ENDIAN=1 -Isrc/ -I/usr/include/python3.6m -c
+src/RIPEMD160.c -o build/temp.linux-x86_64-3.6/src/RIPEMD160.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/RIPEMD160.o -L/usr/lib64 -lpython3.6m
+-o build/lib.linux-x86_64-3.6/Crypto/Hash/_RIPEMD160.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._AES' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/AES.c -o
+build/temp.linux-x86_64-3.6/src/AES.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/AES.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Cipher/_AES.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._ARC2' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/ARC2.c -o
+build/temp.linux-x86_64-3.6/src/ARC2.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/ARC2.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Cipher/_ARC2.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._Blowfish' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/Blowfish.c -o
+build/temp.linux-x86_64-3.6/src/Blowfish.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/Blowfish.o -L/usr/lib64 -lpython3.6m
+-o build/lib.linux-x86_64-3.6/Crypto/Cipher/_Blowfish.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._CAST' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/CAST.c -o
+build/temp.linux-x86_64-3.6/src/CAST.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/CAST.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Cipher/_CAST.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._DES' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -Isrc/libtom/ -I/usr/include/python3.6m -c src/DES.c -o
+build/temp.linux-x86_64-3.6/src/DES.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/DES.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Cipher/_DES.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._DES3' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -Isrc/libtom/ -I/usr/include/python3.6m -c src/DES3.c -o
+build/temp.linux-x86_64-3.6/src/DES3.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/DES3.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Cipher/_DES3.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._ARC4' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/ARC4.c -o
+build/temp.linux-x86_64-3.6/src/ARC4.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/ARC4.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Cipher/_ARC4.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._XOR' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/XOR.c -o
+build/temp.linux-x86_64-3.6/src/XOR.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/XOR.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Cipher/_XOR.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Util.strxor' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/strxor.c -o
+build/temp.linux-x86_64-3.6/src/strxor.o
+src/strxor.c:31:19: warning: ‘rcsid’ defined but not used
+[-Wunused-const-variable=]
+ static const char rcsid[] = &quot;$Id$&quot;;
+                   ^~~~~
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/strxor.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Util/strxor.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Util._counter' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/_counter.c -o
+build/temp.linux-x86_64-3.6/src/_counter.o
+src/_counter.c: In function ‘PyInit__counter’:
+src/_counter.c:570:5: warning: this ‘if’ clause does not guard...
+[-Wmisleading-indentation]
+     if (m == NULL)
+     ^~
+src/_counter.c:573:2: note: ...this statement, but the latter is
+misleadingly indented as if it were guarded by the ‘if’
+  return m;
+  ^~~~~~
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/_counter.o -L/usr/lib64 -lpython3.6m
+-o build/lib.linux-x86_64-3.6/Crypto/Util/_counter.cpython-36m-x86_64-linux-gnu.so
+
+
+On 21 July 2017 at 15:16, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt; wrote:
+&gt;<i> Installing on a new system, Fedora 26, 64 bit.
+</I>&gt;<i> Builds OK using setup.py for python 2.7
+</I>&gt;<i>
+</I>&gt;<i> Fails on python 3.x?
+</I>&gt;<i>
+</I>&gt;<i> Should this be built in a different way please?
+</I>&gt;<i>
+</I>&gt;<i> TiA
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dave Pawson
+</I>&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;<i> Docbook FAQ.
+</I>&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message (by thread): <A HREF="000898.html">[pycrypto] Build error, 2.6.1
+</A></li>
+	<LI>Next message (by thread): <A HREF="000900.html">[pycrypto] Build error, 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#899">[ date ]</a>
+              <a href="thread.html#899">[ thread ]</a>
+              <a href="subject.html#899">[ subject ]</a>
+              <a href="author.html#899">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

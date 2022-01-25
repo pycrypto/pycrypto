@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Things that go bump in the night (qNEW)
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Things%20that%20go%20bump%20in%20the%20night%20%28qNEW%29&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000362.html">
+   <LINK REL="Next"  HREF="000361.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Things that go bump in the night (qNEW)</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Things%20that%20go%20bump%20in%20the%20night%20%28qNEW%29&In-Reply-To="
+       TITLE="[pycrypto] Things that go bump in the night (qNEW)">sbehrens at gmx.li
+       </A><BR>
+    <I>Wed Dec 29 21:55:41 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000362.html">[pycrypto] Wanted: Additional unit tests for Python 3.x porting effort
+</A></li>
+        <LI>Next message: <A HREF="000361.html">[pycrypto] Comments on Elgamal,	and a broader question: Whither pycrypto?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#357">[ date ]</a>
+              <a href="thread.html#357">[ thread ]</a>
+              <a href="subject.html#357">[ subject ]</a>
+              <a href="author.html#357">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I've been looking at the functions that don't have unit tests, among 
+them PublicKey/qNEW. It puzzled me for a bit - qNEW is not an algorithm 
+I know, can successfully google for, or find in other crypto packages.
+Looking at the source, though, it seems to be a cousin of DSA, with a 
+few differences in the fundamentals (bit sizes of q and p, for one), and 
+a lot of differences in the specifics.
+
+I am not going to write any unit tests for qNEW.
+
+It may be a DSA-variant, in which case it is covered already by DSA.py. 
+Or it may be a DSA-derivative that's never been standardized, and thus 
+scrutinized, and if that's true, then it should just be stricken from 
+the code. Given that there's really no documentation on it either in the 
+package or anywhere, I'd wager beer that it's not in serious use 
+anywhere, anyway.
+
+Thorsten
+
+</PRE>
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000362.html">[pycrypto] Wanted: Additional unit tests for Python 3.x porting effort
+</A></li>
+	<LI>Next message: <A HREF="000361.html">[pycrypto] Comments on Elgamal,	and a broader question: Whither pycrypto?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#357">[ date ]</a>
+              <a href="thread.html#357">[ thread ]</a>
+              <a href="subject.html#357">[ subject ]</a>
+              <a href="author.html#357">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

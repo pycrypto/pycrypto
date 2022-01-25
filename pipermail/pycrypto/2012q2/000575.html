@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20/%20OAEP%20-%20ValueError%3A%20Plaintext%20is%20too%20long.&In-Reply-To=%3C4F91AC60.7040007%40amberfisharts.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000574.html">
+   <LINK REL="Next"  HREF="000576.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.</H1>
+    <B>Lorenz Quack</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20/%20OAEP%20-%20ValueError%3A%20Plaintext%20is%20too%20long.&In-Reply-To=%3C4F91AC60.7040007%40amberfisharts.com%3E"
+       TITLE="[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.">don at amberfisharts.com
+       </A><BR>
+    <I>Fri Apr 20 14:35:12 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000574.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+        <LI>Next message: <A HREF="000576.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#575">[ date ]</a>
+              <a href="thread.html#575">[ thread ]</a>
+              <a href="subject.html#575">[ subject ]</a>
+              <a href="author.html#575">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hey Antonio,
+
+first of all I want to point out that Cryptography is *hard*! There are innumerable things you can get wrong.
+So if you are trying to implement crypto stuff for a production system I would suggest: Don't! Use existing established 
+software instead.
+I consider PyCrypto to be a rather lowlevel crypto library which only provides the primitives to crypto. Getting this 
+stuff right is of course paramount but still you can do a lot wrong in combining these primitives in the wrong way.
+One example would be padding which at first seems trivial but can lead to disastrous results if done wrong.
+
+If on the other hand you are doing this out of pure interest in order to educate yourself: Go ahead. I find crypto to be 
+very fascinating.
+
+In crypto you need to clearly state what your goal is. In my experience the most often desired goals are:
+  - authentisity (the receiver of a message can be sure the message really comes the sender)
+  - integrity (the receiver can be sure he received the message as it was originally written)
+  - confidentiallity (nobody but the receiver can read the message)
+  - a combination of the above
+So depending on what your goal is you need to do different things.
+Broadly speeking you use signing (Hash+RSA) for authentisity, Hash functions for integrity and AES+RSA for confidentiallity.
+But appling and combining these is really tricky.
+
+For example it makes a difference if you first sign a message and then encrypt or if you first encrypt it and then sign 
+it. Depending on the case it might be neccessary to do encrypt-sign-encrypt or sign-encrypt-sign.
+
+so what you seem to try to do is confidentiallity only.
+to reiterate what others have already said you need to do the following:
+  1) create a cryptografically strong random private and public keypair k_priv and k_pub
+  2) distrubute your public key.
+Then for every message/session do:
+  3) create a random key &quot;k_aes&quot;
+  4) pad your message to the block length (typically 16 bytes for AES). use an appropriate padding scheme!:
+     &quot;m_padded = pad(m)&quot;
+  5) encrypt the padded message using a symetric cipher (e.g. AES) using k_aes:
+     &quot;e_m = sym_encrypt(m_padded, k_aes)&quot;
+  6) pad the message/session key. use an appropriate padding scheme (e.g. OEAP):
+     &quot;k_aes_padded = pad(k_aes)&quot;
+  7) encrypt the padded random key k_ase_padded using an asymetric cipher (e.g. RSA) using your private key k_priv:
+     &quot;e_k = asym_encrypt(k_aes_padded, k_priv)&quot;
+  8) send both e_m and e_k to the recipiant
+
+the receiver can then:
+  1) knowing the message comes from you, decrypt the padded message/session key k_aes_padded by using your public key:
+     &quot;k_aes_padded = asym_decrypt(e_k, k_pub)&quot;
+  2) unpad the message/session key:
+     &quot;k_aes = unpad(k_aes_padded)&quot;
+  3) decrypt the message using the retrieved message/session key:
+     &quot;m_padded = sym_decrypt(e_m, k_aes)&quot;
+  4) retrieve the message by removing the known padding scheme:
+     &quot;m = unpad(m_padded)&quot;
+
+A few notes on the above:
+  * The message/session key can be different every message or be the same for more than one message (a session).
+    This depends on your implmentation (&quot;the protokol&quot;). So if you use a new k_aes for every message then there
+    is no shared state but you need more bandwith (you need to send e_k for every message and not only for a
+     session) and more CPU power (you need to create, encrypt and decrypt the k_aes for every message).
+  * There is a theoretical limit on howmany bytes you can safly encrypt with a session key. However, I don't
+    have the numbers right now.
+  * The padding for k_aes and the message doesn't have to be the same. I don't know if there is a standard way
+    of doing both.
+
+I hope this helps!
+
+cheers,
+Lorenz
+
+PS: full disclosure: I'm by no means a crypto expert myself and the above message might (and probably will) contain 
+inaccuracies and maybe even falshoods (these would then be unintentionally of course). I did contribute to pycrypto 
+though (namely work on the sha-2 implementation and the getStrongPrime and isPrime functions).
+
+
+On 04/20/2012 06:48 PM, Antonio Teixeira wrote:
+&gt;<i> Hello Legrandin &amp; Others.
+</I>&gt;<i>
+</I>&gt;<i> I'm currently trying to implement the following :
+</I>&gt;<i>
+</I>&gt;<i> The &quot;proper&quot; way to do encryption would be to create a random AES
+</I>&gt;<i> session key (16 bytes), encrypt it with RSA (hopefully at least 2048
+</I>&gt;<i> bit long), send it, pad the data, encrypt it with AES, send it.
+</I>&gt;<i>
+</I>&gt;<i> Ok So ..
+</I>&gt;<i>   - Create A Random AES 16 Bytes ( I'm assuming this will be the &quot;secret&quot;)
+</I>&gt;<i> - Pad The Payload
+</I>&gt;<i> - Encrypt Using AES
+</I>&gt;<i> - Encrypt The Secret +  Payload With the RSA Key
+</I>&gt;<i> - Make A Signature Of The Entire &quot;Encrypted Payload&quot;
+</I>&gt;<i> - Append it to the &quot;Encrypted Payload&quot;
+</I>&gt;<i> Send it ....
+</I>&gt;<i>
+</I>&gt;<i> Recv it ..
+</I>&gt;<i> Make the reverse process.
+</I>&gt;<i>
+</I>&gt;<i> One thing i can't use the Normal SSL/TLS type of &quot;session key&quot; since there is no state across requests or during the
+</I>&gt;<i> handshake.
+</I>&gt;<i> Meaning &quot;one worker can receive the request but another one can answer it and there is no shared memory between the two.&quot;
+</I>&gt;<i>
+</I>&gt;<i> 2012/4/12 Antonio Teixeira &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">eagle.antonio at gmail.com</A> &lt;mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">eagle.antonio at gmail.com</A>&gt;&gt;
+</I>&gt;<i>
+</I>&gt;<i>     Legrandin thank you for your help.
+</I>&gt;<i>     When i have time i will put something on pastebin so it can serve as example for future members that require this
+</I>&gt;<i>     type of solution :)
+</I>&gt;<i>
+</I>&gt;<i>     Regards
+</I>&gt;<i>     A/T
+</I>&gt;<i>
+</I>&gt;<i>     2012/4/11 Legrandin &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">gooksankoo at hoiptorrow.mailexpire.com</A> &lt;mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">gooksankoo at hoiptorrow.mailexpire.com</A>&gt;&gt;
+</I>&gt;<i>
+</I>&gt;<i>          &gt; So after a small search i found out that if i increase the RSA Modulus i'm
+</I>&gt;<i>          &gt; able to encrypt larger number of bits ( makes sense )  but this feels dirty.
+</I>&gt;<i>          &gt;
+</I>&gt;<i>          &gt; What do your guys recommend ?
+</I>&gt;<i>          &gt;
+</I>&gt;<i>          &gt; Breaking the data in chunks and encrypting part by part joining it all in a
+</I>&gt;<i>          &gt; buffer and send it down the socket all in one with the other server
+</I>&gt;<i>          &gt; decrypting part by part and merging the data again ?
+</I>&gt;<i>          &gt;
+</I>&gt;<i>          &gt; P.S - I dont mind fishing by myself just trying to understand the best &quot;way
+</I>&gt;<i>          &gt; / more correct way &quot; to do it :)
+</I>&gt;<i>
+</I>&gt;<i>         Hi Antonio,
+</I>&gt;<i>
+</I>&gt;<i>         Increasing the RSA key length is not &quot;dirty&quot;: it simply increases
+</I>&gt;<i>         security (and incidentally useful payload size) at the expense of
+</I>&gt;<i>         decryption speed.
+</I>&gt;<i>         If decryption speed is not that important to you, and you have a clear
+</I>&gt;<i>         idea on how long you data can be at most, go ahead and increase the
+</I>&gt;<i>         key size. The time you gain by taking this approach can be spent on
+</I>&gt;<i>         important tasks like making the private key secure, or adding some
+</I>&gt;<i>         form of authentication to your protocol.
+</I>&gt;<i>
+</I>&gt;<i>         The &quot;proper&quot; way to do encryption would be to create a random AES
+</I>&gt;<i>         session key (16 bytes), encrypt it with RSA (hopefully at least 2048
+</I>&gt;<i>         bit long), send it, pad the data, encrypt it with AES, send it.
+</I>&gt;<i>         Additionally, you should also sign the data and send the signature
+</I>&gt;<i>         along.
+</I>&gt;<i>
+</I>&gt;<i>         At the receiving end, you decrypt the session key with RSA, decrypt
+</I>&gt;<i>         the data with AES, unpad the data, and verify its signature.
+</I>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000574.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+	<LI>Next message: <A HREF="000576.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#575">[ date ]</a>
+              <a href="thread.html#575">[ thread ]</a>
+              <a href="subject.html#575">[ subject ]</a>
+              <a href="author.html#575">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

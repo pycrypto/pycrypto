@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ERROR%3A%20testRsaUnversionedSignAndVerify%20failed&In-Reply-To=16d8ea90-15a6-4ef8-9895-e41436a7a8e0%40e18g2000vbe.googlegroups.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000113.html">
+   <LINK REL="Next"  HREF="000115.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed</H1>
+    <B>Hans-Peter Jansen</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ERROR%3A%20testRsaUnversionedSignAndVerify%20failed&In-Reply-To=16d8ea90-15a6-4ef8-9895-e41436a7a8e0%40e18g2000vbe.googlegroups.com"
+       TITLE="[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed">hpj at urpla.net
+       </A><BR>
+    <I>Thu Aug 20 03:11:46 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000113.html">[pycrypto] How can I read a standard openssl private key with	PyCrypto and decrypt with it?
+</A></li>
+        <LI>Next message: <A HREF="000115.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#114">[ date ]</a>
+              <a href="thread.html#114">[ thread ]</a>
+              <a href="subject.html#114">[ subject ]</a>
+              <a href="author.html#114">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi S&#233;bastien, hi Steve,
+
+first of all, thanks for the instant feedback.
+
+Am Donnerstag, 20. August 2009 schrieb S&#233;bastien Martini:
+&gt;<i> Hi Hans-Peter,
+</I>&gt;<i>
+</I>&gt;<i> &gt; /usr/lib/python2.6/site-packages/Crypto/Hash/SHA.py:6:
+</I>&gt;<i> &gt; DeprecationWarning: the sha module is deprecated; use the hashlib
+</I>&gt;<i> &gt; module instead
+</I>&gt;<i> &gt; &#160; from sha import *
+</I>&gt;<i>
+</I>&gt;<i> Strange, with pycrypto 2.0.1 on Ubuntu 9.04 (and with Python 2.6.1) I
+</I>&gt;<i> do not have this warning. Are you sure your system use pycrypto
+</I>&gt;<i> 2.0.1 ?
+</I>
+Yes, I am:
+$ rpm -qf /usr/lib/python2.6/site-packages/Crypto/PublicKey/RSA.py
+python-crypto-2.0.1-28.115.1
+
+Let me note, that I always generate rpm packages (at least with &quot;python 
+setup.py bdist_rpm&quot;), rather then installing from source directly. 
+
+Probably, Ubuntu incorporates some patches from Dwaynes trunk, does it?
+I got rid of the Deprecation warning with updating to Dwaynes version, by 
+the price of a new one. See below.
+
+Please let me turn around the question: are you sure, that Ubuntus version 
+isn't a hybrid of Andrews and Dwaynes at least? May I ask you to show me 
+your patches? I show you mine ;-)
+
+openSUSE incorporated two patches to 2.0.1:
+
+This one, I ported to trunk:
+--- src/hash_template.c~	2009-08-16 23:39:34.053841534 +0200
++++ src/hash_template.c	2009-08-20 10:16:05.877840748 +0200
+@@ -111,13 +111,15 @@ ALG_hexdigest(ALGobject *self, PyObject
+ 	PyObject *value, *retval;
+ 	unsigned char *raw_digest, *hex_digest;
+ 	int i, j, size;
++	Py_ssize_t ssize;
+ 
+ 	if (!PyArg_ParseTuple(args, &quot;&quot;))
+ 		return NULL;
+ 
+ 	/* Get the raw (binary) digest value */
+ 	value = (PyObject *)hash_digest(&amp;(self-&gt;st));
+-	size = PyString_Size(value);
++	ssize = PyString_Size(value);
++	size = (ssize &gt; INT_MAX) ? INT_MAX : ssize;
+ 	raw_digest = (unsigned char *) PyString_AsString(value);
+ 
+ 	/* Create a new string */
+
+Dwayne, is this in order or just plain silly?
+
+The other is the already applied ARC2 fix to check of oversized keys.
+
+&gt;<i> &gt; ............................E.
+</I>&gt;<i> &gt; ======================================================================
+</I>&gt;<i> &gt; ERROR: testRsaUnversionedSignAndVerify (signer_test.SignerTest)
+</I>&gt;<i> &gt; ----------------------------------------------------------------------
+</I>&gt;<i> &gt; Traceback (most recent call last):
+</I>&gt;<i> &gt; &#160; File &quot;.../keyczar/tests/keyczar/signer_test.py&quot;, line 125, in
+</I>&gt;<i> &gt; testRsaUnversionedSignAndVerify
+</I>&gt;<i> &gt; self.__testUnversionedSignAndVerify(&quot;rsa-sign&quot;)
+</I>&gt;<i> &gt; &#160; File &quot;.../keyczar/tests/keyczar/signer_test.py&quot;, line 67, in
+</I>&gt;<i> &gt; __testUnversionedSignAndVerify
+</I>&gt;<i> &gt; self.assertFalse(unversioned_signer.Verify(&quot;Wrong string&quot;, sig)) File
+</I>&gt;<i> &gt; &quot;/usr/local/lib/python2.6/site-packages/keyczar/keyczar.py&quot;, line 404,
+</I>&gt;<i> &gt; in Verify result = key.Verify(data, sig_bytes)
+</I>&gt;<i> &gt; &#160; File &quot;/usr/local/lib/python2.6/site-packages/keyczar/keys.py&quot;, line
+</I>&gt;<i> &gt; 622, in Verify return self.public_key.Verify(msg, sig)
+</I>&gt;<i> &gt; &#160; File &quot;/usr/local/lib/python2.6/site-packages/keyczar/keys.py&quot;, line
+</I>&gt;<i> &gt; 787, in Verify (util.BytesToLong(sig),))
+</I>&gt;<i> &gt; &#160; File &quot;/usr/lib/python2.6/site-packages/Crypto/PublicKey/pubkey.py&quot;,
+</I>&gt;<i> &gt; line 84, in verify return self._verify(M, signature)
+</I>&gt;<i> &gt; &#160; File &quot;/usr/lib/python2.6/site-packages/Crypto/PublicKey/RSA.py&quot;, line
+</I>&gt;<i> &gt; 103, in _verify m2=self._encrypt(sig[0])
+</I>&gt;<i> &gt; &#160; File &quot;/usr/lib/python2.6/site-packages/Crypto/PublicKey/RSA.py&quot;, line
+</I>&gt;<i> &gt; 89, in _encrypt raise error, 'Plaintext too large'
+</I>&gt;<i> &gt; error: Plaintext too large
+</I>&gt;<i>
+</I>&gt;<i> I think this error is related somehow to the hash computation (which
+</I>&gt;<i> also could be related to the deprecation warning) because this is the
+</I>&gt;<i> hash value which is signed with a private_encrypt() RSA method. I
+</I>&gt;<i> might be wrong but I really think this is not currently pycrypto 2.0.1
+</I>&gt;<i> that your keyczar install calls.
+</I>
+No, it _wasn't_ related to SHA.py, since in a first test, I just updated to 
+Dwaynes current SHA.py, which tries to import hashlib.SHA first and got rid 
+of the deprecation, but this error persisted. 
+
+After updating my python-crypto package to Dwaynes trunk, the tests 
+succeeded:
+
+$ python alltests.py 
+./usr/lib/python2.6/site-packages/Crypto/Util/randpool.py:72: 
+RandomPool_DeprecationWarning: RandomPool is deprecated.  Use Random.new() 
+or Random.RandomPoolCompat instead.
+  warnings.warn(&quot;RandomPool is deprecated.  Use Random.new() or 
+Random.RandomPoolCompat instead.&quot;, RandomPool_DeprecationWarning)
+.............................
+----------------------------------------------------------------------
+Ran 30 tests in 1.010s
+
+OK
+
+I fixed it with this patch:
+
+--- util.py.orig	2009-08-20 10:40:19.248702303 +0200
++++ util.py	2009-08-20 10:57:27.765198430 +0200
+@@ -30,7 +30,12 @@ except ImportError:
+   from sha import sha as sha1
+   from Crypto.Hash.SHA256 import new as sha256
+ 
+-from Crypto.Util import randpool
++try:
++  # Import RandomPoolCompat, if available
++  from Crypto.Random import RandomPoolCompat as RandomPool
++except ImportError:
++  from Crypto.Util.randpool import RandomPool
++
+ from pyasn1.codec.der import decoder
+ from pyasn1.codec.der import encoder
+ from pyasn1.type import univ
+@@ -291,7 +296,7 @@ def TrimBytes(bytes):
+ 
+ def RandBytes(n):
+   &quot;&quot;&quot;Return n random bytes.&quot;&quot;&quot;
+-  return randpool.RandomPool(512).get_bytes(n)
++  return RandomPool(512).get_bytes(n)
+ 
+ def Hash(digest, *inputs):
+   &quot;&quot;&quot;Return a SHA-1 hash over a variable number of inputs.&quot;&quot;&quot;
+
+BTW, is there any reason to fetch 512 bytes always, and use a subset only 
+(if I read the code correctly)? What happens, if n is &gt; 512?
+
+&gt;<i> &gt; ----------------------------------------------------------------------
+</I>&gt;<i> &gt; Ran 30 tests in 3.179s
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; FAILED (errors=1)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Since I wanted to use RSA signing and encryption, I'm concerned about
+</I>&gt;<i> &gt; it.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; System:
+</I>&gt;<i> &gt; openSUSE 11.1, python 2.6.0, python-crypto-2.0.1, pyasn1-0.0.8a
+</I>&gt;<i>
+</I>&gt;<i> Cordially,
+</I>&gt;<i>
+</I>&gt;<i> S&#233;bastien
+</I>
+Thanks,
+Pete
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000113.html">[pycrypto] How can I read a standard openssl private key with	PyCrypto and decrypt with it?
+</A></li>
+	<LI>Next message: <A HREF="000115.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#114">[ date ]</a>
+              <a href="thread.html#114">[ thread ]</a>
+              <a href="subject.html#114">[ subject ]</a>
+              <a href="author.html#114">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

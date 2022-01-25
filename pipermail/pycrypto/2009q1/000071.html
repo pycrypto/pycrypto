@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Quick and Easy Email Authentication
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Quick%20and%20Easy%20Email%20Authentication&In-Reply-To=5.2.1.1.0.20090212125722.03b08b48%40mail.ece.arizona.edu">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000070.html">
+   <LINK REL="Next"  HREF="000061.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Quick and Easy Email Authentication</H1>
+    <B>Mads Kiilerich</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Quick%20and%20Easy%20Email%20Authentication&In-Reply-To=5.2.1.1.0.20090212125722.03b08b48%40mail.ece.arizona.edu"
+       TITLE="[pycrypto] Quick and Easy Email Authentication">mads at kiilerich.com
+       </A><BR>
+    <I>Thu Feb 12 19:06:07 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000070.html">[pycrypto] Quick and Easy Email Authentication
+</A></li>
+        <LI>Next message: <A HREF="000061.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#71">[ date ]</a>
+              <a href="thread.html#71">[ thread ]</a>
+              <a href="subject.html#71">[ subject ]</a>
+              <a href="author.html#71">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Yes, I'm pessimistic - but I would call it realistic. And I think you 
+are too optimistic. I'm not trying to demotivate, just trying to help by 
+sharing what I think is insight. Feel free to ignore me. Let's hope you 
+are right and I'm wrong ;-)
+
+FWIW I disagree with most of what you are saying, so continuing the 
+discussion would probably be a waste of time. (For example, as the 
+problem/solution is described it relies on the &quot;short authentication 
+code&quot; which contains only 32 bits of information! Nuff said.)
+
+/Mads
+
+ps: it is my understanding that this list is for &quot;PyCrypto - The Python 
+Cryptography Toolkit&quot;, not for general crypto design discussion. But as 
+far as I am concerned feel free to continue here.
+
+
+
+David MacQuigg wrote, On 02/12/2009 11:58 PM:
+&gt;<i> At 10:34 PM 2/11/2009 +0100, Mads Kiilerich wrote:
+</I>&gt;<i>
+</I>&gt;<i>   
+</I>&gt;&gt;<i> David MacQuigg wrote, On 02/11/2009 04:41 PM:
+</I>&gt;&gt;<i>     
+</I>&gt;&gt;&gt;<i> RSA, maybe some way to do this with hashcodes?  If we can solve this
+</I>&gt;&gt;&gt;<i> problem, it could lead to a robust, no-exceptions policy on
+</I>&gt;&gt;&gt;<i> authentication of SMTP mail sessions.
+</I>&gt;&gt;&gt;<i>       
+</I>&gt;&gt;<i> Such systems already exists, designed and peer reviewed by experts. The primarily problem they face is acceptance - and the lack of acceptance because of the trade-offs made to make the protocols acceptable. And nobody with real-world need for email can rely on such protocols before everybody else uses them, and thus there is no need to deploy the protocols before everybody else uses them.
+</I>&gt;&gt;<i>     
+</I>&gt;<i>
+</I>&gt;<i> I'm familiar with this problem.  What the protocol experts have missed, or prefer not to deal with, is the importance of motivating senders.  That's why we need to pay attention to such simple things as the length of the authcode.  If we could dictate a solution, it would be very easy to add a simple extension to SMTP, and make the authcode as long as we like.  Senders would be required to upgrade their mail servers, and the world would be a nice place.
+</I>&gt;<i>
+</I>&gt;<i>   
+</I>&gt;&gt;&gt;<i> Let me try to state the problem in more fundamental terms.  A stranger
+</I>&gt;&gt;&gt;<i> says HELO this is f33faf76.mailout09.arizona.edu.  The only other
+</I>&gt;&gt;&gt;<i> information you have to verify that claim is a DNS text record at
+</I>&gt;&gt;&gt;<i> mailout09.arizona.edu. That record can hold up to 480 bytes of text. 
+</I>&gt;&gt;&gt;<i>       
+</I>&gt;&gt;<i> The DNS system is fundamentally broken and insecure. You shouldn't rely on it at all. Secure DNS is really a must but unfortunately not widely deployed, so we must rely on DNS for functionality but shouldn't rely on it for security.
+</I>&gt;&gt;<i>     
+</I>&gt;<i>
+</I>&gt;<i> You are being too pessimistic.  DNS security is good enough to screen out almost all the petty forgers.  Banks, of course, should not rely on DNS for high-value transactions.
+</I>&gt;<i>
+</I>&gt;<i>   
+</I>&gt;&gt;&gt;<i> criminals.  More secure sites can add additional checks, including a
+</I>&gt;&gt;&gt;<i> digital signature on the entire message.
+</I>&gt;&gt;&gt;<i>       
+</I>&gt;&gt;<i> IMHO the right solution to the problem you are trying to solve lies in that direction. Why try to find another and less perfect solution?
+</I>&gt;&gt;<i>     
+</I>&gt;<i>
+</I>&gt;<i> The existing solutions are not enough, and there is no one perfect solution.  It will take a combination of several methods, starting with a simple HELO check, like what I am proposing, and moving on to more secure and time-consuming methods, for those few messages that pass the initial checks.
+</I>&gt;<i>
+</I>&gt;<i>   
+</I>&gt;&gt;<i> But ... this is a (silent) list for python crypto, not for protocol design and email systems. Other lists might be more appropriate.
+</I>&gt;&gt;<i>     
+</I>&gt;<i>
+</I>&gt;<i> You are right.  We should stick to crypto on this list.  I'll be glad to discuss email and DNS security offlist.
+</I>&gt;<i>
+</I>&gt;<i> Back to the crypto discussion.  Let me try one more time to formulate a pure crypto problem, free of the complexities of the application.  I have a feeling that what I am looking for is possible.  I just don't know enough about crypto algorithms to figure it out.
+</I>&gt;<i>
+</I>&gt;<i> Alice wants to ask Bob for some confidential information.  Bob needs to make sure it really is Alice, not Eve.  Alice gives Bob her ID and a short authentication code, like 'f33faf76'.  She also has a public record where Bob can retrieve up to 480 bytes of text that Alice has published.  There is no prior arrangement, or other out-of-band information available to Bob.
+</I>&gt;<i>
+</I>&gt;<i> The authcode must remain valid and secure for as long as it takes Bob to run the authentication (a few seconds).  The public record can be changed only once every few days.  Eve can't intercept the communication between Alice and Bob, and she can't alter Alice's public record, but she can trick Alice into sending messages to Eve, complete with authentication codes.  Eve also has access to a fast PC, and can test authcodes a thousand times faster than Bob.
+</I>&gt;<i>
+</I>&gt;<i> -- Dave
+</I>&gt;<i> ************************************************************     *
+</I>&gt;<i> * David MacQuigg, PhD    email: macquigg at ece.arizona.edu   *  *
+</I>&gt;<i> * Research Associate                phone: USA 520-721-4583   *  *  *
+</I>&gt;<i> * ECE Department, University of Arizona                       *  *  *
+</I>&gt;<i> *                                 9320 East Mikelyn Lane       * * *
+</I>&gt;<i> * <A HREF="http://purl.net/macquigg">http://purl.net/macquigg</A>        Tucson, Arizona 85710          *
+</I>&gt;<i> ************************************************************     *
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>   
+</I>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 3435 bytes
+Desc: S/MIME Cryptographic Signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090213/107a5fbf/attachment.bin">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090213/107a5fbf/attachment.bin</A> 
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000070.html">[pycrypto] Quick and Easy Email Authentication
+</A></li>
+	<LI>Next message: <A HREF="000061.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#71">[ date ]</a>
+              <a href="thread.html#71">[ thread ]</a>
+              <a href="subject.html#71">[ subject ]</a>
+              <a href="author.html#71">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

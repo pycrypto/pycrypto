@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Failed test compiling on Fedora 19
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Failed%20test%20compiling%20on%20Fedora%2019&In-Reply-To=%3C0c56da51e220a8f2a0aafd72536beb38%40linuxbsdos.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000691.html">
+   <LINK REL="Next"  HREF="000693.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Failed test compiling on Fedora 19</H1>
+    <B>finid at linuxbsdos.com</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Failed%20test%20compiling%20on%20Fedora%2019&In-Reply-To=%3C0c56da51e220a8f2a0aafd72536beb38%40linuxbsdos.com%3E"
+       TITLE="[pycrypto] Failed test compiling on Fedora 19">finid at linuxbsdos.com
+       </A><BR>
+    <I>Thu Aug 29 17:35:37 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000691.html">[pycrypto] Failed test compiling on Fedora 19
+</A></li>
+        <LI>Next message: <A HREF="000693.html">[pycrypto] Failed test compiling on Fedora 19
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#692">[ date ]</a>
+              <a href="thread.html#692">[ thread ]</a>
+              <a href="subject.html#692">[ subject ]</a>
+              <a href="author.html#692">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Sorry folks. I posted the wrong output from another program.
+
+Here's what happened.
+
+On running &quot;python3 setup.py test&quot; I get this
+
+&lt;!Start&gt;
+
+SelfTest: You can ignore the RandomPool_DeprecationWarning that follows.
+........E...................
+ERROR: test_negative_number_roundtrip_mpzToLongObj_longObjToMPZ 
+(Crypto.SelfTest.Util.test_number.MiscTests)
+Test that mpzToLongObj and longObjToMPZ (internal functions) roundtrip 
+negative numbers correctly.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+   File &quot;build/lib.linux-x86_64-3.3/Crypto/SelfTest/Util/test_number.py&quot;, 
+line 283, in test_negative_number_roundtrip_mpzToLongObj_longObjToMPZ
+     k = number._fastmath.rsa_construct(n, e)
+AttributeError: 'NoneType' object has no attribute 'rsa_construct'
+
+----------------------------------------------------------------------
+Ran 1031 tests in 38.282s
+
+FAILED (errors=1)
+Traceback (most recent call last):
+   File &quot;setup.py&quot;, line 456, in &lt;module&gt;
+     core.setup(**kw)
+   File &quot;/usr/lib64/python3.3/distutils/core.py&quot;, line 148, in setup
+     dist.run_commands()
+   File &quot;/usr/lib64/python3.3/distutils/dist.py&quot;, line 929, in 
+run_commands
+     self.run_command(cmd)
+   File &quot;/usr/lib64/python3.3/distutils/dist.py&quot;, line 948, in 
+run_command
+     cmd_obj.run()
+   File &quot;setup.py&quot;, line 336, in run
+     SelfTest.run(module=moduleObj, verbosity=self.verbose, 
+stream=sys.stdout, config=self.config)
+   File &quot;build/lib.linux-x86_64-3.3/Crypto/SelfTest/__init__.py&quot;, line 
+74, in run
+     raise SelfTestError(&quot;Self-test failed&quot;, result)
+Crypto.SelfTest.SelfTestError: ('Self-test failed', 
+&lt;unittest.runner.TextTestResult run=1031 errors=1 failures=0&gt;)
+
+
+&lt;!/End&gt;
+
+On running &quot;python3 setup.py build&quot; I get this:
+
+&lt;!Start&gt;
+
+python3 setup.py build
+running build
+running build_py
+running build_ext
+running build_configure
+warning: GMP or MPIR library not found; Not building 
+Crypto.PublicKey._fastmath.
+
+&lt;!/End&gt;
+
+But GMP and PMIR are installed.
+
+But even with the error on test and the warning on build, &quot;python3 
+setup.py install&quot; completed successfully, only throwing the same warning 
+I got on the build part.
+
+What's with the error on test and the warning message on build? Are 
+those make or break?
+
+TIA
+
+
+
+--
+finid
+<A HREF="http://linuxbsdos.com">http://linuxbsdos.com</A>
+
+
+
+On 2013-08-29 21:02, <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">finid at linuxbsdos.com</A> wrote:
+&gt;<i> Folks,
+</I>&gt;<i> 
+</I>&gt;<i> When I ran &quot;python3 runtests test&quot; on Fedora 19, most of the test were
+</I>&gt;<i> either SKIPPED or PASSED, and I got a bunch of errors all having to do
+</I>&gt;<i> with SELinux. Here's the tail end of the test report:
+</I>&gt;<i> 
+</I>&gt;<i> &lt;!Start&gt;
+</I>&gt;<i> 
+</I>&gt;<i> rsync: rsync_xal_set:
+</I>&gt;<i> lsetxattr(&quot;&quot;/tmp/s3ql-mnt-ssn0wz/orig/C!pulseaudio/O&#245;karm/.sort.B3KkHI&quot;&quot;,&quot;security.selinux&quot;) failed: Operation not supported (95)
+</I>&gt;<i> rsync: rsync_xal_set:
+</I>&gt;<i> lsetxattr(&quot;&quot;/tmp/s3ql-mnt-ssn0wz/orig/C!pulseaudio/O&#245;karm/.&#243;true.WWN7XB&quot;&quot;,&quot;security.selinux&quot;) failed: Operation not supported (95)
+</I>&gt;<i> rsync: rsync_xal_set:
+</I>&gt;<i> lsetxattr(&quot;&quot;/tmp/s3ql-mnt-ssn0wz/orig/C!pulseaudio/O&#245;karm/.&#208;kinfocenter.lPArfv&quot;&quot;,&quot;security.selinux&quot;) failed: Operation not supported (95)
+</I>&gt;<i> rsync error: some files/attrs were not transferred (see previous
+</I>&gt;<i> errors) (code 23) at main.c(1052) [sender=3.0.9]
+</I>&gt;<i> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: stopping after 2
+</I>&gt;<i> failures !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+</I>&gt;<i> =============== 1 failed, 135 passed, 61 skipped, 1 error in 109.11
+</I>&gt;<i> seconds========
+</I>&gt;<i> 
+</I>&gt;<i> &lt;/Stop&gt;
+</I>&gt;<i> 
+</I>&gt;<i> Even with this error, running &quot;python3 setup.py install&quot; completed 
+</I>&gt;<i> successfully.
+</I>&gt;<i> 
+</I>&gt;<i> Any ideas what impact those SELinux-related errors will have on using 
+</I>&gt;<i> S3QL?
+</I>&gt;<i> 
+</I>&gt;<i> TIA,
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> --
+</I>&gt;<i> finid
+</I>&gt;<i> <A HREF="http://linuxbsdos.com">http://linuxbsdos.com</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I></PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000691.html">[pycrypto] Failed test compiling on Fedora 19
+</A></li>
+	<LI>Next message: <A HREF="000693.html">[pycrypto] Failed test compiling on Fedora 19
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#692">[ date ]</a>
+              <a href="thread.html#692">[ thread ]</a>
+              <a href="subject.html#692">[ subject ]</a>
+              <a href="author.html#692">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

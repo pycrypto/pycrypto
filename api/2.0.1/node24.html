@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Adding Block Encryption Algorithms</TITLE>
+<META NAME="description" CONTENT="Adding Block Encryption Algorithms">
+<META NAME="keywords" CONTENT="pycrypt">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="pycrypt.css">
+
+<LINK REL="next" HREF="node25.html">
+<LINK REL="previous" HREF="node23.html">
+<LINK REL="up" HREF="node22.html">
+<LINK REL="next" HREF="node25.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html349"
+  HREF="node25.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html345"
+  HREF="node22.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html339"
+  HREF="node23.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html347"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html350"
+  HREF="node25.html">Adding Stream Encryption Algorithms</A>
+<B> Up:</B> <A NAME="tex2html346"
+  HREF="node22.html">Extending the Toolkit</A>
+<B> Previous:</B> <A NAME="tex2html340"
+  HREF="node23.html">Adding Hash Algorithms</A>
+ &nbsp; <B>  <A NAME="tex2html348"
+  HREF="node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00082000000000000000">
+Adding Block Encryption Algorithms</A>
+</H2>
+
+<P>
+The required constant definitions are as follows:
+
+<P>
+<PRE>
+#define MODULE_NAME AES	       /* Name of algorithm */
+#define BLOCK_SIZE 16          /* Size of encryption block */
+#define KEY_SIZE 0             /* Size of key in bytes (0 if not fixed size) */
+</PRE>
+
+<P>
+The C structure must be named block_state:
+
+<P>
+<PRE>
+typedef struct {
+     ... whatever state variables you need ...
+} block_state;
+</PRE>
+
+<P>
+There are three functions that need to be written: to initialize the
+algorithm's state, and to encrypt and decrypt a single block.
+
+<P>
+
+<UL>
+<LI>void block_init(block_state *self, unsigned char *key,
+                int keylen);
+</LI>
+<LI>void block_encrypt(block_state *self, unsigned char *in, 
+               unsigned char *out);
+</LI>
+<LI>void block_decrypt(block_state *self, unsigned char *in, 
+               unsigned char *out);
+</LI>
+</UL>
+
+<P>
+Put #include "block_template.c" at the end of the file to
+include the actual implementation of the module.
+
+<P>
+<BR><HR>
+
+</BODY>
+</HTML>

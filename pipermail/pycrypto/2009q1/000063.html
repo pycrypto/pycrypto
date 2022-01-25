@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] PyCrypto AND Crypt_RSA integration
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%20AND%20Crypt_RSA%20integration&In-Reply-To=3c5f192d0902061053o4c00c796k8a440b9f62b4efb7%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000061.html">
+   <LINK REL="Next"  HREF="000064.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] PyCrypto AND Crypt_RSA integration</H1>
+    <B>Mads Kiilerich</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%20AND%20Crypt_RSA%20integration&In-Reply-To=3c5f192d0902061053o4c00c796k8a440b9f62b4efb7%40mail.gmail.com"
+       TITLE="[pycrypto] PyCrypto AND Crypt_RSA integration">mads at kiilerich.com
+       </A><BR>
+    <I>Fri Feb  6 18:56:50 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000061.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+        <LI>Next message: <A HREF="000064.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#63">[ date ]</a>
+              <a href="thread.html#63">[ thread ]</a>
+              <a href="subject.html#63">[ subject ]</a>
+              <a href="author.html#63">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Mauricio Arozi wrote, On 02/06/2009 07:53 PM:
+&gt;<i> Hello,
+</I>&gt;<i> I'm trying to import/export keys from/to Crypt_RSA 
+</I>&gt;<i> &lt;<A HREF="http://pear.php.net/package/Crypt_RSA">http://pear.php.net/package/Crypt_RSA</A>&gt;, using PyCrypto 
+</I>&gt;<i> &lt;<A HREF="http://www.dlitz.net/software/pycrypto/">http://www.dlitz.net/software/pycrypto/</A>&gt;. My problem is that while 
+</I>&gt;<i> using PyCrypto to generate both public and private keys, the 
+</I>&gt;<i> e(exponent?) is always the same.
+</I>&gt;<i> According to this site: <A HREF="http://pajhome.org.uk/crypt/rsa/rsa.html,">http://pajhome.org.uk/crypt/rsa/rsa.html,</A> and 
+</I>&gt;<i> yet others, the e(exponent?) is used for the public key, and d for the 
+</I>&gt;<i> private key.
+</I>
+Yes, many implementations and applications of RSA uses a fixed exponent 
+- very often 65537 (F4). Usually that is a good decision and no problem 
+- perhaps except for interoperability.
+
+And yes, interoperability is often very hard when implementing crypto 
+stuff. IMHO an important criteria when selecting a crypto library is 
+having examples / proof of how it interoperates with other implementations.
+
+It is not clear to me exactly what you are asking for, so I can't answer 
+that directly - I hope someone else can do that.
+
+/Mads
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 3435 bytes
+Desc: S/MIME Cryptographic Signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090207/8b240f70/attachment.bin">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090207/8b240f70/attachment.bin</A> 
+</PRE>
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000061.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+	<LI>Next message: <A HREF="000064.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#63">[ date ]</a>
+              <a href="thread.html#63">[ thread ]</a>
+              <a href="subject.html#63">[ subject ]</a>
+              <a href="author.html#63">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

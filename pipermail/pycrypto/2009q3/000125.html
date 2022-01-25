@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Adding support for Tiger Hash / Tiger Tree Hash
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Adding%20support%20for%20Tiger%20Hash%20/%20Tiger%20Tree%20Hash&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000124.html">
+   <LINK REL="Next"  HREF="000126.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Adding support for Tiger Hash / Tiger Tree Hash</H1>
+    <B>Ximin Luo</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Adding%20support%20for%20Tiger%20Hash%20/%20Tiger%20Tree%20Hash&In-Reply-To="
+       TITLE="[pycrypto] Adding support for Tiger Hash / Tiger Tree Hash">xl269 at cam.ac.uk
+       </A><BR>
+    <I>Wed Aug 26 04:43:53 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000124.html">[pycrypto] example
+</A></li>
+        <LI>Next message: <A HREF="000126.html">[pycrypto] RandomPool
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#125">[ date ]</a>
+              <a href="thread.html#125">[ thread ]</a>
+              <a href="subject.html#125">[ subject ]</a>
+              <a href="author.html#125">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I was just wondering if it would be possible to add support for Tiger Tree Hash
+/ Tiger Hash into pyCrypto? At the moment a bunch of us are having to bundle
+our own custom &quot;tiger&quot; module with the software we're developing; we have
+pyCrypto as a dependency anyway, so it would be great if it could include the
+tiger module.
+
+Mark's original code for pytiger: <A HREF="https://launchpad.net/pytiger/trunk">https://launchpad.net/pytiger/trunk</A>
+
+My branch, which has better endianness detection:
+<A HREF="https://code.launchpad.net/~xl269/pytiger/main">https://code.launchpad.net/~xl269/pytiger/main</A>
+
+The specification of the THEX algorithm is at:
+<A HREF="http://www.open-content.net/specs/draft-jchapweske-thex-02.html">http://www.open-content.net/specs/draft-jchapweske-thex-02.html</A>
+
+The specification of the Tiger hash algorithm is at:
+<A HREF="http://www.cs.technion.ac.il/~biham/Reports/Tiger/">http://www.cs.technion.ac.il/~biham/Reports/Tiger/</A>
+
+There is also a debian package. I haven't looked at it, but you might find the
+information useful: <A HREF="http://packages.debian.org/sid/tthsum">http://packages.debian.org/sid/tthsum</A>
+
+Thanks,
+
+Ximin
+
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000124.html">[pycrypto] example
+</A></li>
+	<LI>Next message: <A HREF="000126.html">[pycrypto] RandomPool
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#125">[ date ]</a>
+              <a href="thread.html#125">[ thread ]</a>
+              <a href="subject.html#125">[ subject ]</a>
+              <a href="author.html#125">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

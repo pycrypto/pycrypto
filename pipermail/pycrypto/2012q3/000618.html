@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA output on long inputs can sometimes be gibberish
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20output%20on%20long%20inputs%20can%20sometimes%20be%20gibberish&In-Reply-To=%3CCAHAkNZ3WBEBgMnDnPX6wKAxubE3EG9d94yBfizc%3DFRyKAq%2B22Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000632.html">
+   <LINK REL="Next"  HREF="000619.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA output on long inputs can sometimes be gibberish</H1>
+    <B>Philip Horger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20output%20on%20long%20inputs%20can%20sometimes%20be%20gibberish&In-Reply-To=%3CCAHAkNZ3WBEBgMnDnPX6wKAxubE3EG9d94yBfizc%3DFRyKAq%2B22Q%40mail.gmail.com%3E"
+       TITLE="[pycrypto] RSA output on long inputs can sometimes be gibberish">campadrenalin at gmail.com
+       </A><BR>
+    <I>Thu Jul 26 18:05:56 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000632.html">[pycrypto] random.uniform() method
+</A></li>
+        <LI>Next message: <A HREF="000619.html">[pycrypto] RSA output on long inputs can sometimes be gibberish
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#618">[ date ]</a>
+              <a href="thread.html#618">[ thread ]</a>
+              <a href="subject.html#618">[ subject ]</a>
+              <a href="author.html#618">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm working on a project that includes a wrapper for cryptographic
+encoding, which lets you express an &quot;encryptor&quot; as a JSON list. Of
+course, this kinda hinges on the underlying cryptography code working,
+and since I'm the sort of person who likes cryptographic privacy but
+doesn't have an expert grasp on it, I make good use of my PyCrypto
+dependency.
+
+However, I *am* having issues regarding the RSA encryptor which delve
+beyond my ken, and which may or may not indicate problems with the
+underlying PyCrypto implementation. I wrote some test code and created
+a bug report in my project:
+
+<A HREF="https://github.com/campadrenalin/EJTP-lib-python/issues/9">https://github.com/campadrenalin/EJTP-lib-python/issues/9</A>
+
+The test involves the reversibility of the RSA process, using the
+decrypt function on raw input as a bit of a hack to encrypt with the
+private key (such that the public key can be used to decrypt it). This
+matches the real-world functionality it will be used for, where data
+at the innermost layer of encryption will be encrypted with the
+sender's private key. This may seem silly, but it both acts as an
+obfuscation and saves bandwidth (by accomplishing the intention of a
+signature without the network overhead).
+
+If sending raw data through the decrypt function is the problem, as I
+suspect, then I can change the EJTP protocol to use proper signatures,
+that's no biggy. But if this reveals problems in PyCrypto... I figured
+you guys would want to know.
+
+Anyways, my social anxiety and procrastination have delayed me from
+this for long enough. Thank you for your time, and for PyCrypto being
+excellent.
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000632.html">[pycrypto] random.uniform() method
+</A></li>
+	<LI>Next message: <A HREF="000619.html">[pycrypto] RSA output on long inputs can sometimes be gibberish
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#618">[ date ]</a>
+              <a href="thread.html#618">[ thread ]</a>
+              <a href="subject.html#618">[ subject ]</a>
+              <a href="author.html#618">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

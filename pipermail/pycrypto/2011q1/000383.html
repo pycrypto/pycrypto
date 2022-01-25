@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Issue with the new random.choice() unit test
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Issue%20with%20the%20new%20random.choice%28%29%20unit%20test&In-Reply-To=4D24C32A.5000806%40amberfisharts.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000382.html">
+   <LINK REL="Next"  HREF="000385.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Issue with the new random.choice() unit test</H1>
+    <B>Paul Koning</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Issue%20with%20the%20new%20random.choice%28%29%20unit%20test&In-Reply-To=4D24C32A.5000806%40amberfisharts.com"
+       TITLE="[pycrypto] Issue with the new random.choice() unit test">paul_koning at dell.com
+       </A><BR>
+    <I>Wed Jan  5 13:14:58 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000382.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+        <LI>Next message: <A HREF="000385.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#383">[ date ]</a>
+              <a href="thread.html#383">[ thread ]</a>
+              <a href="subject.html#383">[ subject ]</a>
+              <a href="author.html#383">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Jan 5, 2011, at 2:14 PM, Lorenz Quack wrote:
+
+&gt;<i> Hey,
+</I>&gt;<i> 
+</I>&gt;<i> I just took a look at random.sample.
+</I>&gt;<i> The problem is that it uses a dict to simulate a set (introduced in py2.3).
+</I>&gt;<i> This is probably done because IIRC dict can do membership test in O(1).
+</I>&gt;<i> Lists on the other hand do membership test in O(n) so using sets/dict should
+</I>&gt;<i> provide a speedup if sample size k becomes large.
+</I>&gt;<i> So what's the problem? Membership testing for dicts was only added in py2.2.
+</I>
+True for &quot;k in d&quot; but &quot;d.has_key(k)&quot; works in 2.1.  Unfortunately, it doesn't work in Python 3.  But it would be easy enough to subclass dict and add that method to it in Python 3.
+
+Alternatively, one could use a subscript operation on the dict, wrapped in try/except.
+
+	paul
+
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000382.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+	<LI>Next message: <A HREF="000385.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#383">[ date ]</a>
+              <a href="thread.html#383">[ thread ]</a>
+              <a href="subject.html#383">[ subject ]</a>
+              <a href="author.html#383">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

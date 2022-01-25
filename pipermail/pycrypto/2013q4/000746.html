@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] AES, MODE_CTR
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20AES%2C%20MODE_CTR&In-Reply-To=%3CCAMp7mVvJMG4_jpFba-Km4PrmFD2pYBSPQOYqZBmf3sw%3DKUg3Kw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000745.html">
+   <LINK REL="Next"  HREF="000747.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] AES, MODE_CTR</H1>
+    <B>Richard Moore</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20AES%2C%20MODE_CTR&In-Reply-To=%3CCAMp7mVvJMG4_jpFba-Km4PrmFD2pYBSPQOYqZBmf3sw%3DKUg3Kw%40mail.gmail.com%3E"
+       TITLE="[pycrypto] AES, MODE_CTR">richmoore44 at gmail.com
+       </A><BR>
+    <I>Wed Dec  4 09:01:34 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000745.html">[pycrypto] AES, MODE_CTR
+</A></li>
+        <LI>Next message: <A HREF="000747.html">[pycrypto] AES, MODE_CTR
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#746">[ date ]</a>
+              <a href="thread.html#746">[ thread ]</a>
+              <a href="subject.html#746">[ subject ]</a>
+              <a href="author.html#746">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>You need to reset the counter (or make a new one) before you start to
+decrypt. You also don't seem to be using an IV which would lead to a
+massive security hole.
+
+Rich.
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000745.html">[pycrypto] AES, MODE_CTR
+</A></li>
+	<LI>Next message: <A HREF="000747.html">[pycrypto] AES, MODE_CTR
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#746">[ date ]</a>
+              <a href="thread.html#746">[ thread ]</a>
+              <a href="subject.html#746">[ subject ]</a>
+              <a href="author.html#746">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

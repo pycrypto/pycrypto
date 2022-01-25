@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Comments%20on%20Elgamal%2C%0A%20and%20a%20broader%20question%3A%20Whither%20pycrypto%3F&In-Reply-To=4D1DEF9F.7020101%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000364.html">
+   <LINK REL="Next"  HREF="000366.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?</H1>
+    <B>Lorenz Quack</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Comments%20on%20Elgamal%2C%0A%20and%20a%20broader%20question%3A%20Whither%20pycrypto%3F&In-Reply-To=4D1DEF9F.7020101%40gmx.li"
+       TITLE="[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?">don at amberfisharts.com
+       </A><BR>
+    <I>Sun Jan  2 15:49:50 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000364.html">[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+        <LI>Next message: <A HREF="000366.html">[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#365">[ date ]</a>
+              <a href="thread.html#365">[ thread ]</a>
+              <a href="subject.html#365">[ subject ]</a>
+              <a href="author.html#365">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi
+
+On 12/31/2010 03:58 PM, Thorsten Behrens wrote:
+&gt;<i>[...]
+</I>&gt;<i> What I have found is that pycrypto's Elgamal implementation is, shall we say, naive. Specifically in these regards
+</I>&gt;<i> (and I'll quote others here, these assertions as per crypto safety are not mine. The conclusions about elgamal.py are
+</I>&gt;<i> mine):
+</I>&gt;<i>
+</I>&gt;<i> /- p/  SHOULD be a safe prime, i.e. such that (/p/-1)/2 is prime
+</I>&gt;<i>
+</I>&gt;<i> TB: elgamal.py makes no effort to find a safe prime. elgamal.py does not allow the user to pass her own safe prime to
+</I>&gt;<i> the key generator.
+</I>
+Just for the record: a &quot;safe prime&quot; is *not* the same thing as a &quot;strong prime&quot;. A strong prime is a prime p where p-1 
+and p+1 have large prime factors. strong primes are used in RSA and safe primes for discrete logarithm based techniques. 
+pycrypto has a function for generating &quot;strong primes&quot; (getStrongPrime()) but not for safe primes.
+I know that nobody claimed otherwise but I wanted to mention it because I was stumped for a moment because of the 
+similarity of the names.
+
+&gt;<i> [...]
+</I>&gt;<i> The broader question that occurs, particularly also in view of the stdlib-crypto discussion
+</I>&gt;<i> (<A HREF="http://bugs.python.org/issue8998">http://bugs.python.org/issue8998</A>) is: What is pycrypto's intent? What should it be?
+</I>
+Wow! I was not aware that there is an ongoing stdlib-crypto discussion. Thanks a lot!
+
+&gt;<i> Should it be a low-level collection of crypto algorithms, suitable for academic and real work, and requiring a strong
+</I>&gt;<i> understanding of crypto and its complexities in either case, with no safeguards should a user choose to shoot himself
+</I>&gt;<i> in the foot?
+</I>&gt;<i>
+</I>&gt;<i> Should it be a high-level collection of crypto routines, suitable for the crypto-naive coder, offering safe defaults
+</I>&gt;<i> and a few knobs to influence those parameters that should be able to be chosen by a slightly less crypto-naive coder?
+</I>&gt;<i> Note that this would require vigorous debate about what this second tier should look like, which defaults would be
+</I>&gt;<i> chosen, which knobs would still be exposed, and so on. That debate would have to be carried out in public and would
+</I>&gt;<i> have to include all the other movers-and-shakers in the Python crypto community.
+</I>&gt;<i>
+</I>&gt;<i> Should it be both, offering a two-tiered API?
+</I>&gt;<i>
+</I>&gt;<i> And further:
+</I>&gt;<i>
+</I>&gt;<i> Should pycrypto continue to offer its own implementations of crypto algorithms? Or should it be a Python wrapper for
+</I>&gt;<i> existing implementations such as tomlib, Crypto++ or NSS, relying on those implementations to have been coded in a
+</I>&gt;<i> secure manner?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Thank you for reading
+</I>&gt;<i>
+</I>&gt;<i> Thorsten
+</I>
+Here are my 2 cents:
+When I was looking for a python crypto package I chose pycrypto mainly for two reasons.
+1) It had the fewest dependencies. Only the optionally (though highly recommended) libgmp.
+2) The API was more pythonic than many libraries that only wrap the calls to C-functions of underlying libraries.
+
+Some people say that pycrypto should not implement the crypto primitives but rather us existing libraries. While I do 
+understand the rationale behind such a statement, I have to voice my opposition. AFAIK there are already python bindings 
+for virtually every major crypto library [1-3]. The only issue with those libraries might be the API but I would suggest 
+that one first tries to persuade the maintainers to adopt a more PEP 272 like API.
+Instead I would suggest to slim down pycrypto. Support one or two of each: block cipher, public key crypto, Hash 
+function. Try to harden their implementation and then move to provide a good upper layer which takes care of padding, 
+envelope encryption and so on.
+This way pycrypto will be a slim independent library which gets the job done. If someone really needs block cipher XYZ 
+then kindly point them to a more exhaustive package that wraps an underlying crypto library.
+Feel free to disagree :)
+
+Enough ranting for today.
+
+Cheers and thanks a lot to all the people that built, improve and maintain this great piece of software.
+Sincerely yours,
+Lorenz
+
+[1] <A HREF="http://tahoe-lafs.org/trac/pycryptopp">http://tahoe-lafs.org/trac/pycryptopp</A>
+[2] <A HREF="http://people.redhat.com/jdennis/python-nss/doc/api/html/">http://people.redhat.com/jdennis/python-nss/doc/api/html/</A>
+[3] <A HREF="http://buggywhip.blogspot.com/2007/06/python-ctypes-wrapper-for-libtomcrypt.html">http://buggywhip.blogspot.com/2007/06/python-ctypes-wrapper-for-libtomcrypt.html</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000364.html">[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+	<LI>Next message: <A HREF="000366.html">[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#365">[ date ]</a>
+              <a href="thread.html#365">[ thread ]</a>
+              <a href="subject.html#365">[ subject ]</a>
+              <a href="author.html#365">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

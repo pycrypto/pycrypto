@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Public key algos usage
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20key%20algos%20usage&In-Reply-To=4B018B2E.2020203%40amberfisharts.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000161.html">
+   <LINK REL="Next"  HREF="000163.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Public key algos usage</H1>
+    <B>Kiwi</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20key%20algos%20usage&In-Reply-To=4B018B2E.2020203%40amberfisharts.com"
+       TITLE="[pycrypto] Public key algos usage">spiky.kiwi at gmail.com
+       </A><BR>
+    <I>Mon Nov 16 17:42:23 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000161.html">[pycrypto] Public key algos usage
+</A></li>
+        <LI>Next message: <A HREF="000163.html">[pycrypto] Public key algos usage
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#162">[ date ]</a>
+              <a href="thread.html#162">[ thread ]</a>
+              <a href="subject.html#162">[ subject ]</a>
+              <a href="author.html#162">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Nov 16, 2009 at 6:26 PM, Lorenz Quack &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">don at amberfisharts.com</A>&gt; wrote:
+&gt;<i> Hi Stefano,
+</I>&gt;<i>
+</I>&gt;<i> As far as I know the API remains the same whether the key is a private/public key pair
+</I>&gt;<i> or only the public key. So this should work (However, I didn't test this code):
+</I>&gt;<i>
+</I>&gt;<i> &#160;&gt;&gt;&gt; message = &quot;this is a secret&quot;
+</I>&gt;<i> &#160;&gt;&gt;&gt; pub_key = key_pair.publickey()
+</I>&gt;<i> &#160;&gt;&gt;&gt; cipher_text = pub_key.encrypt(message, &quot;&quot;)
+</I>&gt;<i>
+</I>&gt;<i> I also think that the API-Reference [1] is fairly accurate.
+</I>&gt;<i>
+</I>&gt;<i> I hope that helps. If not, maybe you show some code how you try to use it.
+</I>&gt;<i>
+</I>
+Thank you for the fast answer.
+I understand the code above.
+Still something is not clear to me.
+And how do I export the public key (or a keypair) to a string? How do
+I import it back?
+I want just the key so it can be reused by other libraries and future
+versions of this one, so I cannot just serialize the object.
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000161.html">[pycrypto] Public key algos usage
+</A></li>
+	<LI>Next message: <A HREF="000163.html">[pycrypto] Public key algos usage
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#162">[ date ]</a>
+              <a href="thread.html#162">[ thread ]</a>
+              <a href="subject.html#162">[ subject ]</a>
+              <a href="author.html#162">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

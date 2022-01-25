@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Pycrypto working with python 3.0 or 3.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20working%20with%20python%203.0%20or%203.1&In-Reply-To=SNT132-w5A183B01A86ED88B8DCD0B12C0%40phx.gbl">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000205.html">
+   <LINK REL="Next"  HREF="000208.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Pycrypto working with python 3.0 or 3.1</H1>
+    <B>Grail Dane</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20working%20with%20python%203.0%20or%203.1&In-Reply-To=SNT132-w5A183B01A86ED88B8DCD0B12C0%40phx.gbl"
+       TITLE="[pycrypto] Pycrypto working with python 3.0 or 3.1">grail69 at hotmail.com
+       </A><BR>
+    <I>Tue Mar 16 23:26:18 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000205.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+        <LI>Next message: <A HREF="000208.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#207">[ date ]</a>
+              <a href="thread.html#207">[ thread ]</a>
+              <a href="subject.html#207">[ subject ]</a>
+              <a href="author.html#207">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+So now I am answering my own question &lt;doh&gt; (after looking at reply I just sent you)
+The issue with the below would appear to be that 'common' is a file (hence not a packagewith a __init__.py to define it) in the same directory.
+So now my question is, how do you import from a file within the same path.Scenario is, directory path looks like:
+Crypto - &gt; SelfTest -&gt; Cipher -&gt; test_AES.pyCrypto - &gt; SelfTest -&gt; Cipher -&gt; common.py
+And here test_AES.py has the line: from .common import make_block_tests
+If I change this back to the original from Python 2.x version (ie remove the dot) how do we know if it calls the correct common.py as it exists in several directories?
+The other alternative I thought of was a full path import:
+from Crypto.SelfTest.Cipher.common import make_block_tests
+but not sure this is correct either???
+Grail
+From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">grail69 at hotmail.com</A>
+To: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+Date: Wed, 17 Mar 2010 05:09:52 +0000
+Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+
+
+
+
+
+
+
+
+Hi Christoph
+Yes I am running into this issue as well. Another similar one is where2to3 suggests the following change:
+from common import make_block_tests
+to
+from .common import make_block_tests 
+In case hard top see the change is to add a full-stop at the start of common which makes thisa relative path reference. The error I get after making this change is:
+ValueError: Attempted relative import in non-package
+So I am trying to get this working as well. Let me know how you go?
+CheersGrail
+
+
+ 		 	   		  
+_________________________________________________________________
+Browse profiles for FREE! Meet local singles online.
+<A HREF="http://clk.atdmt.com/NMN/go/150855801/direct/01/">http://clk.atdmt.com/NMN/go/150855801/direct/01/</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100317/12d450eb/attachment-0001.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100317/12d450eb/attachment-0001.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000205.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+	<LI>Next message: <A HREF="000208.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#207">[ date ]</a>
+              <a href="thread.html#207">[ thread ]</a>
+              <a href="subject.html#207">[ subject ]</a>
+              <a href="author.html#207">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

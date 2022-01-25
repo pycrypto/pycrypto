@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] synchronisation 2 computers'databases
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20synchronisation%202%20computers%27databases&In-Reply-To=49829F87.8070700%40broadley.org">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000058.html">
+   <LINK REL="Next"  HREF="000060.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] synchronisation 2 computers'databases</H1>
+    <B>James A. Donald</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20synchronisation%202%20computers%27databases&In-Reply-To=49829F87.8070700%40broadley.org"
+       TITLE="[pycrypto] synchronisation 2 computers'databases">jamesd at echeque.com
+       </A><BR>
+    <I>Fri Jan 30 23:12:29 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000058.html">[pycrypto] synchronisation 2 computers'databases
+</A></li>
+        <LI>Next message: <A HREF="000060.html">[pycrypto] Quick and Easy Email Authentication
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#59">[ date ]</a>
+              <a href="thread.html#59">[ thread ]</a>
+              <a href="subject.html#59">[ subject ]</a>
+              <a href="author.html#59">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Bill Broadley wrote:
+ &gt; So server A says:
+ &gt;   server B, send me all records updated since X
+ &gt;
+ &gt; Then server B says:
+ &gt;   server A, send me all records updated since X
+
+But if something goes wrong - if B incorrectly thinks it
+has an accurate account of A's records up to time Y, and
+it does not, situation will never be corrected.
+
+I suggest a patricia hash tree of transactions with the
+time of update of the transaction creating or changing a
+record being the high order part of the patricia key.
+Then a small number of hashes near the root of the tree
+will guarantee that the past of A's tree agrees with the
+past of B's tree.  So A and B can guarantee that they
+agree on a very large database by exchanging a very
+small number of hashes - and if any discrepancy shows
+up, can ask for hashes further from the root and closer
+to the leaves, eventually leading to the discrepant
+leaves of the tree.
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000058.html">[pycrypto] synchronisation 2 computers'databases
+</A></li>
+	<LI>Next message: <A HREF="000060.html">[pycrypto] Quick and Easy Email Authentication
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#59">[ date ]</a>
+              <a href="thread.html#59">[ thread ]</a>
+              <a href="subject.html#59">[ subject ]</a>
+              <a href="author.html#59">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

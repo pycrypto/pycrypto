@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Two flaky tests
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Two%20flaky%20tests&In-Reply-To=%3CCAHzVmCxa84GEN01Y%3DQnr_YKYCzA6QbB_5P1xnAAvRtwXk%2ByoVw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000663.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Two flaky tests</H1>
+    <B>Peter McKenzie</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Two%20flaky%20tests&In-Reply-To=%3CCAHzVmCxa84GEN01Y%3DQnr_YKYCzA6QbB_5P1xnAAvRtwXk%2ByoVw%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Two flaky tests">petermck at google.com
+       </A><BR>
+    <I>Sun Mar 17 16:20:46 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000663.html">[pycrypto] PyCon
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#664">[ date ]</a>
+              <a href="thread.html#664">[ thread ]</a>
+              <a href="subject.html#664">[ subject ]</a>
+              <a href="author.html#664">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Greetings,
+
+I've noticed that a couple of the pycrypto (2.6) tests are a little
+flaky.  Our automated internal test infrastructure tends to be pretty
+good at exposing this sort of thing, and it impacts our developer
+productivity, so I was hoping to get the tests patched.
+
+The problems, with suggested fixes are described below.
+
+
+File: lib/Crypto/SelfTest/Random/test_random.py
+
+Code (in functon test_isPrime()):
+
+for composite in (43 * 127 * 211, 61 * 151 * 211, 15259 * 30517,
+                  346141L * 692281L, 1007119L * 2014237L, 3589477L * 7178953L,
+                  4859419L * 9718837L, 2730439L * 5460877L,
+                  245127919L * 490255837L, 963939391L * 1927878781L,
+                  4186358431L * 8372716861L, 1576820467L * 3153640933L):
+    self.assertEqual(number.isPrime(long(composite)), False)
+
+The default probability for isPrime to return a false positive is
+1e-6.  That's enough for us to see them occasionally, so I propose
+changing the assert to be:
+
+self.assertEqual(number.isPrime(long(composite),
+false_positive_prob=1e-9), False)
+
+
+File: lib/Crypto/SelfTest/Util/test_number.py
+
+Code (in function runTest()):
+
+# Test choice
+seq = range(10000)
+x = random.choice(seq)
+y = random.choice(seq)
+self.assertNotEqual(x, y)
+
+This assert will fail approximately one in 10000 runs which is way too
+often for us.  Possible fixes:
+a) remove the assert. I'm fine with that, but presumably someone wants
+to test that x and y are not equal all the time.
+b) make seq a bigger range.  I'd want the range to be at least 100
+million, which needlessly chews up time and CPU.
+c) which I quite like: add the following code immediately prior to the assert:
+
+if x == y:
+  y = random.choice(seq)
+
+That reduces the chance of failure to about 1 in 10000**2, which is acceptable.
+
+
+Thanks,
+Peter McKenzie
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000663.html">[pycrypto] PyCon
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#664">[ date ]</a>
+              <a href="thread.html#664">[ thread ]</a>
+              <a href="subject.html#664">[ subject ]</a>
+              <a href="author.html#664">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

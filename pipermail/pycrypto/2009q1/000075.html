@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] building pycrypto on AIX fails
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20building%20pycrypto%20on%20AIX%20fails&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000074.html">
+   <LINK REL="Next"  HREF="000076.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] building pycrypto on AIX fails</H1>
+    <B>Pella,Chris</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20building%20pycrypto%20on%20AIX%20fails&In-Reply-To="
+       TITLE="[pycrypto] building pycrypto on AIX fails">Chris.Pella at safenet-inc.com
+       </A><BR>
+    <I>Tue Feb 17 13:07:41 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000074.html">[pycrypto]  Re: jibberish output with blowfish cbc
+</A></li>
+        <LI>Next message: <A HREF="000076.html">[pycrypto] building pycrypto on AIX fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#75">[ date ]</a>
+              <a href="thread.html#75">[ thread ]</a>
+              <a href="subject.html#75">[ subject ]</a>
+              <a href="author.html#75">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Not a development issue per se, but I'm trying to build pycrypto on AIX
+5.3 for python 2.6. I have ActivePython 2.6 installed. When I run python
+setup.py build it fails with a bunch of compiler errors (default
+compiler on AIX is cc_r). I wonder if anybody else has any experience
+building pcrypto using this OS and compiler. I had no issues building on
+solaris, HP-UX,  and other linux platforms. 
+
+ 
+
+cc_r -qlanglvl=ansi -DNDEBUG -O -Isrc/
+-I/usr/ActivePython-2.6/include/python2.6 -c src/RIPEMD.c -o
+build/temp.aix-5.3-2.6/src/RIPEMD.o
+
+&quot;src/RIPEMD.c&quot;, line 51.9: 1506-213 (S) Macro name FF1 cannot be
+redefined.
+
+&quot;src/RIPEMD.c&quot;, line 51.9: 1506-358 (I) &quot;FF1&quot; is defined on line 235 of
+/usr/include/sys/ioctl.h.
+
+&quot;src/RIPEMD.c&quot;, line 218.43: 1506-280 (E) Function argument assignment
+between types &quot;const char*&quot; and &quot;unsigned char*&quot; is not allowed.
+
+&quot;src/RIPEMD.c&quot;, line 264.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/RIPEMD.c&quot;, line 265.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/RIPEMD.c&quot;, line 266.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/RIPEMD.c&quot;, line 267.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/RIPEMD.c&quot;, line 268.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/RIPEMD.c&quot;, line 269.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/RIPEMD.c&quot;, line 270.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/RIPEMD.c&quot;, line 271.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/RIPEMD.c&quot;, line 272.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/RIPEMD.c&quot;, line 273.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/RIPEMD.c&quot;, line 274.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/RIPEMD.c&quot;, line 275.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/RIPEMD.c&quot;, line 276.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/RIPEMD.c&quot;, line 277.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/RIPEMD.c&quot;, line 278.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/RIPEMD.c&quot;, line 279.9: 1506-023 (S) Expecting function or pointer
+to function.
+
+&quot;src/hash_template.c&quot;, line 108.20: 1506-068 (E) Operation between types
+&quot;unsigned char*&quot; and &quot;char*&quot; is not allowed.
+
+&quot;src/hash_template.c&quot;, line 112.20: 1506-068 (E) Operation between types
+&quot;unsigned char*&quot; and &quot;char*&quot; is not allowed.
+
+&quot;src/hash_template.c&quot;, line 139.34: 1506-280 (E) Function argument
+assignment between types &quot;char*&quot; and &quot;unsigned char*&quot; is not allowed.
+
+&quot;src/hash_template.c&quot;, line 211.41: 1506-280 (E) Function argument
+assignment between types &quot;char*&quot; and &quot;unsigned char*&quot; is not allowed.
+
+error: command 'cc_r' failed with exit status 1
+
+ 
+
+ 
+
+ 
+
+ 
+
+Chris Pella
+
+
+The information contained in this electronic mail transmission 
+may be privileged and confidential, and therefore, protected 
+from disclosure. If you have received this communication in 
+error, please notify us immediately by replying to this 
+message and deleting it from your computer without copying 
+or disclosing it.
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090217/6332b706/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090217/6332b706/attachment.htm</A> 
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000074.html">[pycrypto]  Re: jibberish output with blowfish cbc
+</A></li>
+	<LI>Next message: <A HREF="000076.html">[pycrypto] building pycrypto on AIX fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#75">[ date ]</a>
+              <a href="thread.html#75">[ thread ]</a>
+              <a href="subject.html#75">[ subject ]</a>
+              <a href="author.html#75">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] AES, python 2.7 vs 3
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20AES%2C%20python%202.7%20vs%203&In-Reply-To=%3CCAEncD4d%3DBH1Z6GA-dJ2Yf6Dqgjoh4Z1D1%3DxMW1mcukCEU4d40A%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000769.html">
+   <LINK REL="Next"  HREF="000776.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] AES, python 2.7 vs 3</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20AES%2C%20python%202.7%20vs%203&In-Reply-To=%3CCAEncD4d%3DBH1Z6GA-dJ2Yf6Dqgjoh4Z1D1%3DxMW1mcukCEU4d40A%40mail.gmail.com%3E"
+       TITLE="[pycrypto] AES, python 2.7 vs 3">dave.pawson at gmail.com
+       </A><BR>
+    <I>Thu Feb  6 22:29:31 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000769.html">[pycrypto] AES, python 2.7 vs 3
+</A></li>
+        <LI>Next message: <A HREF="000776.html">[pycrypto] AES, python 2.7 vs 3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#774">[ date ]</a>
+              <a href="thread.html#774">[ thread ]</a>
+              <a href="subject.html#774">[ subject ]</a>
+              <a href="author.html#774">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 6 February 2014 16:49, Dwayne Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt; wrote:
+&gt;<i> On Mon, Feb 03, 2014 at 03:51:06PM +0100, Mirko Dziadzka wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hi
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Without testing or verifying:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You should probably use bytes in Python 3, not characters.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Yeah, this is a known bug.   Under Python 3, PyCrypto should raise a
+</I>&gt;<i> TypeError in most places where unicode strings are used instead of bytes,
+</I>&gt;<i> but right now it just does weird things.  Sorry about that.
+</I>
+
+Recently playing about with reading / writing between Linux / Windows,
+one symptom I came across was that the decrypted string contained b' &lt;string&gt;'
+is that a part of this bug?
+
+
+regards
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000769.html">[pycrypto] AES, python 2.7 vs 3
+</A></li>
+	<LI>Next message: <A HREF="000776.html">[pycrypto] AES, python 2.7 vs 3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#774">[ date ]</a>
+              <a href="thread.html#774">[ thread ]</a>
+              <a href="subject.html#774">[ subject ]</a>
+              <a href="author.html#774">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

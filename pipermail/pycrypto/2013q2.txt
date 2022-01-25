@@ -1,0 +1,136 @@
+From alexlbeal at gmail.com  Sun Apr 14 09:44:56 2013
+From: alexlbeal at gmail.com (Alex Beal)
+Date: Sun, 14 Apr 2013 10:44:56 -0600
+Subject: [pycrypto] Crypto.Random for password generation
+Message-ID: <CALw82QaHaS3HztWoU8U2fBMgh1bwsSj+1C6GU5_qf-6q0DrhDA@mail.gmail.com>
+
+Hello All,
+
+I was wondering if Crypto.Random is suitable for password generation
+purposes. I maintain an xkcd-style password generator (
+https://github.com/beala/xkcd-password) and have switched from python's
+random.SystemRandom to pycrypto's Crypto.Random. Python only makes vague
+guarantees about random.SystemRandom, so I thought pycrypto would be a
+better choice. Any input would be appreciated.
+
+Thanks!
+Alex Beal
+
+-- 
+For sensitive information, use my public key:
+http://media.usrsb.in/files/pub.asc
+Fingerprint: 0BCE 27F8 FBED 34C0 B936 7625 1D7D CA76 C811 1C0C
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130414/b8392449/attachment.html>
+
+From dlitz at dlitz.net  Tue Apr 23 23:20:43 2013
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Tue, 23 Apr 2013 23:20:43 -0700
+Subject: [pycrypto] Crypto.Random for password generation
+In-Reply-To: <CALw82QaHaS3HztWoU8U2fBMgh1bwsSj+1C6GU5_qf-6q0DrhDA@mail.gmail.com>
+References: <CALw82QaHaS3HztWoU8U2fBMgh1bwsSj+1C6GU5_qf-6q0DrhDA@mail.gmail.com>
+Message-ID: <20130424062043.GA10601@rivest.dlitz.net>
+
+On Sun, Apr 14, 2013 at 10:44:56AM -0600, Alex Beal wrote:
+>I was wondering if Crypto.Random is suitable for password generation
+>purposes. I maintain an xkcd-style password generator (
+>https://github.com/beala/xkcd-password) and have switched from python's
+>random.SystemRandom to pycrypto's Crypto.Random. Python only makes vague
+>guarantees about random.SystemRandom, so I thought pycrypto would be a
+>better choice. Any input would be appreciated.
+
+Yes.  Crypto.Random is designed to be a cryptographically strong random 
+number generator, so it should work fine as a random source for password 
+generation.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From jonahbron.d at gmail.com  Fri May  3 10:32:50 2013
+From: jonahbron.d at gmail.com (Jonah Dahlquist)
+Date: Fri, 3 May 2013 10:32:50 -0700
+Subject: [pycrypto] RFC-2898 Padding
+Message-ID: <CAFFXLU5F3Z-e6rhBVV+MWL7DRy5x03XH4rL-rPFPCB6BKWpVAA@mail.gmail.com>
+
+Hi,
+
+What would you think about adding a standard padding functionality to the
+library?  It would help avoid people creating poor solutions themselves.  I
+know the home page said you want to avoid adding unnecessary features, so I
+wanted to get your thoughts on it.
+
+Thanks,
+Jonah Dahlquist
+
+P.S. My apologies if this has been discussed already, I did browse through
+the archives first and found no mention of it.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130503/4dc98f13/attachment.html>
+
+From jonas at borgstrom.se  Fri Jun 14 03:57:27 2013
+From: jonas at borgstrom.se (=?ISO-8859-1?Q?Jonas_Borgstr=F6m?=)
+Date: Fri, 14 Jun 2013 12:57:27 +0200
+Subject: [pycrypto] Python 3 regression
+Message-ID: <51BAF717.6060704@borgstrom.se>
+
+Hi,
+
+While porting an application to Python 3 I noticed that PyCrypto no
+longer supports operations on buffer/memoryview-like objects.
+
+With Python 2 you could do the following:
+
+AES.new(...).decrypt(buffer(a_large_buffer, 32))
+
+To efficiently decrypt a large buffer containing a few header bytes at
+the beginning without having to do an expensive string slice/copy.
+
+The buffer() object is not available in Python 3 and has been replaced
+by memoryview() which has also been backported to python 2.7.
+
+So the Python 2.7+ version of the above is:
+
+AES.new(...).decrypt(memoryview(a_large_buffer)[32:])
+
+I implemented memoryview support and sent a github pull request [1] two
+weeks ago but I haven't received any feedback yet.
+Is there anything I can do to help with the review process?
+
+1. https://github.com/dlitz/pycrypto/pull/47
+
+Cheers,
+Jonas
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 482 bytes
+Desc: OpenPGP digital signature
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130614/9f1a1e20/attachment.sig>
+
+From kvogel at mdcom.com  Fri Jun 28 01:00:45 2013
+From: kvogel at mdcom.com (Kurt Vogel)
+Date: Fri, 28 Jun 2013 01:00:45 -0700
+Subject: [pycrypto] RSA exportKey question
+Message-ID: <CAGwD-jZvf=V15Ui8Ndf5L6iVBhWQ=u7YeLU-mFEPJOexRNtAzA@mail.gmail.com>
+
+Hello,
+
+Wondering if it would be worthwhile to add more encryption options to rsa
+exportKey() function rather than just DES3?  As the default for ssh-keygen
+-t rsa export is 128-bit AES.  And maybe allow plug-able hash algorithms
+such as PBKDF2, Bcrypt, etc.?
+
+Thanks,
+Kurt
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20130628/4fed60c5/attachment.html>
+

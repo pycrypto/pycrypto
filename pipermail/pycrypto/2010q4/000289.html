@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA importKey
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20RSA%20importKey&In-Reply-To=AANLkTime7egFD%3DVuHy7SztA-qqygqr8tEn%3D9OrQXTKvC%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000284.html">
+   <LINK REL="Next"  HREF="000438.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA importKey</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20RSA%20importKey&In-Reply-To=AANLkTime7egFD%3DVuHy7SztA-qqygqr8tEn%3D9OrQXTKvC%40mail.gmail.com"
+       TITLE="[pycrypto] RSA importKey">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Nov 29 22:14:38 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000284.html">[pycrypto] RSA importKey
+</A></li>
+        <LI>Next message: <A HREF="000438.html">[pycrypto] AMD64 binaries for Python 2.7
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#289">[ date ]</a>
+              <a href="thread.html#289">[ thread ]</a>
+              <a href="subject.html#289">[ subject ]</a>
+              <a href="author.html#289">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Fran&#231;ois,
+
+PyCrypto doesn't currently have any RSA padding support; it merely provides 
+the RSA modular exponentiation primitive.
+
+Actually, the whole Crypto.PublicKey API is a minefield.  It's 
+overgeneralized, and it almost never does what you would expect it to do.  
+I'd love to see proposals a well-designed replacement API that doesn't add 
+a ton of complexity.
+
+Cheers,
+- Dwayne
+
+On Fri, Nov 12, 2010 at 02:32:45PM +0100, Fran&#231;ois Santy wrote:
+&gt;<i>I have another Question concernant PyCrypto's implementation of RSA: which
+</I>&gt;<i>encryption mode is it using?
+</I>&gt;<i>I had to use PyCrypto's implementation of DES recently, and I could easily
+</I>&gt;<i>choose between several modes (MODE_EBC, MODE_CBC,...), but unfortunatly, I
+</I>&gt;<i>can't find these modes in RSA.
+</I>&gt;<i>
+</I>&gt;<i>The same question applied for the Padding options. Can I choose between
+</I>&gt;<i>PKCS5Padding and PKCS1Padding ?
+</I>&gt;<i>
+</I>&gt;<i>Thanks !
+</I>&gt;<i>
+</I>&gt;<i>2010/11/12 Fran&#231;ois Santy &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">francoissanty at gmail.com</A>&gt;
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi everybody !
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm currently working with pycrypto and I want to import public and private
+</I>&gt;&gt;<i> keys from DER files.
+</I>&gt;&gt;<i> I found a piece of code that shows how to proceed, but it isn't working
+</I>&gt;&gt;<i> anyway !
+</I>&gt;&gt;<i> Here is the code I'm using:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> f = file(&quot;./public_key.der&quot;)
+</I>&gt;&gt;<i> key = RSA.importKey(f.read())
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It tells me *'module' object has no attribute 'importKey'. *It's rather
+</I>&gt;&gt;<i> strange since the method appears explicitely in the file
+</I>&gt;&gt;<i> /lib/Crypto/PublicKey/RSA.py*.*
+</I>&gt;&gt;<i> *
+</I>&gt;&gt;<i> *
+</I>&gt;&gt;<i> What am I doing wrong ?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Fran&#231;ois S.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>-- 
+</I>&gt;<i>Fran&#231;ois S.
+</I>
+&gt;<i>_______________________________________________
+</I>&gt;<i>pycrypto mailing list
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+   OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000284.html">[pycrypto] RSA importKey
+</A></li>
+	<LI>Next message: <A HREF="000438.html">[pycrypto] AMD64 binaries for Python 2.7
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#289">[ date ]</a>
+              <a href="thread.html#289">[ thread ]</a>
+              <a href="subject.html#289">[ subject ]</a>
+              <a href="author.html#289">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

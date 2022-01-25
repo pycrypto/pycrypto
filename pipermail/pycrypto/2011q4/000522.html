@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Using Counter for true 64-bit decryption
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Using%20Counter%20for%20true%2064-bit%20decryption&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000521.html">
+   <LINK REL="Next"  HREF="000523.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Using Counter for true 64-bit decryption</H1>
+    <B>Lance Ware</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Using%20Counter%20for%20true%2064-bit%20decryption&In-Reply-To="
+       TITLE="[pycrypto] Using Counter for true 64-bit decryption">lware2002 at hotmail.com
+       </A><BR>
+    <I>Tue Dec 13 13:38:12 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000521.html">[pycrypto] reg current work in pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000523.html">[pycrypto] import/export for DSA keys
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#522">[ date ]</a>
+              <a href="thread.html#522">[ thread ]</a>
+              <a href="subject.html#522">[ subject ]</a>
+              <a href="author.html#522">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hello,
+ 
+I am trying to use pycrypto to decrypt a file using AES in CTR mode.  Currently I have a file with a counter value store in the first 16 bytes of the file.  I see in most of the examples the first 8 bytes are stored in the counter value as part of a prefix with the last section starting with zero and incrementing up.  My question is that if I want to have a truly random counter value. Do I need to create my own count class to handle the increment or can i use Crypto.Util.counter class.
+ 
+I am trying to use the Crypto.Util.counter class but i keep getting errors on CTR: counter returned not 16 bytes.
+ 
+Thanks,
+  		 	   		  
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20111213/4ab0a21d/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20111213/4ab0a21d/attachment.html</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000521.html">[pycrypto] reg current work in pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000523.html">[pycrypto] import/export for DSA keys
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#522">[ date ]</a>
+              <a href="thread.html#522">[ thread ]</a>
+              <a href="subject.html#522">[ subject ]</a>
+              <a href="author.html#522">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

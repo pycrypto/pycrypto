@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Once again: Python3 with PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=4D161FFE.3040002%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000325.html">
+   <LINK REL="Next"  HREF="000327.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Once again: Python3 with PyCrypto</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=4D161FFE.3040002%40gmx.li"
+       TITLE="[pycrypto] Once again: Python3 with PyCrypto">sbehrens at gmx.li
+       </A><BR>
+    <I>Sun Dec 26 14:24:40 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000325.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000327.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#326">[ date ]</a>
+              <a href="thread.html#326">[ thread ]</a>
+              <a href="subject.html#326">[ subject ]</a>
+              <a href="author.html#326">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Quick update on where this stands right now.
+
+As predicted, the module handling changes with Python 3.x were a pain. I 
+think I have them under control now. At least &quot;python setup.py test&quot; no 
+longer crashes immediately. It now gets far enough to complain about 
+bytes/unicode errors.
+
+I haven't attempted _fastmath.c on Python 3.x yet. I'll do that last, 
+when everything else works.
+
+C modules will give link-time errors, like so: &quot;_counter.obj : warning 
+LNK4197: export 'init_counter' specified multiple times; using first 
+specification&quot;. This is an issue in distutils. See python issue 9709. 
+There's nothing we can do until Python fixes distutils - of course any 
+pre-compiled binaries can be built with the distutils fix in, and the 
+README can warn people of this.
+
+The code still works with Python27, but I broke Python21. Specifically, 
+I am having a hard time with string literals. The main work remaining 
+now is to flush out string to bytes/unicode changes between 2.x and 3.x, 
+and adapt the code. I thought I had this licked, but I clearly don't.
+
+I am currently not handling literals well. This is what I tried:
+         if sys.version_info[0] is 2:
+             seed = &quot;&quot;.join(seed)
+         else:
+             seed = b&quot;&quot;.join(seed)
+
+And that gives a &quot;SyntaxError: invalid syntax&quot; at run time. Of course it 
+does.
+
+django has been moved to be 2.x/3.x compatible. I'll see what they did 
+and try to replicate it. I'm hoping it'll take care of these type of issues.
+
+Assignment to True and False in pycrypto_compat.py is an issue. Right 
+now, I just don't import pycrypto_compat.py when Python 3.x is detected. 
+That still gives install-time errors on Python 3.x. The only option I 
+can think of right now is to exclude the offending file from install in 
+setup.py if Python 3.x is detected.
+
+Thorsten
+
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000325.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000327.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#326">[ date ]</a>
+              <a href="thread.html#326">[ thread ]</a>
+              <a href="subject.html#326">[ subject ]</a>
+              <a href="author.html#326">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

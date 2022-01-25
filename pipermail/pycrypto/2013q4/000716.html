@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Crypto.Random crashes due to unaligned access
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Crypto.Random%20crashes%20due%20to%20unaligned%20access&In-Reply-To=%3CCAFCC3etvDY9hTBwV7QL8Nn%2BRTuD3FE3egz59RFT4NG2Fjm2eww%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000715.html">
+   <LINK REL="Next"  HREF="000713.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Crypto.Random crashes due to unaligned access</H1>
+    <B>Greg Price</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Crypto.Random%20crashes%20due%20to%20unaligned%20access&In-Reply-To=%3CCAFCC3etvDY9hTBwV7QL8Nn%2BRTuD3FE3egz59RFT4NG2Fjm2eww%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Crypto.Random crashes due to unaligned access">gnprice at gmail.com
+       </A><BR>
+    <I>Mon Oct 28 12:00:14 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000715.html">[pycrypto] Crypto.Random crashes due to unaligned access
+</A></li>
+        <LI>Next message: <A HREF="000713.html">[pycrypto] Crypto.Random crashes due to unaligned access
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#716">[ date ]</a>
+              <a href="thread.html#716">[ thread ]</a>
+              <a href="subject.html#716">[ subject ]</a>
+              <a href="author.html#716">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Oct 28, 2013 at 10:13 AM, Sebastian Ramacher
+&lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">sebastian+lists at ramacher.at</A>&gt; wrote:
+&gt;<i> I've implemented this approach now by allocating ek and dk with one of
+</I>&gt;<i> posix_memalign (POSIX), aligned_alloc (C11) or _aligned_malloc
+</I>&gt;<i> (Windows/Visual Studio). A pull request is available at
+</I>&gt;<i> <A HREF="https://github.com/dlitz/pycrypto/pull/62.">https://github.com/dlitz/pycrypto/pull/62.</A> I'd appreciate any testing
+</I>&gt;<i> and feedback.
+</I>
+Great!  Looks like a good solution.  I have minor comments I'll make
+over on GitHub.  I'll test it, too.
+
+Greg
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000715.html">[pycrypto] Crypto.Random crashes due to unaligned access
+</A></li>
+	<LI>Next message: <A HREF="000713.html">[pycrypto] Crypto.Random crashes due to unaligned access
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#716">[ date ]</a>
+              <a href="thread.html#716">[ thread ]</a>
+              <a href="subject.html#716">[ subject ]</a>
+              <a href="author.html#716">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

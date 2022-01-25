@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Key generation and storage
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Key%20generation%20and%20storage&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000280.html">
+   <LINK REL="Next"  HREF="000281.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Key generation and storage</H1>
+    <B>Mikael Modin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Key%20generation%20and%20storage&In-Reply-To="
+       TITLE="[pycrypto] Key generation and storage">micke.modin at gmail.com
+       </A><BR>
+    <I>Tue Oct 26 15:27:21 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000280.html">[pycrypto] PyCrypto needs your help
+</A></li>
+        <LI>Next message: <A HREF="000281.html">[pycrypto] Patched pycrypto2.3 for python3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#433">[ date ]</a>
+              <a href="thread.html#433">[ thread ]</a>
+              <a href="subject.html#433">[ subject ]</a>
+              <a href="author.html#433">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I'm working on a small time report project and have implemented a
+cache mode for offline work, normally it reports to a server. Since
+the users shouldn't be able to add 50 hours to their time reports at
+will I thought it would be a good idea to encrypt it. I've implemented
+a simple solution using a fixed key and AES using pyCrypto, but I'm
+having some thoughts regarding the key. I know it will be impossible
+to provide any real security since the client will be running on their
+machine on hardware I have no control over, but since it will most
+likely be mainly 40 year old stay-at-home-moms working in their spare
+time I figure some kind of encryption would be enough.
+
+Currently I'm using a hardcoded key but that feels really bad so I'm
+wondering how to solve the key generation and storage issue. As I see
+it there are two options:
+a) secret key, stick with AES. Base the key on a hash of user+password
+something similar and store it in a file with a name they likely won't
+like to touch, &quot;vs_core.dll&quot; or something. Security by obfuscation.
+b) public/private key. the problem here is that since the client need
+both to encrypt and decrypt again before sending all the chached time
+reports. store the keys similar to a)
+c) public/private key. the server generates the pair and send the
+public key to the client who uses it to encrypt the cache and then
+simply uploads the encrypted data to the server. This has the
+disadvantage that it might become a fairly large upload in one chunk,
+but could probably be solved in other ways.
+
+Do you have any other suggestions?
+
+Kind regards,
+Mikael Modin
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000280.html">[pycrypto] PyCrypto needs your help
+</A></li>
+	<LI>Next message: <A HREF="000281.html">[pycrypto] Patched pycrypto2.3 for python3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#433">[ date ]</a>
+              <a href="thread.html#433">[ thread ]</a>
+              <a href="subject.html#433">[ subject ]</a>
+              <a href="author.html#433">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

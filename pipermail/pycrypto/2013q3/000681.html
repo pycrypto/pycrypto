@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA exportKey question with bcrypt?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%20question%20with%20bcrypt%3F&In-Reply-To=%3CCAGfyce203qv9sHJVTbTv9R%3DXRbBMj%3DAdg7ksWjUpxvM1Mw8LRg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000680.html">
+   <LINK REL="Next"  HREF="000682.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA exportKey question with bcrypt?</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%20question%20with%20bcrypt%3F&In-Reply-To=%3CCAGfyce203qv9sHJVTbTv9R%3DXRbBMj%3DAdg7ksWjUpxvM1Mw8LRg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] RSA exportKey question with bcrypt?">helderijs at gmail.com
+       </A><BR>
+    <I>Mon Jul 15 02:26:42 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000680.html">[pycrypto] RSA exportKey question with bcrypt?
+</A></li>
+        <LI>Next message: <A HREF="000682.html">[pycrypto] RSA exportKey question with bcrypt?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#681">[ date ]</a>
+              <a href="thread.html#681">[ thread ]</a>
+              <a href="subject.html#681">[ subject ]</a>
+              <a href="author.html#681">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Kurt,
+
+In the PyCrypto 2.6 release, rsa.exportKey(passphrase='boo') generates
+a TDES-encrypted private key, with encryption being done at the PEM
+level.
+
+I don't think that behavior should change (e.g. we should not silently
+switch to AES or even to the more robust PKCS#8-level encryption).
+
+2013/7/15 Kurt Vogel &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">kvogel at mdcom.com</A>&gt;:
+&gt;<i> And finally a comment/question/complaint :(
+</I>&gt;<i>
+</I>&gt;<i> If I use protection like this for ex:
+</I>&gt;<i>
+</I>&gt;<i> export = rsa.exportKey(passphrase='boo', pkcs=8,
+</I>&gt;<i> protection='PBKDF2WithHMAC-SHA1AndAES256-CBC')
+</I>&gt;<i>
+</I>&gt;<i> The exported key looks like this:
+</I>&gt;<i>
+</I>&gt;<i> -----BEGIN ENCRYPTED PRIVATE KEY-----
+</I>&gt;<i> MIIFHzBJBgkqhkiG9w0BBQ0wPDAbBgkqhkiG9w0BBQwwDgQIHI1C+JhO35cCAgPo
+</I>&gt;<i> MB0GCWCGSAFlAwQBKgQQ2FsezYUEaQLPHxk0z6+R4gSCBNDV++BsvKxxpo6uhUYw
+</I>&gt;<i> ...
+</I>&gt;<i>
+</I>&gt;<i> With export = rsa.exportKey(passphrase='boo'):
+</I>&gt;<i>
+</I>&gt;<i> -----BEGIN RSA PRIVATE KEY-----
+</I>&gt;<i> Proc-Type: 4,ENCRYPTED
+</I>&gt;<i> DEK-Info: DES-EDE3-CBC,CE7B6EC598ED0D10
+</I>&gt;<i>
+</I>&gt;<i> lPMvbYUypG+O4P/LilzGVQqP+6PMbnnLMP6eosyubcBqLtQxvMlvRRqgRu5CDApA
+</I>&gt;<i> ...
+</I>&gt;<i>
+</I>&gt;<i> The logic in exportKey() looks a bit convoluted, is this for some backward
+</I>&gt;<i> compatibility issue?  I would expect to see something like this, what
+</I>&gt;<i> ssh-key does:
+</I>&gt;<i>
+</I>&gt;<i> -----BEGIN RSA PRIVATE KEY-----
+</I>&gt;<i> Proc-Type: 4,ENCRYPTED
+</I>&gt;<i> DEK-Info: AES-256-CBC,16D792053CB9E5981B06E020900F86EA
+</I>&gt;<i>
+</I>&gt;<i> oL8O6n5v1S3cgGJIwrzrAq5TQIb7OeolGJpHXiyTUj1iStulgS5vAjkht0cgq53p
+</I>&gt;<i> ...
+</I>&gt;<i> ..
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Kurt
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Sun, Jul 14, 2013 at 11:40 PM, Kurt Vogel &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">kvogel at mdcom.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> While I'm on the subject and appears Dwayne is merging in pull requests :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> For RSA exportKey() think we could have **kwargs for extra prot_params
+</I>&gt;&gt;<i> passed to
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> PKCS8.wrap() like iteration_count and salt size?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Sun, Jul 14, 2013 at 9:34 PM, Kurt Vogel &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">kvogel at mdcom.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Do you guys know roughly when this will go in?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Also with import/export RSA keys can we support bcrypt?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Does JCA and BouncyCastle use bcrypt, eg:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> 'BcryptWithHMAC-SHA1AndAES256-CBC'
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Thanks,
+</I>&gt;&gt;&gt;<i> Kurt
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Fri, Jul 5, 2013 at 2:52 AM, Legrandin &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">helderijs at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; Hi Kurt , thanks a lot for providing feedback. It is much appreciated.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; * I guess you refer to camel-casing used for several variables, which
+</I>&gt;&gt;&gt;<i> &gt; was due to my preference to stick to ASN.1 naming.
+</I>&gt;&gt;&gt;<i> &gt;   I can work on that and make sure flake8 does not complain that much.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; * Right. Code evolved at different points in time, and indeed it is
+</I>&gt;&gt;&gt;<i> &gt; now hard to follow the path of the 'parameter' value. I will try to
+</I>&gt;&gt;&gt;<i> &gt; fix that.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; * I used strings like 'PBKDF2WithHMAC-SHA1AndAES128-CBC' because that
+</I>&gt;&gt;&gt;<i> &gt; is the style used in JCA and BouncyCastle and a lot of people are
+</I>&gt;&gt;&gt;<i> &gt; familiar with it.
+</I>&gt;&gt;&gt;<i> &gt;   I am not very clear what the benefit enums might bring? One option I
+</I>&gt;&gt;&gt;<i> &gt; considered was the ability to provide 3 independent parameters
+</I>&gt;&gt;&gt;<i> &gt;   instead of one (since protection mainly depends on type of KDF, PRF,
+</I>&gt;&gt;&gt;<i> &gt; and symmetric cipher) but at the end I guess most
+</I>&gt;&gt;&gt;<i> &gt;   uses case are about the desire to protect the private key using a
+</I>&gt;&gt;&gt;<i> &gt; password in a strong way, and the ability to tweak the various
+</I>&gt;&gt;&gt;<i> &gt; parameters
+</I>&gt;&gt;&gt;<i> &gt;   is not that relevant. Plus, exportKey() parameter list becomes to
+</I>&gt;&gt;&gt;<i> &gt; long.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; * I am really ashamed to admit that I actually have 9 pull requests
+</I>&gt;&gt;&gt;<i> &gt; open, not 2 so I am totally giving headaches to the maintainer. :-)
+</I>&gt;&gt;&gt;<i> &gt;   It is of course only up to him to decide which features should go
+</I>&gt;&gt;&gt;<i> &gt; in; given that he has not much time these days, it is likely that only
+</I>&gt;&gt;&gt;<i> &gt;   few features and bugfixes may go into any next release.
+</I>&gt;&gt;&gt;<i> &gt;   The release merge window seems to roughly be once per year and I
+</I>&gt;&gt;&gt;<i> &gt; find it is natural to have so many outstanding pull requests by now.
+</I>&gt;&gt;&gt;<i> &gt;   To my defense, I can only say that the all pull requests cover one
+</I>&gt;&gt;&gt;<i> &gt; feature only and that I try to keep them as independent as possible.
+</I>&gt;&gt;&gt;<i> &gt;   Most of them apply cleanly to master (e.g. HKDF, CCM, PKCS#8, bug
+</I>&gt;&gt;&gt;<i> &gt; fixes, etc).
+</I>&gt;&gt;&gt;<i> &gt;   In some cases though, they do depend on an existing pull request (as
+</I>&gt;&gt;&gt;<i> &gt; in the case of DSA import/export depending on PKCS8 be applied first),
+</I>&gt;&gt;&gt;<i> &gt;   because keeping them separated is honestly too much work for me
+</I>&gt;&gt;&gt;<i> &gt; *and* they are indeed extensions of other extensions.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; Hi, I was looking at the pycrypto pull request
+</I>&gt;&gt;&gt;<i> &gt; &gt; <A HREF="https://github.com/dlitz/pycrypto/pull/32.">https://github.com/dlitz/pycrypto/pull/32.</A>  Just a few comments...
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; * For readability can you pep8 format the code?
+</I>&gt;&gt;&gt;<i> &gt; &gt; * RSA, for import/export the protection parameter maybe rename to
+</I>&gt;&gt;&gt;<i> &gt; &gt; algo or
+</I>&gt;&gt;&gt;<i> &gt; &gt; wrap algo?  It evolves from: 'protection' to 'wrap_algo' to 'mode' as
+</I>&gt;&gt;&gt;<i> &gt; &gt; it
+</I>&gt;&gt;&gt;<i> &gt; &gt; goes down the call stack.
+</I>&gt;&gt;&gt;<i> &gt; &gt; * Also maybe make this parameter an enum/value?  Since the long
+</I>&gt;&gt;&gt;<i> &gt; &gt; string can
+</I>&gt;&gt;&gt;<i> &gt; &gt; be error prone, low level code would need to change anyway if it were
+</I>&gt;&gt;&gt;<i> &gt; &gt; either
+</I>&gt;&gt;&gt;<i> &gt; &gt; string or int if we support more modes.
+</I>&gt;&gt;&gt;<i> &gt; &gt; * And last but not least... I'm new to this email list and not sure
+</I>&gt;&gt;&gt;<i> &gt; &gt; how
+</I>&gt;&gt;&gt;<i> &gt; &gt; often pull requests are accepted but maybe you could reduce the
+</I>&gt;&gt;&gt;<i> &gt; &gt; amount of
+</I>&gt;&gt;&gt;<i> &gt; &gt; features going in?  I know you have another one, 51, after this...
+</I>&gt;&gt;&gt;<i> &gt; &gt; Maintainer may reluctant to do massive changes all at once?
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; &gt; Anyway just ideas...
+</I>&gt;&gt;&gt;<i> &gt; &gt; Thanks for your time,
+</I>&gt;&gt;&gt;<i> &gt; &gt; Sincerely,
+</I>&gt;&gt;&gt;<i> &gt; &gt; Kurt
+</I>&gt;&gt;&gt;<i> &gt; &gt;
+</I>&gt;&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;&gt;<i> &gt; pycrypto mailing list
+</I>&gt;&gt;&gt;<i> &gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;<i> &gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000680.html">[pycrypto] RSA exportKey question with bcrypt?
+</A></li>
+	<LI>Next message: <A HREF="000682.html">[pycrypto] RSA exportKey question with bcrypt?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#681">[ date ]</a>
+              <a href="thread.html#681">[ thread ]</a>
+              <a href="subject.html#681">[ subject ]</a>
+              <a href="author.html#681">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

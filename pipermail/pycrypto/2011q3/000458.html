@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20setup.py%20fails%20to%20find%20gmp%20on%20Debian/Ubuntu&In-Reply-To=4E7DD571.2030204%40ramacher.at">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000457.html">
+   <LINK REL="Next"  HREF="000459.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] setup.py fails to find gmp on Debian/Ubuntu</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20setup.py%20fails%20to%20find%20gmp%20on%20Debian/Ubuntu&In-Reply-To=4E7DD571.2030204%40ramacher.at"
+       TITLE="[pycrypto] setup.py fails to find gmp on Debian/Ubuntu">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Sun Sep 25 14:48:04 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000457.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+        <LI>Next message: <A HREF="000459.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#458">[ date ]</a>
+              <a href="thread.html#458">[ thread ]</a>
+              <a href="subject.html#458">[ subject ]</a>
+              <a href="author.html#458">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> Debian and Ubuntu recently started to implement Multiarch [1]. Because of this,
+</I>&gt;<i> libgmp.so has been moved from /usr/lib/ to /usr/lib/&lt;host-triplet&gt;/ and setup.py
+</I>&gt;<i> cannot find it anymore.
+</I>&gt;<i>
+</I>&gt;<i> I was able to circumvent this problem by asking gcc for its library search path
+</I>&gt;<i> (see the attached patch). I don't know if that is the best way to fix this issue
+</I>&gt;<i> but I would be glad if you'd consider the patch or fix the issue differently.
+</I>
+&gt;<i> [1] <A HREF="https://wiki.ubuntu.com/MultiarchSpec">https://wiki.ubuntu.com/MultiarchSpec</A>
+</I>
+Hi Sebastian, all,
+
+I think the problem is more deep rooted.
+
+Searching the file system for the gmp library file is not very
+reliable, in that one has to make a lot of assumptions about how the
+linker works.
+Moreover, we don't know if the file we find is actually in the right
+binary format or not.
+
+I suggest a different approach. We get rid of the searching logic
+altogether, and we simply try to compile a dummy C file that requires
+libgmp. If it compiles, we know that the library is somehow reachable,
+but we don't need to investigate where it actually is.
+
+That is what has_function() in distutils is supposed to do, but I find
+it very limited: the sought function can only be one that does not
+take any argument, whereas ALL functions in libgmp I know of take at
+least one.
+
+See attached patch.
+
+Mind that I have only tried it with Python 2.7 on Linux.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: multiarch2.patch
+Type: text/x-diff
+Size: 3084 bytes
+Desc: not available
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20110925/006d4129/attachment.patch">http://lists.dlitz.net/pipermail/pycrypto/attachments/20110925/006d4129/attachment.patch</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000457.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+	<LI>Next message: <A HREF="000459.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#458">[ date ]</a>
+              <a href="thread.html#458">[ thread ]</a>
+              <a href="subject.html#458">[ subject ]</a>
+              <a href="author.html#458">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

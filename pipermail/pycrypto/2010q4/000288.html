@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Once again: Python3 with PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=4CEBC044.2010103%40gmx.de">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000285.html">
+   <LINK REL="Next"  HREF="000286.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Once again: Python3 with PyCrypto</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=4CEBC044.2010103%40gmx.de"
+       TITLE="[pycrypto] Once again: Python3 with PyCrypto">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Nov 29 22:07:13 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000285.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000286.html">[pycrypto] Policy changes - Now accepting patches from the U.S.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#288">[ date ]</a>
+              <a href="thread.html#288">[ thread ]</a>
+              <a href="subject.html#288">[ subject ]</a>
+              <a href="author.html#288">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Johannes,
+
+Would you like to champion Python 3.x support?  I don't really know what's 
+involved in doing Py3k support, but I'd like to see it happen, provided 
+that it doesn't involve breaking Python 2.x support or a lot of unnecessary 
+code duplication.  How do other Python projects that have C code maintain 
+compatibility across both Python 2.x and 3.x?
+
+- Dwayne
+
+On Tue, Nov 23, 2010 at 02:23:16PM +0100, Johannes Bauer wrote:
+&gt;<i>Hi there,
+</I>&gt;<i>
+</I>&gt;<i>I wanted to ask what the current status of PyCrypto together with
+</I>&gt;<i>Python3 is.
+</I>&gt;<i>
+</I>&gt;<i>I found three patches on the mailing list, all of which are against
+</I>&gt;<i>2.1.0 and none of which work.
+</I>&gt;<i>
+</I>&gt;<i>Two were in a ZIP archive, I found them in pycrypto-patches.zip
+</I>&gt;<i><A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100228/349e8dc6/attachment-0001.obj">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100228/349e8dc6/attachment-0001.obj</A>
+</I>&gt;<i>
+</I>&gt;<i>They both patch fine against 2.1.0, but when running, they tell me both
+</I>&gt;<i>the same error message:
+</I>&gt;<i>
+</I>&gt;<i>Python 3.1.2 (r312:79147, Apr 15 2010, 15:35:48)
+</I>&gt;<i>[GCC 4.4.3] on linux2
+</I>&gt;<i>Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+</I>&gt;&gt;&gt;&gt;<i> from Crypto.Cipher import AES
+</I>&gt;<i>Traceback (most recent call last):
+</I>&gt;<i>  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+</I>&gt;<i>SystemError: NULL result without error in PyObject_Call
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>The third I found here (pycrypto-2.1.0-python3-1.patch.bz2).
+</I>&gt;<i><A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100115/0432fbaf/attachment-0001.bin">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100115/0432fbaf/attachment-0001.bin</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>It also compiles, but when trying to access the library, it yields
+</I>&gt;<i>
+</I>&gt;<i>Python 3.1.2 (r312:79147, Apr 15 2010, 15:35:48)
+</I>&gt;<i>[GCC 4.4.3] on linux2
+</I>&gt;<i>Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+</I>&gt;&gt;&gt;&gt;<i> from Crypto.Cipher import AES
+</I>&gt;<i>Traceback (most recent call last):
+</I>&gt;<i>  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+</I>&gt;<i>ImportError: Crypto/Cipher/AES.so: undefined symbol: PyString_AsString
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>I also tried the GIT version, which also doesn't work (cannot even run
+</I>&gt;<i>setup.py with Python3).
+</I>&gt;<i>
+</I>&gt;<i>Is any Python3 support planned at all? Are there any working patches (or
+</I>&gt;<i>even a GIT branch)?
+</I>&gt;<i>
+</I>&gt;<i>Regards,
+</I>&gt;<i>Johannes
+</I>&gt;<i>_______________________________________________
+</I>&gt;<i>pycrypto mailing list
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000285.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000286.html">[pycrypto] Policy changes - Now accepting patches from the U.S.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#288">[ date ]</a>
+              <a href="thread.html#288">[ thread ]</a>
+              <a href="subject.html#288">[ subject ]</a>
+              <a href="author.html#288">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

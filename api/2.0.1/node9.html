@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Algorithm-specific Notes for Encryption Algorithms</TITLE>
+<META NAME="description" CONTENT="Algorithm-specific Notes for Encryption Algorithms">
+<META NAME="keywords" CONTENT="pycrypt">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="pycrypt.css">
+
+<LINK REL="next" HREF="node10.html">
+<LINK REL="previous" HREF="node8.html">
+<LINK REL="up" HREF="node8.html">
+<LINK REL="next" HREF="node10.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html167"
+  HREF="node10.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html163"
+  HREF="node8.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html157"
+  HREF="node8.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html165"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html168"
+  HREF="node10.html">Security Notes</A>
+<B> Up:</B> <A NAME="tex2html164"
+  HREF="node8.html">Crypto.Cipher: Encryption Algorithms</A>
+<B> Previous:</B> <A NAME="tex2html158"
+  HREF="node8.html">Crypto.Cipher: Encryption Algorithms</A>
+ &nbsp; <B>  <A NAME="tex2html166"
+  HREF="node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00041000000000000000">
+Algorithm-specific Notes for Encryption Algorithms</A>
+</H2>
+
+<P>
+RC5 has a bunch of parameters; see Ronald Rivest's paper at
+<TT><A NAME="tex2html4"
+  HREF="http://theory.lcs.mit.edu/~rivest/rc5rev.ps">http://theory.lcs.mit.edu/~rivest/rc5rev.ps</A></TT> for the
+implementation details.  The keyword parameters are:
+
+<P>
+
+<UL>
+<LI>version:
+The version
+of the RC5 algorithm to use; currently the only legal value is
+0x10 for RC5 1.0.  
+</LI>
+<LI>wordsize:
+The word size to use;
+16 or 32 are the only legal values.  (A larger word size is better, so
+usually 32 will be used.  16-bit RC5 is probably only of academic
+interest.)  
+</LI>
+<LI>rounds:
+The number of rounds to apply, the larger the more secure: this
+can be any value from 0 to 255, so you will have to choose a value
+balanced between speed and security. 
+</LI>
+</UL>
+
+<P>
+<BR><HR>
+
+</BODY>
+</HTML>

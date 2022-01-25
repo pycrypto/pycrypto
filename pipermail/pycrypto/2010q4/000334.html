@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -	SHA1withRSA
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Create%20a%20Digital%20Signature%20%28DER%20Encoded%20PKCS%231%29%20-%0A%09SHA1withRSA&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000306.html">
+   <LINK REL="Next"  HREF="000335.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -	SHA1withRSA</H1>
+    <B>Anurag Chourasia</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Create%20a%20Digital%20Signature%20%28DER%20Encoded%20PKCS%231%29%20-%0A%09SHA1withRSA&In-Reply-To="
+       TITLE="[pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -	SHA1withRSA">anurag.chourasia at gmail.com
+       </A><BR>
+    <I>Tue Dec 28 13:44:13 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000306.html">[pycrypto] _fastmath.c now compiles with VC++ 2008
+</A></li>
+        <LI>Next message: <A HREF="000335.html">[pycrypto] Create a Digital Signature (DER Encoded PKCS#1) - SHA1withRSA
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#334">[ date ]</a>
+              <a href="thread.html#334">[ thread ]</a>
+              <a href="subject.html#334">[ subject ]</a>
+              <a href="author.html#334">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi All,
+
+I have a Private key and Public Key which comes in an XML in the following
+form.
+
+&lt;RSASK&gt;-----BEGIN RSA PRIVATE KEY-----
+MIIBOgIBAAJBALWmf82Fh6TUrzE5TV7BoLdamFWd/nGFzSNLtYsncENI07X47XKC
+G/YDRZeRcWKq+6P1pbM9ejgjXF72FCZZbL8CAQMCQHkZqokDr8M4dMt7iOnWayTn
+EDkT/vZZM2zdI7IaSteEwnbsIYjcAIkD0m3E2vZA9oNcjwEQ19ZXjyAhh+Y7B3sC
+IQDkhKYQUGPErXMsxhRDXlvpBzjPq7pGCTaY3th2KszAOwIhAMt+8KrU1FZ7Cl0s
+1eWS7aDXsf+F6fBtaWzP61IiNCFNAiEAmFhutYrtLcj3cy64LOmSm1ol38fRhAYk
+ZenlpByIgCcCIQCHqfXHOI2O/LGTczlDt0kV5SFVA/FK85ud3/I2wXgWMwIhAMXy
+zk5RMjE25Y+PFyevn4j1nWme6cvbv49g1OCZkZxE -----END RSA PRIVATE
+KEY-----&lt;/RSASK&gt;
+
+&lt;RSAPUBK&gt;-----BEGIN PUBLIC KEY-----
+MFowDQYJKoZIhvcNAQEBBQADSQAwRgJBALWmf82Fh6TUrzE5TV7BoLdamFWd/nGF
+zSNLtYsncENI07X47XKCG/YDRZeRcWKq+6P1pbM9ejgjXF72FCZZbL8CAQM= -----END PUBLIC
+KEY-----&lt;/RSAPUBK&gt;
+
+I need to use the &quot;Private Key&quot; above and transform a stream of text into a
+&quot;Digital Signature (DER Encoded PKCS#1)&quot; utilizing the &quot;Private Key&quot;.
+
+Could you please let me know how I could use Crypto to meet this
+requirement. Appreciate if you could help me with a simple code snippet.
+
+Thanks for your help on this.
+
+Regards,
+Anurag
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20101229/88717e2e/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20101229/88717e2e/attachment.htm</A> 
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000306.html">[pycrypto] _fastmath.c now compiles with VC++ 2008
+</A></li>
+	<LI>Next message: <A HREF="000335.html">[pycrypto] Create a Digital Signature (DER Encoded PKCS#1) - SHA1withRSA
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#334">[ date ]</a>
+              <a href="thread.html#334">[ thread ]</a>
+              <a href="subject.html#334">[ subject ]</a>
+              <a href="author.html#334">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

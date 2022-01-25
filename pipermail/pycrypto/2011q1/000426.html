@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] adding ssh keys support in distutils2
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20adding%20ssh%20keys%20support%20in%20distutils2&In-Reply-To=20110221165910.GA25341%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000425.html">
+   <LINK REL="Next"  HREF="000427.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] adding ssh keys support in distutils2</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20adding%20ssh%20keys%20support%20in%20distutils2&In-Reply-To=20110221165910.GA25341%40rivest.dlitz.net"
+       TITLE="[pycrypto] adding ssh keys support in distutils2">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Mon Feb 21 11:08:38 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000425.html">[pycrypto] adding ssh keys support in distutils2
+</A></li>
+        <LI>Next message: <A HREF="000427.html">[pycrypto] adding ssh keys support in distutils2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#426">[ date ]</a>
+              <a href="thread.html#426">[ thread ]</a>
+              <a href="subject.html#426">[ subject ]</a>
+              <a href="author.html#426">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>It seems to be that openssl alone is more practical for that, as it
+simply runs from the command line.
+Or do you plan to do everything from within Python?
+
+2011/2/21 Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;:
+&gt;<i> On Mon, Feb 21, 2011 at 05:39:24PM +0100, Aljo&#353;a Mohorovi&#263; wrote:
+</I>&gt;&gt;<i>On Mon, Feb 21, 2011 at 5:32 PM, Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> Robey Pointer has an awesome Python library that does SSH called Paramiko:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> <A HREF="http://www.lag.net/paramiko/">http://www.lag.net/paramiko/</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>can't figure out if paramiko requires sshd server.
+</I>&gt;&gt;<i>i would like to avoid having sshd server because i just need to verify
+</I>&gt;&gt;<i>that python package is uploaded by the owner of key of which i have
+</I>&gt;&gt;<i>public part.
+</I>&gt;&gt;<i>in this situation, should i be looking into paramiko or pycrypto?
+</I>&gt;<i>
+</I>&gt;<i> Paramiko uses PyCrypto, it *is* an SSH server (and client), and it contains
+</I>&gt;<i> code for parsing, generating, and manipulating SSH keys.
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+</I>&gt;<i> &#160;OpenPGP: 19E1 1FE8 B3CF F273 ED17 &#160;4A24 928C EC13 39C2 5CF7
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I></PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000425.html">[pycrypto] adding ssh keys support in distutils2
+</A></li>
+	<LI>Next message: <A HREF="000427.html">[pycrypto] adding ssh keys support in distutils2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#426">[ date ]</a>
+              <a href="thread.html#426">[ thread ]</a>
+              <a href="subject.html#426">[ subject ]</a>
+              <a href="author.html#426">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

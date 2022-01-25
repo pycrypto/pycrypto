@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Base64%20encoded%20output%20differs%20from%20pycrypto%20and%0A%20as3crypto%20libraries.&In-Reply-To=AANLkTi%3D315L%3Dz9ye7k7f3%3DrubcW2xjG6_FhjxL2PcxKt%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000404.html">
+   <LINK REL="Next"  HREF="000406.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.</H1>
+    <B>Joshua Strauss</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Base64%20encoded%20output%20differs%20from%20pycrypto%20and%0A%20as3crypto%20libraries.&In-Reply-To=AANLkTi%3D315L%3Dz9ye7k7f3%3DrubcW2xjG6_FhjxL2PcxKt%40mail.gmail.com"
+       TITLE="[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.">joshua.a.strauss at gmail.com
+       </A><BR>
+    <I>Wed Jan 12 16:18:55 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000404.html">[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+</A></li>
+        <LI>Next message: <A HREF="000406.html">[pycrypto] Why p&lt;q in RSA code?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#405">[ date ]</a>
+              <a href="thread.html#405">[ thread ]</a>
+              <a href="subject.html#405">[ subject ]</a>
+              <a href="author.html#405">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>To all who gave me some of their time.
+
+I've sorted the problem, it was how the IV was being fed into the byte array
+in AS3.
+
+Thank you all for your help :)
+
+Regards,
+Joshua
+
+On Wed, Jan 12, 2011 at 1:49 PM, Joshua Strauss
+&lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">joshua.a.strauss at gmail.com</A>&gt;wrote:
+
+&gt;<i> Legrandin,
+</I>&gt;<i>
+</I>&gt;<i> I think you are on to something here. Removing the initialization vector
+</I>&gt;<i> from both pycrypto and as3crypto produces the same b64encoded output. I've
+</I>&gt;<i> been playing around with different IV's but I can only get the output to
+</I>&gt;<i> match without the presence of an IV.
+</I>&gt;<i>
+</I>&gt;<i> This does lead me to believe that the IV is the source of my problem but if
+</I>&gt;<i> anyone can think of a reason why this might not be, it would be helpful to
+</I>&gt;<i> know as I don't want to be on the wrong track.
+</I>&gt;<i>
+</I>&gt;<i> I haven't done much coding at the byte level (I'm mainly a web developer,
+</I>&gt;<i> and not seasoned by any means), I'll keep trucking from here I suppose.
+</I>&gt;<i>
+</I>&gt;<i> Regards,
+</I>&gt;<i> Joshua
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Jan 12, 2011 at 1:15 PM, Legrandin &lt;
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">gooksankoo at hoiptorrow.mailexpire.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> &gt;    var t_byAry:ByteArray = Hex.toArray( Hex.fromString( t_toEnc ) );
+</I>&gt;&gt;<i> &gt;    var t_key:ByteArray = Hex.toArray( Hex.fromString( 'Thisisthekey' )
+</I>&gt;&gt;<i> );
+</I>&gt;&gt;<i> &gt;    var t_cbc:CBCMode = new CBCMode( new BlowFishKey( t_key ), new
+</I>&gt;&gt;<i> NullPad );
+</I>&gt;&gt;<i> &gt;    t_cbc.IV = Hex.toArray( '30313233' );
+</I>&gt;&gt;<i> &gt;    t_cbc.encrypt( t_byAry );
+</I>&gt;&gt;<i> &gt;    t_enc = Base64.encodeByteArray( t_byAry );
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt;    &gt;&gt;&gt; from Crypto.Cipher import Blowfish
+</I>&gt;&gt;<i> &gt;    &gt;&gt;&gt; B = Blowfish.new( 'Thisisthekey', Blowfish.MODE_CBC, '30313233' )
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Could it be that in you AS code your IV is 4 bytes (0x30,0x31,0x32,0x33)
+</I>&gt;&gt;<i> which t_cbc.encrypt() silently pads, whereas in the python code it is 8
+</I>&gt;&gt;<i> different bytes (0x33 for '3', 0x30 for '0', etc)?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Legrandin
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20110112/efd8b675/attachment-0001.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20110112/efd8b675/attachment-0001.htm</A> 
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000404.html">[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+</A></li>
+	<LI>Next message: <A HREF="000406.html">[pycrypto] Why p&lt;q in RSA code?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#405">[ date ]</a>
+              <a href="thread.html#405">[ thread ]</a>
+              <a href="subject.html#405">[ subject ]</a>
+              <a href="author.html#405">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

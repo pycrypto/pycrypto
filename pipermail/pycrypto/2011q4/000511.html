@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Public Key encryption of files
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20Key%20encryption%20of%20files&In-Reply-To=8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF0A4%40exch-mail.bridge.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000509.html">
+   <LINK REL="Next"  HREF="000510.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Public Key encryption of files</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20Key%20encryption%20of%20files&In-Reply-To=8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF0A4%40exch-mail.bridge.net"
+       TITLE="[pycrypto] Public Key encryption of files">dave.pawson at gmail.com
+       </A><BR>
+    <I>Fri Nov 11 08:33:56 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000509.html">[pycrypto] Public Key encryption of files
+</A></li>
+        <LI>Next message: <A HREF="000510.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#511">[ date ]</a>
+              <a href="thread.html#511">[ thread ]</a>
+              <a href="subject.html#511">[ subject ]</a>
+              <a href="author.html#511">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 11 November 2011 13:21, Dean Macinskas &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dmacinskas at geobridge.net</A>&gt; wrote:
+&gt;<i> Dave,
+</I>&gt;<i>
+</I>&gt;<i> For what you're doing the example is fine, but I think you'd be disappointed in the performance if your file was 10mb instead of 1 kb. &#160;Why? Because CFB-8 requires an AES cycle *PER BYTE*. &#160;So encrypting 1024 bytes requires 1024 AES cycles, compared to 64 if you used CBC.
+</I>
+
+Could you tell me how to change the code please, to use the less extravagent ???
+whatever CBC is?
+
+Guessing. In
+def encrypt(plaintext, secret, lazy=True, checksum=True):
+  ....
+ encobj = AES.new(secret, AES.MODE_CFB)
+ plaintext += struct.pack(&quot;i&quot;, zlib.crc32(plaintext))
+
+Is it the change to the first line above? If so, how to specify CBC please?
+
+
+TIA
+
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000509.html">[pycrypto] Public Key encryption of files
+</A></li>
+	<LI>Next message: <A HREF="000510.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#511">[ date ]</a>
+              <a href="thread.html#511">[ thread ]</a>
+              <a href="subject.html#511">[ subject ]</a>
+              <a href="author.html#511">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

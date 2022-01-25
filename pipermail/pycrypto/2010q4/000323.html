@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] _fastmath.c on 64-bit, compile-time warnings
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20_fastmath.c%20on%2064-bit%2C%20compile-time%20warnings&In-Reply-To=4D1539CB.6000600%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000322.html">
+   <LINK REL="Next"  HREF="000324.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] _fastmath.c on 64-bit, compile-time warnings</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20_fastmath.c%20on%2064-bit%2C%20compile-time%20warnings&In-Reply-To=4D1539CB.6000600%40gmx.li"
+       TITLE="[pycrypto] _fastmath.c on 64-bit, compile-time warnings">sbehrens at gmx.li
+       </A><BR>
+    <I>Fri Dec 24 18:48:24 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000322.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000324.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#323">[ date ]</a>
+              <a href="thread.html#323">[ thread ]</a>
+              <a href="subject.html#323">[ subject ]</a>
+              <a href="author.html#323">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>_fastmath.c gives out some warnings along the lines of &quot;you may lose 
+data because you are forcing a 64-bit value into a 32-bit value&quot; when 
+compiling pycrypto as a native 64-bit module.
+
+I don't want to get too side-tracked right now - but could someone take 
+a look and see whether these warnings are harmless? And even if they are 
+harmless, whether the code could be changed to avoid the warnings 
+without breaking the code?
+
+src/_fastmath.c(62) : warning C4244: '=' : conversion from 'Py_ssize_t' 
+to 'int', possible loss of data
+src/_fastmath.c(64) : warning C4244: '=' : conversion from 'Py_ssize_t' 
+to 'int', possible loss of data
+src/_fastmath.c(88) : warning C4267: 'initializing' : conversion from 
+'size_t' to 'int', possible loss of data
+src/_fastmath.c(1096) : warning C4267: 'function' : conversion from 
+'size_t' to 'unsigned long', possible loss of data
+src/_fastmath.c(1177) : warning C4244: '=' : conversion from 
+'mp_bitcnt_t' to 'unsigned long', possible loss of data
+src/_fastmath.c(1180) : warning C4018: '&lt;' : signed/unsigned mismatch
+src/_fastmath.c(1182) : warning C4018: '&lt;' : signed/unsigned mismatch
+
+Thorsten
+
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000322.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000324.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#323">[ date ]</a>
+              <a href="thread.html#323">[ thread ]</a>
+              <a href="subject.html#323">[ subject ]</a>
+              <a href="author.html#323">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

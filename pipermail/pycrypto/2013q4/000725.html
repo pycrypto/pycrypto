@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Installation on python3
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Installation%20on%20python3&In-Reply-To=%3CCAHAkNZ3WY0TT4MeroqByqiHAtzj1Q5CB39aQgHbB9_97ydzGfA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000724.html">
+   <LINK REL="Next"  HREF="000726.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Installation on python3</H1>
+    <B>Philip Horger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Installation%20on%20python3&In-Reply-To=%3CCAHAkNZ3WY0TT4MeroqByqiHAtzj1Q5CB39aQgHbB9_97ydzGfA%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Installation on python3">campadrenalin at gmail.com
+       </A><BR>
+    <I>Fri Nov 15 08:05:55 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000724.html">[pycrypto] Installation on python3
+</A></li>
+        <LI>Next message: <A HREF="000726.html">[pycrypto] Installation on python3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#725">[ date ]</a>
+              <a href="thread.html#725">[ thread ]</a>
+              <a href="subject.html#725">[ subject ]</a>
+              <a href="author.html#725">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Dave,
+
+
+You are missing the python3-dev package, or whatever it's called in
+Fedora-Land. That contains the headers that the compiler needs to compile C
+extensions for Python (specifically, Python.h). Without that header
+information, you can't compile the C extensions that are part of PyCrypto
+(or any other Python module that makes use of compiled extensions).
+
+Basically, you just need to find and install that package from the Fedora
+repos.
+
+Hope that helps,
+Philip Horger
+
+
+On Fri, Nov 15, 2013 at 12:10 AM, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt; wrote:
+
+&gt;<i> setup is Fedora 19, 64 bit.
+</I>&gt;<i>
+</I>&gt;<i> cmd was pip-python3 install pycrypto
+</I>&gt;<i>
+</I>&gt;<i> result
+</I>&gt;<i>
+</I>&gt;<i> ...
+</I>&gt;<i> creating build/temp.linux-x86_64-3.3
+</I>&gt;<i>
+</I>&gt;<i> creating build/temp.linux-x86_64-3.3/src
+</I>&gt;<i>
+</I>&gt;<i> gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe
+</I>&gt;<i> -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector
+</I>&gt;<i> --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic
+</I>&gt;<i> -D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+</I>&gt;<i> -Isrc/ -I/usr/include/python3.3m -c src/MD2.c -o
+</I>&gt;<i> build/temp.linux-x86_64-3.3/src/MD2.o
+</I>&gt;<i>
+</I>&gt;<i> src/MD2.c:31:20: fatal error: Python.h: No such file or directory
+</I>&gt;<i>
+</I>&gt;<i>  #include &quot;Python.h&quot;
+</I>&gt;<i>
+</I>&gt;<i>                     ^
+</I>&gt;<i>
+</I>&gt;<i> compilation terminated.
+</I>&gt;<i>
+</I>&gt;<i> warning: GMP or MPIR library not found; Not building
+</I>&gt;<i> Crypto.PublicKey._fastmath.
+</I>&gt;<i>
+</I>&gt;<i> error: command 'gcc' failed with exit status 1
+</I>&gt;<i>
+</I>&gt;<i> Any suggestions please?
+</I>&gt;<i> pycrypto installed fine on python 2.7
+</I>&gt;<i>
+</I>&gt;<i> regards
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dave Pawson
+</I>&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;<i> Docbook FAQ.
+</I>&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20131115/a3da9740/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20131115/a3da9740/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000724.html">[pycrypto] Installation on python3
+</A></li>
+	<LI>Next message: <A HREF="000726.html">[pycrypto] Installation on python3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#725">[ date ]</a>
+              <a href="thread.html#725">[ thread ]</a>
+              <a href="subject.html#725">[ subject ]</a>
+              <a href="author.html#725">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,17 @@
+<tt>
+&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;<br>
+&lt;br&gt;<br>
+I&nbsp;am&nbsp;getting&nbsp;&quot;ValueError:&nbsp;Input&nbsp;strings&nbsp;must&nbsp;be&nbsp;a&nbsp;multiple&nbsp;of&nbsp;the&lt;br&gt;<br>
+segment&nbsp;size&nbsp;8&nbsp;in&nbsp;length&quot;&nbsp;when&nbsp;trying&nbsp;to&nbsp;decrypt&nbsp;a&nbsp;file&nbsp;by&nbsp;using&lt;br&gt;<br>
+Blowfish&nbsp;in&nbsp;CFB&nbsp;mode.&nbsp;The&nbsp;file&nbsp;length&nbsp;is&nbsp;not&nbsp;a&nbsp;multiple&nbsp;of&nbsp;8.&nbsp;However,&lt;br&gt;<br>
+OpenSSL&nbsp;doesn&#39;t&nbsp;require&nbsp;file&nbsp;length&nbsp;to&nbsp;be&nbsp;multiple&nbsp;of&nbsp;8&nbsp;and&nbsp;it&lt;br&gt;<br>
+successfully&nbsp;decrypts&nbsp;the&nbsp;file.&lt;br&gt;<br>
+&lt;br&gt;<br>
+1.&nbsp;Is&nbsp;this&nbsp;a&nbsp;limitation&nbsp;imposed&nbsp;by&nbsp;PyCrypto?&lt;br&gt;<br>
+&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;Yes.&nbsp;I&nbsp;actually&nbsp;opened&nbsp;a&nbsp;&lt;a&nbsp;href=&quot;https://bugs.launchpad.net/pycrypto/+bug/996207&quot;&gt;bug&lt;/a&gt;&nbsp;about&nbsp;this,&nbsp;but&nbsp;in&nbsp;the&nbsp;meanwhile&nbsp;I&nbsp;have&nbsp;read&nbsp;in&nbsp;Section&nbsp;5.2&nbsp;of&nbsp;NIST&nbsp;800&nbsp;38A&nbsp;(the&nbsp;only&nbsp;standard&nbsp;I&nbsp;am&nbsp;aware&nbsp;of&nbsp;that&nbsp;describes&nbsp;CFB)&nbsp;that&nbsp;the&nbsp;input&nbsp;&lt;b&gt;must&lt;/b&gt;&nbsp;be&nbsp;a&nbsp;multiple&nbsp;of&nbsp;the&nbsp;segment&nbsp;size.&lt;br&gt;<br>
+&lt;br&gt;That&nbsp;means&nbsp;that&nbsp;strictly&nbsp;speaking&nbsp;OpenSSL&nbsp;is&nbsp;&lt;b&gt;not&nbsp;&lt;/b&gt;standard&nbsp;compliant,&nbsp;unless&nbsp;other&nbsp;standards&nbsp;saying&nbsp;that&nbsp;the&nbsp;last&nbsp;block&nbsp;can&nbsp;be&nbsp;shorter&nbsp;exists.&lt;br&gt; &lt;/div&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0pt&nbsp;0pt&nbsp;0pt&nbsp;0.8ex;border-left:1px&nbsp;solid&nbsp;rgb(204,204,204);padding-left:1ex&quot;&gt;<br>
+<br>
+2.&nbsp;I&nbsp;could&nbsp;successfully&nbsp;decrypt&nbsp;and&nbsp;inflate&nbsp;the&nbsp;file&nbsp;by&nbsp;padding&nbsp;it&lt;br&gt;<br>
+with&nbsp;&quot;x&quot;&nbsp;(randomly&nbsp;chosen).&nbsp;Is&nbsp;this&nbsp;safe&nbsp;and&nbsp;correct?&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt; &lt;br&gt;Yes.&lt;br&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;<br>
+
+</tt>

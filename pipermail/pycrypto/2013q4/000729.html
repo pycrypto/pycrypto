@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ARC4 examples
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20ARC4%20examples&In-Reply-To=%3CCAGfyce0XedrA%3DpCxWaF9CMA9V_ptzhsP0bXJF6FRg3N_qx7-UQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000727.html">
+   <LINK REL="Next"  HREF="000731.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ARC4 examples</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20ARC4%20examples&In-Reply-To=%3CCAGfyce0XedrA%3DpCxWaF9CMA9V_ptzhsP0bXJF6FRg3N_qx7-UQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] ARC4 examples">helderijs at gmail.com
+       </A><BR>
+    <I>Wed Nov 20 13:19:33 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000727.html">[pycrypto] ARC4 examples
+</A></li>
+        <LI>Next message: <A HREF="000731.html">[pycrypto] ARC4 examples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#729">[ date ]</a>
+              <a href="thread.html#729">[ thread ]</a>
+              <a href="subject.html#729">[ subject ]</a>
+              <a href="author.html#729">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;&gt;&gt;&gt;<i> from Crypto.Cipher import ARC4
+</I>&gt;&gt;&gt;&gt;<i> from Crypto.Hash import SHA
+</I>&gt;&gt;&gt;&gt;<i> from Crypto import Random
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> key = b'Very long and confidential key'
+</I>&gt;&gt;&gt;&gt;<i> nonce = Random.new().read(16)
+</I>&gt;&gt;&gt;&gt;<i> tempkey = SHA.new(key+nonce).digest()
+</I>&gt;&gt;&gt;&gt;<i> cipher = ARC4.new(tempkey)
+</I>&gt;&gt;&gt;&gt;<i> msg = nonce + cipher.encrypt(b'Open the pod bay doors, HAL')
+</I>&gt;<i>
+</I>&gt;<i> I cannot get that to decrypt to the plaintext.
+</I>&gt;<i> What is the point of adding the nonce to the ciphertext please, and
+</I>&gt;<i> how to decrypt?
+</I>
+It is just one of the many possible ways for delivering the nonce (or
+IV) to the receiver.
+
+If you receive msg, and you have the key, you can decrypt using these steps:
+
+from Crypto.Cipher import ARC4
+from Crypto.Hash import SHA
+
+nonce = msg[:16]
+tempkey = SHA.new(key+nonce).digest()
+cipher = ARC4.new(tempkey)
+plaintext = cipher.decrypt(msg[16:])
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000727.html">[pycrypto] ARC4 examples
+</A></li>
+	<LI>Next message: <A HREF="000731.html">[pycrypto] ARC4 examples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#729">[ date ]</a>
+              <a href="thread.html#729">[ thread ]</a>
+              <a href="subject.html#729">[ subject ]</a>
+              <a href="author.html#729">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

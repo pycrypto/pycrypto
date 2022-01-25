@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Base64 encoded output differs from pycrypto and	as3crypto libraries.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Base64%20encoded%20output%20differs%20from%20pycrypto%20and%0A%09as3crypto%20libraries.&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000394.html">
+   <LINK REL="Next"  HREF="000397.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Base64 encoded output differs from pycrypto and	as3crypto libraries.</H1>
+    <B>Joshua Strauss</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Base64%20encoded%20output%20differs%20from%20pycrypto%20and%0A%09as3crypto%20libraries.&In-Reply-To="
+       TITLE="[pycrypto] Base64 encoded output differs from pycrypto and	as3crypto libraries.">joshua.a.strauss at gmail.com
+       </A><BR>
+    <I>Wed Jan 12 13:07:49 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000394.html">[pycrypto] Idea: pycrypto user survey
+</A></li>
+        <LI>Next message: <A HREF="000397.html">[pycrypto] Base64 encoded output differs from pycrypto and	as3crypto libraries.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#396">[ date ]</a>
+              <a href="thread.html#396">[ thread ]</a>
+              <a href="subject.html#396">[ subject ]</a>
+              <a href="author.html#396">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm trying to use symmetric encryption to pass data from actionscript 3 (client) to python (server).
+
+The libraries I'm using are as3crypto and pycrypto.
+
+I'm not sure if I'm using these libraries correctly, here's the action script 3 code.
+
+private function testOnInit():void {
+	var t_toEnc:String = 'testtest';
+	var t_byAry:ByteArray = Hex.toArray( Hex.fromString( t_toEnc ) );
+	var t_key:ByteArray = Hex.toArray( Hex.fromString( 'Thisisthekey' ) );
+	var t_cbc:CBCMode = new CBCMode( new BlowFishKey( t_key ), new NullPad );
+	var t_enc:String;
+	t_cbc.IV = Hex.toArray( '30313233' );
+	t_cbc.encrypt( t_byAry );
+	t_enc = Base64.encodeByteArray( t_byAry );      
+	dbg( 'b64 encrypted string ' + t_enc ); //this is just a debugging function we use in our code.
+}
+
+This is the base64 encoded output of the function above.
+
+xvVqLzV5TU4=
+
+Now, using the same key, initialization vector, and algorithm from the pycrypto library gives me different output.
+
+Here's the python code.
+
+&gt;&gt;&gt;<i> from Crypto.Cipher import Blowfish
+</I>&gt;&gt;&gt;<i> B = Blowfish.new( 'Thisisthekey', Blowfish.MODE_CBC, '30313233' )
+</I>&gt;&gt;&gt;<i> S = 'testtest'
+</I>&gt;&gt;&gt;<i> X = B.encrypt( S )
+</I>&gt;&gt;&gt;<i> import base64
+</I>&gt;&gt;&gt;<i> Y = base64.b64encode( X )
+</I>&gt;&gt;&gt;<i> print Y
+</I>
+I82NQEkSHhE=
+
+I'm pretty sure that I'm doing something wrong with the encryption process because I can base64 encode 'testtest' on both libraries and receive the same output.
+
+Here's as3
+
+var b:ByteArray = new ByteArray();
+b.writeUTFBytes( 'testtest' );
+dbg( Base64.encodeByteArray( b ) );
+
+Yields...
+
+dGVzdHRlc3Q=
+
+Here's the python
+
+&gt;&gt;&gt;<i> T = 'testtest'
+</I>&gt;&gt;&gt;<i> print base64.b64encode( T )
+</I>
+Yields&#8230;
+
+dGVzdHRlc3Q=
+
+Could someone please encrypt and base64encode the same string with the same IV in either python or actionscript, so I know which library is actually producing the correct output?
+
+Any assistance with this problem would be greatly appreciated, I'm stuck and don't know how to proceed from here.
+
+Thank you
+Joshua
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20110112/fd046061/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20110112/fd046061/attachment.htm</A> 
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000394.html">[pycrypto] Idea: pycrypto user survey
+</A></li>
+	<LI>Next message: <A HREF="000397.html">[pycrypto] Base64 encoded output differs from pycrypto and	as3crypto libraries.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#396">[ date ]</a>
+              <a href="thread.html#396">[ thread ]</a>
+              <a href="subject.html#396">[ subject ]</a>
+              <a href="author.html#396">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

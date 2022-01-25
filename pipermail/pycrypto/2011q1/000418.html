@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] PKCS#1 v1.5 and PSS
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PKCS%231%20v1.5%20and%20PSS&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000412.html">
+   <LINK REL="Next"  HREF="000434.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] PKCS#1 v1.5 and PSS</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PKCS%231%20v1.5%20and%20PSS&In-Reply-To="
+       TITLE="[pycrypto] PKCS#1 v1.5 and PSS">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Tue Feb  8 04:43:52 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000412.html">[pycrypto] Why p&lt;q in RSA code?
+</A></li>
+        <LI>Next message: <A HREF="000434.html">[pycrypto] AES.Mode_PGP
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#418">[ date ]</a>
+              <a href="thread.html#418">[ thread ]</a>
+              <a href="subject.html#418">[ subject ]</a>
+              <a href="author.html#418">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+I have just finalized support for PKCS#1-style RSA signatures, meaning
+both v1.5 and the new PSS. I ended up spending most of the time on the
+test suite, so I believe the result is pretty rock solid. I have it
+shelved on a branch of my github repo, which can be retrieved via:
+
+git clone -b pkcs1 <A HREF="https://github.com/Legrandin/pycrypto.git">https://github.com/Legrandin/pycrypto.git</A>
+
+Any feedback is appreciated!
+
+One thing you may notice, is that Crypto.PublicKey is not touched at
+all (apart from a few bugfixes and small improvements).
+Instead, I have tried to isolate everything in two new modules:
+Crypto.Signature.PKCS1_v1_5 and Crypto.Signature.PKCS1_PSS .
+
+At the sender, one would do:
+
+&gt;&gt;&gt;<i> from Crypto.Signature import PKCS1_v1_5
+</I>&gt;&gt;&gt;<i> from Crypto.Hash import SHA
+</I>&gt;&gt;&gt;<i> from Crypto.PublicKey import RSA
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> message = 'To be signed'
+</I>&gt;&gt;&gt;<i> key = RSA.importKey('key.der')
+</I>&gt;&gt;&gt;<i> h = SHA.new()
+</I>&gt;&gt;&gt;<i> h.update(message)
+</I>&gt;&gt;&gt;&gt;<i> signature = PKCS1_v1_5.sign(h, key)
+</I>
+whereas at the receiver:
+
+&gt;&gt;&gt;<i> key = RSA.importKey('pubkey.der')
+</I>&gt;&gt;&gt;<i> h = SHA.new()
+</I>&gt;&gt;&gt;<i> h.update(message)
+</I>&gt;&gt;&gt;<i> if PKCS_v1_5.verify(h, key, signature):
+</I>&gt;&gt;&gt;<i> print &quot;The signature is authentic.&quot;
+</I>&gt;&gt;&gt;<i>     else:
+</I>&gt;&gt;&gt;<i> print &quot;The signature is not authentic.&quot;
+</I>
+Note that no object is used in such modules, because the signing
+algorithms are inherently stateless.
+
+I believe this way is much cleaner that expanding the already shaky RSA.sign() !
+
+More generally, using a Crypto.PublicKey.RSA object as both key (e.g.
+generation) and key engine (signing, encryption) seems to be the root
+of a lot of troubles. It would be much better to use such object (and
+the same applies to everything under Crypto.PublicKey) only for key
+management, and leave all usages of such key to a different module.
+
+That is the same approach found in the Java Crypto Architecture (see
+<A HREF="http://download.oracle.com/javase/6/docs/technotes/guides/security/crypto/CryptoSpec.html">http://download.oracle.com/javase/6/docs/technotes/guides/security/crypto/CryptoSpec.html</A>)
+which applies the concept to all key types, including symmetric ones.
+In PyCrypto, the fact that Cipher.AES is used to model both the key
+and the raw algorithm seem to be still acceptable though, because key
+management for AES does not require a lot of logic like for public
+keys.
+
+For such reasons, while thinking how to implement the PKCS#1 OAEP algo
+I need, I was considering how the Crypto.Cipher package could be a
+good candidate for holding a new PKCS1_OAEP module. Mixing up
+symmetric key objects and an asymmetric algo may seem bad at first,
+but JCA indeed has a Cipher class meant to cover all encryption algos,
+no matter the type. On the long run, we may actually want to move
+symmetric keys into a Crypto.SymmetricKey module, and leave
+Crypto.Cipher for key usage only, and no key management.
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000412.html">[pycrypto] Why p&lt;q in RSA code?
+</A></li>
+	<LI>Next message: <A HREF="000434.html">[pycrypto] AES.Mode_PGP
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#418">[ date ]</a>
+              <a href="thread.html#418">[ thread ]</a>
+              <a href="subject.html#418">[ subject ]</a>
+              <a href="author.html#418">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

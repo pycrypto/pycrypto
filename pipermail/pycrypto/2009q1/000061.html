@@ -1,0 +1,242 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] PyCrypto AND Crypt_RSA integration
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%20AND%20Crypt_RSA%20integration&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000071.html">
+   <LINK REL="Next"  HREF="000063.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] PyCrypto AND Crypt_RSA integration</H1>
+    <B>Mauricio Arozi</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%20AND%20Crypt_RSA%20integration&In-Reply-To="
+       TITLE="[pycrypto] PyCrypto AND Crypt_RSA integration">mauricioarozi at gmail.com
+       </A><BR>
+    <I>Fri Feb  6 12:53:14 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000071.html">[pycrypto] Quick and Easy Email Authentication
+</A></li>
+        <LI>Next message: <A HREF="000063.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#61">[ date ]</a>
+              <a href="thread.html#61">[ thread ]</a>
+              <a href="subject.html#61">[ subject ]</a>
+              <a href="author.html#61">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+I'm trying to import/export keys from/to
+Crypt_RSA&lt;<A HREF="http://pear.php.net/package/Crypt_RSA">http://pear.php.net/package/Crypt_RSA</A>&gt;,
+using PyCrypto &lt;<A HREF="http://www.dlitz.net/software/pycrypto/">http://www.dlitz.net/software/pycrypto/</A>&gt;. My problem is that
+while using PyCrypto to generate both public and private keys, the
+e(exponent?) is always the same.
+According to this site: <A HREF="http://pajhome.org.uk/crypt/rsa/rsa.html,">http://pajhome.org.uk/crypt/rsa/rsa.html,</A> and yet
+others, the e(exponent?) is used for the public key, and d for the private
+key.
+ Public Key
+
+n = 133
+e = 5
+ Secret Key
+
+n = 133
+d = 65
+
+With Crypt_RSA  the e(exponent!) does change. And, currently, Crypt_RSA
+'should' import a key with:
+
+function Crypt_RSA_Key
+&lt;<A HREF="http://pear.php.net/package/Crypt_RSA/docs/latest/Crypt_RSA/Crypt_RSA_Key.html#methodCrypt_RSA_Key">http://pear.php.net/package/Crypt_RSA/docs/latest/Crypt_RSA/Crypt_RSA_Key.html#methodCrypt_RSA_Key</A>&gt;*(**$modulus**,
+**$exp**, **$key_type**, **$wrapper_name *= 'default'*,
+**$error_handler *= ''*)*
+
+
+I've made some examples to find out why it's no working, I couldn't find
+anything besides what I'm telling here, I'm getting:
+
+**
+
+I'm getting:
+
+*php output:*
+public:
+e = 576770076438170600293020230006
+11111558980619493053522755045300999066282094579
+n =
+8181236468479469953170512321145304204212043012891758446155743461774497958816815322484398388795674807728198188380330393972375008693925124720339387183472981
+
+private:
+e =
+437180361711592053741873121324365600858808727935298705094471030803249044470609246732980373383618106117311336729585366532974229499133803473168583498751419
+n =
+8181236468479469953170512321145304204212043012891758446155743461774497958816815322484398388795674807728198188380330393972375008693925124720339387183472981
+
+plain text:             This is the secret phrase testing.
+key:
+YTozOntpOjA7czo2NDoiVSFbfK0ZrvVUOUo/EejHR7YO4F8ugtRGrDPSjrTZEMYZqLUuiZhNhxr2ZdSyvoBN/2wfVnYJzqqYrYT/BA01nCI7aToxO3M6MzI6IvPv6+fj39vXU1DMyMRAvbk1sq4qpyOgHJkVkg6LB4R/IjtpOjI7czo2OiJwdWJsaWMiO30=
+encrypted text:
+mBL6f3pRyFX34nB/0H5jL3VOwylAjJzGx32UKS11EOhtooAVjdiYZHGh5jUOAUWj3GD9+ccPPyh5afXmGrq3UA==
+decrypted text:         This is the secret phrase testing.
+
+*python output:*
+privkey
+
+n=6725954312330247844957820045120819261330667638399165421086669714474128366894973621051940873915934423533814876921018123156635212781400913635892080927069649
+        e=65537
+
+d=4335534734949590616144210259946732528112578457728805761841499642766064251636039038235790562167224376876190746808970727821310520543898873435686861965120773
+
+p=67052724006509355618909096968505962144329319327659728670702224750645922227811
+
+q=100308442527663820502897858910213458115962396303231005493840992047817473580859
+
+u=49237107846093262220122150056829317849796914810691525815572680169759496162772
+
+pubkey
+
+n=6725954312330247844957820045120819261330667638399165421086669714474128366894973621051940873915934423533814876921018123156635212781400913635892080927069649
+        e=65537
+
+msg=            This is the secret phrase testing.
+data=           Sh'f&#226;&#170;a&#211;&#207;!_&#205;T&#202;&#197;\~1rA&#178;&#181;G!&#240;bS(e&#168;(R)e{]&#200;&#238;&#172;&lt;P&#205;L&#179;,$h
+strdata=
+(&quot;Sh'f\x12\xe2\xaa\x82a\xd3\xcf\x98!_\xcd\x94T\xca\x05\xc5\\~\x7f1r\x95\x9eA\xb2\xb5G!\x15\xf0bS(e\x94\xa8\x90\xaee\x01{]\xc8\xee\xac&lt;\x07P\xcd\x87\x8eL\x84\x8e\x8f\xb3,\x9a$h&quot;,)
+decrypted=   This is the secret phrase testing.
+
+here are the sources:
+*cryp.py
+*from Crypto.PublicKey import RSA
+from Crypto.Util.randpool import RandomPool
+import os
+rpool = RandomPool()
+
+# Generate keys
+print os.urandom(0);
+privkeyA = RSA.generate(512, rpool.get_bytes)
+pubkeyA = privkeyA.publickey()
+
+msg = 'This is the secret phrase testing.'
+msgc = pubkeyA.encrypt(msg, '')
+msgf = privkeyA.decrypt(msgc)
+
+print 'privkey\n\tn=%s\n\te=%s\n\td=%s\n\tp=%s\n\tq=%s\n\tu=%s\n' %
+(privkeyA.n, privkeyA.e, privkeyA.d, privkeyA.p, privkeyA.q, privkeyA.u)
+print 'pubkey\n\tn=%s\n\te=%s\n' % (pubkeyA.n, pubkeyA.e)
+print 'msg=\t\t%s\ndata=\t\t%s\nstrdata=\t%s\ndecrypted=\t%s\n' % (msg,
+msgc[0],str(msgc),msgf)
+
+*cryp.php
+*&lt;?php
+    require_once 'Crypt/RSA.php';
+    require_once 'Crypt/RSA/MathLoader.php';
+
+    //Generates the pair keys
+    function generate_key_pair()
+    {
+        global $public_key,$private_key;
+        $obj = &amp;Crypt_RSA_MathLoader::loadWrapper('default');
+
+        $key_pair = new Crypt_RSA_KeyPair(512);
+
+        //Returns public key from the pair
+        $public_key = $key_pair-&gt;getPublicKey();
+        echo &quot;public:\ne = &quot;.$obj-&gt;bin2int($public_key-&gt;getExponent()).&quot;\nn
+= &quot;.$obj-&gt;bin2int($public_key-&gt;getModulus()).&quot;\n\n&quot;;
+
+        //Returns private key from the pair
+        $private_key = $key_pair-&gt;getPrivateKey();
+        echo &quot;private:\ne =
+&quot;.$obj-&gt;bin2int($private_key-&gt;getExponent()).&quot;\nn =
+&quot;.$obj-&gt;bin2int($private_key-&gt;getModulus()).&quot;\n\n&quot;;
+    }
+
+    //Check runtime errors
+    function check_error(&amp;$obj)
+    {
+        if (PEAR::isError($obj)) {
+            echo &quot;error: &quot;, $obj-&gt;getMessage(), &quot;\n&quot;;
+        }
+        if ($obj-&gt;isError()){
+         $error = $obj-&gt;getLastError();
+         switch ($error-&gt;getCode()) {
+         case CRYPT_RSA_ERROR_WRONG_TAIL :
+            // nothing to do
+            break;
+         default:
+            // echo error message and exit
+            echo 'error: ', $error-&gt;getMessage();
+            exit;
+         }
+        }
+    }
+
+    generate_key_pair();
+    $plain_text = 'This is the secret phrase testing.';
+    echo &quot;plain text:\t\t&quot;.$plain_text.&quot;\n&quot;;
+
+    //get string represenation of the public key
+    $key = Crypt_RSA_Key::fromString($public_key-&gt;toString());
+    echo &quot;key:\t\t\t&quot;.$public_key-&gt;toString().&quot;\n&quot;;
+
+    $rsa_obj = new Crypt_RSA;
+    check_error($rsa_obj);
+
+    //Ecnrypts $plain_text by the key $key.
+    $encrypted = $rsa_obj-&gt;encrypt($plain_text, $key);
+
+    $enc_text = $encrypted;
+    echo &quot;encrypted text:\t\t&quot;.$enc_text.&quot;\n&quot;;
+
+    //Get string represenation of the private key
+    $key2 = Crypt_RSA_Key::fromString($private_key-&gt;toString());
+    check_error($key2);
+
+    //Check encrypting/decrypting function's behaviour
+    $rsa_obj-&gt;setParams(array('dec_key' =&gt; $key2));
+    check_error($rsa_obj);
+
+    //Decrypts $enc_text
+    $decrypted = $rsa_obj-&gt;decrypt($enc_text);
+    echo &quot;decrypted text:\t\t&quot;.$decrypted.&quot;\n&quot;;
+
+?&gt;
+
+Thanks in advance.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090206/f0613e03/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090206/f0613e03/attachment.htm</A> 
+</PRE>
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000071.html">[pycrypto] Quick and Easy Email Authentication
+</A></li>
+	<LI>Next message: <A HREF="000063.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#61">[ date ]</a>
+              <a href="thread.html#61">[ thread ]</a>
+              <a href="subject.html#61">[ subject ]</a>
+              <a href="author.html#61">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,434 @@
+From choudary.omar at gmail.com  Wed Aug 17 17:10:15 2011
+From: choudary.omar at gmail.com (Omar Choudary)
+Date: Thu, 18 Aug 2011 01:10:15 +0200
+Subject: [pycrypto] AES-XTS and AES-Wrap support
+Message-ID: <CALMZ8o6y79QqhQ8K77=7aMfgaOsciXN4VXcbq04uvFzAawTNxw@mail.gmail.com>
+
+[sorry if you get this twice, first message appears blocked because I
+wasn't registered]
+
+Hi guys,
+
+I am working on a project where I have to use several encryption
+mechanisms, among which AES-XTS and AES-Wrap.
+
+So far I have been using PyCrypto quite a lot but I didn't find the
+AES-XTS and AES-Wrap algorithms as part of it. Therefore I created my
+own quick python methods for that.
+
+However I would like to build the C++ version so that is fasert and
+then PyCrypto can use that as is done with the other ciphers.
+
+Can you please let me know if there is already an existing
+implementation of those I don't know about or if I should go ahead and
+do it? (I have already started a bit actually)
+
+Cheers,
+ Omar
+
+From dolfandringa at gmail.com  Fri Aug 19 10:55:02 2011
+From: dolfandringa at gmail.com (Dolf Andringa)
+Date: Fri, 19 Aug 2011 18:55:02 +0200
+Subject: [pycrypto] extract RSA public from X509 certificate file
+Message-ID: <CABkWtfjZ91ChdHmjN1XG1k4fQPkZFVsyX9nQEMxhF9tfVzLMMQ@mail.gmail.com>
+
+Hey Everyone,
+
+I am playing around with PyCrypto and public key encryption using RSA.
+The thing is that I already have an RSA private key, and an X509 certificate
+which contains the RSA public key belonging to the private key.
+
+I succesfully exported the public key starting with the private key file
+like this.
+
+from Crypto.PublicKey import RSA
+from Crypto import Random
+privkey1=RSA.importKey(open('/path/to/private.key','r').read())
+pubkey1=privkey1.publickey()
+print pubkey1.exportKey(format='PEM')
+
+When I compare the print output with the output of the openssl tool which
+can extrac the public key from an x509 certificate file with the following
+command
+openssl x509 -inform pem -in /path/to/certificate.crt -pubkey -noout
+
+The public keys are indeed the same, so the exporting with pycrypto and
+extracting with openssl produce the same public key.
+But is it possible to use pycrypto (or another library) to extract the
+public key from the certificate file (like openssl does)?
+
+Another question is the following:
+
+rng=Random.new().read
+
+This works fine:
+privkey1.decrypt(pubkey1.encrypt(s,rng))
+
+But this raises a typeError:
+pubkey1.decrypt(privkey1.encrypt(s,rng))
+
+But the keys are symmetric right? So it should be possible to encrypt
+something with the private key and decypt that with the public key. It
+doesn't make sense to do this since then anyone can decrypt the data, which
+you just encrypted with the private key, making encryption useless in the
+first place. But the difference between RSA public and private keys is only
+the name. Which one is public, and which one is private is just a matter of
+choice, not a technical difference right? So why then does the PyCrypto
+library raise a TypeError in the first case?
+Cheers,
+
+Dolf.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110819/33eab5bc/attachment.htm 
+
+From bytestorm at gmail.com  Sun Aug 21 09:35:27 2011
+From: bytestorm at gmail.com (Andrew Cho)
+Date: Sun, 21 Aug 2011 11:35:27 -0400
+Subject: [pycrypto] RSA signature pycrypto openssl interoperability
+Message-ID: <CACYddFx-s0LWthtDqM-2-aZeOg8mofwK-Nm7RJHQK7MvXAgL6w@mail.gmail.com>
+
+Hi, I'm trying to generate signatures in a way openssl can verify using
+pycrypto, but when I decode it with openssl, it doesn't produce usable
+results. This has been my workflow so far:
+
+------------------------------------
+
+openssl genrsa -out privkey.pem 2048
+openssl rsa -pubout -in privkey.pem -out pubkey.pem
+
+echo "message text" > data
+
+python <<!
+#!/usr/bin/env python
+
+from Crypto.PublicKey import RSA
+import Crypto.Random
+from Crypto.Util import number
+import sys,ctypes
+
+def make_OPENSSL_PKCS1_padding(k,msglen):
+    if msglen > k - 11:
+        return None
+    PS = '\xff'* (k-msglen-3)
+    E = ''.join((chr(0x00), chr(0x01), PS, chr(0x00)))
+
+    return E
+
+prk = RSA.importKey(file('privkey.pem').read())
+
+data = file('data').read()
+E = make_OPENSSL_PKCS1_padding((prk.size()+1)/8,len(data))
+EM = ''.join((E,data))
+
+sigout = prk.sign(EM,'')
+
+f = open('signature','wb')
+f.write(number.long_to_bytes(sigout[0]))
+f.close()
+!
+
+openssl rsautl -verify -raw -pubin -inkey pubkey.pem -in signature -out
+de_signature
+
+cat de_signature
+
+------------------
+
+I expect to see a whole bunch of 0xFFs followed by "message text" when I cat
+de_signature, but that's not what I get at all. Any idea what I might be
+doing wrong here?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110821/dc133a09/attachment.htm 
+
+From dave.pawson at gmail.com  Thu Sep  1 03:46:58 2011
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Thu, 1 Sep 2011 10:46:58 +0100
+Subject: [pycrypto] checksum problem.
+Message-ID: <CAEncD4cjLoyRuCC+n-g++Nom77ghoTsYq-W2z0O=QyyxurUhpw@mail.gmail.com>
+
+I've been ignoring a checksum error for some time now,  and decided to
+ask for help.
+Workaround
+
+def decrypt(ciphertext, secret, lazy=True, checksum=True):
+    """decrypt ciphertext with secret
+    ciphertext  - encrypted content to decrypt
+    secret      - secret to decrypt ciphertext
+    lazy        - pad secret if less than legal blocksize (default: True)
+    checksum    - verify crc32 byte encoded checksum (default: True)
+    returns plaintext
+    """
+    secret = _lazysecret(secret) if lazy else secret
+    encobj = AES.new(secret, AES.MODE_CFB)
+    plaintext = encobj.decrypt(ciphertext)
+    if checksum:
+        crc, plaintext = (plaintext[-4:], plaintext[:-4])
+        if not crc == struct.pack("i", zlib.crc32(plaintext)):
+            print "Checksum error"
+            #raise CheckSumError("checksum mismatch")
+    return plaintext
+
+1. I'm not sure how its happening or what I can do to resolve it?
+
+Currently working on windows.
+Reading the file using binary mode
+Ditto writing.
+
+I'm creating a plain text file,
+encrypting
+then writing back to disk
+
+Access then reads the file, decrypts and returns the sought string.
+The checksum error is showing in the decrypt fn above.
+
+Any help appreciated.
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From gooksankoo at hoiptorrow.mailexpire.com  Tue Sep 20 12:27:30 2011
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Tue, 20 Sep 2011 20:27:30 +0200
+Subject: [pycrypto] extract RSA public from X509 certificate file
+Message-ID: <CAGfyce1seaGg4-FBsj_BT1HxLX2yP2XfK9HOAV9KLnYgrA+6Gg@mail.gmail.com>
+
+Hi Dolf,
+
+> But is it possible to use pycrypto (or another library) to extract the
+> public key from the certificate file (like openssl does)?
+
+No, it is not possible. The encoding is not currently supported.
+
+> But the difference between RSA public and private keys is only
+> the name. Which one is public, and which one is private is just a matter of
+> choice, not a technical difference right?
+
+In theory you are right: the term "public RSA key" is just a
+convention for "the RSA key with known and typically short exponent".
+However, implementation-wise it's more common to distinguish the two.
+It makes optimizations easier to handle.
+
+In case of pycrypto, the RSA object has got one attribute name for the
+private exponent (d) and one for the public (e).
+I cannot tell where it breaks exactly, but I can guess that
+pubkey1.decrypt() will try to use the former, which is not available.
+
+From rusydi.hasan at gmail.com  Mon Sep 19 06:50:12 2011
+From: rusydi.hasan at gmail.com (rusydi hasan)
+Date: Mon, 19 Sep 2011 20:50:12 +0800
+Subject: [pycrypto] Fail to build pycrypto 2.3 on Ubuntu
+Message-ID: <CAMEe+rT7nj+6H8D-crzGd0mYQYLqcmNTcNyY08QBLWmcRHoucQ@mail.gmail.com>
+
+Hi All,
+
+I tried to install pycrypto 2.3 on my machine (Ubuntu 11.04, kernel 2.6.38).
+But the installation error says :
+
+building 'Crypto.Hash.MD2' extension
+> gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC
+> -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/python2.7 -c
+> src/MD2.c -o build/temp.linux-i686-2.7/src/MD2.o
+> src/MD2.c:31:20: fatal error: Python.h: No such file or directory
+> compilation terminated.
+> error: command 'gcc' failed with exit status 1
+>
+
+It seems that *Python.h* is missing from src/ directory. Or am i missing
+something here ?
+
+-- 
+Rusydi Hasan Makarim (0721051)
+PGP Public Key <http://munmap.org/pubkey.asc>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110919/b69663eb/attachment.htm 
+
+From sebastian+lists at ramacher.at  Thu Sep 22 04:16:53 2011
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Thu, 22 Sep 2011 12:16:53 +0200
+Subject: [pycrypto] Fail to build pycrypto 2.3 on Ubuntu
+In-Reply-To: <CAMEe+rT7nj+6H8D-crzGd0mYQYLqcmNTcNyY08QBLWmcRHoucQ@mail.gmail.com>
+References: <CAMEe+rT7nj+6H8D-crzGd0mYQYLqcmNTcNyY08QBLWmcRHoucQ@mail.gmail.com>
+Message-ID: <4E7B0B15.6040202@ramacher.at>
+
+On 09/19/2011 02:50 PM, rusydi hasan wrote:
+> I tried to install pycrypto 2.3 on my machine (Ubuntu 11.04, kernel 2.6.38).
+> But the installation error says :
+> 
+> building 'Crypto.Hash.MD2' extension
+>> gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC
+>> -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/python2.7 -c
+>> src/MD2.c -o build/temp.linux-i686-2.7/src/MD2.o
+>> src/MD2.c:31:20: fatal error: Python.h: No such file or directory
+>> compilation terminated.
+>> error: command 'gcc' failed with exit status 1
+>>
+> 
+> It seems that *Python.h* is missing from src/ directory. Or am i missing
+> something here ?
+
+Python.h is included in python-dev. Do you have python-dev installed?
+
+Regards
+
+From sebastian+lists at ramacher.at  Sat Sep 24 07:04:49 2011
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Sat, 24 Sep 2011 15:04:49 +0200
+Subject: [pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+Message-ID: <4E7DD571.2030204@ramacher.at>
+
+Hi,
+
+Debian and Ubuntu recently started to implement Multiarch [1]. Because of this,
+libgmp.so has been moved from /usr/lib/ to /usr/lib/<host-triplet>/ and setup.py
+cannot find it anymore.
+
+I was able to circumvent this problem by asking gcc for its library search path
+(see the attached patch). I don't know if that is the best way to fix this issue
+but I would be glad if you'd consider the patch or fix the issue differently.
+
+Regards
+
+[1] https://wiki.ubuntu.com/MultiarchSpec
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: multiarch.patch
+Type: text/x-diff
+Size: 1334 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20110924/58564f26/attachment.patch 
+
+From gooksankoo at hoiptorrow.mailexpire.com  Sun Sep 25 14:48:04 2011
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Sun, 25 Sep 2011 22:48:04 +0200
+Subject: [pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+In-Reply-To: <4E7DD571.2030204@ramacher.at>
+References: <4E7DD571.2030204@ramacher.at>
+Message-ID: <CAGfyce1rD9TmQSzt7vfhZvsBQpko_jy3UJ33SN6pDfkHiYbYSw@mail.gmail.com>
+
+> Debian and Ubuntu recently started to implement Multiarch [1]. Because of this,
+> libgmp.so has been moved from /usr/lib/ to /usr/lib/<host-triplet>/ and setup.py
+> cannot find it anymore.
+>
+> I was able to circumvent this problem by asking gcc for its library search path
+> (see the attached patch). I don't know if that is the best way to fix this issue
+> but I would be glad if you'd consider the patch or fix the issue differently.
+
+> [1] https://wiki.ubuntu.com/MultiarchSpec
+
+Hi Sebastian, all,
+
+I think the problem is more deep rooted.
+
+Searching the file system for the gmp library file is not very
+reliable, in that one has to make a lot of assumptions about how the
+linker works.
+Moreover, we don't know if the file we find is actually in the right
+binary format or not.
+
+I suggest a different approach. We get rid of the searching logic
+altogether, and we simply try to compile a dummy C file that requires
+libgmp. If it compiles, we know that the library is somehow reachable,
+but we don't need to investigate where it actually is.
+
+That is what has_function() in distutils is supposed to do, but I find
+it very limited: the sought function can only be one that does not
+take any argument, whereas ALL functions in libgmp I know of take at
+least one.
+
+See attached patch.
+
+Mind that I have only tried it with Python 2.7 on Linux.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: multiarch2.patch
+Type: text/x-diff
+Size: 3084 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20110925/006d4129/attachment.patch 
+
+From sebastian+lists at ramacher.at  Mon Sep 26 15:51:58 2011
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Mon, 26 Sep 2011 23:51:58 +0200
+Subject: [pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+In-Reply-To: <CAGfyce1rD9TmQSzt7vfhZvsBQpko_jy3UJ33SN6pDfkHiYbYSw@mail.gmail.com>
+References: <4E7DD571.2030204@ramacher.at>
+	<CAGfyce1rD9TmQSzt7vfhZvsBQpko_jy3UJ33SN6pDfkHiYbYSw@mail.gmail.com>
+Message-ID: <4E80F3FE.8000103@ramacher.at>
+
+Hi,
+
+On 09/25/2011 10:48 PM, Legrandin wrote:
+> Hi Sebastian, all,
+> 
+> I think the problem is more deep rooted.
+> 
+> Searching the file system for the gmp library file is not very
+> reliable, in that one has to make a lot of assumptions about how the
+> linker works.
+> Moreover, we don't know if the file we find is actually in the right
+> binary format or not.
+> 
+> I suggest a different approach. We get rid of the searching logic
+> altogether, and we simply try to compile a dummy C file that requires
+> libgmp. If it compiles, we know that the library is somehow reachable,
+> but we don't need to investigate where it actually is.
+
+I like your approach even more.
+
+> That is what has_function() in distutils is supposed to do, but I find
+> it very limited: the sought function can only be one that does not
+> take any argument, whereas ALL functions in libgmp I know of take at
+> least one.
+> 
+> See attached patch.
+
+I've added a call to customize_compiler to your patch. Then CFLAGS and LDFLAGS
+will be honored (as they are during the build). Hence if libgmp is not installed
+in a standard location, the paths can be passed with CFLAGS and LDFLAGS. I've
+also added calls to delete the files that are generated during the test build.
+See the attach patch.
+
+Regards
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: multiarch3.patch
+Type: text/x-diff
+Size: 3220 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20110926/cbc2b92a/attachment.patch 
+
+From gooksankoo at hoiptorrow.mailexpire.com  Tue Sep 27 11:02:44 2011
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Tue, 27 Sep 2011 19:02:44 +0200
+Subject: [pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+In-Reply-To: <4E80F3FE.8000103@ramacher.at>
+References: <4E7DD571.2030204@ramacher.at>
+	<CAGfyce1rD9TmQSzt7vfhZvsBQpko_jy3UJ33SN6pDfkHiYbYSw@mail.gmail.com>
+	<4E80F3FE.8000103@ramacher.at>
+Message-ID: <CAGfyce0z8ZXZ7BiN1c_mAYOBTcQJNAzEAxA=pzPoNi-QC8-qew@mail.gmail.com>
+
+> I've added a call to customize_compiler to your patch. Then CFLAGS and LDFLAGS
+> will be honored (as they are during the build). Hence if libgmp is not installed
+> in a standard location, the paths can be passed with CFLAGS and LDFLAGS. I've
+> also added calls to delete the files that are generated during the test build.
+> See the attach patch.
+
+Last bit of polishing:
+ - Now it works with Python 2.1 (which pycrypto must apparently still support)
+ - It ignores any exception that os.remove() could raise.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: multiarch4.patch
+Type: text/x-diff
+Size: 3173 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20110927/c893181c/attachment.patch 
+

@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Is PyCrypto dead?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Is%20PyCrypto%20dead%3F&In-Reply-To=%3CCAEncD4dOhvNMV2K2_b48tboSQ4wkCkMVQ_iiyGiHdKFErZU17Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000809.html">
+   <LINK REL="Next"  HREF="000812.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Is PyCrypto dead?</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Is%20PyCrypto%20dead%3F&In-Reply-To=%3CCAEncD4dOhvNMV2K2_b48tboSQ4wkCkMVQ_iiyGiHdKFErZU17Q%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Is PyCrypto dead?">dave.pawson at gmail.com
+       </A><BR>
+    <I>Mon May 12 10:49:11 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000809.html">[pycrypto] Is PyCrypto dead?
+</A></li>
+        <LI>Next message: <A HREF="000812.html">[pycrypto] Is PyCrypto dead?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#810">[ date ]</a>
+              <a href="thread.html#810">[ thread ]</a>
+              <a href="subject.html#810">[ subject ]</a>
+              <a href="author.html#810">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I've insufficient knowledge to tweak code.
+I do believe the documentation could be improved.
+How to split out the documentation into n parts,
+at least one favouring usage, examples, testing etc.
+If I believed the list/site was live, I would work on that
+and submit it for review.
+ The requirement surely is to document fully the API, but
+also provide ... a guidance /usage document set?
+
+Getting no response from the maintainer is not conducive to submitting anything?
+
+
+
+regards
+
+
+
+On 12 May 2014 17:03, Dwayne Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt; wrote:
+&gt;<i> It's not dead.  Due to some personal issues, I just have very little time to
+</I>&gt;<i> work on the project right now, and unfortunately I haven't been able to find
+</I>&gt;<i> someone I trust to hand off maintenance to.  It seems that most contributors
+</I>&gt;<i> either want to add their pet algorithms[1] (increasing maintenance
+</I>&gt;<i> overhead)]---or they introduce potentially serious vulnerabilities[2][3],
+</I>&gt;<i> bizarre[4] or inconsistent[5] APIs, performance issues, etc.
+</I>&gt;<i>
+</I>&gt;<i> That's fine; Crypto is hard, but it means progress is slow, because I have
+</I>&gt;<i> to go over everything with a fine-toothed comb, and it's hard to find the
+</I>&gt;<i> time do it, and I'm reluctant to merge code that might make things worse for
+</I>&gt;<i> existing end-users, even if this makes some developers unhappy.
+</I>&gt;<i>
+</I>&gt;<i> If a fork is necessary, Sebastian Ramacher is probably the person I trust
+</I>&gt;<i> the most---at the moment---to maintain it.  His patches have been
+</I>&gt;<i> consistently good, albeit small, and he's the Debian package maintainer, so
+</I>&gt;<i> a lot of people are already implicitly relying on him anyway.
+</I>&gt;<i>
+</I>&gt;<i> I'm hoping to spend more time on the project soon, but my availability is
+</I>&gt;<i> hard to predict in advance.  Hopefully, things will be better in the next
+</I>&gt;<i> 6-12 months, but I can't promise anything.
+</I>&gt;<i>
+</I>&gt;<i> In the meantime, there are a few things that might help in the short term:
+</I>&gt;<i>
+</I>&gt;<i> - Having some process for triage &amp; code review, so that the community   can
+</I>&gt;<i> vet and patches, and also ensure that the master branch remains in   a
+</I>&gt;<i> releasable state.  Right now, I have an unordered set of pull   requests to
+</I>&gt;<i> deal with.  It would be great if this became a queue that   was prioritized
+</I>&gt;<i> according to quality and the current release goals.
+</I>&gt;<i>
+</I>&gt;<i> - CI infrastructure.  It would be really helpful if all pull requests   were
+</I>&gt;<i> automatically tested against.  Like [6], but actually covering   all
+</I>&gt;<i> currently supported configurations.
+</I>&gt;<i>
+</I>&gt;<i> - Moving bug tracking to GitHub (from Launchpad).  Using both tools has
+</I>&gt;<i> been pretty cumbersome, but I've been reluctant to disrupt things.    Any
+</I>&gt;<i> objections to this?
+</I>&gt;<i>
+</I>&gt;<i> - If anyone is in/near San Francisco and wants to help with this, it   might
+</I>&gt;<i> help if we introduced ourselves in person.
+</I>&gt;<i>
+</I>&gt;<i> Does anyone want to champion this?
+</I>&gt;<i>
+</I>&gt;<i> Regards,
+</I>&gt;<i> - Dwayne
+</I>&gt;<i>
+</I>&gt;<i> [1] <A HREF="https://github.com/dlitz/pycrypto/pull/76">https://github.com/dlitz/pycrypto/pull/76</A>
+</I>&gt;<i> [2] <A HREF="https://github.com/dlitz/pycrypto/pull/50">https://github.com/dlitz/pycrypto/pull/50</A>
+</I>&gt;<i> [3] <A HREF="https://bugs.launchpad.net/pycrypto/+bug/1176482">https://bugs.launchpad.net/pycrypto/+bug/1176482</A>
+</I>&gt;<i> [4]
+</I>&gt;<i> <A HREF="https://github.com/dlitz/pycrypto/blob/f9a0fc77e1c8847c1a17503e5a1b86a409b8cb2d/lib/Crypto/PublicKey/RSA.py#L318">https://github.com/dlitz/pycrypto/blob/f9a0fc77e1c8847c1a17503e5a1b86a409b8cb2d/lib/Crypto/PublicKey/RSA.py#L318</A>
+</I>&gt;<i> [5] <A HREF="https://bugs.launchpad.net/pycrypto/+bug/1132550">https://bugs.launchpad.net/pycrypto/+bug/1132550</A>
+</I>&gt;<i> [6] <A HREF="https://github.com/dlitz/pycrypto/pull/60">https://github.com/dlitz/pycrypto/pull/60</A>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Apr 21, 2014 at 09:44:16PM +0200, Legrandin wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Is PyCrypto dead?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If one had to judge from the speed security flaws are recognized,
+</I>&gt;&gt;<i> fixed and disclosed [1], then no, pycrypto is definitely not dead.
+</I>&gt;&gt;<i> Other, more active FOSS library should take notes in fact.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> However, when it comes to adding new features (as in, catching up with the
+</I>&gt;&gt;<i> needs of a normal security application in 2014) and refactoring the
+</I>&gt;&gt;<i> existing ones, pycrypto is deep frozen. Bug reports keep piling up and it
+</I>&gt;&gt;<i> can easily take a couple of years for a pull request to finally end up in
+</I>&gt;&gt;<i> a
+</I>&gt;&gt;<i> release.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Every now and then, I can read on the ML proposals and intentions for
+</I>&gt;&gt;<i> major (and IMO, not entirely needed) overhauls, but they never seem to
+</I>&gt;&gt;<i> translate into anything solid. Worse than that, their completion is set as
+</I>&gt;&gt;<i> the
+</I>&gt;&gt;<i> precondition for acceptance of any new feature, which further exacerbates
+</I>&gt;&gt;<i> the problem.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> What can be done to improve on that?
+</I>&gt;&gt;<i> Would setting up a tip jar help?
+</I>&gt;&gt;<i> Would a fork of the library be seen as hostile?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Finally, I am aware of the existence of the cryptography project [1].
+</I>&gt;&gt;<i> It does *not* cover my needs and I do *not* agree with some of the
+</I>&gt;&gt;<i> principles and motivations behind that design, though its dev and test
+</I>&gt;&gt;<i> processes are clearly sound.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> [1] <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2013q4/000702.html">http://lists.dlitz.net/pipermail/pycrypto/2013q4/000702.html</A>
+</I>&gt;&gt;<i> [2] <A HREF="https://cryptography.io">https://cryptography.io</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+</I>&gt;<i>  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000809.html">[pycrypto] Is PyCrypto dead?
+</A></li>
+	<LI>Next message: <A HREF="000812.html">[pycrypto] Is PyCrypto dead?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#810">[ date ]</a>
+              <a href="thread.html#810">[ thread ]</a>
+              <a href="subject.html#810">[ subject ]</a>
+              <a href="author.html#810">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

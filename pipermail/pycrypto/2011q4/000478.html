@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] string XOR
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20string%20XOR&In-Reply-To=CAMp7mVtANYeMjVfxbsJxhv7vKCHOiJuUzynAniP%2BhD2LGyXFwQ%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000477.html">
+   <LINK REL="Next"  HREF="000482.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] string XOR</H1>
+    <B>Dean Macinskas</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20string%20XOR&In-Reply-To=CAMp7mVtANYeMjVfxbsJxhv7vKCHOiJuUzynAniP%2BhD2LGyXFwQ%40mail.gmail.com"
+       TITLE="[pycrypto] string XOR">dmacinskas at geobridge.net
+       </A><BR>
+    <I>Fri Oct 21 10:01:13 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000477.html">[pycrypto] string XOR
+</A></li>
+        <LI>Next message: <A HREF="000482.html">[pycrypto] string XOR
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#478">[ date ]</a>
+              <a href="thread.html#478">[ thread ]</a>
+              <a href="subject.html#478">[ subject ]</a>
+              <a href="author.html#478">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Rich,
+
+Thanks.  That solved the problem.
+
+I do have a pycrypto question: does the DES3 mode support triple-length keys?  I supplied one and got no errors, but I didn't get the results I expected.
+
+Thanks,
+dpm
+
+-----Original Message-----
+From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A> [mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>] On Behalf Of Richard Moore
+Sent: Friday, October 21, 2011 10:10 AM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] string XOR
+
+On Fri, Oct 21, 2011 at 2:55 PM, Dean Macinskas
+&lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dmacinskas at geobridge.net</A>&gt; wrote:
+&gt;<i> &#160;&#160;&#160; ke = operator.xor(kbpkb,ve)
+</I>&gt;<i>
+</I>&gt;<i> TypeError: unsupported operand type(s) for ^: 'str' and 'str'
+</I>&gt;<i>
+</I>&gt;<i> Is there a way to do this in native Python (I'm using 2.7.2), or must I use
+</I>&gt;<i> a library of some sort?
+</I>
+Use ord() to convert each character to a number first, then chr() to
+convert the number back to a character.
+
+Rich.
+_______________________________________________
+pycrypto mailing list
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000477.html">[pycrypto] string XOR
+</A></li>
+	<LI>Next message: <A HREF="000482.html">[pycrypto] string XOR
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#478">[ date ]</a>
+              <a href="thread.html#478">[ thread ]</a>
+              <a href="subject.html#478">[ subject ]</a>
+              <a href="author.html#478">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

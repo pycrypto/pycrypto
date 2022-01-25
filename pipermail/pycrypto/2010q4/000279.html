@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] On the future of new ciphers/hashes in PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20On%20the%20future%20of%20new%20ciphers/hashes%20in%20PyCrypto&In-Reply-To=20101022155257.GA29765%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000278.html">
+   <LINK REL="Next"  HREF="000277.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] On the future of new ciphers/hashes in PyCrypto</H1>
+    <B>Paul Koning</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20On%20the%20future%20of%20new%20ciphers/hashes%20in%20PyCrypto&In-Reply-To=20101022155257.GA29765%40rivest.dlitz.net"
+       TITLE="[pycrypto] On the future of new ciphers/hashes in PyCrypto">paul_koning at dell.com
+       </A><BR>
+    <I>Fri Oct 22 10:00:44 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000278.html">[pycrypto] On the future of new ciphers/hashes in PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000277.html">[pycrypto] Changes for _fastmath.c to be able to built on MSVC 9.0	(aka VS2008)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#279">[ date ]</a>
+              <a href="thread.html#279">[ thread ]</a>
+              <a href="subject.html#279">[ subject ]</a>
+              <a href="author.html#279">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I tend to think of ciphers and modes as belonging together, while protocols are separate.  The former I'd expect to find in C, the latter in Python.  But you're right, that assumption depends on the guess that Python call overhead is too high to construct modes in Python out of single-block cipher operations done in C.
+
+That said, I don't know if that's the actual issue.  You make a comment about not wanting to add new algorithms, such as Camellia and TEA (ciphers) and PKCS1 (a protocol, essentially) or PKDF2 (no idea what that is).
+
+In all cases, one of the questions to ask is whether adding lots of things is a good idea.  When crypto is involved, more is NOT necessarily a good thing.  Adding ciphers of uncertain strength (like TEA) or limited applicability along with limited evaluation (Camellia, perhaps?) isn't all that helpful.  I'd much rather see a small library that supports known strong ciphers, modes, and protocols only.
+
+	paul
+
+On Oct 22, 2010, at 11:52 AM, Dwayne C. Litzenberger wrote:
+
+&gt;<i> Can block cipher chaining modes be implemented in Python without making 
+</I>&gt;<i> ridiculous performance sacrifices?  I'm not a Python performance expert, 
+</I>&gt;<i> but I thought the Python function call overhead was too high.
+</I>&gt;<i> 
+</I>&gt;<i> On Thu, Oct 14, 2010 at 11:10:59PM +0200, Legrandin wrote:
+</I>&gt;&gt;<i> I think it is worth making a distinction between primitives and protocols.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> The few ciphers/hashes that currently exist in pycrypto suffice for
+</I>&gt;&gt;<i> most needs one may have, and
+</I>&gt;&gt;<i> I agree that adding more won't help in 99% of the applications (even
+</I>&gt;&gt;<i> though it may look good
+</I>&gt;&gt;<i> on a fact sheet) whereas a low-level cipher zoo is hard to maintain.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Having said that, one of beauties of pycrypto is the fact that is
+</I>&gt;&gt;<i> self-contained and does not require
+</I>&gt;&gt;<i> to be combined with further packages. A pluggable system - although
+</I>&gt;&gt;<i> elegant - would become
+</I>&gt;&gt;<i> less practical and possibly not very considered as a feature. If one
+</I>&gt;&gt;<i> day one could prove that pycrypto is
+</I>&gt;&gt;<i> indeed missing a primitive used by some real, widespread systems
+</I>&gt;&gt;<i> (maybe ECC?) that cannot be sanely
+</I>&gt;&gt;<i> replaced by AES/TDES/SHA, I would even urge to still have a C
+</I>&gt;&gt;<i> implementation included from some
+</I>&gt;&gt;<i> good patent-free library (e.g. tomcrypt) and shipped. So much time saved...
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Protocols are another beast though: key derivation/management/exchange
+</I>&gt;&gt;<i> schemes, wrappers,
+</I>&gt;&gt;<i> message authentication codes, etc etc are in most cases independent of
+</I>&gt;&gt;<i> the underlying cipher/hash
+</I>&gt;&gt;<i> primitive and can be more cleanly and quickly implemented/tested in a
+</I>&gt;&gt;<i> high-level language like Python
+</I>&gt;&gt;<i> with little performance penalty. PKCS#1 and PBKDF2 are good examples.
+</I>&gt;&gt;<i> Even chaining modes
+</I>&gt;&gt;<i> for block ciphers look better in python (to me at least).I would
+</I>&gt;&gt;<i> really prefer to have these high-level
+</I>&gt;&gt;<i> algorithms available in the library and not through some obscure
+</I>&gt;&gt;<i> openssl-like library coded in C...
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> My 2 cents... :-)
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> Going through the bug tracker and the mailing list, a lot of the requests
+</I>&gt;&gt;&gt;<i> are to add new algorithms (Camellia, SHA512, TEA, PKCS#1/OAEP, PBKDF2), or
+</I>&gt;&gt;&gt;<i> to make changes to the existing implementations (timing attack
+</I>&gt;&gt;&gt;<i> countermeasures for the AES module, better prime generation for RSA).
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> They're all good ideas, but I don't have the time or the expertise needed
+</I>&gt;&gt;&gt;<i> to review C implementations of low-level crypto primitives, and frankly, I
+</I>&gt;&gt;&gt;<i> have better things to do.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> Python does not need its own custom AES implementation.  Neither do Java,
+</I>&gt;&gt;&gt;<i> Ruby, Perl, JavaScript, PHP, Go, C++, D, Clojure, Haskell.  It's a waste of
+</I>&gt;&gt;&gt;<i> volunteer time, it's bad engineering, and it means that the FOSS community
+</I>&gt;&gt;&gt;<i> ends up repeating the same mistakes over and over, year after year, every
+</I>&gt;&gt;&gt;<i> time a new language comes out.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> I'm putting a stop to it.  I'm declaring a permanent feature freeze on the
+</I>&gt;&gt;&gt;<i> C implementations of &lt;Crypto.Cipher.*&gt; and &lt;Crypto.Hash.*&gt;.  New algortihms
+</I>&gt;&gt;&gt;<i> will be added only by calling out to existing libraries.  PyCrypto
+</I>&gt;&gt;&gt;<i> development will be focused on the API.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> I haven't yet figured out exactly how this is going to look.  I'm thinking
+</I>&gt;&gt;&gt;<i> of some kind of pluggable backends, sort of like how Java or CryptoAPI, but
+</I>&gt;&gt;&gt;<i> with as little API complexity as possible.  Ideas are welcome.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> - Dwayne
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+</I>&gt;<i>  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000278.html">[pycrypto] On the future of new ciphers/hashes in PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000277.html">[pycrypto] Changes for _fastmath.c to be able to built on MSVC 9.0	(aka VS2008)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#279">[ date ]</a>
+              <a href="thread.html#279">[ thread ]</a>
+              <a href="subject.html#279">[ subject ]</a>
+              <a href="author.html#279">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

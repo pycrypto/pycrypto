@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] 'tis done: Python3 with PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20%27tis%20done%3A%20Python3%20with%20PyCrypto&In-Reply-To=2e5e0f645584e65dc50d25cb3578820a%40amberfisharts.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000377.html">
+   <LINK REL="Next"  HREF="000392.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] 'tis done: Python3 with PyCrypto</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20%27tis%20done%3A%20Python3%20with%20PyCrypto&In-Reply-To=2e5e0f645584e65dc50d25cb3578820a%40amberfisharts.com"
+       TITLE="[pycrypto] 'tis done: Python3 with PyCrypto">sbehrens at gmx.li
+       </A><BR>
+    <I>Tue Jan  4 14:35:22 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000377.html">[pycrypto] 'tis done: Python3 with PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000392.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#378">[ date ]</a>
+              <a href="thread.html#378">[ thread ]</a>
+              <a href="subject.html#378">[ subject ]</a>
+              <a href="author.html#378">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thank you for giving it such a close reading! I've committed 
+test_AllOrNothing.py, for real this time, and I've committed your patch.
+
+Thorsten
+
+
+On 1/4/2011 2:16 PM, <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">don at amberfisharts.com</A> wrote:
+&gt;<i> Hey Thorsten,
+</I>&gt;<i>
+</I>&gt;<i> I have a small patch you might want to include in your branch before 
+</I>&gt;<i> it merges.
+</I>&gt;<i> It does three things:
+</I>&gt;<i>  * fix a typo in your new docs
+</I>&gt;<i>  * fixes a bug in the randrange unittests
+</I>&gt;<i>  * adds some more tests for randrange and shuffle
+</I>&gt;<i>
+</I>&gt;<i> Furthermore it seems that you didn't commit the test_AllOrNothing.py 
+</I>&gt;<i> file.
+</I>&gt;<i>
+</I>&gt;<i> Let me thank you once more for your determined and -it seems- 
+</I>&gt;<i> successful push for py3k support.
+</I>&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i> Lorenz
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, 03 Jan 2011 22:42:32 -0500, Thorsten Behrens &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">sbehrens at gmx.li</A>&gt; 
+</I>&gt;<i> wrote:
+</I>&gt;&gt;<i> I've done what I will on the py3k branch. It's been tested on 2.1, 2.2,
+</I>&gt;&gt;<i> 2.7, 3.1 and 3.2.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> AllOrNothing unit tests are now in and show AllOrNothing failing
+</I>&gt;&gt;<i> occasionally. This has always been the case. The unit test just forces
+</I>&gt;&gt;<i> the failure. Since I highly suspect that no-one actually uses
+</I>&gt;&gt;<i> AllOrNothing.py - or these errors would have been detected before now -
+</I>&gt;&gt;<i> I am not going to tackle that particular piece further. Others are more
+</I>&gt;&gt;<i> than welcome to, of course!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I have updated the documentation that ships with pycrypto, adding
+</I>&gt;&gt;<i> comments on the (in)security of the algorithms included, such as
+</I>&gt;&gt;<i> MD2/4/5, SHA1, ARC2, ARC4. Please do have a look. These changes bear
+</I>&gt;&gt;<i> verification by others. I may well have asserted that which is not true,
+</I>&gt;&gt;<i> or distorted a fact here and there.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I've issued a pull request. I'm happy to make further changes if there
+</I>&gt;&gt;<i> should be something I overlooked and that the unit tests did not expose.
+</I>&gt;&gt;<i> But barring that, I consider the porting effort complete. All further
+</I>&gt;&gt;<i> work - such as dealing with the errors in AllOrNothing.py and
+</I>&gt;&gt;<i> random.sample() (the latter is an issue in Python 2.1 only), dealing
+</I>&gt;&gt;<i> with security concerns in Elgamal.py, deciding the fate of qNEW - I'd
+</I>&gt;&gt;<i> like to keep to trunk. I've made quite enough changes already on this
+</I>&gt;&gt;<i> private branch.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Yours
+</I>&gt;&gt;<i> Thorsten
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20110104/890998fc/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20110104/890998fc/attachment.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000377.html">[pycrypto] 'tis done: Python3 with PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000392.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#378">[ date ]</a>
+              <a href="thread.html#378">[ thread ]</a>
+              <a href="subject.html#378">[ subject ]</a>
+              <a href="author.html#378">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

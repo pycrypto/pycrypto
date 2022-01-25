@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] macOS, pip3 install pycrypto: fatal error: 'gmp.h' file not found?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20macOS%2C%0A%20pip3%20install%20pycrypto%3A%20fatal%20error%3A%20%27gmp.h%27%20file%20not%20found%3F&In-Reply-To=%3Cc10c4018b79431041ea68c8b26361d2a%40falatic.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000911.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] macOS, pip3 install pycrypto: fatal error: 'gmp.h' file not found?</H1>
+    <B>Martin Falatic</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20macOS%2C%0A%20pip3%20install%20pycrypto%3A%20fatal%20error%3A%20%27gmp.h%27%20file%20not%20found%3F&In-Reply-To=%3Cc10c4018b79431041ea68c8b26361d2a%40falatic.com%3E"
+       TITLE="[pycrypto] macOS, pip3 install pycrypto: fatal error: 'gmp.h' file not found?">martin at falatic.com
+       </A><BR>
+    <I>Wed Jul 15 07:57:06 UTC 2020</I>
+    <P><UL>
+        <LI>Previous message (by thread): <A HREF="000911.html">[pycrypto] macOS, pip3 install pycrypto: fatal error: 'gmp.h' file not found?
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#912">[ date ]</a>
+              <a href="thread.html#912">[ thread ]</a>
+              <a href="subject.html#912">[ subject ]</a>
+              <a href="author.html#912">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>The best way to install pycrypto is not to (it hasn't been updated since
+2013).
+
+Instead, use the drop-in replacement pycryptodome! See the docs for more
+information and where to find support for it if needed.
+
+<A HREF="https://www.pycryptodome.org/en/latest/">https://www.pycryptodome.org/en/latest/</A> 
+
+On 2020-07-14 22:58, &#22825;&#19978;&#28779; wrote:
+
+&gt;<i> macOS:  
+</I>&gt;<i> pip3 install pycrypto 
+</I>&gt;<i> 
+</I>&gt;<i> fatal error: 'gmp.h' file not found? 
+</I>&gt;<i> 
+</I>&gt;<i> Error message: 
+</I>&gt;<i> /////////////////////////////////// 
+</I>&gt;<i> 
+</I>&gt;<i> xcrun -sdk macosx clang -arch x86_64 -Wno-unused-result -Wsign-compare -Wunreachable-code -fno-common -dynamic -fwrapv -Wall -iwithsysroot/System/Library/Frameworks/System.framework/PrivateHeaders -iwithsysroot/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.7/Headers -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/ -I/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.7/include/python3.7m -c src/_fastmath.c -o build/temp.macosx-10.14-x86_64-3.7/src/_fastmath.o 
+</I>&gt;<i> src/_fastmath.c:36:11: fatal error: 'gmp.h' file not found 
+</I>&gt;<i> # include &lt;gmp.h&gt; 
+</I>&gt;<i> ^~~~~~~ 
+</I>&gt;<i> 1 error generated. 
+</I>&gt;<i> error: command 'xcrun' failed with exit status 1 
+</I>&gt;<i> 
+</I>&gt;<i> /////////////////////////////////// 
+</I>&gt;<i> 
+</I>&gt;<i> How to install pycrypto ? 
+</I>&gt;<i> 
+</I>&gt;<i> -------------------------------------------------- 
+</I>&gt;<i> Best regards 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20200715/86fc622a/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20200715/86fc622a/attachment.htm</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message (by thread): <A HREF="000911.html">[pycrypto] macOS, pip3 install pycrypto: fatal error: 'gmp.h' file not found?
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#912">[ date ]</a>
+              <a href="thread.html#912">[ thread ]</a>
+              <a href="subject.html#912">[ subject ]</a>
+              <a href="author.html#912">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

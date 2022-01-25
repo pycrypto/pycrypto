@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] _RSA.py and generate_py
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20_RSA.py%20and%20generate_py&In-Reply-To=20091102010455.GA19192%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000154.html">
+   <LINK REL="Next"  HREF="000155.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] _RSA.py and generate_py</H1>
+    <B>Anthony Honstain</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20_RSA.py%20and%20generate_py&In-Reply-To=20091102010455.GA19192%40rivest.dlitz.net"
+       TITLE="[pycrypto] _RSA.py and generate_py">honstain at gmail.com
+       </A><BR>
+    <I>Mon Nov  2 00:03:30 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000154.html">[pycrypto] _RSA.py and generate_py
+</A></li>
+        <LI>Next message: <A HREF="000155.html">[pycrypto] ANN: PyCrypto 2.1.0 beta 1 released
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#168">[ date ]</a>
+              <a href="thread.html#168">[ thread ]</a>
+              <a href="subject.html#168">[ subject ]</a>
+              <a href="author.html#168">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>It is essentially the same as the patch I implemented, I have attached an
+attempt to prove (the best I can do quickly) that this check is sufficient
+to guarantee that GCD(e, (p-1)(q-1))=1. It did not seem
+immediately intuitive to me so I tried to prove it.
+
+Thanks!
+Anthony Honstain
+
+On Sun, Nov 1, 2009 at 5:04 PM, Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;wrote:
+
+&gt;<i> On Mon, Aug 03, 2009 at 09:41:50PM -0400, Dwayne C. Litzenberger wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> On Wed, May 27, 2009 at 09:50:07PM -0700, Anthony Honstain wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> In the generate_py function of lib/Crypto/PublicKey/_RSA.py , it would
+</I>&gt;&gt;&gt;<i> appear to be possible that the the primes p and q can be generated such
+</I>&gt;&gt;&gt;<i> that
+</I>&gt;&gt;&gt;<i> the GCD( 65537, (p-1)(q-1)) != 1 which would result in a unusable key. If
+</I>&gt;&gt;&gt;<i> anyone can clarify this it would be greatly appreciated.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I haven't looked into this claim yet, but I've filed a bug report:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>    <A HREF="https://bugs.launchpad.net/pycrypto/+bug/408660">https://bugs.launchpad.net/pycrypto/+bug/408660</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Lorenz Quack has posted a patch that he says will solve this problem.  It
+</I>&gt;<i> checks that e does not divide p-1 or q-1.
+</I>&gt;<i>
+</I>&gt;<i> That should fix this bug, right?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+</I>&gt;<i>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</I>&gt;<i>  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20091102/d52ebd8e/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20091102/d52ebd8e/attachment.htm</A> 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: GCDproof.pdf
+Type: application/pdf
+Size: 183722 bytes
+Desc: not available
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20091102/d52ebd8e/attachment.pdf">http://lists.dlitz.net/pipermail/pycrypto/attachments/20091102/d52ebd8e/attachment.pdf</A> 
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000154.html">[pycrypto] _RSA.py and generate_py
+</A></li>
+	<LI>Next message: <A HREF="000155.html">[pycrypto] ANN: PyCrypto 2.1.0 beta 1 released
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#168">[ date ]</a>
+              <a href="thread.html#168">[ thread ]</a>
+              <a href="subject.html#168">[ subject ]</a>
+              <a href="author.html#168">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

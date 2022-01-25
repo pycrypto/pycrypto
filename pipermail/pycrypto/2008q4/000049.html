@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Why I would be glad to find a plenty of	algorithms	in pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Why%20I%20would%20be%20glad%20to%20find%20a%20plenty%20of%0A%09algorithms%09in%20pycrypto&In-Reply-To=BAY105-DS60481B5418488371AD402AA1B0%40phx.gbl">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000047.html">
+   <LINK REL="Next"  HREF="000048.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Why I would be glad to find a plenty of	algorithms	in pycrypto</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Why%20I%20would%20be%20glad%20to%20find%20a%20plenty%20of%0A%09algorithms%09in%20pycrypto&In-Reply-To=BAY105-DS60481B5418488371AD402AA1B0%40phx.gbl"
+       TITLE="[pycrypto] Why I would be glad to find a plenty of	algorithms	in pycrypto">dlitz at dlitz.net
+       </A><BR>
+    <I>Sun Nov  9 17:13:38 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000047.html">[pycrypto] Why I would be glad to find a plenty of algorithms in	pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000048.html">[pycrypto] Batteries included
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#49">[ date ]</a>
+              <a href="thread.html#49">[ thread ]</a>
+              <a href="subject.html#49">[ subject ]</a>
+              <a href="author.html#49">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Nov 09, 2008 at 05:01:15PM -0430, Stefan Spoettl wrote:
+&gt;<i>ARC4 is fast.
+</I>&gt;<i>ARC4 is easy to implement.
+</I>&gt;<i>ARC4 is beautiful (my personal Mona Lisa of cryptography)
+</I>
+On the topic of &quot;beautiful&quot;, you should read this, by Sean O'Neil:
+
+     Most cryptographers are either mathematicians or come from a very
+     strong mathematical background [including myself] and we love
+     beautiful mathematical structures.  We like magic squares, we like
+     fancy patterns, we like cool mathematical properties such as
+     guaranteed long periods, etc. etc. etc.  It is extremely hard to
+     resist the temptation to include an unnecessarily complex but
+     mathematically pretty component in your design that other
+     mathematicians might admire.  We do tend to forget that the beautiful
+     mathematics of it tend to be responsible for the algebraic structures
+     that may turn out to be exploitable to mount successful attacks.  We
+     get attached to our cute little babies and to their beautiful
+     mathematical complexity.
+
+     The truth: The cipher's job is to destroy mathematics as quickly as
+     possible.
+
+     -- <A HREF="http://www.enrupt.com/index.php/2008/09/05/strength_in_complexity">http://www.enrupt.com/index.php/2008/09/05/strength_in_complexity</A>
+
+&gt;<i>Some years ago this &quot;arguments&quot; appeared to me as &quot;sufficient&quot; to bank on 
+</I>&gt;<i>it during a development of a secure protocol, which is intending to beat 
+</I>&gt;<i>the SSL performance (in a concluded VPN).
+</I>
+What is a &quot;concluded VPN&quot;?  A search on Google returns nothing useful.
+
+&gt;<i>As you know some &quot;uncultured and barefaced&quot; cryptoanalysts have painted a 
+</I>&gt;<i>fat nipple directly is the face of my Mona Lisa. It could be adopted that 
+</I>&gt;<i>this people will terminate to do their sacrileges. Futheron this is not 
+</I>&gt;<i>desirable.
+</I>&gt;<i>
+</I>&gt;<i>But what should one do if a development depends on an algorithm. The only 
+</I>&gt;<i>way around this edge is to bank on a library that offers equivalent 
+</I>&gt;<i>compensation.
+</I>
+&quot;Fat nipple&quot;?  &quot;Sacrilege&quot;?  &quot;Equivalent compensation&quot;?  What is this, a 
+religious strip show with a bit of Judge Judy mixed in?
+
+Enough with the vague rhetoric.  Please make your arguments directly, 
+clearly, and in English, or don't make them at all.  Although I speak 
+English as a native language, others on this list don't, and if I can't 
+understand you, they surely won't.
+
+Also, please address my responses to your last email, especially my point 
+about keeping the amount of hand-written C code to a minimum.
+
+Furthermore, please actually use the &quot;Reply&quot; function of your mailer (the 
+In-Reply-To header should be set correctly).  By breaking up the threads, 
+you are making this conversation harder to follow in the mailing list 
+archives.
+
+&gt;<i>By the way: In my point of view a block cipher that is running in CFB, OFB 
+</I>&gt;<i>or CTR mode could never be an equivalent compensation for a stream cipher 
+</I>&gt;<i>(if you want speed).
+</I>
+Quoting D. J. Bernstein's paper, which I expect you have read by now:
+
+     I don't like waiting for my computer.  I really don't like waiting for
+     someone else's computer.  A large part of my research is devoted to
+     improving system performance at various levels.  (For example, my paper
+     [6] is titled &quot;Curve25519: new Diffie-Hellman speed records.&quot;)  But I
+     find security much more important than speed.  We need invulnerable
+     software systems, and we need them today, even if they are ten times
+     slower than our current systems.  Tomorrow we can start working on
+     making them faster.
+
+     ...
+
+     &quot;To this very day, idiot software managers measure 'programmer
+     productivity' in terms of 'lines of code produced,' whereas the notion
+     of 'lines of code spent' is much more appropriate.&quot;
+     &#8212;Dijkstra in [9, page EWD962&#8211;4]
+
+If speed is more important to you than security, then I suggest you write 
+all your code in C, and use one of the many widely-available C crypto 
+libraries.  I've heard Crypto++ is quite good, and several people have 
+already mentioned pycryptopp.
+
+My resources are extremely limited, and I choose to devote them toward 
+security, not speed.
+
+&gt;<i>Dwayne's statement that stream ciphers are still in an &quot;experimental&quot; 
+</I>&gt;<i>state sounds in my (european) ears like a simple misapprehension.
+</I>
+Believe it.  All of the six stream ciphers submitted to NESSIE (2000-2003) 
+were broken[1], the recently-published cube attack decimated LFSR-based 
+stream ciphers, and I'm sure somebody else can comment on the status of 
+eSTREAM, but from [2] it looks like the submissions required a lot of 
+last-minute changes in order to avoid newly-discovered attacks.
+
+[1] <A HREF="https://www.cosic.esat.kuleuven.be/nessie/deliverables/decision-final.pdf">https://www.cosic.esat.kuleuven.be/nessie/deliverables/decision-final.pdf</A>
+[2] <A HREF="http://cr.yp.to/streamciphers/broken-20080330.pdf">http://cr.yp.to/streamciphers/broken-20080330.pdf</A>
+
+&gt;<i>For some reasons the Europeans are never leaving the &quot;experimental&quot; state 
+</I>&gt;<i>of exactly nothing. Well, that's a part of our weakness but even a part of 
+</I>&gt;<i>our power.
+</I>
+I don't care where you're from unless you're submitting code: 
+<A HREF="http://www.pycrypto.org/submission-requirements/">http://www.pycrypto.org/submission-requirements/</A>
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/2bc25454/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/2bc25454/attachment.pgp</A> 
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000047.html">[pycrypto] Why I would be glad to find a plenty of algorithms in	pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000048.html">[pycrypto] Batteries included
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#49">[ date ]</a>
+              <a href="thread.html#49">[ thread ]</a>
+              <a href="subject.html#49">[ subject ]</a>
+              <a href="author.html#49">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

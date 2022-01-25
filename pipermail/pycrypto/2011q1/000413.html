@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Initial review of Thorsten's Py3k changes
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Initial%20review%20of%20Thorsten%27s%20Py3k%20changes&In-Reply-To=4D2B235E.6040007%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000393.html">
+   <LINK REL="Next"  HREF="000395.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Initial review of Thorsten's Py3k changes</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Initial%20review%20of%20Thorsten%27s%20Py3k%20changes&In-Reply-To=4D2B235E.6040007%40gmx.li"
+       TITLE="[pycrypto] Initial review of Thorsten's Py3k changes">dlitz at dlitz.net
+       </A><BR>
+    <I>Sat Jan 29 19:11:33 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000393.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+        <LI>Next message: <A HREF="000395.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#413">[ date ]</a>
+              <a href="thread.html#413">[ thread ]</a>
+              <a href="subject.html#413">[ subject ]</a>
+              <a href="author.html#413">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Jan 10, 2011 at 10:18:54AM -0500, Thorsten Behrens wrote:
+&gt;<i>Thanks for looking over my commits.
+</I>
+Thanks for tolerating my glacial response time. :)
+
+&gt;<i>I have been trying to rebase and am getting nowhere fast. There are a 
+</I>&gt;<i>lot of merge conflicts, and I end up with something that may or may not 
+</I>&gt;<i>actually be the current state of the repository.
+</I>
+You might want to take a look at a video that tries to explain rebasing.  
+Here's one I found:
+
+     <A HREF="http://v.youku.com/v_show/id_XMjE3NDI3ODAw.html">http://v.youku.com/v_show/id_XMjE3NDI3ODAw.html</A>
+
+If I were rebasing a lot of changes, making substantial changes as I go, 
+I'd probably just create a new branch at origin/master and apply individual 
+changes (using git cherry-pick -n $COMMIT_ID) to build up a new series of 
+commits.  Then, I would do &quot;git diff oldbranch..newbranch&quot; to see what's 
+different between them (hopefully nothing).  Also, I usually re-order the 
+commits first, compare the resulting branches using &quot;git diff&quot; to make sure 
+I didn't miss anything, and *then* make actual code changes.
+
+&gt;<i>I'm not sure what the best way forward is for this part of the changes.  I 
+</I>&gt;<i>still think it's cleaner to change the literals than the way asserts and 
+</I>&gt;<i>functions are called. b(s) in Py3k returns s.encode(&quot;latin-1&quot;).  Compare 
+</I>&gt;<i>and contrast these two:
+</I>&gt;<i>
+</I>&gt;<i>input = b'abcdef00'
+</I>&gt;<i>expected = b'abcdef00'
+</I>&gt;<i>
+</I>&gt;<i>x = somefunction(input)
+</I>&gt;<i>assertEqual(x,expected)
+</I>&gt;<i>
+</I>&gt;<i>to
+</I>&gt;<i>
+</I>&gt;<i>input = 'abcdef00'
+</I>&gt;<i>expected = 'cdefab00'
+</I>&gt;<i>
+</I>&gt;<i>x = somefunction(input.encode(&quot;latin-1&quot;))
+</I>&gt;<i>assertEqual(x,expected.encode(&quot;latin-1&quot;))
+</I>&gt;<i>
+</I>&gt;<i>If you were to write native Py3k code, you'd choose the former over the 
+</I>&gt;<i>latter. I tried to get as close to that as I could. I don't quite have 
+</I>&gt;<i>b'something', since I can't do that and remain compatible with Python 
+</I>&gt;<i>2.x. But the spirit of it is intact: I am changing the way the literal 
+</I>&gt;<i>is presented, instead of working with a string literal and changing it 
+</I>&gt;<i>to bytes whenever I use it.
+</I>
+Hmm.  I was puzzled by what you wrote until I saw this:
+
+     &gt;&gt;&gt; import binascii
+     &gt;&gt;&gt; binascii.b2a_hex(b&quot;asdf&quot;)
+     b'61736466'
+     &gt;&gt;&gt;
+
+I would have expected binascii.b2a_hex to return a string, since 
+hexadecimal is a human-readable representation of binary data, but 
+apparently it doesn't.  Yuck, ok.
+
+&gt;&gt;<i> - References to things like RC5 or IDEA, which have been removed from
+</I>&gt;&gt;<i>     PyCrypto, can be removed.
+</I>&gt;<i>I didn't touch those since they may have been there for a reason.
+</I>
+OK.  It can be done separately later.
+
+&gt;&gt;<i> - If adding additional/alternative dependencies like MPIR, include *why*
+</I>&gt;&gt;<i>     that's being done in the commit message and/or in the documentation.
+</I>&gt;<i>Hmm, I thought I did. This was done so _fastmath.c would work on 
+</I>&gt;<i>Windows. GMP is actively hostile to compilation on Windows. MPIR is a 
+</I>&gt;<i>GMP fork that is friendly to compilation on Windows.
+</I>
+Ok, I guessed that was the reason, but the commit message just said &quot;add 
+support for mpir as alternative to gmp&quot;.
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000393.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+	<LI>Next message: <A HREF="000395.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#413">[ date ]</a>
+              <a href="thread.html#413">[ thread ]</a>
+              <a href="subject.html#413">[ subject ]</a>
+              <a href="author.html#413">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

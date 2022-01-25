@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Got different PKCS1_v1_5 signature result on the same	message &amp; same rsa key pair
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Got%20different%20PKCS1_v1_5%20signature%20result%20on%20the%20same%0A%09message%20%26%20same%20rsa%20key%20pair&In-Reply-To=%3C201403121122133419764%40goldenapptechnology.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000775.html">
+   <LINK REL="Next"  HREF="000785.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Got different PKCS1_v1_5 signature result on the same	message &amp; same rsa key pair</H1>
+    <B>wanggang</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Got%20different%20PKCS1_v1_5%20signature%20result%20on%20the%20same%0A%09message%20%26%20same%20rsa%20key%20pair&In-Reply-To=%3C201403121122133419764%40goldenapptechnology.com%3E"
+       TITLE="[pycrypto] Got different PKCS1_v1_5 signature result on the same	message &amp; same rsa key pair">wanggang at goldenapptechnology.com
+       </A><BR>
+    <I>Tue Mar 11 20:22:14 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000775.html">[pycrypto] Public Key (X.509) in Modulus/Exponent Format
+</A></li>
+        <LI>Next message: <A HREF="000785.html">[pycrypto] Got different PKCS1_v1_5 signature result on the same message &amp; same rsa key pair
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#784">[ date ]</a>
+              <a href="thread.html#784">[ thread ]</a>
+              <a href="subject.html#784">[ subject ]</a>
+              <a href="author.html#784">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi pycrypto,
+
+This may be a simple problem since I am a newbiee to crypto.
+I am not sure why I got different result from PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m))) , 
+I have mentioned the 'stateful' comment in API doc, but still can't fix the code below.
+besides I have used DES for a lot, &amp; never got stuck in such situation.
+
+if __name__ == &quot;__main__&quot;:
+    t = (modulus, publicExponent, privateExponent, prime1, prime2, coefficient)
+    lst = [long(x,16) for x in t]
+
+    k = '1234'
+    e1 = RSA.construct(lst).encrypt(m, k)
+    e2 = RSA.construct(lst).encrypt(m, k)
+    assert e1 == e2 # passed
+    
+    signature1 = PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m)))
+    print binascii.b2a_hex(signature1)
+    signature2 = PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m)))
+    print binascii.b2a_hex(signature2)
+    assert signature1==signature2 # why this assertion failed ?
+
+Thank you in advance!    
+--------------
+ Wang Gang
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000775.html">[pycrypto] Public Key (X.509) in Modulus/Exponent Format
+</A></li>
+	<LI>Next message: <A HREF="000785.html">[pycrypto] Got different PKCS1_v1_5 signature result on the same message &amp; same rsa key pair
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#784">[ date ]</a>
+              <a href="thread.html#784">[ thread ]</a>
+              <a href="subject.html#784">[ subject ]</a>
+              <a href="author.html#784">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

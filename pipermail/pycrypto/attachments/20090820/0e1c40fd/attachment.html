@@ -1,0 +1,172 @@
+<tt>
+Are&nbsp;there&nbsp;advantages&nbsp;to&nbsp;using&nbsp;Pycrypto&amp;#39;s&nbsp;Randpool&nbsp;over&nbsp;Random.SystemRandom()?&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;In&nbsp;another&nbsp;Keyczar&nbsp;thread,&nbsp;someone&nbsp;reported&nbsp;that&nbsp;Randpool&nbsp;was&nbsp;a&nbsp;performance&nbsp;bottleneck&nbsp;and&nbsp;got&nbsp;a&nbsp;big&nbsp;improvement&nbsp;by&nbsp;switching&nbsp;to&nbsp;SystemRandom.&lt;/div&gt;<br>
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I&nbsp;don&amp;#39;t&nbsp;know&nbsp;enough&nbsp;about&nbsp;the&nbsp;underlying&nbsp;implementations&nbsp;to&nbsp;make&nbsp;any&nbsp;security&nbsp;judgement.&nbsp;If&nbsp;anyone&nbsp;can&nbsp;comment&nbsp;authoritatively,&nbsp;please&nbsp;do.&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Thu,&nbsp;Aug&nbsp;20,&nbsp;2009&nbsp;at&nbsp;2:11&nbsp;AM,&nbsp;Hans-Peter&nbsp;Jansen&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&amp;lt;&lt;a&nbsp;href=&quot;mailto:hpj@urpla.net&quot;&gt;hpj@urpla.net&lt;/a&gt;&amp;gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex;&quot;&gt;&lt;br&gt;<br>
+Hi&nbsp;Sébastien,&nbsp;hi&nbsp;Steve,&lt;br&gt;<br>
+&lt;br&gt;<br>
+first&nbsp;of&nbsp;all,&nbsp;thanks&nbsp;for&nbsp;the&nbsp;instant&nbsp;feedback.&lt;br&gt;<br>
+&lt;br&gt;<br>
+Am&nbsp;Donnerstag,&nbsp;20.&nbsp;August&nbsp;2009&nbsp;schrieb&nbsp;Sébastien&nbsp;Martini:&lt;br&gt;<br>
+&lt;div&nbsp;class=&quot;im&quot;&gt;&amp;gt;&nbsp;Hi&nbsp;Hans-Peter,&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;/usr/lib/python2.6/site-packages/Crypto/Hash/SHA.py:6:&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;DeprecationWarning:&nbsp;the&nbsp;sha&nbsp;module&nbsp;is&nbsp;deprecated;&nbsp;use&nbsp;the&nbsp;hashlib&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;module&nbsp;instead&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp; &nbsp;from&nbsp;sha&nbsp;import&nbsp;*&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;Strange,&nbsp;with&nbsp;pycrypto&nbsp;2.0.1&nbsp;on&nbsp;Ubuntu&nbsp;9.04&nbsp;(and&nbsp;with&nbsp;Python&nbsp;2.6.1)&nbsp;I&lt;br&gt;<br>
+&amp;gt;&nbsp;do&nbsp;not&nbsp;have&nbsp;this&nbsp;warning.&nbsp;Are&nbsp;you&nbsp;sure&nbsp;your&nbsp;system&nbsp;use&nbsp;pycrypto&lt;br&gt;<br>
+&amp;gt;&nbsp;2.0.1&nbsp;?&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;Yes,&nbsp;I&nbsp;am:&lt;br&gt;<br>
+$&nbsp;rpm&nbsp;-qf&nbsp;/usr/lib/python2.6/site-packages/Crypto/PublicKey/RSA.py&lt;br&gt;<br>
+python-crypto-2.0.1-28.115.1&lt;br&gt;<br>
+&lt;br&gt;<br>
+Let&nbsp;me&nbsp;note,&nbsp;that&nbsp;I&nbsp;always&nbsp;generate&nbsp;rpm&nbsp;packages&nbsp;(at&nbsp;least&nbsp;with&nbsp;&amp;quot;python&lt;br&gt;<br>
+setup.py&nbsp;bdist_rpm&amp;quot;),&nbsp;rather&nbsp;then&nbsp;installing&nbsp;from&nbsp;source&nbsp;directly.&lt;br&gt;<br>
+&lt;br&gt;<br>
+Probably,&nbsp;Ubuntu&nbsp;incorporates&nbsp;some&nbsp;patches&nbsp;from&nbsp;Dwaynes&nbsp;trunk,&nbsp;does&nbsp;it?&lt;br&gt;<br>
+I&nbsp;got&nbsp;rid&nbsp;of&nbsp;the&nbsp;Deprecation&nbsp;warning&nbsp;with&nbsp;updating&nbsp;to&nbsp;Dwaynes&nbsp;version,&nbsp;by&lt;br&gt;<br>
+the&nbsp;price&nbsp;of&nbsp;a&nbsp;new&nbsp;one.&nbsp;See&nbsp;below.&lt;br&gt;<br>
+&lt;br&gt;<br>
+Please&nbsp;let&nbsp;me&nbsp;turn&nbsp;around&nbsp;the&nbsp;question:&nbsp;are&nbsp;you&nbsp;sure,&nbsp;that&nbsp;Ubuntus&nbsp;version&lt;br&gt;<br>
+isn&amp;#39;t&nbsp;a&nbsp;hybrid&nbsp;of&nbsp;Andrews&nbsp;and&nbsp;Dwaynes&nbsp;at&nbsp;least?&nbsp;May&nbsp;I&nbsp;ask&nbsp;you&nbsp;to&nbsp;show&nbsp;me&lt;br&gt;<br>
+your&nbsp;patches?&nbsp;I&nbsp;show&nbsp;you&nbsp;mine&nbsp;;-)&lt;br&gt;<br>
+&lt;br&gt;<br>
+openSUSE&nbsp;incorporated&nbsp;two&nbsp;patches&nbsp;to&nbsp;2.0.1:&lt;br&gt;<br>
+&lt;br&gt;<br>
+This&nbsp;one,&nbsp;I&nbsp;ported&nbsp;to&nbsp;trunk:&lt;br&gt;<br>
+---&nbsp;src/hash_template.c~&nbsp; &nbsp; &nbsp; &nbsp; 2009-08-16&nbsp;23:39:34.053841534&nbsp;+0200&lt;br&gt;<br>
++++&nbsp;src/hash_template.c&nbsp;2009-08-20&nbsp;10:16:05.877840748&nbsp;+0200&lt;br&gt;<br>
+@@&nbsp;-111,13&nbsp;+111,15&nbsp;@@&nbsp;ALG_hexdigest(ALGobject&nbsp;*self,&nbsp;PyObject&lt;br&gt;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; PyObject&nbsp;*value,&nbsp;*retval;&lt;br&gt;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; unsigned&nbsp;char&nbsp;*raw_digest,&nbsp;*hex_digest;&lt;br&gt;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; int&nbsp;i,&nbsp;j,&nbsp;size;&lt;br&gt;<br>
++&nbsp; &nbsp; &nbsp; &nbsp;Py_ssize_t&nbsp;ssize;&lt;br&gt;<br>
+&lt;br&gt;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; if&nbsp;(!PyArg_ParseTuple(args,&nbsp;&amp;quot;&amp;quot;))&lt;br&gt;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return&nbsp;NULL;&lt;br&gt;<br>
+&lt;br&gt;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; /*&nbsp;Get&nbsp;the&nbsp;raw&nbsp;(binary)&nbsp;digest&nbsp;value&nbsp;*/&lt;br&gt;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; value&nbsp;=&nbsp;(PyObject&nbsp;*)hash_digest(&amp;amp;(self-&amp;gt;st));&lt;br&gt;<br>
+-&nbsp; &nbsp; &nbsp; &nbsp;size&nbsp;=&nbsp;PyString_Size(value);&lt;br&gt;<br>
++&nbsp; &nbsp; &nbsp; &nbsp;ssize&nbsp;=&nbsp;PyString_Size(value);&lt;br&gt;<br>
++&nbsp; &nbsp; &nbsp; &nbsp;size&nbsp;=&nbsp;(ssize&nbsp;&amp;gt;&nbsp;INT_MAX)&nbsp;?&nbsp;INT_MAX&nbsp;:&nbsp;ssize;&lt;br&gt;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; raw_digest&nbsp;=&nbsp;(unsigned&nbsp;char&nbsp;*)&nbsp;PyString_AsString(value);&lt;br&gt;<br>
+&lt;br&gt;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; /*&nbsp;Create&nbsp;a&nbsp;new&nbsp;string&nbsp;*/&lt;br&gt;<br>
+&lt;br&gt;<br>
+Dwayne,&nbsp;is&nbsp;this&nbsp;in&nbsp;order&nbsp;or&nbsp;just&nbsp;plain&nbsp;silly?&lt;br&gt;<br>
+&lt;br&gt;<br>
+The&nbsp;other&nbsp;is&nbsp;the&nbsp;already&nbsp;applied&nbsp;ARC2&nbsp;fix&nbsp;to&nbsp;check&nbsp;of&nbsp;oversized&nbsp;keys.&lt;br&gt;<br>
+&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&nbsp;class=&quot;h5&quot;&gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;............................E.&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;======================================================================&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;ERROR:&nbsp;testRsaUnversionedSignAndVerify&nbsp;(signer_test.SignerTest)&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;----------------------------------------------------------------------&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;Traceback&nbsp;(most&nbsp;recent&nbsp;call&nbsp;last):&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp; &nbsp;File&nbsp;&amp;quot;.../keyczar/tests/keyczar/signer_test.py&amp;quot;,&nbsp;line&nbsp;125,&nbsp;in&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;testRsaUnversionedSignAndVerify&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;self.__testUnversionedSignAndVerify(&amp;quot;rsa-sign&amp;quot;)&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp; &nbsp;File&nbsp;&amp;quot;.../keyczar/tests/keyczar/signer_test.py&amp;quot;,&nbsp;line&nbsp;67,&nbsp;in&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;__testUnversionedSignAndVerify&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;self.assertFalse(unversioned_signer.Verify(&amp;quot;Wrong&nbsp;string&amp;quot;,&nbsp;sig))&nbsp;File&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;&amp;quot;/usr/local/lib/python2.6/site-packages/keyczar/keyczar.py&amp;quot;,&nbsp;line&nbsp;404,&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;in&nbsp;Verify&nbsp;result&nbsp;=&nbsp;key.Verify(data,&nbsp;sig_bytes)&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp; &nbsp;File&nbsp;&amp;quot;/usr/local/lib/python2.6/site-packages/keyczar/keys.py&amp;quot;,&nbsp;line&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;622,&nbsp;in&nbsp;Verify&nbsp;return&nbsp;self.public_key.Verify(msg,&nbsp;sig)&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp; &nbsp;File&nbsp;&amp;quot;/usr/local/lib/python2.6/site-packages/keyczar/keys.py&amp;quot;,&nbsp;line&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;787,&nbsp;in&nbsp;Verify&nbsp;(util.BytesToLong(sig),))&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp; &nbsp;File&nbsp;&amp;quot;/usr/lib/python2.6/site-packages/Crypto/PublicKey/pubkey.py&amp;quot;,&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;line&nbsp;84,&nbsp;in&nbsp;verify&nbsp;return&nbsp;self._verify(M,&nbsp;signature)&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp; &nbsp;File&nbsp;&amp;quot;/usr/lib/python2.6/site-packages/Crypto/PublicKey/RSA.py&amp;quot;,&nbsp;line&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;103,&nbsp;in&nbsp;_verify&nbsp;m2=self._encrypt(sig[0])&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp; &nbsp;File&nbsp;&amp;quot;/usr/lib/python2.6/site-packages/Crypto/PublicKey/RSA.py&amp;quot;,&nbsp;line&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;89,&nbsp;in&nbsp;_encrypt&nbsp;raise&nbsp;error,&nbsp;&amp;#39;Plaintext&nbsp;too&nbsp;large&amp;#39;&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;error:&nbsp;Plaintext&nbsp;too&nbsp;large&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;I&nbsp;think&nbsp;this&nbsp;error&nbsp;is&nbsp;related&nbsp;somehow&nbsp;to&nbsp;the&nbsp;hash&nbsp;computation&nbsp;(which&lt;br&gt;<br>
+&amp;gt;&nbsp;also&nbsp;could&nbsp;be&nbsp;related&nbsp;to&nbsp;the&nbsp;deprecation&nbsp;warning)&nbsp;because&nbsp;this&nbsp;is&nbsp;the&lt;br&gt;<br>
+&amp;gt;&nbsp;hash&nbsp;value&nbsp;which&nbsp;is&nbsp;signed&nbsp;with&nbsp;a&nbsp;private_encrypt()&nbsp;RSA&nbsp;method.&nbsp;I&lt;br&gt;<br>
+&amp;gt;&nbsp;might&nbsp;be&nbsp;wrong&nbsp;but&nbsp;I&nbsp;really&nbsp;think&nbsp;this&nbsp;is&nbsp;not&nbsp;currently&nbsp;pycrypto&nbsp;2.0.1&lt;br&gt;<br>
+&amp;gt;&nbsp;that&nbsp;your&nbsp;keyczar&nbsp;install&nbsp;calls.&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;&lt;/div&gt;No,&nbsp;it&nbsp;_wasn&amp;#39;t_&nbsp;related&nbsp;to&nbsp;SHA.py,&nbsp;since&nbsp;in&nbsp;a&nbsp;first&nbsp;test,&nbsp;I&nbsp;just&nbsp;updated&nbsp;to&lt;br&gt;<br>
+Dwaynes&nbsp;current&nbsp;SHA.py,&nbsp;which&nbsp;tries&nbsp;to&nbsp;import&nbsp;hashlib.SHA&nbsp;first&nbsp;and&nbsp;got&nbsp;rid&lt;br&gt;<br>
+of&nbsp;the&nbsp;deprecation,&nbsp;but&nbsp;this&nbsp;error&nbsp;persisted.&lt;br&gt;<br>
+&lt;br&gt;<br>
+After&nbsp;updating&nbsp;my&nbsp;python-crypto&nbsp;package&nbsp;to&nbsp;Dwaynes&nbsp;trunk,&nbsp;the&nbsp;tests&lt;br&gt;<br>
+succeeded:&lt;br&gt;<br>
+&lt;br&gt;<br>
+$&nbsp;python&nbsp;alltests.py&lt;br&gt;<br>
+./usr/lib/python2.6/site-packages/Crypto/Util/randpool.py:72:&lt;br&gt;<br>
+RandomPool_DeprecationWarning:&nbsp;RandomPool&nbsp;is&nbsp;deprecated.&nbsp; Use&nbsp;Random.new()&lt;br&gt;<br>
+or&nbsp;Random.RandomPoolCompat&nbsp;instead.&lt;br&gt;<br>
+&nbsp; warnings.warn(&amp;quot;RandomPool&nbsp;is&nbsp;deprecated.&nbsp; Use&nbsp;Random.new()&nbsp;or&lt;br&gt;<br>
+Random.RandomPoolCompat&nbsp;instead.&amp;quot;,&nbsp;RandomPool_DeprecationWarning)&lt;br&gt;<br>
+.............................&lt;br&gt;<br>
+----------------------------------------------------------------------&lt;br&gt;<br>
+Ran&nbsp;30&nbsp;tests&nbsp;in&nbsp;1.010s&lt;br&gt;<br>
+&lt;br&gt;<br>
+OK&lt;br&gt;<br>
+&lt;br&gt;<br>
+I&nbsp;fixed&nbsp;it&nbsp;with&nbsp;this&nbsp;patch:&lt;br&gt;<br>
+&lt;br&gt;<br>
+---&nbsp;util.py.orig&nbsp; &nbsp; &nbsp; &nbsp; 2009-08-20&nbsp;10:40:19.248702303&nbsp;+0200&lt;br&gt;<br>
++++&nbsp;util.py&nbsp; &nbsp; &nbsp;2009-08-20&nbsp;10:57:27.765198430&nbsp;+0200&lt;br&gt;<br>
+@@&nbsp;-30,7&nbsp;+30,12&nbsp;@@&nbsp;except&nbsp;ImportError:&lt;br&gt;<br>
+&nbsp; &nbsp;from&nbsp;sha&nbsp;import&nbsp;sha&nbsp;as&nbsp;sha1&lt;br&gt;<br>
+&nbsp; &nbsp;from&nbsp;Crypto.Hash.SHA256&nbsp;import&nbsp;new&nbsp;as&nbsp;sha256&lt;br&gt;<br>
+&lt;br&gt;<br>
+-from&nbsp;Crypto.Util&nbsp;import&nbsp;randpool&lt;br&gt;<br>
++try:&lt;br&gt;<br>
++&nbsp; #&nbsp;Import&nbsp;RandomPoolCompat,&nbsp;if&nbsp;available&lt;br&gt;<br>
++&nbsp; from&nbsp;Crypto.Random&nbsp;import&nbsp;RandomPoolCompat&nbsp;as&nbsp;RandomPool&lt;br&gt;<br>
++except&nbsp;ImportError:&lt;br&gt;<br>
++&nbsp; from&nbsp;Crypto.Util.randpool&nbsp;import&nbsp;RandomPool&lt;br&gt;<br>
++&lt;br&gt;<br>
+ from&nbsp;pyasn1.codec.der&nbsp;import&nbsp;decoder&lt;br&gt;<br>
+ from&nbsp;pyasn1.codec.der&nbsp;import&nbsp;encoder&lt;br&gt;<br>
+ from&nbsp;pyasn1.type&nbsp;import&nbsp;univ&lt;br&gt;<br>
+@@&nbsp;-291,7&nbsp;+296,7&nbsp;@@&nbsp;def&nbsp;TrimBytes(bytes):&lt;br&gt;<br>
+&lt;br&gt;<br>
+ def&nbsp;RandBytes(n):&lt;br&gt;<br>
+&nbsp; &nbsp;&amp;quot;&amp;quot;&amp;quot;Return&nbsp;n&nbsp;random&nbsp;bytes.&amp;quot;&amp;quot;&amp;quot;&lt;br&gt;<br>
+-&nbsp; return&nbsp;randpool.RandomPool(512).get_bytes(n)&lt;br&gt;<br>
++&nbsp; return&nbsp;RandomPool(512).get_bytes(n)&lt;br&gt;<br>
+&lt;br&gt;<br>
+ def&nbsp;Hash(digest,&nbsp;*inputs):&lt;br&gt;<br>
+&nbsp; &nbsp;&amp;quot;&amp;quot;&amp;quot;Return&nbsp;a&nbsp;SHA-1&nbsp;hash&nbsp;over&nbsp;a&nbsp;variable&nbsp;number&nbsp;of&nbsp;inputs.&amp;quot;&amp;quot;&amp;quot;&lt;br&gt;<br>
+&lt;br&gt;<br>
+BTW,&nbsp;is&nbsp;there&nbsp;any&nbsp;reason&nbsp;to&nbsp;fetch&nbsp;512&nbsp;bytes&nbsp;always,&nbsp;and&nbsp;use&nbsp;a&nbsp;subset&nbsp;only&lt;br&gt;<br>
+(if&nbsp;I&nbsp;read&nbsp;the&nbsp;code&nbsp;correctly)?&nbsp;What&nbsp;happens,&nbsp;if&nbsp;n&nbsp;is&nbsp;&amp;gt;&nbsp;512?&lt;br&gt;<br>
+&lt;div&nbsp;class=&quot;im&quot;&gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;----------------------------------------------------------------------&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;Ran&nbsp;30&nbsp;tests&nbsp;in&nbsp;3.179s&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;FAILED&nbsp;(errors=1)&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;Since&nbsp;I&nbsp;wanted&nbsp;to&nbsp;use&nbsp;RSA&nbsp;signing&nbsp;and&nbsp;encryption,&nbsp;I&amp;#39;m&nbsp;concerned&nbsp;about&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;it.&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;System:&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;gt;&nbsp;openSUSE&nbsp;11.1,&nbsp;python&nbsp;2.6.0,&nbsp;python-crypto-2.0.1,&nbsp;pyasn1-0.0.8a&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;Cordially,&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;Sébastien&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;Thanks,&lt;br&gt;<br>
+Pete&lt;br&gt;<br>
+&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&nbsp;class=&quot;h5&quot;&gt;&lt;br&gt;<br>
+&lt;br&gt;<br>
+--~--~---------~--~----~------------~-------~--~----~&lt;br&gt;<br>
+You&nbsp;received&nbsp;this&nbsp;message&nbsp;because&nbsp;you&nbsp;are&nbsp;subscribed&nbsp;to&nbsp;the&nbsp;Google&nbsp;Groups&nbsp;&amp;quot;Keyczar&nbsp;Discuss&amp;quot;&nbsp;group.&lt;br&gt;<br>
+To&nbsp;post&nbsp;to&nbsp;this&nbsp;group,&nbsp;send&nbsp;email&nbsp;to&nbsp;&lt;a&nbsp;href=&quot;mailto:keyczar-discuss@googlegroups.com&quot;&gt;keyczar-discuss@googlegroups.com&lt;/a&gt;&lt;br&gt;<br>
+To&nbsp;unsubscribe&nbsp;from&nbsp;this&nbsp;group,&nbsp;send&nbsp;email&nbsp;to&nbsp;&lt;a&nbsp;href=&quot;mailto:keyczar-discuss%2Bunsubscribe@googlegroups.com&quot;&gt;keyczar-discuss+unsubscribe@googlegroups.com&lt;/a&gt;&lt;br&gt;<br>
+For&nbsp;more&nbsp;options,&nbsp;visit&nbsp;this&nbsp;group&nbsp;at&nbsp;&lt;a&nbsp;href=&quot;http://groups.google.com/group/keyczar-discuss?hl=en&quot;&nbsp;target=&quot;_blank&quot;&gt;http://groups.google.com/group/keyczar-discuss?hl=en&lt;/a&gt;&lt;br&gt;<br>
+-~----------~----~----~----~------~----~------~--~---&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;<br>
+
+</tt>

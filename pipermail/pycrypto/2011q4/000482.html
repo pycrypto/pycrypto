@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] string XOR
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20string%20XOR&In-Reply-To=CAMp7mVtANYeMjVfxbsJxhv7vKCHOiJuUzynAniP%2BhD2LGyXFwQ%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000478.html">
+   <LINK REL="Next"  HREF="000486.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] string XOR</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20string%20XOR&In-Reply-To=CAMp7mVtANYeMjVfxbsJxhv7vKCHOiJuUzynAniP%2BhD2LGyXFwQ%40mail.gmail.com"
+       TITLE="[pycrypto] string XOR">dlitz at dlitz.net
+       </A><BR>
+    <I>Sat Oct 22 14:23:50 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000478.html">[pycrypto] string XOR
+</A></li>
+        <LI>Next message: <A HREF="000486.html">[pycrypto] string XOR
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#482">[ date ]</a>
+              <a href="thread.html#482">[ thread ]</a>
+              <a href="subject.html#482">[ subject ]</a>
+              <a href="author.html#482">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Oct 21, 2011 at 03:09:36PM +0100, Richard Moore wrote:
+&gt;<i>On Fri, Oct 21, 2011 at 2:55 PM, Dean Macinskas
+</I>&gt;<i>&lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dmacinskas at geobridge.net</A>&gt; wrote:
+</I>&gt;&gt;<i> &#160;&#160;&#160; ke = operator.xor(kbpkb,ve)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> TypeError: unsupported operand type(s) for ^: 'str' and 'str'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Is there a way to do this in native Python (I'm using 2.7.2), or must I use
+</I>&gt;&gt;<i> a library of some sort?
+</I>&gt;<i>
+</I>&gt;<i>Use ord() to convert each character to a number first, then chr() to
+</I>&gt;<i>convert the number back to a character.
+</I>
+Also, if you're using PyCrypto anyway, you can use its fast C 
+implementation of a byte-wise string XOR:
+
+     from Crypto.Util.strxor import strxor
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000478.html">[pycrypto] string XOR
+</A></li>
+	<LI>Next message: <A HREF="000486.html">[pycrypto] string XOR
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#482">[ date ]</a>
+              <a href="thread.html#482">[ thread ]</a>
+              <a href="subject.html#482">[ subject ]</a>
+              <a href="author.html#482">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

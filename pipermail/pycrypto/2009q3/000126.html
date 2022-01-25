@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RandomPool
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20RandomPool&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000125.html">
+   <LINK REL="Next"  HREF="000128.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RandomPool</H1>
+    <B>Paul Koning</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20RandomPool&In-Reply-To="
+       TITLE="[pycrypto] RandomPool">Paul_Koning at dell.com
+       </A><BR>
+    <I>Thu Aug 27 11:59:50 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000125.html">[pycrypto] Adding support for Tiger Hash / Tiger Tree Hash
+</A></li>
+        <LI>Next message: <A HREF="000128.html">[pycrypto] RandomPool
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#126">[ date ]</a>
+              <a href="thread.html#126">[ thread ]</a>
+              <a href="subject.html#126">[ subject ]</a>
+              <a href="author.html#126">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi...
+
+My first post to this list, though I've used pycrypto for 2-3 years
+now. 
+
+I spotted the message about RandomPool, and the three replies to it
+that the mail archive showed.  (If there are others in later sections
+of the archive, I didn't see those.)
+
+Some observations.
+
+RFC 4086, &quot;Randomness Requirements for Security&quot; is very much worth
+studying for a discussion of this subject.
+
+Dwayne comments &quot;Also, after looking a bit more at OS-provided random
+generators, I'm starting to think that just returning their output
+might not be such a great idea.  There just doesn't seem to be any
+reason to trust them very far.&quot;  I don't know what OS is at issue
+here; it would be good for a general statement like that to be
+accompanied by specific evidence.  For example, I spent quite a while
+looking at the Linux /dev/random code by Ted Ts'o, and my conclusion
+is just the opposite.  It looks strong and well constructed.  So could
+you spell which OS you were talking about, and why you concluded it
+should not be trusted?
+
+What is Fortuna?  What makes it good enough that an application-level
+RNG can be safely layered on top of it?
+
+    paul
+
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000125.html">[pycrypto] Adding support for Tiger Hash / Tiger Tree Hash
+</A></li>
+	<LI>Next message: <A HREF="000128.html">[pycrypto] RandomPool
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#126">[ date ]</a>
+              <a href="thread.html#126">[ thread ]</a>
+              <a href="subject.html#126">[ subject ]</a>
+              <a href="author.html#126">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

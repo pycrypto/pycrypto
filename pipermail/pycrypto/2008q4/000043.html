@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] the sad state of pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=1C67BC02-F259-499C-9AF9-3CA0C27A6CBE%40zooko.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000042.html">
+   <LINK REL="Next"  HREF="000044.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] the sad state of pycrypto</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=1C67BC02-F259-499C-9AF9-3CA0C27A6CBE%40zooko.com"
+       TITLE="[pycrypto] the sad state of pycrypto">dlitz at dlitz.net
+       </A><BR>
+    <I>Sun Nov  9 11:50:41 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000042.html">[pycrypto] the sad state of pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000044.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#43">[ date ]</a>
+              <a href="thread.html#43">[ thread ]</a>
+              <a href="subject.html#43">[ subject ]</a>
+              <a href="author.html#43">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Nov 09, 2008 at 09:58:00AM -0700, zooko wrote:
+&gt;<i>On Nov 9, 2008, at 8:54 AM, Paul Hoffman wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> The idea of dropping support for &quot;weak&quot; algorithms is silly. No  
+</I>&gt;&gt;<i> developer looks through the list of algorithms in a library and say  
+</I>&gt;&gt;<i> &quot;I'll pick, um, er, that one&quot; without knowing what it is.
+</I>&gt;<i>
+</I>&gt;<i>I happen to know a somewhat famous developer who once looked through  
+</I>&gt;<i>the Crypto++ API and chose DES-XEX without (I think) realizing that  
+</I>&gt;<i>it was DES-X and not Triple-DES.
+</I>&gt;<i>
+</I>&gt;<i>But yeah, modelling the developers who use your library -- guessing  
+</I>&gt;<i>how clueful and careful they will be -- is a black art and is  
+</I>&gt;<i>probably doomed to failure.
+</I>
+But can we make bad choices more difficult to make?
+
+One think I am considering is to allow the developer to select a 
+pre-defined &quot;policy&quot; (set of constraints), and then raise an exception or a 
+warning whenever the program does something that would violate this policy.  
+The policies themselves would be frozen (so legacy code could still use 
+legacy algorithms), but we could create new policies as necessary, 
+encourage developers to use the latest policies for new code, and provide 
+users with tools (environment variables?) to further constrain the policy 
+selections in order to find places where obsolete policies might be in use.
+
+So, hypothetically, you would have something like this:
+
+     &gt;&gt;&gt; from Crypto import CryptoAPI
+     &gt;&gt;&gt; from Crypto.Policy.p2008v1 import ConservativePolicy
+     &gt;&gt;&gt; api = CryptoAPI(policy=ConservativePolicy)
+     &gt;&gt;&gt; h = api.Hash.MD5.new()
+     Traceback (most recent call last):
+       File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+     PolicyError: MD5 hash not allowed by policy &lt;2008.1.ConservativePolicy&gt;
+
+This would probably involve concentrating all object creation into a single 
+&quot;factory&quot;, so I'm not quite sure how to shoehorn the current PyCrypto API 
+into it.
+
+This would also make unit testing easier, since we could substitute dummy 
+functions for real ones.  Also, things like Util.number.isPrime could more 
+easily be made non-deterministic (giving them access to the user's selected 
+RNG) without having to change the external API.
+
+Thoughts?
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/359ab7bf/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/359ab7bf/attachment.pgp</A> 
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000042.html">[pycrypto] the sad state of pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000044.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#43">[ date ]</a>
+              <a href="thread.html#43">[ thread ]</a>
+              <a href="subject.html#43">[ subject ]</a>
+              <a href="author.html#43">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

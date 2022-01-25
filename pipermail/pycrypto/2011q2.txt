@@ -1,0 +1,464 @@
+From bogus@does.not.exist.com  Mon Apr  4 18:29:28 2011
+From: bogus@does.not.exist.com ()
+Date: Tue, 05 Apr 2011 00:29:28 -0000
+Subject: No subject
+Message-ID: <mailman.0.1302974073.1110.pycrypto@lists.dlitz.net>
+
+branch. Is this the case and if so, does anyone have a working Python
+3 branch with public read access?
+
+Also, is there any roadmap information available about when Python 3
+support can be expected to appear in a release? This would greatly
+help in planning of projects that rely on pycrypto.
+
+All the best and thank you for your efforts in adding Python 3 support.
+
+// Anders Sundman
+
+From sbehrens at gmx.li  Sat Apr 16 12:18:37 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Sat, 16 Apr 2011 14:18:37 -0400
+Subject: [pycrypto] Python3 and PyCrypto
+In-Reply-To: <AANLkTi=euFrfarbRhJ60Q_e_PvcbPdX9-f1r6+Z2SyhH@mail.gmail.com>
+References: <AANLkTi=euFrfarbRhJ60Q_e_PvcbPdX9-f1r6+Z2SyhH@mail.gmail.com>
+Message-ID: <4DA9DD7D.5040604@gmx.li>
+
+On 3/28/2011 4:55 AM, Anders Sundman wrote:
+> > From what I reckon, the changes are not yet committed to the master
+> branch. Is this the case and if so, does anyone have a working Python
+> 3 branch with public read access?
+Yes, and yes. I need to change the test cases so they don't use b'' 
+literals, and all my time is taken up with other stuff right now.
+
+Public branch is here: https://github.com/yorickdowne/pycrypto
+
+As for roadmap: I got nothing. I don't know when I'll have that kind of 
+time to devote again. That having been said, the p3k branch works, on 
+2.1 through 3.2. If an enterprising soul wanted to take the branch, 
+revert all b'' test vectors to '' and wrap them in b() in the code 
+instead - so that Dwayne doesn't have to go through every single last 
+vector - I am sure that would speed up inclusion on trunk.
+
+Thorsten
+
+
+From don at amberfisharts.com  Sun Apr 17 05:22:31 2011
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Sun, 17 Apr 2011 13:22:31 +0200
+Subject: [pycrypto] AES.Mode_PGP
+In-Reply-To: <F1740D29-4982-4EDA-99C3-721A3E6B8C4E@gmail.com>
+References: <F1740D29-4982-4EDA-99C3-721A3E6B8C4E@gmail.com>
+Message-ID: <4DAACD77.5050802@amberfisharts.com>
+
+Hi David,
+
+ > def AESdecode(secretkey,message):
+ >     cipher = AES.new(secretkey,AES.MODE_PGP)
+ >     return cipher.decrypt(base64.b64decode(message))
+
+shouldn't that be:
+
+def AESdecode(secretkey,message):
+     cipher = AES.new(secretkey,AES.MODE_PGP)
+     return base64.b64decode(cipher.decrypt(message))
+
+cheers,
+Lorenz
+
+
+On 02/14/2011 08:47 PM, David Arena wrote:
+> Hello All..
+>
+> basically im either stupid or guessing something is wrong with the Mode_PGP of the Cipher AES class..
+>
+> Let me explain..
+>
+> I assumed that the class would follow the rfc 2440 ( OpenPGP Message Format)
+> Basically, in my laymans terms..
+>
+> On encryption...
+> The IV is a random generated number, added  as the first block of the ciphertext and used in CBC mode for the other blocks...
+>
+> On Decryption..
+> The IV added is zero's, The CBC continues finding the IV in the first block, which results in the following blocks to be deciphered correctly.. However  when returning the plaintext it drops the first block of the plaintext  garbage..
+> resulting in a correct message..
+>
+> Im not sure if Pycrypto does this??? I tried and failed.. and i thought i should ask questions..
+>
+> here is my basic code..
+>
+>   def AESencode(secretkey,message,vi):
+>                  cipher = AES.new(secretkey,AES.MODE_PGP,vi)
+>                  return cipher.encrypt(base64.b64encode(message))
+>
+>   def AESdecode(secretkey,message):
+>                  cipher = AES.new(secretkey,AES.MODE_PGP)
+>                  return cipher.decrypt(base64.b64decode(message))
+>
+>
+> Any suggestions on where to go????
+>
+> Regards
+> David
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From sbehrens at gmx.li  Sun Apr 17 08:15:57 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Sun, 17 Apr 2011 10:15:57 -0400
+Subject: [pycrypto] Initial review of Thorsten's Py3k changes
+In-Reply-To: <20110130014708.GB2551@rivest.dlitz.net>
+References: <ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>	<4D1B7BB0.6050201@gmx.li>	<cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>	<4D229728.2000109@gmx.li>	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>	<4D23848A.8090805@gmx.li>
+	<20110110044938.GA12449@rivest.dlitz.net>	<4D2C773B.8060605@gmx.li>	<AANLkTi=H6c1Z5g1-pjicz=29+6Ot69MUxoSOSZfhiW7U@mail.gmail.com>	<4D3702C5.7090803@gmx.li>
+	<20110130014708.GB2551@rivest.dlitz.net>
+Message-ID: <4DAAF61D.5040408@gmx.li>
+
+I am going back into the code to take a peek at your suggestion.
+
+
+On 1/29/2011 8:47 PM, Dwayne C. Litzenberger wrote:
+> Have a look in the various common.py files.  All of the hex test vectors are
+> being fed through either a2b_hex or b2a_hex.  I think it should be possible
+> to make versions of b2a_hex and a2b_hex that also do bytes->str and
+> str->bytes conversions, respectively.
+>
+> The following code works in both Python 2.1 and Python 3.2b2:
+>
+>       from binascii import b2a_hex as _b2a_hex, a2b_hex as _a2b_hex
+>       from codecs import ascii_decode as _ascii_decode
+>       def bin2hex(bts):
+>           """Like b2a_hex, but returns a str instead of bytes in Python 3.x"""
+>           return _ascii_decode(_b2a_hex(bts))[0]
+>       def hex2bin(s):
+>           """Like a2b_hex, but expects a str instead of bytes in Python 3.x"""
+>           return _a2b_hex(s.encode('ascii'))
+
+This would actually make things worse. That it works at all is to be 
+considered a bug - there's a TODO I have not followed up on yet, and 
+that TODO is to add type-checking to all functions so that an error is 
+returned if a parameter is not "an object interpretable as a buffer of 
+bytes". That is, if encode() is called with a unicode (str) object, that 
+should raise an error.
+
+The reason I believe that pycrypto should check type is that the Python 
+3.x stdlib behaves that way:
+
+ >>> from hashlib import sha1
+ >>> h = sha1()
+ >>> h.update("lorem")
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+TypeError: Unicode-objects must be encoded before hashing
+ >>> h.update(b"lorem")
+ >>> print (h.hexdigest())
+b58e92fff5246645f772bfe7a60272f356c0151a
+
+For consistency, I have both Crypto.Hash and Crypto.Cipher behaving this 
+way. The changes are in the doc, but in a nutshell:
+
+Crypto.Hash
+
+Python 3.x: digest() returns a bytes object
+Python 3.x: hexdigest() returns a bytes object
+Python 3.x: The passed argument to update() must be an object
+interpretable as a buffer of bytes
+
+Crypto.Cipher
+
+new()
+Python 3.x: ```mode`` is a string object; ```key``` and ```IV``` must be
+objects interpretable as a buffer of bytes.
+
+cipher object
+Python 3.x: ```IV``` is a bytes object.
+
+decrypt()
+Python 3.x: ```string``` must be an object interpretable as a buffer of 
+bytes.
+decrypt() will return a bytes object.
+
+encrypt()
+Python 3.x: ```string``` must be an object interpretable as a buffer of 
+bytes.
+encrypt() will return a bytes object.
+
+
+If these new conventions will cause an issue, let's discuss that now, 
+before I add the type-checking.
+
+
+All that having been said, I still think it should be possible to have 
+the vectors be Unicode literals and to convert them to a bytes object 
+when reading them in. It just will need to be done in a different part 
+of the code.
+
+Thorsten
+
+
+From dlitz at dlitz.net  Sun Apr 17 15:06:03 2011
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 17 Apr 2011 17:06:03 -0400
+Subject: [pycrypto] Initial review of Thorsten's Py3k changes
+In-Reply-To: <4DAAF61D.5040408@gmx.li>
+References: <ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>
+	<4D1B7BB0.6050201@gmx.li>
+	<cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>
+	<4D229728.2000109@gmx.li>
+	<2e5e0f645584e65dc50d25cb3578820a@amberfisharts.com>
+	<4D23848A.8090805@gmx.li> <20110110044938.GA12449@rivest.dlitz.net>
+	<4D2C773B.8060605@gmx.li>
+	<AANLkTi=H6c1Z5g1-pjicz=29+6Ot69MUxoSOSZfhiW7U@mail.gmail.com>
+	<4D3702C5.7090803@gmx.li> <20110130014708.GB2551@rivest.dlitz.net>
+	<4DAAF61D.5040408@gmx.li>
+Message-ID: <0a0b0e8d-4bd4-4988-9856-03463190fa0f@email.android.com>
+
+Awesome! Thank you!
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+
+Thorsten Behrens <sbehrens at gmx.li> wrote:
+
+I am going back into the code to take a peek at your suggestion. On 1/29/2011 8:47 PM, Dwayne C. Litzenberger wrote: > Have a look in the various common.py files. All of the hex test vectors are > being fed through either a2b_hex or b2a_hex. I think it should be possible > to make versions of b2a_hex and a2b_hex that also do bytes->str and > str->bytes conversions, respectively. > > The following code works in both Python 2.1 and Python 3.2b2: > > from binascii import b2a_hex as _b2a_hex, a2b_hex as _a2b_hex > from codecs import ascii_decode as _ascii_decode > def bin2hex(bts): > """Like b2a_hex, but returns a str instead of bytes in Python 3.x""" > return _ascii_decode(_b2a_hex(bts))[0] > def hex2bin(s): > """Like a2b_hex, but expects a str instead of bytes in Python 3.x""" > return _a2b_hex(s.encode('ascii')) This would actually make things worse. That it works at all is to be considered a bug - there's a TODO I have not followed up on yet, and that TODO is to add type-chec
+ king to
+all functions so that an error is returned if a parameter is not "an object interpretable as a buffer of bytes". That is, if encode() is called with a unicode (str) object, that should raise an error. The reason I believe that pycrypto should check type is that the Python 3.x stdlib behaves that way: >>> from hashlib import sha1 >>> h = sha1() >>> h.update("lorem") Traceback (most recent call last): File "<stdin>", line 1, in <module> TypeError: Unicode-objects must be encoded before hashing >>> h.update(b"lorem") >>> print (h.hexdigest()) b58e92fff5246645f772bfe7a60272f356c0151a For consistency, I have both Crypto.Hash and Crypto.Cipher behaving this way. The changes are in the doc, but in a nutshell: Crypto.Hash Python 3.x: digest() returns a bytes object Python 3.x: hexdigest() returns a bytes object Python 3.x: The passed argument to update() must be an object interpretable as a buffer of bytes Crypto.Cipher new() Python 3.x: ```mode`` is a string object; ```key``` and ``
+ `IV```
+must be objects interpretable as a buffer of bytes. cipher object Python 3.x: ```IV``` is a bytes object. decrypt() Python 3.x: ```string``` must be an object interpretable as a buffer of bytes. decrypt() will return a bytes object. encrypt() Python 3.x: ```string``` must be an object interpretable as a buffer of bytes. encrypt() will return a bytes object. If these new conventions will cause an issue, let's discuss that now, before I add the type-checking. All that having been said, I still think it should be possible to have the vectors be Unicode literals and to convert them to a bytes object when reading them in. It just will need to be done in a different part of the code. Thorsten 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110417/f6b4bb17/attachment.htm 
+
+From sundman.anders at gmail.com  Mon Apr 18 02:10:37 2011
+From: sundman.anders at gmail.com (Anders Sundman)
+Date: Mon, 18 Apr 2011 10:10:37 +0200
+Subject: [pycrypto] Python3 and PyCrypto
+In-Reply-To: <4DA9DD7D.5040604@gmx.li>
+References: <AANLkTi=euFrfarbRhJ60Q_e_PvcbPdX9-f1r6+Z2SyhH@mail.gmail.com>
+	<4DA9DD7D.5040604@gmx.li>
+Message-ID: <BANLkTim9WDQF0fp7EMSKgrNa_oRHXcZg=A@mail.gmail.com>
+
+Hi Thorsten,
+
+> Public branch is here: https://github.com/yorickdowne/pycrypto
+
+Thank you for your work so far. I'll try it out during the next few
+days. If I manage to get any time to work on it my self, I'll try to
+do the bytes wrapping and send a patch to the list.
+
+Regards,
+Anders
+
+From sbehrens at gmx.li  Mon Apr 18 05:02:23 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Mon, 18 Apr 2011 07:02:23 -0400
+Subject: [pycrypto] Python3 and PyCrypto
+In-Reply-To: <BANLkTim9WDQF0fp7EMSKgrNa_oRHXcZg=A@mail.gmail.com>
+References: <AANLkTi=euFrfarbRhJ60Q_e_PvcbPdX9-f1r6+Z2SyhH@mail.gmail.com>	<4DA9DD7D.5040604@gmx.li>
+	<BANLkTim9WDQF0fp7EMSKgrNa_oRHXcZg=A@mail.gmail.com>
+Message-ID: <4DAC1A3F.5080305@gmx.li>
+
+On 4/18/2011 4:10 AM, Anders Sundman wrote:
+> Hi Thorsten,
+>
+>> Public branch is here: https://github.com/yorickdowne/pycrypto
+> Thank you for your work so far. I'll try it out during the next few
+> days. If I manage to get any time to work on it my self, I'll try to
+> do the bytes wrapping and send a patch to the list.
+Cool. That'll help. I'm going to start looking at the type checking, so 
+people who use that branch don't have a rude awakening later on.
+
+Thorsten
+
+
+From knoxth at gmail.com  Mon May 16 13:18:26 2011
+From: knoxth at gmail.com (Thomas Knox)
+Date: Mon, 16 May 2011 15:18:26 -0400
+Subject: [pycrypto] PyCrypto 2.3 and unicode
+Message-ID: <BANLkTinOwabrerhEHYHi3B30StzQJKFPiw@mail.gmail.com>
+
+Hello,
+
+I'm building an application in Python 2.7.1 using PyCrypto 2.3, and it's
+behaving badly with utf-8 and utf-16 strings. For example:
+
+from Crypto.Cipher import AES
+foo = AES.new('a1b2c3d4e5f6g7h8', AES.MODE_ECB)
+bar=u''
+for i in range(0,16):
+    bar+=unichr(255)
+# At this point, bar is
+# u'\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff'
+baz=foo.encrypt(bar.encode('utf-8'))
+blah=foo.decrypt(baz)
+# baz is now
+#
+'\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf'
+
+How can I get encrypt and decrypt to use UTF gracefully?
+
+Thank you,
+Tom
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110516/07a6ddd9/attachment.htm 
+
+From don at amberfisharts.com  Mon May 16 13:54:35 2011
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Mon, 16 May 2011 21:54:35 +0200
+Subject: [pycrypto] PyCrypto 2.3 and unicode
+In-Reply-To: <BANLkTinOwabrerhEHYHi3B30StzQJKFPiw@mail.gmail.com>
+References: <BANLkTinOwabrerhEHYHi3B30StzQJKFPiw@mail.gmail.com>
+Message-ID: <4DD180FB.4030008@amberfisharts.com>
+
+Hi Thomas,
+
+what about either:
+
+blah=foo.decrypt(baz).decode("utf-8")
+
+or
+
+blah=unicode(foo.decrypt(baz), "utf-8")
+
+cheers,
+Lorenz
+
+On 05/16/2011 09:18 PM, Thomas Knox wrote:
+> Hello,
+>
+> I'm building an application in Python 2.7.1 using PyCrypto 2.3, and it's behaving badly with utf-8 and utf-16 strings.
+> For example:
+>
+> from Crypto.Cipher import AES
+> foo = AES.new('a1b2c3d4e5f6g7h8', AES.MODE_ECB)
+> bar=u''
+> for i in range(0,16):
+>      bar+=unichr(255)
+> # At this point, bar is
+> # u'\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff'
+> baz=foo.encrypt(bar.encode('utf-8'))
+> blah=foo.decrypt(baz)
+> # baz is now
+> #
+> '\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf'
+>
+> How can I get encrypt and decrypt to use UTF gracefully?
+>
+> Thank you,
+> Tom
+>
+>
+
+
+From knoxth at gmail.com  Mon May 16 13:53:16 2011
+From: knoxth at gmail.com (Thomas Knox)
+Date: Mon, 16 May 2011 15:53:16 -0400
+Subject: [pycrypto] PyCrypto 2.3 and unicode
+In-Reply-To: <4DD180FB.4030008@amberfisharts.com>
+References: <BANLkTinOwabrerhEHYHi3B30StzQJKFPiw@mail.gmail.com>
+	<4DD180FB.4030008@amberfisharts.com>
+Message-ID: <BANLkTim=uK_1hw_W1_qUthH+asyH1qRRrg@mail.gmail.com>
+
+Those worked. Thanks.
+
+On Mon, May 16, 2011 at 3:54 PM, Lorenz Quack <don at amberfisharts.com> wrote:
+
+> Hi Thomas,
+>
+> what about either:
+>
+> blah=foo.decrypt(baz).decode("utf-8")
+>
+> or
+>
+> blah=unicode(foo.decrypt(baz), "utf-8")
+>
+> cheers,
+> Lorenz
+>
+> On 05/16/2011 09:18 PM, Thomas Knox wrote:
+> > Hello,
+> >
+> > I'm building an application in Python 2.7.1 using PyCrypto 2.3, and it's
+> behaving badly with utf-8 and utf-16 strings.
+> > For example:
+> >
+> > from Crypto.Cipher import AES
+> > foo = AES.new('a1b2c3d4e5f6g7h8', AES.MODE_ECB)
+> > bar=u''
+> > for i in range(0,16):
+> >      bar+=unichr(255)
+> > # At this point, bar is
+> > # u'\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff'
+> > baz=foo.encrypt(bar.encode('utf-8'))
+> > blah=foo.decrypt(baz)
+> > # baz is now
+> > #
+> >
+> '\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf\xc3\xbf'
+> >
+> > How can I get encrypt and decrypt to use UTF gracefully?
+> >
+> > Thank you,
+> > Tom
+> >
+> >
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20110516/32f2687e/attachment.htm 
+
+From joseph.santaniello at gmail.com  Thu Jun  9 03:54:22 2011
+From: joseph.santaniello at gmail.com (Joseph Santaniello)
+Date: Thu, 9 Jun 2011 11:54:22 +0200
+Subject: [pycrypto] Help with keys
+Message-ID: <BANLkTikUf=v7MqWFPNoqbfgTKmvkmLP9gA@mail.gmail.com>
+
+Hi,
+
+I hope this is the proper forum for this question.
+
+I am new to cryptography and still grappling with terms, so please
+correct me if I confuse things.
+
+I am interested in creating RSA key-pairs with a passphrase. This I
+believe is PKCS#8, preferably in PEM format.
+
+There are few Java examples I have found, but no Python
+implementations other that ones which requires OpenSSL. This is going
+to live over at Google App Engine, so a pure-python way is needed.
+
+Any suggestions?
+
+Thanks,
+
+Joseph
+
+From aljosa.mohorovic at gmail.com  Thu Jun  9 21:29:08 2011
+From: aljosa.mohorovic at gmail.com (=?UTF-8?B?QWxqb8WhYSBNb2hvcm92acSH?=)
+Date: Fri, 10 Jun 2011 05:29:08 +0200
+Subject: [pycrypto] problem with public key import
+Message-ID: <BANLkTinPO39RrGe+giLRqDrYh2p-6Oq-WQ@mail.gmail.com>
+
+i'm getting "ValueError: RSA key format is not supported" when
+importing public key.
+public key format is the one that can be generated with "ssh-keygen
+-y" and i'm using it without "ssh-rsa" at beginning of string.
+
+could somebody post an example howto import this public key using
+RSA.importKey(pub)?
+basically, what i need to do to transfer public key i have to what
+importKey expects?
+
+Aljosa Mohorovic
+

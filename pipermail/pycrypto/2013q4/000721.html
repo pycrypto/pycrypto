@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Need your input: Major modernization; dropping legacy Python support?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Need%20your%20input%3A%20Major%20modernization%3B%0A%20dropping%20legacy%20Python%20support%3F&In-Reply-To=%3C20131030172448.GB17774%40ramacher.at%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000720.html">
+   <LINK REL="Next"  HREF="000722.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Need your input: Major modernization; dropping legacy Python support?</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Need%20your%20input%3A%20Major%20modernization%3B%0A%20dropping%20legacy%20Python%20support%3F&In-Reply-To=%3C20131030172448.GB17774%40ramacher.at%3E"
+       TITLE="[pycrypto] Need your input: Major modernization; dropping legacy Python support?">sebastian+lists at ramacher.at
+       </A><BR>
+    <I>Wed Oct 30 10:24:48 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000720.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+        <LI>Next message: <A HREF="000722.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#721">[ date ]</a>
+              <a href="thread.html#721">[ thread ]</a>
+              <a href="subject.html#721">[ subject ]</a>
+              <a href="author.html#721">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi
+
+On 2013-10-29 23:09:24, Dwayne Litzenberger wrote:
+&gt;<i> 1. How many of you would really care if PyCrypto 2.6 was that last
+</I>&gt;<i> version to support legacy versions of Python?  By &quot;legacy&quot;, I mean
+</I>&gt;<i> all versions of Python that are NOT one of these:
+</I>&gt;<i> 
+</I>&gt;<i>     - Python 2.6.x
+</I>&gt;<i>     - Python 2.7.x
+</I>&gt;<i>     - Python 3.3 and above.
+</I>&gt;<i> 
+</I>&gt;<i>    I'd continue to make bugfix releases of PyCrypto 2.6.x, but add
+</I>&gt;<i> no    more substantial new features.
+</I>
+No objection from me here. As I understand it, Python 2.6 got it's last
+release yesterday, so I wouldn't mind if Python 2.6 got dropped too.
+
+&gt;<i> 2. I'm thinking of pulling in additional dependencies (e.g. cffi),
+</I>&gt;<i> requiring setuptools, and basically joining what the rest of the
+</I>&gt;<i> Python community is doing in 2013.
+</I>&gt;<i> 
+</I>&gt;<i> 3. What if src/*.c were removed, and any relevant C code moved into
+</I>&gt;<i> an    independent library, which could be loaded using cffi?  (This
+</I>&gt;<i> is    basically what we need to do to support PyPy properly.)
+</I>
+I wouldn't mind if the C code is moved into a library, however cffi
+doesn't seem to be ready to be used in binary distributions without
+resorting to hacks ([1] for the upstream bug, [2] for a very short
+thread on debian-python). I'm told that this will be fixed in cffi at
+some point.
+
+I've always had a good experience with Cython. What do you thinkg about
+that?
+
+Anyway, as long as we are not starting to use ctypes, I'll be fine.
+Depending on the timeframe of this change, I'd prefer PyCrypto to use
+someting that does not require hacks in binary distributions. If cffi is
+fixed until the change happens, I won't complain.
+
+[1] <A HREF="https://bitbucket.org/cffi/cffi/issue/109/enable-sane-packaging-for-cffi">https://bitbucket.org/cffi/cffi/issue/109/enable-sane-packaging-for-cffi</A>
+[2] <A HREF="https://lists.debian.org/debian-python/2013/10/msg00070.html">https://lists.debian.org/debian-python/2013/10/msg00070.html</A>
+
+&gt;<i> 4. What if Crypto.* became a wrapper around some other crypto library?
+</I>
+This depends on the crypto library you're thinking of. If it's openssl,
+then all the GPL licensed reverse dependencies might have a problem (at
+least in Debian).
+
+&gt;<i> 5. The Apache License 2.0.  What if PyCrypto were licensed under it,
+</I>&gt;<i> or    included dependencies that are licensed under it?
+</I>
+With my Debian maintainer hat on, this would be a problem for me. We
+still ship software that is GPL 2 only that depends on PyCrypto.
+However, GPL 2 and the Apache License 2.0 are incompatible.
+
+Examples of these packages include revelation and pymsnt (I stopped
+searching for GPL 2 only reverse dependencies after I've found two).
+
+Of course, if the license changes or python-crypto starts depending on
+something licensed under Apache 2.0 this needs to be checked on a case by
+case basis, but I'd rather avoid it if there is no really good reason to
+do so.
+
+Regards
+-- 
+Sebastian Ramacher
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: Digital signature
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20131030/85cca8a8/attachment.sig">http://lists.dlitz.net/pipermail/pycrypto/attachments/20131030/85cca8a8/attachment.sig</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000720.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+	<LI>Next message: <A HREF="000722.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#721">[ date ]</a>
+              <a href="thread.html#721">[ thread ]</a>
+              <a href="subject.html#721">[ subject ]</a>
+              <a href="author.html#721">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

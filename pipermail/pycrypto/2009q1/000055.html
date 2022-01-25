@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Can pycrypt do a key exchange?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Can%20pycrypt%20do%20a%20key%20exchange%3F&In-Reply-To=848354.88310.qm%40web62506.mail.re1.yahoo.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000054.html">
+   <LINK REL="Next"  HREF="000056.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Can pycrypt do a key exchange?</H1>
+    <B>James A. Donald</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Can%20pycrypt%20do%20a%20key%20exchange%3F&In-Reply-To=848354.88310.qm%40web62506.mail.re1.yahoo.com"
+       TITLE="[pycrypto] Can pycrypt do a key exchange?">jamesd at echeque.com
+       </A><BR>
+    <I>Fri Jan 23 23:05:07 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000054.html">[pycrypto] Can pycrypt do a key exchange?
+</A></li>
+        <LI>Next message: <A HREF="000056.html">[pycrypto] Can pycrypt do a key exchange?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#55">[ date ]</a>
+              <a href="thread.html#55">[ thread ]</a>
+              <a href="subject.html#55">[ subject ]</a>
+              <a href="author.html#55">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Gre7g Luterman wrote:
+ &gt; Hey list -
+ &gt;
+ &gt; I'm working on a Python application where clients will
+ &gt; open encrypted connections to a custom server
+ &gt; application. The data isn't something super-important,
+ &gt; like credit card numbers, but I'd rather not have it
+ &gt; snooped or otherwise mucked with by outsiders.
+ &gt;
+ &gt; pycrypt makes this easy, but how do I share the key
+ &gt; securely? pycrypt has code for calculating
+ &gt; public/private keys, encrypting with them, decrypting
+ &gt; with them, etc., but I don't see an obvious way to do
+ &gt; an exchange with it.
+
+Key distribution is in the general case a major unsolved
+problem, and there are no libraries to handle it -
+worse, there are no protocols to handle it, worse still,
+there are no successful examples to imitate, other than
+SSH.
+
+You, however, are not solving the general case, so might
+hand roll your own custom solution, perhaps starting
+with a single widely known trusted master public key
+embedded in both client and server, whose secret key,
+which you alone possess, is used to sign durable client
+keys and server keys, which are used in combination with
+transient client keys and transient server keys - the
+skype solution.
+
+Now, of course, all the experts say &quot;never hand roll
+your own custom solution&quot;, which is true if the experts
+have something ready to roll that actually works. Which,
+for key distribution, they generally do not.
+
+The particular special case solution will depend on the
+particulars of your particular special case.
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000054.html">[pycrypto] Can pycrypt do a key exchange?
+</A></li>
+	<LI>Next message: <A HREF="000056.html">[pycrypto] Can pycrypt do a key exchange?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#55">[ date ]</a>
+              <a href="thread.html#55">[ thread ]</a>
+              <a href="subject.html#55">[ subject ]</a>
+              <a href="author.html#55">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

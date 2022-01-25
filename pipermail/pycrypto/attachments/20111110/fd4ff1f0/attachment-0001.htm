@@ -1,0 +1,140 @@
+<tt>
+Dean,&nbsp;thanks&nbsp;for&nbsp;the&nbsp;reply&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Ah,&nbsp;I&nbsp;see.&nbsp; If&nbsp;I&nbsp;want&nbsp;to&nbsp;encrypt&nbsp;a&nbsp;2mb&nbsp;file&nbsp;with&nbsp;a Symmetric Key,&nbsp;it&nbsp;just&nbsp;has&nbsp;to&nbsp;have&nbsp;a&nbsp;&amp;quot;16&nbsp;byte&nbsp;padding&amp;quot;&nbsp;for&nbsp;AES,&nbsp;or&nbsp;do&nbsp;all&nbsp;the&nbsp;chunks&nbsp;need&nbsp;to&nbsp;be&nbsp;16&nbsp;bytes?&lt;div&gt;<br>
+&lt;br&gt;&lt;/div&gt;&lt;div&gt;J&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Thu,&nbsp;Nov&nbsp;10,&nbsp;2011&nbsp;at&nbsp;5:17&nbsp;AM,&nbsp;Dean&nbsp;Macinskas&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&amp;lt;&lt;a&nbsp;href=&quot;mailto:dmacinskas@geobridge.net&quot;&gt;dmacinskas@geobridge.net&lt;/a&gt;&amp;gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex;&quot;&gt;<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+&lt;div&nbsp;lang=&quot;EN-US&quot;&nbsp;link=&quot;blue&quot;&nbsp;vlink=&quot;purple&quot;&gt;<br>
+<br>
+&lt;div&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;span&nbsp;style=&quot;font-size:11.0pt;color:#1F497D&quot;&gt;John,&lt;u&gt;&lt;/u&gt;&lt;u&gt;&lt;/u&gt;&lt;/span&gt;&lt;/p&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;span&nbsp;style=&quot;font-size:11.0pt;color:#1F497D&quot;&gt;&lt;u&gt;&lt;/u&gt; &lt;u&gt;&lt;/u&gt;&lt;/span&gt;&lt;/p&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;span&nbsp;style=&quot;font-size:11.0pt;color:#1F497D&quot;&gt;Unless&nbsp;the&nbsp;file&nbsp;is&nbsp;small,&nbsp;the&nbsp;typical&nbsp;way&nbsp;to&nbsp;encrypt&nbsp;a&nbsp;file&nbsp;is<br>
+to&nbsp;use&nbsp;a&nbsp;symmetric&nbsp;key,&nbsp;like&nbsp;TDES&nbsp;or&nbsp;AES. &nbsp;Asymmetric&nbsp;key&nbsp;crypto&nbsp;is<br>
+usually&nbsp;too&nbsp;slow&nbsp;for&nbsp;bulk&nbsp;encryption;&nbsp;you&nbsp;use&nbsp;a&nbsp;symmetric&nbsp;key&nbsp;for&nbsp;that,&nbsp;and<br>
+store/export&nbsp;the&nbsp;symmetric&nbsp;key&nbsp;using&nbsp;asymmetric&nbsp;key&nbsp;protection.&lt;u&gt;&lt;/u&gt;&lt;u&gt;&lt;/u&gt;&lt;/span&gt;&lt;/p&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;span&nbsp;style=&quot;font-size:11.0pt;color:#1F497D&quot;&gt;&lt;u&gt;&lt;/u&gt; &lt;u&gt;&lt;/u&gt;&lt;/span&gt;&lt;/p&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;span&nbsp;style=&quot;font-size:11.0pt;color:#1F497D&quot;&gt;The&nbsp;block&nbsp;size&nbsp;of&nbsp;a&nbsp;public&nbsp;key&nbsp;is&nbsp;fixed&nbsp;by&nbsp;the&nbsp;length&nbsp;of&nbsp;the<br>
+key;&nbsp;in&nbsp;other&nbsp;words,&nbsp;if&nbsp;you&nbsp;generate&nbsp;a&nbsp;2048&nbsp;bit&nbsp;key,&nbsp;the&nbsp;block&nbsp;size&nbsp;is&nbsp;2048<br>
+bits&nbsp;(256&nbsp;bytes). &nbsp;Symmetric&nbsp;key&nbsp;block&nbsp;length&nbsp;is&nbsp;set&nbsp;by&nbsp;the&nbsp;algorithm:&nbsp;8<br>
+bytes&nbsp;for&nbsp;TDES,&nbsp;16&nbsp;for&nbsp;AES. &nbsp;Any&nbsp;data&nbsp;you&nbsp;encrypt&nbsp;has&nbsp;to&nbsp;be&nbsp;padded&nbsp;to&nbsp;a<br>
+multiple&nbsp;of&nbsp;the&nbsp;block&nbsp;length.&lt;u&gt;&lt;/u&gt;&lt;u&gt;&lt;/u&gt;&lt;/span&gt;&lt;/p&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;span&nbsp;style=&quot;font-size:11.0pt;color:#1F497D&quot;&gt;&lt;u&gt;&lt;/u&gt; &lt;u&gt;&lt;/u&gt;&lt;/span&gt;&lt;/p&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;span&nbsp;style=&quot;font-size:11.0pt;color:#1F497D&quot;&gt;If&nbsp;you&nbsp;use&nbsp;RSA,&nbsp;there&nbsp;are&nbsp;a&nbsp;couple&nbsp;of&nbsp;rules&nbsp;for&nbsp;encrypting&nbsp;data,<br>
+one&nbsp;of&nbsp;which&nbsp;is&nbsp;that&nbsp;the&nbsp;data&nbsp;has&nbsp;to&nbsp;be&nbsp;numerically&nbsp;less&nbsp;than&nbsp;the&nbsp;public&nbsp;modulus. <br>
+This&nbsp;is&nbsp;usually&nbsp;accomplished&nbsp;by&nbsp;setting&nbsp;the&nbsp;left-most&nbsp;bit&nbsp;(MSB)&nbsp;of&nbsp;the&nbsp;data<br>
+block&nbsp;to&nbsp;zero;&nbsp;another&nbsp;reason&nbsp;why&nbsp;using&nbsp;a&nbsp;public&nbsp;key&nbsp;directly&nbsp;is&nbsp;not&nbsp;a&nbsp;good<br>
+choice&nbsp;for&nbsp;bulk&nbsp;encryption.&lt;u&gt;&lt;/u&gt;&lt;u&gt;&lt;/u&gt;&lt;/span&gt;&lt;/p&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;span&nbsp;style=&quot;font-size:11.0pt;color:#1F497D&quot;&gt;&lt;u&gt;&lt;/u&gt; &lt;u&gt;&lt;/u&gt;&lt;/span&gt;&lt;/p&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;span&nbsp;style=&quot;font-size:11.0pt;color:#1F497D&quot;&gt;HTH,&lt;u&gt;&lt;/u&gt;&lt;u&gt;&lt;/u&gt;&lt;/span&gt;&lt;/p&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;span&nbsp;style=&quot;font-size:11.0pt;color:#1F497D&quot;&gt;Dean&lt;u&gt;&lt;/u&gt;&lt;u&gt;&lt;/u&gt;&lt;/span&gt;&lt;/p&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;span&nbsp;style=&quot;font-size:11.0pt;color:#1F497D&quot;&gt;&lt;u&gt;&lt;/u&gt; &lt;u&gt;&lt;/u&gt;&lt;/span&gt;&lt;/p&gt;<br>
+<br>
+&lt;div&nbsp;style=&quot;border:none;border-top:solid&nbsp;#B5C4DF&nbsp;1.0pt;padding:3.0pt&nbsp;0in&nbsp;0in&nbsp;0in&quot;&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;b&gt;&lt;span&nbsp;style=&quot;font-size:10.0pt&quot;&gt;From:&lt;/span&gt;&lt;/b&gt;&lt;span&nbsp;style=&quot;font-size:10.0pt&quot;&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto-bounces@lists.dlitz.net&quot;&nbsp;target=&quot;_blank&quot;&gt;pycrypto-bounces@lists.dlitz.net&lt;/a&gt;&nbsp;[mailto:&lt;a&nbsp;href=&quot;mailto:pycrypto-bounces@lists.dlitz.net&quot;&nbsp;target=&quot;_blank&quot;&gt;pycrypto-bounces@lists.dlitz.net&lt;/a&gt;]&nbsp;&lt;b&gt;On<br>
+Behalf&nbsp;Of&nbsp;&lt;/b&gt;John&nbsp;Matthew&lt;br&gt;<br>
+&lt;b&gt;Sent:&lt;/b&gt;&nbsp;Tuesday,&nbsp;November&nbsp;08,&nbsp;2011&nbsp;11:59&nbsp;AM&lt;br&gt;<br>
+&lt;b&gt;To:&lt;/b&gt;&nbsp;&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&nbsp;target=&quot;_blank&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;b&gt;Subject:&lt;/b&gt;&nbsp;[pycrypto]&nbsp;Public&nbsp;Key&nbsp;encryption&nbsp;of&nbsp;files&lt;u&gt;&lt;/u&gt;&lt;u&gt;&lt;/u&gt;&lt;/span&gt;&lt;/p&gt;<br>
+<br>
+&lt;/div&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;u&gt;&lt;/u&gt; &lt;u&gt;&lt;/u&gt;&lt;/p&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;First&nbsp;off,&nbsp;pycrypto&nbsp;is&nbsp;awesome!&nbsp; Thank&nbsp;you&nbsp;for&nbsp;creating<br>
+it!&lt;u&gt;&lt;/u&gt;&lt;u&gt;&lt;/u&gt;&lt;/p&gt;<br>
+<br>
+&lt;div&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;u&gt;&lt;/u&gt; &lt;u&gt;&lt;/u&gt;&lt;/p&gt;<br>
+<br>
+&lt;/div&gt;<br>
+<br>
+&lt;div&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;I&amp;#39;d&nbsp;like&nbsp;to&nbsp;use&nbsp;Public&nbsp;Keys&nbsp;to&nbsp;encrypt&nbsp;files,&nbsp;is&nbsp;this<br>
+something&nbsp;that&nbsp;seems&nbsp;appropriate&nbsp;for&nbsp;file&nbsp;encryption?&lt;u&gt;&lt;/u&gt;&lt;u&gt;&lt;/u&gt;&lt;/p&gt;<br>
+<br>
+&lt;/div&gt;<br>
+<br>
+&lt;div&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;u&gt;&lt;/u&gt; &lt;u&gt;&lt;/u&gt;&lt;/p&gt;<br>
+<br>
+&lt;/div&gt;<br>
+<br>
+&lt;div&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;I&amp;#39;ve&nbsp;noticed&nbsp;that&nbsp;the&nbsp;encrypt&nbsp;method&nbsp;for&nbsp;RSA&nbsp;keys&nbsp;is&nbsp;only<br>
+256&nbsp;bytes,&nbsp;which&nbsp;seems&nbsp;rather&nbsp;small.&lt;u&gt;&lt;/u&gt;&lt;u&gt;&lt;/u&gt;&lt;/p&gt;<br>
+<br>
+&lt;/div&gt;<br>
+<br>
+&lt;div&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;u&gt;&lt;/u&gt; &lt;u&gt;&lt;/u&gt;&lt;/p&gt;<br>
+<br>
+&lt;/div&gt;<br>
+<br>
+&lt;div&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;I&nbsp;know&nbsp;I&nbsp;could&nbsp;wrap&nbsp;that&nbsp;in&nbsp;a&nbsp;generator,&nbsp;but&nbsp;was&nbsp;hoping&nbsp;for<br>
+some&nbsp;feedback&nbsp;on&nbsp;another&nbsp;way&nbsp;or&nbsp;a&nbsp;configuration&nbsp;change&nbsp;to&nbsp;increase&nbsp;that&nbsp;number.&lt;u&gt;&lt;/u&gt;&lt;u&gt;&lt;/u&gt;&lt;/p&gt;<br>
+<br>
+&lt;/div&gt;<br>
+<br>
+&lt;div&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;u&gt;&lt;/u&gt; &lt;u&gt;&lt;/u&gt;&lt;/p&gt;<br>
+<br>
+&lt;/div&gt;<br>
+<br>
+&lt;div&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;Thanks&nbsp;for&nbsp;your&nbsp;contribution,&nbsp;and&nbsp;help.&lt;u&gt;&lt;/u&gt;&lt;u&gt;&lt;/u&gt;&lt;/p&gt;<br>
+<br>
+&lt;/div&gt;<br>
+<br>
+&lt;div&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;&lt;u&gt;&lt;/u&gt; &lt;u&gt;&lt;/u&gt;&lt;/p&gt;<br>
+<br>
+&lt;/div&gt;<br>
+<br>
+&lt;div&gt;<br>
+<br>
+&lt;p&nbsp;class=&quot;MsoNormal&quot;&gt;J&lt;u&gt;&lt;/u&gt;&lt;u&gt;&lt;/u&gt;&lt;/p&gt;<br>
+<br>
+&lt;/div&gt;<br>
+<br>
+&lt;/div&gt;<br>
+<br>
+&lt;/div&gt;<br>
+<br>
+<br>
+&lt;br&gt;_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;br&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;<br>
+
+</tt>

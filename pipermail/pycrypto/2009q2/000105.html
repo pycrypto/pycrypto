@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Encryption library
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Encryption%20library&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000104.html">
+   <LINK REL="Next"  HREF="000106.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Encryption library</H1>
+    <B>Jonathan Hayward</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Encryption%20library&In-Reply-To="
+       TITLE="[pycrypto] Encryption library">christos.jonathan.hayward at gmail.com
+       </A><BR>
+    <I>Mon May  4 12:58:09 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000104.html">[pycrypto] DES/DES3/XOR/etc removal
+</A></li>
+        <LI>Next message: <A HREF="000106.html">[pycrypto] Encryption library
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#105">[ date ]</a>
+              <a href="thread.html#105">[ thread ]</a>
+              <a href="subject.html#105">[ subject ]</a>
+              <a href="author.html#105">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I am looking to set up a hardened box that will be able to store
+information, but after we ask it to generate fresh keys and credentials, the
+box alone can access the plaintext of stored information but we won't know
+of any way we could access the plaintext information without either breaking
+the (hardened) OS or breaking strong encryption.
+
+I am looking for basic asymmetric encryption available in Python; I'd
+imagine that would mean something like GPG or PGP, were such available in
+Python.
+
+As far as the encryption side,
+<A HREF="http://docs.python.org/library/crypto.htmloffers">http://docs.python.org/library/crypto.htmloffers</A> message digests only
+and says to see
+<A HREF="http://www.amk.ca/python/code/crypto.html">http://www.amk.ca/python/code/crypto.html</A> for a fuller suite.
+<A HREF="http://www.amk.ca/python/code/crypto.html">http://www.amk.ca/python/code/crypto.html</A> says that it is not being
+maintained and to check <A HREF="http://www.dlitz.net/software/pycrypto/">http://www.dlitz.net/software/pycrypto/</A> for current
+development, but the new page in turn says that it's still working towards a
+release and people can download the dated/buggy library from
+<A HREF="http://www.amk.ca/python/code/crypto.html">http://www.amk.ca/python/code/crypto.html</A> ; I assume that means that for
+production purposes I should be looking at
+<A HREF="http://www.amk.ca/files/python/crypto/pycrypto-2.0.1.tar.gz">http://www.amk.ca/files/python/crypto/pycrypto-2.0.1.tar.gz</A> .
+
+I'd welcome suggestions on libraries/algorighms I should be using for
+asymmetric encryption to be able to say &quot;We made this box as secure as we
+can and now we don't know how to access the sensitive plaintext that it is
+securing and using to secure requests.&quot;
+
+TIA,
+-- 
+Jonathan Hayward, <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">christos.jonathan.hayward at gmail.com</A>
+An Orthodox Christian author: theology, literature, et cetera.
+My award-winning collection is available for free reading online:
+I invite you to visit my website at <A HREF="http://JonathansCorner.com/">http://JonathansCorner.com/</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090504/a7526ef3/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090504/a7526ef3/attachment.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000104.html">[pycrypto] DES/DES3/XOR/etc removal
+</A></li>
+	<LI>Next message: <A HREF="000106.html">[pycrypto] Encryption library
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#105">[ date ]</a>
+              <a href="thread.html#105">[ thread ]</a>
+              <a href="subject.html#105">[ subject ]</a>
+              <a href="author.html#105">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

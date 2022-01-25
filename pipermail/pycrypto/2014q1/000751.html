@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Docs/code mis-match - not specifying IV fails
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Docs/code%20mis-match%20-%20not%20specifying%20IV%20fails&In-Reply-To=%3CCAL_xc9ip-UxK_2%3D5EvJBtEN9guqwZa-4%3DxUfCy527uKzj2dycA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000752.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Docs/code mis-match - not specifying IV fails</H1>
+    <B>Hugh Macdonald</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Docs/code%20mis-match%20-%20not%20specifying%20IV%20fails&In-Reply-To=%3CCAL_xc9ip-UxK_2%3D5EvJBtEN9guqwZa-4%3DxUfCy527uKzj2dycA%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Docs/code mis-match - not specifying IV fails">hugh.macdonald at nvizible.com
+       </A><BR>
+    <I>Tue Jan  7 09:43:03 PST 2014</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000752.html">[pycrypto] Docs/code mis-match - not specifying IV fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#751">[ date ]</a>
+              <a href="thread.html#751">[ thread ]</a>
+              <a href="subject.html#751">[ subject ]</a>
+              <a href="author.html#751">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I've just been trying to figure out why some code of mine broke after an
+update from 2.0.1 to 2.6.1, and found that I hadn't been passing an IV into
+AES.new() (using MODE_CFB).
+
+Previously, it was happy with this, and, according to the docs here (
+<A HREF="https://www.dlitz.net/software/pycrypto/api/current/">https://www.dlitz.net/software/pycrypto/api/current/</A>), &quot;It is optional and
+when not present it will be given a default value of all zeroes.&quot;
+
+Looking at the code that throws the exception (
+<A HREF="https://github.com/dlitz/pycrypto/blob/master/src/block_template.c,">https://github.com/dlitz/pycrypto/blob/master/src/block_template.c,</A> line
+163), it doesn't allow for doing what the docs suggest it will.
+
+I'm not sure whether I've either misunderstood something or which of the
+two is wrong, but I thought I'd at least flag it for discussion...
+
+
+Hugh
+
+-- 
+D I S C L A I M E R : This email and any files transmitted with it are 
+intended solely for the intended addressee, and may contain confidential 
+information or material protected by law, copyright or other legislation.  
+If you have received this message in error, please return it to the sender 
+or notify the sender by calling +44 (0)20 3167 3860, and immediately and 
+permanently delete it. You should not copy it or use it for any purpose, 
+nor disclose its contents to any other person. Only the intended recipient 
+may place any reliance upon it. Nvizible Limited accepts no responsibility 
+or liability for emails sent by its employees or personnel which are not 
+sent in the course of its business or that of its clients.
+ 
+Nvizible Limited, 8/9 Carlisle Street, London W1D 3BP .  Registered in 
+England &amp; Wales with Company Number: 6900121
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20140107/2dcce815/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20140107/2dcce815/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000752.html">[pycrypto] Docs/code mis-match - not specifying IV fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#751">[ date ]</a>
+              <a href="thread.html#751">[ thread ]</a>
+              <a href="subject.html#751">[ subject ]</a>
+              <a href="author.html#751">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

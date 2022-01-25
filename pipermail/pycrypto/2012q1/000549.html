@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] same RSA.construct fails on OSX
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20same%20RSA.construct%20fails%20on%20OSX&In-Reply-To=%3CCAGfyce0UFyJNYgfb6mgAnwofsHzoLGTcoFj2JzMBdnTp4Z1qhQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000545.html">
+   <LINK REL="Next"  HREF="000558.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] same RSA.construct fails on OSX</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20same%20RSA.construct%20fails%20on%20OSX&In-Reply-To=%3CCAGfyce0UFyJNYgfb6mgAnwofsHzoLGTcoFj2JzMBdnTp4Z1qhQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] same RSA.construct fails on OSX">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Sun Jan 22 15:55:42 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000545.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+        <LI>Next message: <A HREF="000558.html">[pycrypto] autoconf error on Windows
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#549">[ date ]</a>
+              <a href="thread.html#549">[ thread ]</a>
+              <a href="subject.html#549">[ subject ]</a>
+              <a href="author.html#549">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Antoine,
+
+&gt;&gt;<i> Do you need a public key or a private key?
+</I>&gt;<i> As per above, public if d==0, private otherwise.
+</I>
+&gt;&gt;<i> If you need a private key and you want it to work with all pycrypto
+</I>&gt;&gt;<i> versions, go and look for the remaining 2 parameters (p and q)... ;-)
+</I>
+Here I was wrong, I just had a look at the code.
+If you pass three arguments, you always build a private key in any
+version of pycrypto,
+assuming that the third parameter (d) is really the correct private exponent.
+p and q are not strictly needed.
+
+If d is zero though, construct() in pycrypto &lt;2.5 will succeed but you
+will end with a key which may still be potentially used a private key,
+even if it shouldn't.
+In other words, sign&amp;decrypt won't fail but their output will be wrong.
+
+The code you came up with:
+
+&gt;&gt;&gt;<i> if d==0:
+</I>&gt;&gt;&gt;<i>  k = RSA.construct((long(m), long(e)))
+</I>&gt;&gt;&gt;<i> else:
+</I>&gt;&gt;&gt;<i>  k = RSA.construct((long(m), long(e), long(d)))
+</I>
+seems the most correct in your situation.
+</PRE>
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000545.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+	<LI>Next message: <A HREF="000558.html">[pycrypto] autoconf error on Windows
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#549">[ date ]</a>
+              <a href="thread.html#549">[ thread ]</a>
+              <a href="subject.html#549">[ subject ]</a>
+              <a href="author.html#549">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

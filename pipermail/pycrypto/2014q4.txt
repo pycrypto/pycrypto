@@ -1,0 +1,937 @@
+From luisgf at luisgf.es  Sun Nov 30 23:35:56 2014
+From: luisgf at luisgf.es (=?UTF-8?B?THVpcyBHb256w6FsZXogRmVybsOhbmRleg==?=)
+Date: Mon, 01 Dec 2014 08:35:56 +0100
+Subject: [pycrypto] Bug in PyCrypto 2.6.1
+Message-ID: <547C1A5C.4040107@luisgf.es>
+
+Hello All:
+
+
+I found a strange bug in size() function that return a wrong key size
+after creating or importing an RSA key. The return value for the size
+funciont seems to be keysize-1.
+
+Here a demo of the bug:
+
+
+luisgf at NCC1701B:~$ python3
+Python 3.4.0 (default, Apr 11 2014, 13:05:11)
+[GCC 4.8.2] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from Crypto.PublicKey import RSA
+>>> key = RSA.generate(2048)
+>>> key.size()
+2047
+>>>
+
+
+Regards.
+
+-- 
+
+--
+Luis Gonz?lez Fern?ndez
+https://www.luisgf.es
+PGP ID: C918B80F (DD6F BFC1 FC14 4C81 34F8 EA1E 6BCB C27F C918 B80F)
+Twitter: @luisgf_2001 / Jabber: luisgf at mijabber.es
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20141201/82202087/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 819 bytes
+Desc: OpenPGP digital signature
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20141201/82202087/attachment.sig>
+
+From don at amberfisharts.com  Mon Dec  1 07:23:03 2014
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Mon, 01 Dec 2014 15:23:03 +0000
+Subject: [pycrypto] Bug in PyCrypto 2.6.1
+In-Reply-To: <547C1A5C.4040107@luisgf.es>
+References: <547C1A5C.4040107@luisgf.es>
+Message-ID: <547C87D7.1090905@amberfisharts.com>
+
+Hi Luis,
+
+Thanks for reporting!
+I agree that this seems like strange/wrong behaviour.
+Especially when realise that the docs seem to contradict the behaviour.
+_RSA.RSAobj.size.__doc__ says: Return the maximum number of bits that can be handled by this key.
+But this works fine:
+ >>> key.encrypt(1<<key.size(), "")
+Note that 1 << x has x+1 bits so that the above key happily encrypts key.size()+1 bits.
+
+The only thing holding me back from strait out calling it a bug is that
+  1) this is very old code dating back to 2003.
+  and 2) the -1 is actively coded there but with out explanation
+
+As a pointer to others the relevant places are:
+/lib/Crypto/PublicKey/_RSA.py:80
+/src/_fastmath.c:949
+
+If it is decided that this is a bug and should be fixed one should also look at other keys, e.g. DSA which seems to do 
+the same -1 calculation.
+
+Cheers,
+Lorenz
+
+
+
+On 01/12/14 07:35, Luis Gonz?lez Fern?ndez wrote:
+> Hello All:
+>
+>
+> I found a strange bug in size() function that return a wrong key size after creating or importing an RSA key. The return
+> value for the size funciont seems to be keysize-1.
+>
+> Here a demo of the bug:
+>
+>
+> luisgf at NCC1701B:~$ python3
+> Python 3.4.0 (default, Apr 11 2014, 13:05:11)
+> [GCC 4.8.2] on linux
+> Type "help", "copyright", "credits" or "license" for more information.
+>  >>> from Crypto.PublicKey import RSA
+>  >>> key = RSA.generate(2048)
+>  >>> key.size()
+> 2047
+>  >>>
+>
+>
+> Regards.
+>
+> --
+>
+> --
+> Luis Gonz?lez Fern?ndez
+> https://www.luisgf.es
+> PGP ID: C918B80F (DD6F BFC1 FC14 4C81 34F8 EA1E 6BCB C27F C918 B80F)
+> Twitter: @luisgf_2001 / Jabber:luisgf at mijabber.es
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+From mirko.dziadzka at gmail.com  Mon Dec  1 08:13:12 2014
+From: mirko.dziadzka at gmail.com (Mirko Dziadzka)
+Date: Mon, 1 Dec 2014 17:13:12 +0100
+Subject: [pycrypto] Bug in PyCrypto 2.6.1
+In-Reply-To: <547C87D7.1090905@amberfisharts.com>
+References: <547C1A5C.4040107@luisgf.es> <547C87D7.1090905@amberfisharts.com>
+Message-ID: <5D16DD8B-67CB-429C-9BF0-42D5F1C787AE@gmail.com>
+
+HI
+
+Some thoughts about this ?
+
+> _RSA.RSAobj.size.__doc__ says: Return the maximum number of bits that can be handled by this key
+
+An RSA key can only encrypt data smaller than this key. So if we have an 2048 bit RSA key, it can encrypt some 2048 bit values, but not all. So 2047 should be the safe value here.
+
+IMHO this -1 is correct here.
+
+    Mirko
+
+
+
+On 01.12.2014, at 16:23, Lorenz Quack <don at amberfisharts.com> wrote:
+
+> Hi Luis,
+> 
+> Thanks for reporting!
+> I agree that this seems like strange/wrong behaviour.
+> Especially when realise that the docs seem to contradict the behaviour.
+> _RSA.RSAobj.size.__doc__ says: Return the maximum number of bits that can be handled by this key.
+> But this works fine:
+> >>> key.encrypt(1<<key.size(), "")
+> Note that 1 << x has x+1 bits so that the above key happily encrypts key.size()+1 bits.
+> 
+> The only thing holding me back from strait out calling it a bug is that
+> 1) this is very old code dating back to 2003.
+> and 2) the -1 is actively coded there but with out explanation
+> 
+> As a pointer to others the relevant places are:
+> /lib/Crypto/PublicKey/_RSA.py:80
+> /src/_fastmath.c:949
+> 
+> If it is decided that this is a bug and should be fixed one should also look at other keys, e.g. DSA which seems to do the same -1 calculation.
+> 
+> Cheers,
+> Lorenz
+> 
+> 
+> 
+> On 01/12/14 07:35, Luis Gonz?lez Fern?ndez wrote:
+>> Hello All:
+>> 
+>> 
+>> I found a strange bug in size() function that return a wrong key size after creating or importing an RSA key. The return
+>> value for the size funciont seems to be keysize-1.
+>> 
+>> Here a demo of the bug:
+>> 
+>> 
+>> luisgf at NCC1701B:~$ python3
+>> Python 3.4.0 (default, Apr 11 2014, 13:05:11)
+>> [GCC 4.8.2] on linux
+>> Type "help", "copyright", "credits" or "license" for more information.
+>> >>> from Crypto.PublicKey import RSA
+>> >>> key = RSA.generate(2048)
+>> >>> key.size()
+>> 2047
+>> >>>
+>> 
+>> 
+>> Regards.
+>> 
+>> --
+>> 
+>> --
+>> Luis Gonz?lez Fern?ndez
+>> https://www.luisgf.es
+>> PGP ID: C918B80F (DD6F BFC1 FC14 4C81 34F8 EA1E 6BCB C27F C918 B80F)
+>> Twitter: @luisgf_2001 / Jabber:luisgf at mijabber.es
+>> 
+>> 
+>> 
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>> 
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From paul_koning at dell.com  Mon Dec  1 08:31:27 2014
+From: paul_koning at dell.com (Paul Koning)
+Date: Mon, 1 Dec 2014 11:31:27 -0500
+Subject: [pycrypto] Bug in PyCrypto 2.6.1
+In-Reply-To: <5D16DD8B-67CB-429C-9BF0-42D5F1C787AE@gmail.com>
+References: <547C1A5C.4040107@luisgf.es> <547C87D7.1090905@amberfisharts.com>
+ <5D16DD8B-67CB-429C-9BF0-42D5F1C787AE@gmail.com>
+Message-ID: <CDBB9246-A032-4BA1-BFC2-FA713B65A1B7@dell.com>
+
+To me, key_size means the size of the key.  It doesn?t mean the largest value you can encrypt.  If that is what is intended, or if it has to stay that way for historical reasons, fine, but it needs to be very clearly pointed out in the documentation because it is unexpected and counterintuitive.
+
+	paul
+
+> On Dec 1, 2014, at 11:13 AM, Mirko Dziadzka <mirko.dziadzka at gmail.com> wrote:
+> 
+> HI
+> 
+> Some thoughts about this ?
+> 
+>> _RSA.RSAobj.size.__doc__ says: Return the maximum number of bits that can be handled by this key
+> 
+> An RSA key can only encrypt data smaller than this key. So if we have an 2048 bit RSA key, it can encrypt some 2048 bit values, but not all. So 2047 should be the safe value here.
+> 
+> IMHO this -1 is correct here.
+> 
+> Mirko
+
+
+From mirko.dziadzka at gmail.com  Mon Dec  1 09:23:05 2014
+From: mirko.dziadzka at gmail.com (Mirko Dziadzka)
+Date: Mon, 1 Dec 2014 18:23:05 +0100
+Subject: [pycrypto] Bug in PyCrypto 2.6.1
+In-Reply-To: <CDBB9246-A032-4BA1-BFC2-FA713B65A1B7@dell.com>
+References: <547C1A5C.4040107@luisgf.es> <547C87D7.1090905@amberfisharts.com>
+ <5D16DD8B-67CB-429C-9BF0-42D5F1C787AE@gmail.com>
+ <CDBB9246-A032-4BA1-BFC2-FA713B65A1B7@dell.com>
+Message-ID: <E615861D-FC8C-49FD-BF43-AD72155897F4@gmail.com>
+
+Oh, I totally agree. Either the name or the implementation has a problem.
+
+I was just pointing out that the behavior is consistent with the documentation in https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA._RSAobj-class.html#size
+
+    Mirko
+
+
+On 01.12.2014, at 17:31, Paul Koning <paul_koning at dell.com> wrote:
+
+> To me, key_size means the size of the key.  It doesn?t mean the largest value you can encrypt.  If that is what is intended, or if it has to stay that way for historical reasons, fine, but it needs to be very clearly pointed out in the documentation because it is unexpected and counterintuitive.
+> 
+> 	paul
+> 
+>> On Dec 1, 2014, at 11:13 AM, Mirko Dziadzka <mirko.dziadzka at gmail.com> wrote:
+>> 
+>> HI
+>> 
+>> Some thoughts about this ?
+>> 
+>>> _RSA.RSAobj.size.__doc__ says: Return the maximum number of bits that can be handled by this key
+>> 
+>> An RSA key can only encrypt data smaller than this key. So if we have an 2048 bit RSA key, it can encrypt some 2048 bit values, but not all. So 2047 should be the safe value here.
+>> 
+>> IMHO this -1 is correct here.
+>> 
+>> Mirko
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From don at amberfisharts.com  Mon Dec  1 09:48:26 2014
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Mon, 01 Dec 2014 17:48:26 +0000
+Subject: [pycrypto] Bug in PyCrypto 2.6.1
+In-Reply-To: <E615861D-FC8C-49FD-BF43-AD72155897F4@gmail.com>
+References: <547C1A5C.4040107@luisgf.es> <547C87D7.1090905@amberfisharts.com>
+ <5D16DD8B-67CB-429C-9BF0-42D5F1C787AE@gmail.com>
+ <CDBB9246-A032-4BA1-BFC2-FA713B65A1B7@dell.com>
+ <E615861D-FC8C-49FD-BF43-AD72155897F4@gmail.com>
+Message-ID: <547CA9EA.7010401@amberfisharts.com>
+
+On 01/12/14 17:23, Mirko Dziadzka wrote:
+> Oh, I totally agree. Either the name or the implementation has a problem.
+
++1
+
+>
+> I was just pointing out that the behavior is consistent with the documentation in https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA._RSAobj-class.html#size
+
+I disagree. As I showed in the code example and you pointed out in your previous post there are *some* values that the 
+key can handle with more bits than reported by size().
+So, size() is *not* the "maximum number of bits that can be handled by this key".
+It is the maximum number of bits that is guaranteed to work for all values.
+
+Lorenz
+
+>
+>      Mirko
+>
+>
+> On 01.12.2014, at 17:31, Paul Koning <paul_koning at dell.com> wrote:
+>
+>> To me, key_size means the size of the key.  It doesn?t mean the largest value you can encrypt.  If that is what is intended, or if it has to stay that way for historical reasons, fine, but it needs to be very clearly pointed out in the documentation because it is unexpected and counterintuitive.
+>>
+>> 	paul
+>>
+>>> On Dec 1, 2014, at 11:13 AM, Mirko Dziadzka <mirko.dziadzka at gmail.com> wrote:
+>>>
+>>> HI
+>>>
+>>> Some thoughts about this ?
+>>>
+>>>> _RSA.RSAobj.size.__doc__ says: Return the maximum number of bits that can be handled by this key
+>>>
+>>> An RSA key can only encrypt data smaller than this key. So if we have an 2048 bit RSA key, it can encrypt some 2048 bit values, but not all. So 2047 should be the safe value here.
+>>>
+>>> IMHO this -1 is correct here.
+>>>
+>>> Mirko
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+From luisgf at luisgf.es  Fri Dec 12 04:58:27 2014
+From: luisgf at luisgf.es (=?windows-1252?Q?Luis_Gonz=E1lez_Fern=E1ndez?=)
+Date: Fri, 12 Dec 2014 13:58:27 +0100
+Subject: [pycrypto] Bug in PyCrypto 2.6.1
+In-Reply-To: <547CA9EA.7010401@amberfisharts.com>
+References: <547C1A5C.4040107@luisgf.es> <547C87D7.1090905@amberfisharts.com>
+ <5D16DD8B-67CB-429C-9BF0-42D5F1C787AE@gmail.com>
+ <CDBB9246-A032-4BA1-BFC2-FA713B65A1B7@dell.com>
+ <E615861D-FC8C-49FD-BF43-AD72155897F4@gmail.com>
+ <547CA9EA.7010401@amberfisharts.com>
+Message-ID: <548AE673.4020802@luisgf.es>
+
+Hi All:
+
+Any news about this?
+
+
+On 01/12/14 18:48, Lorenz Quack wrote:
+> On 01/12/14 17:23, Mirko Dziadzka wrote:
+>> Oh, I totally agree. Either the name or the implementation has a
+>> problem.
+>
+> +1
+>
+>>
+>> I was just pointing out that the behavior is consistent with the
+>> documentation in
+>> https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA._RSAobj-class.html#size
+>
+> I disagree. As I showed in the code example and you pointed out in
+> your previous post there are *some* values that the key can handle
+> with more bits than reported by size().
+> So, size() is *not* the "maximum number of bits that can be handled by
+> this key".
+> It is the maximum number of bits that is guaranteed to work for all
+> values.
+>
+> Lorenz
+>
+>>
+>>      Mirko
+>>
+>>
+>> On 01.12.2014, at 17:31, Paul Koning <paul_koning at dell.com> wrote:
+>>
+>>> To me, key_size means the size of the key.  It doesn?t mean the
+>>> largest value you can encrypt.  If that is what is intended, or if
+>>> it has to stay that way for historical reasons, fine, but it needs
+>>> to be very clearly pointed out in the documentation because it is
+>>> unexpected and counterintuitive.
+>>>
+>>>     paul
+>>>
+>>>> On Dec 1, 2014, at 11:13 AM, Mirko Dziadzka
+>>>> <mirko.dziadzka at gmail.com> wrote:
+>>>>
+>>>> HI
+>>>>
+>>>> Some thoughts about this ?
+>>>>
+>>>>> _RSA.RSAobj.size.__doc__ says: Return the maximum number of bits
+>>>>> that can be handled by this key
+>>>>
+>>>> An RSA key can only encrypt data smaller than this key. So if we
+>>>> have an 2048 bit RSA key, it can encrypt some 2048 bit values, but
+>>>> not all. So 2047 should be the safe value here.
+>>>>
+>>>> IMHO this -1 is correct here.
+>>>>
+>>>> Mirko
+>>>
+>>> _______________________________________________
+>>> pycrypto mailing list
+>>> pycrypto at lists.dlitz.net
+>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-- 
+
+--
+Luis Gonz?lez Fern?ndez
+https://www.luisgf.es
+PGP ID: C918B80F (DD6F BFC1 FC14 4C81 34F8 EA1E 6BCB C27F C918 B80F)
+Twitter: @luisgf_2001 / Jabber: luisgf at mijabber.es
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 819 bytes
+Desc: OpenPGP digital signature
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20141212/f18743c3/attachment.sig>
+
+From markgrandi at gmail.com  Thu Dec 18 00:31:03 2014
+From: markgrandi at gmail.com (Mark Grandi)
+Date: Thu, 18 Dec 2014 00:31:03 -0800
+Subject: [pycrypto] Unable to compile PyCrypto 2.6.1 on windows + msvc
+ compiler + python 3.4.2 64bit, missing python imports?
+Message-ID: <CAKK78jn=V7RmTyaS4uwe3eysnsF=9B5vEo6pa67rkuBRm4XKBw@mail.gmail.com>
+
+Hello,
+
+I seem to have the same problem as Alec Taylor, the last message in this
+mailing list thread:
+http://comments.gmane.org/gmane.comp.python.general/705881
+
+Basically, i'm unable to compile PyCrypto 2.6.1 on windows. I have visual
+studio 2010 professional installed, but it appears to be not including the
+python 3.4 'include' directory in the link.exe call, but it does correctly
+pass it in to cl.exe... so i'm confused on whats going wrong. This also
+happens if i use pip to install pycrypto, same error. Any ideas? I managed
+to build a wheel of pycrypto on my old windows install, but I'm just
+frustrated that I can't compile it on my new computer.
+
+my python install :
+
+Python 3.4.2 (v3.4.2:ab2c023a9432, Oct  6 2014, 22:16:31) [MSC v.1600 64
+bit (AMD64)] on win32
+
+The full output of the command:
+######################################################################
+
+
+C:\Users\Mark Grandi\Downloads\pycrypto-2.6.1>py -3 setup.py build
+running build
+running build_py
+creating build
+creating build\lib.win-amd64-3.4
+creating build\lib.win-amd64-3.4\Crypto
+copying lib\Crypto\pct_warnings.py -> build\lib.win-amd64-3.4\Crypto
+copying lib\Crypto\__init__.py -> build\lib.win-amd64-3.4\Crypto
+creating build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\hashalgo.py -> build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\HMAC.py -> build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\MD2.py -> build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\MD4.py -> build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\MD5.py -> build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\RIPEMD.py -> build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\SHA.py -> build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\SHA224.py -> build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\SHA256.py -> build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\SHA384.py -> build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\SHA512.py -> build\lib.win-amd64-3.4\Crypto\Hash
+copying lib\Crypto\Hash\__init__.py -> build\lib.win-amd64-3.4\Crypto\Hash
+creating build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\AES.py -> build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\ARC2.py -> build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\ARC4.py -> build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\blockalgo.py ->
+build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\Blowfish.py ->
+build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\CAST.py -> build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\DES.py -> build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\DES3.py -> build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\PKCS1_OAEP.py ->
+build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\PKCS1_v1_5.py ->
+build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\XOR.py -> build\lib.win-amd64-3.4\Crypto\Cipher
+copying lib\Crypto\Cipher\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\Cipher
+creating build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\asn1.py -> build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\Counter.py -> build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\number.py -> build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\py3compat.py -> build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\randpool.py -> build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\RFC1751.py -> build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\winrandom.py -> build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\_number_new.py ->
+build\lib.win-amd64-3.4\Crypto\Util
+copying lib\Crypto\Util\__init__.py -> build\lib.win-amd64-3.4\Crypto\Util
+creating build\lib.win-amd64-3.4\Crypto\Random
+copying lib\Crypto\Random\random.py -> build\lib.win-amd64-3.4\Crypto\Random
+copying lib\Crypto\Random\_UserFriendlyRNG.py ->
+build\lib.win-amd64-3.4\Crypto\Random
+copying lib\Crypto\Random\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\Random
+creating build\lib.win-amd64-3.4\Crypto\Random\Fortuna
+copying lib\Crypto\Random\Fortuna\FortunaAccumulator.py ->
+build\lib.win-amd64-3.4\Crypto\Random\Fortuna
+copying lib\Crypto\Random\Fortuna\FortunaGenerator.py ->
+build\lib.win-amd64-3.4\Crypto\Random\Fortuna
+copying lib\Crypto\Random\Fortuna\SHAd256.py ->
+build\lib.win-amd64-3.4\Crypto\Random\Fortuna
+copying lib\Crypto\Random\Fortuna\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\Random\Fortuna
+creating build\lib.win-amd64-3.4\Crypto\Random\OSRNG
+copying lib\Crypto\Random\OSRNG\fallback.py ->
+build\lib.win-amd64-3.4\Crypto\Random\OSRNG
+copying lib\Crypto\Random\OSRNG\nt.py ->
+build\lib.win-amd64-3.4\Crypto\Random\OSRNG
+copying lib\Crypto\Random\OSRNG\posix.py ->
+build\lib.win-amd64-3.4\Crypto\Random\OSRNG
+copying lib\Crypto\Random\OSRNG\rng_base.py ->
+build\lib.win-amd64-3.4\Crypto\Random\OSRNG
+copying lib\Crypto\Random\OSRNG\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\Random\OSRNG
+creating build\lib.win-amd64-3.4\Crypto\SelfTest
+copying lib\Crypto\SelfTest\st_common.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest
+copying lib\Crypto\SelfTest\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\common.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_AES.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_ARC2.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_ARC4.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_Blowfish.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_CAST.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_DES.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_DES3.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_pkcs1_15.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_pkcs1_oaep.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\test_XOR.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+copying lib\Crypto\SelfTest\Cipher\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Cipher
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\common.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_HMAC.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_MD2.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_MD4.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_MD5.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_RIPEMD.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_SHA.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_SHA224.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_SHA256.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_SHA384.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\test_SHA512.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+copying lib\Crypto\SelfTest\Hash\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Hash
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Protocol
+copying lib\Crypto\SelfTest\Protocol\test_AllOrNothing.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Protocol
+copying lib\Crypto\SelfTest\Protocol\test_chaffing.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Protocol
+copying lib\Crypto\SelfTest\Protocol\test_KDF.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Protocol
+copying lib\Crypto\SelfTest\Protocol\test_rfc1751.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Protocol
+copying lib\Crypto\SelfTest\Protocol\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Protocol
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\PublicKey
+copying lib\Crypto\SelfTest\PublicKey\test_DSA.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\PublicKey
+copying lib\Crypto\SelfTest\PublicKey\test_ElGamal.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\PublicKey
+copying lib\Crypto\SelfTest\PublicKey\test_importKey.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\PublicKey
+copying lib\Crypto\SelfTest\PublicKey\test_RSA.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\PublicKey
+copying lib\Crypto\SelfTest\PublicKey\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\PublicKey
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Random
+copying lib\Crypto\SelfTest\Random\test_random.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random
+copying lib\Crypto\SelfTest\Random\test_rpoolcompat.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random
+copying lib\Crypto\SelfTest\Random\test__UserFriendlyRNG.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random
+copying lib\Crypto\SelfTest\Random\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Random\Fortuna
+copying lib\Crypto\SelfTest\Random\Fortuna\test_FortunaAccumulator.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\Fortuna
+copying lib\Crypto\SelfTest\Random\Fortuna\test_FortunaGenerator.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\Fortuna
+copying lib\Crypto\SelfTest\Random\Fortuna\test_SHAd256.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\Fortuna
+copying lib\Crypto\SelfTest\Random\Fortuna\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\Fortuna
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Random\OSRNG
+copying lib\Crypto\SelfTest\Random\OSRNG\test_fallback.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\OSRNG
+copying lib\Crypto\SelfTest\Random\OSRNG\test_generic.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\OSRNG
+copying lib\Crypto\SelfTest\Random\OSRNG\test_nt.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\OSRNG
+copying lib\Crypto\SelfTest\Random\OSRNG\test_posix.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\OSRNG
+copying lib\Crypto\SelfTest\Random\OSRNG\test_winrandom.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\OSRNG
+copying lib\Crypto\SelfTest\Random\OSRNG\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Random\OSRNG
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Util
+copying lib\Crypto\SelfTest\Util\test_asn1.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Util
+copying lib\Crypto\SelfTest\Util\test_Counter.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Util
+copying lib\Crypto\SelfTest\Util\test_number.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Util
+copying lib\Crypto\SelfTest\Util\test_winrandom.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Util
+copying lib\Crypto\SelfTest\Util\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Util
+creating build\lib.win-amd64-3.4\Crypto\SelfTest\Signature
+copying lib\Crypto\SelfTest\Signature\test_pkcs1_15.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Signature
+copying lib\Crypto\SelfTest\Signature\test_pkcs1_pss.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Signature
+copying lib\Crypto\SelfTest\Signature\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\SelfTest\Signature
+creating build\lib.win-amd64-3.4\Crypto\Protocol
+copying lib\Crypto\Protocol\AllOrNothing.py ->
+build\lib.win-amd64-3.4\Crypto\Protocol
+copying lib\Crypto\Protocol\Chaffing.py ->
+build\lib.win-amd64-3.4\Crypto\Protocol
+copying lib\Crypto\Protocol\KDF.py ->
+build\lib.win-amd64-3.4\Crypto\Protocol
+copying lib\Crypto\Protocol\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\Protocol
+creating build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\DSA.py ->
+build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\ElGamal.py ->
+build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\pubkey.py ->
+build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\RSA.py ->
+build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\_DSA.py ->
+build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\_RSA.py ->
+build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\_slowmath.py ->
+build\lib.win-amd64-3.4\Crypto\PublicKey
+copying lib\Crypto\PublicKey\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\PublicKey
+creating build\lib.win-amd64-3.4\Crypto\Signature
+copying lib\Crypto\Signature\PKCS1_PSS.py ->
+build\lib.win-amd64-3.4\Crypto\Signature
+copying lib\Crypto\Signature\PKCS1_v1_5.py ->
+build\lib.win-amd64-3.4\Crypto\Signature
+copying lib\Crypto\Signature\__init__.py ->
+build\lib.win-amd64-3.4\Crypto\Signature
+Skipping implicit fixer: buffer
+Skipping implicit fixer: idioms
+Skipping implicit fixer: set_literal
+Skipping implicit fixer: ws_comma
+running build_ext
+warning: GMP or MPIR library not found; Not building
+Crypto.PublicKey._fastmath.
+building 'Crypto.Random.OSRNG.winrandom' extension
+creating build\temp.win-amd64-3.4
+creating build\temp.win-amd64-3.4\Release
+creating build\temp.win-amd64-3.4\Release\src
+c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\BIN\cl.exe /c
+/nologo /Ox /MD /W3 /GS- /DNDEBUG -Isrc/ -Isrc/inc-msvc/
+-IC:\Python34\include -IC:\Python34\include /Tcsrc/winrand.c
+/Fobuild\temp.win-amd64-3.4\Release\src/winrand.obj
+winrand.c
+c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\BIN\link.exe /DLL
+/nologo /INCREMENTAL:NO /LIBPATH:C:\Python34\libs
+/LIBPATH:C:\Python34\PCbuild\amd64 ws2_32.lib advapi32.lib
+/EXPORT:PyInit_winrandom build\temp.win-amd64-3.4\Release\src/winrand.obj
+/OUT:build\lib.win-amd64-3.4\Crypto\Random\OSRNG\winrandom.pyd
+/IMPLIB:build\temp.win-amd64-3.4\Release\src\winrandom.lib
+/MANIFESTFILE:build\temp.win-amd64-3.4\Release\src\winrandom.pyd.manifest
+   Creating library build\temp.win-amd64-3.4\Release\src\winrandom.lib and
+object build\temp.win-amd64-3.4\Release\src\winrandom.exp
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyObject_Free referenced in function _WRdealloc
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyExc_SystemError referenced in function _WRdealloc
+winrand.obj : error LNK2019: unresolved external symbol __imp__PyErr_Format
+referenced in function _WRdealloc
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyExc_TypeError referenced in function _WRdealloc
+winrand.obj : error LNK2019: unresolved external symbol
+__imp___PyObject_New referenced in function _winrandom_new
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyArg_ParseTupleAndKeywords referenced in function _winrandom_new
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyBytes_FromStringAndSize referenced in function _WR_get_bytes
+winrand.obj : error LNK2019: unresolved external symbol __imp__PyMem_Free
+referenced in function _WR_get_bytes
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyErr_NoMemory referenced in function _WR_get_bytes
+winrand.obj : error LNK2019: unresolved external symbol __imp__PyMem_Malloc
+referenced in function _WR_get_bytes
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyErr_SetString referenced in function _WR_get_bytes
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyExc_ValueError referenced in function _WR_get_bytes
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyArg_ParseTuple referenced in function _WR_get_bytes
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyObject_GenericGetAttr referenced in function _WRgetattro
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyLong_FromLong referenced in function _WRgetattro
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyUnicode_CompareWithASCIIString referenced in function _WRgetattro
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__Py_FatalError referenced in function _PyInit_winrandom
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyErr_Occurred referenced in function _PyInit_winrandom
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyModule_AddStringConstant referenced in function _PyInit_winrandom
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyModule_AddIntConstant referenced in function _PyInit_winrandom
+winrand.obj : error LNK2019: unresolved external symbol
+__imp__PyModule_Create2 referenced in function _PyInit_winrandom
+winrand.obj : error LNK2019: unresolved external symbol __imp__PyType_Ready
+referenced in function _PyInit_winrandom
+build\lib.win-amd64-3.4\Crypto\Random\OSRNG\winrandom.pyd : fatal error
+LNK1120: 22 unresolved externals
+error: command 'c:\\Program Files (x86)\\Microsoft Visual Studio
+10.0\\VC\\BIN\\link.exe' failed with exit status 1120
+#############################################################################################
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20141218/4f835cf1/attachment-0001.html>
+
+From dlitz at dlitz.net  Mon Dec 22 14:28:14 2014
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Mon, 22 Dec 2014 14:28:14 -0800
+Subject: [pycrypto] Bug in PyCrypto 2.6.1
+In-Reply-To: <548AE673.4020802@luisgf.es>
+References: <547C1A5C.4040107@luisgf.es> <547C87D7.1090905@amberfisharts.com>
+ <5D16DD8B-67CB-429C-9BF0-42D5F1C787AE@gmail.com>
+ <CDBB9246-A032-4BA1-BFC2-FA713B65A1B7@dell.com>
+ <E615861D-FC8C-49FD-BF43-AD72155897F4@gmail.com>
+ <547CA9EA.7010401@amberfisharts.com> <548AE673.4020802@luisgf.es>
+Message-ID: <20141222222814.GA19693@syra.lan>
+
+On Fri, Dec 12, 2014 at 01:58:27PM +0100, Luis Gonz?lez Fern?ndez wrote:
+>Any news about this?
+
+    >>> from Crypto import __version__
+    >>> print(__version__)
+    2.0.1
+    >>> from Crypto.PublicKey import RSA
+    >>> import os
+    >>> RSA.generate(2048, os.urandom).size()
+    2047
+
+Ugh.  Yeah, this is yet another flaw in the design of 
+Crypto.PublicKey.pubkey.  Unfortunately, this behavior has existed since 
+at least PyCrypto 2.0.1, so I don't think we should silently change it 
+at this point.  The whole thing should probably be deprecated and 
+replaced, but at this point it might be better for new code to just use 
+pyca's RSA primitive:
+
+    >>> from cryptography.hazmat.backends import default_backend
+    >>> from cryptography.hazmat.primitives.asymmetric import rsa
+    >>> k = rsa.generate_private_key(public_exponent=65537, key_size=2048, backend=default_backend())
+    >>> k.key_size
+    2048
+    >>> # See docs: https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/
+
+I think it would be worth putting a warning and an example in the 
+docs/docstring about this.
+
+Cheers,
+- Dwayne
+
+On Fri, Dec 12, 2014 at 01:58:27PM +0100, Luis Gonz?lez Fern?ndez wrote:
+>Hi All:
+>
+>Any news about this?
+>
+>
+>On 01/12/14 18:48, Lorenz Quack wrote:
+>> On 01/12/14 17:23, Mirko Dziadzka wrote:
+>>> Oh, I totally agree. Either the name or the implementation has a
+>>> problem.
+>>
+>> +1
+>>
+>>>
+>>> I was just pointing out that the behavior is consistent with the
+>>> documentation in
+>>> https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA._RSAobj-class.html#size
+>>
+>> I disagree. As I showed in the code example and you pointed out in
+>> your previous post there are *some* values that the key can handle
+>> with more bits than reported by size().
+>> So, size() is *not* the "maximum number of bits that can be handled by
+>> this key".
+>> It is the maximum number of bits that is guaranteed to work for all
+>> values.
+>>
+>> Lorenz
+>>
+>>>
+>>>      Mirko
+>>>
+>>>
+>>> On 01.12.2014, at 17:31, Paul Koning <paul_koning at dell.com> wrote:
+>>>
+>>>> To me, key_size means the size of the key.  It doesn?t mean the
+>>>> largest value you can encrypt.  If that is what is intended, or if
+>>>> it has to stay that way for historical reasons, fine, but it needs
+>>>> to be very clearly pointed out in the documentation because it is
+>>>> unexpected and counterintuitive.
+>>>>
+>>>>     paul
+>>>>
+>>>>> On Dec 1, 2014, at 11:13 AM, Mirko Dziadzka
+>>>>> <mirko.dziadzka at gmail.com> wrote:
+>>>>>
+>>>>> HI
+>>>>>
+>>>>> Some thoughts about this ?
+>>>>>
+>>>>>> _RSA.RSAobj.size.__doc__ says: Return the maximum number of bits
+>>>>>> that can be handled by this key
+>>>>>
+>>>>> An RSA key can only encrypt data smaller than this key. So if we
+>>>>> have an 2048 bit RSA key, it can encrypt some 2048 bit values, but
+>>>>> not all. So 2047 should be the safe value here.
+>>>>>
+>>>>> IMHO this -1 is correct here.
+>>>>>
+>>>>> Mirko
+>>>>
+>>>> _______________________________________________
+>>>> pycrypto mailing list
+>>>> pycrypto at lists.dlitz.net
+>>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>>
+>>> _______________________________________________
+>>> pycrypto mailing list
+>>> pycrypto at lists.dlitz.net
+>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>>
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>-- 
+>
+>--
+>Luis Gonz?lez Fern?ndez
+>https://www.luisgf.es
+>PGP ID: C918B80F (DD6F BFC1 FC14 4C81 34F8 EA1E 6BCB C27F C918 B80F)
+>Twitter: @luisgf_2001 / Jabber: luisgf at mijabber.es
+>
+>
+
+
+
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+ OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+

@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] On the future of new ciphers/hashes in PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20On%20the%20future%20of%20new%20ciphers/hashes%20in%20PyCrypto&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000290.html">
+   <LINK REL="Next"  HREF="000278.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] On the future of new ciphers/hashes in PyCrypto</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20On%20the%20future%20of%20new%20ciphers/hashes%20in%20PyCrypto&In-Reply-To="
+       TITLE="[pycrypto] On the future of new ciphers/hashes in PyCrypto">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Thu Oct 14 15:10:59 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000290.html">[pycrypto] a problem when build pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000278.html">[pycrypto] On the future of new ciphers/hashes in PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#276">[ date ]</a>
+              <a href="thread.html#276">[ thread ]</a>
+              <a href="subject.html#276">[ subject ]</a>
+              <a href="author.html#276">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I think it is worth making a distinction between primitives and protocols.
+
+The few ciphers/hashes that currently exist in pycrypto suffice for
+most needs one may have, and
+I agree that adding more won't help in 99% of the applications (even
+though it may look good
+on a fact sheet) whereas a low-level cipher zoo is hard to maintain.
+
+Having said that, one of beauties of pycrypto is the fact that is
+self-contained and does not require
+to be combined with further packages. A pluggable system - although
+elegant - would become
+less practical and possibly not very considered as a feature. If one
+day one could prove that pycrypto is
+indeed missing a primitive used by some real, widespread systems
+(maybe ECC?) that cannot be sanely
+replaced by AES/TDES/SHA, I would even urge to still have a C
+implementation included from some
+good patent-free library (e.g. tomcrypt) and shipped. So much time saved...
+
+Protocols are another beast though: key derivation/management/exchange
+schemes, wrappers,
+message authentication codes, etc etc are in most cases independent of
+the underlying cipher/hash
+primitive and can be more cleanly and quickly implemented/tested in a
+high-level language like Python
+with little performance penalty. PKCS#1 and PBKDF2 are good examples.
+Even chaining modes
+for block ciphers look better in python (to me at least).I would
+really prefer to have these high-level
+algorithms available in the library and not through some obscure
+openssl-like library coded in C...
+
+My 2 cents... :-)
+
+&gt;<i> Going through the bug tracker and the mailing list, a lot of the requests
+</I>&gt;<i> are to add new algorithms (Camellia, SHA512, TEA, PKCS#1/OAEP, PBKDF2), or
+</I>&gt;<i> to make changes to the existing implementations (timing attack
+</I>&gt;<i> countermeasures for the AES module, better prime generation for RSA).
+</I>
+&gt;<i> They're all good ideas, but I don't have the time or the expertise needed
+</I>&gt;<i> to review C implementations of low-level crypto primitives, and frankly, I
+</I>&gt;<i> have better things to do.
+</I>
+&gt;<i> Python does not need its own custom AES implementation.  Neither do Java,
+</I>&gt;<i> Ruby, Perl, JavaScript, PHP, Go, C++, D, Clojure, Haskell.  It's a waste of
+</I>&gt;<i> volunteer time, it's bad engineering, and it means that the FOSS community
+</I>&gt;<i> ends up repeating the same mistakes over and over, year after year, every
+</I>&gt;<i> time a new language comes out.
+</I>
+&gt;<i> I'm putting a stop to it.  I'm declaring a permanent feature freeze on the
+</I>&gt;<i> C implementations of &lt;Crypto.Cipher.*&gt; and &lt;Crypto.Hash.*&gt;.  New algortihms
+</I>&gt;<i> will be added only by calling out to existing libraries.  PyCrypto
+</I>&gt;<i> development will be focused on the API.
+</I>
+&gt;<i> I haven't yet figured out exactly how this is going to look.  I'm thinking
+</I>&gt;<i> of some kind of pluggable backends, sort of like how Java or CryptoAPI, but
+</I>&gt;<i> with as little API complexity as possible.  Ideas are welcome.
+</I>
+&gt;<i> - Dwayne
+</I></PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000290.html">[pycrypto] a problem when build pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000278.html">[pycrypto] On the future of new ciphers/hashes in PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#276">[ date ]</a>
+              <a href="thread.html#276">[ thread ]</a>
+              <a href="subject.html#276">[ subject ]</a>
+              <a href="author.html#276">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

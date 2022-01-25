@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ERROR%3A%20testRsaUnversionedSignAndVerify%20failed&In-Reply-To=200908201111.47035.hpj%40urpla.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000127.html">
+   <LINK REL="Next"  HREF="000118.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ERROR%3A%20testRsaUnversionedSignAndVerify%20failed&In-Reply-To=200908201111.47035.hpj%40urpla.net"
+       TITLE="[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed">dlitz at dlitz.net
+       </A><BR>
+    <I>Thu Aug 20 20:55:05 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000127.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+        <LI>Next message: <A HREF="000118.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#117">[ date ]</a>
+              <a href="thread.html#117">[ thread ]</a>
+              <a href="subject.html#117">[ subject ]</a>
+              <a href="author.html#117">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Aug 20, 2009 at 11:11:46AM +0200, Hans-Peter Jansen wrote:
+&gt;<i> openSUSE incorporated two patches to 2.0.1:
+</I>&gt;<i> 
+</I>&gt;<i> This one, I ported to trunk:
+</I>&gt;<i> --- src/hash_template.c~	2009-08-16 23:39:34.053841534 +0200
+</I>&gt;<i> +++ src/hash_template.c	2009-08-20 10:16:05.877840748 +0200
+</I>&gt;<i> @@ -111,13 +111,15 @@ ALG_hexdigest(ALGobject *self, PyObject
+</I>&gt;<i>  	PyObject *value, *retval;
+</I>&gt;<i>  	unsigned char *raw_digest, *hex_digest;
+</I>&gt;<i>  	int i, j, size;
+</I>&gt;<i> +	Py_ssize_t ssize;
+</I>&gt;<i>  
+</I>&gt;<i>  	if (!PyArg_ParseTuple(args, &quot;&quot;))
+</I>&gt;<i>  		return NULL;
+</I>&gt;<i>  
+</I>&gt;<i>  	/* Get the raw (binary) digest value */
+</I>&gt;<i>  	value = (PyObject *)hash_digest(&amp;(self-&gt;st));
+</I>&gt;<i> -	size = PyString_Size(value);
+</I>&gt;<i> +	ssize = PyString_Size(value);
+</I>&gt;<i> +	size = (ssize &gt; INT_MAX) ? INT_MAX : ssize;
+</I>&gt;<i>  	raw_digest = (unsigned char *) PyString_AsString(value);
+</I>&gt;<i>  
+</I>&gt;<i>  	/* Create a new string */
+</I>&gt;<i> 
+</I>&gt;<i> Dwayne, is this in order or just plain silly?
+</I>
+Hmm...  What's the purpose of this patch?
+
+I'm assuming this patch is for 64-bit machines, but even with the patch 
+applied, you will still have other problems if ssize &gt; INT_MAX (or even 
+INT_MAX/2).
+
+Here's the code (with that patch applied) in context:
+
+  	/* Get the raw (binary) digest value */
+  	value = (PyObject *)hash_digest(&amp;(self-&gt;st));
+	ssize = PyString_Size(value);
+	size = (ssize &gt; INT_MAX) ? INT_MAX : ssize;
+	raw_digest = (unsigned char *) PyString_AsString(value);
+
+        /* Create a new string */
+        retval = PyString_FromStringAndSize(NULL, size * 2 );
+        hex_digest = (unsigned char *) PyString_AsString(retval);
+
+        /* Make hex version of the digest */
+        for(i=j=0; i&lt;size; i++)
+        {
+                char c;
+                c = raw_digest[i] / 16; c = (c&gt;9) ? c+'a'-10 : c + '0';
+                hex_digest[j++] = c;
+                c = raw_digest[i] % 16; c = (c&gt;9) ? c+'a'-10 : c + '0';
+                hex_digest[j++] = c;
+        }
+        Py_DECREF(value);
+        return retval;
+
+If ssize &gt; INT_MAX, then the &quot;size * 2&quot; argument passed to 
+PyString_FromStringAndSize() will overflow, causing one of the following 
+things to happen:
+
+- If size*2 overflows to a negative number, PyString_FromStringAndSize will 
+  presumably return NULL, causing a null-pointer dereference in the 
+  subsequent code.
+
+- If size*2 overflows to a positive number, PyString_FromStringAndSize will 
+  allocate a smaller buffer than we expect, and the subsequent loop wil 
+  overflow this buffer.  Even if we fixed that, if size ended up larger 
+  than INT_MAX/2, we would *still* overflow the buffer, since j would wrap 
+  around to a negative number.
+
+None of PyCrypto's hash functions return anything close to INT_MAX bytes 
+(SHA256 outputs a whopping 32 bytes), so I wonder about the rationale 
+behind this patch.  Does it suppress some lint warning?
+
+/me runs splint against the code
+
+No, I doubt it's that.  The C code isn't even close to being lint-clean.
+
+/my adds a TODO item...
+
+Thanks,
+ - Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+ Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000127.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+	<LI>Next message: <A HREF="000118.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#117">[ date ]</a>
+              <a href="thread.html#117">[ thread ]</a>
+              <a href="subject.html#117">[ subject ]</a>
+              <a href="author.html#117">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

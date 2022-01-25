@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Bug in Crypto.PublicKey.RSA?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To=20080908144200.GA7041%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000019.html">
+   <LINK REL="Next"  HREF="000020.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Bug in Crypto.PublicKey.RSA?</H1>
+    <B>Bill Broadley</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To=20080908144200.GA7041%40rivest.dlitz.net"
+       TITLE="[pycrypto] Bug in Crypto.PublicKey.RSA?">bill at broadley.org
+       </A><BR>
+    <I>Mon Sep  8 21:13:58 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000019.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+        <LI>Next message: <A HREF="000020.html">[pycrypto] RandomPool is now deprecated
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#13">[ date ]</a>
+              <a href="thread.html#13">[ thread ]</a>
+              <a href="subject.html#13">[ subject ]</a>
+              <a href="author.html#13">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dwayne C. Litzenberger wrote:
+&gt;<i> On Sun, Sep 07, 2008 at 10:48:49PM -0700, Bill Broadley wrote:
+</I>&gt;&gt;<i> Shouldn't RSA.generate(keysize, rpool.get_bytes) generate a key that is
+</I>&gt;&gt;<i> keysize bits and that can encrypt that many bits?
+</I>&gt;<i> 
+</I>&gt;<i> No.  RSA with an N-bit modulus can only guarantee encryption of up to 
+</I>&gt;<i> N-1 bits.
+</I>
+Ah.  Strange.  Are there restrictions on the size of the modulus?  For instance:
+ &gt;&gt;&gt; keysize=368
+ &gt;&gt;&gt; privkeyA = RSA.generate(keysize, rpool.get_bytes)
+[ finishes in close to zero time ]
+ &gt;&gt;&gt; keysize=369
+ &gt;&gt;&gt; privkeyA = RSA.generate(keysize, rpool.get_bytes)
+Hangs forever.... well at least 10's of minutes.
+
+&gt;<i> When you generate an RSA key, you get three values:
+</I>&gt;<i> 
+</I>&gt;<i>     - n: the modulus (when you talk about a 368-bit key, you are 
+</I>&gt;<i> actually       talking about a 368-bit modulus)
+</I>&gt;<i> 
+</I>&gt;<i>     - e: the public exponent (PyCrypto defaults to 65537)
+</I>&gt;<i> 
+</I>&gt;<i>     - d: the private exponent
+</I>&gt;<i> 
+</I>&gt;<i> The public key is the pair (n, e), and the private key is the pair (n, 
+</I>&gt;<i> d).  To encrypt, you perform the following operation:
+</I>&gt;<i> 
+</I>&gt;<i>     C = M**e (mod n)
+</I>&gt;<i>       = M**e % n        # Python notation
+</I>&gt;<i>       = pow(M, e, n)    # Fast Python notation
+</I>&gt;<i> 
+</I>&gt;<i> To decrypt, you perform the following operation:
+</I>&gt;<i> 
+</I>&gt;<i>     M = C**d (mod n)
+</I>&gt;<i>       = C**d % n        # Python notation
+</I>&gt;<i>       = pow(C, d, n)    # Fast Python notation
+</I>&gt;<i> 
+</I>&gt;<i> Notice how in the decryption, we do a &quot;% n&quot; operation.  This means that 
+</I>&gt;<i> whatever the value we decrypt, we will only ever get a value between 0 
+</I>&gt;<i> and n-1.  Thus, PyCrypto only lets you encrypt a value between 0 and n-1.
+</I>
+Ah, thanks for the clarification.
+
+&gt;&gt;<i> Then used this piece of code:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> from Crypto.PublicKey import RSA
+</I>&gt;&gt;<i> from Crypto.Util.randpool import RandomPool
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> rpool = RandomPool()
+</I>&gt;&gt;<i> keysize=368
+</I>&gt;&gt;<i> privkeyA = RSA.generate(keysize, rpool.get_bytes)
+</I>&gt;<i> 
+</I>&gt;<i> As an aside, don't use RandomPool to generate random numbers.  It 
+</I>&gt;<i> doesn't do what you think it does.  See this thread:
+</I>
+Indeed, I'm a big fan of /dev/random and /dev/urandom, linux seems like it was 
+one of the first to provide a pretty good /dev/random implementation that uses 
+non-visible (at least not trivially visible) sources of entropy.  In any case 
+I figured I'd get the example I found working like I expected before I 
+improved it.
+
+&gt;<i>     <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html">http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html</A>
+</I>&gt;<i> 
+</I>&gt;<i> The next release of PyCrypto will provide an API that does what you 
+</I>&gt;<i> want.  Until then, I would do something like this (Python 2.5 only):
+</I>
+Sounds good, I'm actually using the 2.6 beta for development since I want to 
+use the new multiprocessing extensions.
+
+&gt;<i>     import os
+</I>&gt;<i>     privkeyA = RSA.generate(keysize, os.urandom)
+</I>&gt;<i> 
+</I>&gt;<i> Or this:
+</I>&gt;<i> 
+</I>&gt;<i>     privkeyA = RSA.generate(keysize, open(&quot;/dev/urandom&quot;, &quot;rb&quot;).read)
+</I>
+Perfect, thanks.
+
+</PRE>
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000019.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+	<LI>Next message: <A HREF="000020.html">[pycrypto] RandomPool is now deprecated
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#13">[ date ]</a>
+              <a href="thread.html#13">[ thread ]</a>
+              <a href="subject.html#13">[ subject ]</a>
+              <a href="author.html#13">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

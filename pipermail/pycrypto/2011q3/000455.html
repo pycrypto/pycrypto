@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Fail to build pycrypto 2.3 on Ubuntu
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Fail%20to%20build%20pycrypto%202.3%20on%20Ubuntu&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000453.html">
+   <LINK REL="Next"  HREF="000456.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Fail to build pycrypto 2.3 on Ubuntu</H1>
+    <B>rusydi hasan</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Fail%20to%20build%20pycrypto%202.3%20on%20Ubuntu&In-Reply-To="
+       TITLE="[pycrypto] Fail to build pycrypto 2.3 on Ubuntu">rusydi.hasan at gmail.com
+       </A><BR>
+    <I>Mon Sep 19 06:50:12 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000453.html">[pycrypto] checksum problem.
+</A></li>
+        <LI>Next message: <A HREF="000456.html">[pycrypto] Fail to build pycrypto 2.3 on Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#455">[ date ]</a>
+              <a href="thread.html#455">[ thread ]</a>
+              <a href="subject.html#455">[ subject ]</a>
+              <a href="author.html#455">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi All,
+
+I tried to install pycrypto 2.3 on my machine (Ubuntu 11.04, kernel 2.6.38).
+But the installation error says :
+
+building 'Crypto.Hash.MD2' extension
+&gt;<i> gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC
+</I>&gt;<i> -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/python2.7 -c
+</I>&gt;<i> src/MD2.c -o build/temp.linux-i686-2.7/src/MD2.o
+</I>&gt;<i> src/MD2.c:31:20: fatal error: Python.h: No such file or directory
+</I>&gt;<i> compilation terminated.
+</I>&gt;<i> error: command 'gcc' failed with exit status 1
+</I>&gt;<i>
+</I>
+It seems that *Python.h* is missing from src/ directory. Or am i missing
+something here ?
+
+-- 
+Rusydi Hasan Makarim (0721051)
+PGP Public Key &lt;<A HREF="http://munmap.org/pubkey.asc">http://munmap.org/pubkey.asc</A>&gt;
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20110919/b69663eb/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20110919/b69663eb/attachment.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000453.html">[pycrypto] checksum problem.
+</A></li>
+	<LI>Next message: <A HREF="000456.html">[pycrypto] Fail to build pycrypto 2.3 on Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#455">[ date ]</a>
+              <a href="thread.html#455">[ thread ]</a>
+              <a href="subject.html#455">[ subject ]</a>
+              <a href="author.html#455">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

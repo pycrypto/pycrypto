@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Crypto.Protocol.AllOrNothing</TITLE>
+<META NAME="description" CONTENT="Crypto.Protocol.AllOrNothing">
+<META NAME="keywords" CONTENT="pycrypt">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="pycrypt.css">
+
+<LINK REL="next" HREF="node14.html">
+<LINK REL="previous" HREF="node12.html">
+<LINK REL="up" HREF="node12.html">
+<LINK REL="next" HREF="node14.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html215"
+  HREF="node14.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html211"
+  HREF="node12.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html205"
+  HREF="node12.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html213"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html216"
+  HREF="node14.html">Crypto.Protocol.Chaffing</A>
+<B> Up:</B> <A NAME="tex2html212"
+  HREF="node12.html">Crypto.Protocol: Various Protocols</A>
+<B> Previous:</B> <A NAME="tex2html206"
+  HREF="node12.html">Crypto.Protocol: Various Protocols</A>
+ &nbsp; <B>  <A NAME="tex2html214"
+  HREF="node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00051000000000000000">
+Crypto.Protocol.AllOrNothing</A>
+</H2>
+
+<P>
+This module implements all-or-nothing package transformations.
+An all-or-nothing package transformation is one in which some text is
+transformed into message blocks, such that all blocks must be obtained before
+the reverse transformation can be applied.  Thus, if any blocks are corrupted
+or lost, the original message cannot be reproduced.
+
+<P>
+An all-or-nothing package transformation is not encryption, although a block
+cipher algorithm is used.  The encryption key is randomly generated and is
+extractable from the message blocks.
+
+<P>
+<BR>
+18#18
+<BR>
+
+<P>
+The methods of the AllOrNothing class are:
+
+<P>
+<BR>
+19#19
+<BR>
+
+<P>
+<BR>
+20#20
+<BR>
+
+<P>
+<BR><HR>
+
+</BODY>
+</HTML>

@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Run test suite with /dev/random
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To=20120113160750.GA5544%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000530.html">
+   <LINK REL="Next"  HREF="000537.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Run test suite with /dev/random</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To=20120113160750.GA5544%40rivest.dlitz.net"
+       TITLE="[pycrypto] Run test suite with /dev/random">sebastian+lists at ramacher.at
+       </A><BR>
+    <I>Fri Jan 13 12:59:49 CST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000530.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+        <LI>Next message: <A HREF="000537.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#536">[ date ]</a>
+              <a href="thread.html#536">[ thread ]</a>
+              <a href="subject.html#536">[ subject ]</a>
+              <a href="author.html#536">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 01/13/2012 05:07 PM, Dwayne C. Litzenberger wrote:
+&gt;<i> On Mon, Jan 02, 2012 at 05:08:32AM +0100, Sebastian Ramacher wrote:
+</I>&gt;&gt;<i> I'm facing the following issue: in the Debian package of pycrypto we build
+</I>&gt;&gt;<i> pycrypto for Python 2.6, 2.7 and 3.1 and the debug variants. For all these
+</I>&gt;&gt;<i> versions and variants the test suite is run during the build. This works fine
+</I>&gt;&gt;<i> except on the GNU/Hurd build system [1]. There the test suite succeeds for Py
+</I>&gt;&gt;<i> 2.6, 2.7 but fails for Py 3.2 because the system runs out of entropy.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I see two options to fix the issue on the Debian side:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> * Disable the test suite on GNU/Hurd.
+</I>&gt;&gt;<i> * Replace every occurrence of /dev/urandom with /dev/random and run the 
+</I>&gt;&gt;<i> test suite with /dev/random.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I don't like either of these two options. I'd rather prefer an option to 
+</I>&gt;&gt;<i> specify the random number generator that should be used for the test 
+</I>&gt;&gt;<i> suite.  But before implementing such an option I'd like to know if this 
+</I>&gt;&gt;<i> has any chance to be accepted into pycrypto.
+</I>&gt;<i> 
+</I>&gt;<i> Not likely.  This looks like a HURD bug that should be fixed in HURD.
+</I>&gt;<i> 
+</I>&gt;<i> [snip]
+</I>
+Thank you for the explanation. This was a misunderstanding on my side. I'll talk
+with the Hurd Developers then.
+
+Kind regards
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000530.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+	<LI>Next message: <A HREF="000537.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#536">[ date ]</a>
+              <a href="thread.html#536">[ thread ]</a>
+              <a href="subject.html#536">[ subject ]</a>
+              <a href="author.html#536">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

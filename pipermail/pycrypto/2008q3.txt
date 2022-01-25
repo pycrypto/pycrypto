@@ -1,0 +1,1437 @@
+From dlitz at dlitz.net  Mon Jul 21 18:25:26 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 21 Jul 2008 20:25:26 -0400
+Subject: [pycrypto] What to do about RandomPool
+Message-ID: <20080722002526.GA14858@rivest.dlitz.net>
+
+[Reposted from https://bugs.launchpad.net/pycrypto/+bug/249765]
+
+RandomPool really really needs to die, at least in its current form. It's 
+not thread-safe, it's not fork-safe, and if it can't get entropy from the 
+OS, it silently produces predictable output. What's worse is that everyone 
+assumes that it's a portable substitute for reading from /dev/urandom on 
+Linux, but it's actually way too fragile to be safely used that way.
+
+When I fixed Paramiko's usage of RandomPool back in January, Robey Pointer 
+broke it again, so I ended up fixing it *twice* in one program.[1] Judging 
+from the rest of the Paramiko code base, I certainly do NOT think Robey is 
+a careless or stupid programmer; Random number generators are just hard to 
+get right and RandomPool encourages people to get it wrong. I have yet to 
+see any code that *explicitly* uses RandomPool correctly. Most of the code 
+I've seen that avoids RandomPool-related security holes seems to do so 
+accidentally---as long as it's not running on Windows and /dev/urandom 
+exists.
+
+I'm not sure that PyCrypto is the right place to implement a good RNG, 
+anyway. Even if we make RandomPool thread-safe and make sure it initializes 
+with enough entropy, it all becomes pointless as soon as somebody calls 
+os.fork(), which duplicates the entire state pool. As far as I know, 
+there's no easy way (and certainly no portable way) to prevent that. Also, 
+absent an OS random number generator, arbitrary programs usually have 
+little to no access to entropy. What makes matters worse is that, unless 
+the RNG gets to run in its own process/thread (RandomPool does not) it 
+relies totally on the user to supply the pool with new entropy at frequent 
+intervals. That almost never happens.
+
+Would there be any objection to replacing RandomPool with a simple wrapper 
+around os.urandom? A quick benchmark shows that reading from /dev/urandom 
+on Linux is about 10-50x faster than using RandomPool.
+
+[1] See
+     http://www.lag.net/pipermail/paramiko/2008-January/000599.html
+         and
+     http://www.lag.net/pipermail/paramiko/2008-April/000678.html
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20080721/deb9ebb1/attachment.pgp 
+
+From paul.hoffman at gmail.com  Tue Jul 22 09:08:17 2008
+From: paul.hoffman at gmail.com (Paul Hoffman)
+Date: Tue, 22 Jul 2008 08:08:17 -0700
+Subject: [pycrypto] What to do about RandomPool
+In-Reply-To: <20080722002526.GA14858@rivest.dlitz.net>
+References: <20080722002526.GA14858@rivest.dlitz.net>
+Message-ID: <1e267dfe0807220808u1f6f0d19s2a8cfad255ae3ed@mail.gmail.com>
+
+On Mon, Jul 21, 2008 at 5:25 PM, Dwayne C. Litzenberger <dlitz at dlitz.net> wrote:
+> I'm not sure that PyCrypto is the right place to implement a good RNG,
+> anyway.
+
+...much less a bad one. :-)
+
+> Would there be any objection to replacing RandomPool with a simple wrapper
+> around os.urandom? A quick benchmark shows that reading from /dev/urandom on
+> Linux is about 10-50x faster than using RandomPool.
+
+No objection here.
+
+From dlitz at dlitz.net  Tue Aug  5 21:48:52 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Tue, 5 Aug 2008 23:48:52 -0400
+Subject: [pycrypto] What to do about RandomPool
+In-Reply-To: <1e267dfe0807220808u1f6f0d19s2a8cfad255ae3ed@mail.gmail.com>
+References: <20080722002526.GA14858@rivest.dlitz.net>
+	<1e267dfe0807220808u1f6f0d19s2a8cfad255ae3ed@mail.gmail.com>
+Message-ID: <20080806034852.GA12832@rivest.dlitz.net>
+
+On Tue, Jul 22, 2008 at 08:08:17AM -0700, Paul Hoffman wrote:
+> Would there be any objection to replacing RandomPool with a simple 
+> wrapper around os.urandom? A quick benchmark shows that reading from 
+> /dev/urandom on Linux is about 10-50x faster than using RandomPool.
+
+Although nobody objected here, a few people on ##crypto (irc.freenode.net) 
+didn't seem too thrilled with the idea, and as I work more on PyCrypto, I'm 
+thinking that just replacing RandomPool from under people might not be such 
+a great idea.  For one thing, it would break the few people's code who were 
+actually using it correctly, which I think is somewhat unfair to them.
+
+Instead, I think I'll just issue a DeprecationWarning when the randpool 
+module is imported.
+
+Also, after looking a bit more at OS-provided random generators, I'm 
+starting to think that just returning their output might not be such a 
+great idea.  There just doesn't seem to be any reason to trust them very 
+far.
+
+What I think I'll do is provide a Fortuna implementation, then provide a 
+proper RNG on top of Fortuna that runs in its own thread and updates itself 
+periodically.  Furthermore, whenever its .get_bytes() method is called, it 
+will request random bytes from the OS and XOR them with Fortuna's output 
+before returning them.  That way, as long as either of them produces random 
+numbers, the output will be random.
+
+But first I need to recover my Fortuna implementation from an older copy, 
+since "bzr rebase" just deleted my current version.  I have tried to be 
+patient with bzr, but this might be the last straw that makes me finally 
+switch to git.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20080805/75504984/attachment.pgp 
+
+From dlitz at dlitz.net  Wed Aug  6 12:08:20 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Wed, 6 Aug 2008 14:08:20 -0400
+Subject: [pycrypto] thinking of switching to git (was: What to do about
+	RandomPool)
+Message-ID: <20080806180820.GA14308@rivest.dlitz.net>
+
+On Tue, Aug 05, 2008 at 11:48:52PM -0400, Dwayne C. Litzenberger wrote:
+> But first I need to recover my Fortuna implementation from an older copy, 
+> since "bzr rebase" just deleted my current version.  I have tried to be 
+> patient with bzr, but this might be the last straw that makes me finally 
+> switch to git.
+
+Here's the bug report against the Debian bzr-rebase package, if anyone 
+cares:
+
+    http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=493945
+
+I'm really getting fed up with bzr.  Compared to Subversion, bzr was a 
+dream, but I've lately been using git 1.5 for other projects, and now I 
+find that bzr is doing more to interrupt my workflow than to help me get 
+work done.
+
+I'm thinking of dropping bzr and switching PyCrypto over to git 
+<http://git.or.cz/>.  Would anyone be terribly inconvenienced if I did?  I 
+want to make things easy for you guys, but unless somebody cares, I'd 
+rather be working with git.
+
+There are a few reasons why I'm planning to replace bzr with git:
+
+
+=== 1. Missing/Useless OpenPGP signature support ===
+
+One thing that is important to me for PyCrypto is making sure that users, 
+developers, and distributors actually get the real PyCrypto source code, 
+and not some version that has been tampered with as it travelled over the 
+Internet.  (From what I understand, man-in-the-middle attacks are pretty 
+easy on open Wi-Fi networks, for example, and DNS cache poisoning has 
+recently been a popular topic for discussion.)  As far as I know, such 
+tampering hasn't been much of a problem so far, but I expect active attacks 
+to become more common in the future, and PyCrypto could be a particularly 
+attractive target.  I don't want PyCrypto's users to be the first 
+casualties.
+
+Git has a feature that lets you tag particular revisions, and sign those 
+tags using GnuPG.  Because of the way git is designed (it uses content 
+addressing), this effectively authenticates not only all the files in the 
+tagged commit, but also all previous commits in the branch.
+
+Unfortunately, bzr doesn't support signatures out of the box, and John A 
+Meinel's experimental "bzr-signing" plugin 
+<https://code.launchpad.net/~jameinel/+junk/bzr-signing> is neither 
+trustworthy (see below) nor suitable for my workflow.
+
+The bzr-signing plugin allows people to sign their *commits* using GnuPG, 
+but as far as I can tell, it doesn't support signing *tags*.  My workflow 
+typically consists of something like this:
+
+    1. bzr branch
+    2. hack hack hack
+    3. bzr commit
+    4. hack hack hack
+    5. bzr commit
+    6. ...
+    7. bzr rebase --interactive
+    8. review the changes
+    9. bzr push to some public repository
+    10. go to step 2
+
+If I want to sign my changes using the bzr-signing plugin, I basically have
+two options:
+    
+    1. sign each individual commit as it happens by changing the policy in 
+       my ~/.bazaar/bazaar.conf file; or
+    
+    2. use the horrible "bzr sign-my-commits" command, which signs every 
+       single commit that happens to have my name attached to it (including 
+       commits incorporated using "bzr merge"), whether I actually made the 
+       commit or not.  
+
+Option #1 is ruled out because I don't want to sign any changes until after 
+I've reviewed them---right before I release them to the world---not every 
+time I make a private commit.  Option #2 is out of the question, because it 
+leaves open a fairly wide security hole: I might end up retroactively 
+signing commits attributed to me that I never actually made.  To make 
+matters worse, it's not clear how to extract signatures from a repository 
+so they can be checked independently, so I doubt anyone will ever rely on 
+signatures generated using bzr-signing anyway.
+
+Rather than giving up and moving everything over to git, I was originally 
+planning to run "bzr testament --long --strict" on my releases, use GnuPG 
+to sign the result, and include the signatures somewhere alongside the 
+PyCrypto source code.  I even wrote a script to convert the output of these 
+files into something that could be (partially) checked using the 
+widely-available "sha1sums" tool.  That still wouldn't protect the revision 
+history, but at least it would give us some reliable checkpoints.  On the 
+other hand, the probability that anyone else would bother checking these 
+signatures is pretty well near zero.
+
+PyCrypto can't provide security if everyone ends up unwittingly running a 
+compromised version.
+
+
+=== 2. No interactive rebase ===
+
+In the previous text, I mentioned the following step in my workflow:
+
+    7. bzr rebase --interactive
+
+Unfortunately, that command doesn't exist; bzr-rebase doesn't support 
+interactive rebasing like git does.
+
+Interactive rebasing allows me to edit the revision history for stuff I 
+haven't published yet.  Why would I want to do that?  To make peer review 
+easier.  When I publish changes to PyCrypto, I want other people to be able 
+to review them easily, but that's going to be hard if they're constantly 
+being distracted by meaningless checkpoints, reverts, and typos that get 
+corrected a few commits later.
+
+
+=== 3. "bzr viz" is clunky compared to gitk ===
+
+Use both tool; You'll see what I mean.  In "bzr viz", you have to 
+double-click on each change to see *what* changed, which makes reviewing 
+several commits a pain.  I searched Google for "gitk bzr", and found out 
+that apparently somebody wrote some code to fix this, but the bzr-gtk 
+developers weren't interested in it because they weren't sure if it was a 
+good idea.
+
+Again, this impacts peer review.  PyCrypto will suffer if it's not easy to 
+review.
+
+
+=== 4. No support for cherry picking ===
+
+When I started working on PyCrypto, I decided to go back to the latest 
+release (pycrypto-2.0.1) and start my work from there.  The idea was to 
+cherry-pick patches from a several people's trees, reviewing them in the 
+process.  I used "bzr merge -c", only to find out that bzr doesn't actually 
+track cherry-picked merges.  To work around this, I ended up copying chunks 
+of other people's commit logs into my commit messages by hand.  That will 
+probably make a mess for anyone who already has a PyCrypto bzr tree and 
+wants to pull in my changes.
+
+
+=== 5. bzr-rebase deleted my Fortuna implementation ===
+
+See the beginning of this post.  This might be the proverbial straw that 
+broke the camel's back.
+
+
+=== Conclusion ===
+
+I originally started using bzr because of an article by Mark Shuttleworth:
+
+    "Choose lossless VCS tools if you have that luxury"
+    http://www.markshuttleworth.com/archives/125
+
+Unfortunately, bzr doesn't support cherry-picking, it doesn't try to 
+guarantee data integrity through content addressing, and now it just 
+deleted my files.  I don't think explicitly tracking renames is enough to 
+make bzr qualify a "lossless VCS tool".  Besides, what good is a lossless 
+VCS tool if the information it stores isn't readily available when I need 
+it?
+
+While searching for ways to do certain things in bzr, I found an 
+interesting article by someone who goes by the name "Casey":
+
+    http://screwyouenterpriseedition.blogspot.com/2008/06/i-cant-stand-second-best.html
+
+While I might disagree with the author's evaluation of Python, I think his 
+analysis of bzr was spot-on (quoted here):
+
+    "Bzr does not have cherry pick. It does not have interactive rebase.  
+    There were ways to pull the changes out of my working tree, but no way 
+    to rearrange the history to be a strict superset of my upstream. The 
+    operation seemed so trivial, and yet it was impossible. Suddenly it was 
+    all so clear to me. The "advanced features" that bzr admitted to 
+    lacking and claimed it was just as well off without weren't advanced at 
+    all. They were the whole point! Git's history manipulation was the 
+    reason I used it. All bzr does is track your changes. Git actually lets 
+    you *manage* them."
+
+Whatever you might think about the Linux kernel, Linux developers have a 
+lot of experience coping with complex workflows.  I think their experience 
+is evident in git.  By contrast, bzr seems immature, and I'm not convinced 
+that bzr developers are going to change that any time soon.
+
+Bart Trojanowski made a nice video tutorial about working with git.  It's a 
+little over two hours, but I highly recommend it if you've never used git 
+before:
+
+    http://excess.org/article/2008/07/ogre-git-tutorial/
+
+Also, if you used versions of git prior to 1.5 but hated the interface, I 
+suggest looking at git 1.5.  Coming from a bzr background, git 1.5 was easy 
+for me to learn, but I'm told that that previous versions had a much uglier 
+interface with a steeper learning curve.
+
+At this point, I might still be able to be convinced to stay with bzr for a 
+few releases, or maybe to try Mercurial, but unless somebody convinces me 
+otherwise, I'm switching to git.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20080806/b6369da8/attachment.pgp 
+
+From yanagisawa at csg.is.titech.ac.jp  Sat Aug 16 07:57:19 2008
+From: yanagisawa at csg.is.titech.ac.jp (Yoshisato YANAGISAWA)
+Date: Sat, 16 Aug 2008 22:57:19 +0900
+Subject: [pycrypto] Add support for Camellia block cipher to pycrypto 2.0.1.
+Message-ID: <48A6DCBF.3090702@csg.is.titech.ac.jp>
+
+Hi,
+
+I implemented a patch to add support for Camellia block cipher to Python
+Cryptography Toolkit (aka. pycrypto).  Camellia is one of the approved
+encryption methods by European Union (one of the finalist of NESSIE) and
+has specified in several RFCs.  It is also included in some open source
+softwares such as Linux, OpenSSL, Firefox 3, and so on.
+
+I put the patch at:
+http://www.csg.is.titech.ac.jp/~yanagisawa/Sites/text/camellia/pycrypto-2.0.1.patch
+in http://www.csg.is.titech.ac.jp/~yanagisawa/Sites/text/camellia-e.html
+
+I have already posted the patch to the bug tracking system:
+https://bugs.launchpad.net/pycrypto/+bug/258561
+
+Will you please review and test it?
+I hope pycrypto will include the patch.
+
+Thank you in advance,
+-- 
+Yoshisato Yanagisawa (Dr.Sc.) <yanagisawa at csg.is.titech.ac.jp>
+
+From dlitz at dlitz.net  Thu Aug 21 11:01:56 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Thu, 21 Aug 2008 13:01:56 -0400
+Subject: [pycrypto] Licence
+In-Reply-To: <20080821101936.GC9658@trippin>
+References: <20080821101936.GC9658@trippin>
+Message-ID: <20080821170156.GA10554@rivest.dlitz.net>
+
+On Thu, Aug 21, 2008 at 01:19:36PM +0300, Ali Polatel wrote:
+>Hi,
+>We have a bug? about the pycrypto licence being wrong in our repository.
+>The tarball states the source is public domain and the sourceforge page
+>says it's cnri python.
+>Which one is correct? I assume the one in the tarball is the correct one
+>but I just want to be sure.
+>
+>?: https://bugs.gentoo.org/show_bug.cgi?id=177815
+
+[PyCrypto has its own mailing list now.  See http://www.pycrypto.org/.  
+Please send any replies to that list.]
+
+I've filed a bug in PyCrypto's bug tracker:
+
+     https://bugs.launchpad.net/pycrypto/+bug/260130
+
+The PyCrypto licensing status is a bit of a mess.  It looks like a bunch of 
+reference implementations were simply copied-and-pasted into the source 
+tree, and each has its own licensing statement.
+
+I recommend looking at each source file and making a judgment for yourself.
+
+I'm slowly working on a new release of PyCrypto (I've just taken over from 
+Andrew Kuchling).  In the next release, I'll try to document things better, 
+and fix the most obvious problems (I've already written a replacement for 
+RIPEMD.c).
+
+However, some of the software is unattributed.  I assume that most of it 
+was written by A.M. Kuchling, but I can't be totally sure.  I'll try to 
+contact Andrew and see if he can clear things up.
+
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20080821/b5d4248a/attachment.pgp 
+
+From dlitz at dlitz.net  Sun Aug 24 09:53:21 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 24 Aug 2008 11:53:21 -0400
+Subject: [pycrypto] Add support for Camellia block cipher to
+	pycrypto	2.0.1.
+In-Reply-To: <48A6DCBF.3090702@csg.is.titech.ac.jp>
+References: <48A6DCBF.3090702@csg.is.titech.ac.jp>
+Message-ID: <20080824155321.GA2437@rivest.dlitz.net>
+
+On Sat, Aug 16, 2008 at 10:57:19PM +0900, Yoshisato YANAGISAWA wrote:
+>I put the patch at:
+>http://www.csg.is.titech.ac.jp/~yanagisawa/Sites/text/camellia/pycrypto-2.0.1.patch
+>in http://www.csg.is.titech.ac.jp/~yanagisawa/Sites/text/camellia-e.html
+>
+>I have already posted the patch to the bug tracking system:
+>https://bugs.launchpad.net/pycrypto/+bug/258561
+
+Thank you for your patch!
+
+The goals for the next release are:
+- to fix bugs
+- to deal with potential copyright issues, and
+- to fix long-standing problems with how people generate random numbers for use
+   with PyCrypto.
+
+The resulting set of changes is already fairly large, and I don't want to 
+make it larger by adding new ciphers, so Camellia will probably not be 
+included in the next release. I will consider it for future releases, 
+however.
+
+Looking at your patch, I noticed that you have included copyright licensing 
+statements in camellia.c and camellia.h, but the author's name and 
+copyright licensing for the PyCrypto-specific parts of the patch are 
+missing. The ideal situation would be for the PyCrypto-specific 
+contributions to be placed into the public domain (i.e. all copyright 
+interests be disclaimed). Alternatively, the same license that the Camellia 
+reference implementation uses (i.e. 2-clause BSD) would be fine.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20080824/05720e72/attachment.pgp 
+
+From yanagisawa at csg.is.titech.ac.jp  Mon Aug 25 05:37:45 2008
+From: yanagisawa at csg.is.titech.ac.jp (Yoshisato YANAGISAWA)
+Date: Mon, 25 Aug 2008 20:37:45 +0900
+Subject: [pycrypto] Add support for Camellia block cipher to	pycrypto
+ 2.0.1.
+In-Reply-To: <20080824155321.GA2437@rivest.dlitz.net>
+References: <48A6DCBF.3090702@csg.is.titech.ac.jp>
+	<20080824155321.GA2437@rivest.dlitz.net>
+Message-ID: <48B29989.5080505@csg.is.titech.ac.jp>
+
+
+Thank you for your reply,
+
+On 2008/08/25 0:53, Dwayne C. Litzenberger wrote:
+> The resulting set of changes is already fairly large, and I don't want 
+> to make it larger by adding new ciphers, so Camellia will probably not 
+> be included in the next release. I will consider it for future releases, 
+> however.
+
+OK, I understood the situation and the goals in the next release.  I
+will wait until PyCrypto attains the goals.  After that, I hope PyCrypto
+will include the Camellia block cipher, which is fast and strong enough.
+
+> Looking at your patch, I noticed that you have included copyright 
+> licensing statements in camellia.c and camellia.h, but the author's name 
+> and copyright licensing for the PyCrypto-specific parts of the patch are 
+> missing. The ideal situation would be for the PyCrypto-specific 
+
+According to your suggestion, I fixed my patch.  Since we cannot make
+public domain softwares under Japanese copyright law, I chose 2-clause
+BSD license for the PyCrypto-specific parts.
+Fixed version is:
+http://www.csg.is.titech.ac.jp/~yanagisawa/Sites/text/camellia/pycrypto-2.0.1-p1.patch
+
+Thank you,
+
+-- 
+Yoshisato Yanagisawa (Dr.Sc.) <yanagisawa at csg.is.titech.ac.jp>
+
+From dlitz at dlitz.net  Wed Aug 27 18:42:54 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Wed, 27 Aug 2008 20:42:54 -0400
+Subject: [pycrypto] PyCrypto TSU NOTIFICATION
+Message-ID: <20080828004254.GA31214@rivest.dlitz.net>
+
+-----BEGIN PGP SIGNED MESSAGE-----
+
+########################################################
+#
+# This is a proof of posting certificate from
+# stamper.itconsult.co.uk certifying that a user
+# claiming to be:-
+#     dlitz at dlitz.net
+# requested that this message be sent to:-
+#     crypt at bis.doc.gov
+#     enc at nsa.gov
+#     web_site at bis.doc.gov
+#     pycrypto at lists.dlitz.net
+#     PYTHON-CRYPTO at NIC.SURFNET.NL
+#     dlitz at dlitz.net
+#
+# This certificate was issued at 00:45 (GMT)
+# on Thursday 28 August 2008 with reference 0520978
+#
+# CAUTION: while the message may well be from the sender
+#          indicated in the "From:" header, the sender
+#          has NOT been authenticated by this service
+#
+# For information about the Stamper service see
+#        http://www.itconsult.co.uk/stamper.htm
+#
+########################################################
+
+SUBMISSION TYPE: TSU
+SUBMITTED BY: Dwayne C. Litzenberger
+SUBMITTED FOR: Dwayne C. Litzenberger
+POINT OF CONTACT: Dwayne C. Litzenberger
+PHONE and/or FAX: +1-613-693-1296
+MANUFACTURER: n/a
+PRODUCT NAME/MODEL #: The Python Cryptography Toolkit ("PyCrypto")
+ECCN: 5D002
+
+NOTIFICATION: http://www.pycrypto.org/
+
+Note: I am a Canadian citizen posting software to my website located in 
+Canada.  I am not certain whether PyCrypto contains enough US-origin 
+cryptography to be covered by U.S. export controls, but I am submitting 
+this anyway.
+
+(Sorry for spamming the lists, but I want there to be a record of this.)
+
+- -- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: 2.6.3i
+Charset: noconv
+Comment: Stamper Reference Id: 0520978
+
+iQEVAgUBSLX1DYGVnbVwth+BAQEcuwf9EWnXLqSO5bPzR9K9QnTPcsKbTljKjPxr
+d+q0E7eE8VtnvvijUcTAR9o27yvzOPxdFT864MQA7OTSbPK39aGAgA4fgAgvYH9t
+UNjJ/kv8QLz/aq2fi/HNjyrwnqFnUl0uqwpOrQGbz8Y+SGpVh1gKqy1Ju45L+doq
+sxbzCOpjgRv2zDdNR/2SnFmDWQXv8dSeonwIHpQDft8/LVA/gHiTDmteQlOhJQ6o
+XYhY+HbRjsD741/GSpOt9IlN5ln0UgshFoLIndnNSAvWf4aPyh5KCN7ho+/BC0v/
+W/pqSSlPkwmbhlPHoOltTkNc0qKLAHXqMGJNhO8AkrYZOyJksb0HsA==
+=3oIX
+-----END PGP SIGNATURE-----
+
+
+From batt at develer.com  Tue Sep  2 04:31:28 2008
+From: batt at develer.com (Francesco Sacchi)
+Date: Tue, 02 Sep 2008 12:31:28 +0200
+Subject: [pycrypto] [PATCH] Support for TEA
+Message-ID: <48BD1600.8080704@develer.com>
+
+More than one year ago I posted a patch on sourceforge 
+(http://sourceforge.net/tracker/index.php?func=detail&aid=1726872&group_id=20937&atid=320937) 
+that adds TEA (Tiny Encryption Algorithm) to pycrypto and is gone 
+un-noticed. I then posted to Launchpad, but it get unnoticed too.
+
+Since people ask questions to me on  when it get included in official 
+release I re-post it again, hoping that at least someone will reply...
+
+To apply use:
+patch -p1 < tea_patch
+Into your pycryto 2.0.1 directory.
+
+Bye!
+
+P.S.
+I'm not a subscriber of this list, please keep me in CC
+-- 
+   _|/ Francesco Sacchi - Develer S.r.l., R&D dept.
+    |\ http://www.develer.com/
+
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: tea_patch
+Url: http://lists.dlitz.net/pipermail/pycrypto/attachments/20080902/cff3ab97/attachment.txt 
+
+From bill at broadley.org  Sun Sep  7 23:48:49 2008
+From: bill at broadley.org (Bill Broadley)
+Date: Sun, 07 Sep 2008 22:48:49 -0700
+Subject: [pycrypto] Bug in Crypto.PublicKey.RSA?
+Message-ID: <48C4BCC1.1060709@broadley.org>
+
+
+Shouldn't RSA.generate(keysize, rpool.get_bytes) generate a key that is
+keysize bits and that can encrypt that many bits?
+
+I generated a 10MB file with:
+dd if=/dev/urandom of=10MB bs=1024 count=10240
+
+Then used this piece of code:
+
+from Crypto.PublicKey import RSA
+from Crypto.Util.randpool import RandomPool
+
+rpool = RandomPool()
+keysize=368
+privkeyA = RSA.generate(keysize, rpool.get_bytes)
+pubkeyA = privkeyA.publickey()
+print privkeyA.size();
+myfile = open("10MB",mode="rb")
+buff=myfile.read(keysize/8)
+print len(buff)
+block1 = pubkeyA.encrypt(buff, '')
+
+Sometimes it works:
+$ python pk.py
+367
+46
+
+Sometimes it doesn't (on the same 10MB file):
+$ python pk.py
+367
+46
+Traceback (most recent call last):
+   File "pk.py", line 17, in <module>
+     block2 = pubkeyA.encrypt(buff, '')
+   File "/usr/lib/python2.5/site-packages/Crypto/PublicKey/pubkey.py", line
+50, in encrypt
+     ciphertext=self._encrypt(plaintext, K)
+   File "/usr/lib/python2.5/site-packages/Crypto/PublicKey/RSA.py", line 91,
+in _encrypt
+     raise error, 'Plaintext too large'
+Crypto.PublicKey.RSA.error: Plaintext too large
+
+I believe ssh had a bug like this, if the first bit of the key was zero the
+resulting key was half as big as asked for.  I guess I could always specify
+the key to be one bit bigger than I need, but it seems like to encrypt N bytes
+that the key should need to be N*8 and should always work.
+
+Am I missing anything?  I didn't see anything in my googling (I did find many
+folks with the plaintext too large error) or on the pydoc page.
+
+
+
+From dlitz at dlitz.net  Mon Sep  8 08:42:01 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 8 Sep 2008 10:42:01 -0400
+Subject: [pycrypto] Bug in Crypto.PublicKey.RSA?
+In-Reply-To: <48C4BCC1.1060709@broadley.org>
+References: <48C4BCC1.1060709@broadley.org>
+Message-ID: <20080908144200.GA7041@rivest.dlitz.net>
+
+On Sun, Sep 07, 2008 at 10:48:49PM -0700, Bill Broadley wrote:
+>Shouldn't RSA.generate(keysize, rpool.get_bytes) generate a key that is
+>keysize bits and that can encrypt that many bits?
+
+No.  RSA with an N-bit modulus can only guarantee encryption of up to N-1 
+bits.
+
+When you generate an RSA key, you get three values:
+
+     - n: the modulus (when you talk about a 368-bit key, you are actually 
+       talking about a 368-bit modulus)
+
+     - e: the public exponent (PyCrypto defaults to 65537)
+
+     - d: the private exponent
+
+The public key is the pair (n, e), and the private key is the pair (n, d).  
+To encrypt, you perform the following operation:
+
+     C = M**e (mod n)
+       = M**e % n        # Python notation
+       = pow(M, e, n)    # Fast Python notation
+
+To decrypt, you perform the following operation:
+
+     M = C**d (mod n)
+       = C**d % n        # Python notation
+       = pow(C, d, n)    # Fast Python notation
+
+Notice how in the decryption, we do a "% n" operation.  This means that 
+whatever the value we decrypt, we will only ever get a value between 0 and 
+n-1.  Thus, PyCrypto only lets you encrypt a value between 0 and n-1.
+
+This program should demonstrate:
+
+# ==== BEGIN ====
+>>> from Crypto.PublicKey import RSA
+>>> from binascii import a2b_hex, b2a_hex
+>>>
+>>> # Generate a random RSA key (see my note below about RandomPool)
+>>> rsaobj = RSA.generate(368, open("/dev/urandom", "rb").read)
+>>>
+>>> # Generate two messages
+>>> M0 = a2b_hex("%02X" % rsaobj.key.n)      # M0 = n
+>>> M1 = a2b_hex("%02X" % (rsaobj.key.n-1))  # M1 = n-1
+>>>
+>>> # Try to encrypt n
+>>> rsaobj.encrypt(M0, 0)
+Traceback (most recent call last):
+   File "<stdin>", line 2, in ?
+   File "/usr/lib/python2.4/site-packages/Crypto/PublicKey/pubkey.py", line 50, in encrypt
+     ciphertext=self._encrypt(plaintext, K)
+   File "/usr/lib/python2.4/site-packages/Crypto/PublicKey/RSA.py", line 181, in _encrypt
+     return (self.key._encrypt(plain),)
+_fastmath.error: Plaintext too large
+>>>
+>>> # Try to encrypt n-1
+>>> rsaobj.encrypt(M1, 0)
+('\x82\x9cp4\x0c@\xcd\t\x1f\x10\xed\x06Z*\x00^\xcf\xf1\xb2\xc0h\'%M+\x92\x91\xf8\xc3TD\xf5\xd4\xa3\r\xf7\x11\xa2\xf9\xec\x01"\x05\xd3\x89@',)
+>>> # Success
+>>>
+# ==== END ====
+
+>Then used this piece of code:
+>
+>from Crypto.PublicKey import RSA
+>from Crypto.Util.randpool import RandomPool
+>
+>rpool = RandomPool()
+>keysize=368
+>privkeyA = RSA.generate(keysize, rpool.get_bytes)
+
+As an aside, don't use RandomPool to generate random numbers.  It doesn't 
+do what you think it does.  See this thread:
+
+     http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html
+
+The next release of PyCrypto will provide an API that does what you want.  
+Until then, I would do something like this (Python 2.5 only):
+
+     import os
+     privkeyA = RSA.generate(keysize, os.urandom)
+
+Or this:
+
+     privkeyA = RSA.generate(keysize, open("/dev/urandom", "rb").read)
+
+Cheers,
+ - Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20080908/e906c0ce/attachment.pgp 
+
+From dlitz at dlitz.net  Mon Sep  8 08:46:27 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 8 Sep 2008 10:46:27 -0400
+Subject: [pycrypto] Bug in Crypto.PublicKey.RSA?
+In-Reply-To: <20080908144200.GA7041@rivest.dlitz.net>
+References: <48C4BCC1.1060709@broadley.org>
+	<20080908144200.GA7041@rivest.dlitz.net>
+Message-ID: <20080908144627.GB7041@rivest.dlitz.net>
+
+On Mon, Sep 08, 2008 at 10:42:01AM -0400, Dwayne C. Litzenberger wrote:
+> On Sun, Sep 07, 2008 at 10:48:49PM -0700, Bill Broadley wrote:
+>> Shouldn't RSA.generate(keysize, rpool.get_bytes) generate a key that is
+>> keysize bits and that can encrypt that many bits?
+>
+> No.  RSA with an N-bit modulus can only guarantee encryption of up to N-1 
+> bits.
+
+I should also add that you should not be encrypting user data directly 
+using RSA.  You _need_ padding like PKCS#1 if you want any security.  There 
+are a ton of attacks on direct RSA encryption.
+
+Like most of the things in PyCrypto, Crypto.PublicKey.RSA is a primitive 
+that can be used to *build* a secure cryptosystem, but it doesn't provide 
+any meaningful security by itself.
+
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20080908/c252807c/attachment.pgp 
+
+From bill at broadley.org  Mon Sep  8 21:13:58 2008
+From: bill at broadley.org (Bill Broadley)
+Date: Mon, 08 Sep 2008 20:13:58 -0700
+Subject: [pycrypto] Bug in Crypto.PublicKey.RSA?
+In-Reply-To: <20080908144200.GA7041@rivest.dlitz.net>
+References: <48C4BCC1.1060709@broadley.org>
+	<20080908144200.GA7041@rivest.dlitz.net>
+Message-ID: <48C5E9F6.3070302@broadley.org>
+
+Dwayne C. Litzenberger wrote:
+> On Sun, Sep 07, 2008 at 10:48:49PM -0700, Bill Broadley wrote:
+>> Shouldn't RSA.generate(keysize, rpool.get_bytes) generate a key that is
+>> keysize bits and that can encrypt that many bits?
+> 
+> No.  RSA with an N-bit modulus can only guarantee encryption of up to 
+> N-1 bits.
+
+Ah.  Strange.  Are there restrictions on the size of the modulus?  For instance:
+ >>> keysize=368
+ >>> privkeyA = RSA.generate(keysize, rpool.get_bytes)
+[ finishes in close to zero time ]
+ >>> keysize=369
+ >>> privkeyA = RSA.generate(keysize, rpool.get_bytes)
+Hangs forever.... well at least 10's of minutes.
+
+> When you generate an RSA key, you get three values:
+> 
+>     - n: the modulus (when you talk about a 368-bit key, you are 
+> actually       talking about a 368-bit modulus)
+> 
+>     - e: the public exponent (PyCrypto defaults to 65537)
+> 
+>     - d: the private exponent
+> 
+> The public key is the pair (n, e), and the private key is the pair (n, 
+> d).  To encrypt, you perform the following operation:
+> 
+>     C = M**e (mod n)
+>       = M**e % n        # Python notation
+>       = pow(M, e, n)    # Fast Python notation
+> 
+> To decrypt, you perform the following operation:
+> 
+>     M = C**d (mod n)
+>       = C**d % n        # Python notation
+>       = pow(C, d, n)    # Fast Python notation
+> 
+> Notice how in the decryption, we do a "% n" operation.  This means that 
+> whatever the value we decrypt, we will only ever get a value between 0 
+> and n-1.  Thus, PyCrypto only lets you encrypt a value between 0 and n-1.
+
+Ah, thanks for the clarification.
+
+>> Then used this piece of code:
+>>
+>> from Crypto.PublicKey import RSA
+>> from Crypto.Util.randpool import RandomPool
+>>
+>> rpool = RandomPool()
+>> keysize=368
+>> privkeyA = RSA.generate(keysize, rpool.get_bytes)
+> 
+> As an aside, don't use RandomPool to generate random numbers.  It 
+> doesn't do what you think it does.  See this thread:
+
+Indeed, I'm a big fan of /dev/random and /dev/urandom, linux seems like it was 
+one of the first to provide a pretty good /dev/random implementation that uses 
+non-visible (at least not trivially visible) sources of entropy.  In any case 
+I figured I'd get the example I found working like I expected before I 
+improved it.
+
+>     http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html
+> 
+> The next release of PyCrypto will provide an API that does what you 
+> want.  Until then, I would do something like this (Python 2.5 only):
+
+Sounds good, I'm actually using the 2.6 beta for development since I want to 
+use the new multiprocessing extensions.
+
+>     import os
+>     privkeyA = RSA.generate(keysize, os.urandom)
+> 
+> Or this:
+> 
+>     privkeyA = RSA.generate(keysize, open("/dev/urandom", "rb").read)
+
+Perfect, thanks.
+
+
+From bill at broadley.org  Mon Sep  8 22:29:08 2008
+From: bill at broadley.org (Bill Broadley)
+Date: Mon, 08 Sep 2008 21:29:08 -0700
+Subject: [pycrypto] Bug in Crypto.PublicKey.RSA?
+In-Reply-To: <20080908144627.GB7041@rivest.dlitz.net>
+References: <48C4BCC1.1060709@broadley.org>	<20080908144200.GA7041@rivest.dlitz.net>
+	<20080908144627.GB7041@rivest.dlitz.net>
+Message-ID: <48C5FB94.7040609@broadley.org>
+
+Dwayne C. Litzenberger wrote:
+> On Mon, Sep 08, 2008 at 10:42:01AM -0400, Dwayne C. Litzenberger wrote:
+>> On Sun, Sep 07, 2008 at 10:48:49PM -0700, Bill Broadley wrote:
+>>> Shouldn't RSA.generate(keysize, rpool.get_bytes) generate a key that is
+>>> keysize bits and that can encrypt that many bits?
+>>
+>> No.  RSA with an N-bit modulus can only guarantee encryption of up to 
+>> N-1 bits.
+> 
+> I should also add that you should not be encrypting user data directly 
+> using RSA.  You _need_ padding like PKCS#1 if you want any security.
+
+Hmm, I was not aware of padding issues.  What is the attack?  How much is the 
+ideal padding?  Is the attack related to guessing the plain text based on the 
+file size?  Is the padding supposed to be random extra bytes?  Filled to some 
+boundary like the next 16 bytes?  More?  Does compressing the plain text help?
+
+> There are a ton of attacks on direct RSA encryption.
+
+I'm blissfully unaware, I'll do some digging around, but any recommendations 
+are welcome.
+
+I'm basically trying to handle 2 encryption related problems:
+#1 backing up files that are distributed to untrusted (as much as possible)
+    peers.  Only the one encrypting should ever be able to decrypt the files.
+    I was planning on using RSA with a user selected key size.  Possibilities
+    for implementations include Crypto.PublicKey.RSA, a wrapper around GPG,
+    and a wrapper/bindings for openssl.
+#2 Securely communications between peers (of encrypted files).  Possibly
+    with out of band communication of public keys (I.e. manual peer
+    introduction by the admin).
+
+Ideally recovery of all backed up files could be managed with only a copy of 
+the the public/private keys.
+
+> Like most of the things in PyCrypto, Crypto.PublicKey.RSA is a primitive 
+> that can be used to *build* a secure cryptosystem, but it doesn't 
+> provide any meaningful security by itself.
+
+Sounds very reasonable.  Thanks for the advice on the padding, I'll try to 
+track down the reasons why and what an ideal implementation would be.
+
+
+From dlitz at dlitz.net  Tue Sep  9 06:24:05 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Tue, 9 Sep 2008 08:24:05 -0400
+Subject: [pycrypto] Bug in Crypto.PublicKey.RSA?
+In-Reply-To: <48C5FB94.7040609@broadley.org>
+References: <48C4BCC1.1060709@broadley.org>
+	<20080908144200.GA7041@rivest.dlitz.net>
+	<20080908144627.GB7041@rivest.dlitz.net>
+	<48C5FB94.7040609@broadley.org>
+Message-ID: <20080909122405.GA5660@rivest.dlitz.net>
+
+> >>> keysize=368
+> >>> privkeyA = RSA.generate(keysize, rpool.get_bytes)
+>[ finishes in close to zero time ]
+> >>> keysize=369
+> >>> privkeyA = RSA.generate(keysize, rpool.get_bytes)
+>Hangs forever.... well at least 10's of minutes.
+
+I filed a bug report:
+
+     https://bugs.launchpad.net/pycrypto/+bug/268101
+
+>> I should also add that you should not be encrypting user data directly 
+>> using RSA.  You _need_ padding like PKCS#1 if you want any security.
+>
+>Hmm, I was not aware of padding issues.  What is the attack?  How much is the 
+>ideal padding?  Is the attack related to guessing the plain text based on the 
+>file size?  Is the padding supposed to be random extra bytes?  Filled to some 
+>boundary like the next 16 bytes?  More?  Does compressing the plain text help?
+
+If you're asking "how much" padding, then you misunderstand what is meant 
+by RSA "padding".  It is NOT just a simple matter of appending zeros to a 
+message.  Quoting Wikipedia:
+
+     "In public key cryptography, padding is the process of preparing a 
+     message for encryption or signing with a primitive such as RSA. A 
+     popular example is OAEP. This is called "padding" because originally, 
+     random material was simply appended to the message to make it long 
+     enough for the primitive, but this is not a secure form of padding and 
+     is no longer used. A modern padding scheme aims to ensure that the 
+     attacker cannot manipulate the plaintext to exploit the mathematical 
+     structure of the primitive..."
+
+If you want to implement your own RSA encryption, then look at PKCS#1 
+(currently at version 2.1):
+
+     http://www.rsa.com/rsalabs/node.asp?id=2125
+
+>> There are a ton of attacks on direct RSA encryption.
+>
+>I'm blissfully unaware, I'll do some digging around, but any recommendations 
+>are welcome.
+
+Dan Boneh's article, "Twenty Years of Attacks on the RSA Cryptosystem", is 
+a good start:
+
+     http://www.cs.bgu.ac.il/~beimel/Courses/crypto/Boneh.pdf
+
+>I'm basically trying to handle 2 encryption related problems:
+>#1 backing up files that are distributed to untrusted (as much as possible)
+>    peers.  Only the one encrypting should ever be able to decrypt the files.
+>    I was planning on using RSA with a user selected key size.  Possibilities
+>    for implementations include Crypto.PublicKey.RSA, a wrapper around GPG,
+>    and a wrapper/bindings for openssl.
+
+If "only the one encrypting should ever be able to decrypt the files", then 
+why not use symmetric encryption?  It's much faster, and probably stronger 
+in the long run (since most people don't use 8192-bit RSA keys).
+
+If you must use public-key crypto, use GPG.  Avoid X.509:
+
+     http://www.cs.auckland.ac.nz/~pgut001/pubs/x509guide.txt
+
+Also, avoid PKCS#12:
+
+     http://www.cs.auckland.ac.nz/~pgut001/pubs/pfx.html
+
+Don't forget to apply an authentication scheme to the data if there's any 
+possibility that the data might be manipulated.
+
+>#2 Securely communications between peers (of encrypted files).  Possibly
+>    with out of band communication of public keys (I.e. manual peer
+>    introduction by the admin).
+
+This is too vague for me to recommend anything, but it sounds like GPG 
+might work here.
+
+And don't forget about random number generation.  All your crypto relies 
+upon it, but people screw up the implementations all the time.  Don't be 
+one of those people!
+
+Good luck,
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20080909/27dc45da/attachment.pgp 
+
+From bill at broadley.org  Tue Sep  9 21:03:32 2008
+From: bill at broadley.org (Bill Broadley)
+Date: Tue, 09 Sep 2008 20:03:32 -0700
+Subject: [pycrypto] Bug in Crypto.PublicKey.RSA?
+In-Reply-To: <20080909122405.GA5660@rivest.dlitz.net>
+References: <48C4BCC1.1060709@broadley.org>	<20080908144200.GA7041@rivest.dlitz.net>	<20080908144627.GB7041@rivest.dlitz.net>	<48C5FB94.7040609@broadley.org>
+	<20080909122405.GA5660@rivest.dlitz.net>
+Message-ID: <48C73904.80602@broadley.org>
+
+Dwayne C. Litzenberger wrote:
+>> >>> keysize=368
+>> >>> privkeyA = RSA.generate(keysize, rpool.get_bytes)
+>> [ finishes in close to zero time ]
+>> >>> keysize=369
+>> >>> privkeyA = RSA.generate(keysize, rpool.get_bytes)
+>> Hangs forever.... well at least 10's of minutes.
+> 
+> I filed a bug report:
+> 
+>     https://bugs.launchpad.net/pycrypto/+bug/268101
+
+Ah, do you think that is an ubuntu bug?  Or a pycrypto?  I.e. can I fix it by 
+installing pycrypto myself.  I had thought I had just misunderstood.
+
+>>> I should also add that you should not be encrypting user data 
+>>> directly using RSA.  You _need_ padding like PKCS#1 if you want any 
+>>> security.
+>>
+>> Hmm, I was not aware of padding issues.  What is the attack?  How much 
+>> is the ideal padding?  Is the attack related to guessing the plain 
+>> text based on the file size?  Is the padding supposed to be random 
+>> extra bytes?  Filled to some boundary like the next 16 bytes?  More?  
+>> Does compressing the plain text help?
+> 
+> If you're asking "how much" padding, then you misunderstand what is 
+> meant by RSA "padding".  It is NOT just a simple matter of appending 
+> zeros to a message.  Quoting Wikipedia:
+> 
+>     "In public key cryptography, padding is the process of preparing a 
+>     message for encryption or signing with a primitive such as RSA. A 
+>     popular example is OAEP. This is called "padding" because 
+> originally,     random material was simply appended to the message to 
+> make it long     enough for the primitive, but this is not a secure form 
+> of padding and     is no longer used. A modern padding scheme aims to 
+> ensure that the     attacker cannot manipulate the plaintext to exploit 
+> the mathematical     structure of the primitive..."
+> 
+> If you want to implement your own RSA encryption, then look at PKCS#1 
+> (currently at version 2.1):
+> 
+>     http://www.rsa.com/rsalabs/node.asp?id=2125
+
+That's was a bit of a hard read, I found some similar relevant material at:
+      http://en.wikipedia.org/wiki/Optimal_Asymmetric_Encryption_Padding
+
+Which looks relevant and useful.  Some additional at the bottom of the page:
+# ^ M. Bellare, P. Rogaway. Optimal Asymmetric Encryption -- How to encrypt 
+with RSA.
+
+Thanks for bringing the padding issue to my attention.
+
+> Dan Boneh's article, "Twenty Years of Attacks on the RSA Cryptosystem", 
+> is a good start:
+> 
+>     http://www.cs.bgu.ac.il/~beimel/Courses/crypto/Boneh.pdf
+
+Added to my reading list thanks.
+
+> If "only the one encrypting should ever be able to decrypt the files", 
+> then why not use symmetric encryption?  It's much faster, and probably 
+> stronger in the long run (since most people don't use 8192-bit RSA keys).
+
+Mostly for the added protection of not having your private key on the system.
+I might even backup systems that aren't even under my control.  Scenarios like 
+"Hey, user departmental user X, to back up your machine install this program, 
+and use this public key."
+
+I also find the public key appealing for reputation, a global ID, etc.
+
+Oh, as to performance my symmetric vs public key encryption tests didn't find 
+much difference:
+$ dd if=/dev/urandom of=/tmp/100MB bs=10240 count=10240
+$ time (echo a-test-password-of-non-trivial-length | gpg -o /dev/null 
+--symmetric --passphrase-fd 0  /tmp/100MB)
+real	0m8.563s
+user	0m8.513s
+sys	0m0.052s
+$ ls -alh /tmp/100MB
+-rw-r--r-- 1 bill bill 100M 2008-09-09 19:43 /tmp/100MB
+
+Using a 2kbit RSA key:
+$ gpg --list-keys
+/home/bill/.gnupg/pubring.gpg
+-----------------------------
+pub   1024D/07DDAB8A 2008-09-08
+uid                  Python benchmark <py at bench>
+sub   2048g/37E185E1 2008-09-08
+$ time (echo | gpg -o /dev/null -e -r benchmark --passphrase-fd 0 /tmp/100MB )
+Reading passphrase from file descriptor 0
+
+real	0m9.555s
+user	0m9.513s
+sys	0m0.048s
+
+So I'm not too concerned about 8.5 seconds 11.5MB/sec vs 10.5MB/sec.
+
+Am I missing something?
+
+> If you must use public-key crypto, use GPG.  Avoid X.509:
+> 
+>     http://www.cs.auckland.ac.nz/~pgut001/pubs/x509guide.txt
+> 
+> Also, avoid PKCS#12:
+> 
+>     http://www.cs.auckland.ac.nz/~pgut001/pubs/pfx.html
+
+Wow, more land mines than I expected, thanks.
+
+> Don't forget to apply an authentication scheme to the data if there's 
+> any possibility that the data might be manipulated.
+
+Indeed.
+
+>> #2 Securely communications between peers (of encrypted files).  Possibly
+>>    with out of band communication of public keys (I.e. manual peer
+>>    introduction by the admin).
+> 
+> This is too vague for me to recommend anything, but it sounds like GPG 
+> might work here.
+> 
+> And don't forget about random number generation.  All your crypto relies 
+> upon it, but people screw up the implementations all the time.  Don't be 
+> one of those people!
+
+Indeed.  If I generate the keys myself (as opposed to asking gpg) I'd use 
+/dev/random under linux (which from what I can tell is a pretty good 
+implementation).
+
+From bill at broadley.org  Wed Sep 10 02:09:48 2008
+From: bill at broadley.org (Bill Broadley)
+Date: Wed, 10 Sep 2008 01:09:48 -0700
+Subject: [pycrypto] Bug in Crypto.PublicKey.RSA?
+In-Reply-To: <48C73904.80602@broadley.org>
+References: <48C4BCC1.1060709@broadley.org>	<20080908144200.GA7041@rivest.dlitz.net>	<20080908144627.GB7041@rivest.dlitz.net>	<48C5FB94.7040609@broadley.org>	<20080909122405.GA5660@rivest.dlitz.net>
+	<48C73904.80602@broadley.org>
+Message-ID: <48C780CC.4060605@broadley.org>
+
+Please disregard my gpg benchmark numbers, turns out that gpg --encrypt with a 
+private/public key and --symmetric both use a symmetric encryption for files.
+
+> Oh, as to performance my symmetric vs public key encryption tests didn't find 
+> much difference:
+> $ dd if=/dev/urandom of=/tmp/100MB bs=10240 count=10240
+> $ time (echo a-test-password-of-non-trivial-length | gpg -o /dev/null 
+> --symmetric --passphrase-fd 0  /tmp/100MB)
+> real	0m8.563s
+> user	0m8.513s
+> sys	0m0.052s
+> $ ls -alh /tmp/100MB
+> -rw-r--r-- 1 bill bill 100M 2008-09-09 19:43 /tmp/100MB
+> 
+> Using a 2kbit RSA key:
+> $ gpg --list-keys
+> /home/bill/.gnupg/pubring.gpg
+> -----------------------------
+> pub   1024D/07DDAB8A 2008-09-08
+> uid                  Python benchmark <py at bench>
+> sub   2048g/37E185E1 2008-09-08
+> $ time (echo | gpg -o /dev/null -e -r benchmark --passphrase-fd 0 /tmp/100MB )
+> Reading passphrase from file descriptor 0
+> 
+> real	0m9.555s
+> user	0m9.513s
+> sys	0m0.048s
+
+From dlitz at dlitz.net  Wed Sep 10 09:06:46 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Wed, 10 Sep 2008 11:06:46 -0400
+Subject: [pycrypto] Bug in Crypto.PublicKey.RSA?
+In-Reply-To: <48C73904.80602@broadley.org>
+References: <48C4BCC1.1060709@broadley.org>
+	<20080908144200.GA7041@rivest.dlitz.net>
+	<20080908144627.GB7041@rivest.dlitz.net>
+	<48C5FB94.7040609@broadley.org>
+	<20080909122405.GA5660@rivest.dlitz.net>
+	<48C73904.80602@broadley.org>
+Message-ID: <20080910150646.GA11742@rivest.dlitz.net>
+
+On Tue, Sep 09, 2008 at 08:03:32PM -0700, Bill Broadley wrote:
+>>> >>> privkeyA = RSA.generate(keysize, rpool.get_bytes)
+>>> Hangs forever.... well at least 10's of minutes.
+>> 
+>> I filed a bug report:
+>> 
+>>     https://bugs.launchpad.net/pycrypto/+bug/268101
+>
+>Ah, do you think that is an ubuntu bug?  Or a pycrypto?  I.e. can I fix it by 
+>installing pycrypto myself.  I had thought I had just misunderstood.
+
+It's a PyCrypto bug.  As far as I know, Ubuntu hasn't made many 
+modifications to PyCrypto.
+
+>> If "only the one encrypting should ever be able to decrypt the files", 
+>> then why not use symmetric encryption?  It's much faster, and probably 
+>> stronger in the long run (since most people don't use 8192-bit RSA 
+>> keys).
+>
+>Mostly for the added protection of not having your private key on the system.
+>I might even backup systems that aren't even under my control.  Scenarios like 
+>"Hey, user departmental user X, to back up your machine install this program, 
+>and use this public key."
+
+Ah, that makes sense.
+
+>Oh, as to performance my symmetric vs public key encryption tests didn't 
+>find much difference:
+[snip]
+>So I'm not too concerned about 8.5 seconds 11.5MB/sec vs 10.5MB/sec.
+>
+>Am I missing something?
+
+I was referring to is that if you don't get some benefit from public-key 
+crypto, then you're better off not using it, since, according to NIST, you 
+need a 15360-bit RSA key (!) to get comparable security to AES-256:
+
+     http://csrc.nist.gov/publications/nistpubs/800-57/SP800-57-Part1.pdf
+     (Table 2 on Page 63)
+
+(Curiously, that table lists AES-256 as having 256 "bits of security", 
+which doesn't sound right to me, but even if you want 128-bit security, 
+it's claimed that you need at least 3072-bit RSA keys.  The number I've 
+heard elsewhere was about 6100 bits, and I've seen others recommend at 
+least 8192-bit RSA keys.)
+
+Regards,
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20080910/06f1ce1e/attachment.pgp 
+
+From dlitz at dlitz.net  Wed Sep 17 20:19:02 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Wed, 17 Sep 2008 22:19:02 -0400
+Subject: [pycrypto] Bug in Crypto.PublicKey.RSA?
+In-Reply-To: <20080909122405.GA5660@rivest.dlitz.net>
+References: <48C4BCC1.1060709@broadley.org>
+	<20080908144200.GA7041@rivest.dlitz.net>
+	<20080908144627.GB7041@rivest.dlitz.net>
+	<48C5FB94.7040609@broadley.org>
+	<20080909122405.GA5660@rivest.dlitz.net>
+Message-ID: <20080918021902.GA16306@rivest.dlitz.net>
+
+On Tue, Sep 09, 2008 at 08:24:05AM -0400, Dwayne C. Litzenberger wrote:
+>> >>> keysize=368
+>> >>> privkeyA = RSA.generate(keysize, rpool.get_bytes)
+>> [ finishes in close to zero time ]
+>> >>> keysize=369
+>> >>> privkeyA = RSA.generate(keysize, rpool.get_bytes)
+>> Hangs forever.... well at least 10's of minutes.
+>
+> I filed a bug report:
+>
+>     https://bugs.launchpad.net/pycrypto/+bug/268101
+
+Fixed in http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.0.x.git;a=commitdiff;h=23dcc92f8edaf1e0ec76e1a4c31d950546c005fa
+
+The problem is that you're trying to generate odd-length RSA keys. The offending code was:
+
+     while number.size(p*q) < bits:
+         p = pubkey.getPrime(bits/2, randfunc)
+         q = pubkey.getPrime(bits/2, randfunc)
+
+I replaced it with:
+
+     while number.size(p*q) < bits:
+         p = pubkey.getPrime(bits/2, randfunc)
+         q = pubkey.getPrime(bits - (bits/2), randfunc)
+
+However, notice that factoring n = p*q (and therefore breaking the RSA key)
+isn't any harder with a 369-bit key as it is with a 368-bit key, because even
+though q is now 185 bits long, p is still 184 bits.
+
+So although I fixed this bug to prevent the infinite loop, you don't have any
+reason to use odd-length RSA keys.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20080917/f5055788/attachment.pgp 
+
+From dlitz at dlitz.net  Wed Sep 17 22:23:58 2008
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Thu, 18 Sep 2008 00:23:58 -0400
+Subject: [pycrypto] RandomPool is now deprecated
+Message-ID: <20080918042358.GA18099@rivest.dlitz.net>
+
+At long last, using RandomPool now results in a DeprecationWarning.  The 
+recommended way to get random bytes in new programs is to do something like 
+this:
+
+     from Crypto import Random
+     ...
+     rng = Random.new()      # rng is a file-like object
+     ...
+     data = rng.read(32)
+
+This is okay too:
+
+     from Crypto import Random
+     ...
+     data = Random.new().read(32)
+
+If you need a drop-in replacement for old code that uses the RandomPool 
+interface, you can replace this:
+
+     from Crypto.Util.randpool import RandomPool
+
+with this:
+
+     from Crypto.Random import RandomPoolCompat as RandomPool
+
+The new code will be included in the next release of PyCrypto, and is 
+currently available in the git repository[1].  Please let me know if you 
+find any problems.
+
+On POSIX systems (where os.name == "posix"), we currently just read from 
+/dev/urandom.  That should work well enough on the free *nix platforms 
+(Linux, modern BSDs, etc.), but please let me know if there are any systems 
+with bad /dev/urandom devices.
+
+Cheers,
+  - Dwayne
+
+[1] git://git.pycrypto.org:9419/crypto/pycrypto-2.0.x.git
+     http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.0.x.git
+     latest commit-id: 2d3846eefd728d6cf9fd9aa9f8e94d1a77107908
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20080918/9f1e0a6c/attachment.pgp 
+

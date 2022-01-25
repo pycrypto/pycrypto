@@ -1,0 +1,251 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ANN: PyCrypto 2.1.0 beta 1 released
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ANN%3A%20PyCrypto%202.1.0%20beta%201%20released&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000168.html">
+   <LINK REL="Next"  HREF="000157.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ANN: PyCrypto 2.1.0 beta 1 released</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ANN%3A%20PyCrypto%202.1.0%20beta%201%20released&In-Reply-To="
+       TITLE="[pycrypto] ANN: PyCrypto 2.1.0 beta 1 released">dlitz at dlitz.net
+       </A><BR>
+    <I>Sun Nov  1 20:38:31 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000168.html">[pycrypto] _RSA.py and generate_py
+</A></li>
+        <LI>Next message: <A HREF="000157.html">[pycrypto] Pycrypto, New contributor, TODO &amp; Camellia
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#155">[ date ]</a>
+              <a href="thread.html#155">[ thread ]</a>
+              <a href="subject.html#155">[ subject ]</a>
+              <a href="author.html#155">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>PyCrypto 2.1.0b1 has been released.  This is the first beta release since I
+took over as maintainer of PyCrypto.
+
+You can download this release from <A HREF="http://www.pycrypto.org/">http://www.pycrypto.org/</A>
+
+It has the following SHA256 sums:
+
+7be4be8262ed8443700eed71e498e9b8d8a5ac17f3a00abc112c81753ffec9ba *pycrypto-2.1.0b1.tar.gz
+d4f628937c04faa5daaf4bd99e7c7ecbcd90e43f9291bcbc5a428ceacdd80f21 *pycrypto-2.1.0b1.tar.gz.asc
+
+Please test it and post your experiences to the PyCrypto mailing list:
+
+    <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+
+and/or file bug reports on Launchpad:
+
+    <A HREF="https://bugs.launchpad.net/pycrypto">https://bugs.launchpad.net/pycrypto</A>
+
+Here is a (non-exhaustive) list of changes between 2.0.1 and 2.1.0beta1:
+
+2.1.0beta1
+==========
+
+         * Modified RSA.generate() to ensure that e is coprime to p-1 and q-1.
+           Apparently, RSA.generate was capable of generating unusable keys.
+
+
+2.1.0alpha2
+===========
+
+         * Modified isPrime() to release the global interpreter lock while
+           performing computations. (patch from Lorenz Quack)
+
+         * Release the GIL while encrypting, decrypting, and hashing (but not
+           during initialization or finalization).
+
+         * API changes:
+
+           - Removed RandomPoolCompat and made Crypto.Util.randpool.RandomPool
+             a wrapper around Crypto.Random that emits a DeprecationWarning.
+             This is to discourage developers from attempting to provide
+             backwards compatibility for systems where there are NO strong
+             entropy sources available.
+
+           - Added Crypto.Random.get_random_bytes().  This should allow people
+             to use something like this if they want backwards-compatibility:
+
+                 try:
+                      from Crypto.Random import get_random_bytes
+                 except ImportError:
+                      try:
+                          from os import urandom as get_random_bytes
+                      except ImportError:
+                          get_random_bytes = open(&quot;/dev/urandom&quot;, &quot;rb&quot;).read
+
+           - Implemented __ne__() on pubkey, which fixes the following broken
+             behaviour:
+                 &gt;&gt;&gt; pk.publickey() == pk.publickey()
+                 True
+                 &gt;&gt;&gt; pk.publickey() != pk.publickey()
+                 True
+             (patch from Lorenz Quack)
+
+           - Block ciphers created with MODE_CTR can now operate on strings of
+             any size, rather than just multiples of the underlying cipher's
+             block size.
+
+           - Crypto.Util.Counter objects now raise OverflowError when they wrap
+             around to zero.  You can override this new behaviour by passing
+             allow_wraparound=True to Counter.new()
+
+
+2.1.0alpha1
+===========
+
+    * This version supports Python versions 2.1 through 2.6.
+
+    * Clarified copyright status of much of the existing code by tracking
+      down Andrew M. Kuchling, Barry A. Warsaw, Jeethu Rao, Joris Bontje,
+      Mark Moraes, Paul Swartz, Robey Pointer, and Wim Lewis and getting
+      their permission to clarify the license/public-domain status of their
+      contributions.  Many thanks to all involved!
+
+    * Replaced the test suite with a new, comprehensive package
+      (Crypto.SelfTest) that includes documentation about where its test
+      vectors came from, or how they were derived.
+
+      Use &quot;python setup.py test&quot; to run the tests after building.
+
+    * API changes:
+
+      - Added Crypto.version_info, which from now on will contain version
+        information in a format similar to Python's sys.version_info.
+
+      - Added a new random numbers API (Crypto.Random), and deprecated the
+        old one (Crypto.Util.randpool.RandomPool), which was misused more
+        often than not.
+
+        The new API is used by invoking Crypto.Random.new() and then just
+        reading from the file-like object that is returned.
+
+        CAVEAT: To maintain the security of the PRNG, you must call
+        Crypto.Random.atfork() in both the parent and the child processes
+        whenever you use os.fork().  Otherwise, the parent and child will
+        share copies of the same entropy pool, causing them to return the
+        same results!  This is a limitation of Python, which does not
+        provide readily-accessible hooks to os.fork().  It's also a
+        limitation caused by the failure of operating systems to provide
+        sufficiently fast, trustworthy sources of cryptographically-strong
+        random numbers.
+
+      - Crypto.PublicKey now raises ValueError/TypeError/RuntimeError
+        instead of the various custom &quot;error&quot; exceptions
+
+      - Removed the IDEA and RC5 modules due to software patents.  Debian
+        has been doing this for a while
+
+      - Added Crypto.Random.random, a strong version of the standard Python
+       'random' module.
+
+      - Added Crypto.Util.Counter, providing fast counter implementations
+        for use with CTR-mode ciphers.
+
+    * Bug fixes:
+
+      - Fixed padding bug in SHA256; this resulted in bad digests whenever
+        (the number of bytes hashed) mod 64 == 55.
+
+      - Fixed a 32-bit limitation on the length of messages the SHA256 module
+        could hash.
+
+      - AllOrNothing: Fixed padding bug in digest()
+
+      - Fixed a bad behaviour of the XOR cipher module: It would silently
+        truncate all keys to 32 bytes.  Now it raises ValueError when the
+        key is too long.
+
+      - DSA: Added code to enforce FIPS 186-2 requirements on the size of
+        the prime p
+
+      - Fixed the winrandom module, which had been omitted from the build
+        process, causing security problems for programs that misuse RandomPool.
+
+      - Fixed infinite loop when attempting to generate RSA keys with an
+        odd number of bits in the modulus.  (Not that you should do that.)
+
+    * Clarified the documentation for Crypto.Util.number.getRandomNumber.
+
+      Confusingly, this function does NOT return N random bits; It returns
+      a random N-bit number, i.e. a random number between 2**(N-1) and
+      (2**N)-1.
+
+      Note that getRandomNumber is for internal use only and may be
+      renamed or removed in future releases.
+
+    * Replaced RIPEMD.c with a new implementation (RIPEMD160.c) to
+      alleviate copyright concerns.
+
+    * Replaced the DES/DES3 modules with ones based on libtomcrypt-1.16 to
+      alleviate copyright concerns.
+
+    * Replaced Blowfish.c with a new implementation to alleviate copyright
+      concerns.
+
+    * Added a string-XOR implementation written in C (Crypto.Util.strxor)
+      and used it to speed up Crypto.Hash.HMAC
+
+    * Converted documentation to reStructured Text.
+
+    * Added epydoc configuration Doc/epydoc-config
+
+    * setup.py now emits a warning when building without GMP.
+
+    * Added pct-speedtest.py to the source tree for doing performance
+      testing on the new code.
+
+    * Cleaned up the code in several places.
+
+Cheers!
+   - Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 221 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20091101/b6c5ce3e/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20091101/b6c5ce3e/attachment.pgp</A> 
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000168.html">[pycrypto] _RSA.py and generate_py
+</A></li>
+	<LI>Next message: <A HREF="000157.html">[pycrypto] Pycrypto, New contributor, TODO &amp; Camellia
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#155">[ date ]</a>
+              <a href="thread.html#155">[ thread ]</a>
+              <a href="subject.html#155">[ subject ]</a>
+              <a href="author.html#155">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

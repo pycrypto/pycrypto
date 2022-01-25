@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Bug in PyCrypto 2.6.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Bug%20in%20PyCrypto%202.6.1&In-Reply-To=%3C548AE673.4020802%40luisgf.es%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000827.html">
+   <LINK REL="Next"  HREF="000830.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Bug in PyCrypto 2.6.1</H1>
+    <B>Luis Gonz&#225;lez Fern&#225;ndez</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Bug%20in%20PyCrypto%202.6.1&In-Reply-To=%3C548AE673.4020802%40luisgf.es%3E"
+       TITLE="[pycrypto] Bug in PyCrypto 2.6.1">luisgf at luisgf.es
+       </A><BR>
+    <I>Fri Dec 12 04:58:27 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000827.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+        <LI>Next message: <A HREF="000830.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#828">[ date ]</a>
+              <a href="thread.html#828">[ thread ]</a>
+              <a href="subject.html#828">[ subject ]</a>
+              <a href="author.html#828">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi All:
+
+Any news about this?
+
+
+On 01/12/14 18:48, Lorenz Quack wrote:
+&gt;<i> On 01/12/14 17:23, Mirko Dziadzka wrote:
+</I>&gt;&gt;<i> Oh, I totally agree. Either the name or the implementation has a
+</I>&gt;&gt;<i> problem.
+</I>&gt;<i>
+</I>&gt;<i> +1
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I was just pointing out that the behavior is consistent with the
+</I>&gt;&gt;<i> documentation in
+</I>&gt;&gt;<i> <A HREF="https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA._RSAobj-class.html#size">https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA._RSAobj-class.html#size</A>
+</I>&gt;<i>
+</I>&gt;<i> I disagree. As I showed in the code example and you pointed out in
+</I>&gt;<i> your previous post there are *some* values that the key can handle
+</I>&gt;<i> with more bits than reported by size().
+</I>&gt;<i> So, size() is *not* the &quot;maximum number of bits that can be handled by
+</I>&gt;<i> this key&quot;.
+</I>&gt;<i> It is the maximum number of bits that is guaranteed to work for all
+</I>&gt;<i> values.
+</I>&gt;<i>
+</I>&gt;<i> Lorenz
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>      Mirko
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 01.12.2014, at 17:31, Paul Koning &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">paul_koning at dell.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> To me, key_size means the size of the key.  It doesn&#8217;t mean the
+</I>&gt;&gt;&gt;<i> largest value you can encrypt.  If that is what is intended, or if
+</I>&gt;&gt;&gt;<i> it has to stay that way for historical reasons, fine, but it needs
+</I>&gt;&gt;&gt;<i> to be very clearly pointed out in the documentation because it is
+</I>&gt;&gt;&gt;<i> unexpected and counterintuitive.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>     paul
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Dec 1, 2014, at 11:13 AM, Mirko Dziadzka
+</I>&gt;&gt;&gt;&gt;<i> &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">mirko.dziadzka at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> HI
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Some thoughts about this &#8230;
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> _RSA.RSAobj.size.__doc__ says: Return the maximum number of bits
+</I>&gt;&gt;&gt;&gt;&gt;<i> that can be handled by this key
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> An RSA key can only encrypt data smaller than this key. So if we
+</I>&gt;&gt;&gt;&gt;<i> have an 2048 bit RSA key, it can encrypt some 2048 bit values, but
+</I>&gt;&gt;&gt;&gt;<i> not all. So 2047 should be the safe value here.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> IMHO this -1 is correct here.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Mirko
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+-- 
+
+--
+Luis Gonz&#225;lez Fern&#225;ndez
+<A HREF="https://www.luisgf.es">https://www.luisgf.es</A>
+PGP ID: C918B80F (DD6F BFC1 FC14 4C81 34F8 EA1E 6BCB C27F C918 B80F)
+Twitter: @luisgf_2001 / Jabber: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">luisgf at mijabber.es</A>
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 819 bytes
+Desc: OpenPGP digital signature
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20141212/f18743c3/attachment.sig">http://lists.dlitz.net/pipermail/pycrypto/attachments/20141212/f18743c3/attachment.sig</A>&gt;
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000827.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+	<LI>Next message: <A HREF="000830.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#828">[ date ]</a>
+              <a href="thread.html#828">[ thread ]</a>
+              <a href="subject.html#828">[ subject ]</a>
+              <a href="author.html#828">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

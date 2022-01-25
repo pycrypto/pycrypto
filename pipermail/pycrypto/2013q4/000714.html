@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Crypto.Random crashes due to unaligned access
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Crypto.Random%20crashes%20due%20to%20unaligned%20access&In-Reply-To=%3CCAFCC3es7FOvZ8zK6s67sarhULOZwbHRRQRea0RC80zREEF49KA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000711.html">
+   <LINK REL="Next"  HREF="000712.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Crypto.Random crashes due to unaligned access</H1>
+    <B>Greg Price</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Crypto.Random%20crashes%20due%20to%20unaligned%20access&In-Reply-To=%3CCAFCC3es7FOvZ8zK6s67sarhULOZwbHRRQRea0RC80zREEF49KA%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Crypto.Random crashes due to unaligned access">gnprice at gmail.com
+       </A><BR>
+    <I>Sun Oct 27 16:15:31 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000711.html">[pycrypto] Crypto.Random crashes due to unaligned access
+</A></li>
+        <LI>Next message: <A HREF="000712.html">[pycrypto] Crypto.Random crashes due to unaligned access
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#714">[ date ]</a>
+              <a href="thread.html#714">[ thread ]</a>
+              <a href="subject.html#714">[ subject ]</a>
+              <a href="author.html#714">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Oct 27, 2013 at 3:07 PM, Sebastian Ramacher
+&lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">sebastian+lists at ramacher.at</A>&gt; wrote:
+&gt;<i> I debugged this for a while and the problem is not _mm_loadu_si128.
+</I>&gt;<i> That's fine. It generates the correct movdqu instruction for that. The
+</I>&gt;<i> problem is the rk[0] = ... part. On amd64, ek and dk from block_state
+</I>&gt;<i> get aligned at 16 byte boundaries and everything works out properly.
+</I>&gt;<i> However, on i386 this does not appear to be true.
+</I>
+Now that my messages are making it to the list:
+
+Yes.  The guarantee from malloc(), which PyObject_New() relies on, is
+that the returned pointer is suitably aligned for any built-in type.
+On i386 this means 4-byte alignment; on amd64 8-byte alignment.  The
+actual behavior of glibc malloc() is a little nicer: it's aligned to
+the greater of 2 * sizeof(size_t) and __alignof__ (long double), so 8
+bytes on i386 and 16 bytes on amd64. [1]
+
+This is why on amd64 all is well and on i386 it often fails.
+
+The problem is that 'rk' has a type that implies 16-byte alignment.
+The __m128i type is defined in emmintrin.h:
+
+typedef long long __m128i __attribute__ ((__vector_size__ (16), __may_alias__));
+
+So our choices are (a) place 'rk' 16-byte aligned to match its type,
+or (b) change its type to guarantee no alignment (beyond that of
+built-in types.)  I don't see a way to do (b) without making the code
+significantly messier, and probably slowing it down measurably too
+because of the unaligned loads and stores.  To do (a), we can move
+st-&gt;ek and st-&gt;dk to a separate buffer which we allocate ourselves
+with something like posix_memalign().  My recommendation is (a).
+
+Thanks for looking at this!
+
+Greg
+
+
+[1] Details at <A HREF="https://git.kernel.org/cgit/docs/man-pages/man-pages.git/commit/?id=25630b276">https://git.kernel.org/cgit/docs/man-pages/man-pages.git/commit/?id=25630b276</A>
+.
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000711.html">[pycrypto] Crypto.Random crashes due to unaligned access
+</A></li>
+	<LI>Next message: <A HREF="000712.html">[pycrypto] Crypto.Random crashes due to unaligned access
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#714">[ date ]</a>
+              <a href="thread.html#714">[ thread ]</a>
+              <a href="subject.html#714">[ subject ]</a>
+              <a href="author.html#714">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

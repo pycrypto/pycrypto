@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Any progress with pycrypto 2.7?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Any%20progress%20with%20pycrypto%202.7%3F&In-Reply-To=%3CCAGfyce3Obua_R91DjKh3tt%2BRvFPG9HN_SHGX3n3Q9D3kA8svng%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000804.html">
+   <LINK REL="Next"  HREF="000799.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Any progress with pycrypto 2.7?</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Any%20progress%20with%20pycrypto%202.7%3F&In-Reply-To=%3CCAGfyce3Obua_R91DjKh3tt%2BRvFPG9HN_SHGX3n3Q9D3kA8svng%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Any progress with pycrypto 2.7?">helderijs at gmail.com
+       </A><BR>
+    <I>Sun Apr 13 11:09:04 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000804.html">[pycrypto] Linking Against Non-Sytem libgmp
+</A></li>
+        <LI>Next message: <A HREF="000799.html">[pycrypto] Building a Win32 egg for PyCrypto 2.5
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#798">[ date ]</a>
+              <a href="thread.html#798">[ thread ]</a>
+              <a href="subject.html#798">[ subject ]</a>
+              <a href="author.html#798">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>[ Shameless ping ]
+
+Is there any progress with the release?
+Or any indication about when it could take place?
+
+&gt;&gt;<i> 2) Potential DoS when importing an RSA key (segfault of the interpreter)
+</I>
+&gt;<i> &gt; I assume you mean the floating-point exception that occurs when you pass
+</I>&gt;<i> an
+</I>&gt;<i> &gt; even modulus to RSA.construct?
+</I>&gt;<i>
+</I>&gt;<i> Correct.
+</I>&gt;<i>
+</I>&gt;<i> &gt; <A HREF="https://bugs.launchpad.net/pycrypto/+bug/1193521">https://bugs.launchpad.net/pycrypto/+bug/1193521</A>
+</I>&gt;<i> &gt; <A HREF="https://github.com/dlitz/pycrypto/pull/50">https://github.com/dlitz/pycrypto/pull/50</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On pull request #50 (&quot;Add checks to verify correctness of RSA/DSA/ElGamal
+</I>&gt;<i> &gt; keys&quot;), it would be helpful if others could chime in about the potential
+</I>&gt;<i> for
+</I>&gt;<i> &gt; leaking private keys via timing side-channels.
+</I>&gt;<i>
+</I>&gt;<i> In addition to fixing the DoS, PR #50 also replaced the custom
+</I>&gt;<i> KeyFormatError exception with ValueError in the DSA code (I wrote it
+</I>&gt;<i> before you expressed preference for not having custom exceptions at
+</I>&gt;<i> all).
+</I>&gt;<i>
+</I>&gt;<i> I would actually apply first this other PR:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="https://github.com/dlitz/pycrypto/pull/71">https://github.com/dlitz/pycrypto/pull/71</A>
+</I>&gt;<i>
+</I>&gt;<i> Since there are 2 other exception types to fix.
+</I>&gt;<i> Hopefully PR #50 still applies cleanly after it.
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20140413/acf7dd3f/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20140413/acf7dd3f/attachment.html</A>&gt;
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000804.html">[pycrypto] Linking Against Non-Sytem libgmp
+</A></li>
+	<LI>Next message: <A HREF="000799.html">[pycrypto] Building a Win32 egg for PyCrypto 2.5
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#798">[ date ]</a>
+              <a href="thread.html#798">[ thread ]</a>
+              <a href="subject.html#798">[ subject ]</a>
+              <a href="author.html#798">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

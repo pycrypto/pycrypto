@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Unicode?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Unicode%3F&In-Reply-To=%3CCAEncD4c0sC%2BYH%3DqNGRpHfz8BFt_v7Jw7JLwbHEbD2cnEG2dhyg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000763.html">
+   <LINK REL="Next"  HREF="000765.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Unicode?</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Unicode%3F&In-Reply-To=%3CCAEncD4c0sC%2BYH%3DqNGRpHfz8BFt_v7Jw7JLwbHEbD2cnEG2dhyg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Unicode?">dave.pawson at gmail.com
+       </A><BR>
+    <I>Mon Feb  3 06:02:04 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000763.html">[pycrypto] Unicode?
+</A></li>
+        <LI>Next message: <A HREF="000765.html">[pycrypto] AES, python 2.7 vs 3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#764">[ date ]</a>
+              <a href="thread.html#764">[ thread ]</a>
+              <a href="subject.html#764">[ subject ]</a>
+              <a href="author.html#764">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Doh! Don't you just hate those smart guys :-)
+
+Many thanks Jeremy, that works perfectly without the oddities.
+
+Lesson learned.
+
+DaveP
+
+On 3 February 2014 12:40, Jeremy Gray &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">jrgray at gmail.com</A>&gt; wrote:
+&gt;<i> I may not understand the constraints of your situation, but wouldn't
+</I>&gt;<i> python's &quot;universal newlines&quot; file-open mode achieve what you want?  infile
+</I>&gt;<i> = open(filename, 'Urb')
+</I>&gt;<i>
+</I>&gt;<i> --Jeremy
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Feb 3, 2014 at 5:35 AM, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Now resolved.
+</I>&gt;&gt;<i> Source plain text is created / modified in either DOS or Linux (np to add
+</I>&gt;&gt;<i> Mac)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> read using
+</I>&gt;&gt;<i> chunk = unicode(infile.read(chunksize))
+</I>&gt;&gt;<i> # replace newline as appropriate
+</I>&gt;&gt;<i> chunk=replaceNL(chunk)
+</I>&gt;&gt;<i> # Convert to byte string
+</I>&gt;&gt;<i> chunk=safe_str(chunk)
+</I>&gt;&gt;<i> encrypt and write to disk
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> # for decrypt
+</I>&gt;&gt;<i> #Iterate over file to read into string
+</I>&gt;&gt;<i> # replace the individual bytes of the Unicode character (u2022 in my case)
+</I>&gt;&gt;<i> # with \n for the local machine
+</I>&gt;&gt;<i> retval = replaceBullet(retval)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> code below
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> #
+</I>&gt;&gt;<i> #Swap \n for \u2022
+</I>&gt;&gt;<i> #
+</I>&gt;&gt;<i> def replaceNL(str):
+</I>&gt;&gt;<i>     # If DOS, replace \r\x0A
+</I>&gt;&gt;<i>     # If Unix, replace \n
+</I>&gt;&gt;<i>     lineEnd=u'\n'
+</I>&gt;&gt;<i>     if string.find(str,'\r\x0a'):
+</I>&gt;&gt;<i>         lineEnd=u'\r\x0A'
+</I>&gt;&gt;<i>     return string.replace(str,lineEnd,u'\u2022')
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> #
+</I>&gt;&gt;<i> # Replace bullet by \n
+</I>&gt;&gt;<i> #
+</I>&gt;&gt;<i> def replaceBullet(bstr):
+</I>&gt;&gt;<i>     return string.replace(bstr,u'\\u2022',u'\n')
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> def safe_str(obj):
+</I>&gt;&gt;<i>     &quot;&quot;&quot; return the byte string representation of obj &quot;&quot;&quot;
+</I>&gt;&gt;<i>     try:
+</I>&gt;&gt;<i>         return str(obj)
+</I>&gt;&gt;<i>     except UnicodeEncodeError:
+</I>&gt;&gt;<i>         # obj is unicode
+</I>&gt;&gt;<i>         return unicode(obj).encode('unicode_escape')
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> HTH others, though it seems messy, it works.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Dave
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 3 February 2014 09:39, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; I'm having a problem 'sharing' an encrypted file between
+</I>&gt;&gt;<i> &gt; MSDOS and Linux.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; so I thought I'd replace \nl in the plain text with a non ASCII
+</I>&gt;&gt;<i> &gt; character prior to encryption.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; encryptor = AES.new(key, AES.MODE_CBC, iv)
+</I>&gt;&gt;<i> &gt; outfile.write(encryptor.encrypt(chunk))
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; gives me
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;  File &quot;/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py&quot;,
+</I>&gt;&gt;<i> &gt; line 244, in encrypt
+</I>&gt;&gt;<i> &gt;     return self._cipher.encrypt(plaintext)
+</I>&gt;&gt;<i> &gt; UnicodeEncodeError: 'ascii' codec can't encode character u'\u2022' in
+</I>&gt;&gt;<i> &gt; position 34: ordinal not in range(128)
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; It would seem I can't use non-ASCII characters, at least with AES, is
+</I>&gt;&gt;<i> &gt; this right ?
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; If not, how to address it please?
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; regards
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; --
+</I>&gt;&gt;<i> &gt; Dave Pawson
+</I>&gt;&gt;<i> &gt; XSLT XSL-FO FAQ.
+</I>&gt;&gt;<i> &gt; Docbook FAQ.
+</I>&gt;&gt;<i> &gt; <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Dave Pawson
+</I>&gt;&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;&gt;<i> Docbook FAQ.
+</I>&gt;&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000763.html">[pycrypto] Unicode?
+</A></li>
+	<LI>Next message: <A HREF="000765.html">[pycrypto] AES, python 2.7 vs 3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#764">[ date ]</a>
+              <a href="thread.html#764">[ thread ]</a>
+              <a href="subject.html#764">[ subject ]</a>
+              <a href="author.html#764">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

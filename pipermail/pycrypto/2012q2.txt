@@ -1,0 +1,2373 @@
+From partheinstein at gmail.com  Thu Apr  5 14:47:37 2012
+From: partheinstein at gmail.com (Parthy Chandrasekaran)
+Date: Thu, 5 Apr 2012 14:47:37 -0400
+Subject: [pycrypto] ImportError: cannot import name _counter
+Message-ID: <CA+rTMznFmwyJ1LgRnxxMdq5gS_32nkDGHZa=wrHExy2Si7bjZA@mail.gmail.com>
+
+Hi,
+
+I need to install pycryto module to use another module (paramiko).
+I've installed pycrypto 2.5 for Python 2.7 on Windows XP as follows:
+
+C:\Tools\python\pycrypto-2.5.tar\dist\pycrypto-2.5\pycrypto-2.5>python
+setup.py install --install-platbase win32
+running install
+running build
+running build_py
+running build_ext
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+
+running install_lib
+copying build\lib.win32-2.7\Crypto\Cipher\AES.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Cipher\ARC2.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Cipher\ARC4.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Cipher\Blowfish.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Cipher\CAST.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Cipher\DES.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Cipher\DES3.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Cipher\XOR.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Hash\_MD2.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Hash
+copying build\lib.win32-2.7\Crypto\Hash\_MD4.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Hash
+copying build\lib.win32-2.7\Crypto\Hash\_RIPEMD160.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Hash
+copying build\lib.win32-2.7\Crypto\Hash\_SHA224.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Hash
+copying build\lib.win32-2.7\Crypto\Hash\_SHA256.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Hash
+copying build\lib.win32-2.7\Crypto\Hash\_SHA384.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Hash
+copying build\lib.win32-2.7\Crypto\Hash\_SHA512.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Hash
+copying build\lib.win32-2.7\Crypto\Random\OSRNG\winrandom.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Random\OSRNG
+copying build\lib.win32-2.7\Crypto\Util\strxor.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Util
+copying build\lib.win32-2.7\Crypto\Util\_counter.pyd ->
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Util
+running install_egg_info
+Removing C:\Tools\python\Python27\Lib\site-packages\pycrypto-2.5-py2.7.egg-info
+Writing C:\Tools\python\Python27\Lib\site-packages\pycrypto-2.5-py2.7.egg-info
+
+When I run the self-test for counter, I get an ImportError for _counter:
+
+C:\Tools\python\pycrypto-2.5.tar\dist\pycrypto-2.5\pycrypto-2.5\lib\Crypto\SelfTest\Util>python
+test_Counter.py
+
+  File "test_Counter.py", line 39, in setUp
+    from Crypto.Util import Counter
+  File "C:\Tools\python\Python27\lib\Crypto\Util\Counter.py", line30,
+in <module>
+    from Crypto.Util import _counter
+ImportError: cannot import name _counter
+
+Any ideas on how I can resolve this import error?
+
+thanks
+partheinstein
+
+From eagle.antonio at gmail.com  Wed Apr 11 05:25:05 2012
+From: eagle.antonio at gmail.com (Antonio Teixeira)
+Date: Wed, 11 Apr 2012 09:25:05 +0000
+Subject: [pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+Message-ID: <CAF+3j-smda0r_uFKA8Gy7PL79V=tA8M_DTXWetAg97k-6BnxJw@mail.gmail.com>
+
+Good Morning.
+
+I'm in a no way a crypto expert just trying to encrypt some traffic inside
+our cluster between machines :) so be nice :D
+
+Anyway , I currently have the following code :
+
+self.publicKey = RSA.importKey(str(b64decode(publicKey)))
+encryptCipher = PKCS1_OAEP.new(self.publicKey)
+Data = encryptCipher.encrypt(Data)
+
+This Raises The Exception ValueError: Plaintext is too long.
+
+This is An Example Payload
+{"ACTION": "CLASSIFIED", "TASK": "HELLO", "PAYLOAD": "{\"TIME\": 10}",
+"TASK_ID": "c38aac1a-03ea-492d-9c03-27d9ea29eb0d"}
+
+So after a small search i found out that if i increase the RSA Modulus i'm
+able to encrypt larger number of bits ( makes sense )  but this feels dirty.
+
+What do your guys recommend ?
+
+Breaking the data in chunks and encrypting part by part joining it all in a
+buffer and send it down the socket all in one with the other server
+decrypting part by part and merging the data again ?
+
+P.S - I dont mind fishing by myself just trying to understand the best "way
+/ more correct way " to do it :)
+
+Regards
+Antonio Teixeira
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120411/a7793764/attachment.html>
+
+From gooksankoo at hoiptorrow.mailexpire.com  Wed Apr 11 08:19:09 2012
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Wed, 11 Apr 2012 14:19:09 +0200
+Subject: [pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+In-Reply-To: <CAF+3j-smda0r_uFKA8Gy7PL79V=tA8M_DTXWetAg97k-6BnxJw@mail.gmail.com>
+References: <CAF+3j-smda0r_uFKA8Gy7PL79V=tA8M_DTXWetAg97k-6BnxJw@mail.gmail.com>
+Message-ID: <CAGfyce1NE0dsMm=wenX2sJajDBG-BpaEdxzwSws7eUQ19V7w3g@mail.gmail.com>
+
+> So after a small search i found out that if i increase the RSA Modulus i'm
+> able to encrypt larger number of bits ( makes sense )? but this feels dirty.
+>
+> What do your guys recommend ?
+>
+> Breaking the data in chunks and encrypting part by part joining it all in a
+> buffer and send it down the socket all in one with the other server
+> decrypting part by part and merging the data again ?
+>
+> P.S - I dont mind fishing by myself just trying to understand the best "way
+> / more correct way " to do it :)
+
+Hi Antonio,
+
+Increasing the RSA key length is not "dirty": it simply increases
+security (and incidentally useful payload size) at the expense of
+decryption speed.
+If decryption speed is not that important to you, and you have a clear
+idea on how long you data can be at most, go ahead and increase the
+key size. The time you gain by taking this approach can be spent on
+important tasks like making the private key secure, or adding some
+form of authentication to your protocol.
+
+The "proper" way to do encryption would be to create a random AES
+session key (16 bytes), encrypt it with RSA (hopefully at least 2048
+bit long), send it, pad the data, encrypt it with AES, send it.
+Additionally, you should also sign the data and send the signature
+along.
+
+At the receiving end, you decrypt the session key with RSA, decrypt
+the data with AES, unpad the data, and verify its signature.
+
+From eagle.antonio at gmail.com  Thu Apr 12 12:34:06 2012
+From: eagle.antonio at gmail.com (Antonio Teixeira)
+Date: Thu, 12 Apr 2012 16:34:06 +0000
+Subject: [pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+In-Reply-To: <CAGfyce1NE0dsMm=wenX2sJajDBG-BpaEdxzwSws7eUQ19V7w3g@mail.gmail.com>
+References: <CAF+3j-smda0r_uFKA8Gy7PL79V=tA8M_DTXWetAg97k-6BnxJw@mail.gmail.com>
+	<CAGfyce1NE0dsMm=wenX2sJajDBG-BpaEdxzwSws7eUQ19V7w3g@mail.gmail.com>
+Message-ID: <CAF+3j-utzrT4WZSXC1=sZxNxE6WVF8Pufudp8y17PexuberPGA@mail.gmail.com>
+
+Legrandin thank you for your help.
+When i have time i will put something on pastebin so it can serve as
+example for future members that require this type of solution :)
+
+Regards
+A/T
+
+2012/4/11 Legrandin <gooksankoo at hoiptorrow.mailexpire.com>
+
+> > So after a small search i found out that if i increase the RSA Modulus
+> i'm
+> > able to encrypt larger number of bits ( makes sense )  but this feels
+> dirty.
+> >
+> > What do your guys recommend ?
+> >
+> > Breaking the data in chunks and encrypting part by part joining it all
+> in a
+> > buffer and send it down the socket all in one with the other server
+> > decrypting part by part and merging the data again ?
+> >
+> > P.S - I dont mind fishing by myself just trying to understand the best
+> "way
+> > / more correct way " to do it :)
+>
+> Hi Antonio,
+>
+> Increasing the RSA key length is not "dirty": it simply increases
+> security (and incidentally useful payload size) at the expense of
+> decryption speed.
+> If decryption speed is not that important to you, and you have a clear
+> idea on how long you data can be at most, go ahead and increase the
+> key size. The time you gain by taking this approach can be spent on
+> important tasks like making the private key secure, or adding some
+> form of authentication to your protocol.
+>
+> The "proper" way to do encryption would be to create a random AES
+> session key (16 bytes), encrypt it with RSA (hopefully at least 2048
+> bit long), send it, pad the data, encrypt it with AES, send it.
+> Additionally, you should also sign the data and send the signature
+> along.
+>
+> At the receiving end, you decrypt the session key with RSA, decrypt
+> the data with AES, unpad the data, and verify its signature.
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120412/91c526c7/attachment.html>
+
+From Imran.Azad at bthft.nhs.uk  Tue Apr 17 04:11:21 2012
+From: Imran.Azad at bthft.nhs.uk (Imran Azad)
+Date: Tue, 17 Apr 2012 08:11:21 +0000
+Subject: [pycrypto] unsubscribe address=imran.azad@bradfordhospitals.nhs.uk
+Message-ID: <20120417081652.32AFE44846D@nhs-pd1e-esg108.ad1.nhs.net>
+
+
+
+Imran Azad
+Web Content Manager
+Bradford Teaching Hospitals NHS Foundation Trust
+
+Tel: 01274 38 3556
+Mob: 07535660951
+Internet: http://www.bradfordhospitals.nhs.uk
+
+Your Hospital needs YOU! We need you to register as a Public, Patient or Staff member and help shape the future of your healthcare. Call 0800 280 2581 to register by phone or you can email bradfordhospitals at capitaregistrars.com<mailto:bradfordhospitals at capitaregistrars.com> and ask to be registered as a new member. For more information about our hospitals and Foundation Trust Membership please visit www.bradfordhospitals.nhs.uk<http://www.bradfordhospitals.nhs.uk>
+This message is confidential. It may also contain privileged information. The contents of this e-mail and any attachments are intended for the named addressee only. Unless you are the named addressee or authorised to receive the e-mail of the named addressee you may not disclose, use or copy the contents of the e-mail. If you are not the person for whom the message was intended, please notify the sender immediately at Bradford Teaching Hospitals NHS Foundation Trust and delete the material from your computer. You must not use the message for any other purpose, nor disclose its contents to any person other than the intended recipient. Bradford Teaching Hospitals NHS Foundation Trust does not accept responsibility for this message and any views or opinions contained in this e-mail are solely those of the author unless expressly stated otherwise.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120417/ec654393/attachment.html>
+
+From Imran.Azad at bthft.nhs.uk  Tue Apr 17 04:11:49 2012
+From: Imran.Azad at bthft.nhs.uk (Imran Azad)
+Date: Tue, 17 Apr 2012 08:11:49 +0000
+Subject: [pycrypto] unsubscribe
+Message-ID: <20120417081720.3B508448123@nhs-pd1e-esg104.ad1.nhs.net>
+
+
+
+Imran Azad
+Web Content Manager
+Bradford Teaching Hospitals NHS Foundation Trust
+
+Tel: 01274 38 3556
+Mob: 07535660951
+Internet: http://www.bradfordhospitals.nhs.uk
+
+Your Hospital needs YOU! We need you to register as a Public, Patient or Staff member and help shape the future of your healthcare. Call 0800 280 2581 to register by phone or you can email bradfordhospitals at capitaregistrars.com<mailto:bradfordhospitals at capitaregistrars.com> and ask to be registered as a new member. For more information about our hospitals and Foundation Trust Membership please visit www.bradfordhospitals.nhs.uk<http://www.bradfordhospitals.nhs.uk>
+This message is confidential. It may also contain privileged information. The contents of this e-mail and any attachments are intended for the named addressee only. Unless you are the named addressee or authorised to receive the e-mail of the named addressee you may not disclose, use or copy the contents of the e-mail. If you are not the person for whom the message was intended, please notify the sender immediately at Bradford Teaching Hospitals NHS Foundation Trust and delete the material from your computer. You must not use the message for any other purpose, nor disclose its contents to any person other than the intended recipient. Bradford Teaching Hospitals NHS Foundation Trust does not accept responsibility for this message and any views or opinions contained in this e-mail are solely those of the author unless expressly stated otherwise.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120417/8f3e2b33/attachment.html>
+
+From Imran.Azad at bthft.nhs.uk  Tue Apr 17 04:13:57 2012
+From: Imran.Azad at bthft.nhs.uk (Imran Azad)
+Date: Tue, 17 Apr 2012 08:13:57 +0000
+Subject: [pycrypto] unsubscribe Babylon1
+	address=imran.azad@bradfordhospitals.nhs.uk
+Message-ID: <20120417081928.9327844846D@nhs-pd1e-esg108.ad1.nhs.net>
+
+
+
+Imran Azad
+Web Content Manager
+Bradford Teaching Hospitals NHS Foundation Trust
+
+Tel: 01274 38 3556
+Mob: 07535660951
+Internet: http://www.bradfordhospitals.nhs.uk
+
+Your Hospital needs YOU! We need you to register as a Public, Patient or Staff member and help shape the future of your healthcare. Call 0800 280 2581 to register by phone or you can email bradfordhospitals at capitaregistrars.com<mailto:bradfordhospitals at capitaregistrars.com> and ask to be registered as a new member. For more information about our hospitals and Foundation Trust Membership please visit www.bradfordhospitals.nhs.uk<http://www.bradfordhospitals.nhs.uk>
+This message is confidential. It may also contain privileged information. The contents of this e-mail and any attachments are intended for the named addressee only. Unless you are the named addressee or authorised to receive the e-mail of the named addressee you may not disclose, use or copy the contents of the e-mail. If you are not the person for whom the message was intended, please notify the sender immediately at Bradford Teaching Hospitals NHS Foundation Trust and delete the material from your computer. You must not use the message for any other purpose, nor disclose its contents to any person other than the intended recipient. Bradford Teaching Hospitals NHS Foundation Trust does not accept responsibility for this message and any views or opinions contained in this e-mail are solely those of the author unless expressly stated otherwise.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120417/d5f1c745/attachment.html>
+
+From eagle.antonio at gmail.com  Fri Apr 20 12:48:56 2012
+From: eagle.antonio at gmail.com (Antonio Teixeira)
+Date: Fri, 20 Apr 2012 16:48:56 +0000
+Subject: [pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+In-Reply-To: <CAF+3j-utzrT4WZSXC1=sZxNxE6WVF8Pufudp8y17PexuberPGA@mail.gmail.com>
+References: <CAF+3j-smda0r_uFKA8Gy7PL79V=tA8M_DTXWetAg97k-6BnxJw@mail.gmail.com>
+	<CAGfyce1NE0dsMm=wenX2sJajDBG-BpaEdxzwSws7eUQ19V7w3g@mail.gmail.com>
+	<CAF+3j-utzrT4WZSXC1=sZxNxE6WVF8Pufudp8y17PexuberPGA@mail.gmail.com>
+Message-ID: <CAF+3j-sskHPjaDKNcg57_wPyYesKHEKdFg8mJMg8CtwmCTvwcw@mail.gmail.com>
+
+Hello Legrandin & Others.
+
+I'm currently trying to implement the following :
+
+The "proper" way to do encryption would be to create a random AES
+session key (16 bytes), encrypt it with RSA (hopefully at least 2048
+bit long), send it, pad the data, encrypt it with AES, send it.
+
+Ok So ..
+ - Create A Random AES 16 Bytes ( I'm assuming this will be the "secret")
+- Pad The Payload
+- Encrypt Using AES
+- Encrypt The Secret +  Payload With the RSA Key
+- Make A Signature Of The Entire "Encrypted Payload"
+- Append it to the "Encrypted Payload"
+Send it ....
+
+Recv it ..
+Make the reverse process.
+
+One thing i can't use the Normal SSL/TLS type of "session key" since there
+is no state across requests or during the handshake.
+Meaning "one worker can receive the request but another one can answer it
+and there is no shared memory between the two."
+
+2012/4/12 Antonio Teixeira <eagle.antonio at gmail.com>
+
+> Legrandin thank you for your help.
+> When i have time i will put something on pastebin so it can serve as
+> example for future members that require this type of solution :)
+>
+> Regards
+> A/T
+>
+> 2012/4/11 Legrandin <gooksankoo at hoiptorrow.mailexpire.com>
+>
+>> > So after a small search i found out that if i increase the RSA Modulus
+>> i'm
+>> > able to encrypt larger number of bits ( makes sense )  but this feels
+>> dirty.
+>> >
+>> > What do your guys recommend ?
+>> >
+>> > Breaking the data in chunks and encrypting part by part joining it all
+>> in a
+>> > buffer and send it down the socket all in one with the other server
+>> > decrypting part by part and merging the data again ?
+>> >
+>> > P.S - I dont mind fishing by myself just trying to understand the best
+>> "way
+>> > / more correct way " to do it :)
+>>
+>> Hi Antonio,
+>>
+>> Increasing the RSA key length is not "dirty": it simply increases
+>> security (and incidentally useful payload size) at the expense of
+>> decryption speed.
+>> If decryption speed is not that important to you, and you have a clear
+>> idea on how long you data can be at most, go ahead and increase the
+>> key size. The time you gain by taking this approach can be spent on
+>> important tasks like making the private key secure, or adding some
+>> form of authentication to your protocol.
+>>
+>> The "proper" way to do encryption would be to create a random AES
+>> session key (16 bytes), encrypt it with RSA (hopefully at least 2048
+>> bit long), send it, pad the data, encrypt it with AES, send it.
+>> Additionally, you should also sign the data and send the signature
+>> along.
+>>
+>> At the receiving end, you decrypt the session key with RSA, decrypt
+>> the data with AES, unpad the data, and verify its signature.
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120420/0447be4b/attachment.html>
+
+From Paul_Koning at Dell.com  Fri Apr 20 12:59:36 2012
+From: Paul_Koning at Dell.com (Paul_Koning at Dell.com)
+Date: Fri, 20 Apr 2012 11:59:36 -0500
+Subject: [pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+In-Reply-To: <CAF+3j-sskHPjaDKNcg57_wPyYesKHEKdFg8mJMg8CtwmCTvwcw@mail.gmail.com>
+References: <CAF+3j-smda0r_uFKA8Gy7PL79V=tA8M_DTXWetAg97k-6BnxJw@mail.gmail.com>
+	<CAGfyce1NE0dsMm=wenX2sJajDBG-BpaEdxzwSws7eUQ19V7w3g@mail.gmail.com>
+	<CAF+3j-utzrT4WZSXC1=sZxNxE6WVF8Pufudp8y17PexuberPGA@mail.gmail.com>
+	<CAF+3j-sskHPjaDKNcg57_wPyYesKHEKdFg8mJMg8CtwmCTvwcw@mail.gmail.com>
+Message-ID: <09787EF419216C41A903FD14EE5506DD0313F5F7AD@AUSX7MCPC103.AMER.DELL.COM>
+
+I assume you meant in step 4 "encrypt the secret (but NOT the payload) with RSA".  Otherwise you've double-encrypted stuff and consumed vast quantities of time doing bulk encryption with RSA.
+
+If so, you have recreated approximately what PGP does, because it too doesn't rely on a real time session.  You might take a look at the PGP RFC for a detailed recipe to follow.
+
+               paul
+
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Antonio Teixeira
+Sent: Friday, April 20, 2012 12:49 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+
+Hello Legrandin & Others.
+
+I'm currently trying to implement the following :
+
+The "proper" way to do encryption would be to create a random AES
+session key (16 bytes), encrypt it with RSA (hopefully at least 2048
+bit long), send it, pad the data, encrypt it with AES, send it.
+
+Ok So ..
+ - Create A Random AES 16 Bytes ( I'm assuming this will be the "secret")
+- Pad The Payload
+- Encrypt Using AES
+- Encrypt The Secret +  Payload With the RSA Key
+- Make A Signature Of The Entire "Encrypted Payload"
+- Append it to the "Encrypted Payload"
+Send it ....
+
+Recv it ..
+Make the reverse process.
+
+One thing i can't use the Normal SSL/TLS type of "session key" since there is no state across requests or during the handshake.
+Meaning "one worker can receive the request but another one can answer it and there is no shared memory between the two."
+2012/4/12 Antonio Teixeira <eagle.antonio at gmail.com<mailto:eagle.antonio at gmail.com>>
+Legrandin thank you for your help.
+When i have time i will put something on pastebin so it can serve as example for future members that require this type of solution :)
+
+Regards
+A/T
+
+2012/4/11 Legrandin <gooksankoo at hoiptorrow.mailexpire.com<mailto:gooksankoo at hoiptorrow.mailexpire.com>>
+> So after a small search i found out that if i increase the RSA Modulus i'm
+> able to encrypt larger number of bits ( makes sense )  but this feels dirty.
+>
+> What do your guys recommend ?
+>
+> Breaking the data in chunks and encrypting part by part joining it all in a
+> buffer and send it down the socket all in one with the other server
+> decrypting part by part and merging the data again ?
+>
+> P.S - I dont mind fishing by myself just trying to understand the best "way
+> / more correct way " to do it :)
+Hi Antonio,
+
+Increasing the RSA key length is not "dirty": it simply increases
+security (and incidentally useful payload size) at the expense of
+decryption speed.
+If decryption speed is not that important to you, and you have a clear
+idea on how long you data can be at most, go ahead and increase the
+key size. The time you gain by taking this approach can be spent on
+important tasks like making the private key secure, or adding some
+form of authentication to your protocol.
+
+The "proper" way to do encryption would be to create a random AES
+session key (16 bytes), encrypt it with RSA (hopefully at least 2048
+bit long), send it, pad the data, encrypt it with AES, send it.
+Additionally, you should also sign the data and send the signature
+along.
+
+At the receiving end, you decrypt the session key with RSA, decrypt
+the data with AES, unpad the data, and verify its signature.
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120420/130e2f16/attachment.html>
+
+From don at amberfisharts.com  Fri Apr 20 14:35:12 2012
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Fri, 20 Apr 2012 20:35:12 +0200
+Subject: [pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+In-Reply-To: <CAF+3j-sskHPjaDKNcg57_wPyYesKHEKdFg8mJMg8CtwmCTvwcw@mail.gmail.com>
+References: <CAF+3j-smda0r_uFKA8Gy7PL79V=tA8M_DTXWetAg97k-6BnxJw@mail.gmail.com>
+	<CAGfyce1NE0dsMm=wenX2sJajDBG-BpaEdxzwSws7eUQ19V7w3g@mail.gmail.com>
+	<CAF+3j-utzrT4WZSXC1=sZxNxE6WVF8Pufudp8y17PexuberPGA@mail.gmail.com>
+	<CAF+3j-sskHPjaDKNcg57_wPyYesKHEKdFg8mJMg8CtwmCTvwcw@mail.gmail.com>
+Message-ID: <4F91AC60.7040007@amberfisharts.com>
+
+Hey Antonio,
+
+first of all I want to point out that Cryptography is *hard*! There are innumerable things you can get wrong.
+So if you are trying to implement crypto stuff for a production system I would suggest: Don't! Use existing established 
+software instead.
+I consider PyCrypto to be a rather lowlevel crypto library which only provides the primitives to crypto. Getting this 
+stuff right is of course paramount but still you can do a lot wrong in combining these primitives in the wrong way.
+One example would be padding which at first seems trivial but can lead to disastrous results if done wrong.
+
+If on the other hand you are doing this out of pure interest in order to educate yourself: Go ahead. I find crypto to be 
+very fascinating.
+
+In crypto you need to clearly state what your goal is. In my experience the most often desired goals are:
+  - authentisity (the receiver of a message can be sure the message really comes the sender)
+  - integrity (the receiver can be sure he received the message as it was originally written)
+  - confidentiallity (nobody but the receiver can read the message)
+  - a combination of the above
+So depending on what your goal is you need to do different things.
+Broadly speeking you use signing (Hash+RSA) for authentisity, Hash functions for integrity and AES+RSA for confidentiallity.
+But appling and combining these is really tricky.
+
+For example it makes a difference if you first sign a message and then encrypt or if you first encrypt it and then sign 
+it. Depending on the case it might be neccessary to do encrypt-sign-encrypt or sign-encrypt-sign.
+
+so what you seem to try to do is confidentiallity only.
+to reiterate what others have already said you need to do the following:
+  1) create a cryptografically strong random private and public keypair k_priv and k_pub
+  2) distrubute your public key.
+Then for every message/session do:
+  3) create a random key "k_aes"
+  4) pad your message to the block length (typically 16 bytes for AES). use an appropriate padding scheme!:
+     "m_padded = pad(m)"
+  5) encrypt the padded message using a symetric cipher (e.g. AES) using k_aes:
+     "e_m = sym_encrypt(m_padded, k_aes)"
+  6) pad the message/session key. use an appropriate padding scheme (e.g. OEAP):
+     "k_aes_padded = pad(k_aes)"
+  7) encrypt the padded random key k_ase_padded using an asymetric cipher (e.g. RSA) using your private key k_priv:
+     "e_k = asym_encrypt(k_aes_padded, k_priv)"
+  8) send both e_m and e_k to the recipiant
+
+the receiver can then:
+  1) knowing the message comes from you, decrypt the padded message/session key k_aes_padded by using your public key:
+     "k_aes_padded = asym_decrypt(e_k, k_pub)"
+  2) unpad the message/session key:
+     "k_aes = unpad(k_aes_padded)"
+  3) decrypt the message using the retrieved message/session key:
+     "m_padded = sym_decrypt(e_m, k_aes)"
+  4) retrieve the message by removing the known padding scheme:
+     "m = unpad(m_padded)"
+
+A few notes on the above:
+  * The message/session key can be different every message or be the same for more than one message (a session).
+    This depends on your implmentation ("the protokol"). So if you use a new k_aes for every message then there
+    is no shared state but you need more bandwith (you need to send e_k for every message and not only for a
+     session) and more CPU power (you need to create, encrypt and decrypt the k_aes for every message).
+  * There is a theoretical limit on howmany bytes you can safly encrypt with a session key. However, I don't
+    have the numbers right now.
+  * The padding for k_aes and the message doesn't have to be the same. I don't know if there is a standard way
+    of doing both.
+
+I hope this helps!
+
+cheers,
+Lorenz
+
+PS: full disclosure: I'm by no means a crypto expert myself and the above message might (and probably will) contain 
+inaccuracies and maybe even falshoods (these would then be unintentionally of course). I did contribute to pycrypto 
+though (namely work on the sha-2 implementation and the getStrongPrime and isPrime functions).
+
+
+On 04/20/2012 06:48 PM, Antonio Teixeira wrote:
+> Hello Legrandin & Others.
+>
+> I'm currently trying to implement the following :
+>
+> The "proper" way to do encryption would be to create a random AES
+> session key (16 bytes), encrypt it with RSA (hopefully at least 2048
+> bit long), send it, pad the data, encrypt it with AES, send it.
+>
+> Ok So ..
+>   - Create A Random AES 16 Bytes ( I'm assuming this will be the "secret")
+> - Pad The Payload
+> - Encrypt Using AES
+> - Encrypt The Secret +  Payload With the RSA Key
+> - Make A Signature Of The Entire "Encrypted Payload"
+> - Append it to the "Encrypted Payload"
+> Send it ....
+>
+> Recv it ..
+> Make the reverse process.
+>
+> One thing i can't use the Normal SSL/TLS type of "session key" since there is no state across requests or during the
+> handshake.
+> Meaning "one worker can receive the request but another one can answer it and there is no shared memory between the two."
+>
+> 2012/4/12 Antonio Teixeira <eagle.antonio at gmail.com <mailto:eagle.antonio at gmail.com>>
+>
+>     Legrandin thank you for your help.
+>     When i have time i will put something on pastebin so it can serve as example for future members that require this
+>     type of solution :)
+>
+>     Regards
+>     A/T
+>
+>     2012/4/11 Legrandin <gooksankoo at hoiptorrow.mailexpire.com <mailto:gooksankoo at hoiptorrow.mailexpire.com>>
+>
+>          > So after a small search i found out that if i increase the RSA Modulus i'm
+>          > able to encrypt larger number of bits ( makes sense )  but this feels dirty.
+>          >
+>          > What do your guys recommend ?
+>          >
+>          > Breaking the data in chunks and encrypting part by part joining it all in a
+>          > buffer and send it down the socket all in one with the other server
+>          > decrypting part by part and merging the data again ?
+>          >
+>          > P.S - I dont mind fishing by myself just trying to understand the best "way
+>          > / more correct way " to do it :)
+>
+>         Hi Antonio,
+>
+>         Increasing the RSA key length is not "dirty": it simply increases
+>         security (and incidentally useful payload size) at the expense of
+>         decryption speed.
+>         If decryption speed is not that important to you, and you have a clear
+>         idea on how long you data can be at most, go ahead and increase the
+>         key size. The time you gain by taking this approach can be spent on
+>         important tasks like making the private key secure, or adding some
+>         form of authentication to your protocol.
+>
+>         The "proper" way to do encryption would be to create a random AES
+>         session key (16 bytes), encrypt it with RSA (hopefully at least 2048
+>         bit long), send it, pad the data, encrypt it with AES, send it.
+>         Additionally, you should also sign the data and send the signature
+>         along.
+>
+>         At the receiving end, you decrypt the session key with RSA, decrypt
+>         the data with AES, unpad the data, and verify its signature.
+
+
+From roy at panix.com  Fri Apr 20 14:38:13 2012
+From: roy at panix.com (Roy Smith)
+Date: Fri, 20 Apr 2012 14:38:13 -0400
+Subject: [pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+In-Reply-To: <4F91AC60.7040007@amberfisharts.com>
+References: <CAF+3j-smda0r_uFKA8Gy7PL79V=tA8M_DTXWetAg97k-6BnxJw@mail.gmail.com>
+	<CAGfyce1NE0dsMm=wenX2sJajDBG-BpaEdxzwSws7eUQ19V7w3g@mail.gmail.com>
+	<CAF+3j-utzrT4WZSXC1=sZxNxE6WVF8Pufudp8y17PexuberPGA@mail.gmail.com>
+	<CAF+3j-sskHPjaDKNcg57_wPyYesKHEKdFg8mJMg8CtwmCTvwcw@mail.gmail.com>
+	<4F91AC60.7040007@amberfisharts.com>
+Message-ID: <F13DB5B7-0AEC-475C-A7B3-C9BB794416C5@panix.com>
+
+On Apr 20, 2012, at 2:35 PM, Lorenz Quack wrote:
+
+> first of all I want to point out that Cryptography is *hard*! There are innumerable things you can get wrong.
+> So if you are trying to implement crypto stuff for a production system I would suggest: Don't! Use existing established software instead.
+
+Another thing about crypto is that some customers are paranoid about it (perhaps rightfully so).  If you are writing a commercial product, you may discover that you can't sell into some markets unless your crypto is certified by some random certification authority.  It won't matter if it works or not, if you don't have the right paperwork, the sale isn't happening.
+
+I used to work for a Fortune-500 company.  At the time I left, one of the big projects was tearing out all the home-grown crypto which had been working for years and replacing it with a FIPS-certified crypto library so they could sell into government accounts.  The effort was measured in person-years.
+
+Just something to be aware of if you even suspect you might want to play in that space someday.
+
+---
+Roy Smith
+roy at panix.com
+
+
+From dlitz at dlitz.net  Sat Apr 21 13:26:21 2012
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Sat, 21 Apr 2012 13:26:21 -0400
+Subject: [pycrypto] Run test suite with /dev/random
+In-Reply-To: <4F2C0CC8.9080402@ramacher.at>
+References: <4F012DC0.3020106@ramacher.at>
+	<20120113160750.GA5544@rivest.dlitz.net>
+	<4F107F25.2020008@ramacher.at> <4F199469.1@ramacher.at>
+	<20120127181347.GA8154@rivest.dlitz.net>
+	<4F234BE2.8030503@ramacher.at>
+	<20120131044540.GA5208@rivest.dlitz.net>
+	<4F2C0CC8.9080402@ramacher.at>
+Message-ID: <4F92EDBD.9060805@dlitz.net>
+
+On 03/02/12 11:35 AM, Sebastian Ramacher wrote:
+> On 01/31/2012 05:45 AM, Dwayne C. Litzenberger wrote:
+>> Ok, I'm willing to accept a patch that implements your workaround, if you can
+>> address a few remaining issues:
+> 
+> Please have a look at the attached patch. It should fix all the remaining
+> issues. Just let me know if there is something left that I've missed.
+> 
+>> 1. BlockingIOError needs to be handled.  If the signal occurs immediately   
+>> after the read(2) syscall is invoked, it will set errno=EAGAIN and    Python
+>> will raise BlockingIOError.  (At least, that's what the    documentation says.)
+> 
+> I think you meant IOError and errno=EINTR. FileIO won't throw a BlockingIOError
+> in any case. That's BufferedReader. If FileIO.read fails and errno=EAGAIN then
+> it returns None and otherwise it throws an IOError. At least that's how I
+> understand the code and the documentation.
+
+OK.  I've merged this, and it'll be available in PyCrypto v2.6, which
+I'll be releasing this weekend.
+
+https://github.com/dlitz/pycrypto/commit/95d65366e9ac7e194bf8317d69785c9a5b877790
+
+Cheers,
+- Dwayne
+
+From dlitz at dlitz.net  Sat Apr 21 13:37:06 2012
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Sat, 21 Apr 2012 13:37:06 -0400
+Subject: [pycrypto] Base64 encoded output differs from pycrypto
+ and	as3crypto libraries.
+In-Reply-To: <4D2E0FEC.3080306@gmx.li>
+References: <3E0EA384-BCAA-40DC-BB39-E6EBE3CBE3F5@gmail.com>
+	<4D2E04BC.2070809@amberfisharts.com> <4D2E0FEC.3080306@gmx.li>
+Message-ID: <4F92F042.2080208@dlitz.net>
+
+On 12/01/11 03:32 PM, Thorsten Behrens wrote:
+> Hey Lorenz,
+> 
+> I notice that we don't use Schneier's CBC test vector. All we use is ECB.
+> I tried adding CBC, and got errors. Running it manually, I get errors. 
+> Can you sanity-check that I'm not doing something stupid. If I'm 
+> invoking it right and it's failing, we need to review the CBC code.
+
+If one of you send me a pull request on GitHub with Schneier's CBC test,
+I'll merge it. :)
+
+Cheers,
+- Dwayne
+
+From cornelius.koelbel at lsexperts.de  Wed May  9 10:28:30 2012
+From: cornelius.koelbel at lsexperts.de (=?ISO-8859-15?Q?Cornelius_K=F6lbel?=)
+Date: Wed, 09 May 2012 16:28:30 +0200
+Subject: [pycrypto] providing signature in base64
+Message-ID: <4FAA7F0E.1060501@lsexperts.de>
+
+Hello,
+
+I have a signature provided in base64 like this:
+
+XQgVBkxrmJXqN2+xkJx8dGRecadoLi61vjBTsl+kYibji0pf6ZsxYF2ewniV7pIbtjQxxIridBRtLo9d1Rpq6QvjvuVbVzqqimQeFZnQTp9scSfAbKCtDe1F4lEWCLP6s/6op3jgPpmgd0p5kPaA4iWLM5IjleT7kxgniggBXIky1aMq4L8DtLujcfHNLeJyXpw9TDPg/2KEYZGT1WqiXIeIuYPt7UySOVnmgIoQYstu7C5Vsy5hjzBfhpVvKaPjXEDeETL4UoO2S9H+hu0x932HyyiNTYCpY9VFQnptsVtTkkOvEqhY3xxYix4nzeU+vXc4hFFnhAZMJbPYmuPy5w==
+
+but I am breaking my head how to pass this to the verify function.
+
+I create the RSA Object from a PEM encoded public key. This works fine.
+
+But when I try to unpack the base64 encoded signature, I do not get ONE
+long but a tuple with 32 long int.
+
+    long_signature= struct.unpack('Q'*32, sign.decode("base64"))
+    hash = sha256(licStr).digest()
+    RSAKey = RSA.importKey(public)
+    ret =  RSAKey.verify(hash, long_signature)
+
+I know that this is more a matter of how to handle the unpack function,
+but did not find anything about this.
+
+Thanks a lot and kind regards
+Cornelius
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 262 bytes
+Desc: OpenPGP digital signature
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120509/cc4a977a/attachment.pgp>
+
+From cornelius.koelbel at lsexperts.de  Wed May  9 11:56:06 2012
+From: cornelius.koelbel at lsexperts.de (=?ISO-8859-1?Q?Cornelius_K=F6lbel?=)
+Date: Wed, 09 May 2012 17:56:06 +0200
+Subject: [pycrypto] providing signature in base64
+In-Reply-To: <4FAA7F0E.1060501@lsexperts.de>
+References: <4FAA7F0E.1060501@lsexperts.de>
+Message-ID: <4FAA9396.9090603@lsexperts.de>
+
+Hi,
+
+i discovered the number.bytes_to_long function, which does the trick,
+
+but the signature validation still fails.
+
+I assume I would have to b64decode my signature prior to converting it.
+But it fails :-/
+
+ret =  RSAKey.verify(hash, (number.bytes_to_long(sign.decode("base64")),) )
+print ret
+
+ret =  RSAKey.verify(hash, (number.bytes_to_long(base64.b64decode(sign)),))
+print ret
+
+Any hint on that?
+
+The signature was created with openssl/M2Crypto.
+And I'd like to mirgate to pycrypto.
+
+Kind regards
+Cornelius
+
+Am 09.05.2012 16:28, schrieb Cornelius K?lbel:
+> Hello,
+>
+> I have a signature provided in base64 like this:
+>
+> XQgVBkxrmJXqN2+xkJx8dGRecadoLi61vjBTsl+kYibji0pf6ZsxYF2ewniV7pIbtjQxxIridBRtLo9d1Rpq6QvjvuVbVzqqimQeFZnQTp9scSfAbKCtDe1F4lEWCLP6s/6op3jgPpmgd0p5kPaA4iWLM5IjleT7kxgniggBXIky1aMq4L8DtLujcfHNLeJyXpw9TDPg/2KEYZGT1WqiXIeIuYPt7UySOVnmgIoQYstu7C5Vsy5hjzBfhpVvKaPjXEDeETL4UoO2S9H+hu0x932HyyiNTYCpY9VFQnptsVtTkkOvEqhY3xxYix4nzeU+vXc4hFFnhAZMJbPYmuPy5w==
+>
+> but I am breaking my head how to pass this to the verify function.
+>
+> I create the RSA Object from a PEM encoded public key. This works fine.
+>
+> But when I try to unpack the base64 encoded signature, I do not get ONE
+> long but a tuple with 32 long int.
+>
+>     long_signature= struct.unpack('Q'*32, sign.decode("base64"))
+>     hash = sha256(licStr).digest()
+>     RSAKey = RSA.importKey(public)
+>     ret =  RSAKey.verify(hash, long_signature)
+>
+> I know that this is more a matter of how to handle the unpack function,
+> but did not find anything about this.
+>
+> Thanks a lot and kind regards
+> Cornelius
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 262 bytes
+Desc: OpenPGP digital signature
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120509/b26bc819/attachment.pgp>
+
+From gooksankoo at hoiptorrow.mailexpire.com  Wed May  9 13:31:09 2012
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Wed, 9 May 2012 19:31:09 +0200
+Subject: [pycrypto] providing signature in base64
+In-Reply-To: <4FAA9396.9090603@lsexperts.de>
+References: <4FAA7F0E.1060501@lsexperts.de>
+	<4FAA9396.9090603@lsexperts.de>
+Message-ID: <CAGfyce3w7DbohQBmJTi29ninis+ai6Jb9m8ukJx5Rj0866pZgg@mail.gmail.com>
+
+Hi Cornelius,
+
+I think M2Crypto signs by default using PKCS#1 v1.5.
+You can try the Crypto.Signature.PKCS1_v1_5 module in pycrypto.
+Something along these lines:
+
+===
+import Crypto.Signature.PKCS1_v1_5 as PKCS
+
+signature = sign.decode("base64")
+hash = sha256(licStr)
+RSAKey = RSA.importKey(public)
+ret =  PKCS.verify(hash, RSAKey, signature)
+===
+
+2012/5/9 Cornelius K?lbel <cornelius.koelbel at lsexperts.de>:
+> Hi,
+>
+> i discovered the number.bytes_to_long function, which does the trick,
+>
+> but the signature validation still fails.
+>
+> I assume I would have to b64decode my signature prior to converting it.
+> But it fails :-/
+>
+> ret = ?RSAKey.verify(hash, (number.bytes_to_long(sign.decode("base64")),) )
+> print ret
+>
+> ret = ?RSAKey.verify(hash, (number.bytes_to_long(base64.b64decode(sign)),))
+> print ret
+>
+> Any hint on that?
+>
+> The signature was created with openssl/M2Crypto.
+> And I'd like to mirgate to pycrypto.
+>
+> Kind regards
+> Cornelius
+>
+> Am 09.05.2012 16:28, schrieb Cornelius K?lbel:
+>> Hello,
+>>
+>> I have a signature provided in base64 like this:
+>>
+>> XQgVBkxrmJXqN2+xkJx8dGRecadoLi61vjBTsl+kYibji0pf6ZsxYF2ewniV7pIbtjQxxIridBRtLo9d1Rpq6QvjvuVbVzqqimQeFZnQTp9scSfAbKCtDe1F4lEWCLP6s/6op3jgPpmgd0p5kPaA4iWLM5IjleT7kxgniggBXIky1aMq4L8DtLujcfHNLeJyXpw9TDPg/2KEYZGT1WqiXIeIuYPt7UySOVnmgIoQYstu7C5Vsy5hjzBfhpVvKaPjXEDeETL4UoO2S9H+hu0x932HyyiNTYCpY9VFQnptsVtTkkOvEqhY3xxYix4nzeU+vXc4hFFnhAZMJbPYmuPy5w==
+>>
+>> but I am breaking my head how to pass this to the verify function.
+>>
+>> I create the RSA Object from a PEM encoded public key. This works fine.
+>>
+>> But when I try to unpack the base64 encoded signature, I do not get ONE
+>> long but a tuple with 32 long int.
+>>
+>> ? ? long_signature= struct.unpack('Q'*32, sign.decode("base64"))
+>> ? ? hash = sha256(licStr).digest()
+>> ? ? RSAKey = RSA.importKey(public)
+>> ? ? ret = ?RSAKey.verify(hash, long_signature)
+>>
+>> I know that this is more a matter of how to handle the unpack function,
+>> but did not find anything about this.
+>>
+>> Thanks a lot and kind regards
+>> Cornelius
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+From cornelius.koelbel at lsexperts.de  Wed May  9 14:42:41 2012
+From: cornelius.koelbel at lsexperts.de (=?ISO-8859-1?Q?Cornelius_K=F6lbel?=)
+Date: Wed, 09 May 2012 20:42:41 +0200
+Subject: [pycrypto] providing signature in base64
+In-Reply-To: <CAGfyce3w7DbohQBmJTi29ninis+ai6Jb9m8ukJx5Rj0866pZgg@mail.gmail.com>
+References: <4FAA7F0E.1060501@lsexperts.de> <4FAA9396.9090603@lsexperts.de>
+	<CAGfyce3w7DbohQBmJTi29ninis+ai6Jb9m8ukJx5Rj0866pZgg@mail.gmail.com>
+Message-ID: <4FAABAA1.4090901@lsexperts.de>
+
+Hi,
+
+great! Thanks! This indeed verifies the signature successfully.
+
+Too bad, most of the distributions do not yet ship with pycrypto 2.5 ---
+2.4 and lower does not contain the Crypto.Signature.
+And I need to take care to pass a hashing object and not only a hashed
+string...
+
+Anyway, I now know how it will work out.
+
+Kind regards
+Cornelius
+
+Am 09.05.2012 19:31, schrieb Legrandin:
+> Hi Cornelius,
+>
+> I think M2Crypto signs by default using PKCS#1 v1.5.
+> You can try the Crypto.Signature.PKCS1_v1_5 module in pycrypto.
+> Something along these lines:
+>
+> ===
+> import Crypto.Signature.PKCS1_v1_5 as PKCS
+>
+> signature = sign.decode("base64")
+> hash = sha256(licStr)
+> RSAKey = RSA.importKey(public)
+> ret =  PKCS.verify(hash, RSAKey, signature)
+> ===
+>
+> 2012/5/9 Cornelius K?lbel <cornelius.koelbel at lsexperts.de>:
+>> Hi,
+>>
+>> i discovered the number.bytes_to_long function, which does the trick,
+>>
+>> but the signature validation still fails.
+>>
+>> I assume I would have to b64decode my signature prior to converting it.
+>> But it fails :-/
+>>
+>> ret =  RSAKey.verify(hash, (number.bytes_to_long(sign.decode("base64")),) )
+>> print ret
+>>
+>> ret =  RSAKey.verify(hash, (number.bytes_to_long(base64.b64decode(sign)),))
+>> print ret
+>>
+>> Any hint on that?
+>>
+>> The signature was created with openssl/M2Crypto.
+>> And I'd like to mirgate to pycrypto.
+>>
+>> Kind regards
+>> Cornelius
+>>
+>> Am 09.05.2012 16:28, schrieb Cornelius K?lbel:
+>>> Hello,
+>>>
+>>> I have a signature provided in base64 like this:
+>>>
+>>> XQgVBkxrmJXqN2+xkJx8dGRecadoLi61vjBTsl+kYibji0pf6ZsxYF2ewniV7pIbtjQxxIridBRtLo9d1Rpq6QvjvuVbVzqqimQeFZnQTp9scSfAbKCtDe1F4lEWCLP6s/6op3jgPpmgd0p5kPaA4iWLM5IjleT7kxgniggBXIky1aMq4L8DtLujcfHNLeJyXpw9TDPg/2KEYZGT1WqiXIeIuYPt7UySOVnmgIoQYstu7C5Vsy5hjzBfhpVvKaPjXEDeETL4UoO2S9H+hu0x932HyyiNTYCpY9VFQnptsVtTkkOvEqhY3xxYix4nzeU+vXc4hFFnhAZMJbPYmuPy5w==
+>>>
+>>> but I am breaking my head how to pass this to the verify function.
+>>>
+>>> I create the RSA Object from a PEM encoded public key. This works fine.
+>>>
+>>> But when I try to unpack the base64 encoded signature, I do not get ONE
+>>> long but a tuple with 32 long int.
+>>>
+>>>     long_signature= struct.unpack('Q'*32, sign.decode("base64"))
+>>>     hash = sha256(licStr).digest()
+>>>     RSAKey = RSA.importKey(public)
+>>>     ret =  RSAKey.verify(hash, long_signature)
+>>>
+>>> I know that this is more a matter of how to handle the unpack function,
+>>> but did not find anything about this.
+>>>
+>>> Thanks a lot and kind regards
+>>> Cornelius
+>>
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-- 
+Cornelius K?lbel
+(Senior Security Consultant, Head of Product Management)
+http://www.lsexperts.de
+LSE Leading Security Experts GmbH, Postfach 100121, 64201 Darmstadt
+Tel: +49 6151 9067-252, Fax: -299, Mobil: +49 160 96307089
+Unternehmenssitz: Weiterstadt, Amtsgericht Darmstadt: HRB8649
+Geschaeftsfuehrer: Oliver Michel, Sven Walther, Dr. Peter Schill
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 262 bytes
+Desc: OpenPGP digital signature
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120509/3da6d05e/attachment.pgp>
+
+From ryeterrell at ryeterrell.net  Mon May 21 21:55:30 2012
+From: ryeterrell at ryeterrell.net (Rye Terrell)
+Date: Mon, 21 May 2012 20:55:30 -0500
+Subject: [pycrypto] Generating a public/private key pair from a passphrase
+Message-ID: <CAJ9N7UHsBcu5EGycxB8kjBfKvUgaNd1FyswKBKV69SL4jGoxLA@mail.gmail.com>
+
+I'd like to be able to repeatably generate a public/private key pair from a
+user-supplied passphrase. I could use Python's built in random function
+seeded with the passphrase, or numpy's, but is there a better way of going
+about doing this via pycrypto?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120521/bf92703c/attachment.html>
+
+From gooksankoo at hoiptorrow.mailexpire.com  Tue May 22 17:21:15 2012
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Tue, 22 May 2012 23:21:15 +0200
+Subject: [pycrypto] Generating a public/private key pair from a
+	passphrase
+In-Reply-To: <CAJ9N7UHsBcu5EGycxB8kjBfKvUgaNd1FyswKBKV69SL4jGoxLA@mail.gmail.com>
+References: <CAJ9N7UHsBcu5EGycxB8kjBfKvUgaNd1FyswKBKV69SL4jGoxLA@mail.gmail.com>
+Message-ID: <CAGfyce3f1921XD5tV0zTGURXVZDnRf_BjKOfgmHF_EXPE_uezQ@mail.gmail.com>
+
+Hi Rye,
+
+You really want a cryptographically strong PRNG for that.
+I don't think Python's random module is good enough.
+
+One option is to use the Fortuna PRNG in PyCrypto.
+Another is to use a NIST approved PRNG, like HMAC-DRBG, shown below.
+
+===
+from Crypto.PublicKey import RSA
+from Crypto.Hash import HMAC
+
+class PRNG():
+    def __init__(self, passphrase):
+        self.K = passphrase
+        self.V = b'\x00'*16
+        self.pool = b''
+
+    def __call__(self, n):
+        while len(self.pool)<n:
+            self.pool += HMAC.new(self.K,self.V).digest()
+            self.V = self.pool[HMAC.digest_size:]
+        res = self.pool[:n]
+        self.pool = self.pool[n:]
+        return res
+
+key = RSA.generate(2048, PRNG(b'pass phrase'))
+===
+
+Mind that - if possible - you should couple the pass phrase to a salt number.
+
+> I'd like to be able to repeatably generate a public/private key pair from a
+> user-supplied passphrase. I could use Python's built in random function
+> seeded with the passphrase, or numpy's, but is there a better way of going
+> about doing this via pycrypto?
+
+From john-mark at cryptography.com  Wed May 23 13:48:03 2012
+From: john-mark at cryptography.com (Gurney, John-Mark)
+Date: Wed, 23 May 2012 10:48:03 -0700
+Subject: [pycrypto] documentation for PKCS1_PSS.py is incorrect,
+ plus minor issue w/ _slowmath.py
+Message-ID: <010EF8E44879B2468C96768709C743D21CE6476CA4@EXCHANGE.rambus.com>
+
+https://github.com/dlitz/pycrypto/blob/master/lib/Crypto/Signature/PKCS1_PSS.py
+
+In the file on lines 41 & 42 it has:
+>>> signer = PKCS1_PSS.new(key)
+>>> signature = PKCS1_PSS.sign(key)
+
+The second line is incorrect.  It should be:
+>>> signature = signer.sign(h)
+
+Oh, there is also a bogus assertion in _slowmath.py:
+https://github.com/dlitz/pycrypto/blob/master/lib/Crypto/PublicKey/_slowmath.py
+
+On line 85, it asserts that e is long.  If you have an e of 3, it is reasonable for e to be a normal int, and not a long.  Maybe the asserts should be changed to:
+n = long(n)
+e = long(e)
+
+So that python will convert the types properly.
+
+Thanks.
+
+-- 
+John-Mark Gurney
+Cryptography Research a division of Rambus
++1 415 397 0123 x4332
+
+
+
+From dlitz at dlitz.net  Thu May 24 18:57:45 2012
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Thu, 24 May 2012 18:57:45 -0400
+Subject: [pycrypto] documentation for PKCS1_PSS.py is incorrect,
+ plus minor issue w/ _slowmath.py
+In-Reply-To: <010EF8E44879B2468C96768709C743D21CE6476CA4@EXCHANGE.rambus.com>
+References: <010EF8E44879B2468C96768709C743D21CE6476CA4@EXCHANGE.rambus.com>
+Message-ID: <20120524225745.GA5809@rivest.dlitz.net>
+
+On Wed, May 23, 2012 at 10:48:03AM -0700, Gurney, John-Mark wrote:
+>https://github.com/dlitz/pycrypto/blob/master/lib/Crypto/Signature/PKCS1_PSS.py
+>
+>In the file on lines 41 & 42 it has:
+>>>> signer = PKCS1_PSS.new(key)
+>>>> signature = PKCS1_PSS.sign(key)
+>
+>The second line is incorrect.  It should be:
+>>>> signature = signer.sign(h)
+
+I've committed a fix.  Thanks!
+
+>Oh, there is also a bogus assertion in _slowmath.py:
+>https://github.com/dlitz/pycrypto/blob/master/lib/Crypto/PublicKey/_slowmath.py
+>
+>On line 85, it asserts that e is long.  If you have an e of 3, it is reasonable for e to be a normal int, and not a long.  Maybe the asserts should be changed to:
+>n = long(n)
+>e = long(e)
+>
+>So that python will convert the types properly.
+
+No, those assertions in _slowmath are there so that we catch usage that 
+would break when using _fastmath.
+
+_fastmath.rsa_construct (which is written in C) requires long parameters in 
+order to keep the C code simple.  If we do the implicit conversions in 
+_slowmath, we should also have do the conversions in _fastmath.  Since 
+_fastmath is an internal module, I see no reason for the added complexity 
+(and risk of bugs).
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Thu May 24 19:07:32 2012
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Thu, 24 May 2012 19:07:32 -0400
+Subject: [pycrypto] ANN: PyCrypto 2.6 released
+Message-ID: <20120524230732.GB5809@rivest.dlitz.net>
+
+PyCrypto 2.6 has been released!
+
+You can download this release from http://www.pycrypto.org/.  It has the 
+following SHA256 sums:
+
+7293c9d7e8af2e44a82f86eb9c3b058880f4bcc884bf3ad6c8a34b64986edde8 *pycrypto-2.6.tar.gz
+9b64854f69dd7daf06aa8865d6a9699f00687640d77784d4ccc489080637d6f3 *pycrypto-2.6.tar.gz.asc
+
+The git repository is here: https://github.com/dlitz/pycrypto/
+The v2.6 commit id is: 373ea760f21701b162e8c4912a66928ee30d401a
+
+Please test it and post your experiences to the PyCrypto mailing list:
+
+      pycrypto at lists.dlitz.net
+
+and/or file bug reports on Launchpad:
+
+      https://bugs.launchpad.net/pycrypto
+
+Here is the changelog:
+
+  * [CVE-2012-2417] Fix LP#985164: insecure ElGamal key generation.
+    (thanks: Legrandin)
+
+    In the ElGamal schemes (for both encryption and signatures), g is
+    supposed to be the generator of the entire Z^*_p group.  However, in
+    PyCrypto 2.5 and earlier, g is more simply the generator of a random
+    sub-group of Z^*_p.
+
+    The result is that the signature space (when the key is used for
+    signing) or the public key space (when the key is used for encryption)
+    may be greatly reduced from its expected size of log(p) bits, possibly
+    down to 1 bit (the worst case if the order of g is 2).
+
+    While it has not been confirmed, it has also been suggested that an
+    attacker might be able to use this fact to determine the private key.
+
+    Anyone using ElGamal keys should generate new keys as soon as practical.
+
+    Any additional information about this bug will be tracked at
+    https://bugs.launchpad.net/pycrypto/+bug/985164
+
+  * Huge documentation cleanup (thanks: Legrandin).
+
+  * Added more tests, including test vectors from NIST 800-38A
+    (thanks: Legrandin)
+
+  * Remove broken MODE_PGP, which never actually worked properly.
+    A new mode, MODE_OPENPGP, has been added for people wishing to write
+    OpenPGP implementations.  Note that this does not implement the full
+    OpenPGP specification, only the "OpenPGP CFB mode" part of that
+    specification.
+    https://bugs.launchpad.net/pycrypto/+bug/996814
+
+  * Fix: getPrime with invalid input causes Python to abort with fatal error
+    https://bugs.launchpad.net/pycrypto/+bug/988431
+
+  * Fix: Segfaults within error-handling paths
+    (thanks: Paul Howarth & Dave Malcolm)
+    https://bugs.launchpad.net/pycrypto/+bug/934294
+
+  * Fix: Block ciphers allow empty string as IV
+    https://bugs.launchpad.net/pycrypto/+bug/997464
+
+  * Fix DevURandomRNG to work with Python3's new I/O stack.
+    (thanks: Sebastian Ramacher)
+
+  * Remove automagic dependencies on libgmp and libmpir, let the caller
+    disable them using args.
+
+  * Many other minor bug fixes and improvements (mostly thanks to Legrandin)
+
+
+Thanks to everyone who helped make this release possible, especially to
+Legrandin, who again did most of the work.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+    OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 222 bytes
+Desc: Digital signature
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120524/5d0695d0/attachment.sig>
+
+From john-mark at cryptography.com  Thu May 24 19:36:22 2012
+From: john-mark at cryptography.com (Gurney, John-Mark)
+Date: Thu, 24 May 2012 16:36:22 -0700
+Subject: [pycrypto] documentation for PKCS1_PSS.py is incorrect,
+ plus minor issue w/ _slowmath.py
+In-Reply-To: <20120524225745.GA5809@rivest.dlitz.net>
+References: <010EF8E44879B2468C96768709C743D21CE6476CA4@EXCHANGE.rambus.com>
+ <20120524225745.GA5809@rivest.dlitz.net>
+Message-ID: <010EF8E44879B2468C96768709C743D21CE64770F1@EXCHANGE.rambus.com>
+
+Since that is for compatibility w/ _fastmath, I agree that it shouldn't go there then.
+
+How about a fix to RSA's construct method that attempts to convert the tuple's contents to longs?
+
+Such as:
+key = self._math.rsa_construct(*(long(x) for x in tup))
+
+on line 539.
+
+Thanks for fixing the doc bug!
+
+-----Original Message-----
+From: Dwayne C. Litzenberger [mailto:dlitz at dlitz.net] 
+Sent: Thursday, May 24, 2012 3:58 PM
+To: Gurney, John-Mark
+Cc: pycrypto at lists.dlitz.net
+Subject: Re: [pycrypto] documentation for PKCS1_PSS.py is incorrect, plus minor issue w/ _slowmath.py
+
+On Wed, May 23, 2012 at 10:48:03AM -0700, Gurney, John-Mark wrote:
+>https://github.com/dlitz/pycrypto/blob/master/lib/Crypto/Signature/PKCS
+>1_PSS.py
+>
+>In the file on lines 41 & 42 it has:
+>>>> signer = PKCS1_PSS.new(key)
+>>>> signature = PKCS1_PSS.sign(key)
+>
+>The second line is incorrect.  It should be:
+>>>> signature = signer.sign(h)
+
+I've committed a fix.  Thanks!
+
+>Oh, there is also a bogus assertion in _slowmath.py:
+>https://github.com/dlitz/pycrypto/blob/master/lib/Crypto/PublicKey/_slo
+>wmath.py	
+>
+>On line 85, it asserts that e is long.  If you have an e of 3, it is reasonable for e to be a normal int, and not a long.  Maybe the asserts should be changed to:
+>n = long(n)
+>e = long(e)
+>
+>So that python will convert the types properly.
+
+No, those assertions in _slowmath are there so that we catch usage that would break when using _fastmath.
+
+_fastmath.rsa_construct (which is written in C) requires long parameters in order to keep the C code simple.  If we do the implicit conversions in _slowmath, we should also have do the conversions in _fastmath.  Since _fastmath is an internal module, I see no reason for the added complexity (and risk of bugs).
+
+Cheers,
+- Dwayne
+
+--
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From gooksankoo at hoiptorrow.mailexpire.com  Fri May 25 01:11:48 2012
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Fri, 25 May 2012 07:11:48 +0200
+Subject: [pycrypto] documentation for PKCS1_PSS.py is incorrect,
+ plus minor issue w/ _slowmath.py
+In-Reply-To: <20120524225745.GA5809@rivest.dlitz.net>
+References: <010EF8E44879B2468C96768709C743D21CE6476CA4@EXCHANGE.rambus.com>
+ <20120524225745.GA5809@rivest.dlitz.net>
+Message-ID: <CAGfyce1eVWJE9b0qRLWjWELvb27-Bocbq-ksdes=-ukMkjHd=w@mail.gmail.com>
+
+Mind that the commit makes now the example line be:
+
+>>> signature = signer.sign(key)
+
+Whereas it should really be:
+
+>>>> signature = signer.sign(h)
+
+Because we sign the hash (not the key :-)).
+
+>> https://github.com/dlitz/pycrypto/blob/master/lib/Crypto/Signature/PKCS1_PSS.py
+>>
+>> In the file on lines 41 & 42 it has:
+>>>>>
+>>>>> signer = PKCS1_PSS.new(key)
+>>>>> signature = PKCS1_PSS.sign(key)
+>>
+>>
+>> The second line is incorrect. ?It should be:
+>>>>>
+>>>>> signature = signer.sign(h)
+>
+>
+> I've committed a fix. ?Thanks!
+
+From dflinkmann at gmx.de  Fri May 25 11:55:23 2012
+From: dflinkmann at gmx.de (Daniel Flinkmann)
+Date: Fri, 25 May 2012 17:55:23 +0200
+Subject: [pycrypto] how to add run path libs when compiling ?
+Message-ID: <5A1C5D8F-E5F7-4E09-90E7-D112375D35EB@gmx.de>
+
+Hi,
+
+I am new to pycrypto and struggling to build the current version.
+I have to add some runtime libraries to the binaries, but I am a bit unsure
+how to achieve that with the build.py in pycrypto. 
+
+In general I can use something like "LDFLAGS= -R/opt/custom_dir/libs ", so that 
+all .so files do search for required libs in /opt/custom_dir/libs . 
+
+In the python-ldap project, there was a setup.cfg which build.py was using, but 
+I haven't found something similar in pycrypto. 
+
+Could someone be so kind and point me to the right hint / documentation ? 
+
+Cheers,
+
+Daniel
+
+-- 
+	--	www.Flinkmann.de : Unix, Mac, Photography	--
+	--	www.Hijet.de : Daihatsu and Japan related stuff 	--
+
+
+From dlitz at dlitz.net  Sat May 26 11:53:50 2012
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sat, 26 May 2012 11:53:50 -0400
+Subject: [pycrypto] how to add run path libs when compiling ?
+In-Reply-To: <5A1C5D8F-E5F7-4E09-90E7-D112375D35EB@gmx.de>
+References: <5A1C5D8F-E5F7-4E09-90E7-D112375D35EB@gmx.de>
+Message-ID: <20120526155350.GA23496@rivest.dlitz.net>
+
+On Fri, May 25, 2012 at 05:55:23PM +0200, Daniel Flinkmann wrote:
+>I am new to pycrypto and struggling to build the current version.
+>I have to add some runtime libraries to the binaries, but I am a bit unsure
+>how to achieve that with the build.py in pycrypto.
+>
+>In general I can use something like "LDFLAGS= -R/opt/custom_dir/libs ", so that
+>all .so files do search for required libs in /opt/custom_dir/libs .
+
+distutils apparenly does respect LDFLAGS, although it treats gcc as the 
+linker (rather than ld), so you need to provide gcc-style options.
+
+This should work for you:
+
+     LDFLAGS=-Wl,-R/opt/custom_dir/libs python setup.py build
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From assie181 at gmail.com  Mon Jun  4 10:57:23 2012
+From: assie181 at gmail.com (Webie)
+Date: Mon, 4 Jun 2012 20:27:23 +0530
+Subject: [pycrypto] PyCrypto's output doesn't match OpenSSL's result
+Message-ID: <CAN6+gWEoNbaWNjzV2JyHpEpLT2y-ySaJy2yL9cev-mM1KdBWXg@mail.gmail.com>
+
+Hi,
+
+PyCrypto's output doesn't match OpenSSL when decrypting a file in
+Blowfish CFB mode. To reproduce this, download and test
+http://dl.dropbox.com/u/1522424/PyCrypto-strange.tar.
+
+OpenSSL.sh (find in the above link) generates correct output while
+PyCrypto.py can't do the same. Is this a problem in my code OR is this
+a bug in PyCrypto?
+
+Thanks!
+
+From gooksankoo at hoiptorrow.mailexpire.com  Mon Jun  4 13:26:20 2012
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Mon, 4 Jun 2012 19:26:20 +0200
+Subject: [pycrypto] PyCrypto's output doesn't match OpenSSL's result
+In-Reply-To: <CAN6+gWEoNbaWNjzV2JyHpEpLT2y-ySaJy2yL9cev-mM1KdBWXg@mail.gmail.com>
+References: <CAN6+gWEoNbaWNjzV2JyHpEpLT2y-ySaJy2yL9cev-mM1KdBWXg@mail.gmail.com>
+Message-ID: <CAGfyce1YQvTohxmC41Q7b8y1csSK-N3cpuqLZWGbDxBarRix-Q@mail.gmail.com>
+
+2012/6/4 Webie <assie181 at gmail.com>
+
+>
+> PyCrypto's output doesn't match OpenSSL when decrypting a file in
+> Blowfish CFB mode. To reproduce this, download and test
+> http://dl.dropbox.com/u/1522424/PyCrypto-strange.tar.
+>
+>
+Both are correct. The fact is that they use different default segment sizes
+for CFB:
+PyCrypto uses 8 bits, and OpenSSL 64 bits.
+
+With:
+
+bf = Blowfish.new(key = key, mode = Blowfish.MODE_CFB, IV = iv,
+       segment_size=64)
+
+You will get the same result.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120604/776153c0/attachment.html>
+
+From assie181 at gmail.com  Tue Jun  5 01:29:25 2012
+From: assie181 at gmail.com (Webie)
+Date: Tue, 5 Jun 2012 10:59:25 +0530
+Subject: [pycrypto] PyCrypto's output doesn't match OpenSSL's result
+In-Reply-To: <CAGfyce1YQvTohxmC41Q7b8y1csSK-N3cpuqLZWGbDxBarRix-Q@mail.gmail.com>
+References: <CAN6+gWEoNbaWNjzV2JyHpEpLT2y-ySaJy2yL9cev-mM1KdBWXg@mail.gmail.com>
+ <CAGfyce1YQvTohxmC41Q7b8y1csSK-N3cpuqLZWGbDxBarRix-Q@mail.gmail.com>
+Message-ID: <CAN6+gWEuSbnxrm_LruuUKDBCJmnq=SXbJ1TUYDBVQCoxQ9prhQ@mail.gmail.com>
+
+On Mon, Jun 4, 2012 at 10:56 PM, Legrandin
+<gooksankoo at hoiptorrow.mailexpire.com> wrote:
+> 2012/6/4 Webie <assie181 at gmail.com>
+>> PyCrypto's output doesn't match OpenSSL when decrypting a file in
+>> Blowfish CFB mode. To reproduce this, download and test
+>> http://dl.dropbox.com/u/1522424/PyCrypto-strange.tar.
+>>
+>
+> Both are correct. The fact is that they use different default segment sizes
+> for CFB:
+> PyCrypto uses 8 bits, and OpenSSL 64 bits.
+>
+> With:
+>
+> bf = Blowfish.new(key = key, mode = Blowfish.MODE_CFB, IV = iv,
+> ?????? segment_size=64)
+>
+> You will get the same result.
+
+
+Using "segment_size=64" solved the problem. Thanks!
+
+From assie181 at gmail.com  Wed Jun  6 11:50:31 2012
+From: assie181 at gmail.com (Webie)
+Date: Wed, 6 Jun 2012 21:20:31 +0530
+Subject: [pycrypto] PyCrypto Blowfish CFB limitation
+Message-ID: <CAN6+gWEk-xR9B3FMn=O6DCuWHpDLxW=WRg8x9JEY1SEaiWdtiA@mail.gmail.com>
+
+Hi,
+
+I am getting "ValueError: Input strings must be a multiple of the
+segment size 8 in length" when trying to decrypt a file by using
+Blowfish in CFB mode. The file length is not a multiple of 8. However,
+OpenSSL doesn't require file length to be multiple of 8 and it
+successfully decrypts the file.
+
+You can see the problem in action by downloading and running
+http://dl.dropbox.com/u/1522424/PyCrypto-limitation.tar
+(segment_size=64 is required for compatibility with OpenSSL).
+
+1. Is this a limitation imposed by PyCrypto?
+
+2. I could successfully decrypt and inflate the file by padding it
+with "x" (randomly chosen). Is this safe and correct?
+
+Thanks!
+
+From gooksankoo at hoiptorrow.mailexpire.com  Wed Jun  6 13:11:47 2012
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Wed, 6 Jun 2012 19:11:47 +0200
+Subject: [pycrypto] PyCrypto Blowfish CFB limitation
+In-Reply-To: <CAN6+gWEk-xR9B3FMn=O6DCuWHpDLxW=WRg8x9JEY1SEaiWdtiA@mail.gmail.com>
+References: <CAN6+gWEk-xR9B3FMn=O6DCuWHpDLxW=WRg8x9JEY1SEaiWdtiA@mail.gmail.com>
+Message-ID: <CAGfyce0GEti-0550DWeDMcEhMm_kRqm1LPAtWshqO9+Y7wK5FQ@mail.gmail.com>
+
+>
+>
+> I am getting "ValueError: Input strings must be a multiple of the
+> segment size 8 in length" when trying to decrypt a file by using
+> Blowfish in CFB mode. The file length is not a multiple of 8. However,
+> OpenSSL doesn't require file length to be multiple of 8 and it
+> successfully decrypts the file.
+>
+> 1. Is this a limitation imposed by PyCrypto?
+>
+>
+Yes. I actually opened a
+bug<https://bugs.launchpad.net/pycrypto/+bug/996207>about this, but in
+the meanwhile I have read in Section 5.2 of NIST 800 38A
+(the only standard I am aware of that describes CFB) that the input
+*must*be a multiple of the segment size.
+
+That means that strictly speaking OpenSSL is *not *standard compliant,
+unless other standards saying that the last block can be shorter exists.
+
+
+> 2. I could successfully decrypt and inflate the file by padding it
+> with "x" (randomly chosen). Is this safe and correct?
+>
+
+Yes.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120606/4e405bad/attachment.html>
+
+From Paul_Koning at Dell.com  Wed Jun  6 13:23:51 2012
+From: Paul_Koning at Dell.com (Paul_Koning at Dell.com)
+Date: Wed, 6 Jun 2012 17:23:51 +0000
+Subject: [pycrypto] PyCrypto Blowfish CFB limitation
+In-Reply-To: <CAGfyce0GEti-0550DWeDMcEhMm_kRqm1LPAtWshqO9+Y7wK5FQ@mail.gmail.com>
+References: <CAN6+gWEk-xR9B3FMn=O6DCuWHpDLxW=WRg8x9JEY1SEaiWdtiA@mail.gmail.com>
+ <CAGfyce0GEti-0550DWeDMcEhMm_kRqm1LPAtWshqO9+Y7wK5FQ@mail.gmail.com>
+Message-ID: <91453013-DF53-4CF3-A8C0-7C09220317CB@dell.com>
+
+
+On Jun 6, 2012, at 1:11 PM, Legrandin wrote:
+
+> 
+> I am getting "ValueError: Input strings must be a multiple of the
+> segment size 8 in length" when trying to decrypt a file by using
+> Blowfish in CFB mode. The file length is not a multiple of 8. However,
+> OpenSSL doesn't require file length to be multiple of 8 and it
+> successfully decrypts the file.
+> 
+> 1. Is this a limitation imposed by PyCrypto?
+> 
+> 
+> Yes. I actually opened a bug about this, but in the meanwhile I have read in Section 5.2 of NIST 800 38A (the only standard I am aware of that describes CFB) that the input must be a multiple of the segment size.
+> 
+> That means that strictly speaking OpenSSL is not standard compliant, unless other standards saying that the last block can be shorter exists.
+
+That certainly is the case.  The original (or at least earlier) definition of CFB is in FIPS 1026 (May 16, 1980).  It defines CFB and OFB for data units of size 1..64 (where 64 is the DES blocksize, so to generalize it for k-bit block ciphers the data unit size would be 1..k.
+
+	paul
+
+
+
+From anil.philip at motorolasolutions.com  Mon Jun 25 18:20:58 2012
+From: anil.philip at motorolasolutions.com (Philip Anil-QBW348)
+Date: Mon, 25 Jun 2012 22:20:58 +0000
+Subject: [pycrypto] problems with testing PyCrypto Module
+Message-ID: <DD2926DBB985EB40ADF6462A09062EE508EF8096@CH1PRD0410MB357.namprd04.prod.outlook.com>
+
+Python newbie here.
+
+Win XP with VS 2008 installed.
+
+I ran the commands from the README for PyCrypto. No errors reported. python setup.py test produces lots of ................. and then hangs. No message saying "all tests passed" or whatever.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120625/58535d81/attachment.html>
+
+From dave.pawson at gmail.com  Tue Jun 26 02:52:32 2012
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Tue, 26 Jun 2012 07:52:32 +0100
+Subject: [pycrypto] Typo or bug?
+Message-ID: <CAEncD4faNrPm0NJG90nVVSDK1P5y6r6UXyD5iWgWyGKWxLg6kg@mail.gmail.com>
+
+Just re-installing pycrypto for my own use. Version 2.6, with python 2.7
+(src src http://www.turnkeylinux.org/blog/python-symmetric-encryption )
+def _lazysecret(secret, blocksize=16, padding='}'):
+   """pads secret if not legal AES block size (16, 24, 32)"""
+   if not len(secret) in (16, 24, 32):
+       return secret + (blocksize - len(secret)) * padding
+   return secret
+
+def decrypt(ciphertext, secret, lazy=True, checksum=True):
+   """decrypt ciphertext with secret
+   ciphertext  - encrypted content to decrypt
+   secret      - secret to decrypt ciphertext
+   lazy        - pad secret if less than legal blocksize (default: True)
+   checksum    - verify crc32 byte encoded checksum (default: True)
+   returns plaintext
+   """
+   secret = _lazysecret(secret) if lazy else secret
+   print secret, len(secret)
+   encobj = AES.new(secret, AES.MODE_CFB)
+   plaintext = encobj.decrypt(ciphertext)
+   if checksum:
+       crc, plaintext = (plaintext[-4:], plaintext[:-4])
+       if not crc == struct.pack("i", zlib.crc32(plaintext)):
+           print "Checksum error"
+           raise CheckSumError("checksum mismatch")
+   return plaintext
+
+
+run this and I get
+
+dkdkkd}}}}}}}}}} 16
+Traceback (most recent call last):
+ File "/files/python/fp/fp.py", line 148, in <module>
+   domain(sys.argv)
+ File "/files/python/fp/fp.py", line 131, in domain
+   str=decrypt(encContents,secret)
+ File "/files/python/fp/fp.py", line 97, in decrypt
+   encobj = AES.new(secret, AES.MODE_CFB)
+ File "/usr/lib64/python2.7/site-packages/Crypto/Cipher/AES.py", line
+95, in new
+   return AESCipher(key, *args, **kwargs)
+ File "/usr/lib64/python2.7/site-packages/Crypto/Cipher/AES.py", line
+59, in __init__
+   blockalgo.BlockAlgo.__init__(self, _AES, key, *args, **kwargs)
+ File "/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py",
+line 141, in __init__
+   self._cipher = factory.new(key, *args, **kwargs)
+ValueError: IV must be 16 bytes long
+
+
+So although the 'secret' is 16 bytes long, I'm getting a report saying it isn't?
+
+Any suggestions please.
+
+TIA
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From gooksankoo at hoiptorrow.mailexpire.com  Tue Jun 26 05:52:50 2012
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Tue, 26 Jun 2012 11:52:50 +0200
+Subject: [pycrypto] Typo or bug?
+In-Reply-To: <CAEncD4faNrPm0NJG90nVVSDK1P5y6r6UXyD5iWgWyGKWxLg6kg@mail.gmail.com>
+References: <CAEncD4faNrPm0NJG90nVVSDK1P5y6r6UXyD5iWgWyGKWxLg6kg@mail.gmail.com>
+Message-ID: <CAGfyce1rtehF8rrk0D7Edx0uMS4+2CbF_8sEdsdt_=7_t8dv3Q@mail.gmail.com>
+
+>
+>   encobj = AES.new(secret, AES.MODE_CFB)
+>   File "/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py",
+> line 141, in __init__
+>   self._cipher = factory.new(key, *args, **kwargs)
+> ValueError: IV must be 16 bytes long
+>
+> So although the 'secret' is 16 bytes long, I'm getting a report saying it
+> isn't?
+>
+>
+Hi Dave,
+
+The key is OK, but the IV is missing and it is mandatory for CFB.
+Your code should be:
+
+encobj = AES.new(secret, AES.MODE_CFB, some_iv)
+
+where len(some_iv)==16.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120626/7afc9474/attachment.html>
+
+From dave.pawson at gmail.com  Tue Jun 26 06:19:49 2012
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Tue, 26 Jun 2012 11:19:49 +0100
+Subject: [pycrypto] Typo or bug?
+In-Reply-To: <CAGfyce1rtehF8rrk0D7Edx0uMS4+2CbF_8sEdsdt_=7_t8dv3Q@mail.gmail.com>
+References: <CAEncD4faNrPm0NJG90nVVSDK1P5y6r6UXyD5iWgWyGKWxLg6kg@mail.gmail.com>
+ <CAGfyce1rtehF8rrk0D7Edx0uMS4+2CbF_8sEdsdt_=7_t8dv3Q@mail.gmail.com>
+Message-ID: <CAEncD4dw9T-fByufTh-XwoWMAAGmM3SfAiKMtjDSX88zV5bcXg@mail.gmail.com>
+
+On 26 June 2012 10:52, Legrandin <gooksankoo at hoiptorrow.mailexpire.com> wrote:
+>> ? encobj = AES.new(secret, AES.MODE_CFB)
+>> ? File "/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py",
+>> line 141, in __init__
+>> ? self._cipher = factory.new(key, *args, **kwargs)
+>> ValueError: IV must be 16 bytes long
+>>
+>> So although the 'secret' is 16 bytes long, I'm getting a report saying it
+>> isn't?
+>>
+>
+> Hi Dave,
+>
+> The key is OK, but the IV is missing and it is mandatory for CFB.
+> Your code should be:
+>
+> encobj = AES.new(secret, AES.MODE_CFB, some_iv)
+>
+> where len(some_iv)==16.
+
+Next question (bet you saw this coming)...
+some_iv? Any explanation of this call please?
+What should it be?
+
+
+Sorry to sound so newbie... This code has worked well for a year or more?
+
+
+TIA
+
+
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Tue Jun 26 07:08:23 2012
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Tue, 26 Jun 2012 12:08:23 +0100
+Subject: [pycrypto] Typo or bug?
+In-Reply-To: <CAGfyce1rtehF8rrk0D7Edx0uMS4+2CbF_8sEdsdt_=7_t8dv3Q@mail.gmail.com>
+References: <CAEncD4faNrPm0NJG90nVVSDK1P5y6r6UXyD5iWgWyGKWxLg6kg@mail.gmail.com>
+ <CAGfyce1rtehF8rrk0D7Edx0uMS4+2CbF_8sEdsdt_=7_t8dv3Q@mail.gmail.com>
+Message-ID: <CAEncD4e-u_c7YaBRvg8QN8TWki3VqSfihzvhCdjyAGQkwbYvsw@mail.gmail.com>
+
+On 26 June 2012 10:52, Legrandin <gooksankoo at hoiptorrow.mailexpire.com> wrote:
+>> ? encobj = AES.new(secret, AES.MODE_CFB)
+>> ? File "/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py",
+>> line 141, in __init__
+>> ? self._cipher = factory.new(key, *args, **kwargs)
+>> ValueError: IV must be 16 bytes long
+>>
+>> So although the 'secret' is 16 bytes long, I'm getting a report saying it
+>> isn't?
+>>
+>
+> Hi Dave,
+>
+> The key is OK, but the IV is missing and it is mandatory for CFB.
+> Your code should be:
+>
+> encobj = AES.new(secret, AES.MODE_CFB, some_iv)
+>
+> where len(some_iv)==16.
+
+I think I have it working....
+
+  myiv = "some Random string"   # which is 16 bytes long....
+  encobj = AES.new(secret, AES.MODE_CFB, myiv)
+
+Would someone help me understand what is happening here please?
+
+I'm guessing on both encode and decode the 'myiv' string should be identical...
+but I'm unsure?
+https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.AES-module.html#new
+shows it in use, but with no explanation?
+
+TIA
+
+
+
+
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From gooksankoo at hoiptorrow.mailexpire.com  Tue Jun 26 07:31:15 2012
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Tue, 26 Jun 2012 13:31:15 +0200
+Subject: [pycrypto] Typo or bug?
+In-Reply-To: <CAEncD4e-u_c7YaBRvg8QN8TWki3VqSfihzvhCdjyAGQkwbYvsw@mail.gmail.com>
+References: <CAEncD4faNrPm0NJG90nVVSDK1P5y6r6UXyD5iWgWyGKWxLg6kg@mail.gmail.com>
+ <CAGfyce1rtehF8rrk0D7Edx0uMS4+2CbF_8sEdsdt_=7_t8dv3Q@mail.gmail.com>
+ <CAEncD4e-u_c7YaBRvg8QN8TWki3VqSfihzvhCdjyAGQkwbYvsw@mail.gmail.com>
+Message-ID: <CAGfyce3ST0n9M+wkccQM-H+QE9pWMOP19bmyQoSb-zTKJrLW5A@mail.gmail.com>
+
+>
+>
+> I think I have it working....
+>
+>  myiv = "some Random string"   # which is 16 bytes long....
+>  encobj = AES.new(secret, AES.MODE_CFB, myiv)
+>
+> Would someone help me understand what is happening here please?
+>
+> I'm guessing on both encode and decode the 'myiv' string should be
+> identical...
+> but I'm unsure?
+>
+> https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.AES-module.html#new
+> shows it in use, but with no explanation?
+>
+>
+Choice of the IV is critical for security.
+For CFB, the combination IV and key must be use only with one message, and
+never occur again.
+That is explained here:
+
+https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.blockalgo-module.html#MODE_CFB
+
+IV needs indeed to be share by the party encrypting and by the party
+decrypting the message.
+
+Up to pycrypto 2.5, when no iv was provided to new() a string of zeroes was
+automatically used.
+Depending on your application, that may or may not be a problem. It is
+wiser to always make iv explicit.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120626/e1bf90e4/attachment.html>
+
+From dave.pawson at gmail.com  Tue Jun 26 07:59:29 2012
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Tue, 26 Jun 2012 12:59:29 +0100
+Subject: [pycrypto] Typo or bug?
+In-Reply-To: <CAGfyce3ST0n9M+wkccQM-H+QE9pWMOP19bmyQoSb-zTKJrLW5A@mail.gmail.com>
+References: <CAEncD4faNrPm0NJG90nVVSDK1P5y6r6UXyD5iWgWyGKWxLg6kg@mail.gmail.com>
+ <CAGfyce1rtehF8rrk0D7Edx0uMS4+2CbF_8sEdsdt_=7_t8dv3Q@mail.gmail.com>
+ <CAEncD4e-u_c7YaBRvg8QN8TWki3VqSfihzvhCdjyAGQkwbYvsw@mail.gmail.com>
+ <CAGfyce3ST0n9M+wkccQM-H+QE9pWMOP19bmyQoSb-zTKJrLW5A@mail.gmail.com>
+Message-ID: <CAEncD4cgP3kSXc-==b=QeGxKhE+bFOyH2j0E-Hj0h8p8QeXUdw@mail.gmail.com>
+
+On 26 June 2012 12:31, Legrandin <gooksankoo at hoiptorrow.mailexpire.com> wrote:
+
+> Choice of the IV is critical for security.
+> For CFB, the combination IV and key must be use only with one message, and
+> never occur again.
+> That is explained here:
+>
+> https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.blockalgo-module.html#MODE_CFB
+
+Thanks.
+(I think I need more reading to select one!)
+
+
+>
+> IV needs indeed to be share by the party encrypting and by the party
+> decrypting the message.
+>
+> Up to pycrypto 2.5, when no iv was provided to new() a string of zeroes was
+> automatically used.
+> Depending on your application, that may or may not be a problem. It is wiser
+> to always make iv explicit.
+
+
+Which explains why my 'old' code failed. Thanks.
+
+Needing both key and iv... It sounds like asking for two keys to unlock a box?
+Is that the idea?
+
+regards
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From gooksankoo at hoiptorrow.mailexpire.com  Tue Jun 26 08:01:36 2012
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Tue, 26 Jun 2012 14:01:36 +0200
+Subject: [pycrypto] Typo or bug?
+In-Reply-To: <CAEncD4cgP3kSXc-==b=QeGxKhE+bFOyH2j0E-Hj0h8p8QeXUdw@mail.gmail.com>
+References: <CAEncD4faNrPm0NJG90nVVSDK1P5y6r6UXyD5iWgWyGKWxLg6kg@mail.gmail.com>
+ <CAGfyce1rtehF8rrk0D7Edx0uMS4+2CbF_8sEdsdt_=7_t8dv3Q@mail.gmail.com>
+ <CAEncD4e-u_c7YaBRvg8QN8TWki3VqSfihzvhCdjyAGQkwbYvsw@mail.gmail.com>
+ <CAGfyce3ST0n9M+wkccQM-H+QE9pWMOP19bmyQoSb-zTKJrLW5A@mail.gmail.com>
+ <CAEncD4cgP3kSXc-==b=QeGxKhE+bFOyH2j0E-Hj0h8p8QeXUdw@mail.gmail.com>
+Message-ID: <CAGfyce0hKsTtCgfiwM2v=Hvf5=qyM_v2G64qTvgEKZuOvDLU_Q@mail.gmail.com>
+
+> > Up to pycrypto 2.5, when no iv was provided to new() a string of zeroes
+> was
+> > automatically used.
+> > Depending on your application, that may or may not be a problem. It is
+> wiser
+> > to always make iv explicit.
+>
+> Which explains why my 'old' code failed. Thanks.
+> Needing both key and iv... It sounds like asking for two keys to unlock a
+> box?
+> Is that the idea?
+>
+
+Well, an important difference is that the IV is not a secret, so it's not
+really a key,
+just a way to randomize the key stream.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120626/86c9f685/attachment.html>
+
+From anil.philip at motorolasolutions.com  Tue Jun 26 10:35:33 2012
+From: anil.philip at motorolasolutions.com (Philip Anil-QBW348)
+Date: Tue, 26 Jun 2012 14:35:33 +0000
+Subject: [pycrypto] problems with testing PyCrypto Module
+In-Reply-To: <DD2926DBB985EB40ADF6462A09062EE508EF8096@CH1PRD0410MB357.namprd04.prod.outlook.com>
+References: <DD2926DBB985EB40ADF6462A09062EE508EF8096@CH1PRD0410MB357.namprd04.prod.outlook.com>
+Message-ID: <DD2926DBB985EB40ADF6462A09062EE508EF8233@CH1PRD0410MB357.namprd04.prod.outlook.com>
+
+Appreciate any help.
+
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Philip Anil-QBW348
+Sent: Monday, June 25, 2012 5:21 PM
+To: pycrypto at lists.dlitz.net
+Subject: [pycrypto] problems with testing PyCrypto Module
+
+
+Python newbie here.
+
+Win XP with VS 2008 installed.
+
+I ran the commands from the README for PyCrypto. No errors reported. python setup.py test produces lots of ................. and then hangs. No message saying "all tests passed" or whatever.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120626/97782b99/attachment.html>
+
+From anil.philip at motorolasolutions.com  Tue Jun 26 10:49:39 2012
+From: anil.philip at motorolasolutions.com (Philip Anil-QBW348)
+Date: Tue, 26 Jun 2012 14:49:39 +0000
+Subject: [pycrypto] problems with testing PyCrypto Module
+References: <DD2926DBB985EB40ADF6462A09062EE508EF8096@CH1PRD0410MB357.namprd04.prod.outlook.com>
+Message-ID: <DD2926DBB985EB40ADF6462A09062EE508EF849D@CH1PRD0410MB357.namprd04.prod.outlook.com>
+
+D: \pycrypto-2.6>python setup.py build
+running build
+running build_py
+running build_ext
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+
+D: \pycrypto-2.6>python setup.py test
+running test
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+...............................................................................................................
+
+From: pycrypto-bounces at lists.dlitz.net<mailto:pycrypto-bounces at lists.dlitz.net> [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Philip Anil-QBW348
+Sent: Monday, June 25, 2012 5:21 PM
+To: pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+Subject: [pycrypto] problems with testing PyCrypto Module
+
+
+Python newbie here.
+
+Win XP with VS 2008 installed.
+
+I ran the commands from the README for PyCrypto. No errors reported. python setup.py test produces lots of ................. and then hangs. No message saying "all tests passed" or whatever.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120626/926c5e27/attachment.html>
+
+From anil.philip at motorolasolutions.com  Tue Jun 26 11:47:56 2012
+From: anil.philip at motorolasolutions.com (Philip Anil-QBW348)
+Date: Tue, 26 Jun 2012 15:47:56 +0000
+Subject: [pycrypto] problems with testing PyCrypto Module
+In-Reply-To: <DD2926DBB985EB40ADF6462A09062EE508EF849D@CH1PRD0410MB357.namprd04.prod.outlook.com>
+References: <DD2926DBB985EB40ADF6462A09062EE508EF8096@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EF849D@CH1PRD0410MB357.namprd04.prod.outlook.com>
+Message-ID: <DD2926DBB985EB40ADF6462A09062EE508EF84D0@CH1PRD0410MB357.namprd04.prod.outlook.com>
+
+After a long time (1 hr) and hitting [enter]:
+
+D:\Cryptolibrary\pycrypto-2.6>python setup.py build
+running build
+running build_py
+running build_ext
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+
+D:\Cryptolibrary\pycrypto-2.6>python setup.py test
+running test
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+............................................SelfTest: You can ignore the RandomPool_DeprecationWarning that follows.
+.........E...................
+======================================================================
+ERROR: test_negative_number_roundtrip_mpzToLongObj_longObjToMPZ (Crypto.SelfTest.Util.test_number.MiscTests)
+Test that mpzToLongObj and longObjToMPZ (internal functions) roundtrip negative numbers correctly.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "build\lib.win32-2.7\Crypto\SelfTest\Util\test_number.py", line 283, in test_negative_number_roundtrip_mpzToLongO
+bj_longObjToMPZ
+    k = number._fastmath.rsa_construct(n, e)
+AttributeError: 'NoneType' object has no attribute 'rsa_construct'
+
+----------------------------------------------------------------------
+Ran 1033 tests in 3513.075s
+
+FAILED (errors=1)
+Traceback (most recent call last):
+  File "setup.py", line 456, in <module>
+    core.setup(**kw)
+  File "C:\Python27\lib\distutils\core.py", line 152, in setup
+    dist.run_commands()
+  File "C:\Python27\lib\distutils\dist.py", line 953, in run_commands
+    self.run_command(cmd)
+  File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+    cmd_obj.run()
+  File "setup.py", line 336, in run
+    SelfTest.run(module=moduleObj, verbosity=self.verbose, stream=sys.stdout, config=self.config)
+  File "build\lib.win32-2.7\Crypto\SelfTest\__init__.py", line 74, in run
+    raise SelfTestError("Self-test failed", result)
+Crypto.SelfTest.SelfTestError: ('Self-test failed', <unittest.runner.TextTestResult run=1033 errors=1 failures=0>)
+
+
+
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Philip Anil-QBW348
+Sent: Tuesday, June 26, 2012 9:50 AM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] problems with testing PyCrypto Module
+
+D: \pycrypto-2.6>python setup.py build
+running build
+running build_py
+running build_ext
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+
+D: \pycrypto-2.6>python setup.py test
+running test
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+...............................................................................................................
+
+From: pycrypto-bounces at lists.dlitz.net<mailto:pycrypto-bounces at lists.dlitz.net> [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Philip Anil-QBW348
+Sent: Monday, June 25, 2012 5:21 PM
+To: pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+Subject: [pycrypto] problems with testing PyCrypto Module
+
+
+Python newbie here.
+
+Win XP with VS 2008 installed.
+
+I ran the commands from the README for PyCrypto. No errors reported. python setup.py test produces lots of ................. and then hangs. No message saying "all tests passed" or whatever.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20120626/b4e02f50/attachment-0001.html>
+
+From Paul_Koning at Dell.com  Tue Jun 26 11:50:52 2012
+From: Paul_Koning at Dell.com (Paul_Koning at Dell.com)
+Date: Tue, 26 Jun 2012 15:50:52 +0000
+Subject: [pycrypto] problems with testing PyCrypto Module
+In-Reply-To: <DD2926DBB985EB40ADF6462A09062EE508EF84D0@CH1PRD0410MB357.namprd04.prod.outlook.com>
+References: <DD2926DBB985EB40ADF6462A09062EE508EF8096@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EF849D@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EF84D0@CH1PRD0410MB357.namprd04.prod.outlook.com>
+Message-ID: <F08FBCAD-72C7-45E3-A57D-D91284AAB249@dell.com>
+
+Maybe it was waiting for /dev/random to think it had enough entropy to work?
+
+paul
+
+On Jun 26, 2012, at 11:47 AM, Philip Anil-QBW348 wrote:
+
+After a long time (1 hr) and hitting [enter]:
+
+D:\Cryptolibrary\pycrypto-2.6>python setup.py build
+running build
+running build_py
+running build_ext
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+
+D:\Cryptolibrary\pycrypto-2.6>python setup.py test
+running test
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+............................................SelfTest: You can ignore the RandomPool_DeprecationWarning that follows.
+.........E...................
+======================================================================
+ERROR: test_negative_number_roundtrip_mpzToLongObj_longObjToMPZ (Crypto.SelfTest.Util.test_number.MiscTests)
+Test that mpzToLongObj and longObjToMPZ (internal functions) roundtrip negative numbers correctly.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "build\lib.win32-2.7\Crypto\SelfTest\Util\test_number.py", line 283, in test_negative_number_roundtrip_mpzToLongO
+bj_longObjToMPZ
+    k = number._fastmath.rsa_construct(n, e)
+AttributeError: 'NoneType' object has no attribute 'rsa_construct'
+
+----------------------------------------------------------------------
+Ran 1033 tests in 3513.075s
+
+FAILED (errors=1)
+Traceback (most recent call last):
+  File "setup.py", line 456, in <module>
+    core.setup(**kw)
+  File "C:\Python27\lib\distutils\core.py", line 152, in setup
+    dist.run_commands()
+  File "C:\Python27\lib\distutils\dist.py", line 953, in run_commands
+    self.run_command(cmd)
+  File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+    cmd_obj.run()
+  File "setup.py", line 336, in run
+    SelfTest.run(module=moduleObj, verbosity=self.verbose, stream=sys.stdout, config=self.config)
+  File "build\lib.win32-2.7\Crypto\SelfTest\__init__.py", line 74, in run
+    raise SelfTestError("Self-test failed", result)
+Crypto.SelfTest.SelfTestError: ('Self-test failed', <unittest.runner.TextTestResult run=1033 errors=1 failures=0>)
+
+
+
+From: pycrypto-bounces at lists.dlitz.net<mailto:pycrypto-bounces at lists.dlitz.net> [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Philip Anil-QBW348
+Sent: Tuesday, June 26, 2012 9:50 AM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] problems with testing PyCrypto Module
+
+D: \pycrypto-2.6>python setup.py build
+running build
+running build_py
+running build_ext
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+
+D: \pycrypto-2.6>python setup.py test
+running test
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+...............................................................................................................
+
+From: pycrypto-bounces at lists.dlitz.net<mailto:pycrypto-bounces at lists.dlitz.net> [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Philip Anil-QBW348
+Sent: Monday, June 25, 2012 5:21 PM
+To: pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+Subject: [pycrypto] problems with testing PyCrypto Module
+
+
+Python newbie here.
+
+Win XP with VS 2008 installed.
+
+I ran the commands from the README for PyCrypto. No errors reported. python setup.py test produces lots of ................. and then hangs. No message saying "all tests passed" or whatever.
+
+
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From anil.philip at motorolasolutions.com  Thu Jun 28 09:17:05 2012
+From: anil.philip at motorolasolutions.com (Philip Anil-QBW348)
+Date: Thu, 28 Jun 2012 13:17:05 +0000
+Subject: [pycrypto] problems with testing PyCrypto Module
+In-Reply-To: <F08FBCAD-72C7-45E3-A57D-D91284AAB249@dell.com>
+References: <DD2926DBB985EB40ADF6462A09062EE508EF8096@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EF849D@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EF84D0@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <F08FBCAD-72C7-45E3-A57D-D91284AAB249@dell.com>
+Message-ID: <DD2926DBB985EB40ADF6462A09062EE508EFA6BA@SN2PRD0410MB359.namprd04.prod.outlook.com>
+
+But what about the errors - anyone have any suggestions?
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Paul_Koning at Dell.com
+Sent: Tuesday, June 26, 2012 10:51 AM
+To: pycrypto at lists.dlitz.net
+Subject: Re: [pycrypto] problems with testing PyCrypto Module
+
+Maybe it was waiting for /dev/random to think it had enough entropy to work?
+
+paul
+
+On Jun 26, 2012, at 11:47 AM, Philip Anil-QBW348 wrote:
+
+After a long time (1 hr) and hitting [enter]:
+
+D:\Cryptolibrary\pycrypto-2.6>python setup.py build
+running build
+running build_py
+running build_ext
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+
+D:\Cryptolibrary\pycrypto-2.6>python setup.py test
+running test
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+............................................SelfTest: You can ignore the RandomPool_DeprecationWarning that follows.
+.........E...................
+======================================================================
+ERROR: test_negative_number_roundtrip_mpzToLongObj_longObjToMPZ (Crypto.SelfTest.Util.test_number.MiscTests)
+Test that mpzToLongObj and longObjToMPZ (internal functions) roundtrip negative numbers correctly.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "build\lib.win32-2.7\Crypto\SelfTest\Util\test_number.py", line 283, in test_negative_number_roundtrip_mpzToLongO
+bj_longObjToMPZ
+    k = number._fastmath.rsa_construct(n, e)
+AttributeError: 'NoneType' object has no attribute 'rsa_construct'
+
+----------------------------------------------------------------------
+Ran 1033 tests in 3513.075s
+
+FAILED (errors=1)
+Traceback (most recent call last):
+  File "setup.py", line 456, in <module>
+    core.setup(**kw)
+  File "C:\Python27\lib\distutils\core.py", line 152, in setup
+    dist.run_commands()
+  File "C:\Python27\lib\distutils\dist.py", line 953, in run_commands
+    self.run_command(cmd)
+  File "C:\Python27\lib\distutils\dist.py", line 972, in run_command
+    cmd_obj.run()
+  File "setup.py", line 336, in run
+    SelfTest.run(module=moduleObj, verbosity=self.verbose, stream=sys.stdout, config=self.config)
+  File "build\lib.win32-2.7\Crypto\SelfTest\__init__.py", line 74, in run
+    raise SelfTestError("Self-test failed", result)
+Crypto.SelfTest.SelfTestError: ('Self-test failed', <unittest.runner.TextTestResult run=1033 errors=1 failures=0>)
+
+
+
+From: pycrypto-bounces at lists.dlitz.net<mailto:pycrypto-bounces at lists.dlitz.net> [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Philip Anil-QBW348
+Sent: Tuesday, June 26, 2012 9:50 AM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] problems with testing PyCrypto Module
+
+D: \pycrypto-2.6>python setup.py build
+running build
+running build_py
+running build_ext
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+
+D: \pycrypto-2.6>python setup.py test
+running test
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+........................................................................................................................
+...............................................................................................................
+
+From: pycrypto-bounces at lists.dlitz.net<mailto:pycrypto-bounces at lists.dlitz.net> [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Philip Anil-QBW348
+Sent: Monday, June 25, 2012 5:21 PM
+To: pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+Subject: [pycrypto] problems with testing PyCrypto Module
+
+
+Python newbie here.
+
+Win XP with VS 2008 installed.
+
+I ran the commands from the README for PyCrypto. No errors reported. python setup.py test produces lots of ................. and then hangs. No message saying "all tests passed" or whatever.
+
+
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+
+
+
+From sebastian+lists at ramacher.at  Thu Jun 28 09:20:17 2012
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Thu, 28 Jun 2012 15:20:17 +0200
+Subject: [pycrypto] problems with testing PyCrypto Module
+In-Reply-To: <DD2926DBB985EB40ADF6462A09062EE508EFA6BA@SN2PRD0410MB359.namprd04.prod.outlook.com>
+References: <DD2926DBB985EB40ADF6462A09062EE508EF8096@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EF849D@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EF84D0@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <F08FBCAD-72C7-45E3-A57D-D91284AAB249@dell.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EFA6BA@SN2PRD0410MB359.namprd04.prod.outlook.com>
+Message-ID: <4FEC5A11.7010301@ramacher.at>
+
+On 28/06/12 15:17, Philip Anil-QBW348 wrote:
+> But what about the errors - anyone have any suggestions?
+
+That's a known issue: https://bugs.launchpad.net/pycrypto/+bug/1004781
+
+Kind regards
+
+From anil.philip at motorolasolutions.com  Fri Jun 29 11:19:31 2012
+From: anil.philip at motorolasolutions.com (Philip Anil-QBW348)
+Date: Fri, 29 Jun 2012 15:19:31 +0000
+Subject: [pycrypto] problems with testing PyCrypto Module
+In-Reply-To: <4FEC5A11.7010301@ramacher.at>
+References: <DD2926DBB985EB40ADF6462A09062EE508EF8096@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EF849D@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EF84D0@CH1PRD0410MB357.namprd04.prod.outlook.com>
+ <F08FBCAD-72C7-45E3-A57D-D91284AAB249@dell.com>
+ <DD2926DBB985EB40ADF6462A09062EE508EFA6BA@SN2PRD0410MB359.namprd04.prod.outlook.com>
+ <4FEC5A11.7010301@ramacher.at>
+Message-ID: <DD2926DBB985EB40ADF6462A09062EE508EFEBD9@SN2PRD0410MB359.namprd04.prod.outlook.com>
+
+Thank you for replying. I am wondering whether to build and install the C++ mpir lib http://www.exploringbinary.com/how-to-install-and-run-gmp-on-windows-using-mpir/
+Will that fix the issue? But I am not sure which lib folder I should drop the static lib into, since they all contain python scripts only - not libs.
+
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Sebastian Ramacher
+Sent: Thursday, June 28, 2012 8:20 AM
+To: pycrypto at lists.dlitz.net
+Subject: Re: [pycrypto] problems with testing PyCrypto Module
+
+On 28/06/12 15:17, Philip Anil-QBW348 wrote:
+> But what about the errors - anyone have any suggestions?
+
+That's a known issue: https://bugs.launchpad.net/pycrypto/+bug/1004781
+
+Kind regards
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+
+
+

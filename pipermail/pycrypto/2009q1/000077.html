@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Buffer overflow in ARC2.new() with len(key) &gt; 128	bytes
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Buffer%20overflow%20in%20ARC2.new%28%29%20with%20len%28key%29%20%3E%20128%0A%09bytes&In-Reply-To=20090207003914.GA28184%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000062.html">
+   <LINK REL="Next"  HREF="000073.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Buffer overflow in ARC2.new() with len(key) &gt; 128	bytes</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Buffer%20overflow%20in%20ARC2.new%28%29%20with%20len%28key%29%20%3E%20128%0A%09bytes&In-Reply-To=20090207003914.GA28184%40rivest.dlitz.net"
+       TITLE="[pycrypto] Buffer overflow in ARC2.new() with len(key) &gt; 128	bytes">dlitz at dlitz.net
+       </A><BR>
+    <I>Sat Feb 28 12:06:26 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000062.html">[pycrypto] Buffer overflow in ARC2.new() with len(key) &gt; 128 bytes
+</A></li>
+        <LI>Next message: <A HREF="000073.html">[pycrypto] jibberish output with blowfish cbc
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#77">[ date ]</a>
+              <a href="thread.html#77">[ thread ]</a>
+              <a href="subject.html#77">[ subject ]</a>
+              <a href="author.html#77">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, Feb 06, 2009 at 07:39:14PM -0500, Dwayne C. Litzenberger wrote:
+&gt;<i>Mike Wiacek from the Google Security Team pointed out a buffer overflow in 
+</I>&gt;<i>PyCrypto's ARC2 cipher module, which occurs when attempting to initialize 
+</I>&gt;<i>ARC2 with a key longer than 128 bytes.
+</I>
+For future reference, this issue has been assigned CVE-2009-0544, and 
+Debian DSA 1726:
+
+     <A HREF="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0544">http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0544</A>
+     <A HREF="http://www.debian.org/security/2009/dsa-1726">http://www.debian.org/security/2009/dsa-1726</A>
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000062.html">[pycrypto] Buffer overflow in ARC2.new() with len(key) &gt; 128 bytes
+</A></li>
+	<LI>Next message: <A HREF="000073.html">[pycrypto] jibberish output with blowfish cbc
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#77">[ date ]</a>
+              <a href="thread.html#77">[ thread ]</a>
+              <a href="subject.html#77">[ subject ]</a>
+              <a href="author.html#77">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

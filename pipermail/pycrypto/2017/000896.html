@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] keyrings.cryptfile released on github
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20keyrings.cryptfile%20released%20on%20github&In-Reply-To=%3C9488704.4nHWsKhNEW%40xrated%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+   <LINK REL="Next"  HREF="000897.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] keyrings.cryptfile released on github</H1>
+    <B>Hans-Peter Jansen</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20keyrings.cryptfile%20released%20on%20github&In-Reply-To=%3C9488704.4nHWsKhNEW%40xrated%3E"
+       TITLE="[pycrypto] keyrings.cryptfile released on github">hpj at urpla.net
+       </A><BR>
+    <I>Thu Mar  9 16:56:11 UTC 2017</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000897.html">[pycrypto] keyrings.cryptfile released on github
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#896">[ date ]</a>
+              <a href="thread.html#896">[ thread ]</a>
+              <a href="subject.html#896">[ subject ]</a>
+              <a href="author.html#896">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I've released a keyring companion package moments ago:
+
+	<A HREF="https://github.com/frispete/keyrings.cryptfile">https://github.com/frispete/keyrings.cryptfile</A>
+
+Its primary purpose is a decent encrypted file backend for python keyrings.
+As such, it uses a manually parameterized argon2 hash as KDF, and AES in OCB 
+mode as stream cipher (well, it just encrypts the password for a given 
+service and user name. Granted, the advantages of OCB are not /that/ crucial 
+here, but apart from the technical factors, the exclusion of military uses by 
+its license is rather attractive from my POV(!). But I'm open for discussions.
+
+Interested? Here we go:
+
+To get you started, I expect you to have a python3 environment available. 
+You might want to provide the packages argon2-cffi, keyring, pycryptodome and 
+their dependencies (most notably secretstorage and cryptography, or use a 
+local venv.
+
+$ git clone <A HREF="https://github.com/frispete/keyrings.cryptfile">https://github.com/frispete/keyrings.cryptfile</A>
+$ cd keyrings.cryptfile
+$ pyvenv env
+$ . env/bin/activate
+(env) $ pip install -e .
+[...] # should succeed, some development packages might be missing otherwise
+(env) $ python3
+Python 3.4.5 (default, Jul 03 2016, 12:57:15) [GCC] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;<i> from keyrings.cryptfile.cryptfile import CryptFileKeyring
+</I>&gt;&gt;&gt;<i> kr = CryptFileKeyring()
+</I>&gt;&gt;&gt;<i> kr.set_password(&quot;service&quot;, &quot;user&quot;, &quot;secret&quot;)
+</I>Please set a password for your new keyring: 
+Please confirm the password: 
+&gt;&gt;&gt;<i> 
+</I>(env) $ python3
+Python 3.4.5 (default, Jul 03 2016, 12:57:15) [GCC] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;<i> from keyrings.cryptfile.cryptfile import CryptFileKeyring
+</I>&gt;&gt;&gt;<i> kr = CryptFileKeyring()
+</I>&gt;&gt;&gt;<i> kr.get_password(&quot;service&quot;, &quot;user&quot;)
+</I>Please enter password for encrypted keyring: 
+'secret'
+&gt;&gt;&gt;<i> 
+</I>
+Note, that the KDF might delay the {set,get}_password() operations for a 
+few seconds (~1 sec. on a capable system).
+
+The resulting file is located here and might look like:
+(env) $ cat .local/share/python_keyring/cryptfile.cfg
+[keyring_2Dsetting]
+password_20reference = eyJub25jZSI6ICJQdVdWVUIwUHNYbEFqYUUxZ2l2RlxuIiwgIm1hYyI6ICIvVTFIVDBWTnRheTFl
+        TjA5TVlHb0dRPT1cbiIsICJzYWx0IjogIklMdDNBU1hMUENrbWZ2NzFudmtBSUE9PVxuIiwgImRh
+        dGEiOiAidW1EQkNvQ2dRUTk5WEVaNkZ4NWt3NXRkSUZDOHFIUE5ZOHhWXG4ifQ==
+scheme = Cryptodome [Argon2] AES OCB
+version = 1.0
+
+[service]
+user = eyJub25jZSI6ICI5SUU3UGp2eDU2SXNQdHlLUGRtaFxuIiwgIm1hYyI6ICJKcFR1NXMxaDd0UGlW
+        OW9XL3d5cFdBPT1cbiIsICJzYWx0IjogIlpBeEhJdXlqYnRuTkgzb3BMNTFvdkE9PVxuIiwgImRh
+        dGEiOiAiT2I3Z1JJbXR5aVJLXG4ifQ==
+
+
+The value can be decoded like this:
+
+(env) $ python3
+&gt;&gt;&gt;<i> import base64
+</I>&gt;&gt;&gt;<i> base64.decodebytes(b&quot;&quot;&quot;
+</I>... eyJub25jZSI6ICI5SUU3UGp2eDU2SXNQdHlLUGRtaFxuIiwgIm1hYyI6ICJKcFR1NXMxaDd0UGlW
+... OW9XL3d5cFdBPT1cbiIsICJzYWx0IjogIlpBeEhJdXlqYnRuTkgzb3BMNTFvdkE9PVxuIiwgImRh
+... dGEiOiAiT2I3Z1JJbXR5aVJLXG4ifQ==&quot;&quot;&quot;)
+b'{&quot;nonce&quot;: &quot;9IE7Pjvx56IsPtyKPdmh\\n&quot;, &quot;mac&quot;: &quot;JpTu5s1h7tPiV9oW/wypWA==\\n&quot;, 
+   &quot;salt&quot;: &quot;ZAxHIuyjbtnNH3opL51ovA==\\n&quot;, &quot;data&quot;: &quot;Ob7gRImtyiRK\\n&quot;}'
+
+
+What do you think? The class hierarchy is inherited from keyrings.alt, and 
+not exactly easy to follow, but the interesting parts are all in cryptfile,
+which is quite brief.
+
+I would be very glad to hear something from you about my handling of 
+cryptography. Is it ready for the public in that form or should I better 
+locked away? :wink:
+
+TIA,
+Pete
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000897.html">[pycrypto] keyrings.cryptfile released on github
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#896">[ date ]</a>
+              <a href="thread.html#896">[ thread ]</a>
+              <a href="subject.html#896">[ subject ]</a>
+              <a href="author.html#896">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

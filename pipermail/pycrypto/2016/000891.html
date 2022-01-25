@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] pycryptodome
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20pycryptodome&In-Reply-To=%3C27265.24.7.58.3.1481320197.squirrel%40martin-wwwss5.ssl.supercp.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <LINK REL="Previous"  HREF="000890.html">
+   <LINK REL="Next"  HREF="000892.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] pycryptodome</H1>
+    <B>Martin Falatic</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20pycryptodome&In-Reply-To=%3C27265.24.7.58.3.1481320197.squirrel%40martin-wwwss5.ssl.supercp.com%3E"
+       TITLE="[pycrypto] pycryptodome">martin at falatic.com
+       </A><BR>
+    <I>Fri Dec  9 21:49:57 UTC 2016</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000890.html">[pycrypto] pycryptodome
+</A></li>
+        <LI>Next message: <A HREF="000892.html">[pycrypto] pycryptodome
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#891">[ date ]</a>
+              <a href="thread.html#891">[ thread ]</a>
+              <a href="subject.html#891">[ subject ]</a>
+              <a href="author.html#891">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Summary: restore the system pips as shown below, uninstall all the crypto
+packages you've installed, verify they are totally uninstalled now, THEN
+install what you need for each python (probably just pycryptodome) per
+previous emails, and test to see it's working and the right version for
+both pythons.
+
+&gt;<i> I honestly don't think dnf is installing pip? It's a Python environment
+</I>&gt;<i> issue? Post your scripts, which versions are you suggesting I use?
+</I>&gt;<i> 8.1 or the more recent 9.0.1 please?
+</I>
+# This restores the system versions of pip (8.1.2 currently):
+sudo dnf reinstall python-pip python3-pip
+
+&gt;<i> Yes, I have 'upgraded' pip (again this morning). Do you think this is a
+</I>&gt;<i> problem?
+</I>
+Yes - and as I said previously: don't do that. It's not a pip problem per
+se, but upgrading pip that way breaks all the aliases in a way that makes
+it hard to use pip for python2 and python3 properly, complicating things
+massively. (I don't know how to upgrade pip and preserve or re-create the
+correct aliases right offhand, and an upgrade of pip to 9.x is not
+required to make any of this work. Just restore the system pip as above
+and use it.)
+
+
+&gt;<i> Python 3.5.2 (default, Sep 14 2016, 11:28:32)
+</I>&gt;&gt;&gt;&gt;<i> import Crypto print(Crypto.version_info)
+</I>&gt;<i> (2, 6, 1, 'final', 0)
+</I>&gt;<i>
+</I>&gt;<i> Python 2.7.12 (default, Sep 29 2016, 12:52:02)
+</I>&gt;&gt;&gt;&gt;<i> import Crypto
+</I>&gt;<i> Traceback (most recent call last):
+</I>&gt;<i> File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+</I>&gt;<i> ImportError: No module named Crypto
+</I>
+You still have the old pycrypto package installed for python 2.7, and you
+have no crypto installed for 3.5.
+
+&gt;<i> # pip uninstall pycrypto
+</I>&gt;<i> Cannot uninstall requirement pycrypto, not installed
+</I>&gt;<i> [<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">root at localhost</A> ~]# pip3.5 uninstall pycrypto
+</I>&gt;<i> Cannot uninstall requirement pycrypto, not installed
+</I>
+But you upgraded pip, so it's not clear it &quot;pip&quot; refers to python 2 (which
+we already know doesn't have it) or python 3 (which does though it's not
+clear if Pip will do the job. Use pip2.7 and pip3.5 for clarity - make
+sure you have the system pips as stated earlier.
+
+That said, what you see in 3.5 is probably a result of installing with
+setup.py directly. We'll get to that below.
+
+&gt;<i> I'm wondering about Python and its search path?
+</I>
+You're using locate, but you're not searching for the right things. Try
+`locate pycrypto Crypto`.
+
+I installed everything - pycrypto, pycryptodome and pycryptodomex AS A
+TEST. Here's what locate found (tree roots for brevity, you probably don't
+have all of these at this point):
+
+/usr/lib64/python2.7/site-packages/Crypto
+/usr/lib64/python2.7/site-packages/Cryptodome
+/usr/lib64/python2.7/site-packages/pycrypto-2.6.1.dist-info
+/usr/lib64/python2.7/site-packages/pycryptodome-3.4.3-py2.7.egg-info
+/usr/lib64/python2.7/site-packages/pycryptodomex-3.4.3.dist-info
+
+/usr/lib64/python3.5/site-packages/Crypto  (lots under here)
+/usr/lib64/python3.5/site-packages/Cryptodome  (lots under here)
+/usr/lib64/python3.5/site-packages/pycrypto-2.6.1.dist-info
+/usr/lib64/python3.5/site-packages/pycryptodome-3.4.3-py3.5.egg-info
+/usr/lib64/python3.5/site-packages/pycryptodomex-3.4.3.dist-info
+
+Lots of stuff! as pycryptodome and pycrypto both install under Crypto,
+lots of conflicts too. Let's fix it!
+
+sudo pip2.7 uninstall pycrypto
+sudo pip2.7 uninstall pycryptodome
+sudo pip2.7 uninstall pycryptodomex
+
+sudo pip3.5 uninstall pycrypto
+sudo pip3.5 uninstall pycryptodome
+sudo pip3.5 uninstall pycryptodomex
+
+(Answer yes to the prompts that will appear for each package installed)
+
+Now, update `locate`'s database and re-run locate (don't ask me why but
+locate will give some state info about directories no longer present after
+this if you don't).
+sudo updatedb; locate pycrypto Crypto
+
+You should see... nothing, except possibly some local files. You shouldn't
+find anything under /usr/lib64/.
+
+But you might, because I've got a feeling at least one of these was
+installed without pip. If that's the case, remove the following manually
+and carefully:
+
+/usr/lib64/python2.7/site-packages/Crypto
+/usr/lib64/python2.7/site-packages/pycrypto-*
+/usr/lib64/python3.5/site-packages/Crypto
+/usr/lib64/python3.5/site-packages/pycrypto-*
+
+Didn't you say at some point you installed pycrypto using 'setup.py'?
+What's above is the only way to undo that. Fortunately, it works.
+
+At this point you should have NOTHING left of pycrypto, or
+pycryptodome/pycryptodomex. Now you can reinstall and test what you need
+as per previous emails. Most likely, you'll just install pycryptodome for
+python 2.7 and 3.5.
+
+
+&gt;<i> I'm thinking that a total environment
+</I>&gt;<i> <A HREF="https://packaging.python.org/key_projects/#virtualenv">https://packaging.python.org/key_projects/#virtualenv</A>
+</I>&gt;<i> might be a way to do this.
+</I>
+Better to first understand how to maintain the system installs.
+
+
+&gt;<i> Most confusing is where Python 3.5 is finding pycrypto!
+</I>
+Not confusing at all now, I hope.
+
+ - Marty
+
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000890.html">[pycrypto] pycryptodome
+</A></li>
+	<LI>Next message: <A HREF="000892.html">[pycrypto] pycryptodome
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#891">[ date ]</a>
+              <a href="thread.html#891">[ thread ]</a>
+              <a href="subject.html#891">[ subject ]</a>
+              <a href="author.html#891">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,66 @@
+<tt>
+I&nbsp;am&nbsp;looking&nbsp;for&nbsp;any&nbsp;way&nbsp;to&nbsp;do&nbsp;this&nbsp;on&nbsp;google&nbsp;app&nbsp;engine&nbsp;using&nbsp;any&nbsp;python&nbsp;library.&nbsp; Do&nbsp;you&nbsp;have&nbsp;any&nbsp;ideas&nbsp;on&nbsp;that?&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;-Tim&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Tue,&nbsp;Aug&nbsp;18,&nbsp;2009&nbsp;at&nbsp;8:26&nbsp;PM,&nbsp;Dwayne&nbsp;C.&nbsp;Litzenberger&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&amp;lt;&lt;a&nbsp;href=&quot;mailto:dlitz@dlitz.net&quot;&gt;dlitz@dlitz.net&lt;/a&gt;&amp;gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex;&quot;&gt;&lt;div&nbsp;class=&quot;im&quot;&gt;On&nbsp;Tue,&nbsp;Aug&nbsp;18,&nbsp;2009&nbsp;at&nbsp;06:07:53PM&nbsp;-0700,&nbsp;William&nbsp;Heath&nbsp;wrote:&lt;br&gt;<br>
+&amp;gt;I&nbsp;generated&nbsp;a&nbsp;private&nbsp;key&nbsp;with:&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp; &nbsp;openssl.exe&nbsp;req&nbsp;-x509&nbsp;-nodes&nbsp;-days&nbsp;365&nbsp;-newkey&nbsp;rsa:1024&nbsp;-keyout&lt;br&gt;<br>
+&amp;gt;sdgidfedapp11.corp.intuit.net.key&nbsp;-out&nbsp;sdgidfedapp11.corp.intuit.net.crt&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;I&nbsp;can&amp;#39;t&nbsp;figure&nbsp;out&nbsp;is&nbsp;how&nbsp;to&nbsp;use&nbsp;PyCrypto.RSA.construct&nbsp;with&nbsp;it&lt;br&gt;<br>
+&amp;gt;to&nbsp;decrypt&nbsp;something.&lt;br&gt;<br>
+&lt;/div&gt;[snip]&lt;br&gt;<br>
+&lt;div&nbsp;class=&quot;im&quot;&gt;&amp;gt;I&nbsp;am&nbsp;sure&nbsp;there&nbsp;is&nbsp;a&nbsp;way&nbsp;to&nbsp;do&nbsp;this&nbsp;with&nbsp;PyCrypto,&nbsp;anyone&nbsp;know&nbsp;how&nbsp;to&nbsp;do&nbsp;it?&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;I&nbsp;am&nbsp;not&nbsp;aware&nbsp;of&nbsp;any&nbsp;simple&nbsp;way&nbsp;to&nbsp;do&nbsp;what&nbsp;you&nbsp;ask&nbsp;without&nbsp;using&nbsp;a&lt;br&gt;<br>
+separate&nbsp;library.&nbsp; PKCS#1&nbsp;and&nbsp;X.509&nbsp;are&nbsp;not&nbsp;implemented&nbsp;in&nbsp;PyCrypto,&nbsp;and&nbsp;as&lt;br&gt;<br>
+far&nbsp;as&nbsp;I&nbsp;understand,&nbsp;you&nbsp;would&nbsp;need&nbsp;both&nbsp;to&nbsp;do&nbsp;anything&nbsp;useful&nbsp;with&nbsp;such&nbsp;a&lt;br&gt;<br>
+key.&lt;br&gt;<br>
+&lt;br&gt;<br>
+At&nbsp;this&nbsp;time,&nbsp;PyCrypto&amp;#39;s&nbsp;API&nbsp;for&nbsp;RSA&nbsp;is&nbsp;somewhat&nbsp;confusing:&nbsp;It&nbsp;only&lt;br&gt;<br>
+implements&nbsp;textbook&nbsp;RSA,&nbsp;so&nbsp;it&amp;#39;s&nbsp;not&nbsp;really&nbsp;useful&nbsp;for&nbsp;anyone&nbsp;except&nbsp;other&lt;br&gt;<br>
+crypto&nbsp;library&nbsp;developers&nbsp;(e.g.&nbsp;Paramiko,&nbsp;Twisted,&nbsp;etc.).&nbsp; You&nbsp;might&nbsp;be&lt;br&gt;<br>
+able&nbsp;to&nbsp;use&nbsp;OpenSSL&nbsp;to&nbsp;generate&nbsp;hex&nbsp;values&nbsp;for&nbsp;each&nbsp;of&nbsp;the&nbsp;parameters,&nbsp;then&lt;br&gt;<br>
+parse&nbsp;the&nbsp;results&nbsp;and&nbsp;feed&nbsp;them&nbsp;to&nbsp;RSA.construct&nbsp;yourself&nbsp;using&nbsp;something&lt;br&gt;<br>
+like&nbsp;this:&lt;br&gt;<br>
+&lt;br&gt;<br>
+&nbsp; &nbsp; &nbsp;openssl&nbsp;rsa&nbsp;-text&nbsp;-in&nbsp;sdgidfedapp11.corp.intuit.net.key&lt;br&gt;<br>
+&lt;br&gt;<br>
+However,&nbsp;since&nbsp;PyCrypto&nbsp;lacks&nbsp;PKCS#1&nbsp;support,&nbsp;if&nbsp;you&nbsp;aren&amp;#39;t&nbsp;careful&nbsp;or&nbsp;if&lt;br&gt;<br>
+you&nbsp;don&amp;#39;t&nbsp;know&nbsp;exactly&nbsp;what&nbsp;you&nbsp;are&nbsp;doing,&nbsp;you&nbsp;will&nbsp;probably&nbsp;expose&nbsp;your&lt;br&gt;<br>
+private&nbsp;key&nbsp;to&nbsp;compromise.&lt;br&gt;<br>
+&lt;br&gt;<br>
+If&nbsp;you&nbsp;want&nbsp;to&nbsp;do&nbsp;practical&nbsp;public-key&nbsp;work&nbsp;with&nbsp;X.509&nbsp;today,&nbsp;you&nbsp;might&lt;br&gt;<br>
+want&nbsp;to&nbsp;check&nbsp;out&nbsp;other&nbsp;libraries&nbsp;like&nbsp;pycryptopp,&nbsp;Google&nbsp;Key&nbsp;Czar,&nbsp;and&lt;br&gt;<br>
+M2Crypto.&nbsp; Also,&nbsp;Paramiko&nbsp;(which&nbsp;depends&nbsp;on&nbsp;PyCrypto)&nbsp;might&nbsp;support&nbsp;at&lt;br&gt;<br>
+least&nbsp;reading&nbsp;those&nbsp;files,&nbsp;since&nbsp;IIRC&nbsp;they&amp;#39;re&nbsp;also&nbsp;used&nbsp;for&nbsp;SSH&nbsp;private&lt;br&gt;<br>
+keys.&lt;br&gt;<br>
+&lt;br&gt;<br>
+Please&nbsp;do&nbsp;remember&nbsp;that&nbsp;PyCrypto&amp;#39;s&nbsp;current&nbsp;RSA&nbsp;functions&nbsp;are&nbsp;insecure&nbsp;if&lt;br&gt;<br>
+used&nbsp;directly.&nbsp; I&nbsp;would&nbsp;like&nbsp;to&nbsp;introduce&nbsp;a&nbsp;simple&nbsp;public&nbsp;key&nbsp;API&nbsp;at&nbsp;some&lt;br&gt;<br>
+point,&nbsp;but&nbsp;right&nbsp;now&nbsp;it&nbsp;doesn&amp;#39;t&nbsp;exist.&lt;br&gt;<br>
+&lt;br&gt;<br>
+If&nbsp;you&amp;#39;re&nbsp;doing&nbsp;any&nbsp;low-level&nbsp;work&nbsp;with&nbsp;RSA,&nbsp;you&nbsp;should&nbsp;at&nbsp;minimum,&nbsp;read&lt;br&gt;<br>
+and&nbsp;understand&nbsp;this&nbsp;overview&nbsp;paper:&lt;br&gt;<br>
+&lt;br&gt;<br>
+&nbsp; &nbsp; &nbsp;&lt;a&nbsp;href=&quot;http://www.cs.bgu.ac.il/~beimel/Courses/crypto/Boneh.pdf&quot;&nbsp;target=&quot;_blank&quot;&gt;http://www.cs.bgu.ac.il/~beimel/Courses/crypto/Boneh.pdf&lt;/a&gt;&lt;br&gt;<br>
+&lt;br&gt;<br>
+Also,&nbsp;as&nbsp;a&nbsp;side&nbsp;note,&nbsp;1024-bit&nbsp;RSA&nbsp;keys&nbsp;are&nbsp;a&nbsp;little&nbsp;on&nbsp;the&nbsp;short&nbsp;side&lt;br&gt;<br>
+today.&nbsp; I&nbsp;would&nbsp;recommend&nbsp;nothing&nbsp;less&nbsp;than&nbsp;2048&nbsp;bits:&lt;br&gt;<br>
+&lt;br&gt;<br>
+&nbsp; &nbsp; &nbsp;&lt;a&nbsp;href=&quot;http://www.google.com/search?q=1024-bit+RSA&quot;&nbsp;target=&quot;_blank&quot;&gt;http://www.google.com/search?q=1024-bit+RSA&lt;/a&gt;&lt;br&gt;<br>
+&lt;br&gt;<br>
+Hope&nbsp;that&nbsp;helps.&lt;br&gt;<br>
+&lt;br&gt;<br>
+Cheers,&lt;br&gt;<br>
+-&nbsp;Dwayne&lt;br&gt;<br>
+&lt;font&nbsp;color=&quot;#888888&quot;&gt;&lt;br&gt;<br>
+--&lt;br&gt;<br>
+Dwayne&nbsp;C.&nbsp;Litzenberger&nbsp;&amp;lt;&lt;a&nbsp;href=&quot;mailto:dlitz@dlitz.net&quot;&gt;dlitz@dlitz.net&lt;/a&gt;&amp;gt;&lt;br&gt;<br>
+&nbsp; Key-signing&nbsp;key&nbsp; &nbsp;-&nbsp;19E1&nbsp;1FE8&nbsp;B3CF&nbsp;F273&nbsp;ED17&nbsp; 4A24&nbsp;928C&nbsp;EC13&nbsp;39C2&nbsp;5CF7&lt;br&gt;<br>
+_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;/font&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;<br>
+
+</tt>

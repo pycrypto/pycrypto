@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Python 3.x vs. Python 2.1 - stay of execution
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Python%203.x%20vs.%20Python%202.1%20-%20stay%20of%20execution&In-Reply-To=4D1972A2.4080305%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000333.html">
+   <LINK REL="Next"  HREF="000345.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Python 3.x vs. Python 2.1 - stay of execution</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Python%203.x%20vs.%20Python%202.1%20-%20stay%20of%20execution&In-Reply-To=4D1972A2.4080305%40gmx.li"
+       TITLE="[pycrypto] Python 3.x vs. Python 2.1 - stay of execution">sbehrens at gmx.li
+       </A><BR>
+    <I>Mon Dec 27 23:39:59 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000333.html">[pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+</A></li>
+        <LI>Next message: <A HREF="000345.html">[pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#332">[ date ]</a>
+              <a href="thread.html#332">[ thread ]</a>
+              <a href="subject.html#332">[ subject ]</a>
+              <a href="author.html#332">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Writing this stuff out helps me think about it. I have a solution. When, 
+or if, the 3.x port is successful, the fate of 2.1 can be decided.
+
+For now, I have created two files: Util/py21floordiv.py and 
+Util/floordiv.py. In Util/number.py, I then include based on version:
+
+if sys.version[0:3] == &quot;2.1&quot;:
+     from Crypto.Util.py21floordiv import *
+else:
+     from Crypto.Util.floordiv import *
+
+The offending code snippet
+
+     if GCD (e, (X-1)/2) != 1:
+
+becomes
+
+     if GCD (e, floordiv((X-1),2)) != 1:
+
+This works on Python 2.1, 2.7 and 3.1
+
+Thorsten
+
+On 12/28/2010 12:16 AM, Thorsten Behrens wrote:
+&gt;<i> I've run into a bit of a snag. The / operator in 2.x returns an int, and
+</I>&gt;<i> in 3.x it can return a float. This causes an infinite loop in
+</I>&gt;<i> numbers.py. I can solve it with //, which is supported from 2.2 on, but
+</I>&gt;<i> not in 2.1.
+</I>
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000333.html">[pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+</A></li>
+	<LI>Next message: <A HREF="000345.html">[pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#332">[ date ]</a>
+              <a href="thread.html#332">[ thread ]</a>
+              <a href="subject.html#332">[ subject ]</a>
+              <a href="author.html#332">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

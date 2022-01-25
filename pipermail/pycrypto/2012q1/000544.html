@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] same RSA.construct fails on OSX
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20same%20RSA.construct%20fails%20on%20OSX&In-Reply-To=%3CCAGfyce0Q%3DDtQscTAFLD7kqj3DX4DD9HOKksA7tsYDdsArWTATg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000543.html">
+   <LINK REL="Next"  HREF="000545.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] same RSA.construct fails on OSX</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20same%20RSA.construct%20fails%20on%20OSX&In-Reply-To=%3CCAGfyce0Q%3DDtQscTAFLD7kqj3DX4DD9HOKksA7tsYDdsArWTATg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] same RSA.construct fails on OSX">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Fri Jan 20 10:22:50 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000543.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+        <LI>Next message: <A HREF="000545.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#544">[ date ]</a>
+              <a href="thread.html#544">[ thread ]</a>
+              <a href="subject.html#544">[ subject ]</a>
+              <a href="author.html#544">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Antoine,
+
+&gt;<i> I've just found that simply removing p (or 'd' as it should be called..)
+</I>&gt;<i> is enough to fix it, so the code becomes:
+</I>&gt;<i> if d==0:
+</I>&gt;<i> &#160;k = RSA.construct((long(m), long(e)))
+</I>&gt;<i> else:
+</I>&gt;<i> &#160;k = RSA.construct((long(m), long(e), long(d)))
+</I>
+In the first case you generate a public key no matter which library
+you have installed.
+In the second case you generate a private key, but only if you are on 2.5.
+
+Do you need a public key or a private key?
+
+If you need a public key, just use 2 arguments.
+If you need a private key and you want it to work with all pycrypto
+versions, go and look for the remaining 2 parameters (p and q)... ;-)
+
+&gt;&gt;<i> With previous version you had to provide at least 5 elements,
+</I>&gt;&gt;<i> m+e+d+p+q (I don't recall how they complain if you provide only 3).
+</I>&gt;<i> According to the docs, it's 2 minimum (as above), anyone know if the
+</I>&gt;<i> code above is going to have problems running on distros with old
+</I>&gt;<i> versions of pycrypto?
+</I>
+I would simply assume it will have problem with previous versions:
+it's clearly off spec for them.
+</PRE>
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000543.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+	<LI>Next message: <A HREF="000545.html">[pycrypto] same RSA.construct fails on OSX
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#544">[ date ]</a>
+              <a href="thread.html#544">[ thread ]</a>
+              <a href="subject.html#544">[ subject ]</a>
+              <a href="author.html#544">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

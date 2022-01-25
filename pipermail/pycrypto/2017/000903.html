@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Build error, 2.6.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Build%20error%2C%202.6.1&In-Reply-To=%3CCAEncD4fYgO74C6%2B8vy_4Xf7ZFAaA5GpzcEFuKZmerj_Enst7vg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <LINK REL="Previous"  HREF="000902.html">
+   <LINK REL="Next"  HREF="000904.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Build error, 2.6.1</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Build%20error%2C%202.6.1&In-Reply-To=%3CCAEncD4fYgO74C6%2B8vy_4Xf7ZFAaA5GpzcEFuKZmerj_Enst7vg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Build error, 2.6.1">dave.pawson at gmail.com
+       </A><BR>
+    <I>Sat Jul 22 07:44:41 UTC 2017</I>
+    <P><UL>
+        <LI>Previous message (by thread): <A HREF="000902.html">[pycrypto] Build error, 2.6.1
+</A></li>
+        <LI>Next message (by thread): <A HREF="000904.html">[pycrypto] Build error, 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#903">[ date ]</a>
+              <a href="thread.html#903">[ thread ]</a>
+              <a href="subject.html#903">[ subject ]</a>
+              <a href="author.html#903">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>pip uninstalled pycrypto!
+
+Re install instructions. Fedora 26, requires root for installation?
+
+running install_lib
+    copying build/lib.linux-x86_64-3.6/Cryptodome/__init__.py -&gt;
+/usr/lib64/python3.6/site-packages/Cryptodome
+    error: could not delete
+'/usr/lib64/python3.6/site-packages/Cryptodome/__init__.py':
+Permission denied
+
+Not mentioned on <A HREF="https://www.pycryptodome.org/en/latest/src/installation.html">https://www.pycryptodome.org/en/latest/src/installation.html</A>
+
+&gt;<i>  python3 -m Cryptodome.SelfTest
+</I>...
+Ran 22656 tests in 37.023s
+
+Tks
+
+On 22 July 2017 at 08:34, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt; wrote:
+&gt;<i> Having installed pycrypto, is the only way to remove it to find the
+</I>&gt;<i> files and remove manually?
+</I>&gt;<i>
+</I>&gt;<i> (groan) - or will pycryptodome run alongside pycrypto please?
+</I>&gt;<i>
+</I>&gt;<i> Tia
+</I>&gt;<i>
+</I>&gt;<i> On 21 July 2017 at 20:21, Martin Falatic &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">martin at falatic.com</A>&gt; wrote:
+</I>&gt;&gt;<i> As this project hasn't seen commits on master (or perhaps any branch) in
+</I>&gt;&gt;<i> over three years, it appears to be dead.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> However, pycryptodome is alive and well! It's a fork off the latest pycrypto
+</I>&gt;&gt;<i> and contains many bugfixes, enhancements. Most importantly, it's an ongoing
+</I>&gt;&gt;<i> project.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="https://github.com/Legrandin/pycryptodome">https://github.com/Legrandin/pycryptodome</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="https://www.pycryptodome.org/">https://www.pycryptodome.org/</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> There are two ways to install it: for a seamless experience I recommend
+</I>&gt;&gt;<i> uninstalling pycrypto (if present) and installing pycryptodome.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> (pycryptodomex has its uses for some, but would mean editing your imports,
+</I>&gt;&gt;<i> whereas pycryptodome is a drop-in replacement for pycrypto.)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If you have issues with installing or using pycryptodome, there are
+</I>&gt;&gt;<i> resources there to guide you and an active issue tracker as well.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Good luck!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>  - Marty
+</I>&gt;&gt;<i>    www.falatic.com
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 2017-07-21 07:16, Dave Pawson wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Installing on a new system, Fedora 26, 64 bit.
+</I>&gt;&gt;&gt;<i> Builds OK using setup.py for python 2.7
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Fails on python 3.x?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Should this be built in a different way please?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> TiA
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dave Pawson
+</I>&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;<i> Docbook FAQ.
+</I>&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message (by thread): <A HREF="000902.html">[pycrypto] Build error, 2.6.1
+</A></li>
+	<LI>Next message (by thread): <A HREF="000904.html">[pycrypto] Build error, 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#903">[ date ]</a>
+              <a href="thread.html#903">[ thread ]</a>
+              <a href="subject.html#903">[ subject ]</a>
+              <a href="author.html#903">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

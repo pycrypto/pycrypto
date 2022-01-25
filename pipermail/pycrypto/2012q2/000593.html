@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] PyCrypto's output doesn't match OpenSSL's result
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20PyCrypto%27s%20output%20doesn%27t%20match%20OpenSSL%27s%20result&In-Reply-To=%3CCAGfyce1YQvTohxmC41Q7b8y1csSK-N3cpuqLZWGbDxBarRix-Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000592.html">
+   <LINK REL="Next"  HREF="000594.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] PyCrypto's output doesn't match OpenSSL's result</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20PyCrypto%27s%20output%20doesn%27t%20match%20OpenSSL%27s%20result&In-Reply-To=%3CCAGfyce1YQvTohxmC41Q7b8y1csSK-N3cpuqLZWGbDxBarRix-Q%40mail.gmail.com%3E"
+       TITLE="[pycrypto] PyCrypto's output doesn't match OpenSSL's result">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Mon Jun  4 13:26:20 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000592.html">[pycrypto] PyCrypto's output doesn't match OpenSSL's result
+</A></li>
+        <LI>Next message: <A HREF="000594.html">[pycrypto] PyCrypto's output doesn't match OpenSSL's result
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#593">[ date ]</a>
+              <a href="thread.html#593">[ thread ]</a>
+              <a href="subject.html#593">[ subject ]</a>
+              <a href="author.html#593">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>2012/6/4 Webie &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">assie181 at gmail.com</A>&gt;
+
+&gt;<i>
+</I>&gt;<i> PyCrypto's output doesn't match OpenSSL when decrypting a file in
+</I>&gt;<i> Blowfish CFB mode. To reproduce this, download and test
+</I>&gt;<i> <A HREF="http://dl.dropbox.com/u/1522424/PyCrypto-strange.tar.">http://dl.dropbox.com/u/1522424/PyCrypto-strange.tar.</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>Both are correct. The fact is that they use different default segment sizes
+for CFB:
+PyCrypto uses 8 bits, and OpenSSL 64 bits.
+
+With:
+
+bf = Blowfish.new(key = key, mode = Blowfish.MODE_CFB, IV = iv,
+       segment_size=64)
+
+You will get the same result.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20120604/776153c0/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20120604/776153c0/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000592.html">[pycrypto] PyCrypto's output doesn't match OpenSSL's result
+</A></li>
+	<LI>Next message: <A HREF="000594.html">[pycrypto] PyCrypto's output doesn't match OpenSSL's result
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#593">[ date ]</a>
+              <a href="thread.html#593">[ thread ]</a>
+              <a href="subject.html#593">[ subject ]</a>
+              <a href="author.html#593">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

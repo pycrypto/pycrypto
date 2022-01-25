@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Public Key encryption of files
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20Key%20encryption%20of%20files&In-Reply-To=CAEncD4e91oCifceev3ZxbSpoYT3P3V6zrzcMgf11ht69TBcmgQ%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000503.html">
+   <LINK REL="Next"  HREF="000505.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Public Key encryption of files</H1>
+    <B>John Matthew</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20Key%20encryption%20of%20files&In-Reply-To=CAEncD4e91oCifceev3ZxbSpoYT3P3V6zrzcMgf11ht69TBcmgQ%40mail.gmail.com"
+       TITLE="[pycrypto] Public Key encryption of files">john at compunique.com
+       </A><BR>
+    <I>Thu Nov 10 12:32:01 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000503.html">[pycrypto] Public Key encryption of files
+</A></li>
+        <LI>Next message: <A HREF="000505.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#504">[ date ]</a>
+              <a href="thread.html#504">[ thread ]</a>
+              <a href="subject.html#504">[ subject ]</a>
+              <a href="author.html#504">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>All good stuff, thanks Dave
+
+On Thu, Nov 10, 2011 at 10:26 AM, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt; wrote:
+
+&gt;<i> On 10 November 2011 18:18, Dean Macinskas &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dmacinskas at geobridge.net</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; All blocks need to be 16 bytes.  So for example, if the file is 2,000,005
+</I>&gt;<i> &gt; bytes, you'd encrypt 125,000 16-byte blocks; you then have 5 bytes left
+</I>&gt;<i> &gt; over, to which you'd add 11 padding bytes, which can be any binary value
+</I>&gt;<i> and
+</I>&gt;<i> &gt; then encrypt that last block.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def _lazysecret(secret, blocksize=32, padding='}'):
+</I>&gt;<i>    &quot;&quot;&quot;pads secret if not legal AES block size (16, 24, 32)&quot;&quot;&quot;
+</I>&gt;<i>    if not len(secret) in (16, 24, 32):
+</I>&gt;<i>        return secret + (blocksize - len(secret)) * padding
+</I>&gt;<i>    return secret
+</I>&gt;<i>
+</I>&gt;<i> Python makes it quite easy.
+</I>&gt;<i>  The reason I started to use it!
+</I>&gt;<i> Thanks to
+</I>&gt;<i> src <A HREF="http://www.turnkeylinux.org/blog/python-symmetric-encryption">http://www.turnkeylinux.org/blog/python-symmetric-encryption</A>
+</I>&gt;<i>
+</I>&gt;<i> great piece of software.
+</I>&gt;<i>
+</I>&gt;<i> regards
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dave Pawson
+</I>&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;<i> Docbook FAQ.
+</I>&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20111110/56d31537/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20111110/56d31537/attachment.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000503.html">[pycrypto] Public Key encryption of files
+</A></li>
+	<LI>Next message: <A HREF="000505.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#504">[ date ]</a>
+              <a href="thread.html#504">[ thread ]</a>
+              <a href="subject.html#504">[ subject ]</a>
+              <a href="author.html#504">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

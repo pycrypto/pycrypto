@@ -1,0 +1,437 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Hash: Remove &quot;oid&quot; attributes; add &quot;name&quot; attribute
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Hash%3A%20Remove%20%22oid%22%20attributes%3B%20add%20%22name%22%20attribute&In-Reply-To=%3CCAGfyce3W0Y8jNBLVbzJ_dHb_enaS1wjNZ4M0vd-Yn6fg%3DNmkZQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000652.html">
+   <LINK REL="Next"  HREF="000653.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Hash: Remove &quot;oid&quot; attributes; add &quot;name&quot; attribute</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Hash%3A%20Remove%20%22oid%22%20attributes%3B%20add%20%22name%22%20attribute&In-Reply-To=%3CCAGfyce3W0Y8jNBLVbzJ_dHb_enaS1wjNZ4M0vd-Yn6fg%3DNmkZQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Hash: Remove &quot;oid&quot; attributes; add &quot;name&quot; attribute">helderijs at gmail.com
+       </A><BR>
+    <I>Mon Feb 18 14:30:58 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000652.html">[pycrypto] Hash: Remove &quot;oid&quot; attributes; add &quot;name&quot; attribute
+</A></li>
+        <LI>Next message: <A HREF="000653.html">[pycrypto] Building pycrypto on HP-UX 11.31
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#656">[ date ]</a>
+              <a href="thread.html#656">[ thread ]</a>
+              <a href="subject.html#656">[ subject ]</a>
+              <a href="author.html#656">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Dwayne,
+
+Please see inline.
+
+2013/2/18 Dwayne Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+
+&gt;<i> [Reposted from 'Hash: Remove &quot;oid&quot; attributes; add &quot;name&quot; attribute'
+</I>&gt;<i>    <A HREF="https://github.com/dlitz/**pycrypto/commit/**">https://github.com/dlitz/**pycrypto/commit/**</A>
+</I>&gt;<i> a3ec589b8dcd1c86ddd5f35666e74a**a3230801b5&lt;<A HREF="https://github.com/dlitz/pycrypto/commit/a3ec589b8dcd1c86ddd5f35666e74aa3230801b5">https://github.com/dlitz/pycrypto/commit/a3ec589b8dcd1c86ddd5f35666e74aa3230801b5</A>&gt;
+</I>&gt;<i> ]:
+</I>&gt;<i>
+</I>&gt;<i> Legrandin wrote:
+</I>&gt;<i>
+</I>&gt;<i>  Hi Dwayne,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The Object ID is an identifier assigned by (inter)national standard
+</I>&gt;&gt;<i> bodies (NIST) or recognized private organizations (RSA Inc, Teletrust) to
+</I>&gt;&gt;<i> the hash algorithm for use in all the several crypto protocols based on
+</I>&gt;&gt;<i> ASN.1 (PKCS#1 signatures, PKCS#7/CMS, PKCS#8 private key encapsulation,
+</I>&gt;&gt;<i> SSL/TLS, CA certificates, etc). Nothing stops one from also using without
+</I>&gt;&gt;<i> ASN.1, as a stand-along numerical string guaranteed to be unique.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The fact that a few other protocols don't use it (and prefer to have
+</I>&gt;&gt;<i> their own internal identifiers, and therefore not leverage work done by
+</I>&gt;&gt;<i> others already) does not look to me as a reason to isolate it in the
+</I>&gt;&gt;<i> PKCS#1v1.5 signature module, considering that protocols that use it are the
+</I>&gt;&gt;<i> majority, and all hashes currently in pycrypto have it (being them all
+</I>&gt;&gt;<i> quite mature).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The attribute could also remained undefined for those experimental hash
+</I>&gt;&gt;<i> that pycrypto ever introduced but that don't have any Object ID assigned
+</I>&gt;&gt;<i> yet (e.g. Salsa20 maybe?). That would just mean that the hash cannot be
+</I>&gt;&gt;<i> used to make PKCS#1v1.5 signatures (which makes sense). If the OID exists,
+</I>&gt;&gt;<i> it can be added to the module. It it doesn't, it is not defined.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> My response:
+</I>&gt;<i>
+</I>&gt;<i>     Be very careful with your use of Object Identifiers.  In many cases
+</I>&gt;<i> there are a
+</I>&gt;<i>     great many OIDs available for the same algorithm, but the exact OID
+</I>&gt;<i> you're
+</I>&gt;<i>     supposed to use varies somewhat.
+</I>&gt;<i>     -- Peter Gutmann, X.509 Style Guide, <A HREF="http://www.cs.auckland.ac.nz/~**">http://www.cs.auckland.ac.nz/~**</A>
+</I>&gt;<i> pgut001/pubs/x509guide.txt&lt;<A HREF="http://www.cs.auckland.ac.nz/%7Epgut001/pubs/x509guide.txt">http://www.cs.auckland.ac.nz/%7Epgut001/pubs/x509guide.txt</A>&gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>Does any of the hash algorithm in the library have more than 1 OID?
+If not, maybe this quote was referring to something else?
+
+
+&gt;<i>  Protocols that use [OIDs] are the majority
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Really?  The only widely-used protocols I can think of are SNMP (which is
+</I>&gt;<i> irrelevant here), LDAP (also irrelevant), and the CMS/TLS/PKCS protocol
+</I>&gt;<i> suite.  SSH doesn't use them, OpenPGP doesn't use them, DNSSEC doesn't use
+</I>&gt;<i> them, OAuth doesn't use them, OpenID doesn't use them, DKIM doesn't use
+</I>&gt;<i> them, and I'm pretty sure that IPsec/IKEv1/IKEv2 don't use them.  Of the
+</I>&gt;<i> protocols that do use them, which ones actually use the OIDs listed in this
+</I>&gt;<i> commit, rather than some ciphersuite identifier like pbeWithSHA1AndDES-CBC?
+</I>&gt;<i>  Have there been any major new crypto protocols designed in the last decade
+</I>&gt;<i> that use these OIDs?  That use ASN.1?
+</I>
+ This is going to be a bit of a long rant.
+&gt;<i>
+</I>&gt;<i> OIDs and ASN.1 are legacy ITU-T crap, and the protocols built around them
+</I>&gt;<i> are overcomplicated and error-prone.  The only reason why I merged any
+</I>&gt;<i> ASN.1 stuff at all is because PKCS#1 uses it.  PKCS#1 is a bit of a special
+</I>&gt;<i> case, because it's basically synonymous with RSA; It's even used protocols
+</I>&gt;<i> that don't otherwise use ASN.1 use PKCS#1.
+</I>&gt;<i>
+</I>
+I think we are throwing the baby with the dirty water here.
+
+I agree ITU created a lot of bloated standards and protocols.
+ASN.1 got a bad fame mostly because of that, and even though bells and
+whistles have been added over time due to design-by-committee, its core
+remains very simple and elegant. BER/DER encoding in particular is very
+handy for binary serialization (even outside of the crypto context); it
+could be summarized in 3 or 4 pages only and still cover 95% of the use
+cases one could ever need. Even the famous, short layman guide could be
+trimmed down a lot [2]. To me, BER/DER is just a rock solid binary TLV with
+a compact schema format (which even XML never had until RELAX NG).
+
+Google's ProtocolBuffers, Facebook's Thrift and several others have been
+created very recently to cover the same problem space; they ended up
+re-inventing the same wheel, getting the abstraction wrong, and still
+without the simplicity of BER/DER [3].
+
+Now, in the crypto world, ASN.1 DER has been the encoding of choice exactly
+because it is simple, clear, efficient, and unambiguous. I stress
+&quot;efficient&quot; in that crypto is also done by resource constrained
+applications like embedded/industrial devices, sensors, smart cards, crypto
+tokens (all things that have serious trouble processing a bit of HTTP or
+XML).
+
+Sure, horrible things have been built with ASN.1, but that's true for
+anything.
+XML-DSIG is a good example [4], which does *not* prove that XML is bad per
+se.
+
+I think it was you who convinced me that the ASN.1 used by PKCS#1 was
+&gt;<i> simple enough that it wouldn't lead to an endless series of bugs.  Even so,
+</I>&gt;<i> you *still* got it wrong, as described in LP#1119552 [1] .  I'm not blaming
+</I>&gt;<i> you; I'm blaming ASN.1 for being such a terrible, complicated, obfuscatory
+</I>&gt;<i> way to define and describe data formats.  Hell, the only reason why you got
+</I>&gt;<i> it wrong was because *so many other people got it wrong early on that the
+</I>&gt;<i> spec was modified to accommodate their errors*.  And PKCS#1 is a much
+</I>&gt;<i> *simpler* use-case of ASN.1 compared to the rest of the CMS/TLS/PKCS
+</I>&gt;<i> suite...
+</I>&gt;<i>
+</I>
+I ignored 3 lines in Appendix B of RFC 3447 (page 54, out of 70+).
+
+Would have it made any different if the encoding had been XML, Json, or
+some custom application-specific format? I don't think so.
+
+It has more to do with the fact that any 20+ years old format (PKCS#1)
+always has some quirks. That, and I was not good enough to read the whole
+the RFC.
+But not really a good example for why ASN.1 is bad.
+
+In contrast, PyCrypto *needs* to be kept simple, because we simply don't
+&gt;<i> have the developer resources to create a secure CMS/TLS/PKCS
+</I>&gt;<i> implementation.  Even if we had the resources, getting it right is tricky
+</I>&gt;<i> enough that we *shouldn't* try to make yet another
+</I>&gt;<i> implementation---especially not one that's Python-specific.
+</I>
+
+I think that asn1 module serves the purpose of simplicity, because:
+a) the code that uses it (PKCS#1/#5/#8) is more compact and readable (at
+least to me, and compared to what it would be w/o the asn1 module), and
+more importantly
+b) I consider PKCS#1/#5/#8 fundamental for a base crypto library. I
+consider a library w/o them even harmful.
+
+Having said that, let me derail a bit to say that I agree that TLS doesn't
+belong into PyCrypto because it is way above than &quot;basic crypto&quot;. I never
+looked enough into CMS to have an opinion about it, but its RFC is shorter
+than PKCS1, so I don't have the feeling it's actually complicated.
+I don't understand what &quot;PKCS implementation&quot; means though (in the same way
+I would not know what &quot;RFC&quot; implementation is). All PKCS standards vary in
+scope and use.
+PKCS#1 is just a standardized way to do RSA, because otherwise any program
+would do it differently and cryptography in application would be years
+behind (ElGamal anybody?). PKCS#5 is a standardized way to derive keys from
+passwords. I believe they deserve to be in a basic crypto library, since I
+could not imagine working w/o them (they also turned into RFC for a reason).
+Other PKCS specs don't because they are focused on very specific use cases
+(PKCS#11, for secure tokens) or are total crap (PKCS#12).
+
+In short, the expression &quot;CMS/TLS/PKCS&quot; you use all over your email is
+binding together too many unrelated things.
+
+
+&gt;<i> It would be better to pool our limited resources with other FOSS crypto
+</I>&gt;<i> developers to improve the existing implementations, or maybe to try to
+</I>&gt;<i> recruit them to work on a new project that would become the successor to
+</I>&gt;<i> the existing implementations.  One more insecure, resource-starved FOSS
+</I>&gt;<i> CMS/TLS/PKCS implementation is not good for users.
+</I>&gt;<i>
+</I>
+OpenSSL exists today, and there are several ways to use it from Python.
+&gt;<i>  The purpose of PyCrypto is not to reimplement everything that OpenSSL
+</I>&gt;<i> already does.  What would be gained by doing that?  If we just wanted to
+</I>&gt;<i> make a nicer, more Pythonic API for OpenSSL, we could just add OpenSSL as a
+</I>&gt;<i> dependency and be done with it.  (Python itself already uses OpenSSL for
+</I>&gt;<i> hashlib, so it's not unprecedented.)
+</I>&gt;<i>
+</I>
+A hard dependency on OpenSSL would make my life difficult for quite a few
+reasons:
+* Its license is neither LGPL-like nor BSD-like and it forces one to
+advertise its presence (deserved credit, but awkward to do)
+* It is cumbersome to cross-compile
+* Its API is very complex and inconsistent
+* It is difficult to predict if my target platform will have the openssl
+library, and if it does, which version of it
+* It is rather Windows-unfriendly (not that pycrypto itself is much
+different though...)
+* Finally, I don't like to put all eggs in the same basket. Today, a bug in
+OpenSSL can easily cause unpredictable chain reactions because it is used
+too much by too many people [7] (in other projects, I prefer other TLS
+libraries also for that reason). Put differently, I am all for some level
+of ecosystem diversity when it comes to security.
+
+The reason I started using PyCrypto is that nothing better existed for
+python (e.g. like BouncyCastle for Java, Crypto++ for C++, or .NET crypto
+services), apart from odd wrappers to C libraries (if I wanted that, I
+would stick to C++) which also increased my list of external dependencies
+(being self-contained is also very valuable).
+
+The only alternative is keyczar, which keeps too much stuff under the
+bonnet for what I need to do.
+
+PyCrypto is used by a lot of folks who are either implementing
+&gt;<i> recently-created protocols (i.e. *not* CMS/TLS/PKCS), or who are---rightly
+</I>&gt;<i> or wrongly---creating new protocols.  One of my goals with PyCrypto has
+</I>&gt;<i> been to improve their chances of building something secure, and to me that
+</I>&gt;<i> means that I should steer people to simpler, easy-to-implement building
+</I>&gt;<i> blocks like OpenPGP and SSH, not complex, error-prone things like
+</I>&gt;<i> ASN.1/CMS/TLS/X.509/PKCS#12.
+</I>&gt;<i>
+</I>
+I think a good deal of PyCrypto users fly under your radar (embedded SW,
+sys admin scripts, test frameworks, crypto workbenches). They don't develop
+new protocols, they just implement established ones (and not those
+web-oriented like OAuth).
+
+I would also not agree in putting the awful PKCS#12 besides all the other
+protocols you list. If I want to do a PKI, there is no true alternative
+today to X.509, which - in its PKIX definition - is pretty straightforward
+actually. You cannot use neither OpenPGP nor SSH in that they adopt
+different security models (resp. web of trust and opportunistic
+authentication).
+
+Having said that, isn't the goal of &quot;steer[ing] people to simpler,
+easy-to-implement building blocks&quot; exactly the same as keyczar (or nacl,
+not sure if a wrapper exists for it laready)? Why does pycrypto exist then?
+
+I want to avoid turning PyCrypto into something that treats CMS/TLS/PKCS as
+&gt;<i> the gold standard and everything else as a second-class citizen.  There
+</I>&gt;<i> have already been a few cases of that (for example, the &quot;oid&quot; attribute
+</I>&gt;<i> here, and the &quot;pkcs&quot; parameter to RSA.exportKey), and I see those things as
+</I>&gt;<i> oversights that need to be fixed, not things that I want to entrench
+</I>&gt;<i> further.
+</I>&gt;<i>
+</I>
+Just to clear things up, the primary reason I added &quot;oid&quot; was to allow one
+to pass a hash instance to PKCS115_SigScheme.sign() and have the method to
+automatically pick the correct OID. Having &quot;oid&quot; as attribute of the hash
+object seemed to me pretty natural (and neutral) choice. I considered the
+dictionary with hash names, and I was not thrilled by its elegance, but
+beauty is in the eye of the beholder. It was truly for practical
+convenience of the library user; no surreptitious plans to have evil asn.1
+take over. ;-)
+
+The &quot;pkcs&quot; parameter came up because PKCS/DER *is* the gold standard for
+exporting an RSA key. PGP key format exists simply because it was designed
+at the dawn of time. SSH key format is application specific (to say, is
+there even a spec for v1?).
+Any other key format is truly boutique variety.
+
+
+&gt;<i> I see that you've been building a PKCS#8 implementation in your fork of
+</I>&gt;<i> the PyCrypto repo.  I can only assume that you eventually plan to build a
+</I>&gt;<i> PKCS#7/CMS implementation, too.  That's fine, but seeing things like `algos
+</I>&gt;<i> = { 'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC' :
+</I>&gt;<i> _PBES2_Factory(_PBKDF2_Factory(), _DES_EDE3_CBC_Factory()) }` convinces me
+</I>&gt;<i> that it's beyond the scope of what I want to include in PyCrypto, unless it
+</I>&gt;<i> were in a well-isolated subdirectory that could be easily split into a
+</I>&gt;<i> separate package if the maintenance became too burdensome for me.  At a
+</I>&gt;<i> minimum, we'd need to agree that the string &quot;X.509&quot; doesn't belong in the
+</I>&gt;<i> module that implements the raw RSA primitive.
+</I>&gt;<i>
+</I>
+It actually never crossed my mind to develop any PKCS#7/CMS code (as I say
+above, I've never looked into it), but it's not clear to me why you despise
+it so much, apart from being ASN.1 encoded?
+
+The thing is, I see PKCS#8 as belonging more with primitives.
+
+Two of the biggest limitations of PyCrypto were (and up to a point, still
+are) interoperability with other systems and basic key management. The
+former brings value, the latter *must* be done right, because it is
+critical for security and it is often overlooked in favour of key lengths
+and algorithms-of-the-day.
+
+In particular, the way keys are encoded (for exchange, storage, etc) plays
+a big role to both aspects; encoding needs to be agreed upon, secure,
+platform-independent, free from misunderstandings and so on. I recall that
+in PyCrypto 2.1 pickling was the only way, and that was wrong on so many
+levels up to the point it was a security threat by itself.
+
+I decided to spend a good deal of time at making key management
+(export/import) easier and more secure. I started with PKCS#1 as the low
+hanging fruit, but it still only allowed storing private keys in the clear,
+which is pretty bad; it is good practice to have private keys always
+encrypted at least by a pass-phrase, especially if you plan to share them.
+PKCS#8 is *the* standard for protecting private asym. keys, so to me is
+appropriate to have it in a core library, rather than an optional one.
+
+You've done a lot of good work and I appreciate your contributions, but
+&gt;<i> IMHO you're embedding the PKCS stuff too deeply into the core of PyCrypto
+</I>&gt;<i> when I'd prefer to see it in separate subdirectory, or even a separate
+</I>&gt;<i> library.  This is partly my fault: I was a bit too anxious to merge the
+</I>&gt;<i> PKCS#1 stuff after being absent for a while, so I didn't pay close enough
+</I>&gt;<i> attention to the API changes (even though the API is really what
+</I>&gt;<i> differentiates PyCrypto from other libraries).  In the future, I'm going to
+</I>&gt;<i> try to be more picky upfront about the API, to avoid backpedaling like I'm
+</I>&gt;<i> doing right now with the .oid stuff.
+</I>&gt;<i>
+</I>As I see it, the PKCS1 stuff probably should have been consolidated into
+&gt;<i> something like Crypto.Protocol.PKCS1.  Going forward, the PKCS8 stuff
+</I>&gt;<i> should probably go into something like Crypto.Protocol.PKCS8, and a future
+</I>&gt;<i> OpenPGP package could go into Crypto.Protocol.OpenPGP.  RSA.importKey and
+</I>&gt;<i> RSA.exportKey should probably be deprecated and moved into the PKCS1 and
+</I>&gt;<i> PKCS8 packages, respectively.
+</I>&gt;<i>
+</I>&gt;<i> The exact names of the subtrees are debatable, but the idea is create a
+</I>&gt;<i> clear separation between the primitives and the protocols that use them,
+</I>&gt;<i> rather than mixing them all together.  This is particularly important for
+</I>&gt;<i> the hash modules, since those could eventually become thin wrappers around
+</I>&gt;<i> the standard hashlib library---I doubt that would ever happen if we
+</I>&gt;<i> insisted on attaching extraneous things like OIDs to them.
+</I>&gt;<i>
+</I>
+Don't worry, I am happy to be told &quot;move this stuff elsewhere&quot; or even
+better &quot;this stuff is crap, get it out of my way, you dumbass&quot; when I am
+proposing some changes.
+Getting stuck to half-baked APIs is a major pain; they always need careful
+attention and vetting.
+
+However, the meaning of &quot;protocol&quot; is rather wide. I am afraid that
+stuffing everything under Crypto.Protocol leads to major confusion.
+
+I did some thinking before proposing RSA changes (some ended up on the ML
+[5]), and I still believe today that:
+
+* Crypto.Signature is a good place for PKCS#1 signature routines.
+Signatures are protocols, but they are so important that it's debatable
+they should end up in the generic &quot;bucket&quot; that Crypto.Protocol is.
+Additionally, Crypto.Signature resembles the JCA and BouncyCastle style.
+* Crypto.Cipher is a good place for PKCS#1 encryption routines. &quot;Cipher&quot; is
+any protocol that performs a keyed transformation aimed at confidentiality.
+Again it is somewhat similar to JCA.
+* PKCS#1 data structures (e.g. RSAPublicKey, RSAPrivateKey, etc) and
+unencrypted PEM are more encodings than protocols because they don't
+achieve any security objective (see definition of &quot;(cryptographic)
+protocol&quot; 1.55 in HAC [6]). I proposed them in Crypto.PublicKey.RSA simply
+because they are basic actions you can perform with a key, and I could get
+nice one-liners with them. JCA also had something similar (getEncoded).
+They could have also belonged to another new module (e.g. Crypto.IO?) but I
+would be wary of having them in something so generic of Crypto.Protocol.
+
+Put differently, I don't think it adds value to have a PKCS1 module, just
+because all the above things are defined in one standard called PKCS#1.
+What makes one's code cleaner and easier to understand should be the key
+factor.
+
+Now, I agree PKCS#8 and Encrypted PEM could be seen as protocols, but
+something like Crypto.IO is more self-explanatory than Crypto.Protocol.I am
+not thrilled by PublicKey.PKCS8 either.
+
+Again, sorry for the long message, but I wanted to explain my thinking as
+&gt;<i> clearly as possible.  Let me know what you think.
+</I>&gt;<i>
+</I>
+Thanks for the time you spend to put it together actually.
+
+
+&gt;<i> Cheers,
+</I>&gt;<i> - Dwayne
+</I>&gt;<i>
+</I>&gt;<i> [1] <A HREF="https://bugs.launchpad.net/**pycrypto/+bug/1119552&lt;https://bugs.launchpad.net/pycrypto/+bug/1119552">https://bugs.launchpad.net/**pycrypto/+bug/1119552&lt;https://bugs.launchpad.net/pycrypto/+bug/1119552</A>&gt;
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+</I>&gt;<i>  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</I>&gt;<i> ______________________________**_________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-**bin/mailman/listinfo/pycrypto&lt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-**bin/mailman/listinfo/pycrypto&lt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>&gt;
+</I>&gt;<i>
+</I>
+[2] <A HREF="http://luca.ntop.org/Teaching/Appunti/asn1.html">http://luca.ntop.org/Teaching/Appunti/asn1.html</A>
+[3]
+<A HREF="http://stackoverflow.com/questions/4633611/what-are-the-key-differences-between-apache-thrift-google-protocol-buffers-mes">http://stackoverflow.com/questions/4633611/what-are-the-key-differences-between-apache-thrift-google-protocol-buffers-mes</A>
+[4] <A HREF="http://www.cs.auckland.ac.nz/~pgut001/pubs/xmlsec.txt">http://www.cs.auckland.ac.nz/~pgut001/pubs/xmlsec.txt</A>
+[5] <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2011q1/000418.html">http://lists.dlitz.net/pipermail/pycrypto/2011q1/000418.html</A>
+[6] <A HREF="http://cacr.uwaterloo.ca/hac/about/chap1.pdf">http://cacr.uwaterloo.ca/hac/about/chap1.pdf</A>
+[7] <A HREF="http://www.schneier.com/blog/archives/2008/05/random_number_b.html(Debian">http://www.schneier.com/blog/archives/2008/05/random_number_b.html(Debian</A>
+OpenSSL branch)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20130218/750a6d6e/attachment-0001.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20130218/750a6d6e/attachment-0001.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000652.html">[pycrypto] Hash: Remove &quot;oid&quot; attributes; add &quot;name&quot; attribute
+</A></li>
+	<LI>Next message: <A HREF="000653.html">[pycrypto] Building pycrypto on HP-UX 11.31
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#656">[ date ]</a>
+              <a href="thread.html#656">[ thread ]</a>
+              <a href="subject.html#656">[ subject ]</a>
+              <a href="author.html#656">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

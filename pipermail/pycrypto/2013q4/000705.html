@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA exportKey() changes set in stone for 2.7?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%28%29%20changes%20set%20in%20stone%20for%202.7%3F&In-Reply-To=%3C20131020202422.GA30415%40rivest.dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000702.html">
+   <LINK REL="Next"  HREF="000706.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA exportKey() changes set in stone for 2.7?</H1>
+    <B>Dwayne Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%28%29%20changes%20set%20in%20stone%20for%202.7%3F&In-Reply-To=%3C20131020202422.GA30415%40rivest.dlitz.net%3E"
+       TITLE="[pycrypto] RSA exportKey() changes set in stone for 2.7?">dlitz at dlitz.net
+       </A><BR>
+    <I>Sun Oct 20 13:24:22 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000702.html">[pycrypto] CVE-2013-1445 python-crypto: PRNG not correctly reseeded in some situations
+</A></li>
+        <LI>Next message: <A HREF="000706.html">[pycrypto] Crypto.Random crashes due to unaligned access
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#705">[ date ]</a>
+              <a href="thread.html#705">[ thread ]</a>
+              <a href="subject.html#705">[ subject ]</a>
+              <a href="author.html#705">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Sep 30, 2013 at 10:28:20PM -0700, Kurt Vogel wrote:
+&gt;<i>On Sun, Sep 29, 2013 at 6:52 PM, Dwayne Litzenberger 
+</I>&gt;<i>&lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;wrote:
+</I>&gt;&gt;<i> The exportKey API should be considered experimental at this point.  
+</I>&gt;&gt;<i> There are things about it that don't really make sense (e.g. the 
+</I>&gt;&gt;<i> `pkcs=1` parameter, which doesn't make any sense if you want to 
+</I>&gt;&gt;<i> expoer in OpenPGP format, for example).  Realistically, it should 
+</I>&gt;&gt;<i> probably be removed from Crypto.PublicKey and placed into Crypto.IO, 
+</I>&gt;&gt;<i> but I'm not sure of exactly when that will happen.
+</I>[snip]
+&gt;<i>Thanks, that is what I was assuming.  If we move import/export to 
+</I>&gt;<i>Crypto.IO it will break backwards compatibility, no?  Is that 
+</I>&gt;<i>important?
+</I>&gt;<i>
+</I>&gt;<i>Is anyone working on this issue?  If backwards compatibility is 
+</I>&gt;<i>important I say keep what we have there now (2.6) and have a 
+</I>&gt;<i>deprecation comment and/or stderr output?
+</I>
+Yes, that's the idea.  Even with a move to Crypto.IO, RSA.exportKey and 
+RSA.importKey should continue to work during a deprecation period---but 
+only to the extent that they work in PyCrypto 2.6.1.  I make no promises 
+about what's in the master branch of the git repo.
+
+&gt;<i>Also does Pycrypto have deprecation/error transition plan?  To ease 
+</I>&gt;<i>transition some packages first do a deprecation warning, second major 
+</I>&gt;<i>release it becomes an error/exception, then third major release the 
+</I>&gt;<i>code is completely removed.  Would that work with pycrypto users?
+</I>
+That's what I usually aim to do, but the very few people who work on 
+PyCrypto are volunteers, so we can't make hard promises.  Obviously, 
+compatibility is important to us (or we wouldn't be supporting really 
+old versions of Python), but I weigh it against other factors.  For 
+example:
+
+1. I only worry about backward compatibility between stable releases, 
+and only for public interfaces. (If it starts with an underscore, expect 
+it to change.  Ditto if something has been introduced in an &quot;alpha&quot; 
+release.)  Absolutely no guarantees are made about any part of the git 
+repo that hasn't been tagged as a 'final' release.  I'm not *opposed* to 
+a few people using the master branch in their own projects (the early 
+feedback is helpful), but things will break and you'll need to be 
+prepared to fix them.
+
+2. I'm willing to break backward compatibility to fix a regression that 
+broke backward compatibility with a previous version.  For example, v2.6 
+silently changed the semantics of the Cipher .IV attribute.  I'm willing 
+to undo that in v2.7 (any maybe even v2.6.2) without a deprecation 
+period.
+
+3. I'm willing to break applications that were already insecure anyway.  
+(For example, making IVs mandatory for CBC/CFB/OFB modes in PyCrypto 
+v2.6.)  My view is that the security of end-users is more important than 
+convenience of developers using PyCrypto, and it's better to break an 
+insecure application than to let it continue to give users a false sense 
+of security.
+
+3.a. If an interface is highly error-prone and has relatively few users, 
+I might be willing to break existing applications in order to prevent 
+new applications from being written than use the error-prone interface, 
+especially if there's a trivial fix that will work with both the old and 
+the new versions of PyCrypto.
+
+4. I'm willing to remove features that I don't think are used much 
+(especially if they're broken).  They can always be re-introduced if 
+people complain (nobody has complained about any removed features, so 
+far).
+
+5. I'm willing to remove legally problematic code.
+
+6. I'm more willing to break things in a &quot;fail-safe&quot; manner than a 
+&quot;fail-open&quot; manner.  (For example, I might consider changing 
+PKCS1_PSS.verify() to raise an exception instead of returning False on a 
+signature verification failure, but I would go from raising an exception 
+to returning False.)
+
+In general, I think it's better for end-users if everyone collaborates 
+on the same tree, so I try to make things easy for developers and 
+distros.  However, my priorities are the security of end-users and 
+keeping the code complexity manageable.  Every change can potentially 
+break something for somebody, so I try to weigh the impact of each 
+change on a case-by-case basis, taking everything into account.
+
+The more information I get about how PyCrypto is being used, the better 
+my decisions can be.
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+   OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000702.html">[pycrypto] CVE-2013-1445 python-crypto: PRNG not correctly reseeded in some situations
+</A></li>
+	<LI>Next message: <A HREF="000706.html">[pycrypto] Crypto.Random crashes due to unaligned access
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#705">[ date ]</a>
+              <a href="thread.html#705">[ thread ]</a>
+              <a href="subject.html#705">[ subject ]</a>
+              <a href="author.html#705">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

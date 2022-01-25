@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] FW: python crypto with python 3.0 or 3.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20FW%3A%20python%20crypto%20with%20python%203.0%20or%203.1&In-Reply-To=4B8ADA4C.1000901%40gmx.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000186.html">
+   <LINK REL="Next"  HREF="000187.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] FW: python crypto with python 3.0 or 3.1</H1>
+    <B>Grail Dane</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20FW%3A%20python%20crypto%20with%20python%203.0%20or%203.1&In-Reply-To=4B8ADA4C.1000901%40gmx.net"
+       TITLE="[pycrypto] FW: python crypto with python 3.0 or 3.1">grail69 at hotmail.com
+       </A><BR>
+    <I>Sun Feb 28 17:58:44 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000186.html">[pycrypto] FW: python crypto with python 3.0 or 3.1
+</A></li>
+        <LI>Next message: <A HREF="000187.html">[pycrypto] FW: python crypto with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#199">[ date ]</a>
+              <a href="thread.html#199">[ thread ]</a>
+              <a href="subject.html#199">[ subject ]</a>
+              <a href="author.html#199">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hello Christoph
+I have made more head way since that one (and made a lot more changes).I found that the module creation required a few more steps and I have come up with two solutions (in attached patches):
+1. First patch follows most of the online info I could find related to PyModuleDef and the related PyTypeObject.   This required that all tp_getattr functions be removed and set to 0 (zero) in the PyTypeObject definition.
+2. The second patch retained the already created tp_getattr functions.
+With either applied I am able to compile but when running a test program with the following lines only:
+#!/usr/bin/env python
+from Crypto.Cipher import AESimport base64import os
+
+When run I receive the following error:
+Traceback (most recent call last):  File &quot;./cypher.py&quot;, line 3, in &lt;module&gt;    from Crypto.Cipher import AESSystemError: NULL result without error in PyObject_Call
+So apply patches (and make necessary changes for Windows) and we will see if I can help further :)
+Cheers Grail
+
+&gt;<i> Date: Sun, 28 Feb 2010 22:04:12 +0100
+</I>&gt;<i> From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">christoph.tapler at gmx.net</A>
+</I>&gt;<i> To: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> Subject: Re: [pycrypto] FW: python crypto with python 3.0 or 3.1
+</I>&gt;<i> 
+</I>&gt;<i> Hi Grail,
+</I>&gt;<i> 
+</I>&gt;<i> Thanks for your patch! I assume you generated the patch based on a Unix
+</I>&gt;<i> environment. Tried to compile pycrypto together with your patch on my
+</I>&gt;<i> Windows machine. However, it did not work out.
+</I>&gt;<i> After fixing two straightforward errors in setup.py (relevant to Windows 
+</I>&gt;<i> only,
+</I>&gt;<i> see [1], [2]), I got stuck when linking the module MD4 and other hashing 
+</I>&gt;<i> methods
+</I>&gt;<i> (MD2, etc).
+</I>&gt;<i> 
+</I>&gt;<i> Now, when I compare the build process against Python 2, I see the following
+</I>&gt;<i> difference:
+</I>&gt;<i> 
+</I>&gt;<i> ###############################################################################
+</I>&gt;<i> [Python 2:]
+</I>&gt;<i> C:\Program Files\Microsoft Visual Studio 9.0\VC\BIN\link.exe /DLL 
+</I>&gt;<i> /nologo /INCRE
+</I>&gt;<i> MENTAL:NO &quot;/LIBPATH:C:\Program Files\Python26\libs&quot; &quot;/LIBPATH:C:\Program 
+</I>&gt;<i> Files\P
+</I>&gt;<i> ython26\PCbuild&quot; /EXPORT:initMD4 
+</I>&gt;<i> build\temp.win32-2.6\Release\src/MD4.obj /OUT:b
+</I>&gt;<i> uild\lib.win32-2.6\Crypto\Hash\MD4.pyd 
+</I>&gt;<i> /IMPLIB:build\temp.win32-2.6\Release\src\
+</I>&gt;<i> MD4.lib /MANIFESTFILE:build\temp.win32-2.6\Release\src\MD4.pyd.manifest
+</I>&gt;<i>     Creating library build\temp.win32-2.6\Release\src\MD4.lib and object 
+</I>&gt;<i> build\te
+</I>&gt;<i> mp.win32-2.6\Release\src\MD4.exp
+</I>&gt;<i> C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin\mt.exe -nologo 
+</I>&gt;<i> -manifest build
+</I>&gt;<i> \temp.win32-2.6\Release\src\MD4.pyd.manifest 
+</I>&gt;<i> -outputresource:build\lib.win32-2.6
+</I>&gt;<i> \Crypto\Hash\MD4.pyd;2
+</I>&gt;<i> 
+</I>&gt;<i> [Python 3:]
+</I>&gt;<i> C:\Program Files\Microsoft Visual Studio 9.0\VC\BIN\link.exe /DLL 
+</I>&gt;<i> /nologo /INCRE
+</I>&gt;<i> MENTAL:NO &quot;/LIBPATH:C:\Program Files\Python31\libs&quot; &quot;/LIBPATH:C:\Program 
+</I>&gt;<i> Files\P
+</I>&gt;<i> ython31\PCbuild&quot; /EXPORT:PyInit_MD4 
+</I>&gt;<i> build\temp.win32-3.1\Release\src/MD4.obj /OU
+</I>&gt;<i> T:build\lib.win32-3.1\Crypto\Hash\MD4.pyd 
+</I>&gt;<i> /IMPLIB:build\temp.win32-3.1\Release\s
+</I>&gt;<i> rc\MD4.lib /MANIFESTFILE:build\temp.win32-3.1\Release\src\MD4.pyd.manifest
+</I>&gt;<i> LINK : error LNK2001: unresolved external symbol PyInit_MD4
+</I>&gt;<i> build\temp.win32-3.1\Release\src\MD4.lib : fatal error LNK1120: 1 
+</I>&gt;<i> unresolved ext
+</I>&gt;<i> ernals
+</I>&gt;<i> error: command '&quot;C:\Program Files\Microsoft Visual Studio 
+</I>&gt;<i> 9.0\VC\BIN\link.exe&quot;'
+</I>&gt;<i> failed with exit status 1120
+</I>&gt;<i> ###############################################################################
+</I>&gt;<i> 
+</I>&gt;<i> It seems that the /EXPORT argument for the Windows Linker is assembled in a
+</I>&gt;<i> different way. This leads to an export name, which does not exist as 
+</I>&gt;<i> function.
+</I>&gt;<i> Hence the linker terminates with an error.
+</I>&gt;<i> 
+</I>&gt;<i> Any idea what I need to change to get the /EXPORT name fixed? Is this 
+</I>&gt;<i> problem
+</I>&gt;<i> located in pycrypto or in the Python distutils?
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> ##### Regarding the changes in setup.py:
+</I>&gt;<i> [1] Changed the following stmt:
+</I>&gt;<i> From
+</I>&gt;<i> print &lt;&lt; sys.stderr &quot;warning: GMP library not found; Not building 
+</I>&gt;<i> Crypto.PublicKey._fastmath.&quot;
+</I>&gt;<i> to
+</I>&gt;<i> print(&quot;warning: GMP library not found; Not building 
+</I>&gt;<i> Crypto.PublicKey._fastmath.&quot;, sys.stderr)
+</I>&gt;<i> 
+</I>&gt;<i> [2] (Temporarily) disabled winrand.c which is included when using the 
+</I>&gt;<i> Windows platform.
+</I>&gt;<i> 
+</I>&gt;<i> Cheers, Christoph
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I> 		 	   		  
+_________________________________________________________________
+Find a great deal on your next car. Get straight to the Point.
+<A HREF="http://clk.atdmt.com/NMN/go/157637060/direct/01/">http://clk.atdmt.com/NMN/go/157637060/direct/01/</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100228/349e8dc6/attachment-0001.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100228/349e8dc6/attachment-0001.htm</A> 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: pycrypto-patches.zip
+Type: application/octet-stream
+Size: 27460 bytes
+Desc: not available
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100228/349e8dc6/attachment-0001.obj">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100228/349e8dc6/attachment-0001.obj</A> 
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000186.html">[pycrypto] FW: python crypto with python 3.0 or 3.1
+</A></li>
+	<LI>Next message: <A HREF="000187.html">[pycrypto] FW: python crypto with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#199">[ date ]</a>
+              <a href="thread.html#199">[ thread ]</a>
+              <a href="subject.html#199">[ subject ]</a>
+              <a href="author.html#199">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

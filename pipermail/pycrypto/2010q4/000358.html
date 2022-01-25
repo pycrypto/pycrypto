@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Wanted: Additional unit tests for Python 3.x porting effort
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Wanted%3A%20Additional%20unit%20tests%20for%20Python%203.x%20porting%0A%20effort&In-Reply-To=4D1BA7EE.6030300%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000356.html">
+   <LINK REL="Next"  HREF="000359.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Wanted: Additional unit tests for Python 3.x porting effort</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Wanted%3A%20Additional%20unit%20tests%20for%20Python%203.x%20porting%0A%20effort&In-Reply-To=4D1BA7EE.6030300%40gmx.li"
+       TITLE="[pycrypto] Wanted: Additional unit tests for Python 3.x porting effort">sbehrens at gmx.li
+       </A><BR>
+    <I>Thu Dec 30 23:11:28 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000356.html">[pycrypto] Wanted: Additional unit tests for Python 3.x porting	effort
+</A></li>
+        <LI>Next message: <A HREF="000359.html">[pycrypto] Wanted: Additional unit tests for Python 3.x porting effort
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#358">[ date ]</a>
+              <a href="thread.html#358">[ thread ]</a>
+              <a href="subject.html#358">[ subject ]</a>
+              <a href="author.html#358">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Crypto.Random.random has unit tests now. A few notes on that:
+     - random.shuffle() was broken, it had a TypeError and an 
+IndexError. Not my doing, that's always been the case. That's been fixed.
+     - random.sample() does not work on 2.1. Not my doing, that's always 
+been the case. I will not fix this. Others are welcome to.
+     - random does not implement the full compliment of functions that 
+Python offers, it is a much smaller subset
+     - I somehow doubt anyone ever actually used this interface. We may 
+declare it &quot;static for backwards compatibility&quot; and leave well enough alone.
+
+I will not write unit tests for qNEW, though others are welcome to.
+
+We still need unit tests for ElGamal and AllOrNothing. Anyone?
+
+Thorsten
+
+On 12/29/2010 4:28 PM, Thorsten Behrens wrote:
+&gt;<i> Now that we have a working pycrypto on Python 3.x, it's time to see what
+</I>&gt;<i> we don't have unit tests for. See
+</I>&gt;<i> <A HREF="https://bugs.launchpad.net/pycrypto/+bug/335995">https://bugs.launchpad.net/pycrypto/+bug/335995</A> for results.
+</I>&gt;<i>
+</I>&gt;<i> Currently, the following are not included in unit testing at all:
+</I>&gt;<i>
+</I>&gt;<i> Protocol/AllOrNothing
+</I>&gt;<i> PublicKey/ElGamal
+</I>&gt;<i> PublicKey/qNEW
+</I>&gt;<i> random/random
+</I>&gt;<i>
+</I>&gt;<i> I'd love some unit tests for those. With public test vectors, please,
+</I>&gt;<i> not test vectors derived from pycrypto.
+</I>&gt;<i>
+</I>&gt;<i> Volunteers?
+</I>&gt;<i>
+</I>&gt;<i> Thorsten
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000356.html">[pycrypto] Wanted: Additional unit tests for Python 3.x porting	effort
+</A></li>
+	<LI>Next message: <A HREF="000359.html">[pycrypto] Wanted: Additional unit tests for Python 3.x porting effort
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#358">[ date ]</a>
+              <a href="thread.html#358">[ thread ]</a>
+              <a href="subject.html#358">[ subject ]</a>
+              <a href="author.html#358">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

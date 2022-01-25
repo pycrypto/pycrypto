@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] FW: python crypto with python 3.0 or 3.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20FW%3A%20python%20crypto%20with%20python%203.0%20or%203.1&In-Reply-To=SNT132-w2669B1935D0D65EE9F7B9FB13C0%40phx.gbl">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000187.html">
+   <LINK REL="Next"  HREF="000189.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] FW: python crypto with python 3.0 or 3.1</H1>
+    <B>Christoph Tapler</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20FW%3A%20python%20crypto%20with%20python%203.0%20or%203.1&In-Reply-To=SNT132-w2669B1935D0D65EE9F7B9FB13C0%40phx.gbl"
+       TITLE="[pycrypto] FW: python crypto with python 3.0 or 3.1">christoph.tapler at gmx.net
+       </A><BR>
+    <I>Mon Mar  1 14:37:42 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000187.html">[pycrypto] FW: python crypto with python 3.0 or 3.1
+</A></li>
+        <LI>Next message: <A HREF="000189.html">[pycrypto] FW: python crypto with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#188">[ date ]</a>
+              <a href="thread.html#188">[ thread ]</a>
+              <a href="subject.html#188">[ subject ]</a>
+              <a href="author.html#188">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Grail!
+
+I think in you need to return the pointer from the newly created module. 
+Currently the return value seems to be a dangling pointer.
+A &quot;return m&quot; at the end of the generic init function in block_template.c 
+may help.
+
+Btw, in Windows, there are still a few issues which prevent successful 
+compilation.
+Should I generate a patch? If yes, could you probably give me a hint how 
+to generate this patch?
+
+Btw, there seems to be a test suite included (python setup.py test). 
+However, at that stage it is not too much of
+help, because the test suite itself needs to be adapted as well. In 
+Python 2 the test suite works perfectly fine.
+
+Cheers,
+Christoph
+
+On 01.03.2010 01:02, Grail Dane wrote:
+&gt;<i> Hello Christoph
+</I>&gt;<i>
+</I>&gt;<i> I have made more head way since that one (and made a lot more changes).
+</I>&gt;<i> I found that the module creation required a few more steps and I have 
+</I>&gt;<i> come up
+</I>&gt;<i> with two solutions (in attached patches):
+</I>&gt;<i>
+</I>&gt;<i> 1. First patch follows most of the online info I could find related 
+</I>&gt;<i> to PyModuleDef and the related PyTypeObject.
+</I>&gt;<i>    This required that all tp_getattr functions be removed and set to 0 
+</I>&gt;<i> (zero) in the PyTypeObject definition.
+</I>&gt;<i>
+</I>&gt;<i> 2. The second patch retained the already created tp_getattr functions.
+</I>&gt;<i>
+</I>&gt;<i> With either applied I am able to compile but when running a test 
+</I>&gt;<i> program with the following lines only:
+</I>&gt;<i>
+</I>&gt;<i> #!/usr/bin/env python
+</I>&gt;<i>
+</I>&gt;<i> from Crypto.Cipher import AES
+</I>&gt;<i> import base64
+</I>&gt;<i> import os
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> When run I receive the following error:
+</I>&gt;<i>
+</I>&gt;<i> Traceback (most recent call last):
+</I>&gt;<i>   File &quot;./cypher.py&quot;, line 3, in &lt;module&gt;
+</I>&gt;<i>     from Crypto.Cipher import AES
+</I>&gt;<i> SystemError: NULL result without error in PyObject_Call
+</I>&gt;<i>
+</I>&gt;<i> So apply patches (and make necessary changes for Windows) and we will 
+</I>&gt;<i> see if I can help further :)
+</I>&gt;<i>
+</I>&gt;<i> Cheers Grail
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i> Get straight to the Point Find a great deal on your next car. 
+</I>&gt;<i> &lt;<A HREF="http://clk.atdmt.com/NMN/go/157637060/direct/01/">http://clk.atdmt.com/NMN/go/157637060/direct/01/</A>&gt;
+</I>&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i> Browse profiles for free! View photos of singles in your area. 
+</I>&gt;<i> &lt;<A HREF="http://clk.atdmt.com/NMN/go/150855801/direct/01/">http://clk.atdmt.com/NMN/go/150855801/direct/01/</A>&gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>    
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100301/3605d7c4/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100301/3605d7c4/attachment.htm</A> 
+</PRE>
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000187.html">[pycrypto] FW: python crypto with python 3.0 or 3.1
+</A></li>
+	<LI>Next message: <A HREF="000189.html">[pycrypto] FW: python crypto with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#188">[ date ]</a>
+              <a href="thread.html#188">[ thread ]</a>
+              <a href="subject.html#188">[ subject ]</a>
+              <a href="author.html#188">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

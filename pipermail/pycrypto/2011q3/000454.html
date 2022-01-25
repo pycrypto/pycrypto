@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] extract RSA public from X509 certificate file
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20extract%20RSA%20public%20from%20X509%20certificate%20file&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000456.html">
+   <LINK REL="Next"  HREF="000457.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] extract RSA public from X509 certificate file</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20extract%20RSA%20public%20from%20X509%20certificate%20file&In-Reply-To="
+       TITLE="[pycrypto] extract RSA public from X509 certificate file">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Tue Sep 20 12:27:30 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000456.html">[pycrypto] Fail to build pycrypto 2.3 on Ubuntu
+</A></li>
+        <LI>Next message: <A HREF="000457.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#454">[ date ]</a>
+              <a href="thread.html#454">[ thread ]</a>
+              <a href="subject.html#454">[ subject ]</a>
+              <a href="author.html#454">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Dolf,
+
+&gt;<i> But is it possible to use pycrypto (or another library) to extract the
+</I>&gt;<i> public key from the certificate file (like openssl does)?
+</I>
+No, it is not possible. The encoding is not currently supported.
+
+&gt;<i> But the difference between RSA public and private keys is only
+</I>&gt;<i> the name. Which one is public, and which one is private is just a matter of
+</I>&gt;<i> choice, not a technical difference right?
+</I>
+In theory you are right: the term &quot;public RSA key&quot; is just a
+convention for &quot;the RSA key with known and typically short exponent&quot;.
+However, implementation-wise it's more common to distinguish the two.
+It makes optimizations easier to handle.
+
+In case of pycrypto, the RSA object has got one attribute name for the
+private exponent (d) and one for the public (e).
+I cannot tell where it breaks exactly, but I can guess that
+pubkey1.decrypt() will try to use the former, which is not available.
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000456.html">[pycrypto] Fail to build pycrypto 2.3 on Ubuntu
+</A></li>
+	<LI>Next message: <A HREF="000457.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#454">[ date ]</a>
+              <a href="thread.html#454">[ thread ]</a>
+              <a href="subject.html#454">[ subject ]</a>
+              <a href="author.html#454">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

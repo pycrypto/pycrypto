@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Typo or bug?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Typo%20or%20bug%3F&In-Reply-To=%3CCAEncD4cgP3kSXc-%3D%3Db%3DQeGxKhE%2BbFOyH2j0E-Hj0h8p8QeXUdw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000603.html">
+   <LINK REL="Next"  HREF="000605.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Typo or bug?</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Typo%20or%20bug%3F&In-Reply-To=%3CCAEncD4cgP3kSXc-%3D%3Db%3DQeGxKhE%2BbFOyH2j0E-Hj0h8p8QeXUdw%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Typo or bug?">dave.pawson at gmail.com
+       </A><BR>
+    <I>Tue Jun 26 07:59:29 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000603.html">[pycrypto] Typo or bug?
+</A></li>
+        <LI>Next message: <A HREF="000605.html">[pycrypto] Typo or bug?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#604">[ date ]</a>
+              <a href="thread.html#604">[ thread ]</a>
+              <a href="subject.html#604">[ subject ]</a>
+              <a href="author.html#604">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 26 June 2012 12:31, Legrandin &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">gooksankoo at hoiptorrow.mailexpire.com</A>&gt; wrote:
+
+&gt;<i> Choice of the IV is critical for security.
+</I>&gt;<i> For CFB, the combination IV and key must be use only with one message, and
+</I>&gt;<i> never occur again.
+</I>&gt;<i> That is explained here:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.blockalgo-module.html#MODE_CFB">https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.blockalgo-module.html#MODE_CFB</A>
+</I>
+Thanks.
+(I think I need more reading to select one!)
+
+
+&gt;<i>
+</I>&gt;<i> IV needs indeed to be share by the party encrypting and by the party
+</I>&gt;<i> decrypting the message.
+</I>&gt;<i>
+</I>&gt;<i> Up to pycrypto 2.5, when no iv was provided to new() a string of zeroes was
+</I>&gt;<i> automatically used.
+</I>&gt;<i> Depending on your application, that may or may not be a problem. It is wiser
+</I>&gt;<i> to always make iv explicit.
+</I>
+
+Which explains why my 'old' code failed. Thanks.
+
+Needing both key and iv... It sounds like asking for two keys to unlock a box?
+Is that the idea?
+
+regards
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000603.html">[pycrypto] Typo or bug?
+</A></li>
+	<LI>Next message: <A HREF="000605.html">[pycrypto] Typo or bug?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#604">[ date ]</a>
+              <a href="thread.html#604">[ thread ]</a>
+              <a href="subject.html#604">[ subject ]</a>
+              <a href="author.html#604">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Verify DSA bytestring signature
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Verify%20DSA%20bytestring%20signature&In-Reply-To=%3C11C3813F-BD17-4DCA-A289-49AED7D650B0%40ml1.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000790.html">
+   <LINK REL="Next"  HREF="000792.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Verify DSA bytestring signature</H1>
+    <B>Winston Weinert</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Verify%20DSA%20bytestring%20signature&In-Reply-To=%3C11C3813F-BD17-4DCA-A289-49AED7D650B0%40ml1.net%3E"
+       TITLE="[pycrypto] Verify DSA bytestring signature">winston at ml1.net
+       </A><BR>
+    <I>Sat Apr  5 12:03:25 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000790.html">[pycrypto] configure, PATH, and setup.py
+</A></li>
+        <LI>Next message: <A HREF="000792.html">[pycrypto] Verify DSA bytestring signature
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#791">[ date ]</a>
+              <a href="thread.html#791">[ thread ]</a>
+              <a href="subject.html#791">[ subject ]</a>
+              <a href="author.html#791">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I noticed in Git there is a &#8220;verify&#8221; method on Crypto.PublicKey.DSA. How do
+I go about using this method? It wants a tuple, but unsure how to create
+the appropriate tuple from my bytestring (which is decoded base64 text).
+This is git revision 2d1aecd. The relevant code and error:
+
+Code:
+
+def validate(dsa_pubkey, signature, zipfile):
+    with open(dsa_pubkey, 'rb') as f:
+        pubkey = DSA.importKey(f.read())
+    with open(zipfile, 'rb') as f:
+        h = SHA1.new()
+        h.update(f.read())
+        zipfile_digest = h.digest()
+    decoded_signature = base64.b64decode(signature)
+
+    return pubkey.verify(zipfile_digest, decoded_signature)
+
+Error:
+
+Traceback (most recent call last):
+  File &quot;sparkle_tool.py&quot;, line 67, in &lt;module&gt;
+    validate_files(appcast, dsa_pubkey)
+  File &quot;sparkle_tool.py&quot;, line 55, in validate_files
+    if validate(dsa_pubkey, signature, local_file):
+  File &quot;sparkle_tool.py&quot;, line 33, in validate
+    return pubkey.verify(zipfile_digest, decoded_signature)
+  File &quot;/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py&quot;, line 222, in verify
+    return pubkey.pubkey.verify(self, M, signature)
+  File &quot;/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/pubkey.py&quot;, line 126, in verify
+    return self._verify(M, signature)
+  File &quot;/home/winston/jobber/venv/local/lib/python2.7/site-packages/Crypto/PublicKey/DSA.py&quot;, line 240, in _verify
+    (r, s) = sig
+ValueError: too many values to unpack
+
+Thanks a bunch!
+&#8212;
+Winston Weinert
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">winston at ml1.net</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000790.html">[pycrypto] configure, PATH, and setup.py
+</A></li>
+	<LI>Next message: <A HREF="000792.html">[pycrypto] Verify DSA bytestring signature
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#791">[ date ]</a>
+              <a href="thread.html#791">[ thread ]</a>
+              <a href="subject.html#791">[ subject ]</a>
+              <a href="author.html#791">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

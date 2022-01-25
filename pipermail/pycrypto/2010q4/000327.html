@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Once again: Python3 with PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=4D17A488.1080002%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000326.html">
+   <LINK REL="Next"  HREF="000328.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Once again: Python3 with PyCrypto</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=4D17A488.1080002%40gmx.li"
+       TITLE="[pycrypto] Once again: Python3 with PyCrypto">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Dec 27 07:37:40 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000326.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000328.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#327">[ date ]</a>
+              <a href="thread.html#327">[ thread ]</a>
+              <a href="subject.html#327">[ subject ]</a>
+              <a href="author.html#327">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Wow, it looks like you're really moving things along.  Thanks, Thorsten!
+
+&quot;Thorsten Behrens&quot; &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">sbehrens at gmx.li</A>&gt; wrote:
+
+&gt;<i>Quick update on where this stands right now.
+</I>&gt;<i>
+</I>&gt;<i>As predicted, the module handling changes with Python 3.x were a pain.
+</I>&gt;<i>I 
+</I>&gt;<i>think I have them under control now. At least &quot;python setup.py test&quot; no
+</I>&gt;<i>
+</I>&gt;<i>longer crashes immediately. It now gets far enough to complain about 
+</I>&gt;<i>bytes/unicode errors.
+</I>&gt;<i>
+</I>&gt;<i>I haven't attempted _fastmath.c on Python 3.x yet. I'll do that last, 
+</I>&gt;<i>when everything else works.
+</I>&gt;<i>
+</I>&gt;<i>C modules will give link-time errors, like so: &quot;_counter.obj : warning 
+</I>&gt;<i>LNK4197: export 'init_counter' specified multiple times; using first 
+</I>&gt;<i>specification&quot;. This is an issue in distutils. See python issue 9709. 
+</I>&gt;<i>There's nothing we can do until Python fixes distutils - of course any 
+</I>&gt;<i>pre-compiled binaries can be built with the distutils fix in, and the 
+</I>&gt;<i>README can warn people of this.
+</I>&gt;<i>
+</I>&gt;<i>The code still works with Python27, but I broke Python21. Specifically,
+</I>&gt;<i>
+</I>&gt;<i>I am having a hard time with string literals. The main work remaining 
+</I>&gt;<i>now is to flush out string to bytes/unicode changes between 2.x and
+</I>&gt;<i>3.x, 
+</I>&gt;<i>and adapt the code. I thought I had this licked, but I clearly don't.
+</I>&gt;<i>
+</I>&gt;<i>I am currently not handling literals well. This is what I tried:
+</I>&gt;<i>         if sys.version_info[0] is 2:
+</I>&gt;<i>             seed = &quot;&quot;.join(seed)
+</I>&gt;<i>         else:
+</I>&gt;<i>             seed = b&quot;&quot;.join(seed)
+</I>&gt;<i>
+</I>&gt;<i>And that gives a &quot;SyntaxError: invalid syntax&quot; at run time. Of course
+</I>&gt;<i>it 
+</I>&gt;<i>does.
+</I>&gt;<i>
+</I>&gt;<i>django has been moved to be 2.x/3.x compatible. I'll see what they did 
+</I>&gt;<i>and try to replicate it. I'm hoping it'll take care of these type of
+</I>&gt;<i>issues.
+</I>&gt;<i>
+</I>&gt;<i>Assignment to True and False in pycrypto_compat.py is an issue. Right 
+</I>&gt;<i>now, I just don't import pycrypto_compat.py when Python 3.x is
+</I>&gt;<i>detected. 
+</I>&gt;<i>That still gives install-time errors on Python 3.x. The only option I 
+</I>&gt;<i>can think of right now is to exclude the offending file from install in
+</I>&gt;<i>
+</I>&gt;<i>setup.py if Python 3.x is detected.
+</I>&gt;<i>
+</I>&gt;<i>Thorsten
+</I>&gt;<i>
+</I>&gt;<i>_______________________________________________
+</I>&gt;<i>pycrypto mailing list
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000326.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000328.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#327">[ date ]</a>
+              <a href="thread.html#327">[ thread ]</a>
+              <a href="subject.html#327">[ subject ]</a>
+              <a href="author.html#327">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Verifying Signatures on Data and Certifictes
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Verifying%20Signatures%20on%20Data%20and%20Certifictes&In-Reply-To=%3C20130930014403.GA31413%40rivest.dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000695.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Verifying Signatures on Data and Certifictes</H1>
+    <B>Dwayne Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Verifying%20Signatures%20on%20Data%20and%20Certifictes&In-Reply-To=%3C20130930014403.GA31413%40rivest.dlitz.net%3E"
+       TITLE="[pycrypto] Verifying Signatures on Data and Certifictes">dlitz at dlitz.net
+       </A><BR>
+    <I>Sun Sep 29 18:44:03 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000695.html">[pycrypto] Verifying Signatures on Data and Certifictes
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#696">[ date ]</a>
+              <a href="thread.html#696">[ thread ]</a>
+              <a href="subject.html#696">[ subject ]</a>
+              <a href="author.html#696">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Sep 26, 2013 at 04:13:19PM -0600, Kyle Cummings wrote:
+&gt;<i>I am trying to use the PyCrypto library to achieve two similar things. 
+</I>&gt;<i>The
+</I>&gt;<i>first use is to verify that a piece of data has been signed by the private
+</I>&gt;<i>key of a certain certificate. The other use is to verify a certificate
+</I>&gt;<i>chain (verify that certificate A has signed B, and then that B has signed
+</I>&gt;<i>C).
+</I>[snip]
+&gt;<i>Having the above code fail, I then found and tried adapting the code
+</I>&gt;<i>here&lt;<A HREF="http://www.v13.gr/blog/?p=303">http://www.v13.gr/blog/?p=303</A>&gt;,
+</I>&gt;<i>but I first received that the function &quot;get_signature_algorithm()&quot; does not
+</I>&gt;<i>exists for X509 certificates, and then received the same error response
+</I>&gt;<i>back for the verify function if I commented out the signature algorithm and
+</I>&gt;<i>just manually provided the digest.
+</I>
+PyCrypto does not implement X.509, and probably never will.  X.509 is a 
+mess and a huge amount of effort to implement correctly[1], and it makes 
+no sense for us to re-implement it in Python.  Sorry.
+
+[1] <A HREF="http://www.cs.auckland.ac.nz/~pgut001/pubs/x509guide.txt">http://www.cs.auckland.ac.nz/~pgut001/pubs/x509guide.txt</A>
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000695.html">[pycrypto] Verifying Signatures on Data and Certifictes
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#696">[ date ]</a>
+              <a href="thread.html#696">[ thread ]</a>
+              <a href="subject.html#696">[ subject ]</a>
+              <a href="author.html#696">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

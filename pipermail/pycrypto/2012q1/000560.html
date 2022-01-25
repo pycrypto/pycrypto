@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] PyCrypto builds neither with MSVC nor MinGW
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20PyCrypto%20builds%20neither%20with%20MSVC%20nor%20MinGW&In-Reply-To=%3CCAO%2B9iGc2mNLuBEm6S4jyrOJi8%3D6ardnHsewwBY%3DSswKbCiMskw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000559.html">
+   <LINK REL="Next"  HREF="000561.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] PyCrypto builds neither with MSVC nor MinGW</H1>
+    <B>Alec Taylor</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20PyCrypto%20builds%20neither%20with%20MSVC%20nor%20MinGW&In-Reply-To=%3CCAO%2B9iGc2mNLuBEm6S4jyrOJi8%3D6ardnHsewwBY%3DSswKbCiMskw%40mail.gmail.com%3E"
+       TITLE="[pycrypto] PyCrypto builds neither with MSVC nor MinGW">alec.taylor6 at gmail.com
+       </A><BR>
+    <I>Sun Feb  5 09:39:24 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000559.html">[pycrypto] Linker errors when attempting to install PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000561.html">[pycrypto] problem installing the PyCrypto toolkit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#560">[ date ]</a>
+              <a href="thread.html#560">[ thread ]</a>
+              <a href="subject.html#560">[ subject ]</a>
+              <a href="author.html#560">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>PIL, PyCrypto and many other modules require a C compiler and linker.
+
+Unfortunately neither install on my computer, with a PATH with the following:
+
+C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC
+C:\libraries\MinGW\msys\1.0\bin
+C:\libraries\MinGW
+C:\Python27\Scripts
+
+Output from G:\pycrypto&gt;vcvarsall.bat
+Setting environment for using Microsoft Visual Studio 2010 x86 tools.
+
+Error output from G:\pycrypto&gt;python setup.py build --compiler msvc
+<A HREF="http://pastebin.com/nBsuXDGg">http://pastebin.com/nBsuXDGg</A>
+
+Error output from G:\pycrypto&gt;python setup.py build --compiler mingw32
+1&gt; log1 2&gt; log2
+Log1: <A HREF="http://pastebin.com/yG3cbdZv">http://pastebin.com/yG3cbdZv</A>
+Log2: <A HREF="http://pastebin.com/qvnshPeh">http://pastebin.com/qvnshPeh</A>
+
+Will there ever be support for newer MSVC versions? - Also, why
+doesn't even MinGW install PyCrypto for me?
+
+Thanks for all suggestions,
+
+Alec Taylor
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000559.html">[pycrypto] Linker errors when attempting to install PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000561.html">[pycrypto] problem installing the PyCrypto toolkit
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#560">[ date ]</a>
+              <a href="thread.html#560">[ thread ]</a>
+              <a href="subject.html#560">[ subject ]</a>
+              <a href="author.html#560">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,214 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Crypto.Util.randpool</TITLE>
+<META NAME="description" CONTENT="Crypto.Util.randpool">
+<META NAME="keywords" CONTENT="pycrypt">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="pycrypt.css">
+
+<LINK REL="next" HREF="node21.html">
+<LINK REL="previous" HREF="node19.html">
+<LINK REL="up" HREF="node18.html">
+<LINK REL="next" HREF="node21.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html300"
+  HREF="node21.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html296"
+  HREF="node18.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html290"
+  HREF="node19.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html298"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html301"
+  HREF="node21.html">Crypto.Util.RFC1751</A>
+<B> Up:</B> <A NAME="tex2html297"
+  HREF="node18.html">Crypto.Util: Odds and Ends</A>
+<B> Previous:</B> <A NAME="tex2html291"
+  HREF="node19.html">Crypto.Util.number</A>
+ &nbsp; <B>  <A NAME="tex2html299"
+  HREF="node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00072000000000000000">
+Crypto.Util.randpool</A>
+</H2>
+
+<P>
+For cryptographic purposes, ordinary random number generators are
+frequently insufficient, because if some of their output is known, it
+is frequently possible to derive the generator's future (or past)
+output.  Given the generator's state at some point in time, someone
+could try to derive any keys generated using it.  The solution is to
+use strong encryption or hashing algorithms to generate successive
+data; this makes breaking the generator as difficult as breaking the
+algorithms used.
+
+<P>
+Understanding the concept of entropy is important for using the
+random number generator properly.  In the sense we'll be using it,
+entropy measures the amount of randomness; the usual unit is in bits.
+So, a single random bit has an entropy of 1 bit; a random byte has an
+entropy of 8 bits.  Now consider a one-byte field in a database containing a
+person's sex, represented as a single character M or F.
+What's the entropy of this field?  Since there are only two possible
+values, it's not 8 bits, but one; if you were trying to guess the value,
+you wouldn't have to bother trying Q or @.  
+
+<P>
+Now imagine running that single byte field through a hash function that
+produces 128 bits of output.  Is the entropy of the resulting hash value
+128 bits?  No, it's still just 1 bit.  The entropy is a measure of how many
+possible states of the data exist.  For English
+text, the entropy of a five-character string is not 40 bits; it's
+somewhat less, because not all combinations would be seen.  Guido
+is a possible string, as is In th; zJwvb is not.
+
+<P>
+The relevance to random number generation?  We want enough bits of
+entropy to avoid making an attack on our generator possible.  An
+example: One computer system had a mechanism which generated nonsense
+passwords for its users.  This is a good idea, since it would prevent
+people from choosing their own name or some other easily guessed string.
+Unfortunately, the random number generator used only had 65536 states,
+which meant only 65536 different passwords would ever be generated, and
+it was easy to compute all the possible passwords and try them.  The
+entropy of the random passwords was far too low.  By the same token, if
+you generate an RSA key with only 32 bits of entropy available, there
+are only about 4.2 billion keys you could have generated, and an
+adversary could compute them all to find your private key.  See 1750,
+"Randomness Recommendations for Security", for an interesting discussion
+of the issues related to random number generation.
+
+<P>
+The randpool module implements a strong random number generator
+in the RandomPool class.  The internal state consists of a string
+of random data, which is returned as callers request it.  The class
+keeps track of the number of bits of entropy left, and provides a function to
+add new random data; this data can be obtained in various ways, such as
+by using the variance in a user's keystroke timings.  
+
+<P>
+<BR>
+41#41
+<BR>
+
+<P>
+RandomPool objects define the following variables and methods:
+
+<P>
+<BR>
+42#42
+<BR>
+
+<P>
+The return value is the value of self.entropy after the data has
+been added.  The function works in the following manner: the time
+between successive calls to the add_event() method is determined,
+and the entropy of the data is guessed; the larger the time between
+calls, the better.  The system time is then read and added to the pool,
+along with the string parameter, if present.  The hope is that the
+low-order bits of the time are effectively random.  In an application,
+it is recommended that add_event() be called as frequently as
+possible, with whatever random data can be found.
+
+<P>
+<BR>
+43#43
+<BR>
+
+<P>
+<BR>
+44#44
+<BR>
+
+<P>
+<BR>
+45#45
+<BR>
+
+<P>
+<BR>
+46#46
+<BR>
+
+<P>
+<BR>
+47#47
+<BR>
+
+<P>
+The PersistentRandomPool class is a subclass of RandomPool 
+that adds the capability to save and load the pool from a disk file.
+
+<P>
+<BR>
+48#48
+<BR>
+
+<P>
+<BR>
+49#49
+<BR>
+
+<P>
+The KeyboardRandomPool class is a subclass of
+PersistentRandomPool that provides a method to obtain random
+data from the keyboard:
+
+<P>
+<BR>
+50#50
+<BR>
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html300"
+  HREF="node21.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html296"
+  HREF="node18.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html290"
+  HREF="node19.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html298"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html301"
+  HREF="node21.html">Crypto.Util.RFC1751</A>
+<B> Up:</B> <A NAME="tex2html297"
+  HREF="node18.html">Crypto.Util: Odds and Ends</A>
+<B> Previous:</B> <A NAME="tex2html291"
+  HREF="node19.html">Crypto.Util.number</A>
+ &nbsp; <B>  <A NAME="tex2html299"
+  HREF="node1.html">Contents</A></B> </DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

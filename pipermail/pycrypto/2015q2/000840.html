@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Compiling on Windows tips
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Compiling%20on%20Windows%20tips&In-Reply-To=%3CCADPfvJs-xcCb42msCYrngP%2ByrLeoPhrE8WMi%3D62tC%2BBkuPoEzg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000839.html">
+   <LINK REL="Next"  HREF="000841.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Compiling on Windows tips</H1>
+    <B>Max Polk</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Compiling%20on%20Windows%20tips&In-Reply-To=%3CCADPfvJs-xcCb42msCYrngP%2ByrLeoPhrE8WMi%3D62tC%2BBkuPoEzg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Compiling on Windows tips">maxpolk at gmail.com
+       </A><BR>
+    <I>Mon Jun  1 22:25:31 PDT 2015</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000839.html">[pycrypto] RSA module
+</A></li>
+        <LI>Next message: <A HREF="000841.html">[pycrypto] Compiling on Windows tips
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#840">[ date ]</a>
+              <a href="thread.html#840">[ thread ]</a>
+              <a href="subject.html#840">[ subject ]</a>
+              <a href="author.html#840">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I have some notes for compiling pip packages on Windows that may be of use.
+
+To build pycrypto with Visual Studio Express 10, edit the python
+msvc9compiler.py, add the line here above the existing line:
+
+    ld_args.append('/MANIFEST')
+    ld_args.append('/MANIFESTFILE:' + temp_manifest)
+
+Then use this to build:
+
+    set VS90COMNTOOLS=%VS100COMNTOOLS%
+    python setup.py bdist_wininst
+
+The above creates an .exe in the dist directory such as
+pycrypto-2.5.win32-py2.7.exe
+
+In general, for various pip packages that require compiling on Windows such
+as tornado, to compile with Visual Studio from Python, trick Python into
+using an old variable name before calling pip install:
+
+Visual Studio 2010 (VS10):
+SET VS90COMNTOOLS=%VS100COMNTOOLS%
+
+Visual Studio 2012 (VS11):
+SET VS90COMNTOOLS=%VS110COMNTOOLS%
+
+Visual Studio 2013 (VS12):
+SET VS90COMNTOOLS=%VS120COMNTOOLS%
+
+If it is looking for Visual C++ 10, you will set VS100COMNTOOLS instead of
+setting VS90COMNTOOLS.
+
+The above worked for pip install tornado on Windows python 2 and 3.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20150602/9f9ef5cd/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20150602/9f9ef5cd/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000839.html">[pycrypto] RSA module
+</A></li>
+	<LI>Next message: <A HREF="000841.html">[pycrypto] Compiling on Windows tips
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#840">[ date ]</a>
+              <a href="thread.html#840">[ thread ]</a>
+              <a href="subject.html#840">[ subject ]</a>
+              <a href="author.html#840">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

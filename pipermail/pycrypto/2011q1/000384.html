@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Issue with the new random.choice() unit test
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Issue%20with%20the%20new%20random.choice%28%29%20unit%20test&In-Reply-To=4D24C32A.5000806%40amberfisharts.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000385.html">
+   <LINK REL="Next"  HREF="000386.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Issue with the new random.choice() unit test</H1>
+    <B>Lorenz Quack</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Issue%20with%20the%20new%20random.choice%28%29%20unit%20test&In-Reply-To=4D24C32A.5000806%40amberfisharts.com"
+       TITLE="[pycrypto] Issue with the new random.choice() unit test">don at amberfisharts.com
+       </A><BR>
+    <I>Wed Jan  5 13:36:25 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000385.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+        <LI>Next message: <A HREF="000386.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#384">[ date ]</a>
+              <a href="thread.html#384">[ thread ]</a>
+              <a href="subject.html#384">[ subject ]</a>
+              <a href="author.html#384">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hey,
+
+I now also took a look at AllOrNothing.
+It was using long_to_bytes with out specifing how many bytes it wants returned.
+Requesting a multiple of the block_size fixed the failing test.
+A few rows below it looked like the same could have happened with the key.
+I also fixed that.
+I did not review the code any further.
+
+patch is attached.
+
+Cheers,
+//Lorenz
+
+
+On 01/05/2011 08:14 PM, Lorenz Quack wrote:
+&gt;<i> [...]
+</I>&gt;<i> I didn't take a look at AllOrNothing yet.
+</I>&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i> //Lorenz
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On 01/05/2011 02:01 PM, Thorsten Behrens wrote:
+</I>&gt;&gt;<i> Do you have any ideas on the ailing AllOrNothing.py and random.sample on
+</I>&gt;&gt;<i> Python 2.1? I haven't dug into those yet beyond
+</I>&gt;&gt;<i> noting that they have issues, exposed by the new unit tests.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Yours
+</I>&gt;&gt;<i> Thorsten
+</I>&gt;<i>
+</I>
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: AllOrNothing.patch
+Url: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20110105/0f806abb/attachment.txt">http://lists.dlitz.net/pipermail/pycrypto/attachments/20110105/0f806abb/attachment.txt</A> 
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000385.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+	<LI>Next message: <A HREF="000386.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#384">[ date ]</a>
+              <a href="thread.html#384">[ thread ]</a>
+              <a href="subject.html#384">[ subject ]</a>
+              <a href="author.html#384">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

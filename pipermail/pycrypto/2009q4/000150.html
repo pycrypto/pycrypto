@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Freezing pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Freezing%20pycrypto&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000147.html">
+   <LINK REL="Next"  HREF="000151.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Freezing pycrypto</H1>
+    <B>Marcin Krol</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Freezing%20pycrypto&In-Reply-To="
+       TITLE="[pycrypto] Freezing pycrypto">mrkafk at gmail.com
+       </A><BR>
+    <I>Wed Oct 28 06:02:40 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000147.html">[pycrypto] Elliptic curve cryptography and group signature
+</A></li>
+        <LI>Next message: <A HREF="000151.html">[pycrypto] Freezing pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#150">[ date ]</a>
+              <a href="thread.html#150">[ thread ]</a>
+              <a href="subject.html#150">[ subject ]</a>
+              <a href="author.html#150">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello everyone,
+
+I'm trying to freeze PyCrypto on Linux (using freeze.py) and having 
+trouble with it, can you help me? PyCrypto is used by paramiko (ssh 
+client module).
+
+I have added following in the Modules/Setup while building Python (This 
+has to be done because freeze.py requires that all compiled extension 
+modules are compiled statically into Python, otherwise it can't import 
+them into frozen binary):
+
+*static*
+# ... lots of other modules
+Crypto.Cipher.DES3 DES3.c
+
+But this produces:
+
+[<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">root at localhost</A> Python-2.6.2]# make
+/bin/sh ./Modules/makesetup -c ./Modules/config.c.in \
+                                 -s Modules \
+                                 Modules/Setup.config \
+                                 Modules/Setup.local \
+                                 Modules/Setup
+bad word Crypto.Cipher.DES3 in Crypto.Cipher.DES3 DES3.c
+make: *** [Makefile] Error 1
+
+If I change that to:
+
+DES3 DES3.c
+
+Python compiles, but then I can't import this module and neither can 
+PyCrypto in a frozen binary:
+
+[<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">root at localhost</A> tmp2]# ./cssh
+&lt;frozen&gt;:6: DeprecationWarning: the sha module is deprecated; use the 
+hashlib module instead
+&lt;frozen&gt;:6: DeprecationWarning: the md5 module is deprecated; use 
+hashlib instead
+Traceback (most recent call last):
+   File &quot;cssh.py&quot;, line 7, in &lt;module&gt;
+     import paramiko
+   File &quot;/usr/local/lib/python2.6/site-packages/paramiko/__init__.py&quot;, 
+line 69, in &lt;module&gt;
+     from transport import randpool, SecurityOptions, Transport
+   File &quot;/usr/local/lib/python2.6/site-packages/paramiko/transport.py&quot;, 
+line 37, in &lt;module&gt;
+     from paramiko.dsskey import DSSKey
+   File &quot;/usr/local/lib/python2.6/site-packages/paramiko/dsskey.py&quot;, 
+line 31, in &lt;module&gt;
+     from paramiko.pkey import PKey
+   File &quot;/usr/local/lib/python2.6/site-packages/paramiko/pkey.py&quot;, line 
+28, in &lt;module&gt;
+     from Crypto.Cipher import DES3
+ImportError: cannot import name DES3
+
+
+
+
+Regards,
+mk
+
+
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000147.html">[pycrypto] Elliptic curve cryptography and group signature
+</A></li>
+	<LI>Next message: <A HREF="000151.html">[pycrypto] Freezing pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#150">[ date ]</a>
+              <a href="thread.html#150">[ thread ]</a>
+              <a href="subject.html#150">[ subject ]</a>
+              <a href="author.html#150">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

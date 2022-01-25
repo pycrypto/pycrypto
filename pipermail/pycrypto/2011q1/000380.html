@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Issue with the new random.choice() unit test
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Issue%20with%20the%20new%20random.choice%28%29%20unit%20test&In-Reply-To=4D2385B2.2050406%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000379.html">
+   <LINK REL="Next"  HREF="000381.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Issue with the new random.choice() unit test</H1>
+    <B>Lorenz Quack</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Issue%20with%20the%20new%20random.choice%28%29%20unit%20test&In-Reply-To=4D2385B2.2050406%40gmx.li"
+       TITLE="[pycrypto] Issue with the new random.choice() unit test">don at amberfisharts.com
+       </A><BR>
+    <I>Tue Jan  4 17:24:14 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000379.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+        <LI>Next message: <A HREF="000381.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#380">[ date ]</a>
+              <a href="thread.html#380">[ thread ]</a>
+              <a href="subject.html#380">[ subject ]</a>
+              <a href="author.html#380">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Well, this problem exist in all your random test although it is indeed
+unlikely that one will hit the others.
+I personally wouldn't worry to much about the exact distribution of most
+random tests. They all use random.randrange which in turn uses getrandbits.
+So if you want to go for *real* tests those functions should be the focus.
+Although proper test for the others functions would of course also be good
+I personally would settle for simple sanity checks (i.e., just increase the
+seq size or wrap the part with a try-except block in which you repeat the test.
+If it fails again raise an exception)
+
+By the way:
+  * You don't need to create the seq randomly or do you? wouldn't range(500) suffice?
+  * I find the way you fixed the shuffle function rather odd (good catch, though)
+    my suggestion would be
+	for i in xrange(len(x)):
+		p = self.randrange(len(items))
+		x[i] = items[p]
+		del items[p]
+    or even shorter
+	for i in xrange(len(x)):
+		x[i] = items.pop(self.randrange(len(items)))
+
+sincerely yours,
+//Lorenz
+
+
+On 01/04/2011 09:40 PM, Thorsten Behrens wrote:
+&gt;<i> I have introduced a unit test in test_random.py that has too high a rate
+</I>&gt;<i> of failure. Specifically, this:
+</I>&gt;<i>
+</I>&gt;<i>           # Test choice
+</I>&gt;<i>           seq = []
+</I>&gt;<i>           for i in range(500): # seed the sequence
+</I>&gt;<i>               seq[i:] = [random.getrandbits(32)]
+</I>&gt;<i>           x = random.choice(seq)
+</I>&gt;<i>           y = random.choice(seq)
+</I>&gt;<i>           self.assertNotEqual(x, y)
+</I>&gt;<i>
+</I>&gt;<i> just produced a FAIL:
+</I>&gt;<i>
+</I>&gt;<i> FAIL: runTest (Crypto.SelfTest.Random.test_random.SimpleTest)
+</I>&gt;<i> Crypto.Random.new()
+</I>&gt;<i> ----------------------------------------------------------------------
+</I>&gt;<i> Traceback (most recent call last):
+</I>&gt;<i>     File &quot;build\lib.win-amd64-2.7\Crypto\SelfTest\Random\test_random.py&quot;,
+</I>&gt;<i> line 103, in runTest
+</I>&gt;<i>       self.assertNotEqual(x, y)
+</I>&gt;<i> AssertionError: 1793595220L == 1793595220L
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Well darn. I guess saying &quot;hey it's a 1 in 500 chance, it'll never
+</I>&gt;<i> fail!&quot; is indeed naive. What would be a less naive test, then? I am
+</I>&gt;<i> thinking seeding a much smaller seq, and then running choice many times,
+</I>&gt;<i> counting collisions each time, and getting some form of expected value
+</I>&gt;<i> with an expected precision from that. It's been very long since I've
+</I>&gt;<i> done stochastic stuff, however. Before I screw this up further: Concrete
+</I>&gt;<i> suggestions on how to fix this unit test?
+</I>&gt;<i>
+</I>&gt;<i> Thanks!
+</I>&gt;<i> Thorsten
+</I>
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000379.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+	<LI>Next message: <A HREF="000381.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#380">[ date ]</a>
+              <a href="thread.html#380">[ thread ]</a>
+              <a href="subject.html#380">[ subject ]</a>
+              <a href="author.html#380">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

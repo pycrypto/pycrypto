@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ANN: PyCrypto 2.1.0 alpha 2 released
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ANN%3A%20PyCrypto%202.1.0%20alpha%202%20released&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000135.html">
+   <LINK REL="Next"  HREF="000137.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ANN: PyCrypto 2.1.0 alpha 2 released</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ANN%3A%20PyCrypto%202.1.0%20alpha%202%20released&In-Reply-To="
+       TITLE="[pycrypto] ANN: PyCrypto 2.1.0 alpha 2 released">dlitz at dlitz.net
+       </A><BR>
+    <I>Sun Oct 18 23:32:22 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000135.html">[pycrypto] AES decrypting issues
+</A></li>
+        <LI>Next message: <A HREF="000137.html">[pycrypto] ANN: PyCrypto 2.1.0 alpha 2 released and Bug #408660
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#136">[ date ]</a>
+              <a href="thread.html#136">[ thread ]</a>
+              <a href="subject.html#136">[ subject ]</a>
+              <a href="author.html#136">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>PyCrypto 2.1.0alpha2 has been released.  I'm going to push through a stable 
+release as soon as I can, since at this point I think all the major issues 
+have been resolved[*], and it's getting a bit ridiculous that it's taking 
+me longer to release a stable PyCrypto than it takes to release a stable 
+Debian.
+
+You can get this alpha release via HTTP at:
+
+   <A HREF="http://ftp.dlitz.net/pub/dlitz/crypto/pycrypto/pycrypto-2.1.0a2.tar.gz">http://ftp.dlitz.net/pub/dlitz/crypto/pycrypto/pycrypto-2.1.0a2.tar.gz</A>
+   <A HREF="http://ftp.dlitz.net/pub/dlitz/crypto/pycrypto/pycrypto-2.1.0a2.tar.gz.asc">http://ftp.dlitz.net/pub/dlitz/crypto/pycrypto/pycrypto-2.1.0a2.tar.gz.asc</A>
+
+You can also get it from the git repository:
+
+   $ git clone <A HREF="git://git.pycrypto.org:9419/crypto/pycrypto-2.x.git">git://git.pycrypto.org:9419/crypto/pycrypto-2.x.git</A>
+   $ cd pycrypto-2.x
+   $ git checkout v2.1.0alpha2
+
+The ChangeLog is available online at:
+
+   <A HREF="http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git;a=blob;f=ChangeLog;h=94731b70962732ea718e63bfdf21c3722ee94af4;hb=a7748d0e65fe17fbcb20f7b086536c3ccf68de43">http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git;a=blob;f=ChangeLog;h=94731b70962732ea718e63bfdf21c3722ee94af4;hb=a7748d0e65fe17fbcb20f7b086536c3ccf68de43</A>
+
+Please test it and post your experiences to the PyCrypto mailing list:
+
+   <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+
+and/or file bug reports on Launchpad:
+
+   <A HREF="https://bugs.launchpad.net/pycrypto">https://bugs.launchpad.net/pycrypto</A>
+
+There has been a huge number of changes since the last stable release[**], 
+and not a lot of feedback so far, so I would really appreciate any feedback 
+even if it's just a simple oneliner like, &quot;built on &lt;OS&gt; &lt;ARCHITECTURE&gt;; 
+used with &lt;PROGRAM&gt;; works fine.&quot;
+
+The files for this release have the following SHA256 sums:
+
+bc42f57eae5bf1ef4319e6e99cd45281b096d0de9ae4f00a0b6fa7ffa359b349 *pycrypto-2.1.0a2.tar.gz
+f2c821e10d5d473af153fb82fd87101772aaf5583aea40e0bac0cb6b586d2c7c *pycrypto-2.1.0a2.tar.gz.asc
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+[*] ... with the possible exception of RSA key generation, which some 
+people have suggested might be inadequate.  I could use some help with 
+this.  See <A HREF="https://bugs.launchpad.net/pycrypto/+bug/408660">https://bugs.launchpad.net/pycrypto/+bug/408660</A>
+
+[**] &quot;git diff -C --shortstat v2.0.1 v2.1.0alpha2&quot; shows:
+ 178 files changed, 20306 insertions(+), 7336 deletions(-)
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 221 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20091019/6cc3e327/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20091019/6cc3e327/attachment.pgp</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000135.html">[pycrypto] AES decrypting issues
+</A></li>
+	<LI>Next message: <A HREF="000137.html">[pycrypto] ANN: PyCrypto 2.1.0 alpha 2 released and Bug #408660
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#136">[ date ]</a>
+              <a href="thread.html#136">[ thread ]</a>
+              <a href="subject.html#136">[ subject ]</a>
+              <a href="author.html#136">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

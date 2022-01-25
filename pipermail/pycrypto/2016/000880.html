@@ -1,0 +1,864 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Build error?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Build%20error%3F&In-Reply-To=%3CCAEncD4d14YqJ7FpevFCgx7e2RFGsa_UEAP%2Bu4RE5%3Dtbb4tMXzQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <LINK REL="Previous"  HREF="000879.html">
+   <LINK REL="Next"  HREF="000881.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Build error?</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Build%20error%3F&In-Reply-To=%3CCAEncD4d14YqJ7FpevFCgx7e2RFGsa_UEAP%2Bu4RE5%3Dtbb4tMXzQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Build error?">dave.pawson at gmail.com
+       </A><BR>
+    <I>Thu Dec  8 07:43:51 UTC 2016</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000879.html">[pycrypto] Build error?
+</A></li>
+        <LI>Next message: <A HREF="000881.html">[pycrypto] pycryptodome
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#880">[ date ]</a>
+              <a href="thread.html#880">[ thread ]</a>
+              <a href="subject.html#880">[ subject ]</a>
+              <a href="author.html#880">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>fyi.
+
+Installed using python setup.py (my error)
+as per <A HREF="https://ofswiki.org/wiki/Uninstalling_setup.py_install">https://ofswiki.org/wiki/Uninstalling_setup.py_install</A>
+
+list of 2.6.1 files is
+
+]# cat files.txt
+/usr/lib64/python2.7/site-packages/Crypto/pct_warnings.py
+/usr/lib64/python2.7/site-packages/Crypto/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/Hash/MD4.py
+/usr/lib64/python2.7/site-packages/Crypto/Hash/RIPEMD.py
+/usr/lib64/python2.7/site-packages/Crypto/Hash/hashalgo.py
+/usr/lib64/python2.7/site-packages/Crypto/Hash/MD5.py
+/usr/lib64/python2.7/site-packages/Crypto/Hash/SHA.py
+/usr/lib64/python2.7/site-packages/Crypto/Hash/MD2.py
+/usr/lib64/python2.7/site-packages/Crypto/Hash/SHA512.py
+/usr/lib64/python2.7/site-packages/Crypto/Hash/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/Hash/SHA224.py
+/usr/lib64/python2.7/site-packages/Crypto/Hash/SHA256.py
+/usr/lib64/python2.7/site-packages/Crypto/Hash/SHA384.py
+/usr/lib64/python2.7/site-packages/Crypto/Hash/HMAC.py
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/ARC4.py
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/DES.py
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/PKCS1_v1_5.py
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/ARC2.py
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/PKCS1_OAEP.py
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/AES.py
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/Blowfish.py
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/XOR.py
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/DES3.py
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/CAST.py
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py
+/usr/lib64/python2.7/site-packages/Crypto/Util/_number_new.py
+/usr/lib64/python2.7/site-packages/Crypto/Util/asn1.py
+/usr/lib64/python2.7/site-packages/Crypto/Util/RFC1751.py
+/usr/lib64/python2.7/site-packages/Crypto/Util/py21compat.py
+/usr/lib64/python2.7/site-packages/Crypto/Util/py3compat.py
+/usr/lib64/python2.7/site-packages/Crypto/Util/Counter.py
+/usr/lib64/python2.7/site-packages/Crypto/Util/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/Util/number.py
+/usr/lib64/python2.7/site-packages/Crypto/Util/winrandom.py
+/usr/lib64/python2.7/site-packages/Crypto/Util/randpool.py
+/usr/lib64/python2.7/site-packages/Crypto/Random/random.py
+/usr/lib64/python2.7/site-packages/Crypto/Random/_UserFriendlyRNG.py
+/usr/lib64/python2.7/site-packages/Crypto/Random/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/Random/Fortuna/FortunaGenerator.py
+/usr/lib64/python2.7/site-packages/Crypto/Random/Fortuna/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/Random/Fortuna/FortunaAccumulator.py
+/usr/lib64/python2.7/site-packages/Crypto/Random/Fortuna/SHAd256.py
+/usr/lib64/python2.7/site-packages/Crypto/Random/OSRNG/fallback.py
+/usr/lib64/python2.7/site-packages/Crypto/Random/OSRNG/rng_base.py
+/usr/lib64/python2.7/site-packages/Crypto/Random/OSRNG/nt.py
+/usr/lib64/python2.7/site-packages/Crypto/Random/OSRNG/posix.py
+/usr/lib64/python2.7/site-packages/Crypto/Random/OSRNG/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/st_common.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_ARC2.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_ARC4.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_AES.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/common.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_DES3.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_pkcs1_oaep.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_pkcs1_15.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_DES.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_Blowfish.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_CAST.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_XOR.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_MD5.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_RIPEMD.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_MD4.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_SHA256.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_HMAC.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/common.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_MD2.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_SHA512.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_SHA224.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_SHA384.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_SHA.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Protocol/test_KDF.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Protocol/test_rfc1751.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Protocol/test_chaffing.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Protocol/test_AllOrNothing.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Protocol/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/PublicKey/test_RSA.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/PublicKey/test_importKey.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/PublicKey/test_DSA.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/PublicKey/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/PublicKey/test_ElGamal.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/test_random.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/test__UserFriendlyRNG.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/test_rpoolcompat.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/Fortuna/test_FortunaAccumulator.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/Fortuna/test_SHAd256.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/Fortuna/test_FortunaGenerator.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/Fortuna/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/OSRNG/test_winrandom.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/OSRNG/test_generic.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/OSRNG/test_fallback.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/OSRNG/test_nt.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/OSRNG/test_posix.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/OSRNG/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Util/test_asn1.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Util/test_winrandom.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Util/test_number.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Util/test_Counter.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Util/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Signature/test_pkcs1_pss.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Signature/test_pkcs1_15.py
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Signature/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/Protocol/KDF.py
+/usr/lib64/python2.7/site-packages/Crypto/Protocol/Chaffing.py
+/usr/lib64/python2.7/site-packages/Crypto/Protocol/AllOrNothing.py
+/usr/lib64/python2.7/site-packages/Crypto/Protocol/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/ElGamal.py
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/_DSA.py
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/DSA.py
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/pubkey.py
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/_RSA.py
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/RSA.py
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/_slowmath.py
+/usr/lib64/python2.7/site-packages/Crypto/Signature/PKCS1_v1_5.py
+/usr/lib64/python2.7/site-packages/Crypto/Signature/PKCS1_PSS.py
+/usr/lib64/python2.7/site-packages/Crypto/Signature/__init__.py
+/usr/lib64/python2.7/site-packages/Crypto/pct_warnings.pyc
+/usr/lib64/python2.7/site-packages/Crypto/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Hash/MD4.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Hash/RIPEMD.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Hash/hashalgo.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Hash/MD5.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Hash/SHA.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Hash/MD2.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Hash/SHA512.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Hash/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Hash/SHA224.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Hash/SHA256.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Hash/SHA384.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Hash/HMAC.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/ARC4.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/DES.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/PKCS1_v1_5.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/ARC2.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/PKCS1_OAEP.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/AES.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/Blowfish.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/XOR.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/DES3.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/CAST.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Util/_number_new.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Util/asn1.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Util/RFC1751.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Util/py21compat.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Util/py3compat.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Util/Counter.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Util/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Util/number.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Util/winrandom.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Util/randpool.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Random/random.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Random/_UserFriendlyRNG.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Random/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Random/Fortuna/FortunaGenerator.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Random/Fortuna/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Random/Fortuna/FortunaAccumulator.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Random/Fortuna/SHAd256.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Random/OSRNG/fallback.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Random/OSRNG/rng_base.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Random/OSRNG/nt.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Random/OSRNG/posix.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Random/OSRNG/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/st_common.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_ARC2.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_ARC4.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_AES.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/common.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_DES3.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_pkcs1_oaep.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_pkcs1_15.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_DES.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_Blowfish.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_CAST.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Cipher/test_XOR.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_MD5.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_RIPEMD.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_MD4.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_SHA256.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_HMAC.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/common.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_MD2.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_SHA512.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_SHA224.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_SHA384.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Hash/test_SHA.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Protocol/test_KDF.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Protocol/test_rfc1751.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Protocol/test_chaffing.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Protocol/test_AllOrNothing.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Protocol/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/PublicKey/test_RSA.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/PublicKey/test_importKey.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/PublicKey/test_DSA.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/PublicKey/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/PublicKey/test_ElGamal.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/test_random.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/test__UserFriendlyRNG.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/test_rpoolcompat.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/Fortuna/test_FortunaAccumulator.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/Fortuna/test_SHAd256.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/Fortuna/test_FortunaGenerator.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/Fortuna/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/OSRNG/test_winrandom.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/OSRNG/test_generic.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/OSRNG/test_fallback.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/OSRNG/test_nt.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/OSRNG/test_posix.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Random/OSRNG/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Util/test_asn1.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Util/test_winrandom.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Util/test_number.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Util/test_Counter.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Util/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Signature/test_pkcs1_pss.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Signature/test_pkcs1_15.pyc
+/usr/lib64/python2.7/site-packages/Crypto/SelfTest/Signature/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Protocol/KDF.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Protocol/Chaffing.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Protocol/AllOrNothing.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Protocol/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/ElGamal.pyc
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/_DSA.pyc
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/DSA.pyc
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/pubkey.pyc
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/_RSA.pyc
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/RSA.pyc
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/PublicKey/_slowmath.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Signature/PKCS1_v1_5.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Signature/PKCS1_PSS.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Signature/__init__.pyc
+/usr/lib64/python2.7/site-packages/Crypto/Hash/_MD2.so
+/usr/lib64/python2.7/site-packages/Crypto/Hash/_MD4.so
+/usr/lib64/python2.7/site-packages/Crypto/Hash/_SHA256.so
+/usr/lib64/python2.7/site-packages/Crypto/Hash/_SHA224.so
+/usr/lib64/python2.7/site-packages/Crypto/Hash/_SHA384.so
+/usr/lib64/python2.7/site-packages/Crypto/Hash/_SHA512.so
+/usr/lib64/python2.7/site-packages/Crypto/Hash/_RIPEMD160.so
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/_AES.so
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/_ARC2.so
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/_Blowfish.so
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/_CAST.so
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/_DES.so
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/_DES3.so
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/_ARC4.so
+/usr/lib64/python2.7/site-packages/Crypto/Cipher/_XOR.so
+/usr/lib64/python2.7/site-packages/Crypto/Util/strxor.so
+/usr/lib64/python2.7/site-packages/Crypto/Util/_counter.so
+/usr/lib64/python2.7/site-packages/pycrypto-2.6.1-py2.7.egg-info
+
+Now removed.
+
+Tks for your help.
+
+Dave
+
+
+On 7 December 2016 at 21:17, Martin Falatic &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">martin at falatic.com</A>&gt; wrote:
+&gt;<i> Typo, or two packages of the same exact name?
+</I>&gt;<i>
+</I>&gt;<i> The system shouldn't have a problem uninstalling the RPM because of the
+</I>&gt;<i> way these packages get installed - pycryptodome uses the same package name
+</I>&gt;<i> &quot;Crypto&quot;, but it's not installed in the same folders. Because of that same
+</I>&gt;<i> namespace, with both installed it can be a toss-up as to which package
+</I>&gt;<i> named &quot;Crypto&quot; Python will use.
+</I>&gt;<i>
+</I>&gt;<i> pycryptodomex uses a different package name entirely (&quot;Cryptodome&quot;) - thus
+</I>&gt;<i> it wouldn't conflict with &quot;Crypto&quot;, but you'd have to refactor everything
+</I>&gt;<i> to use &quot;Cryptodome&quot; instead which is its own kind of pain.
+</I>&gt;<i>
+</I>&gt;<i> Since pycryptodome is a superset of pycrypto, there shouldn't be anything
+</I>&gt;<i> missing (and it already works better just by virtue of the bugs that got
+</I>&gt;<i> fixed), thus using that alone ought to suffice.
+</I>&gt;<i>
+</I>&gt;<i>  - M
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Wed, December 7, 2016 13:03, Dave Pawson wrote:
+</I>&gt;&gt;<i> Assumes the rpm software can tell pycrypto from pycrypto!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'll let you know :-)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 7 December 2016 at 20:47, Martin Falatic &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">martin at falatic.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Got it. I'd think uninstalling pycrypto would suffice.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Pycryptodomex is an option, but then you have to refactor everything.
+</I>&gt;&gt;&gt;<i> I'd go
+</I>&gt;&gt;&gt;<i> with pycryptodome alone.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On December 7, 2016 12:33:56 PM PST, Dave Pawson
+</I>&gt;&gt;&gt;<i> &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> That was the implied question.
+</I>&gt;&gt;&gt;&gt;<i> I installed pycrypto using rpm,
+</I>&gt;&gt;&gt;&gt;<i> pycryptodome using pip.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> I think I need to start again!
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> regards
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On 7 December 2016 at 19:09, Martin Falatic &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">martin at falatic.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> As per the docs, do NOT do that. Uninstall pycrypto if you are
+</I>&gt;&gt;&gt;&gt;&gt;<i> using pycryptodome, or vice versa. - Marty
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> On Wed, December 7, 2016 04:58, Dave Pawson wrote:
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> It does. Sorry.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> I used pip to install pycryptodome.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> So now I have both the old pycrypto and pycryptodome 'providing'
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Crypto
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> package! Mmm.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Still working, so I'll leave it for now.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> regards
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> On 7 December 2016 at
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> 12:02, Martin Falatic &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">martin at falatic.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> See the introduction link I sent previously. It explains this
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> in detail.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> On December 7, 2016 3:45:58 AM PST, Dave Pawson
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> # pip search pycryptodome
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> pycryptodome (3.4.3)   - Cryptographic library for Python
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> pycryptodomex (3.4.3)  - Cryptographic library for Python
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> What's the difference please?
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> regards
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> On 6 December 2016 at 21:41, Martin Falatic
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">martin at falatic.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Since it's forked from pycrypto
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> 2.6.1 I think you'll be fine.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> However,
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> if you find places where it falls short versus this one,
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> please open an issue with them first so it can be tracked
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> and hopefully rectified, and reply with the bug link here so
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> others can be aware of it.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> - M
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> On Tue, December 6, 2016 13:34, Dave Pawson wrote:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Thanks for that. Good it's installable via pip.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> I've a whole setup (pwd safe) to check out, I'll
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> see if it sits as a usable replacement.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Dave
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> On 6 December 2016 at 21:12, Martin Falatic
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">martin at falatic.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Consider the following rather basic but important bug
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> in pycrypto:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://github.com/dlitz/pycrypto/issues/187">https://github.com/dlitz/pycrypto/issues/187</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> As you'll see there, I stumbled on it and even built a
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> fixed version a few months ago.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Revisiting this now, I just re-tested to see that
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> pycryptodome already has that fix in it.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Your mileage may vary, but pycryptodome is being
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> actively developed and maintained and is a drop-in
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> replacement for pycrypto.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> - Marty
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> On Tue, December 6, 2016 04:56, Dave Pawson
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> I downloaded and built from source which seems to
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> work fine. Shame really, it's a good library.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> regards
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> On 6 December 2016 at 09:12, Martin Falatic
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">martin at falatic.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Unfortunately, by all appearances PyCrypto seems to
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> be dead. I would consider Helder Eijs'
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> &quot;PyCryptodome&quot; as a
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> replacement. More information:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://pycryptodome.readthedocs.io/en/latest/src/i">https://pycryptodome.readthedocs.io/en/latest/src/i</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> ntroduct ion.html
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> - Marty
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> @MartyMacGyver most places
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> On Fri, December 2, 2016 01:38, Dave Pawson wrote:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> further investigations show:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> # pip show pycrypto
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Name: pycrypto
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Version: 2.6.1
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Summary: Cryptographic modules for Python.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Home-page: <A HREF="http://www.pycrypto.org/">http://www.pycrypto.org/</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Author: Dwayne C.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Litzenberger
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Author-email: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> License: UNKNOWN
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Location: /usr/lib64/python2.7/site-packages
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> All my code is (now) Python 3.5.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Question if 3.5 code accesses 2.7 site-packages?
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Is there a way round this please?
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> regards
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> On 2 December 2016 at 08:28, Dave Pawson
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Fedora 25, installing
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> pycrypto 2.6.1
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> full build at <A HREF="http://pastebin.com/acC5r1YY">http://pastebin.com/acC5r1YY</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> error reported
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> gcc: error:
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> /usr/lib/rpm/redhat/redhat-hardened-cc1: No
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> such file or directory error: command 'gcc'
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> failed with exit status 1
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Searching for the
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> error I found
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://bugs.launchpad.net/openstack-gate/+bug/">https://bugs.launchpad.net/openstack-gate/+bug/</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> 1424582
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> # dnf install redhat-rpm-config
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> which then brought
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> src/MD2.c:31:20: fatal error: Python.h: No such
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> file or directory #include &quot;Python.h&quot; ^
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> compilation terminated. error: command 'gcc'
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> failed with exit status 1
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> dnf install python3-devel resolved that.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> I'm lost now with
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> from Crypto.Cipher import AES ImportError: No
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> module named 'Crypto'
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Google has lots of varying suggestions, none of
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> which seem to work.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Any help please.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Dave Pawson
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Docbook FAQ.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Dave Pawson
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Docbook FAQ.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> ________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> pycrypto mailing list <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/p">http://lists.dlitz.net/cgi-bin/mailman/listinfo/p</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> ycrypto
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> ________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> pycrypto mailing list <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pyc">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pyc</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> rypto
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Dave Pawson
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> XSLT XSL-FO
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> FAQ.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Docbook FAQ.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> ________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> pycrypto mailing list <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycry">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycry</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> pto
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> ________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> pycrypto mailing list <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypt">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypt</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> o
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Dave Pawson
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> Docbook FAQ.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> ________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> pycrypto mailing list <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> ________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> ________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> pycrypto mailing list <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Dave Pawson
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Docbook FAQ.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> ________________________________
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> pycrypto mailing list <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> ________________________________
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> pycrypto mailing list <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> pycrypto mailing list <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Dave Pawson
+</I>&gt;&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;&gt;<i> Docbook FAQ.
+</I>&gt;&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000879.html">[pycrypto] Build error?
+</A></li>
+	<LI>Next message: <A HREF="000881.html">[pycrypto] pycryptodome
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#880">[ date ]</a>
+              <a href="thread.html#880">[ thread ]</a>
+              <a href="subject.html#880">[ subject ]</a>
+              <a href="author.html#880">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA exportKey question
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%20question&In-Reply-To=%3CCAGfyce0pLWhOEnON2y-vjvfVnhB7tCjYuZkHxmg3tigpw30PvQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000676.html">
+   <LINK REL="Next"  HREF="000673.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA exportKey question</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%20question&In-Reply-To=%3CCAGfyce0pLWhOEnON2y-vjvfVnhB7tCjYuZkHxmg3tigpw30PvQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] RSA exportKey question">helderijs at gmail.com
+       </A><BR>
+    <I>Fri Jul  5 06:32:40 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000676.html">[pycrypto] RSA exportKey question
+</A></li>
+        <LI>Next message: <A HREF="000673.html">[pycrypto] RSA exportKey question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#677">[ date ]</a>
+              <a href="thread.html#677">[ thread ]</a>
+              <a href="subject.html#677">[ subject ]</a>
+              <a href="author.html#677">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Yaron,
+
+I don't see anything related to PKCS#8 in the changelog of openssl 0.9.7.
+It may have introduced AES as a cipher but it's not clear to me if
+ability to decrypt PKCS#8-wrapped keys came with that.
+Even if it did, I still don't find it unthinkable to run into software
+of that age in a) production systems behind the lines b) embedded
+systems.
+Note that PyCrypto does not use openssl (M2Crypto is the best wrapped on it).
+Additionally, PyCrypto claims compatibility to Python 2.1, which came
+out in 2001...
+
+PS: glad to see some activity on this mailing list...
+
+2013/7/5 Yaron Sheffer &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">yaronf.ietf at gmail.com</A>&gt;:
+&gt;<i> Actually-not-so-old meaning more than 10 years? (See &quot;Changes between 0.9.6h
+</I>&gt;<i> and 0.9.7  [31 Dec 2002]&quot; under <A HREF="http://www.openssl.org/news/changelog.html.">http://www.openssl.org/news/changelog.html.</A>
+</I>&gt;<i> Or is Python OpenSSL support so much behind mainline OpenSSL?
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i>         Yaron
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On 2013-07-05 13:10, Legrandin wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hi Paul,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> In the back of my mind, I was referring to practical purposes *in the
+</I>&gt;&gt;<i> context of key wrapping*.
+</I>&gt;&gt;<i> For key wrapping, you deal with very small payloads and the key is
+</I>&gt;&gt;<i> salted: speed and birthdays paradox are not real concerns,
+</I>&gt;&gt;<i> and the security marging 3DES (with 112 bits of ) is large enough.
+</I>&gt;&gt;<i> I am suggesting to stick to &quot;PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC&quot; as
+</I>&gt;&gt;<i> default PKCS#8 wrapping algorithm for export
+</I>&gt;&gt;<i> because there are more chances the receiver (e.g. some
+</I>&gt;&gt;<i> actually-not-so-old openssl versions) will be able to unwrap it.
+</I>&gt;&gt;<i> If I had to pick a more future proof value (regardless of
+</I>&gt;&gt;<i> compatibility) I would agree that AES is better, but only in
+</I>&gt;&gt;<i> combination with scrypt as KDF.
+</I></PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000676.html">[pycrypto] RSA exportKey question
+</A></li>
+	<LI>Next message: <A HREF="000673.html">[pycrypto] RSA exportKey question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#677">[ date ]</a>
+              <a href="thread.html#677">[ thread ]</a>
+              <a href="subject.html#677">[ subject ]</a>
+              <a href="author.html#677">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

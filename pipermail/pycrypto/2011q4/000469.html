@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Install failure
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Install%20failure&In-Reply-To=8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC43%40exch-mail.bridge.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000483.html">
+   <LINK REL="Next"  HREF="000470.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Install failure</H1>
+    <B>Andrew Cooper</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Install%20failure&In-Reply-To=8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC43%40exch-mail.bridge.net"
+       TITLE="[pycrypto] Install failure">andyhhp at gmail.com
+       </A><BR>
+    <I>Wed Oct 19 09:31:19 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000483.html">[pycrypto] PyCrypto survey is live
+</A></li>
+        <LI>Next message: <A HREF="000470.html">[pycrypto] Install failure
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#469">[ date ]</a>
+              <a href="thread.html#469">[ thread ]</a>
+              <a href="subject.html#469">[ subject ]</a>
+              <a href="author.html#469">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 19/10/2011 16:13, Dean Macinskas wrote:
+&gt;<i>
+</I>&gt;<i>  
+</I>&gt;<i>
+</I>&gt;<i>  
+</I>&gt;<i>
+</I>&gt;<i> *From:*<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>
+</I>&gt;<i> [mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>] *On Behalf Of *Andrew Cooper
+</I>&gt;<i> *Sent:* Wednesday, October 19, 2011 11:05 AM
+</I>&gt;<i> *To:* <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> *Subject:* Re: [pycrypto] Install failure
+</I>&gt;<i>
+</I>&gt;<i>  
+</I>&gt;<i>
+</I>&gt;<i> On 19/10/2011 15:58, Dean Macinskas wrote:
+</I>&gt;<i>
+</I>&gt;<i>  
+</I>&gt;<i>
+</I>&gt;<i>  
+</I>&gt;<i>
+</I>&gt;<i> *From:*<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>
+</I>&gt;<i> &lt;mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>&gt;
+</I>&gt;<i> [mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>] *On Behalf Of *Andrew Cooper
+</I>&gt;<i> *Sent:* Wednesday, October 19, 2011 10:52 AM
+</I>&gt;<i> *To:* PyCrypto discussion list
+</I>&gt;<i> *Subject:* Re: [pycrypto] Install failure
+</I>&gt;<i>
+</I>&gt;<i>  
+</I>&gt;<i>
+</I>&gt;<i> On 19/10/2011 15:46, Dean Macinskas wrote:
+</I>&gt;<i>
+</I>&gt;<i>  
+</I>&gt;<i>
+</I>&gt;<i> Platform: W7pro, 64-bit
+</I>&gt;<i>
+</I>&gt;<i>  
+</I>&gt;<i>
+</I>&gt;<i> I downloaded the latest version (2.3) and ran &quot;python setup.py
+</I>&gt;<i> install&quot;.  Here's what I see:
+</I>&gt;<i>
+</I>&gt;<i>  
+</I>&gt;<i>
+</I>&gt;<i> C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3&gt;python
+</I>&gt;<i> setup.py install
+</I>&gt;<i>
+</I>&gt;<i> running install
+</I>&gt;<i>
+</I>&gt;<i> running build
+</I>&gt;<i>
+</I>&gt;<i> running build_py
+</I>&gt;<i>
+</I>&gt;<i> running build_ext
+</I>&gt;<i>
+</I>&gt;<i> warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+</I>&gt;<i>
+</I>&gt;<i> building 'Crypto.Random.OSRNG.winrandom' extension
+</I>&gt;<i>
+</I>&gt;<i> error: Unable to find vcvarsall.bat
+</I>&gt;<i>
+</I>&gt;<i>  
+</I>&gt;<i>
+</I>&gt;<i> C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3&gt;
+</I>&gt;<i>
+</I>&gt;<i>  
+</I>&gt;<i>
+</I>&gt;<i> This appears to defeat the install, because subsequently importing
+</I>&gt;<i> Crypto.Cipher produces a &quot;module not found&quot; error.
+</I>&gt;<i>
+</I>&gt;<i>  
+</I>&gt;<i>
+</I>&gt;<i> Any advice?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Do you have MSCV/MSVS installed?  You need a C compiler for &quot;python
+</I>&gt;<i> setup.py install&quot; to work.
+</I>&gt;<i>
+</I>&gt;<i> ~Andrew
+</I>&gt;<i>
+</I>&gt;<i> No, but I have Python installed on another system, also without
+</I>&gt;<i> MSCV/MSVS installed, and I've imported lots of packages without
+</I>&gt;<i> error.  Is PyCrypto a special case in this regard?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Not overly special - it is certainly not the only python extension
+</I>&gt;<i> written mainly in C.  The majority of extensions however are just
+</I>&gt;<i> python themselves, so don't require a C compiler.
+</I>&gt;<i>
+</I>&gt;<i> ~Andrew
+</I>&gt;<i>
+</I>&gt;<i> Besides, I'd expect that the install module would have the C stuff
+</I>&gt;<i> already compiled, no?
+</I>&gt;<i>
+</I>
+Why do you expect that? It is the source tarball.
+
+~Andrew
+
+&gt;<i>  
+</I>&gt;<i>
+</I>&gt;<i> Perhaps I don't have the C runtime installed.  Is there a specific one
+</I>&gt;<i> required?  I'm using Python 2.7.2.
+</I>&gt;<i>
+</I>&gt;<i>  
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i>
+</I>&gt;<i> dpm
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20111019/710e7b2f/attachment-0001.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20111019/710e7b2f/attachment-0001.htm</A> 
+</PRE>
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000483.html">[pycrypto] PyCrypto survey is live
+</A></li>
+	<LI>Next message: <A HREF="000470.html">[pycrypto] Install failure
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#469">[ date ]</a>
+              <a href="thread.html#469">[ thread ]</a>
+              <a href="subject.html#469">[ subject ]</a>
+              <a href="author.html#469">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,13 @@
+<tt>
+&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;<br>
+&nbsp; &nbsp;encobj&nbsp;=&nbsp;AES.new(secret,&nbsp;AES.MODE_CFB)&lt;br&gt; <br>
+&nbsp;File&nbsp;&quot;/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py&quot;,&lt;br&gt;<br>
+line&nbsp;141,&nbsp;in&nbsp;__init__&lt;br&gt;<br>
+&nbsp; &nbsp;self._cipher&nbsp;=&nbsp;factory.new(key,&nbsp;*args,&nbsp;**kwargs)&lt;br&gt;<br>
+ValueError:&nbsp;IV&nbsp;must&nbsp;be&nbsp;16&nbsp;bytes&nbsp;long&lt;br&gt;<br>
+&lt;br&gt;<br>
+So&nbsp;although&nbsp;the&nbsp;&#39;secret&#39;&nbsp;is&nbsp;16&nbsp;bytes&nbsp;long,&nbsp;I&#39;m&nbsp;getting&nbsp;a&nbsp;report&nbsp;saying&nbsp;it&nbsp;isn&#39;t?&lt;br&gt;&lt;br&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;Hi&nbsp;Dave,&lt;br&gt;<br>
+&lt;br&gt;<br>
+The&nbsp;key&nbsp;is&nbsp;OK,&nbsp;but&nbsp;the&nbsp;IV&nbsp;is&nbsp;missing&nbsp;and&nbsp;it&nbsp;is&nbsp;mandatory&nbsp;for&nbsp;CFB.&lt;br&gt;Your&nbsp;code&nbsp;should&nbsp;be:&lt;br&gt;&lt;br&gt;encobj&nbsp;=&nbsp;AES.new(secret,&nbsp;AES.MODE_CFB,&nbsp;some_iv)&lt;br&gt;&lt;br&gt;where&nbsp;len(some_iv)==16.&lt;br&gt;<br>
+
+</tt>

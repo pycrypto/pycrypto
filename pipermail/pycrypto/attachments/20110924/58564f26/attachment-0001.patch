@@ -1,0 +1,28 @@
+diff --git a/setup.py b/setup.py
+index 37aedef..e97ab97 100644
+--- a/setup.py
++++ b/setup.py
+@@ -157,7 +157,22 @@ class PCTBuildExt (build_ext):
+             self.compiler.include_dirs.insert(0, "src/inc-msvc/")
+ 
+         # Detect libgmp and don't build _fastmath if it is missing.
+-        lib_dirs = self.compiler.library_dirs + ['/lib', '/usr/lib']
++        lib_dirs = None
++        if self.compiler.compiler_type == 'unix':
++            import subprocess
++            comp = self.compiler.executables['linker_so'] + ['-print-search-dirs']
++            p = subprocess.Popen(comp, stdout=subprocess.PIPE)
++            out = p.communicate()[0]
++            if p.returncode == 0:
++                for line in out.split('\n'):
++                    if not line.startswith('libraries'):
++                      continue
++
++                    line = line.replace('libraries: =', '')
++                    lib_dirs = self.compiler.library_dirs + line.split(':')
++                    break
++        if lib_dirs is None:
++            lib_dirs = self.compiler.library_dirs + ['/lib', '/usr/lib']
+         if not (self.compiler.find_library_file(lib_dirs, 'gmp')):
+             print >>sys.stderr, "warning: GMP library not found; Not building Crypto.PublicKey._fastmath."
+             self.__remove_extensions(["Crypto.PublicKey._fastmath"])

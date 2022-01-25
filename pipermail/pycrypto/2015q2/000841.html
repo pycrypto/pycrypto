@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Compiling on Windows tips
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Compiling%20on%20Windows%20tips&In-Reply-To=%3CCAEncD4dqu2fx%3D%3DkZ%3D4-2jJx2X0h0NgztOe7d4FGbNa9qWEp8gQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000840.html">
+   <LINK REL="Next"  HREF="000842.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Compiling on Windows tips</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Compiling%20on%20Windows%20tips&In-Reply-To=%3CCAEncD4dqu2fx%3D%3DkZ%3D4-2jJx2X0h0NgztOe7d4FGbNa9qWEp8gQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Compiling on Windows tips">dave.pawson at gmail.com
+       </A><BR>
+    <I>Mon Jun 15 09:59:36 PDT 2015</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000840.html">[pycrypto] Compiling on Windows tips
+</A></li>
+        <LI>Next message: <A HREF="000842.html">[pycrypto] pycrypto Digest, Vol 75, Issue 2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#841">[ date ]</a>
+              <a href="thread.html#841">[ thread ]</a>
+              <a href="subject.html#841">[ subject ]</a>
+              <a href="author.html#841">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks Max.
+simple question, which of the n variants of Vis Studio should we install please?
+
+regards
+
+On 2 June 2015 at 06:25, Max Polk &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">maxpolk at gmail.com</A>&gt; wrote:
+&gt;<i> I have some notes for compiling pip packages on Windows that may be of use.
+</I>&gt;<i>
+</I>&gt;<i> To build pycrypto with Visual Studio Express 10, edit the python
+</I>&gt;<i> msvc9compiler.py, add the line here above the existing line:
+</I>&gt;<i>
+</I>&gt;<i>     ld_args.append('/MANIFEST')
+</I>&gt;<i>     ld_args.append('/MANIFESTFILE:' + temp_manifest)
+</I>&gt;<i>
+</I>&gt;<i> Then use this to build:
+</I>&gt;<i>
+</I>&gt;<i>     set VS90COMNTOOLS=%VS100COMNTOOLS%
+</I>&gt;<i>     python setup.py bdist_wininst
+</I>&gt;<i>
+</I>&gt;<i> The above creates an .exe in the dist directory such as
+</I>&gt;<i> pycrypto-2.5.win32-py2.7.exe
+</I>&gt;<i>
+</I>&gt;<i> In general, for various pip packages that require compiling on Windows such
+</I>&gt;<i> as tornado, to compile with Visual Studio from Python, trick Python into
+</I>&gt;<i> using an old variable name before calling pip install:
+</I>&gt;<i>
+</I>&gt;<i> Visual Studio 2010 (VS10):
+</I>&gt;<i> SET VS90COMNTOOLS=%VS100COMNTOOLS%
+</I>&gt;<i>
+</I>&gt;<i> Visual Studio 2012 (VS11):
+</I>&gt;<i> SET VS90COMNTOOLS=%VS110COMNTOOLS%
+</I>&gt;<i>
+</I>&gt;<i> Visual Studio 2013 (VS12):
+</I>&gt;<i> SET VS90COMNTOOLS=%VS120COMNTOOLS%
+</I>&gt;<i>
+</I>&gt;<i> If it is looking for Visual C++ 10, you will set VS100COMNTOOLS instead of
+</I>&gt;<i> setting VS90COMNTOOLS.
+</I>&gt;<i>
+</I>&gt;<i> The above worked for pip install tornado on Windows python 2 and 3.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000840.html">[pycrypto] Compiling on Windows tips
+</A></li>
+	<LI>Next message: <A HREF="000842.html">[pycrypto] pycrypto Digest, Vol 75, Issue 2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#841">[ date ]</a>
+              <a href="thread.html#841">[ thread ]</a>
+              <a href="subject.html#841">[ subject ]</a>
+              <a href="author.html#841">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

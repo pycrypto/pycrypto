@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Troubles when porting from m2crypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Troubles%20when%20porting%20from%20m2crypto&In-Reply-To=%3C1330385584.31064.12.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000555.html">
+   <LINK REL="Next"  HREF="000557.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Troubles when porting from m2crypto</H1>
+    <B>Priit Laes</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Troubles%20when%20porting%20from%20m2crypto&In-Reply-To=%3C1330385584.31064.12.camel%40localhost.localdomain%3E"
+       TITLE="[pycrypto] Troubles when porting from m2crypto">plaes at plaes.org
+       </A><BR>
+    <I>Mon Feb 27 18:33:04 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000555.html">[pycrypto] Visual Studio Express 2010
+</A></li>
+        <LI>Next message: <A HREF="000557.html">[pycrypto] Troubles when porting from m2crypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#556">[ date ]</a>
+              <a href="thread.html#556">[ thread ]</a>
+              <a href="subject.html#556">[ subject ]</a>
+              <a href="author.html#556">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hey!
+
+I'm currently in process of porting my code from m2crypt to pycrypto,
+but I have run into an issue where pycrypto doesn't seem to be returning
+correct results (tested on 32-bit Gentoo, pycrypto-2.5 + Debian 64bit
+with consistent results):
+
+#/usr/bin/env python
+from M2Crypto import EVP
+
+MSG = u'Hello world'
+
+k = EVP.load_key('private_key.pem')
+k.sign_init()
+k.sign_update(MSG) # default is SHA1
+print k.sign_final().encode('base64').strip()
+
+### pycrypto
+from Crypto.PublicKey import RSA
+from Crypto.Hash import SHA
+from Crypto.Util import number
+
+with open('private_key.pem', 'r') as f:
+    s = SHA.new(MSG).digest()
+    k = RSA.importKey(f).sign(s, None)[0]
+    print number.long_to_bytes(k).encode('base64').strip()
+
+
+And this returns following:
+J8ubNHhDmqMnvY3e1UidBnbQCryVkc45+F47L1jELa6ZQAHhi4mhOuwLc0AuCX+oWf2KRFHA/xt8
+1D1RDoOl4S3Qv49SfLD1S5cwGyJnJsN0CfMxJ3pgQMs5HL9mSTLA8Mk1GOV9JsqbJdFiLj9IHyDS
+k6d/5ZD+iWKjBatMczwB0Rwy0M9YgUogvYWmPLR1fSeEdZ0KeJnRk7TdrAOS52xXNUo4nkps55uJ
+sa35ofdCDiywMIGu09ZRspCHz/fJNkpZb5OMD22N6rZDcTdSYQJQPGdFgOkjpKx/ifSZhdGccQnU
+QPLLftJ9kizMIUsj0AbpRJbsxwW6QidQmoMj2w==
+FKMyYbI/wwAM4DL7Sk/jWKH3Oa4pS1vAFNkQIwagZi2xaHdz+qJIF3tehMBUgKiPsY0DtIKXBPli
+CUlBsOFXeH4VmRG6QGN2MU6+JW3C1NYKHf4iEUZjo6GJf2W1sa/qzvpFND7am8XPlTS7YbwtCVYF
+LHKxjykekFOx4OKgLCon/ISctglbTjpR5nlJDB4N68FHdEcQSb9VTE+JfZV5OWhQP5oEGIKl3EhG
+MqSowHgWOEGFgSo9FnOkrK260bZz+a4ZMH5zU5r2nONcNzEEnHyqBqVUdiB29mqhSrzUoZ2Mto0X
+7J/L/PiXqaGFGhdC/FhM+LZaBnWff1J4z6grpw==
+
+
+Am I doing something wrong? Or is there a bug?
+
+P&#228;ikest,
+Priit Laes :)
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: private_key.pem
+Type: application/x-x509-ca-cert
+Size: 1675 bytes
+Desc: not available
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20120228/3e49bcac/attachment.crt">http://lists.dlitz.net/pipermail/pycrypto/attachments/20120228/3e49bcac/attachment.crt</A>&gt;
+</PRE>
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000555.html">[pycrypto] Visual Studio Express 2010
+</A></li>
+	<LI>Next message: <A HREF="000557.html">[pycrypto] Troubles when porting from m2crypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#556">[ date ]</a>
+              <a href="thread.html#556">[ thread ]</a>
+              <a href="subject.html#556">[ subject ]</a>
+              <a href="author.html#556">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

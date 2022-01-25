@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Run test suite with /dev/random
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To=%3C4F234BE2.8030503%40ramacher.at%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000550.html">
+   <LINK REL="Next"  HREF="000553.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Run test suite with /dev/random</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To=%3C4F234BE2.8030503%40ramacher.at%3E"
+       TITLE="[pycrypto] Run test suite with /dev/random">sebastian+lists at ramacher.at
+       </A><BR>
+    <I>Fri Jan 27 20:14:10 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000550.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+        <LI>Next message: <A HREF="000553.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#551">[ date ]</a>
+              <a href="thread.html#551">[ thread ]</a>
+              <a href="subject.html#551">[ subject ]</a>
+              <a href="author.html#551">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 01/27/2012 07:13 PM, Dwayne C. Litzenberger wrote:
+&gt;<i> On Fri, Jan 20, 2012 at 05:20:57PM +0100, Sebastian Ramacher wrote:
+</I>&gt;&gt;<i> Nevertheless there is still an issue in pycrypto left. The assumption that
+</I>&gt;&gt;<i> read always returns the amount of data requested if there is enough available
+</I>&gt;&gt;<i> is not true. If the process is interrupted by a signal read will return less.
+</I>&gt;&gt;<i> At least that's the case for Python3.
+</I>&gt;<i> 
+</I>&gt;<i> That assumption is *correct*.  A Python file object's read() method always
+</I>&gt;<i> returns the requested amount of data, except in two cases:
+</I>&gt;<i> 
+</I>&gt;<i>     1. Non-blocking I/O is selected; or
+</I>&gt;<i>     2. End-of-file is reached.
+</I>&gt;<i> 
+</I>&gt;<i> You are confusing this with the read(2) syscall, which *can* return fewer bytes
+</I>&gt;<i> than requested if the process receives a signal.
+</I>&gt;<i> 
+</I>&gt;<i> Here's the relevant Python documentation:
+</I>&gt;<i> 
+</I>&gt;&gt;<i> file.read([&lt;size&gt;])
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>     Read at most &lt;size&gt; bytes from the file (less if the read hits EOF    
+</I>&gt;&gt;<i> before obtaining &lt;size&gt; bytes). If the &lt;size&gt; argument is negative     or
+</I>&gt;&gt;<i> omitted, read all data until EOF is reached. The bytes are     returned as a
+</I>&gt;&gt;<i> string object. An empty string is returned when EOF     is encountered
+</I>&gt;&gt;<i> immediately. (For certain files, like ttys, it makes     sense to continue
+</I>&gt;&gt;<i> reading after an EOF is hit.) Note that this     method may call the
+</I>&gt;&gt;<i> underlying C function fread() more than once in     an effort to acquire as
+</I>&gt;&gt;<i> close to &lt;size&gt; bytes as possible. Also     note that when in non-blocking
+</I>&gt;&gt;<i> mode, less data than was requested     may be returned, even if no &lt;size&gt;
+</I>&gt;&gt;<i> parameter was given.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>     Note: This function is simply a wrapper for the underlying fread()     C
+</I>&gt;&gt;<i> function, and will behave the same in corner cases, such as     whether the
+</I>&gt;&gt;<i> EOF value is cached.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> -- <A HREF="http://docs.python.org/library/stdtypes.html#file-objects">http://docs.python.org/library/stdtypes.html#file-objects</A>
+</I>
+There is no file object anymore. The I/O stack got rewritten in Python 3. If
+open would be called without buffering=0, all the assumptions would be correct
+again (and one would have fread like behavior). But since buffering equals 0,
+open returns a FileIO instance. And FileIO.read just behaves as the underlying
+syscall which is read(2). [1, 2]
+
+Kind regards,
+
+[1] <A HREF="http://docs.python.org/py3k/library/io.html#raw-i-o">http://docs.python.org/py3k/library/io.html#raw-i-o</A>
+[2] <A HREF="http://docs.python.org/py3k/library/io.html#io.RawIOBase">http://docs.python.org/py3k/library/io.html#io.RawIOBase</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000550.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+	<LI>Next message: <A HREF="000553.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#551">[ date ]</a>
+              <a href="thread.html#551">[ thread ]</a>
+              <a href="subject.html#551">[ subject ]</a>
+              <a href="author.html#551">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

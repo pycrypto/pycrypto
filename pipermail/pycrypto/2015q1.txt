@@ -1,0 +1,119 @@
+From nick at nhthomas.freeserve.co.uk  Wed Feb 18 05:53:15 2015
+From: nick at nhthomas.freeserve.co.uk (nick at nhthomas.freeserve.co.uk)
+Date: Wed, 18 Feb 2015 14:53:15 +0100 (CET)
+Subject: [pycrypto] chmod error
+Message-ID: <4314443.22291424267595612.JavaMail.www@wwinf3724>
+
+Hi,
+
+I'm trying to install this on my Android phone.
+
+Using 'pip install PyCrypto' ends in a failure in setup.py at line 273:
+
+raise RuntimeError("chmod error")
+
+
+I know the PyCrypto stuff does work on Android because I have it installed on my Nexus 7. 
+Although, I remember having to jump though hoops to get it to install too - but that was a different problem.
+
+It looks like my new Motorola Android phone doesn't have the 'chmod' command.
+
+So, is there another way to install PyCrypto on Android?
+
+
+Thanks
+
+Nick
+
+From jamesmcm03 at gmail.com  Sat Feb 21 07:08:25 2015
+From: jamesmcm03 at gmail.com (James McMurray)
+Date: Sat, 21 Feb 2015 16:08:25 +0100
+Subject: [pycrypto] Why does PyCrypto not produce the same ciphertext as
+ OpenSSL in this example (AES-128 ECB)
+Message-ID: <CAMJE-1tjJsFiYW_cK+-pSD31P0T3w-74EX_srkW8gCt-2yUpEQ@mail.gmail.com>
+
+Hi,
+
+If I run the following, for openSSL:
+
+echo -n "0123456789abcdef0123456789abcdef" | openssl aes-128-ecb
+-nosalt -nopad | xxd
+
+and enter the key "YELLOW SUBMARINE", I get the following ciphertext:
+
+a2a5 8316 129f c596 8341 c78a 0c36 5d20
+a2a5 8316 129f c596 8341 c78a 0c36 5d20
+
+Yet in PyCrypto, the following code:
+
+from Crypto.Cipher import AES
+key = b'YELLOW SUBMARINE'
+cipher = AES.new(key, AES.MODE_ECB, "")
+msg =  cipher.encrypt(b'0123456789abcdef0123456789abcdef')
+
+Outputs:
+
+20 1e 80 2f 7b 6a ce 6f 6c d0 a7 43 ba 78 ae ad
+20 1e 80 2f 7b 6a ce 6f 6c d0 a7 43 ba 78 ae ad
+
+(line breaks added for clarity)
+
+What is the cause of this discrepancy? Both are 128-bit AES in ECB
+mode. PyCrypto doesn't appear to be salting, and padding should be
+unnecessary in any case with this plaintext.
+
+Thanks,
+James McMurray
+
+From richmoore44 at gmail.com  Sat Feb 21 07:38:05 2015
+From: richmoore44 at gmail.com (Richard Moore)
+Date: Sat, 21 Feb 2015 15:38:05 +0000
+Subject: [pycrypto] Why does PyCrypto not produce the same ciphertext as
+ OpenSSL in this example (AES-128 ECB)
+In-Reply-To: <CAMJE-1tjJsFiYW_cK+-pSD31P0T3w-74EX_srkW8gCt-2yUpEQ@mail.gmail.com>
+References: <CAMJE-1tjJsFiYW_cK+-pSD31P0T3w-74EX_srkW8gCt-2yUpEQ@mail.gmail.com>
+Message-ID: <CAMp7mVurt-kQetrcEZtVtz-aJ721WoahjXmKyfySRczu-BmXWA@mail.gmail.com>
+
+On 21 February 2015 at 15:08, James McMurray <jamesmcm03 at gmail.com> wrote:
+
+> Hi,
+>
+> If I run the following, for openSSL:
+>
+> echo -n "0123456789abcdef0123456789abcdef" | openssl aes-128-ecb
+> -nosalt -nopad | xxd
+>
+> and enter the key "YELLOW SUBMARINE", I get the following ciphertext:
+>
+> a2a5 8316 129f c596 8341 c78a 0c36 5d20
+> a2a5 8316 129f c596 8341 c78a 0c36 5d20
+>
+> Yet in PyCrypto, the following code:
+>
+> from Crypto.Cipher import AES
+> key = b'YELLOW SUBMARINE'
+> cipher = AES.new(key, AES.MODE_ECB, "")
+> msg =  cipher.encrypt(b'0123456789abcdef0123456789abcdef')
+>
+> Outputs:
+>
+> 20 1e 80 2f 7b 6a ce 6f 6c d0 a7 43 ba 78 ae ad
+> 20 1e 80 2f 7b 6a ce 6f 6c d0 a7 43 ba 78 ae ad
+>
+> (line breaks added for clarity)
+>
+> What is the cause of this discrepancy? Both are 128-bit AES in ECB
+> mode. PyCrypto doesn't appear to be salting, and padding should be
+> unnecessary in any case with this plaintext.
+>
+
+OpenSSL doesn't use the passphrase directly, it applies a key derivation
+function to it. Use -K to specify a key explicitly (as a string of hex).
+
+Cheers
+
+Rich.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20150221/b45aefe1/attachment.html>
+

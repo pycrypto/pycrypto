@@ -1,0 +1,7 @@
+<tt>
+&lt;div&nbsp;dir=&quot;ltr&quot;&gt;&lt;div&nbsp;style&gt;I&#39;m&nbsp;trying&nbsp;to&nbsp;translate&nbsp;some&nbsp;Java&nbsp;code&nbsp;that&nbsp;uses&nbsp;BouncyCastle&nbsp; to&nbsp; Python&nbsp;using&nbsp;PyCrypto.&lt;/div&gt;&lt;div&nbsp;style&gt;Does&nbsp;any&nbsp;one&nbsp;know&nbsp;what&nbsp;the&nbsp;equivalent&nbsp;code&nbsp;in&nbsp;python&nbsp;would&nbsp;be&nbsp;for&nbsp;the&nbsp;snippet&nbsp;below?&lt;/div&gt;<br>
+&lt;div&nbsp;style&gt;&lt;br&gt;&lt;/div&gt;&lt;div&nbsp;style&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;public&nbsp;String&nbsp;getMAC(byte[]&nbsp;macData,&nbsp;byte[]&nbsp;macKey)&lt;/div&gt;&lt;div&gt; &nbsp; &nbsp;byte[]&nbsp;macBytes&nbsp;=&nbsp;new&nbsp;byte[4];&lt;/div&gt;&lt;div&gt; &nbsp; &nbsp;CbcBlockCipherMac&nbsp;macCipher&nbsp;=&nbsp;new&nbsp;CbcBlockCipherMac(new&nbsp;DesEdeEngine());&lt;/div&gt;<br>
+&lt;div&gt; &nbsp;  &lt;/div&gt;&lt;div&gt; &nbsp; &nbsp;DesEdeParameters&nbsp;keyParameters&nbsp;=&nbsp;new&nbsp;DesEdeParameters(macKey);&lt;/div&gt;&lt;div&gt; &nbsp; &nbsp;DesEdeEngine&nbsp;engine&nbsp;=&nbsp;new&nbsp;DesEdeEngine();&lt;/div&gt;&lt;div&gt; &nbsp; &nbsp;engine.Init(true,&nbsp;keyParameters);&lt;/div&gt;&lt;div&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &lt;/div&gt;&lt;div&gt;<br>
+ &nbsp; &nbsp;macCipher.Init(keyParameters);&lt;/div&gt;&lt;div&gt; &nbsp; &nbsp;macCipher.BlockUpdate(macData,&nbsp;0,&nbsp;macData.Length);&lt;/div&gt;&lt;div&gt; &nbsp; &nbsp;macCipher.DoFinal(macBytes,&nbsp;0);&lt;/div&gt;&lt;div&gt; &nbsp; &nbsp;.......&lt;/div&gt;&lt;/div&gt;<br>
+
+</tt>

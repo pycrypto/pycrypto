@@ -1,0 +1,40 @@
+<tt>
+&lt;div&nbsp;dir=&quot;ltr&quot;&gt;Hi&nbsp;Dwayne,&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Thanks,&nbsp;that&nbsp;is&nbsp;what&nbsp;I&nbsp;was&nbsp;assuming.&nbsp; If&nbsp;we&nbsp;move&nbsp;import/export&nbsp;to&nbsp;Crypto.IO&nbsp;it&nbsp;will&nbsp;break&nbsp;backwards&nbsp;compatibility,&nbsp;no?&nbsp; Is&nbsp;that&nbsp;important?&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Is&nbsp;anyone&nbsp;working&nbsp;on&nbsp;this&nbsp;issue?&nbsp; If&nbsp;backwards&nbsp;compatibility&nbsp;is&nbsp;important&nbsp;I&nbsp;say&nbsp;keep&nbsp;what&nbsp;we&nbsp;have&nbsp;there&nbsp;now&nbsp;(2.6)&nbsp;and&nbsp;have&nbsp;a&nbsp;deprecation&nbsp;comment&nbsp;and/or&nbsp;stderr&nbsp;output?&nbsp; &lt;/div&gt;<br>
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Also&nbsp;does&nbsp;Pycrypto&nbsp;have&nbsp;deprecation/error&nbsp;transition&nbsp;plan?&nbsp; To&nbsp;ease&nbsp;transition&nbsp;some&nbsp;packages&nbsp;first&nbsp;do&nbsp;a&nbsp;deprecation&nbsp;warning,&nbsp;second&nbsp;major&nbsp;release&nbsp;it&nbsp;becomes&nbsp;an&nbsp;error/exception,&nbsp;then&nbsp;third&nbsp;major&nbsp;release&nbsp;the&nbsp;code&nbsp;is&nbsp;completely&nbsp;removed.&nbsp; Would&nbsp;that&nbsp;work&nbsp;with&nbsp;pycrypto&nbsp;users?&lt;/div&gt;<br>
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Your&nbsp;thoughts?&lt;/div&gt;&lt;div&gt;Thanks!&lt;br&gt;Kurt&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&nbsp;class=&quot;gmail_extra&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Sun,&nbsp;Sep&nbsp;29,&nbsp;2013&nbsp;at&nbsp;6:52&nbsp;PM,&nbsp;Dwayne&nbsp;Litzenberger&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&lt;&lt;a&nbsp;href=&quot;mailto:dlitz@dlitz.net&quot;&nbsp;target=&quot;_blank&quot;&gt;dlitz@dlitz.net&lt;/a&gt;&gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;On&nbsp;Wed,&nbsp;Jul&nbsp;17,&nbsp;2013&nbsp;at&nbsp;01:33:41AM&nbsp;-0700,&nbsp;Kurt&nbsp;Vogel&nbsp;wrote:&lt;br&gt;<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;<br>
+Hi,&nbsp;quick&nbsp;question&nbsp;for&nbsp;the&nbsp;group&nbsp;and&nbsp;maintainer...&lt;br&gt;<br>
+&lt;br&gt;<br>
+I&nbsp;am&nbsp;about&nbsp;ready&nbsp;to&nbsp;deploy&nbsp;a&nbsp;project&nbsp;and&nbsp;wondering&nbsp;how&nbsp;set&nbsp;we&nbsp;are&nbsp;on&nbsp;the&lt;br&gt;<br>
+format&nbsp;of&nbsp;rsa.exportKey()&nbsp;for&nbsp;next&nbsp;pycrypto?&lt;br&gt;<br>
+&lt;br&gt;<br>
+Is&nbsp;it&nbsp;safe&nbsp;to&nbsp;include&nbsp;in&nbsp;our&nbsp;requirements.pip&nbsp;(for&nbsp;now)&nbsp;a&nbsp;reference&nbsp;to&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;https://github.com/dlitz/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;https://github.com/dlitz/&lt;u&gt;&lt;/u&gt;pycrypto&lt;/a&gt;&nbsp;master&nbsp;branch?&nbsp; And&nbsp;export&nbsp;my&nbsp;keys&nbsp;with&lt;br&gt;<br>
+the&nbsp;new&nbsp;protection&nbsp;scheme?&nbsp; And&nbsp;consequently&nbsp;matching&nbsp;importKey().&lt;br&gt;<br>
+&lt;br&gt;<br>
+It&nbsp;would&nbsp;be&nbsp;super&nbsp;nice&nbsp;if&nbsp;we&nbsp;could&nbsp;add&nbsp;**kwargs&nbsp;for&nbsp;iteration_count&nbsp;and&lt;br&gt;<br>
+salt_size&nbsp;to&nbsp;export()&nbsp;but&nbsp;beggars&nbsp;can&#39;t&nbsp;be&nbsp;choosers&nbsp;:)&nbsp; It&nbsp;seems&nbsp;a&nbsp;simple&lt;br&gt;<br>
+enough&nbsp;change&nbsp;and&nbsp;looks&nbsp;like&nbsp;importKey()&nbsp;reads&nbsp;those&nbsp;fields&nbsp;in,&nbsp;I&#39;d&nbsp;do&nbsp;it&lt;br&gt;<br>
+myself&nbsp;but&nbsp;would&nbsp;like&nbsp;any&nbsp;thoughts/opinions?&lt;br&gt;<br>
+&lt;/blockquote&gt;<br>
+&lt;br&gt;<br>
+Hi&nbsp;Kurt,&lt;br&gt;<br>
+&lt;br&gt;<br>
+The&nbsp;exportKey&nbsp;API&nbsp;should&nbsp;be&nbsp;considered&nbsp;experimental&nbsp;at&nbsp;this&nbsp;point.&nbsp; There&nbsp;are&nbsp;things&nbsp;about&nbsp;it&nbsp;that&nbsp;don&#39;t&nbsp;really&nbsp;make&nbsp;sense&nbsp;(e.g.&nbsp;the&nbsp;`pkcs=1`&nbsp;parameter,&nbsp;which&nbsp;doesn&#39;t&nbsp;make&nbsp;any&nbsp;sense&nbsp;if&nbsp;you&nbsp;want&nbsp;to&nbsp;expoer&nbsp;in&nbsp;OpenPGP&nbsp;format,&nbsp;for&nbsp;example).&nbsp; Realistically,&nbsp;it&nbsp;should&nbsp;probably&nbsp;be&nbsp;removed&nbsp;from&nbsp;Crypto.PublicKey&nbsp;and&nbsp;placed&nbsp;into&nbsp;Crypto.IO,&nbsp;but&nbsp;I&#39;m&nbsp;not&nbsp;sure&nbsp;of&nbsp;exactly&nbsp;when&nbsp;that&nbsp;will&nbsp;happen.&lt;br&gt;<br>
+<br>
+&lt;br&gt;<br>
+Cheers,&lt;br&gt;<br>
+-&nbsp;Dwayne&lt;span&nbsp;class=&quot;HOEnZb&quot;&gt;&lt;font&nbsp;color=&quot;#888888&quot;&gt;&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;br&gt;<br>
+--&nbsp;&lt;br&gt;<br>
+Dwayne&nbsp;C.&nbsp;Litzenberger&nbsp;&lt;&lt;a&nbsp;href=&quot;mailto:dlitz@dlitz.net&quot;&nbsp;target=&quot;_blank&quot;&gt;dlitz@dlitz.net&lt;/a&gt;&gt;&lt;br&gt;<br>
+ OpenPGP:&nbsp;19E1&nbsp;1FE8&nbsp;B3CF&nbsp;F273&nbsp;ED17&nbsp; 4A24&nbsp;928C&nbsp;EC13&nbsp;39C2&nbsp;5CF7&lt;br&gt;<br>
+______________________________&lt;u&gt;&lt;/u&gt;_________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&nbsp;target=&quot;_blank&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-&lt;u&gt;&lt;/u&gt;bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;/font&gt;&lt;/span&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;<br>
+
+</tt>

@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Pycrypto working with python 3.0 or 3.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20working%20with%20python%203.0%20or%203.1&In-Reply-To=SNT132-w4220C660F45FBA7DDE87F1B1390%40phx.gbl">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000196.html">
+   <LINK REL="Next"  HREF="000203.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Pycrypto working with python 3.0 or 3.1</H1>
+    <B>Christoph Tapler</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20working%20with%20python%203.0%20or%203.1&In-Reply-To=SNT132-w4220C660F45FBA7DDE87F1B1390%40phx.gbl"
+       TITLE="[pycrypto] Pycrypto working with python 3.0 or 3.1">christoph.tapler at gmx.net
+       </A><BR>
+    <I>Sun Mar 14 09:11:58 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000196.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+        <LI>Next message: <A HREF="000203.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#202">[ date ]</a>
+              <a href="thread.html#202">[ thread ]</a>
+              <a href="subject.html#202">[ subject ]</a>
+              <a href="author.html#202">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Grail,
+
+I have tried to fix the test suite, but I came across a problem,
+which seems to be specific to Python 3. It seems to me that Python 3 
+behaves differently in terms of hierarchical imports.
+
+To demonstrate this difference, I have attached a small example (just 
+start level_test.py in Python 2 / 3). If you execute this example in 
+Python 2, everything works fine. However, in Python 3, the second 
+(nested) import fails. I don't understand why.
+
+Do you (or anybody else of course ;-) ) have an idea how this issue 
+could be resolved? Btw, this pattern appears several times in the test 
+suite.
+
+Kind Regards,
+Christoph
+
+On 04.03.2010 03:37, Grail Dane wrote:
+&gt;<i> Hi Christoph
+</I>&gt;<i>
+</I>&gt;<i> Good to see this is coming together for you, and as one of the users
+</I>&gt;<i> mentions,
+</I>&gt;<i> using the unified option is a general rule of thumb for patches / diffs.
+</I>&gt;<i>
+</I>&gt;<i> You are correct about the test suite as I have not had a chance to alter
+</I>&gt;<i> the tests to Python 3 context.
+</I>&gt;<i>
+</I>&gt;<i> Cheers
+</I>&gt;<i> Grail
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i> Date: Wed, 3 Mar 2010 21:58:09 +0100
+</I>&gt;<i> From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">christoph.tapler at gmx.net</A>
+</I>&gt;<i> To: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+</I>&gt;<i>
+</I>&gt;<i> Hi Grail,
+</I>&gt;<i>
+</I>&gt;<i> I have applied your patch on my Windows machine. Your AES encryption /
+</I>&gt;<i> decryption seems to work well - In case
+</I>&gt;<i> AZCkZ1wU5d0psrwlaoS5R4tz1dRL6rBBNzjIvK9NHSo= is the result ;-)
+</I>&gt;<i> Moreover, I have tried the diff tool. Not sure if the output is usable
+</I>&gt;<i> for you. Just
+</I>&gt;<i> let me know if this format is okay or not. The patch contains a few
+</I>&gt;<i> rather trivial
+</I>&gt;<i> fixes for the Windows environment. With those fixes the build is successful.
+</I>&gt;<i> However, the test suite doesn't build, needs adaptions as well (but I
+</I>&gt;<i> think only
+</I>&gt;<i> in Python).
+</I>&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i> Christoph
+</I>&gt;<i>
+</I>&gt;<i> On 03.03.2010 03:48, Grail Dane wrote:
+</I>&gt;<i>
+</I>&gt;<i>     OK ... OK ... OK - stop the presses
+</I>&gt;<i>
+</I>&gt;<i>     Well, maybe not just yet, anyhoo, the attached patch allows the
+</I>&gt;<i>     source to compile
+</I>&gt;<i>     and run the attached script &lt;woohoo&gt;
+</I>&gt;<i>
+</I>&gt;<i>     Cheers
+</I>&gt;<i>     Grail
+</I>&gt;<i>
+</I>&gt;<i>     ------------------------------------------------------------------------
+</I>&gt;<i>     Meet local singles online. Browse profiles for FREE!
+</I>&gt;<i>     &lt;<A HREF="http://clk.atdmt.com/NMN/go/150855801/direct/01/">http://clk.atdmt.com/NMN/go/150855801/direct/01/</A>&gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>     _______________________________________________
+</I>&gt;<i>     pycrypto mailing list
+</I>&gt;<i>     <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>  &lt;mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>&gt;
+</I>&gt;<i>     <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i> Find out now. Link all your email accounts and social updates with
+</I>&gt;<i> Hotmail. &lt;<A HREF="http://windowslive.ninemsn.com.au/oneinbox?ocid=T162MSN05A0710G">http://windowslive.ninemsn.com.au/oneinbox?ocid=T162MSN05A0710G</A>&gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: example.zip
+Type: application/x-zip-compressed
+Size: 818 bytes
+Desc: not available
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100314/13356f06/attachment.bin">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100314/13356f06/attachment.bin</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000196.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+	<LI>Next message: <A HREF="000203.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#202">[ date ]</a>
+              <a href="thread.html#202">[ thread ]</a>
+              <a href="subject.html#202">[ subject ]</a>
+              <a href="author.html#202">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

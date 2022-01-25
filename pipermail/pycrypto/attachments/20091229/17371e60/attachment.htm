@@ -1,0 +1,33 @@
+<tt>
+Thank&nbsp;you,&nbsp;I&nbsp;get&nbsp;the&nbsp;right&nbsp;answer.&nbsp;CryptoPP&nbsp;is&nbsp;default&nbsp;to&nbsp;128&nbsp;bit&nbsp;mode.&nbsp;and&nbsp;I&nbsp;set&nbsp;it&nbsp;to&nbsp;be&nbsp;8&nbsp;bit&nbsp;mode&nbsp;and&nbsp;solved.&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Mon,&nbsp;Dec&nbsp;28,&nbsp;2009&nbsp;at&nbsp;4:32&nbsp;PM,&nbsp;Dwayne&nbsp;C.&nbsp;Litzenberger&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&amp;lt;&lt;a&nbsp;href=&quot;mailto:dlitz@dlitz.net&quot;&gt;dlitz@dlitz.net&lt;/a&gt;&amp;gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;border-left:&nbsp;1px&nbsp;solid&nbsp;rgb(204,&nbsp;204,&nbsp;204);&nbsp;margin:&nbsp;0pt&nbsp;0pt&nbsp;0pt&nbsp;0.8ex;&nbsp;padding-left:&nbsp;1ex;&quot;&gt;&lt;div&nbsp;class=&quot;im&quot;&gt;On&nbsp;Mon,&nbsp;Dec&nbsp;28,&nbsp;2009&nbsp;at&nbsp;02:19:06PM&nbsp;+0800,&nbsp;ten&nbsp;speme&nbsp;wrote:&lt;br&gt;<br>
+&amp;gt;I&nbsp;using&nbsp;cryptoPP&nbsp;to&nbsp;crypt&nbsp;a&nbsp;string&nbsp;with&nbsp;key:&amp;quot;aaaaaaaaaaaaaaa&amp;quot;&lt;br&gt;<br>
+&amp;gt;,iv:&amp;quot;bbbbbbbbbbbbbbbb&amp;quot;,data&amp;quot;abcdefghijklmnopqrstuvwxyz&amp;quot;,&nbsp;and&nbsp;its&nbsp;encrypted&lt;br&gt;<br>
+&amp;gt;string&nbsp;is&nbsp;[hex]&amp;quot;9FE673D419DD3256B6A206FE7004660F11BAFCE5B2106E2BA39A&amp;quot;&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;Please&nbsp;be&nbsp;careful&nbsp;when&nbsp;posting&nbsp;troubleshooting&nbsp;requests.&nbsp; &amp;quot;aaaaaaaaaaaaaaa&amp;quot;&lt;br&gt;<br>
+is&nbsp;15&nbsp;bytes&nbsp;long,&nbsp;so&nbsp;it&amp;#39;s&nbsp;impossible&nbsp;as&nbsp;an&nbsp;AES&nbsp;key.&nbsp; Can&nbsp;you&nbsp;post&nbsp;example&lt;br&gt;<br>
+code&nbsp;that&nbsp;builds&nbsp;against&nbsp;cryptoPP&nbsp;(or&nbsp;uses&nbsp;pycryptopp)&nbsp;and&nbsp;produces&nbsp;this&lt;br&gt;<br>
+result?&lt;br&gt;<br>
+&lt;div&nbsp;class=&quot;im&quot;&gt;&lt;br&gt;<br>
+&amp;gt;by&nbsp;pycrypto&nbsp;,&nbsp;I&nbsp;also&nbsp;using&nbsp;the&nbsp;same&nbsp;key,&nbsp;vi,&nbsp;and&nbsp;data.&nbsp;but&nbsp;get&nbsp;difference&lt;br&gt;<br>
+&amp;gt;result:[hex]&amp;quot;78bf5fc7d6a87dd6533d028725cb206cf54dbca6e5ea9a852885&amp;quot;.&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;All&nbsp;these&nbsp;using&nbsp;AES&nbsp;with&nbsp;CFB&nbsp;mode.&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;Which&nbsp;CFB&nbsp;mode&nbsp;are&nbsp;you&nbsp;talking&nbsp;about?&nbsp; CFB&nbsp;is&nbsp;a&nbsp;family&nbsp;of&nbsp;modes.&nbsp; You&nbsp;can&lt;br&gt;<br>
+have&nbsp;e.g.&nbsp;1-bit&nbsp;CFB,&nbsp;8-bit&nbsp;CFB,&nbsp;64-bit&nbsp;CFB,&nbsp;128-bit&nbsp;CFB,&nbsp;etc.&nbsp; PyCrypto&lt;br&gt;<br>
+defaults&nbsp;to&nbsp;8-bit&nbsp;CFB,&nbsp;I&nbsp;believe,&nbsp;but&nbsp;will&nbsp;accept&nbsp;any&nbsp;multiple&nbsp;of&nbsp;8&nbsp;bits.&lt;br&gt;<br>
+(It&amp;#39;s&nbsp;set&nbsp;by&nbsp;the&nbsp;segment_size&nbsp;keyword&nbsp;argument&nbsp;to&nbsp;AES.new.)&lt;br&gt;<br>
+&lt;div&nbsp;class=&quot;im&quot;&gt;&lt;br&gt;<br>
+--&lt;br&gt;<br>
+Dwayne&nbsp;C.&nbsp;Litzenberger&nbsp;&amp;lt;&lt;a&nbsp;href=&quot;mailto:dlitz@dlitz.net&quot;&gt;dlitz@dlitz.net&lt;/a&gt;&amp;gt;&lt;br&gt;<br>
+&nbsp; Key-signing&nbsp;key&nbsp; &nbsp;-&nbsp;19E1&nbsp;1FE8&nbsp;B3CF&nbsp;F273&nbsp;ED17&nbsp; 4A24&nbsp;928C&nbsp;EC13&nbsp;39C2&nbsp;5CF7&lt;br&gt;<br>
+&nbsp; Annual&nbsp;key&nbsp;(2009)&nbsp;-&nbsp;C805&nbsp;1746&nbsp;397B&nbsp;0202&nbsp;2758&nbsp; 2821&nbsp;58E0&nbsp;894B&nbsp;81D2&nbsp;582E&lt;br&gt;<br>
+_______________________________________________&lt;br&gt;<br>
+&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&nbsp;class=&quot;h5&quot;&gt;pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;/div&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;<br>
+
+</tt>

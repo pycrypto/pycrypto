@@ -1,0 +1,230 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] example
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20example&In-Reply-To=8e329bc10908250500n7a23e145u4b065175939b58e7%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000123.html">
+   <LINK REL="Next"  HREF="000125.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] example</H1>
+    <B>avo ga</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20example&In-Reply-To=8e329bc10908250500n7a23e145u4b065175939b58e7%40mail.gmail.com"
+       TITLE="[pycrypto] example">avogatro2007 at googlemail.com
+       </A><BR>
+    <I>Tue Aug 25 16:38:03 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000123.html">[pycrypto] example
+</A></li>
+        <LI>Next message: <A HREF="000125.html">[pycrypto] Adding support for Tiger Hash / Tiger Tree Hash
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#124">[ date ]</a>
+              <a href="thread.html#124">[ thread ]</a>
+              <a href="subject.html#124">[ subject ]</a>
+              <a href="author.html#124">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi:
+In this new demo
+i use randint() and  Random.new().read() from the new Crypto.random module.
+DSA use now 512 bit key at least.
+and i use  sha512 for DSA.
+DSA only verifty the sha512 hash of the original AES password.
+
+about rsa:
+Dwayne C. Litzenberger said something about OAEP for RSA.
+    this is a very critical issue, how can I use it.
+
+Well, I feel now like child in a mine field.
+So please help me check this again.
+
+
+Thank you
+-----------------------------------------------------------------------------------
+#!/usr/bin/env python
+from Crypto.Cipher import AES
+from Crypto.Util.number import GCD
+from Crypto import Random
+import os,sys
+#####################AES ####################
+print &quot;=====AES 256 Demo=====&quot;
+# use AES to encrypt the real message
+# use the more secure Crypto.Random to generate PWD and Initialbyte/IV
+# AES key is 32 byte or 16*hex_digit
+# Initial16bytes:16 bytes or 8*hex_digit
+PWD=&quot;&quot;
+rpool = Random.new()
+Random.atfork()
+
+PWD = rpool.read(16).encode(&quot;hex&quot;)
+Initial16bytes=rpool.read(8).encode(&quot;hex&quot;)
+
+print &quot;AES-key:&quot;,PWD,&quot;len:&quot;,len(PWD)
+print &quot;Initial16bytes:&quot;,Initial16bytes
+crypt = AES.new(PWD,AES.MODE_CBC,Initial16bytes)
+
+plain=&quot;sex drugs and crypto&quot;
+#block ciffre need string with lenth 16: add the restbyte to plain
+restbyte =(16-len(plain)%16)%16
+temp_string=&quot;&quot;
+for a in range(restbyte):
+    temp_string+=&quot; &quot;
+plain+=temp_string
+#encryption
+print &quot;\nplain text: \n&quot;,plain,&quot;\n&quot;
+crypt_txt= crypt.encrypt(plain)
+print &quot;encrypted text: \n&quot;,crypt_txt.encode(&quot;hex&quot;),&quot;\n&quot;
+#decryption
+crypt = AES.new(PWD,AES.MODE_CBC,Initial16bytes)
+print &quot;decrypted text: \n&quot;, crypt.decrypt(crypt_txt)
+#################### RSA ####################
+print &quot;\n=====RSA 368 Demo=====&quot;
+#use 1 RSA key to encrypt the AES key
+#use another RSA key to sign AES key
+from Crypto.PublicKey import RSA
+
+#start the random generator
+rpool = Random.new()
+Random.atfork()
+
+# generate both RSA keys,
+privatekeyCMS = RSA.generate(368, rpool.read)
+Random.atfork()
+privatekeyClient = RSA.generate(368, rpool.read)
+publickeyCMS = privatekeyCMS.publickey()
+publickeyClient = privatekeyClient.publickey()
+
+#sign the AES PWD with server private key
+signed_PWD = privatekeyCMS.sign(PWD,&quot;&quot;)
+#encrypt AES PWD with client public key
+enc_PWD = publickeyClient.encrypt(PWD, &quot;&quot;)
+print &quot;with publickeyClient encrypted AES-PWD:&quot;
+print enc_PWD[0].encode(&quot;hex&quot;),&quot;\n&quot;
+print &quot;with privatekeyCMS signed AES-PWD:&quot;
+print signed_PWD[0],&quot;\n&quot;
+
+#decryption
+dec_PWD= privatekeyClient.decrypt(enc_PWD[0])
+#verify identity of the
+print &quot;key verify:\n&quot;,publickeyCMS.verify(dec_PWD,signed_PWD)
+print &quot;decrypted PWD:\n&quot;,dec_PWD
+
+
+#################### ELGAMAL ####################
+from Crypto.PublicKey import ElGamal
+print &quot;\n=====ELGamal 368 Demo=====&quot;
+
+
+#generate 2 ELGAMAL key pair
+rpool = Random.new()
+Random.atfork()
+privatekeyCMS = ElGamal.generate(368, rpool.read)
+privatekeyClient = ElGamal.generate(368, rpool.read)
+publickeyCMS = privatekeyCMS.publickey()
+publickeyClient = privatekeyClient.publickey()
+
+#generate for each encryption session new K
+K=rpool.read(16).encode(&quot;hex&quot;)
+print &quot;K for encrypt:&quot;,K
+#encryption
+enc_PWD = publickeyClient.encrypt(PWD, K)
+
+#generate for each sign session new k
+strong_random = Random.random.StrongRandom(randfunc=rpool.read)
+k = strong_random.randint(2,privatekeyCMS.p-2)
+temp_p=privatekeyCMS.p
+while GCD(privatekeyCMS.p-1,k)&gt;1:
+    k = strong_random.randint(3,temp_p-2)
+print &quot;k for sign:&quot;,k,&quot;\n&quot;
+#signature
+signed_PWD = privatekeyCMS.sign(PWD,k)
+
+
+print &quot;with publickeyClient encrypted AES-PWD:&quot;
+print enc_PWD[0].encode(&quot;hex&quot;)
+print &quot;with privatekeyCMS signed AES-PWD:&quot;
+print signed_PWD[0],&quot;\n&quot;
+
+#decryption
+
+dec_PWD= privatekeyClient.decrypt(enc_PWD)
+#verify signature
+print &quot;verify key:\n&quot;,bool(publickeyCMS.verify(dec_PWD,signed_PWD))
+print &quot;decrypted PWD:\n&quot;,dec_PWD
+
+#################### DSA only sign ####################
+
+
+print &quot;\n=====DSA 512 Demo=====&quot;
+from Crypto.PublicKey import DSA
+#start the randomgenerator to generate integer
+rpool = Random.new()
+strong_random = Random.random.StrongRandom(randfunc=rpool.read)
+Random.atfork()
+
+#generate Server DSA key
+privatekeyCMS = DSA.generate(512, rpool.read)
+publickeyCMS = privatekeyCMS.publickey()
+
+# generatae sha hash, which will be signed by the private key
+import hashlib
+m = hashlib.sha512()
+m.update(PWD)
+print &quot;sha512 hash&quot;,m.digest()
+
+#generate for each sign session new k
+k = strong_random.randint(3,privatekeyCMS.q-1)
+
+print &quot;k for sign:&quot;,k,&quot;\n&quot;
+
+#sign
+signed_PWD = privatekeyCMS.sign(m.digest(),k)
+
+
+m = hashlib.sha512()
+m.update(dec_PWD)
+
+print &quot;sha512 hash&quot;,m.digest()
+
+#verify
+print &quot;verify key:\n&quot;,publickeyCMS.verify(m.digest(),signed_PWD)
+print &quot;decrypted PWD from ELGAMAL:\n&quot;,dec_PWD
+
+#decrypt the real message using the AES key
+crypt = AES.new(dec_PWD,AES.MODE_CBC,Initial16bytes)
+print &quot;decrypted text: \n&quot;, crypt.decrypt(crypt_txt)
+print &quot;\n=====End of Demo=====&quot;
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090826/2f120a24/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090826/2f120a24/attachment.htm</A> 
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000123.html">[pycrypto] example
+</A></li>
+	<LI>Next message: <A HREF="000125.html">[pycrypto] Adding support for Tiger Hash / Tiger Tree Hash
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#124">[ date ]</a>
+              <a href="thread.html#124">[ thread ]</a>
+              <a href="subject.html#124">[ subject ]</a>
+              <a href="author.html#124">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

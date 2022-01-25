@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Bug in PyCrypto 2.6.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Bug%20in%20PyCrypto%202.6.1&In-Reply-To=%3C547C1A5C.4040107%40luisgf.es%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000823.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Bug in PyCrypto 2.6.1</H1>
+    <B>Luis Gonz&#225;lez Fern&#225;ndez</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Bug%20in%20PyCrypto%202.6.1&In-Reply-To=%3C547C1A5C.4040107%40luisgf.es%3E"
+       TITLE="[pycrypto] Bug in PyCrypto 2.6.1">luisgf at luisgf.es
+       </A><BR>
+    <I>Sun Nov 30 23:35:56 PST 2014</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000823.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#822">[ date ]</a>
+              <a href="thread.html#822">[ thread ]</a>
+              <a href="subject.html#822">[ subject ]</a>
+              <a href="author.html#822">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello All:
+
+
+I found a strange bug in size() function that return a wrong key size
+after creating or importing an RSA key. The return value for the size
+funciont seems to be keysize-1.
+
+Here a demo of the bug:
+
+
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">luisgf at NCC1701B</A>:~$ python3
+Python 3.4.0 (default, Apr 11 2014, 13:05:11)
+[GCC 4.8.2] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;<i> from Crypto.PublicKey import RSA
+</I>&gt;&gt;&gt;<i> key = RSA.generate(2048)
+</I>&gt;&gt;&gt;<i> key.size()
+</I>2047
+&gt;&gt;&gt;<i>
+</I>
+
+Regards.
+
+-- 
+
+--
+Luis Gonz&#225;lez Fern&#225;ndez
+<A HREF="https://www.luisgf.es">https://www.luisgf.es</A>
+PGP ID: C918B80F (DD6F BFC1 FC14 4C81 34F8 EA1E 6BCB C27F C918 B80F)
+Twitter: @luisgf_2001 / Jabber: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">luisgf at mijabber.es</A>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20141201/82202087/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20141201/82202087/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 819 bytes
+Desc: OpenPGP digital signature
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20141201/82202087/attachment.sig">http://lists.dlitz.net/pipermail/pycrypto/attachments/20141201/82202087/attachment.sig</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000823.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#822">[ date ]</a>
+              <a href="thread.html#822">[ thread ]</a>
+              <a href="subject.html#822">[ subject ]</a>
+              <a href="author.html#822">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

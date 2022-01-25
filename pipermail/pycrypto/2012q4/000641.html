@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Inovking Depreciation warnings in Python
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Inovking%20Depreciation%20warnings%20in%20Python&In-Reply-To=%3CCADKMUwn0JvtNpnLFez_tv5oKNBYY2%2BpP16DiPApiO9bfWmrA%3DA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000640.html">
+   <LINK REL="Next"  HREF="000647.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Inovking Depreciation warnings in Python</H1>
+    <B>Oz Nahum Tiram</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Inovking%20Depreciation%20warnings%20in%20Python&In-Reply-To=%3CCADKMUwn0JvtNpnLFez_tv5oKNBYY2%2BpP16DiPApiO9bfWmrA%3DA%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Inovking Depreciation warnings in Python">nahumoz at gmail.com
+       </A><BR>
+    <I>Thu Dec 13 01:16:10 PST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000640.html">[pycrypto] Inovking Depreciation warnings in Python
+</A></li>
+        <LI>Next message: <A HREF="000647.html">[pycrypto] Remove DSA because 1024bit is not safe
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#641">[ date ]</a>
+              <a href="thread.html#641">[ thread ]</a>
+              <a href="subject.html#641">[ subject ]</a>
+              <a href="author.html#641">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Dwayne,
+
+First, thanks for the answer and sorry for the late reply.
+
+So, I replace the following code with your example:
+
+    # in the past:
+    &gt;&gt;&gt; from Crypto.Util.randpool import RandomPool
+    &gt;&gt;&gt; random = RandomPool()
+    &gt;&gt;&gt; key = str(random.get_bytes(32)).encode('base64')
+
+    # current:
+    from Crypto.Random import get_random_bytes
+    key = str(get_random_bytes(32).encode('base64'))
+
+Is this correct? If so, that is sweet, an one line shorter!
+
+Thanks,
+
+Oz
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000640.html">[pycrypto] Inovking Depreciation warnings in Python
+</A></li>
+	<LI>Next message: <A HREF="000647.html">[pycrypto] Remove DSA because 1024bit is not safe
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#641">[ date ]</a>
+              <a href="thread.html#641">[ thread ]</a>
+              <a href="subject.html#641">[ subject ]</a>
+              <a href="author.html#641">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

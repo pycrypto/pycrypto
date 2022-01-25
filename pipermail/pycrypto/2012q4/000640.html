@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Inovking Depreciation warnings in Python
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Inovking%20Depreciation%20warnings%20in%20Python&In-Reply-To=%3C20121206221612.GA13725%40goedel.dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000639.html">
+   <LINK REL="Next"  HREF="000641.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Inovking Depreciation warnings in Python</H1>
+    <B>Dwayne Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Inovking%20Depreciation%20warnings%20in%20Python&In-Reply-To=%3C20121206221612.GA13725%40goedel.dlitz.net%3E"
+       TITLE="[pycrypto] Inovking Depreciation warnings in Python">dlitz at dlitz.net
+       </A><BR>
+    <I>Thu Dec  6 14:16:12 PST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000639.html">[pycrypto] Inovking Depreciation warnings in Python
+</A></li>
+        <LI>Next message: <A HREF="000641.html">[pycrypto] Inovking Depreciation warnings in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#640">[ date ]</a>
+              <a href="thread.html#640">[ thread ]</a>
+              <a href="subject.html#640">[ subject ]</a>
+              <a href="author.html#640">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Dec 06, 2012 at 04:23:23PM +0100, Oz Nahum Tiram wrote:
+&gt;<i>Should, I worry about using RandomPool?
+</I>&gt;<i>Shall I used the class which is wrapped by RandomPool directly?
+</I>&gt;<i>
+</I>&gt;<i>How do I proceed in the safest way?
+</I>
+Just use the Crypto.Random API.  If you need random bytes, do:
+
+     from Crypto.Random import get_random_bytes
+
+     rndbytes = get_random_bytes(32)     # returns random 256-bit string
+
+You can also get a file-like object from Crypto.Random:
+
+     from Crypto import Random
+
+     f = Random.new()
+     f.read(32)              # 32 random bytes
+     f.read(32)              # another 32 random bytes
+
+We also provide a stdlib-like &quot;random&quot; module:
+
+     from Crypto.Random import random
+
+     # print a random lowercase letter
+     print random.choice(&quot;abcdefghijklmnopqrstuvwxyz&quot;)
+
+Of course, you can also just use os.urandom:
+
+     import os
+
+     rndbytes = os.urandom(32)       # returns random 256-bit string
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000639.html">[pycrypto] Inovking Depreciation warnings in Python
+</A></li>
+	<LI>Next message: <A HREF="000641.html">[pycrypto] Inovking Depreciation warnings in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#640">[ date ]</a>
+              <a href="thread.html#640">[ thread ]</a>
+              <a href="subject.html#640">[ subject ]</a>
+              <a href="author.html#640">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

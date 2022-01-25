@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Quick and Easy Email Authentication
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Quick%20and%20Easy%20Email%20Authentication&In-Reply-To=49934482.4020605%40kiilerich.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000069.html">
+   <LINK REL="Next"  HREF="000071.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Quick and Easy Email Authentication</H1>
+    <B>David MacQuigg</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Quick%20and%20Easy%20Email%20Authentication&In-Reply-To=49934482.4020605%40kiilerich.com"
+       TITLE="[pycrypto] Quick and Easy Email Authentication">macquigg at ece.arizona.edu
+       </A><BR>
+    <I>Thu Feb 12 16:58:35 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000069.html">[pycrypto] Quick and Easy Email Authentication
+</A></li>
+        <LI>Next message: <A HREF="000071.html">[pycrypto] Quick and Easy Email Authentication
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#70">[ date ]</a>
+              <a href="thread.html#70">[ thread ]</a>
+              <a href="subject.html#70">[ subject ]</a>
+              <a href="author.html#70">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>At 10:34 PM 2/11/2009 +0100, Mads Kiilerich wrote:
+
+&gt;<i>David MacQuigg wrote, On 02/11/2009 04:41 PM:
+</I>&gt;&gt;<i>RSA, maybe some way to do this with hashcodes?  If we can solve this
+</I>&gt;&gt;<i>problem, it could lead to a robust, no-exceptions policy on
+</I>&gt;&gt;<i>authentication of SMTP mail sessions.
+</I>&gt;<i>
+</I>&gt;<i>Such systems already exists, designed and peer reviewed by experts. The primarily problem they face is acceptance - and the lack of acceptance because of the trade-offs made to make the protocols acceptable. And nobody with real-world need for email can rely on such protocols before everybody else uses them, and thus there is no need to deploy the protocols before everybody else uses them.
+</I>
+I'm familiar with this problem.  What the protocol experts have missed, or prefer not to deal with, is the importance of motivating senders.  That's why we need to pay attention to such simple things as the length of the authcode.  If we could dictate a solution, it would be very easy to add a simple extension to SMTP, and make the authcode as long as we like.  Senders would be required to upgrade their mail servers, and the world would be a nice place.
+
+&gt;&gt;<i>Let me try to state the problem in more fundamental terms.  A stranger
+</I>&gt;&gt;<i>says HELO this is f33faf76.mailout09.arizona.edu.  The only other
+</I>&gt;&gt;<i>information you have to verify that claim is a DNS text record at
+</I>&gt;&gt;<i>mailout09.arizona.edu. That record can hold up to 480 bytes of text. 
+</I>&gt;<i>
+</I>&gt;<i>The DNS system is fundamentally broken and insecure. You shouldn't rely on it at all. Secure DNS is really a must but unfortunately not widely deployed, so we must rely on DNS for functionality but shouldn't rely on it for security.
+</I>
+You are being too pessimistic.  DNS security is good enough to screen out almost all the petty forgers.  Banks, of course, should not rely on DNS for high-value transactions.
+
+&gt;&gt;<i>criminals.  More secure sites can add additional checks, including a
+</I>&gt;&gt;<i>digital signature on the entire message.
+</I>&gt;<i>
+</I>&gt;<i>IMHO the right solution to the problem you are trying to solve lies in that direction. Why try to find another and less perfect solution?
+</I>
+The existing solutions are not enough, and there is no one perfect solution.  It will take a combination of several methods, starting with a simple HELO check, like what I am proposing, and moving on to more secure and time-consuming methods, for those few messages that pass the initial checks.
+
+&gt;<i>But ... this is a (silent) list for python crypto, not for protocol design and email systems. Other lists might be more appropriate.
+</I>
+You are right.  We should stick to crypto on this list.  I'll be glad to discuss email and DNS security offlist.
+
+Back to the crypto discussion.  Let me try one more time to formulate a pure crypto problem, free of the complexities of the application.  I have a feeling that what I am looking for is possible.  I just don't know enough about crypto algorithms to figure it out.
+
+Alice wants to ask Bob for some confidential information.  Bob needs to make sure it really is Alice, not Eve.  Alice gives Bob her ID and a short authentication code, like 'f33faf76'.  She also has a public record where Bob can retrieve up to 480 bytes of text that Alice has published.  There is no prior arrangement, or other out-of-band information available to Bob.
+
+The authcode must remain valid and secure for as long as it takes Bob to run the authentication (a few seconds).  The public record can be changed only once every few days.  Eve can't intercept the communication between Alice and Bob, and she can't alter Alice's public record, but she can trick Alice into sending messages to Eve, complete with authentication codes.  Eve also has access to a fast PC, and can test authcodes a thousand times faster than Bob.
+
+-- Dave
+************************************************************     *
+* David MacQuigg, PhD    email: macquigg at ece.arizona.edu   *  *
+* Research Associate                phone: USA 520-721-4583   *  *  *
+* ECE Department, University of Arizona                       *  *  *
+*                                 9320 East Mikelyn Lane       * * *
+* <A HREF="http://purl.net/macquigg">http://purl.net/macquigg</A>        Tucson, Arizona 85710          *
+************************************************************     *
+
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000069.html">[pycrypto] Quick and Easy Email Authentication
+</A></li>
+	<LI>Next message: <A HREF="000071.html">[pycrypto] Quick and Easy Email Authentication
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#70">[ date ]</a>
+              <a href="thread.html#70">[ thread ]</a>
+              <a href="subject.html#70">[ subject ]</a>
+              <a href="author.html#70">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

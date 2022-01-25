@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Confused about some code in PubKey/RSA/_slowmath.py
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Confused%20about%20some%20code%20in%20PubKey/RSA/_slowmath.py&In-Reply-To=%3CF73CAB77-85F3-4E98-BAAA-052A95B4CCF2%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000633.html">
+   <LINK REL="Next"  HREF="000635.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Confused about some code in PubKey/RSA/_slowmath.py</H1>
+    <B>Shoufu Luo</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Confused%20about%20some%20code%20in%20PubKey/RSA/_slowmath.py&In-Reply-To=%3CF73CAB77-85F3-4E98-BAAA-052A95B4CCF2%40gmail.com%3E"
+       TITLE="[pycrypto] Confused about some code in PubKey/RSA/_slowmath.py">luoshoufu at gmail.com
+       </A><BR>
+    <I>Mon Nov  5 00:26:46 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000633.html">[pycrypto] random.uniform() method
+</A></li>
+        <LI>Next message: <A HREF="000635.html">[pycrypto] Confused about some code in PubKey/RSA/_slowmath.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#634">[ date ]</a>
+              <a href="thread.html#634">[ thread ]</a>
+              <a href="subject.html#634">[ subject ]</a>
+              <a href="author.html#634">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+I'm trying to encrypt a message with my private key and release the encrypted to others who will use my public key to decrypt. But, I failed. 
+
+I was confused by the follwing code from PubKey/RSA/_slowmath.py of pyCrypto-2.6. If anyone can give any clues to answer the following questions, I will appreciate. 
+
+1. Theoretically, if I encrypt date using private key, I can decrypt the encrypted data using public key, and vice versa. Why the key must be a private key in decryption function, line 51-52? Can't I use private key to decrypt?
+
+2. _sign() should be the signature process using private key to encrypt a piece of data, why it is trying to decrypt at line 70, and it should be decryption in '_verify', but why it is _encrypt()? 
+
+ 49     def _decrypt(self, c):
+ 50         # compute c**d (mod n)
+ 51         if not self.has_private():
+ 52             raise TypeError(&quot;No private key&quot;)
+ 53         if (hasattr(self,'p') and hasattr(self,'q') and hasattr(self,'u')):
+ 54             m1 = pow(c, self.d % (self.p-1), self.p)
+ 55             m2 = pow(c, self.d % (self.q-1), self.q)
+ 56             h = m2 - m1
+ 57             if (h&lt;0):
+ 58                 h = h + self.q
+ 59             h = h*self.u % self.q
+ 60             return h*self.p+m1
+ 61         return pow(c, self.d, self.n)
+ 62 
+ 63     def _encrypt(self, m):
+ 64         # compute m**d (mod n)
+ 65         return pow(m, self.e, self.n)
+ 66 
+ 67     def _sign(self, m):   # alias for _decrypt
+ 68         if not self.has_private():
+ 69             raise TypeError(&quot;No private key&quot;)
+ 70         return self._decrypt(m)
+ 71 
+ 72     def _verify(self, m, sig):
+ 73         return self._encrypt(sig) == m
+
+
+Thanks,
+Shoufu
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000633.html">[pycrypto] random.uniform() method
+</A></li>
+	<LI>Next message: <A HREF="000635.html">[pycrypto] Confused about some code in PubKey/RSA/_slowmath.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#634">[ date ]</a>
+              <a href="thread.html#634">[ thread ]</a>
+              <a href="subject.html#634">[ subject ]</a>
+              <a href="author.html#634">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

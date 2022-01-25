@@ -1,0 +1,1117 @@
+From brendan.simon at etrix.com.au  Mon Jul 19 06:48:12 2010
+From: brendan.simon at etrix.com.au (Brendan Simon (eTRIX))
+Date: Mon, 19 Jul 2010 22:48:12 +1000
+Subject: [pycrypto] installing pycrypto on OS X 10.6
+Message-ID: <4C44498C.2030806@etrix.com.au>
+
+ I have the following error while installing pycrypto on Mac OS X 10.6
+(via easy_install).
+
+    $ sudo easy_install -z pycrypto
+    Password:
+    Searching for pycrypto
+    Reading http://pypi.python.org/simple/pycrypto/
+    Reading http://pycrypto.sourceforge.net
+    Reading http://www.amk.ca/python/code/crypto
+    Reading http://www.pycrypto.org/
+    Best match: pycrypto 2.1.0
+    Downloading http://www.pycrypto.org/files/pycrypto-2.1.0.tar.gz
+    Processing pycrypto-2.1.0.tar.gz
+    Running pycrypto-2.1.0/setup.py -q bdist_egg --dist-dir
+    /tmp/easy_install-zE_nrE/pycrypto-2.1.0/egg-dist-tmp-izxAlH
+    warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+    Compiling with an SDK that doesn't seem to exist:
+    /Developer/SDKs/MacOSX10.4u.sdk
+    Please check your Xcode installation
+    cc1: error: unrecognized command line option "-Wno-long-double"
+    cc1: error: unrecognized command line option "-Wno-long-double"
+    lipo: can't figure out the architecture type of: /var/tmp//cc1UrVQ6.out
+    error: Setup script exited with error: command 'gcc' failed with
+    exit status 1
+
+
+Why does the installer insist in using SDK for OS X 10.4 ??
+Other easy_installs don't seem to have that restriction !!
+
+My OS X 10.6 system has the following SDKs installed.
+
+    $ ls -l /Developer/SDKs/
+    drwxr-xr-x  7 root  wheel  238 30 Jun  2009 MacOSX10.5.sdk
+    drwxr-xr-x  7 root  wheel  238  3 Aug  2009 MacOSX10.6.sdk
+
+
+I have read one solution is to install the SDK 10.4, but that seems a
+bit of a kludge.
+Has anyone got this working with SDK 10.6 ??
+
+Thanks, Brendan.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100719/1dfa0657/attachment.html 
+
+From zooko at zooko.com  Mon Jul 19 10:20:31 2010
+From: zooko at zooko.com (Zooko O'Whielacronx)
+Date: Mon, 19 Jul 2010 10:20:31 -0600
+Subject: [pycrypto] ANNOUNCING Tahoe, the Least-Authority File System, v1.7.1
+Message-ID: <AANLkTimRHHt78eNrZ39l9xY1pQyhdoRGNSOOcThL8YHr@mail.gmail.com>
+
+ANNOUNCING Tahoe, the Least-Authority File System, v1.7.1
+
+The Tahoe-LAFS team is pleased to announce the immediate
+availability of version 1.7.1 of Tahoe-LAFS, an extremely
+reliable distributed storage system.
+
+Tahoe-LAFS is the first distributed storage system which
+offers "provider-independent security"?meaning that not even
+the operators of your storage servers can read or alter your
+data without your consent. Here is the one-page explanation of
+its unique security and fault-tolerance properties:
+
+http://tahoe-lafs.org/source/tahoe/trunk/docs/about.html
+
+Tahoe-LAFS v1.7.1 is the successor to v1.7.0, which was
+released June 18, 2010 [1].
+
+v1.7.1 is a stable minor release which adds several bugfixes
+and improvements in security, forward-compatibility,
+packaging, usability, and portability. See the NEWS file [2]
+for details.
+
+
+WHAT IS IT GOOD FOR?
+
+With Tahoe-LAFS, you distribute your filesystem across
+multiple servers, and even if some of the servers are
+compromised by by an attacker, the entire filesystem continues
+to work correctly, and continues to preserve your privacy and
+security. You can easily share specific files and directories
+with other people.
+
+In addition to the core storage system itself, volunteers have
+built other projects on top of Tahoe-LAFS and have integrated
+Tahoe-LAFS with existing systems.
+
+These include frontends for Windows, Macintosh, JavaScript,
+iPhone, and Android, and plugins for Hadoop, bzr, mercurial,
+duplicity, TiddlyWiki, and more. See the Related Projects page
+on the wiki [3].
+
+We believe that strong cryptography, Free and Open Source
+Software, erasure coding, and principled engineering practices
+make Tahoe-LAFS safer than RAID, removable drive, tape,
+on-line backup or "cloud storage" systems.
+
+This software is developed under test-driven development, and
+there are no known bugs or security flaws which would
+compromise confidentiality or data integrity under recommended
+use. (For all currently known issues please see the
+known_issues.txt file [4].)
+
+
+COMPATIBILITY
+
+This release is fully compatible with the version 1 series of
+Tahoe-LAFS. Clients from this release can write files and
+directories in the format used by clients of all versions back
+to v1.0 (which was released March 25, 2008). Clients from this
+release can read files and directories produced by clients of
+all versions since v1.0. Servers from this release can serve
+clients of all versions back to v1.0 and clients from this
+release can use servers of all versions back to v1.0.
+
+This is the tenth release in the version 1 series. This series
+of Tahoe-LAFS will be actively supported and maintained for
+the forseeable future, and future versions of Tahoe-LAFS will
+retain the ability to read and write files compatible with
+this series.
+
+
+LICENCE
+
+You may use this package under the GNU General Public License,
+version 2 or, at your option, any later version. See the file
+"COPYING.GPL" [5] for the terms of the GNU General Public
+License, version 2.
+
+You may use this package under the Transitive Grace Period
+Public Licence, version 1 or, at your option, any later
+version. (The Transitive Grace Period Public Licence has
+requirements similar to the GPL except that it allows you to
+delay for up to twelve months after you redistribute a derived
+work before releasing the source code of your derived work.)
+See the file "COPYING.TGPPL.html" [6] for the terms of the
+Transitive Grace Period Public Licence, version 1.
+
+(You may choose to use this package under the terms of either
+licence, at your option.)
+
+
+INSTALLATION
+
+Tahoe-LAFS works on Linux, Mac OS X, Windows, Cygwin, Solaris,
+*BSD, and probably most other systems. Start with
+"docs/quickstart.html" [7].
+
+
+HACKING AND COMMUNITY
+
+Please join us on the mailing list [8]. Patches are gratefully
+accepted -- the RoadMap page [9] shows the next improvements
+that we plan to make and CREDITS [10] lists the names of people
+who've contributed to the project. The Dev page [11] contains
+resources for hackers.
+
+
+SPONSORSHIP
+
+Tahoe-LAFS was originally developed by Allmydata, Inc., a
+provider of commercial backup services. After discontinuing
+funding of Tahoe-LAFS R&D in early 2009, they have continued
+to provide servers, bandwidth, small personal gifts as tokens
+of appreciation, and bug reports. Thank you to Allmydata,
+Inc. for their generous and public-spirited support.
+
+Google, Inc. is sponsoring Tahoe-LAFS development as part of
+the Google Summer of Code 2010. Google suggested that we
+should apply for the Summer of Code program, and when we did
+they generously awarded four sponsorships to students from
+around the world to hack on Tahoe-LAFS this summer. Thank you
+to Google, Inc. for their generous and public-spirited
+support.
+
+
+HACK TAHOE-LAFS!
+
+If you can find a security flaw in Tahoe-LAFS which is serious
+enough that feel compelled to warn our users and issue a fix,
+then we will award you with a customized t-shirts with your
+exploit printed on it and add you to the "Hack Tahoe-LAFS Hall
+Of Fame" [12].
+
+
+ACKNOWLEDGEMENTS
+
+This is the fifth release of Tahoe-LAFS to be created solely
+as a labor of love by volunteers. Thank you very much to the
+team of "hackers in the public interest" who make Tahoe-LAFS
+possible.
+
+David-Sarah Hopwood and Zooko Wilcox-O'Hearn
+on behalf of the Tahoe-LAFS team
+
+July 18, 2010
+Rainhill, Merseyside, UK and Boulder, Colorado, USA
+
+
+[1] http://tahoe-lafs.org/trac/tahoe/browser/relnotes.txt?rev=4514
+[2] http://tahoe-lafs.org/trac/tahoe/browser/NEWS?rev=4577
+[3] http://tahoe-lafs.org/trac/tahoe/wiki/RelatedProjects
+[4] http://tahoe-lafs.org/trac/tahoe/browser/docs/known_issues.txt
+[5] http://tahoe-lafs.org/trac/tahoe/browser/COPYING.GPL
+[6] http://tahoe-lafs.org/source/tahoe/trunk/COPYING.TGPPL.html
+[7] http://tahoe-lafs.org/source/tahoe/trunk/docs/quickstart.html
+[8] http://tahoe-lafs.org/cgi-bin/mailman/listinfo/tahoe-dev
+[9] http://tahoe-lafs.org/trac/tahoe/roadmap
+[10] http://tahoe-lafs.org/trac/tahoe/browser/CREDITS?rev=4567
+[11] http://tahoe-lafs.org/trac/tahoe/wiki/Dev
+[12] http://tahoe-lafs.org/hacktahoelafs/
+
+From brendan.simon at etrix.com.au  Tue Jul 20 22:43:55 2010
+From: brendan.simon at etrix.com.au (Brendan Simon (eTRIX))
+Date: Wed, 21 Jul 2010 14:43:55 +1000
+Subject: [pycrypto] AES CFB with 128 bit feedback size
+Message-ID: <4C467B0B.1060402@etrix.com.au>
+
+ I _need_ to decrypt some data that _is_ encrypted with AES using 128
+bit CFB.  i.e. feeback size is 128 bits.
+
+I tried MODE_CFB with PyCrypto but the data did not decrypt correctly.
+Reading the docs a little closer I see that PyCrypto only seems to
+implement 8 bit CFB.
+
+Is there any way to set the feedback size to 128 (or other sizes: 64,
+32, 16 or 8 bits) ??
+
+Just for reference, I am porting some VB code to python, and the
+equivalent VB decryption code is :
+
+    Dim myAes as New RijndaelManaged()
+    myAes.FeebackSize = 128
+    myAes.Mode = CipherMode.CFB
+    myAes.Key = key
+    myAes.IV = iv
+    myAes.Padding = PaddingMode.None
+
+
+If there is no way of doing this with PyCrypto, then I guess I will have
+to fall back to using ECB and doing the feedback myself.  Not too
+difficult, but it would be nice if PyCrypto had the option of specifying
+the CFB Feeback size :)
+
+Thanks, Brendan.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100721/d5baa07b/attachment.html 
+
+From anders.nauman at gmail.com  Wed Jul 21 10:49:32 2010
+From: anders.nauman at gmail.com (anders nauman)
+Date: Wed, 21 Jul 2010 18:49:32 +0200
+Subject: [pycrypto] Does Pycrypto work with Python 3.x now?
+In-Reply-To: <4BF2C327.9000705@gmx.net>
+References: <713926.74718.qm@web114208.mail.gq1.yahoo.com>
+	<4BF269F0.7080208@amberfisharts.com> <4BF2C155.6020306@gmail.com>
+	<4BF2C327.9000705@gmx.net>
+Message-ID: <AANLkTikIityYD1ESS61CHv-ZMCbHORsmjEoHsjAn8zJl@mail.gmail.com>
+
+Hi
+
+is i possible to get the latest patch to try out on some machines?
+
+// anders
+
+2010/5/18 Christoph Tapler <christoph.tapler at gmx.net>
+
+> Hi Tobias
+>
+>  > Does Pycrypto work with Python 3.x now?
+>
+> To my knowledge PyCrypto doesn't work yet with Python 3.x.
+> Around 30% of the test cases are still fail. If you want me
+> to check which of the components are pass, please let me know.
+>
+> Cheers,
+> Christoph
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100721/c85a09ca/attachment.htm 
+
+From tobias.koeck at gmail.com  Thu Jul 22 16:47:06 2010
+From: tobias.koeck at gmail.com (Tobias Koeck)
+Date: Fri, 23 Jul 2010 00:47:06 +0200
+Subject: [pycrypto] rsa decryption question
+Message-ID: <4C48CA6A.7030601@gmail.com>
+
+I have an encrypted string and a key string (512 bits long, represents 
+a RSA key). After studying the pycrypto documentation I still don't 
+get how to read the
+private key form the key string and decrypt the string.
+
+- read the 512 bit string as private key
+- decrypt the encrypted string with rsa
+
+Any short code example how to do that?
+
+Greetings and thanks
+
+From dlitz at dlitz.net  Mon Aug  2 16:00:13 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 2 Aug 2010 18:00:13 -0400
+Subject: [pycrypto] ANN: PyCrypto 2.2 released
+Message-ID: <20100802220012.GA30375@rivest.dlitz.net>
+
+PyCrypto 2.2 has been released.
+
+This release remains compatible with Python 2.1 through 2.6.  (Python 
+3.x is not yet supported.)  A C99 compiler may be required.
+
+You can download this release from http://www.pycrypto.org/, you can ask 
+for it in the cheeseshop, and it has the following SHA256 sums:
+
+9219449bc85ab4f4ff61fc83b0cbe0ec23d46943caab3d5413c6ba52da6f922c *pycrypto-2.2.tar.gz
+0168719105999133374f995bdc9fa6a1be2de65b2ae359eb8e5ef9f433f66af5 *pycrypto-2.2.tar.gz.asc
+
+Please test it and post your experiences to the PyCrypto mailing list:
+
+     pycrypto at lists.dlitz.net
+
+and/or file bug reports on Launchpad:
+
+     https://bugs.launchpad.net/pycrypto
+
+Here is the changelog:
+
+   - Deprecated Crypto.Util.number.getRandomNumber(), which had confusing
+     semantics.  It's been replaced by getRandomNBitInteger and
+     getRandomInteger.  (Thanks: Lorenz Quack)
+
+   - Better isPrime() and getPrime() implementations that do a real
+     Rabin-Miller probabilistic primality test (not the phony test we did
+     before with fixed bases).  (Thanks: Lorenz Quack)
+
+   - getStrongPrime() implementation for generating RSA primes.
+     (Thanks: Lorenz Quack)
+
+   - Support for importing and exporting RSA keys in DER and PEM format.
+     (Thanks: Legrandin)
+
+   - Fix PyCrypto when floor division (python -Qnew) is enabled.
+
+   - When building using gcc, use -std=c99 for compilation.  This should
+     fix building on FreeBSD and NetBSD.
+
+Thanks to everyone who helped make this release possible!
+
+Cheers,
+- Dwayne
+
+--
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 221 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20100802/3a0fb93a/attachment.pgp 
+
+From macquigg at ece.arizona.edu  Mon Aug  2 18:08:46 2010
+From: macquigg at ece.arizona.edu (David MacQuigg)
+Date: Mon, 02 Aug 2010 17:08:46 -0700
+Subject: [pycrypto] ANN: PyCrypto 2.2 released
+In-Reply-To: <20100802220012.GA30375@rivest.dlitz.net>
+References: <20100802220012.GA30375@rivest.dlitz.net>
+Message-ID: <4C575E0E.6090201@ece.arizona.edu>
+
+Many thanks to all.  This is an excellent package, well-suited for a  
+class in cryptography.
+
+I have some questions about the migration to 3.x, and I apologize if I 
+missed this in the earlier discussions on this list.  Is this really 
+hard to do, or is it just not worth the effort?  Is there something 
+about PyCrypto, compared to other packages, making the migration more 
+difficult. 
+
+I have no prejudice one way or the other as to whether PyCrypto should 
+make a big effort in migration.  I have both 2.7 and 3.1 on my Mac, and 
+it looks like 2.7 will be around for many more years.
+
+************************************************************     *
+* David MacQuigg, PhD    email: macquigg at ece.arizona.edu   *  *
+* Research Associate                phone: USA 520-721-4583   *  *  *
+* ECE Department, University of Arizona                       *  *  *
+*                                 9320 East Mikelyn Lane       * * *
+* http://purl.net/macquigg        Tucson, Arizona 85710          *
+************************************************************     *
+
+
+Dwayne C. Litzenberger wrote:
+> PyCrypto 2.2 has been released.
+>
+> This release remains compatible with Python 2.1 through 2.6.  (Python 
+> 3.x is not yet supported.)  A C99 compiler may be required.
+>
+> You can download this release from http://www.pycrypto.org/, you can 
+> ask for it in the cheeseshop, and it has the following SHA256 sums:
+>
+> 9219449bc85ab4f4ff61fc83b0cbe0ec23d46943caab3d5413c6ba52da6f922c 
+> *pycrypto-2.2.tar.gz
+> 0168719105999133374f995bdc9fa6a1be2de65b2ae359eb8e5ef9f433f66af5 
+> *pycrypto-2.2.tar.gz.asc
+>
+> Please test it and post your experiences to the PyCrypto mailing list:
+>
+>     pycrypto at lists.dlitz.net
+>
+> and/or file bug reports on Launchpad:
+>
+>     https://bugs.launchpad.net/pycrypto
+>
+> Here is the changelog:
+>
+>   - Deprecated Crypto.Util.number.getRandomNumber(), which had confusing
+>     semantics.  It's been replaced by getRandomNBitInteger and
+>     getRandomInteger.  (Thanks: Lorenz Quack)
+>
+>   - Better isPrime() and getPrime() implementations that do a real
+>     Rabin-Miller probabilistic primality test (not the phony test we did
+>     before with fixed bases).  (Thanks: Lorenz Quack)
+>
+>   - getStrongPrime() implementation for generating RSA primes.
+>     (Thanks: Lorenz Quack)
+>
+>   - Support for importing and exporting RSA keys in DER and PEM format.
+>     (Thanks: Legrandin)
+>
+>   - Fix PyCrypto when floor division (python -Qnew) is enabled.
+>
+>   - When building using gcc, use -std=c99 for compilation.  This should
+>     fix building on FreeBSD and NetBSD.
+>
+> Thanks to everyone who helped make this release possible!
+>
+> Cheers,
+> - Dwayne
+>
+> -- 
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>   
+
+
+
+From dlitz at dlitz.net  Mon Aug  2 19:15:21 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 2 Aug 2010 21:15:21 -0400
+Subject: [pycrypto] Guidelines for Py3k support
+Message-ID: <20100803011521.GA31595@rivest.dlitz.net>
+
+Hey guys,
+
+I see that some of you are working on Python 3 support for PyCrypto.  I'll 
+admit that I haven't been paying much attention (I don't really use Python 
+3 right now), but I would definitely like to see this move forward.
+
+Here are some guidelines for patches:
+
+- Patches should be generated using "git format-patch" or "git send-email", 
+   and sent to this mailing list, along with a statement that they comply 
+   with the PyCrypto Code Submission Requirements - Rev C.  See 
+   http://www.dlitz.net/software/pycrypto/submission-requirements/, and take 
+   particular note of the residency requirements.
+   (*insert rant about obnoxious crypto export controls here*)
+
+- One master source tree.  I only want to maintain one source tree, and 
+   Python 2.x support is *not* going away any time soon.
+
+- Must work on older Python releases, going back to 2.2.  Ideally, we would 
+   also continue to support Python 2.1, but I'm willing to drop 2.1 if 
+   necessary.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Mon Aug  2 19:46:37 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 2 Aug 2010 21:46:37 -0400
+Subject: [pycrypto] On the future of new ciphers/hashes in PyCrypto
+Message-ID: <20100803014637.GA32047@rivest.dlitz.net>
+
+Hi folks!
+
+Going through the bug tracker and the mailing list, a lot of the requests 
+are to add new algorithms (Camellia, SHA512, TEA, PKCS#1/OAEP, PBKDF2), or 
+to make changes to the existing implementations (timing attack 
+countermeasures for the AES module, better prime generation for RSA).
+
+They're all good ideas, but I don't have the time or the expertise needed 
+to review C implementations of low-level crypto primitives, and frankly, I 
+have better things to do.
+
+Python does not need its own custom AES implementation.  Neither do Java, 
+Ruby, Perl, JavaScript, PHP, Go, C++, D, Clojure, Haskell.  It's a waste of 
+volunteer time, it's bad engineering, and it means that the FOSS community 
+ends up repeating the same mistakes over and over, year after year, every 
+time a new language comes out.
+
+I'm putting a stop to it.  I'm declaring a permanent feature freeze on the 
+C implementations of <Crypto.Cipher.*> and <Crypto.Hash.*>.  New algortihms   
+will be added only by calling out to existing libraries.  PyCrypto 
+development will be focused on the API.
+
+I haven't yet figured out exactly how this is going to look.  I'm thinking 
+of some kind of pluggable backends, sort of like how Java or CryptoAPI, but 
+with as little API complexity as possible.  Ideas are welcome.
+
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+   OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From ybi10 at yahoo.com  Fri Aug 13 18:11:54 2010
+From: ybi10 at yahoo.com (Peter Bee)
+Date: Fri, 13 Aug 2010 17:11:54 -0700 (PDT)
+Subject: [pycrypto] Help on PyCrypto errors on 64-bit Windows
+Message-ID: <76867.84694.qm@web62304.mail.re1.yahoo.com>
+
+Hi,
+
+I am setting Fabric on my 64-bit Win (2008 Server R2, with Python 2.6.5 installed, also have paramiko-1.7.6, pycrypto 2.2, and Fabric-0.9.1 on the system) system, and ran into the famous error below:
+?
+?
+Traceback (most recent call last):
+? File "C:\Python26\Scripts\fab-script.py", line 9, in <module>
+??? load_entry_point('Fabric==0.9.1', 'console_scripts', 'fab')()
+? File "C:\Python26\lib\site-packages\pkg_resources.py", line 305, in load_entry
+_point
+??? return get_distribution(dist).load_entry_point(group, name)
+? File "C:\Python26\lib\site-packages\pkg_resources.py", line 2244, in load_entr
+y_point
+??? return ep.load()
+? File "C:\Python26\lib\site-packages\pkg_resources.py", line 1954, in load
+??? entry = __import__(self.module_name, globals(),globals(), ['__name__'])
+? File "C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\main.py", li
+ne 17, in <module>
+??? from fabric import api # For checking callables against the API
+? File "C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\api.py", lin
+e 9, in <module>
+??? from fabric.context_managers import cd, hide, settings, show
+? File "C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\context_mana
+gers.py", line 12, in <module>
+??? from fabric.state import env, output
+? File "C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\state.py", l
+ine 9, in <module>
+??? from fabric.network import HostConnectionCache
+? File "C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\network.py",
+?line 19, in <module>
+??? abort("paramiko is a required module. Please install it:\n\t$ sudo easy_inst
+all paramiko")
+? File "C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\utils.py", l
+ine 21, in abort
+??? from fabric.state import output
+ImportError: cannot import name output
+?
+I was pointed to http://code.fabfile.org/issues/show/194, which mentioned that I need a 64-bit precompiled winrandom. 
+?
+I have been trying to search and create one, but no luch so far. Can any of you help me locate one, or provide information on how to build one?
+?
+Your help is very appreciated.
+
+
+Thanks,
+Peter
+
+
+      
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100813/51d29d5a/attachment.htm 
+
+From gtaylor at duointeractive.com  Tue Aug 24 14:03:33 2010
+From: gtaylor at duointeractive.com (Gregory Taylor)
+Date: Tue, 24 Aug 2010 16:03:33 -0400
+Subject: [pycrypto] winrandom alternative (Namely for 64-bit Windows)
+Message-ID: <61ECE607-046B-4FCE-A0ED-73CEA5358800@duointeractive.com>
+
+Hello,
+
+I'm not sure if this is the best place for something like this, but I figured I'd share a workaround and a suggestion for others to take or leave. I'm currently running a 64-bit Windows 7 machine for testing some of our codebase on Windows, and ran into a snag while installing PyCrypto (so I could use Fabric, which depends on Paramiko, which depends on PyCrypto). 
+
+As you are probably aware of, PyCrypto tries to download/compile winrandom, which can be a problem for many that lack a compiler. As an alternative for those who can't/won't install winrandom, I put together a ctypes equivalent that doesn't require compilation like the original winrandom. This new module aims to be functionally equivalent in every way to winrandom, but accesses the Windows-specific cryptography library through ctypes rather than a compiled Python C extension module.
+
+The PyPi page can be found at: http://pypi.python.org/pypi/winrandom-ctypes/
+The Github page can be found at: http://github.com/duointeractive/winrandom-ctypes
+
+I understand that going the ctypes route might raise the minimum Python version required (2.4 or 2.5?), so this probably isn't a one-size-fits-all solution. However, if there was anything that could be done to make it easier for a user to elect to use the ctypes version, that'd be great. Perhaps PyCrypto could check at install time whether winrandom is already installed, and skip trying to compile/re-install it (winrandom-ctypes provides winrandom) to allow a user to plug something else in (winrandom-ctypes?).
+
+Just thought I'd throw this out here for those who might find it useful in the painful situation that they have to develop on Windows.
+
+Greg Taylor
+http://duointeractive.com
+DUO Interactive, LLC
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100824/8b0898ce/attachment.htm 
+
+From dlitz at dlitz.net  Thu Aug 26 23:02:15 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 27 Aug 2010 01:02:15 -0400
+Subject: [pycrypto] winrandom alternative (Namely for 64-bit Windows)
+In-Reply-To: <61ECE607-046B-4FCE-A0ED-73CEA5358800@duointeractive.com>
+References: <61ECE607-046B-4FCE-A0ED-73CEA5358800@duointeractive.com>
+Message-ID: <20100827050215.GA4397@rivest.dlitz.net>
+
+On Tue, Aug 24, 2010 at 04:03:33PM -0400, Gregory Taylor wrote:
+>As you are probably aware of, PyCrypto tries to download/compile 
+>winrandom, which can be a problem for many that lack a compiler. As an 
+>alternative for those who can't/won't install winrandom, I put together a 
+>ctypes equivalent that doesn't require compilation like the original 
+>winrandom. This new module aims to be functionally equivalent in every way 
+>to winrandom, but accesses the Windows-specific cryptography library 
+>through ctypes rather than a compiled Python C extension module.
+
+Does os.urandom work on Win64?  We could just use that if someone would 
+help me with the OS detection (see lib/Crypto/Random/OSRNG/__init__.py).
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Thu Aug 26 23:06:11 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 27 Aug 2010 01:06:11 -0400
+Subject: [pycrypto] ANN: PyCrypto 2.3 released
+Message-ID: <20100827050611.GB4397@rivest.dlitz.net>
+
+PyCrypto 2.3 has been released.  This is a minor bugfix release.
+
+This release remains compatible with Python 2.1 through 2.7.  (Python 3.x is not yet supported.)  A C99 compiler may be required.
+
+You can download this release from http://www.pycrypto.org/, you can ask for it in the cheeseshop, and it has the following SHA256 sums:
+
+495f68eb37150ead7c778671311975edcc177845a7f019e4e96011678b30666f *pycrypto-2.3.tar.gz
+2cf590e5a96d432a5a13134b558dd3c39ca8949b423f84dbd1e6e7729b9d94df *pycrypto-2.3.tar.gz.asc
+
+Please test it and post your experiences to the PyCrypto mailing list:
+
+      pycrypto at lists.dlitz.net
+
+and/or file bug reports on Launchpad:
+
+      https://bugs.launchpad.net/pycrypto
+
+Here is the changelog:
+
+- Fix NameError when attempting to use deprecated getRandomNumber() 
+   function.
+
+- _slowmath: Compute RSA u parameter when it's not given to RSA.construct. 
+   This makes _slowmath behave the same as _fastmath in this regard.
+
+- Make RSA.generate raise a more user-friendly exception message when the 
+   user tries to generate a bogus-length key.
+
+Thanks to everyone who helped make this release possible!
+
+Cheers,
+- Dwayne
+
+--
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+   OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 221 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20100827/8bcd7955/attachment.pgp 
+
+From larry.bates at vitalesafe.com  Fri Aug 27 12:50:22 2010
+From: larry.bates at vitalesafe.com (Larry Bates)
+Date: Fri, 27 Aug 2010 13:50:22 -0500
+Subject: [pycrypto] winrandom alternative (Namely for 64-bit Windows
+In-Reply-To: <mailman.1.1282932001.1627.pycrypto@lists.dlitz.net>
+References: <mailman.1.1282932001.1627.pycrypto@lists.dlitz.net>
+Message-ID: <016801cb4618$b4707760$1d516620$@bates@vitalesafe.com>
+
+os.urandom works on my 64-bit Windows 7 machine (ActiveState Python V2.7).
+
+I think you can use the following to determine if 32/64bit:
+
+import platform
+if platform.architecture()[0] == '64bit':
+    #
+    # Do 64 bit stuff here
+    #
+else:
+    #
+    # Do 32 bit stuff here
+    #
+
+Larry Bates
+vitalEsafe, Inc.
+
+
+Message: 1
+Date: Fri, 27 Aug 2010 01:02:15 -0400
+From: "Dwayne C. Litzenberger" <dlitz at dlitz.net>
+Subject: Re: [pycrypto] winrandom alternative (Namely for 64-bit
+	Windows)
+To: PyCrypto discussion list <pycrypto at lists.dlitz.net>
+Message-ID: <20100827050215.GA4397 at rivest.dlitz.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+
+On Tue, Aug 24, 2010 at 04:03:33PM -0400, Gregory Taylor wrote:
+>As you are probably aware of, PyCrypto tries to download/compile 
+>winrandom, which can be a problem for many that lack a compiler. As an 
+>alternative for those who can't/won't install winrandom, I put together a 
+>ctypes equivalent that doesn't require compilation like the original 
+>winrandom. This new module aims to be functionally equivalent in every way 
+>to winrandom, but accesses the Windows-specific cryptography library 
+>through ctypes rather than a compiled Python C extension module.
+
+Does os.urandom work on Win64?  We could just use that if someone would 
+help me with the OS detection (see lib/Crypto/Random/OSRNG/__init__.py).
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+
+
+
+From larry.bates at vitalesafe.com  Fri Aug 27 12:55:12 2010
+From: larry.bates at vitalesafe.com (Larry Bates)
+Date: Fri, 27 Aug 2010 13:55:12 -0500
+Subject: [pycrypto] winrandom alternative (Namely for 64-bit Windows)
+References: <mailman.1.1282932001.1627.pycrypto@lists.dlitz.net> 
+Message-ID: <016b01cb4619$617ab6f0$247024d0$@bates@vitalesafe.com>
+
+Seems that things might be slightly more complicated than I first thought.  Here
+is a good thread that covers the topic:
+
+http://www.gossamer-threads.com/lists/python/python/663631
+
+Hope info helps,
+Larry Bates
+vitalEsafe, Inc.
+
+-----Original Message-----
+From: Larry Bates [mailto:larry.bates at vitalesafe.com] 
+Sent: Friday, August 27, 2010 1:50 PM
+To: 'pycrypto at lists.dlitz.net'
+Cc: 'dlitz at dlitz.net'
+Subject: winrandom alternative (Namely for 64-bit Windows
+
+os.urandom works on my 64-bit Windows 7 machine (ActiveState Python V2.7).
+
+I think you can use the following to determine if 32/64bit:
+
+import platform
+if platform.architecture()[0] == '64bit':
+    #
+    # Do 64 bit stuff here
+    #
+else:
+    #
+    # Do 32 bit stuff here
+    #
+
+Larry Bates
+vitalEsafe, Inc.
+
+
+Message: 1
+Date: Fri, 27 Aug 2010 01:02:15 -0400
+From: "Dwayne C. Litzenberger" <dlitz at dlitz.net>
+Subject: Re: [pycrypto] winrandom alternative (Namely for 64-bit
+	Windows)
+To: PyCrypto discussion list <pycrypto at lists.dlitz.net>
+Message-ID: <20100827050215.GA4397 at rivest.dlitz.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+
+On Tue, Aug 24, 2010 at 04:03:33PM -0400, Gregory Taylor wrote:
+>As you are probably aware of, PyCrypto tries to download/compile 
+>winrandom, which can be a problem for many that lack a compiler. As an 
+>alternative for those who can't/won't install winrandom, I put together a 
+>ctypes equivalent that doesn't require compilation like the original 
+>winrandom. This new module aims to be functionally equivalent in every way 
+>to winrandom, but accesses the Windows-specific cryptography library 
+>through ctypes rather than a compiled Python C extension module.
+
+Does os.urandom work on Win64?  We could just use that if someone would 
+help me with the OS detection (see lib/Crypto/Random/OSRNG/__init__.py).
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+
+
+
+From dlitz at dlitz.net  Fri Aug 27 21:02:55 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 27 Aug 2010 23:02:55 -0400
+Subject: [pycrypto] Fixed PyCrypto 2.3 tarball & SHA256-sums
+In-Reply-To: <20100827050611.GB4397@rivest.dlitz.net>
+References: <20100827050611.GB4397@rivest.dlitz.net>
+Message-ID: <20100828030255.GA19460@rivest.dlitz.net>
+
+On Fri, Aug 27, 2010 at 01:06:11AM -0400, Dwayne C. Litzenberger wrote:
+>495f68... *pycrypto-2.3.tar.gz
+>2cf590... *pycrypto-2.3.tar.gz.asc
+
+Correction: The files in the previous tarball didn't have the directory 
+prefix "pycrypto-2.3/", so unpacking the tarball would dump all the files 
+into the current directory.  I've re-packaged the tarball from the same 
+commit in the git repository.  The updated tarballs have the following 
+SHA256 sums:
+
+4f11e85fbcf13960373650fc2dae8f088f9b001f07fb6d3efb2fcb5334987182 *pycrypto-2.3.tar.gz
+753637dc906b45a03b2562dc7f77ac63082ade80fe4be075e483daa4613a6d99 *pycrypto-2.3.tar.gz.asc
+
+My apologies to any early-adopters who were inconvenienced by this.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 221 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20100827/1cac0bc5/attachment.pgp 
+
+From zooko at zooko.com  Mon Sep 20 01:45:15 2010
+From: zooko at zooko.com (Zooko O'Whielacronx)
+Date: Mon, 20 Sep 2010 01:45:15 -0600
+Subject: [pycrypto] announcing pycryptopp-0.5.20
+Message-ID: <AANLkTimQFtExj=Ev3RaPCw-c4V6F7iNYYedo+XUBb5_5@mail.gmail.com>
+
+Folks:
+
+If you don't want any algorithms other than RSA, AES, and SHA-256 then
+you can use pycryptopp for that. pycryptopp's API is not the same as
+PyCrypto's, but both of them are pretty simple APIs.
+
+2010-09-18 -- pycryptopp v0.5.20
+
+The following things are new in this release:
+
+    * fix bugs in assembly implementation of SHA-256 from Crypto++
+    * fix it to compile on *BSD (#39)
+    * improve doc strings
+    * add a quick start-up-self-test of SHA256 (#43)
+    * execute the quick start-up-self-tests of AES and SHA256 on module import
+
+http://tahoe-lafs.org/trac/pycryptopp
+
+Regards,
+
+Zooko
+
+From mdriscoll at co.marshall.ia.us  Tue Sep 28 15:23:38 2010
+From: mdriscoll at co.marshall.ia.us (Mike Driscoll)
+Date: Tue, 28 Sep 2010 16:23:38 -0500 (CDT)
+Subject: [pycrypto] Python 3 support
+In-Reply-To: <AANLkTimQFtExj=Ev3RaPCw-c4V6F7iNYYedo+XUBb5_5@mail.gmail.com>
+Message-ID: <1514348382.59554.1285709018692.JavaMail.root@zimbra>
+
+Hi,
+
+Is there Python 3 support for PyCrypto in the tip? I looked at 2.3, but it says it does not.
+
+Thanks,
+
+- Mike
+
+From zooko at zooko.com  Thu Sep 30 00:59:08 2010
+From: zooko at zooko.com (Zooko O'Whielacronx)
+Date: Thu, 30 Sep 2010 00:59:08 -0600
+Subject: [pycrypto] ANNOUNCING Tahoe, the Least-Authority File System, v1.8.0
+Message-ID: <AANLkTimvfjypxEJtM--ebcAgXZxh4RyUuYgyODHQTWHn@mail.gmail.com>
+
+ANNOUNCING Tahoe, the Least-Authority File System, v1.8.0
+
+The Tahoe-LAFS team is pleased to announce the immediate
+availability of version 1.8.0 of Tahoe-LAFS, an extremely
+reliable distributed storage system. Get it here:
+
+http://tahoe-lafs.org/source/tahoe/trunk/docs/quickstart.html
+
+Tahoe-LAFS is the first distributed storage system to offer
+"provider-independent security" ? meaning that not even the
+operators of your storage servers can read or alter your data
+without your consent. Here is the one-page explanation of its
+unique security and fault-tolerance properties:
+
+http://tahoe-lafs.org/source/tahoe/trunk/docs/about.html
+
+The previous stable release of Tahoe-LAFS was v1.7.1, which was
+released July 18, 2010 [1].
+
+v1.8.0 offers greatly improved performance and fault-tolerance
+of downloads and improved Windows support. See the NEWS file
+[2] for details.
+
+
+WHAT IS IT GOOD FOR?
+
+With Tahoe-LAFS, you distribute your filesystem across
+multiple servers, and even if some of the servers fail or are
+taken over by an attacker, the entire filesystem continues to
+work correctly, and continues to preserve your privacy and
+security. You can easily share specific files and directories
+with other people.
+
+In addition to the core storage system itself, volunteers
+have built other projects on top of Tahoe-LAFS and have
+integrated Tahoe-LAFS with existing systems, including
+Windows, JavaScript, iPhone, Android, Hadoop, Flume, Django,
+Puppet, bzr, mercurial, perforce, duplicity, TiddlyWiki, and
+more. See the Related Projects page on the wiki [3].
+
+We believe that strong cryptography, Free and Open Source
+Software, erasure coding, and principled engineering practices
+make Tahoe-LAFS safer than RAID, removable drive, tape,
+on-line backup or cloud storage.
+
+This software is developed under test-driven development, and
+there are no known bugs or security flaws which would
+compromise confidentiality or data integrity under recommended
+use. (For all important issues that we are currently aware of
+please see the known_issues.txt file [4].)
+
+
+COMPATIBILITY
+
+This release is compatible with the version 1 series of
+Tahoe-LAFS. Clients from this release can write files and
+directories in the format used by clients of all versions back
+to v1.0 (which was released March 25, 2008). Clients from this
+release can read files and directories produced by clients of
+all versions since v1.0. Servers from this release can serve
+clients of all versions back to v1.0 and clients from this
+release can use servers of all versions back to v1.0.
+
+This is the eleventh release in the version 1 series. This
+series of Tahoe-LAFS will be actively supported and maintained
+for the forseeable future, and future versions of Tahoe-LAFS
+will retain the ability to read and write files compatible
+with this series.
+
+
+LICENCE
+
+You may use this package under the GNU General Public License,
+version 2 or, at your option, any later version. See the file
+"COPYING.GPL" [5] for the terms of the GNU General Public
+License, version 2.
+
+You may use this package under the Transitive Grace Period
+Public Licence, version 1 or, at your option, any later
+version. (The Transitive Grace Period Public Licence has
+requirements similar to the GPL except that it allows you to
+delay for up to twelve months after you redistribute a derived
+work before releasing the source code of your derived work.)
+See the file "COPYING.TGPPL.html" [6] for the terms of the
+Transitive Grace Period Public Licence, version 1.
+
+(You may choose to use this package under the terms of either
+licence, at your option.)
+
+
+INSTALLATION
+
+Tahoe-LAFS works on Linux, Mac OS X, Windows, Cygwin, Solaris,
+*BSD, and probably most other systems. Start with
+"docs/quickstart.html" [7].
+
+
+HACKING AND COMMUNITY
+
+Please join us on the mailing list [8]. Patches are gratefully
+accepted -- the RoadMap page [9] shows the next improvements
+that we plan to make and CREDITS [10] lists the names of people
+who've contributed to the project. The Dev page [11] contains
+resources for hackers.
+
+
+SPONSORSHIP
+
+Tahoe-LAFS was originally developed by Allmydata, Inc., a
+provider of commercial backup services. After discontinuing
+funding of Tahoe-LAFS R&D in early 2009, they continued
+to provide servers, bandwidth, small personal gifts as tokens
+of appreciation, and bug reports.
+
+Google, Inc. sponsored Tahoe-LAFS development as part of the
+Google Summer of Code 2010. They awarded four sponsorships to
+students from around the world to hack on Tahoe-LAFS that
+summer.
+
+Thank you to Allmydata and Google for their generous and
+public-spirited support.
+
+
+HACK TAHOE-LAFS!
+
+If you can find a security flaw in Tahoe-LAFS which is serious
+enough that feel compelled to warn our users and issue a fix,
+then we will award you with a customized t-shirts with your
+exploit printed on it and add you to the "Hack Tahoe-LAFS Hall
+Of Fame" [12].
+
+
+ACKNOWLEDGEMENTS
+
+This is the fifth release of Tahoe-LAFS to be created solely
+as a labor of love by volunteers. Thank you very much to the
+team of "hackers in the public interest" who make Tahoe-LAFS
+possible.
+
+David-Sarah Hopwood and Zooko Wilcox-O'Hearn
+on behalf of the Tahoe-LAFS team
+
+September 23, 2010
+Rainhill, Merseyside, UK and Boulder, Colorado, USA
+
+
+[1] http://tahoe-lafs.org/trac/tahoe/browser/relnotes.txt?rev=4579
+[2] http://tahoe-lafs.org/trac/tahoe/browser/NEWS?rev=4732
+[3] http://tahoe-lafs.org/trac/tahoe/wiki/RelatedProjects
+[4] http://tahoe-lafs.org/trac/tahoe/browser/docs/known_issues.txt
+[5] http://tahoe-lafs.org/trac/tahoe/browser/COPYING.GPL
+[6] http://tahoe-lafs.org/source/tahoe/trunk/COPYING.TGPPL.html
+[7] http://tahoe-lafs.org/source/tahoe/trunk/docs/quickstart.html
+[8] http://tahoe-lafs.org/cgi-bin/mailman/listinfo/tahoe-dev
+[9] http://tahoe-lafs.org/trac/tahoe/roadmap
+[10] http://tahoe-lafs.org/trac/tahoe/browser/CREDITS?rev=4591
+[11] http://tahoe-lafs.org/trac/tahoe/wiki/Dev
+[12] http://tahoe-lafs.org/hacktahoelafs/
+
+From mogurijin at gmail.com  Sun Aug  8 00:35:57 2010
+From: mogurijin at gmail.com (Mitchell Stokes)
+Date: Sun, 08 Aug 2010 06:35:57 -0000
+Subject: [pycrypto] Py3k Support
+Message-ID: <AANLkTikwj2hy9FwBSpSqoQzji_8jgn483RgPEZWAGd0G@mail.gmail.com>
+
+I have been looking around for some Python libraries to handle encryption
+and decryption using either AES or Blowfish (possibly others, I'm very new
+to cryptography). However, for my current project I need to use Python 3.1,
+which means I have a very limited selection of libraries. The only ones I
+have found are pure Python ones like SlowAES, which are rather slow. Speed
+is important for this project, but the best I can do is 1.7 seconds to
+decrypt a 129KB archive file using a pure Python Blowfish module I found and
+converted to py3k.
+
+So, that brings me to my question: What is the status of Py3k support in
+PyCrypto? The latest information I can find for this is a thread from May
+saying that a py3k version of PyCrypto was still failing 30% of the tests.
+Has this improved? Where can I find this source code
+(branch/patch/whatever)? What parts of PyCrypto are still failing with py3k?
+
+Thank you,
+Mitchell Stokes
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100808/d1258efd/attachment.htm 
+
+From gtaylor at duointeractive.com  Mon Aug 16 08:59:05 2010
+From: gtaylor at duointeractive.com (Gregory Taylor)
+Date: Mon, 16 Aug 2010 14:59:05 -0000
+Subject: [pycrypto] winrandom alternative
+Message-ID: <0E1BD151-1376-46D0-A2B6-AF831E55B6C9@duointeractive.com>
+
+Hello,
+
+I'm not sure if this is the best place for something like this, but I figured I'd share a workaround and a suggestion for others to take or leave. I'm currently running a 64-bit Windows 7 machine for testing some of our codebase on Windows, and ran into a snag while installing PyCrypto (so I could use Fabric, which depends on Paramiko, which depends on PyCrypto). 
+
+As you are probably aware of, PyCrypto tries to download/compile winrandom, which can be a problem for many that lack a compiler. As an alternative for those who can't/won't install winrandom, I put together a ctypes equivalent that doesn't require compilation like the original winrandom. This new module aims to be functionally equivalent in every way to winrandom, but accesses the Windows-specific cryptography library through ctypes rather than a compiled Python C extension module.
+
+The PyPi page can be found at: http://pypi.python.org/pypi/winrandom-ctypes/
+The Github page can be found at: http://github.com/duointeractive/winrandom-ctypes
+
+I understand that going the ctypes route might raise the minimum Python version required (2.4 or 2.5?), so this probably isn't a one-size-fits-all solution. However, if there was anything that could be done to make it easier for a user to elect to use the ctypes version, that'd be great. Perhaps PyCrypto could check at install time whether winrandom is already installed, and skip trying to compile/re-install it (winrandom-ctypes provides winrandom) to allow a user to plug something else in (winrandom-ctypes?).
+
+Just thought I'd throw this out here for those who might find it useful in the painful situation that they have to develop on Windows.
+
+Greg Taylor
+http://duointeractive.com
+DUO Interactive, LLC
+

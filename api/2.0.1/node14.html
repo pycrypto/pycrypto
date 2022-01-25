@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Crypto.Protocol.Chaffing</TITLE>
+<META NAME="description" CONTENT="Crypto.Protocol.Chaffing">
+<META NAME="keywords" CONTENT="pycrypt">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="pycrypt.css">
+
+<LINK REL="previous" HREF="node13.html">
+<LINK REL="up" HREF="node12.html">
+<LINK REL="next" HREF="node15.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html225"
+  HREF="node15.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html221"
+  HREF="node12.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html217"
+  HREF="node13.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html223"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html226"
+  HREF="node15.html">Crypto.PublicKey: Public-Key Algorithms</A>
+<B> Up:</B> <A NAME="tex2html222"
+  HREF="node12.html">Crypto.Protocol: Various Protocols</A>
+<B> Previous:</B> <A NAME="tex2html218"
+  HREF="node13.html">Crypto.Protocol.AllOrNothing</A>
+ &nbsp; <B>  <A NAME="tex2html224"
+  HREF="node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00052000000000000000">
+Crypto.Protocol.Chaffing</A>
+</H2>
+
+<P>
+Winnowing and chaffing is a technique for enhancing privacy without requiring
+strong encryption.  In short, the technique takes a set of authenticated
+message blocks (the wheat) and adds a number of chaff blocks which have
+randomly chosen data and MAC fields.  This means that to an adversary, the
+chaff blocks look as valid as the wheat blocks, and so the authentication
+would have to be performed on every block.  By tailoring the number of chaff
+blocks added to the message, the sender can make breaking the message
+computationally infeasible.  There are many other interesting properties of
+the winnow/chaff technique.
+
+<P>
+For example, say Alice is sending a message to Bob.  She packetizes the
+message and performs an all-or-nothing transformation on the packets.  Then
+she authenticates each packet with a message authentication code (MAC).  The
+MAC is a hash of the data packet, and there is a secret key which she must
+share with Bob (key distribution is an exercise left to the reader).  She then
+adds a serial number to each packet, and sends the packets to Bob.
+
+<P>
+Bob receives the packets, and using the shared secret authentication key,
+authenticates the MACs for each packet.  Those packets that have bad MACs are
+simply discarded.  The remainder are sorted by serial number, and passed
+through the reverse all-or-nothing transform.  The transform means that an
+eavesdropper (say Eve) must acquire all the packets before any of the data can
+be read.  If even one packet is missing, the data is useless.
+
+<P>
+There's one twist: by adding chaff packets, Alice and Bob can make Eve's job
+much harder, since Eve now has to break the shared secret key, or try every
+combination of wheat and chaff packet to read any of the message.  The cool
+thing is that Bob doesn't need to add any additional code; the chaff packets
+are already filtered out because their MACs don't match (in all likelihood -
+since the data and MACs for the chaff packets are randomly chosen it is
+possible, but very unlikely that a chaff MAC will match the chaff data).  And
+Alice need not even be the party adding the chaff!  She could be completely
+unaware that a third party, say Charles, is adding chaff packets to her
+messages as they are transmitted.
+
+<P>
+<BR>
+21#21
+<BR>
+
+<P>
+Chaff instances have the following methods:
+
+<P>
+<BR>
+22#22
+<BR>
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html225"
+  HREF="node15.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html221"
+  HREF="node12.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html217"
+  HREF="node13.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html223"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html226"
+  HREF="node15.html">Crypto.PublicKey: Public-Key Algorithms</A>
+<B> Up:</B> <A NAME="tex2html222"
+  HREF="node12.html">Crypto.Protocol: Various Protocols</A>
+<B> Previous:</B> <A NAME="tex2html218"
+  HREF="node13.html">Crypto.Protocol.AllOrNothing</A>
+ &nbsp; <B>  <A NAME="tex2html224"
+  HREF="node1.html">Contents</A></B> </DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

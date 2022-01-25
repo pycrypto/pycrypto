@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Linker errors when attempting to install PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Linker%20errors%20when%20attempting%20to%20install%20PyCrypto&In-Reply-To=%3CCAO%2B9iGdqPj9ApMHST82TAShZ%2BU4kfbNbpZc%2Byoy%3DaTCOu0m5Xg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000552.html">
+   <LINK REL="Next"  HREF="000560.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Linker errors when attempting to install PyCrypto</H1>
+    <B>Alec Taylor</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Linker%20errors%20when%20attempting%20to%20install%20PyCrypto&In-Reply-To=%3CCAO%2B9iGdqPj9ApMHST82TAShZ%2BU4kfbNbpZc%2Byoy%3DaTCOu0m5Xg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Linker errors when attempting to install PyCrypto">alec.taylor6 at gmail.com
+       </A><BR>
+    <I>Fri Feb  3 13:33:57 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000552.html">[pycrypto] Building a Win32 egg for PyCrypto 2.5
+</A></li>
+        <LI>Next message: <A HREF="000560.html">[pycrypto] PyCrypto builds neither with MSVC nor MinGW
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#559">[ date ]</a>
+              <a href="thread.html#559">[ thread ]</a>
+              <a href="subject.html#559">[ subject ]</a>
+              <a href="author.html#559">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm getting linker errors when trying to install PyCrypto on Windows:
+
+C:\libraries\MinGW\bin\gcc.exe -mno-cygwin -shared -s
+build\temp.win-amd64-2.7\Release\src\winrand.o
+build\temp.win-amd64-2.7\Release\src\winrandom.def -LC:\Python27\libs
+-LC:\Python27\PCbuild\amd64 -lws2_32 -ladvapi32 -lpython27 -lmsvcr90
+-o &quot;C:\Projects\satchmo_test\Prototype\src\pycrypto\lib\Crypto\Random\OSRNG\winrandom.pyd&quot;
+
+Full output: <A HREF="http://pastebin.com/SYBkFt3h">http://pastebin.com/SYBkFt3h</A>
+
+How can I resolve installation issues to get PyCrypto install properly
+on Python 2.7.2 x64?
+
+Thanks for all suggestions,
+
+Alec Taylor
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000552.html">[pycrypto] Building a Win32 egg for PyCrypto 2.5
+</A></li>
+	<LI>Next message: <A HREF="000560.html">[pycrypto] PyCrypto builds neither with MSVC nor MinGW
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#559">[ date ]</a>
+              <a href="thread.html#559">[ thread ]</a>
+              <a href="subject.html#559">[ subject ]</a>
+              <a href="author.html#559">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

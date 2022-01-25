@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Python%203.x%20vs.%20Python%202.1%20-%20prep%20the%20axe&In-Reply-To=4D1972A2.4080305%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000332.html">
+   <LINK REL="Next"  HREF="000347.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Python 3.x vs. Python 2.1 - prep the axe</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Python%203.x%20vs.%20Python%202.1%20-%20prep%20the%20axe&In-Reply-To=4D1972A2.4080305%40gmx.li"
+       TITLE="[pycrypto] Python 3.x vs. Python 2.1 - prep the axe">dlitz at dlitz.net
+       </A><BR>
+    <I>Wed Dec 29 00:39:12 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000332.html">[pycrypto] Python 3.x vs. Python 2.1 - stay of execution
+</A></li>
+        <LI>Next message: <A HREF="000347.html">[pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#345">[ date ]</a>
+              <a href="thread.html#345">[ thread ]</a>
+              <a href="subject.html#345">[ subject ]</a>
+              <a href="author.html#345">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>To do integer division a/b across Python 2.1 through 2.7 (including support for floatdiv), PyCrypto already uses divmod(a,b)[0] IIRC.
+
+&quot;Thorsten Behrens&quot; &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">sbehrens at gmx.li</A>&gt; wrote:
+
+&gt;<i>On 12/23/2010 11:51 PM, Thorsten Behrens wrote:
+</I>&gt;&gt;<i> On 12/23/2010 9:18 PM, Dwayne C. Litzenberger wrote:
+</I>&gt;&gt;&gt;<i> Also, down the road, I could be convinced to drop Python 2.1
+</I>&gt;<i>support, if I
+</I>&gt;&gt;&gt;<i> had some concrete examples showing that the result would be
+</I>&gt;<i>substantially
+</I>&gt;&gt;&gt;<i> less error-prone, easier to maintain, etc.
+</I>&gt;&gt;<i> So far, it doesn't look like that's needed. dict.has_key() cannot be
+</I>&gt;&gt;<i> replaced with &quot;in&quot; for 2.1, but 2to3 seems to handle it fine.
+</I>&gt;<i>
+</I>&gt;<i>I've run into a bit of a snag. The / operator in 2.x returns an int,
+</I>&gt;<i>and 
+</I>&gt;<i>in 3.x it can return a float. This causes an infinite loop in 
+</I>&gt;<i>numbers.py. I can solve it with //, which is supported from 2.2 on, but
+</I>&gt;<i>
+</I>&gt;<i>not in 2.1.
+</I>&gt;<i>
+</I>&gt;<i>I've pasted the offending code snippet from numbers.py below, in the 
+</I>&gt;<i>form that doesn't cause an infinite loop in 3.x.
+</I>&gt;<i>
+</I>&gt;<i>I'm at a bit of a loss here. int(math.floor(a/b)) is not an option due 
+</I>&gt;<i>to the size of the operands - it actually fails on 2.1, and gives 
+</I>&gt;<i>incorrect results on 3.x. That means I am stuck with //.
+</I>&gt;<i>
+</I>&gt;<i>I don't know how to &quot;import something&quot; and have &quot;something&quot; show up in 
+</I>&gt;<i>the namespace above. I don't think it works that way, unlike a C 
+</I>&gt;<i>#include. That means I can't just bring the right function in depending
+</I>&gt;<i>
+</I>&gt;<i>on version. And even if I could, 2.1 doesn't have the &quot;as&quot; keyword, so 
+</I>&gt;<i>it would never show up with the right numbers.getStrongPrime name 
+</I>&gt;<i>anyway, even _if_ such nested namespace manipulations were supported. 
+</I>&gt;<i>Which I don't think they are.
+</I>&gt;<i>
+</I>&gt;<i>I can't just &quot;if sys.version&quot; the offending code snippet, either: 2.1 
+</I>&gt;<i>will still complain that // is a syntax error.
+</I>&gt;<i>
+</I>&gt;<i>We could duplicate the code and have setup.py bring in a special-cased 
+</I>&gt;<i>numbers.py for 2.1. I'm not sure how to do that with setup.py, but 
+</I>&gt;<i>there's got to be a way, even if it's just renaming files as needed.
+</I>&gt;<i>
+</I>&gt;<i>But that means duplicating an entire module, which is ugly. And I can't
+</I>&gt;<i>
+</I>&gt;<i>guarantee that this is the only occurrence of / that causes issues. In 
+</I>&gt;<i>fact, I'd wager some beer that it likely isn't.
+</I>&gt;<i>
+</I>&gt;<i>If you can think of a reasonably clean way of handling the &quot;/&quot; vs. &quot;//&quot;
+</I>&gt;<i>
+</I>&gt;<i>issue - or if anyone else can - please share.
+</I>&gt;<i>
+</I>&gt;<i>Barring that, I think my message is: If Python 3.x is to be supported 
+</I>&gt;<i>without code duplication, Python 2.1 support may have to go.
+</I>&gt;<i>
+</I>&gt;<i>Yours
+</I>&gt;<i>
+</I>&gt;<i>Thorsten
+</I>&gt;<i>
+</I>&gt;<i>         # if e is given make sure that e and X-1 are coprime
+</I>&gt;<i>     # this is not necessarily a strong prime criterion but useful when
+</I>&gt;<i>     # creating them for RSA where the p-1 and q-1 should be coprime to
+</I>&gt;<i>         # the public exponent e
+</I>&gt;<i>         if e and is_possible_prime:
+</I>&gt;<i>             if e &amp; 1:
+</I>&gt;<i>                 if GCD (e, X-1) != 1:
+</I>&gt;<i>                     is_possible_prime = 0
+</I>&gt;<i>             else:
+</I>&gt;<i>                # Python 2.1 does not understand //, and 3.x returns a 
+</I>&gt;<i>float on /
+</I>&gt;<i>                 # Infinite loop, wheee!!!
+</I>&gt;<i>                 if GCD (e, (X-1)//2) != 1:
+</I>&gt;<i>                     is_possible_prime = 0
+</I>&gt;<i>_______________________________________________
+</I>&gt;<i>pycrypto mailing list
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+</PRE>
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000332.html">[pycrypto] Python 3.x vs. Python 2.1 - stay of execution
+</A></li>
+	<LI>Next message: <A HREF="000347.html">[pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#345">[ date ]</a>
+              <a href="thread.html#345">[ thread ]</a>
+              <a href="subject.html#345">[ subject ]</a>
+              <a href="author.html#345">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

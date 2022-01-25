@@ -1,0 +1,792 @@
+\batchmode
+\documentclass{howto}
+\RequirePackage{ifthen}
+
+
+
+
+\title{Python Cryptography Toolkit}
+
+
+\release{2.0.1}
+
+
+\author{A.M. Kuchling}
+\authoraddress{\url{www.amk.ca}}
+
+
+
+
+\usepackage[dvips]{color}
+
+
+\pagecolor[gray]{.7}
+
+\usepackage[]{inputenc}
+
+
+
+\makeatletter
+
+\makeatletter
+\count@=\the\catcode`\_ \catcode`\_=8 
+\newenvironment{tex2html_wrap}{}{}%
+\catcode`\<=12\catcode`\_=\count@
+\newcommand{\providedcommand}[1]{\expandafter\providecommand\csname #1\endcsname}%
+\newcommand{\renewedcommand}[1]{\expandafter\providecommand\csname #1\endcsname{}%
+  \expandafter\renewcommand\csname #1\endcsname}%
+\newcommand{\newedenvironment}[1]{\newenvironment{#1}{}{}\renewenvironment{#1}}%
+\let\newedcommand\renewedcommand
+\let\renewedenvironment\newedenvironment
+\makeatother
+\let\mathon=$
+\let\mathoff=$
+\ifx\AtBeginDocument\undefined \newcommand{\AtBeginDocument}[1]{}\fi
+\newbox\sizebox
+\setlength{\hoffset}{0pt}\setlength{\voffset}{0pt}
+\addtolength{\textheight}{\footskip}\setlength{\footskip}{0pt}
+\addtolength{\textheight}{\topmargin}\setlength{\topmargin}{0pt}
+\addtolength{\textheight}{\headheight}\setlength{\headheight}{0pt}
+\addtolength{\textheight}{\headsep}\setlength{\headsep}{0pt}
+\setlength{\textwidth}{349pt}
+\newwrite\lthtmlwrite
+\makeatletter
+\let\realnormalsize=\normalsize
+\global\topskip=2sp
+\def\preveqno{}\let\real@float=\@float \let\realend@float=\end@float
+\def\@float{\let\@savefreelist\@freelist\real@float}
+\def\liih@math{\ifmmode$\else\bad@math\fi}
+\def\end@float{\realend@float\global\let\@freelist\@savefreelist}
+\let\real@dbflt=\@dbflt \let\end@dblfloat=\end@float
+\let\@largefloatcheck=\relax
+\let\if@boxedmulticols=\iftrue
+\def\@dbflt{\let\@savefreelist\@freelist\real@dbflt}
+\def\adjustnormalsize{\def\normalsize{\mathsurround=0pt \realnormalsize
+ \parindent=0pt\abovedisplayskip=0pt\belowdisplayskip=0pt}%
+ \def\phantompar{\csname par\endcsname}\normalsize}%
+\def\lthtmltypeout#1{{\let\protect\string \immediate\write\lthtmlwrite{#1}}}%
+\newcommand\lthtmlhboxmathA{\adjustnormalsize\setbox\sizebox=\hbox\bgroup\kern.05em }%
+\newcommand\lthtmlhboxmathB{\adjustnormalsize\setbox\sizebox=\hbox to\hsize\bgroup\hfill }%
+\newcommand\lthtmlvboxmathA{\adjustnormalsize\setbox\sizebox=\vbox\bgroup %
+ \let\ifinner=\iffalse \let\)\liih@math }%
+\newcommand\lthtmlboxmathZ{\@next\next\@currlist{}{\def\next{\voidb@x}}%
+ \expandafter\box\next\egroup}%
+\newcommand\lthtmlmathtype[1]{\gdef\lthtmlmathenv{#1}}%
+\newcommand\lthtmllogmath{\dimen0\ht\sizebox \advance\dimen0\dp\sizebox
+  \ifdim\dimen0>.95\vsize
+   \lthtmltypeout{%
+*** image for \lthtmlmathenv\space is too tall at \the\dimen0, reducing to .95 vsize ***}%
+   \ht\sizebox.95\vsize \dp\sizebox\z@ \fi
+  \lthtmltypeout{l2hSize %
+:\lthtmlmathenv:\the\ht\sizebox::\the\dp\sizebox::\the\wd\sizebox.\preveqno}}%
+\newcommand\lthtmlfigureA[1]{\let\@savefreelist\@freelist
+       \lthtmlmathtype{#1}\lthtmlvboxmathA}%
+\newcommand\lthtmlpictureA{\bgroup\catcode`\_=8 \lthtmlpictureB}%
+\newcommand\lthtmlpictureB[1]{\lthtmlmathtype{#1}\egroup
+       \let\@savefreelist\@freelist \lthtmlhboxmathB}%
+\newcommand\lthtmlpictureZ[1]{\hfill\lthtmlfigureZ}%
+\newcommand\lthtmlfigureZ{\lthtmlboxmathZ\lthtmllogmath\copy\sizebox
+       \global\let\@freelist\@savefreelist}%
+\newcommand\lthtmldisplayA{\bgroup\catcode`\_=8 \lthtmldisplayAi}%
+\newcommand\lthtmldisplayAi[1]{\lthtmlmathtype{#1}\egroup\lthtmlvboxmathA}%
+\newcommand\lthtmldisplayB[1]{\edef\preveqno{(\theequation)}%
+  \lthtmldisplayA{#1}\let\@eqnnum\relax}%
+\newcommand\lthtmldisplayZ{\lthtmlboxmathZ\lthtmllogmath\lthtmlsetmath}%
+\newcommand\lthtmlinlinemathA{\bgroup\catcode`\_=8 \lthtmlinlinemathB}
+\newcommand\lthtmlinlinemathB[1]{\lthtmlmathtype{#1}\egroup\lthtmlhboxmathA
+  \vrule height1.5ex width0pt }%
+\newcommand\lthtmlinlineA{\bgroup\catcode`\_=8 \lthtmlinlineB}%
+\newcommand\lthtmlinlineB[1]{\lthtmlmathtype{#1}\egroup\lthtmlhboxmathA}%
+\newcommand\lthtmlinlineZ{\egroup\expandafter\ifdim\dp\sizebox>0pt %
+  \expandafter\centerinlinemath\fi\lthtmllogmath\lthtmlsetinline}
+\newcommand\lthtmlinlinemathZ{\egroup\expandafter\ifdim\dp\sizebox>0pt %
+  \expandafter\centerinlinemath\fi\lthtmllogmath\lthtmlsetmath}
+\newcommand\lthtmlindisplaymathZ{\egroup %
+  \centerinlinemath\lthtmllogmath\lthtmlsetmath}
+\def\lthtmlsetinline{\hbox{\vrule width.1em \vtop{\vbox{%
+  \kern.1em\copy\sizebox}\ifdim\dp\sizebox>0pt\kern.1em\else\kern.3pt\fi
+  \ifdim\hsize>\wd\sizebox \hrule depth1pt\fi}}}
+\def\lthtmlsetmath{\hbox{\vrule width.1em\kern-.05em\vtop{\vbox{%
+  \kern.1em\kern0.8 pt\hbox{\hglue.17em\copy\sizebox\hglue0.8 pt}}\kern.3pt%
+  \ifdim\dp\sizebox>0pt\kern.1em\fi \kern0.8 pt%
+  \ifdim\hsize>\wd\sizebox \hrule depth1pt\fi}}}
+\def\centerinlinemath{%
+  \dimen1=\ifdim\ht\sizebox<\dp\sizebox \dp\sizebox\else\ht\sizebox\fi
+  \advance\dimen1by.5pt \vrule width0pt height\dimen1 depth\dimen1 
+ \dp\sizebox=\dimen1\ht\sizebox=\dimen1\relax}
+
+\def\lthtmlcheckvsize{\ifdim\ht\sizebox<\vsize 
+  \ifdim\wd\sizebox<\hsize\expandafter\hfill\fi \expandafter\vfill
+  \else\expandafter\vss\fi}%
+\providecommand{\selectlanguage}[1]{}%
+\makeatletter \tracingstats = 1 
+
+
+\begin{document}
+\pagestyle{empty}\thispagestyle{empty}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength hsize=\the\hsize}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength vsize=\the\vsize}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength hoffset=\the\hoffset}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength voffset=\the\voffset}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength topmargin=\the\topmargin}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength topskip=\the\topskip}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength headheight=\the\headheight}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength headsep=\the\headsep}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength parskip=\the\parskip}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength oddsidemargin=\the\oddsidemargin}\lthtmltypeout{}%
+\makeatletter
+\if@twoside\lthtmltypeout{latex2htmlLength evensidemargin=\the\evensidemargin}%
+\else\lthtmltypeout{latex2htmlLength evensidemargin=\the\oddsidemargin}\fi%
+\lthtmltypeout{}%
+\makeatother
+\setcounter{page}{1}
+\onecolumn
+
+% !!! IMAGES START HERE !!!
+
+\stepcounter{section}
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{section}
+{\newpage\clearpage
+\lthtmlfigureA{tableii21}%
+\begin{tableii}{c|l}{}{Hash function}{Digest length}
+\lineii{MD2}{128 bits}
+\lineii{MD4}{128 bits}
+\lineii{MD5}{128 bits}
+\lineii{RIPEMD}{160 bits}
+\lineii{SHA1}{160 bits}
+\lineii{SHA256}{256 bits}
+\end{tableii}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{datadesc44}%
+\begin{datadesc}{digest_size}
+An integer value; the size of the digest
+produced by the hashing objects.  You could also obtain this value by
+creating a sample object, and taking the length of the digest string
+it returns, but using \member{digest_size} is faster.
+\end{datadesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc48}%
+\begin{methoddesc}{copy}{}
+Return a separate copy of this hashing object.  An \code{update} to
+this copy won't affect the original object.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc53}%
+\begin{methoddesc}{digest}{}
+Return the hash value of this hashing object, as a string containing
+8-bit data.  The object is not altered in any way by this function;
+you can continue updating the object after calling this function.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc57}%
+\begin{methoddesc}{hexdigest}{}
+Return the hash value of this hashing object, as a string containing
+the digest data as hexadecimal digits.  The resulting string will be
+twice as long as that returned by \method{digest()}.  The object is not
+altered in any way by this function; you can continue updating the
+object after calling this function.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc62}%
+\begin{methoddesc}{update}{arg}
+Update this hashing object with the string \var{arg}.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline518}%
+$10" and "I owe
+Bob $%
+\lthtmlinlinemathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+\stepcounter{section}
+{\newpage\clearpage
+\lthtmlfigureA{tableii83}%
+\begin{tableii}{c|l}{}{Cipher}{Key Size/Block Size}
+\lineii{AES}{16, 24, or 32 bytes/16 bytes}
+\lineii{ARC2}{Variable/8 bytes}
+\lineii{Blowfish}{Variable/8 bytes}
+\lineii{CAST}{Variable/8 bytes}
+\lineii{DES}{8 bytes/8 bytes}
+\lineii{DES3 (Triple DES)}{16 bytes/8 bytes}
+\lineii{IDEA}{16 bytes/8 bytes}
+\lineii{RC5}{Variable/8 bytes}
+\end{tableii}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{tableii106}%
+\begin{tableii}{c|l}{}{Cipher}{Key Size}
+\lineii{Cipher}{Key Size}
+  \lineii{ARC4}{Variable}
+  \lineii{XOR}{Variable}
+\end{tableii}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{funcdesc121}%
+\begin{funcdesc}{new}{key, mode\optional{, IV}}
+Returns a ciphering object, using \var{key} and feedback mode
+\var{mode}.  If \var{mode} is \constant{MODE_CBC} or \constant{MODE_CFB}, \var{IV} must be provided,
+and must be a string of the same length as the block size.  Some
+algorithms support additional keyword arguments to this function; see
+the "Algorithm-specific Notes for Encryption Algorithms" section below for the details.
+\end{funcdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{datadesc131}%
+\begin{datadesc}{block_size}
+An integer value; the size of the blocks encrypted by this module.
+Strings passed to the \code{encrypt} and \code{decrypt} functions
+must be a multiple of this length.  For stream ciphers,
+\code{block_size} will be 1. 
+\end{datadesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{datadesc137}%
+\begin{datadesc}{key_size}
+An integer value; the size of the keys required by this module.  If
+\code{key_size} is zero, then the algorithm accepts arbitrary-length
+keys.  You cannot pass a key of length 0 (that is, the null string
+\code{''} as such a variable-length key.  
+\end{datadesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{memberdesc142}%
+\begin{memberdesc}{block_size}
+An integer value equal to the size of the blocks encrypted by this object.
+Identical to the module variable of the same name.
+\end{memberdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{memberdesc145}%
+\begin{memberdesc}{IV}
+Contains the initial value which will be used to start a cipher
+feedback mode.  After encrypting or decrypting a string, this value
+will reflect the modified feedback text; it will always be one block
+in length.  It is read-only, and cannot be assigned a new value.
+\end{memberdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{memberdesc148}%
+\begin{memberdesc}{key_size}
+An integer value equal to the size of the keys used by this object.  If
+\code{key_size} is zero, then the algorithm accepts arbitrary-length
+keys.  For algorithms that support variable length keys, this will be 0.
+Identical to the module variable of the same name.  
+\end{memberdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc152}%
+\begin{methoddesc}{decrypt}{string}
+Decrypts \var{string}, using the key-dependent data in the object, and
+with the appropriate feedback mode.  The string's length must be an exact
+multiple of the algorithm's block size.  Returns a string containing
+the plaintext.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc157}%
+\begin{methoddesc}{encrypt}{string}
+Encrypts a non-null \var{string}, using the key-dependent data in the
+object, and with the appropriate feedback mode.  The string's length
+must be an exact multiple of the algorithm's block size; for stream
+ciphers, the string can be of any length.  Returns a string containing
+the ciphertext.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{section}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlfigureA{classdesc180}%
+\begin{classdesc}{AllOrNothing}{ciphermodule, mode=None, IV=None}
+Class implementing the All-or-Nothing package transform.
+\par
+\var{ciphermodule} is a module implementing the cipher algorithm to
+use.  Optional arguments \var{mode} and \var{IV} are passed directly
+through to the \var{ciphermodule}.\code{new()} method; they are the
+feedback mode and initialization vector to use.  All three arguments
+must be the same for the object used to create the digest, and to
+undigest'ify the message blocks.
+\par
+The module passed as \var{ciphermodule} must provide the \pep{272}
+interface.  An encryption key is randomly generated automatically when
+needed.
+\end{classdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc192}%
+\begin{methoddesc}{digest}{text}
+Perform the All-or-Nothing package transform on the 
+string \var{text}.  Output is a list of message blocks describing the
+transformed text, where each block is a string of bit length equal
+to the cipher module's block_size.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc197}%
+\begin{methoddesc}{undigest}{mblocks}
+Perform the reverse package transformation on a list of message
+blocks.  Note that the cipher module used for both transformations
+must be the same.  \var{mblocks} is a list of strings of bit length
+equal to \var{ciphermodule}'s block_size.  The output is a string object.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlfigureA{classdesc204}%
+\begin{classdesc}{Chaff}{factor=1.0, blocksper=1}
+Class implementing the chaff adding algorithm. 
+\var{factor} is the number of message blocks 
+            to add chaff to, expressed as a percentage between 0.0 and 1.0; the default value is 1.0.
+\var{blocksper} is the number of chaff blocks to include for each block
+            being chaffed, and defaults to 1.  The default settings 
+add one chaff block to every
+            message block.  By changing the defaults, you can adjust how
+            computationally difficult it could be for an adversary to
+            brute-force crack the message.  The difficulty is expressed as:
+\par
+\begin{verbatim}
+
+pow(blocksper, int(factor * number-of-blocks))\end{verbatim}
+
+\par
+For ease of implementation, when \var{factor} < 1.0, only the first
+\code{int(\var{factor}*number-of-blocks)} message blocks are chaffed.
+\end{classdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc215}%
+\begin{methoddesc}{chaff}{blocks}
+Add chaff to message blocks.  \var{blocks} is a list of 3-tuples of the
+form (\var{serial-number}, \var{data}, \var{MAC}).
+\par
+Chaff is created by choosing a random number of the same
+byte-length as \var{data}, and another random number of the same
+byte-length as \var{MAC}.  The message block's serial number is placed
+on the chaff block and all the packet's chaff blocks are randomly
+interspersed with the single wheat block.  This method then
+returns a list of 3-tuples of the same form.  Chaffed blocks will
+contain multiple instances of 3-tuples with the same serial
+number, but the only way to figure out which blocks are wheat and
+which are chaff is to perform the MAC hash and compare values.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+{\newpage\clearpage
+\lthtmlfigureA{tableii228}%
+\begin{tableii}{c|l}{}{Algorithm}{Capabilities}
+\lineii{RSA}{Encryption, authentication/signatures}
+\lineii{ElGamal}{Encryption, authentication/signatures}
+\lineii{DSA}{Authentication/signatures}
+\lineii{qNEW}{Authentication/signatures}
+\end{tableii}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{funcdesc244}%
+\begin{funcdesc}{construct}{tuple}
+Constructs a key object from a tuple of data.  This is
+algorithm-specific; look at the source code for the details.  (To be
+documented later.)
+\end{funcdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{funcdesc248}%
+\begin{funcdesc}{generate}{size, randfunc, progress_func=\code{None}}
+Generate a fresh public/private key pair.  \var{size} is a
+algorithm-dependent size parameter, usually measured in bits; the
+larger it is, the more difficult it will be to break the key.  Safe
+key sizes vary from algorithm to algorithm; you'll have to research
+the question and decide on a suitable key size for your application.
+An N-bit keys can encrypt messages up to N-1 bits long.
+\par
+\var{randfunc} is a random number generation function; it should
+accept a single integer \var{N} and return a string of random data
+\var{N} bytes long.  You should always use a cryptographically secure
+random number generator, such as the one defined in the
+\module{Crypto.Util.randpool} module; \emph{don't} just use the
+current time and the \module{random} module. 
+\par
+\var{progress_func} is an optional function that will be called with a short
+string containing the key parameter currently being generated; it's
+useful for interactive applications where a user is waiting for a key
+to be generated.
+\end{funcdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc261}%
+\begin{methoddesc}{can_blind}{}
+Returns true if the algorithm is capable of blinding data; 
+returns false otherwise.  
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc265}%
+\begin{methoddesc}{can_encrypt}{}
+Returns true if the algorithm is capable of encrypting and decrypting
+data; returns false otherwise.  To test if a given key object can encrypt
+data, use \code{key.can_encrypt() and key.has_private()}.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc270}%
+\begin{methoddesc}{can_sign}{}
+Returns true if the algorithm is capable of signing data; returns false
+otherwise.  To test if a given key object can sign data, use
+\code{key.can_sign() and key.has_private()}.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc275}%
+\begin{methoddesc}{decrypt}{tuple}
+Decrypts \var{tuple} with the private key, returning another string.
+This requires the private key to be present, and will raise an exception
+if it isn't present.  It will also raise an exception if \var{string} is
+too long.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc281}%
+\begin{methoddesc}{encrypt}{string, K}
+Encrypts \var{string} with the private key, returning a tuple of
+strings; the length of the tuple varies from algorithm to algorithm.  
+\var{K} should be a string of random data that is as long as
+possible.  Encryption does not require the private key to be present
+inside the key object.  It will raise an exception if \var{string} is
+too long.  For ElGamal objects, the value of \var{K} expressed as a
+big-endian integer must be relatively prime to \code{self.p-1}; an
+exception is raised if it is not.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc290}%
+\begin{methoddesc}{has_private}{}
+Returns true if the key object contains the private key data, which
+will allow decrypting data and generating signatures.
+Otherwise this returns false.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc294}%
+\begin{methoddesc}{publickey}{}
+Returns a new public key object that doesn't contain the private key
+data. 
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc298}%
+\begin{methoddesc}{sign}{string, K}
+Sign \var{string}, returning a signature, which is just a tuple; in
+theory the signature may be made up of any Python objects at all; in
+practice they'll be either strings or numbers.  \var{K} should be a
+string of random data that is as long as possible.  Different algorithms
+will return tuples of different sizes.  \code{sign()} raises an
+exception if \var{string} is too long.  For ElGamal objects, the value
+of \var{K} expressed as a big-endian integer must be relatively prime to
+\code{self.p-1}; an exception is raised if it is not.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc308}%
+\begin{methoddesc}{size}{}
+Returns the maximum size of a string that can be encrypted or signed,
+measured in bits.  String data is treated in big-endian format; the most
+significant byte comes first.  (This seems to be a \emph{de facto} standard
+for cryptographical software.)  If the size is not a multiple of 8, then
+some of the high order bits of the first byte must be zero.  Usually
+it's simplest to just divide the size by 8 and round down.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc313}%
+\begin{methoddesc}{verify}{string, signature}
+Returns true if the signature is valid, and false otherwise.
+\var{string} is not processed in any way; \code{verify} does
+not run a hash function over the data, but you can easily do that yourself.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{section}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlfigureA{funcdesc341}%
+\begin{funcdesc}{GCD}{x,y}
+Return the greatest common divisor of \var{x} and \var{y}.
+\end{funcdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{funcdesc347}%
+\begin{funcdesc}{getPrime}{N, randfunc}
+Return an \var{N}-bit random prime number, using random data obtained
+from the function \var{randfunc}.  \var{randfunc} must take a single
+integer argument, and return a string of random data of the
+corresponding length; the \method{get_bytes()} method of a
+\class{RandomPool} object will serve the purpose nicely, as will the
+\method{read()} method of an opened file such as \file{/dev/random}.
+\end{funcdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{funcdesc358}%
+\begin{funcdesc}{getRandomNumber}{N, randfunc}
+Return an \var{N}-bit random number, using random data obtained from the
+function \var{randfunc}.  As usual, \var{randfunc} must take a single
+integer argument and return a string of random data of the
+corresponding length.
+\end{funcdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{funcdesc365}%
+\begin{funcdesc}{inverse}{u, v}
+Return the inverse of \var{u} modulo \var{v}.
+\end{funcdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{funcdesc371}%
+\begin{funcdesc}{isPrime}{N}
+Returns true if the number \var{N} is prime, as determined by a
+Rabin-Miller test.
+\end{funcdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlfigureA{classdesc388}%
+\begin{classdesc}{RandomPool}{\optional{numbytes, cipher, hash} }
+An object of the \code{RandomPool} class can be created without
+parameters if desired.  \var{numbytes} sets the number of bytes of
+random data in the pool, and defaults to 160 (1280 bits). \var{hash}
+can be a string containing the module name of the hash function to use
+in stirring the random data, or a module object supporting the hashing
+interface.  The default action is to use SHA.
+\par
+The \var{cipher} argument is vestigial; it was removed from version
+1.1 so RandomPool would work even in the limited exportable subset of
+the code.  I recommend passing \var{hash} using a keyword argument so
+that someday I can safely delete the \var{cipher} argument
+\par
+\end{classdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc399}%
+\begin{methoddesc}{add_event}{time\optional{, string}}
+Adds an event to the random pool.  \var{time} should be set to the
+current system time, measured at the highest resolution available.
+\var{string} can be a string of data that will be XORed into the pool,
+and can be used to increase the entropy of the pool.  For example, if
+you're encrypting a document, you might use the hash value of the
+document; an adversary presumably won't have the plaintext of the
+document, and thus won't be able to use this information to break the
+generator.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{memberdesc409}%
+\begin{memberdesc}{bits}
+A constant integer value containing the number of bits of data in
+the pool, equal to the \member{bytes} attribute multiplied by 8.
+\end{memberdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{memberdesc413}%
+\begin{memberdesc}{bytes}
+A constant integer value containing the number of bytes of data in
+the pool.
+\end{memberdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{memberdesc416}%
+\begin{memberdesc}{entropy}
+An integer value containing the number of bits of entropy currently in
+the pool.  The value is incremented by the \method{add_event()} method,
+and decreased by the \method{get_bytes()} method.
+\end{memberdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc421}%
+\begin{methoddesc}{get_bytes}{num}
+Returns a string containing \var{num} bytes of random data, and
+decrements the amount of entropy available.  It is not an error to
+reduce the entropy to zero, or to call this function when the entropy
+is zero.  This simply means that, in theory, enough random information has been
+extracted to derive the state of the generator.  It is the caller's
+responsibility to monitor the amount of entropy remaining and decide
+whether it is sufficent for secure operation.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc426}%
+\begin{methoddesc}{stir}{}
+Scrambles the random pool using the previously chosen encryption and
+hash function.  An adversary may attempt to learn or alter the state
+of the pool in order to affect its future output; this function
+destroys the existing state of the pool in a non-reversible way.  It
+is recommended that \method{stir()} be called before and after using
+the \class{RandomPool} object.  Even better, several calls to
+\method{stir()} can be interleaved with calls to \method{add_event()}.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{classdesc436}%
+\begin{classdesc}{PersistentRandomPool}{filename, \optional{numbytes, cipher, hash}}
+The path given in \var{filename} will be automatically opened, and an
+existing random pool read; if no such file exists, the pool will be
+initialized as usual.  If omitted, the filename defaults to the empty
+string, which will prevent it from being saved to a file.  These
+arguments are identical to those for the \class{RandomPool}
+constructor.
+\end{classdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc442}%
+\begin{methoddesc}{save}{}
+Opens the file named by the \member{filename} attribute, and saves the
+random data into the file using the \module{pickle} module.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{methoddesc450}%
+\begin{methoddesc}{randomize}{}
+(Unix systems only)  Obtain random data from the keyboard.  This works
+by prompting the
+user to hit keys at random, and then using the keystroke timings (and
+also the actual keys pressed) to add entropy to the pool.  This works
+similarly to PGP's random pool mechanism.
+\end{methoddesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlfigureA{funcdesc455}%
+\begin{funcdesc}{key_to_english}{key}
+Accepts a string of arbitrary data \var{key}, and returns a string
+containing uppercase English words separated by spaces.  \var{key}'s
+length must be a multiple of 8.
+\end{funcdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{funcdesc461}%
+\begin{funcdesc}{english_to_key}{string}
+Accepts \var{string} containing English words, and returns a string of
+binary data representing the key.  Words must be separated by
+whitespace, and can be any mixture of uppercase and lowercase
+characters.  6 words are required for 8 bytes of key data, so
+the number of words in \var{string} must be a multiple of 6.
+\end{funcdesc}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{subsection}
+
+\end{document}

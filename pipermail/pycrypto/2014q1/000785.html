@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Got different PKCS1_v1_5 signature result on the same message &amp; same rsa key pair
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Got%20different%20PKCS1_v1_5%20signature%20result%20on%20the%0A%20same%20message%20%26%20same%20rsa%20key%20pair&In-Reply-To=%3CCAHAkNZ1T0AD9rdOO4Z-qNDtJW__D4yzAVb8zSSfLeGpLErCbwg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000784.html">
+   <LINK REL="Next"  HREF="000786.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Got different PKCS1_v1_5 signature result on the same message &amp; same rsa key pair</H1>
+    <B>Philip Horger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Got%20different%20PKCS1_v1_5%20signature%20result%20on%20the%0A%20same%20message%20%26%20same%20rsa%20key%20pair&In-Reply-To=%3CCAHAkNZ1T0AD9rdOO4Z-qNDtJW__D4yzAVb8zSSfLeGpLErCbwg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Got different PKCS1_v1_5 signature result on the same message &amp; same rsa key pair">campadrenalin at gmail.com
+       </A><BR>
+    <I>Tue Mar 11 22:55:16 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000784.html">[pycrypto] Got different PKCS1_v1_5 signature result on the same	message &amp; same rsa key pair
+</A></li>
+        <LI>Next message: <A HREF="000786.html">[pycrypto] Got different PKCS1_v1_5 signature result on the same message &amp; same rsa key pair
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#785">[ date ]</a>
+              <a href="thread.html#785">[ thread ]</a>
+              <a href="subject.html#785">[ subject ]</a>
+              <a href="author.html#785">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm not the king of crypto, but if I recall correctly, some signature
+standards (and I think PKCS1 is one of them) include a random salt in the
+signature. This happens automatically, behind the scenes, on your behalf.
+So two signatures can be of the same content, with the same key, and not be
+equal - in fact, it's dramatically more likely than not! So you can't rely
+on bit-for-bit equality of signatures.
+
+
+On Tue, Mar 11, 2014 at 8:22 PM, wanggang
+&lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">wanggang at goldenapptechnology.com</A>&gt;wrote:
+
+&gt;<i> Hi pycrypto,
+</I>&gt;<i>
+</I>&gt;<i> This may be a simple problem since I am a newbiee to crypto.
+</I>&gt;<i> I am not sure why I got different result from
+</I>&gt;<i> PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m))) ,
+</I>&gt;<i> I have mentioned the 'stateful' comment in API doc, but still can't fix
+</I>&gt;<i> the code below.
+</I>&gt;<i> besides I have used DES for a lot, &amp; never got stuck in such situation.
+</I>&gt;<i>
+</I>&gt;<i> if __name__ == &quot;__main__&quot;:
+</I>&gt;<i>     t = (modulus, publicExponent, privateExponent, prime1, prime2,
+</I>&gt;<i> coefficient)
+</I>&gt;<i>     lst = [long(x,16) for x in t]
+</I>&gt;<i>
+</I>&gt;<i>     k = '1234'
+</I>&gt;<i>     e1 = RSA.construct(lst).encrypt(m, k)
+</I>&gt;<i>     e2 = RSA.construct(lst).encrypt(m, k)
+</I>&gt;<i>     assert e1 == e2 # passed
+</I>&gt;<i>
+</I>&gt;<i>     signature1 = PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m)))
+</I>&gt;<i>     print binascii.b2a_hex(signature1)
+</I>&gt;<i>     signature2 = PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m)))
+</I>&gt;<i>     print binascii.b2a_hex(signature2)
+</I>&gt;<i>     assert signature1==signature2 # why this assertion failed ?
+</I>&gt;<i>
+</I>&gt;<i> Thank you in advance!
+</I>&gt;<i> --------------
+</I>&gt;<i>  Wang Gang
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20140311/b842a24a/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20140311/b842a24a/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000784.html">[pycrypto] Got different PKCS1_v1_5 signature result on the same	message &amp; same rsa key pair
+</A></li>
+	<LI>Next message: <A HREF="000786.html">[pycrypto] Got different PKCS1_v1_5 signature result on the same message &amp; same rsa key pair
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#785">[ date ]</a>
+              <a href="thread.html#785">[ thread ]</a>
+              <a href="subject.html#785">[ subject ]</a>
+              <a href="author.html#785">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

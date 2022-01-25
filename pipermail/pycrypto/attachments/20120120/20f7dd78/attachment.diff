@@ -1,0 +1,24 @@
+diff --git a/lib/Crypto/Random/OSRNG/posix.py b/lib/Crypto/Random/OSRNG/posix.py
+index f88cd77..234edfe 100644
+--- a/lib/Crypto/Random/OSRNG/posix.py
++++ b/lib/Crypto/Random/OSRNG/posix.py
+@@ -46,7 +46,6 @@ class DevURandomRNG(BaseRNG):
+             raise TypeError("%r is not a character special device" % (self.name,))
+ 
+         self.__file = f
+-        self._read = f.read
+ 
+         BaseRNG.__init__(self)
+ 
+@@ -54,7 +53,10 @@ class DevURandomRNG(BaseRNG):
+         self.__file.close()
+ 
+     def _read(self, N):
+-        return self.__file.read(N)
++        data = self.__file.read(N)
++        while len(data) < N:
++            data += self.__file.read(N - len(data))
++        return data
+ 
+ def new(*args, **kwargs):
+     return DevURandomRNG(*args, **kwargs)

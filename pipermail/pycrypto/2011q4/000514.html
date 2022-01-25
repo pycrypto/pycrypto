@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Fix for build issue when built without optimization
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Fix%20for%20build%20issue%20when%20built%20without%20optimization&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000515.html">
+   <LINK REL="Next"  HREF="000516.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Fix for build issue when built without optimization</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Fix%20for%20build%20issue%20when%20built%20without%20optimization&In-Reply-To="
+       TITLE="[pycrypto] Fix for build issue when built without optimization">sebastian+lists at ramacher.at
+       </A><BR>
+    <I>Wed Nov 16 10:31:30 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000515.html">[PATCH] Fix building issue if built without optimization.
+</A></li>
+        <LI>Next message: <A HREF="000516.html">[pycrypto] Pycrypto help
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#514">[ date ]</a>
+              <a href="thread.html#514">[ thread ]</a>
+              <a href="subject.html#514">[ subject ]</a>
+              <a href="author.html#514">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>The _fastmath extension cannot be used if pycrypto is built without
+optimization. This is due to the call of size not being inlined and this results
+in an undefined reference. The attached patch fixes this issue.
+
+According to the gcc bug at [1] this is the intended behavior and confirms to C99.
+
+Kind regards
+
+[1] <A HREF="http://gcc.gnu.org/bugzilla/show_bug.cgi?id=49653">http://gcc.gnu.org/bugzilla/show_bug.cgi?id=49653</A>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fix-building-issue-if-built-without-optimization.patch
+Type: text/x-diff
+Size: 0 bytes
+Desc: not available
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20111116/28b55009/attachment.patch">http://lists.dlitz.net/pipermail/pycrypto/attachments/20111116/28b55009/attachment.patch</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000515.html">[PATCH] Fix building issue if built without optimization.
+</A></li>
+	<LI>Next message: <A HREF="000516.html">[pycrypto] Pycrypto help
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#514">[ date ]</a>
+              <a href="thread.html#514">[ thread ]</a>
+              <a href="subject.html#514">[ subject ]</a>
+              <a href="author.html#514">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

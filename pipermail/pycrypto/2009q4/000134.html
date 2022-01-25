@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] AES decrypting issues
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20AES%20decrypting%20issues&In-Reply-To=4ACCBC96.2000607%40co.marshall.ia.us">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000133.html">
+   <LINK REL="Next"  HREF="000135.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] AES decrypting issues</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20AES%20decrypting%20issues&In-Reply-To=4ACCBC96.2000607%40co.marshall.ia.us"
+       TITLE="[pycrypto] AES decrypting issues">dlitz at dlitz.net
+       </A><BR>
+    <I>Wed Oct  7 21:52:53 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000133.html">[pycrypto] AES decrypting issues
+</A></li>
+        <LI>Next message: <A HREF="000135.html">[pycrypto] AES decrypting issues
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#134">[ date ]</a>
+              <a href="thread.html#134">[ thread ]</a>
+              <a href="subject.html#134">[ subject ]</a>
+              <a href="author.html#134">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Oct 07, 2009 at 11:06:46AM -0500, Mike Driscoll wrote:
+&gt;<i>Hi,
+</I>&gt;<i>
+</I>&gt;<i>I am working on a project where I need to decrypt some data that has
+</I>&gt;<i>been encrypted with AES. Our webmaster gave me a PHP example that he 
+</I>&gt;<i>uses, but I'm supposed to use Python. Here's the PHP code:
+</I>&gt;<i>
+</I>&gt;<i>$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+</I>&gt;<i>$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+</I>&gt;<i>return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key,
+</I>&gt;<i>$data,MCRYPT_MODE_ECB, $iv),&quot;\0&quot;);
+</I>
+ECB is insecure.  See the example at:
+<A HREF="http://en.wikipedia.org/w/index.php?title=Block_cipher_modes_of_operation&amp;oldid=312409841#Electronic_codebook_.28ECB.29">http://en.wikipedia.org/w/index.php?title=Block_cipher_modes_of_operation&amp;oldid=312409841#Electronic_codebook_.28ECB.29</A>
+
+To decrypt using ECB mode, you define a function like this:
+
+     from Crypto.Cipher import AES
+
+     def decrypt_my_data(key, data):
+         if len(key) not in (16, 24, 32):
+             raise ValueError(&quot;Key must be 16, 24, or 32 bytes&quot;)
+         if (len(data) % 16) != 0:
+             raise ValueError(&quot;Message must be a multiple of 16 bytes&quot;)
+         cipher = AES.new(key, AES.MODE_ECB)
+         return cipher.decrypt(data)
+
+To decrypt using CBC mode (which is better than using ECB mode, but of 
+course the sender also has to use CBC mode):
+
+     from Crypto.Cipher import AES
+
+     def decrypt_my_data(key, data, iv):
+         if len(key) not in (16, 24, 32):
+             raise ValueError(&quot;Key must be 16, 24, or 32 bytes&quot;)
+         if (len(data) % 16) != 0:
+             raise ValueError(&quot;Message must be a multiple of 16 bytes&quot;)
+         if len(iv) != 16:
+             raise ValueError(&quot;IV must be 16 bytes&quot;)
+         cipher = AES.new(key, AES.MODE_ECB, iv)
+         return cipher.decrypt(data)
+
+&gt;<i>I've been told on c.l.py that the iv in this case should be 16 bytes.
+</I>&gt;<i>
+</I>&gt;<i>I tried following the example on this blog by modifying it as needed:
+</I>&gt;<i>
+</I>&gt;<i><A HREF="http://www.codekoala.com/blog/2009/aes-encryption-python-using-pycrypto/">http://www.codekoala.com/blog/2009/aes-encryption-python-using-pycrypto/</A>
+</I>
+Beware: Whoever wrote that doesn't know the difference between the cipher 
+block size and the size of the key, and he uses ECB mode.
+
+&gt;<i>But no matter which base64 decode method I use, I get some kind of 
+</I>&gt;<i>error: b32decode, b64decode and decodestring all return a padding error 
+</I>&gt;<i>whereas b16decode claims that I don't have only 16-bit characters in my 
+</I>&gt;<i>data string.
+</I>
+Base64 has nothing to do cryptography.  It just turns binary to printable 
+ASCII and back:
+
+     &gt;&gt;&gt; import base64
+     &gt;&gt;&gt; x = base64.encodestring(&quot;This string contains the unprintable \x00 byte&quot;)
+     &gt;&gt;&gt; print x
+     VGhpcyBzdHJpbmcgY29udGFpbnMgdGhlIHVucHJpbnRhYmxlIAAgYnl0ZQ==
+
+     &gt;&gt;&gt; base64.decodestring(x)
+     'This string contains the unprintable \x00 byte'
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000133.html">[pycrypto] AES decrypting issues
+</A></li>
+	<LI>Next message: <A HREF="000135.html">[pycrypto] AES decrypting issues
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#134">[ date ]</a>
+              <a href="thread.html#134">[ thread ]</a>
+              <a href="subject.html#134">[ subject ]</a>
+              <a href="author.html#134">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

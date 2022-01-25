@@ -1,0 +1,24 @@
+>From 8f1af617314a27c6c46ddbc40c712f511772ca89 Mon Sep 17 00:00:00 2001
+From: Sebastian Ramacher <s.ramacher@gmx.at>
+Date: Sat, 29 Oct 2011 18:28:15 +0200
+Subject: [PATCH 2/2] Also ship configure, configure.ac and src/config.h.in in
+ sdist.
+
+---
+ MANIFEST.in |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/MANIFEST.in b/MANIFEST.in
+index eac077e..4a456fe 100644
+--- a/MANIFEST.in
++++ b/MANIFEST.in
+@@ -2,4 +2,6 @@ include MANIFEST.in
+ include ACKS ChangeLog COPYRIGHT Doc/* TODO
+ graft LEGAL
+ recursive-include src *.h *.c
++include src/config.h.in
+ include *.py
++include configure configure.ac
+-- 
+1.7.7.1
+

@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Bug in Crypto.PublicKey.RSA?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To=20080909122405.GA5660%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000015.html">
+   <LINK REL="Next"  HREF="000017.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Bug in Crypto.PublicKey.RSA?</H1>
+    <B>Bill Broadley</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To=20080909122405.GA5660%40rivest.dlitz.net"
+       TITLE="[pycrypto] Bug in Crypto.PublicKey.RSA?">bill at broadley.org
+       </A><BR>
+    <I>Tue Sep  9 21:03:32 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000015.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+        <LI>Next message: <A HREF="000017.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#16">[ date ]</a>
+              <a href="thread.html#16">[ thread ]</a>
+              <a href="subject.html#16">[ subject ]</a>
+              <a href="author.html#16">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dwayne C. Litzenberger wrote:
+&gt;&gt;<i> &gt;&gt;&gt; keysize=368
+</I>&gt;&gt;<i> &gt;&gt;&gt; privkeyA = RSA.generate(keysize, rpool.get_bytes)
+</I>&gt;&gt;<i> [ finishes in close to zero time ]
+</I>&gt;&gt;<i> &gt;&gt;&gt; keysize=369
+</I>&gt;&gt;<i> &gt;&gt;&gt; privkeyA = RSA.generate(keysize, rpool.get_bytes)
+</I>&gt;&gt;<i> Hangs forever.... well at least 10's of minutes.
+</I>&gt;<i> 
+</I>&gt;<i> I filed a bug report:
+</I>&gt;<i> 
+</I>&gt;<i>     <A HREF="https://bugs.launchpad.net/pycrypto/+bug/268101">https://bugs.launchpad.net/pycrypto/+bug/268101</A>
+</I>
+Ah, do you think that is an ubuntu bug?  Or a pycrypto?  I.e. can I fix it by 
+installing pycrypto myself.  I had thought I had just misunderstood.
+
+&gt;&gt;&gt;<i> I should also add that you should not be encrypting user data 
+</I>&gt;&gt;&gt;<i> directly using RSA.  You _need_ padding like PKCS#1 if you want any 
+</I>&gt;&gt;&gt;<i> security.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hmm, I was not aware of padding issues.  What is the attack?  How much 
+</I>&gt;&gt;<i> is the ideal padding?  Is the attack related to guessing the plain 
+</I>&gt;&gt;<i> text based on the file size?  Is the padding supposed to be random 
+</I>&gt;&gt;<i> extra bytes?  Filled to some boundary like the next 16 bytes?  More?  
+</I>&gt;&gt;<i> Does compressing the plain text help?
+</I>&gt;<i> 
+</I>&gt;<i> If you're asking &quot;how much&quot; padding, then you misunderstand what is 
+</I>&gt;<i> meant by RSA &quot;padding&quot;.  It is NOT just a simple matter of appending 
+</I>&gt;<i> zeros to a message.  Quoting Wikipedia:
+</I>&gt;<i> 
+</I>&gt;<i>     &quot;In public key cryptography, padding is the process of preparing a 
+</I>&gt;<i>     message for encryption or signing with a primitive such as RSA. A 
+</I>&gt;<i>     popular example is OAEP. This is called &quot;padding&quot; because 
+</I>&gt;<i> originally,     random material was simply appended to the message to 
+</I>&gt;<i> make it long     enough for the primitive, but this is not a secure form 
+</I>&gt;<i> of padding and     is no longer used. A modern padding scheme aims to 
+</I>&gt;<i> ensure that the     attacker cannot manipulate the plaintext to exploit 
+</I>&gt;<i> the mathematical     structure of the primitive...&quot;
+</I>&gt;<i> 
+</I>&gt;<i> If you want to implement your own RSA encryption, then look at PKCS#1 
+</I>&gt;<i> (currently at version 2.1):
+</I>&gt;<i> 
+</I>&gt;<i>     <A HREF="http://www.rsa.com/rsalabs/node.asp?id=2125">http://www.rsa.com/rsalabs/node.asp?id=2125</A>
+</I>
+That's was a bit of a hard read, I found some similar relevant material at:
+      <A HREF="http://en.wikipedia.org/wiki/Optimal_Asymmetric_Encryption_Padding">http://en.wikipedia.org/wiki/Optimal_Asymmetric_Encryption_Padding</A>
+
+Which looks relevant and useful.  Some additional at the bottom of the page:
+# ^ M. Bellare, P. Rogaway. Optimal Asymmetric Encryption -- How to encrypt 
+with RSA.
+
+Thanks for bringing the padding issue to my attention.
+
+&gt;<i> Dan Boneh's article, &quot;Twenty Years of Attacks on the RSA Cryptosystem&quot;, 
+</I>&gt;<i> is a good start:
+</I>&gt;<i> 
+</I>&gt;<i>     <A HREF="http://www.cs.bgu.ac.il/~beimel/Courses/crypto/Boneh.pdf">http://www.cs.bgu.ac.il/~beimel/Courses/crypto/Boneh.pdf</A>
+</I>
+Added to my reading list thanks.
+
+&gt;<i> If &quot;only the one encrypting should ever be able to decrypt the files&quot;, 
+</I>&gt;<i> then why not use symmetric encryption?  It's much faster, and probably 
+</I>&gt;<i> stronger in the long run (since most people don't use 8192-bit RSA keys).
+</I>
+Mostly for the added protection of not having your private key on the system.
+I might even backup systems that aren't even under my control.  Scenarios like 
+&quot;Hey, user departmental user X, to back up your machine install this program, 
+and use this public key.&quot;
+
+I also find the public key appealing for reputation, a global ID, etc.
+
+Oh, as to performance my symmetric vs public key encryption tests didn't find 
+much difference:
+$ dd if=/dev/urandom of=/tmp/100MB bs=10240 count=10240
+$ time (echo a-test-password-of-non-trivial-length | gpg -o /dev/null 
+--symmetric --passphrase-fd 0  /tmp/100MB)
+real	0m8.563s
+user	0m8.513s
+sys	0m0.052s
+$ ls -alh /tmp/100MB
+-rw-r--r-- 1 bill bill 100M 2008-09-09 19:43 /tmp/100MB
+
+Using a 2kbit RSA key:
+$ gpg --list-keys
+/home/bill/.gnupg/pubring.gpg
+-----------------------------
+pub   1024D/07DDAB8A 2008-09-08
+uid                  Python benchmark &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">py at bench</A>&gt;
+sub   2048g/37E185E1 2008-09-08
+$ time (echo | gpg -o /dev/null -e -r benchmark --passphrase-fd 0 /tmp/100MB )
+Reading passphrase from file descriptor 0
+
+real	0m9.555s
+user	0m9.513s
+sys	0m0.048s
+
+So I'm not too concerned about 8.5 seconds 11.5MB/sec vs 10.5MB/sec.
+
+Am I missing something?
+
+&gt;<i> If you must use public-key crypto, use GPG.  Avoid X.509:
+</I>&gt;<i> 
+</I>&gt;<i>     <A HREF="http://www.cs.auckland.ac.nz/~pgut001/pubs/x509guide.txt">http://www.cs.auckland.ac.nz/~pgut001/pubs/x509guide.txt</A>
+</I>&gt;<i> 
+</I>&gt;<i> Also, avoid PKCS#12:
+</I>&gt;<i> 
+</I>&gt;<i>     <A HREF="http://www.cs.auckland.ac.nz/~pgut001/pubs/pfx.html">http://www.cs.auckland.ac.nz/~pgut001/pubs/pfx.html</A>
+</I>
+Wow, more land mines than I expected, thanks.
+
+&gt;<i> Don't forget to apply an authentication scheme to the data if there's 
+</I>&gt;<i> any possibility that the data might be manipulated.
+</I>
+Indeed.
+
+&gt;&gt;<i> #2 Securely communications between peers (of encrypted files).  Possibly
+</I>&gt;&gt;<i>    with out of band communication of public keys (I.e. manual peer
+</I>&gt;&gt;<i>    introduction by the admin).
+</I>&gt;<i> 
+</I>&gt;<i> This is too vague for me to recommend anything, but it sounds like GPG 
+</I>&gt;<i> might work here.
+</I>&gt;<i> 
+</I>&gt;<i> And don't forget about random number generation.  All your crypto relies 
+</I>&gt;<i> upon it, but people screw up the implementations all the time.  Don't be 
+</I>&gt;<i> one of those people!
+</I>
+Indeed.  If I generate the keys myself (as opposed to asking gpg) I'd use 
+/dev/random under linux (which from what I can tell is a pretty good 
+implementation).
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000015.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+	<LI>Next message: <A HREF="000017.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#16">[ date ]</a>
+              <a href="thread.html#16">[ thread ]</a>
+              <a href="subject.html#16">[ subject ]</a>
+              <a href="author.html#16">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] DES/DES3/XOR/etc removal
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20DES/DES3/XOR/etc%20removal&In-Reply-To=20090422172335.24697.1478264072.divmod.quotient.10540%40henry.divmod.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000099.html">
+   <LINK REL="Next"  HREF="000101.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] DES/DES3/XOR/etc removal</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20DES/DES3/XOR/etc%20removal&In-Reply-To=20090422172335.24697.1478264072.divmod.quotient.10540%40henry.divmod.com"
+       TITLE="[pycrypto] DES/DES3/XOR/etc removal">dlitz at dlitz.net
+       </A><BR>
+    <I>Sat Apr 25 10:13:49 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000099.html">[pycrypto] DES/DES3/XOR/etc removal
+</A></li>
+        <LI>Next message: <A HREF="000101.html">[pycrypto] FYI: PyCrypto on Google App Engine
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#100">[ date ]</a>
+              <a href="thread.html#100">[ thread ]</a>
+              <a href="subject.html#100">[ subject ]</a>
+              <a href="author.html#100">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Apr 22, 2009 at 01:23:35PM -0400, Jean-Paul Calderone wrote:
+&gt;<i>So, what do you say?  Can we decide that backwards compatibility is a good
+</I>&gt;<i>thing?
+</I>
+Sure.
+
+Here's my vision going forward:
+
+1. Keep the Crypto.Cipher and Crypto.Hash APIs.  These are easily the most
+   popular (and most important) parts of PyCrypto, and they work well.
+
+2. Drop patent-encumbered algorithms.  This means RC5 and IDEA.
+
+3. Clean up copyright/licensing ambiguities.  This is why the previous DES3
+   module was removed: From what I can tell, it was written by Eric Young
+   and it's probably from libdes, which has the GPL-incompatible BSD
+   advertising clause, and is apparently stuck with it:
+
+        &quot;In this non-signed mail he basically says that he does not care
+        about this advertising clause anymore as he now works on other
+        projects, but is, due to his contract with RSA, unable to release a
+        new version with a changed license.&quot;
+           <A HREF="http://www.mail-archive.com/debian-legal@lists.debian.org/msg13093.html">http://www.mail-archive.com/debian-legal@lists.debian.org/msg13093.html</A>
+
+   If there are compatibility issues with the new DES/DES3 code, please
+   report them as bugs.
+
+4. Remove old cruft that nobody uses.  I do *not* plan to drop, MD5, SHA1,
+   or DES/DES3, since they are a mandatory part of many protocols, but I'm
+   considering dropping:
+     - ARC2
+     - MD2
+     - Chaffing
+     - AllOrNothing
+     - qNEW
+
+5. Improve the trustworthiness of the implementation.  Crypto.SelfTest is a
+   big part of that.  Cleaning up the existing C code and using stdint.h
+   (uint32_t et al.) is another.  In the long term, I would also like to
+   reduce the amount of hand-coded C, but only if the alternative is less
+   likely to have bugs than hand-coded C.
+
+6. Eventually, replace the asymmetric cipher API (PublicKey) with something
+   that doesn't try so hard to be a 'grand unified API'.  RSA is
+   conceptually very different from DSA, and having it return a tuple just
+   because DSA needs to is confusing.
+
+7. Deprecate, then drop Crypto.Util.randpool (replaced with Crypto.Random).
+   A lot of people misunderstood how RandomPool was supposed to work, and
+   wrote code that was insecure (or secure only due to sheer luck) as a
+   result.  See:
+    <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html">http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html</A>
+    <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2008q3/000020.html">http://lists.dlitz.net/pipermail/pycrypto/2008q3/000020.html</A>
+
+   I'm open to suggestions about the exact process to use here, as long as
+   it results in the old RandomPool implementation going away in the end.
+
+8. Fix and/or replace other confusing APIs.  For example, in
+   Crypto.Util.number, isPrime isn't actually cryptographically strong
+   (unlike what you might expect from a crypto library), and
+   getRandomNumber's behaviour has confused at least one person[1].  Both
+   have their purposes, but are confusingly named.
+
+9. Fix implementation bugs and build issues.
+
+11. Maintain compatibility with Python 2.x, versions 2.1 and later for the
+    next release, and version 2.2 and later for subsequent releases.  I am
+    currently testing against Python 2.1, 2.2, 2.3, 2.4, 2.5, and 2.6.
+
+12. Support Python 3.
+
+13. Avoid US-origin code, to make things simpler for myself and other
+    Canadian distributors.  (Yay crypto export controls!)
+
+14. Add full support for ASN.1, PKCS#12, and all variations of X.509.[3]
+
+15. Support mandatory key escrow.[4]
+
+To summarize, I plan to maintain backwards compatibility where it makes
+sense, but I also want to fix/remove APIs that violate user expectations,
+and I want to remove cruft that nobody uses.  It's not easy to determine
+what &quot;nobody uses&quot;, so I tend to first search Google Code Search, ask this
+mailing list, or just drop the module from the git repository and see if
+anyone complains.  If you thought DES/DES3 support was going away, then
+complaining here was exactly the right thing to do.
+
+I'll address each of the removed modules:
+
+     - Blowfish: Copyright issues. Replaced with my own implementation.
+
+     - DES/DES3: Copyright issues. Replaced with the implementation from
+       LibTomCrypt, plus a wrapper to provide the PyCrypto interface.
+
+     - RIPEMD: Copyright issues. Replaced with my own implementation.
+
+     - IDEA/RC5: Gone due to patent encumbrances (and maybe also copyright
+       issues).  Debian's PyCrypto packages have omitted the RC5 and IDEA
+       for a long time, and it hasn't been a big problem as far as I can
+       tell.  In any case, I don't have any desire to maintain &quot;free&quot;
+       software that people aren't actually free to use and/or distribute
+       due to patent encumbrances.
+
+As for the XOR module, I removed it for the following reasons:
+
+     - It's insecure as a stream cipher, obviously.
+
+     - The old XOR module would silently truncate its &quot;key&quot; to 32 bytes,
+       which violates expectations in a bad way for people who want to use
+       it to implement a one-time pad, or a PRNG, or even HMAC-SHA512.
+
+     - I already wrote a replacement strxor module that does fast XORing of
+       strings (though with a different API).
+
+     - I thought nobody was making significant use of it.  This might be
+       mistaken.
+
+How does Twisted Conch use the XOR module?  Would you prefer to use the new
+strxor module instead?  I don't want to resurrect the old XOR.c code, but I
+wouldn't be opposed to a wrapper around strxor that provides the same
+interface, if someone wanted to write one.[2]
+
+I hope that clears things up.
+
+Cheers!
+
+--
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+Footnotes:
+
+[1] I had someone send me an email saying that he had done statistical
+tests and found that PyCrypto's random number generator was biased.  I
+initially thought he was referring to Crypto.Random, but it turned out that
+he was using getRandomNumber(), which always sets the most-significant bit
+to 1.
+
+[2] Provided, of course, that the code looks good and the developer is
+willing to certify that it meets the &quot;PyCrypto Code Submission Requirements
+- Rev. C&quot; &lt;<A HREF="http://www.pycrypto.org/submission-requirements/">http://www.pycrypto.org/submission-requirements/</A>&gt;
+
+[3] Ha! Just kidding!
+
+[4] Not bloody likely.
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000099.html">[pycrypto] DES/DES3/XOR/etc removal
+</A></li>
+	<LI>Next message: <A HREF="000101.html">[pycrypto] FYI: PyCrypto on Google App Engine
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#100">[ date ]</a>
+              <a href="thread.html#100">[ thread ]</a>
+              <a href="subject.html#100">[ subject ]</a>
+              <a href="author.html#100">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

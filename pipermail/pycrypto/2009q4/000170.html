@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Wanted: PyCrypto security advisories
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Wanted%3A%20PyCrypto%20security%20advisories&In-Reply-To=20091213205934.GA11878%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000169.html">
+   <LINK REL="Next"  HREF="000171.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Wanted: PyCrypto security advisories</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Wanted%3A%20PyCrypto%20security%20advisories&In-Reply-To=20091213205934.GA11878%40rivest.dlitz.net"
+       TITLE="[pycrypto] Wanted: PyCrypto security advisories">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Dec 14 23:47:35 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000169.html">[pycrypto] ANN: PyCrypto 2.1.0 released!
+</A></li>
+        <LI>Next message: <A HREF="000171.html">[pycrypto] Installation terminated with an error &quot;Unable to find	vcvarsall.bat&quot;
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#170">[ date ]</a>
+              <a href="thread.html#170">[ thread ]</a>
+              <a href="subject.html#170">[ subject ]</a>
+              <a href="author.html#170">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Dec 13, 2009 at 03:59:34PM -0500, Dwayne C. Litzenberger wrote:
+&gt;<i> PyCrypto 2.1.0 has been released.
+</I>
+This release of PyCrypto fixes a number of issues, but the previous 
+release, version 2.0.1 is still widely deployed.
+
+I'm a terrible maintainer with too many half-baked projects on the go.  It 
+would be great if someone familiar with making security advisories went 
+through this release, acquired CVE numbers where appropriate, and issued 
+security advisories for bugs in PyCrypto 2.0.1 and in software that uses it 
+incorrectly.
+
+I'm an advocate of full disclosure, so if you find any additional problems 
+that haven't been fixed yet, please just file a bug on Launchpad and make 
+whatever other announcements you deem necessary.  I don't think I have some 
+inherent right to know about exploitable vulnerabilities in other people's 
+computers before they do, just because I happen to be (badly) maintaining 
+some software they use.  (Please also consider supporting 
+<A HREF="http://wikileaks.org/.">http://wikileaks.org/.</A>)
+
+Here are some highlights from the changelog, with my comments:
+
+&gt;<i> 	  - Implemented __ne__() on pubkey, which fixes the following 
+</I>&gt;<i> 	  broken behaviour:
+</I>&gt;<i> 	        &gt;&gt;&gt; pk.publickey() == pk.publickey()
+</I>&gt;<i> 	        True
+</I>&gt;<i> 	        &gt;&gt;&gt; pk.publickey() != pk.publickey()
+</I>&gt;<i> 	        True
+</I>&gt;<i> 	    (patch from Lorenz Quack)
+</I>
+This isn't a security hole in PyCrypto, but I wonder if other software 
+breaks, due to PyCrypto violating the expectations of application 
+developers.
+
+&gt;<i> 	  - Fixed padding bug in SHA256; this resulted in bad digests 
+</I>&gt;<i> 	  whenever (the number of bytes hashed) mod 64 == 55.
+</I>
+I think some distros (e.g. Debian) had this fixed already.  At minimum, 
+this is a compatibility problem.  Maybe it's also a security hole; I'm not 
+a cryptanalyst, so I don't know.
+
+&gt;<i> 	  - Fixed a bad behaviour of the XOR cipher module: It would 
+</I>&gt;<i> 	  silently truncate all keys to 32 bytes.  Now it raises ValueError 
+</I>&gt;<i> 	  when the key is too long.
+</I>
+Code that used Crypto.Cipher.XOR to XOR two long strings together would 
+fail silently.  If your code raises a ValueError here after upgrading to 
+PyCrypto 2.1.0, then you have a security hole.
+
+&gt;<i> 	  - Fixed the winrandom module, which had been omitted from the 
+</I>&gt;<i> 	  build process, causing security problems for programs that misuse 
+</I>&gt;<i> 	  RandomPool.
+</I>
+In the code I've seen, misusing RandomPool is almost universal.  Someone 
+can probably generate a bunch of advisories just by searching Google Code 
+Search for &quot;RandomPool&quot;.
+
+See <A HREF="https://bugs.launchpad.net/pycrypto/+bug/249765,">https://bugs.launchpad.net/pycrypto/+bug/249765,</A> and follow the links.
+
+&gt;<i> 	* Modified RSA.generate() to ensure that e is coprime to p-1 and 
+</I>&gt;<i> 	q-1. Apparently, RSA.generate was capable of generating unusable 
+</I>&gt;<i> 	keys.
+</I>
+I don't quite understand the security impact of this (if any), but it was 
+reported here:
+
+     <A HREF="https://bugs.launchpad.net/pycrypto/+bug/408660">https://bugs.launchpad.net/pycrypto/+bug/408660</A>
+
+= = = = = = = = = = = = = =
+
+Here are some quick links:
+
+PyCrypto 2.1.0 release announcement:
+     <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2009q4/000169.html">http://lists.dlitz.net/pipermail/pycrypto/2009q4/000169.html</A>
+Bug tracker:
+     <A HREF="https://bugs.launchpad.net/pycrypto">https://bugs.launchpad.net/pycrypto</A>
+Website:
+     <A HREF="http://www.pycrypto.org/">http://www.pycrypto.org/</A>
+git repo:
+     <A HREF="git://git.pycrypto.org:9419/crypto/pycrypto-2.x.git">git://git.pycrypto.org:9419/crypto/pycrypto-2.x.git</A>
+gitweb:
+     <A HREF="http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git">http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git</A>
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 221 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20091215/65d1618a/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20091215/65d1618a/attachment.pgp</A> 
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000169.html">[pycrypto] ANN: PyCrypto 2.1.0 released!
+</A></li>
+	<LI>Next message: <A HREF="000171.html">[pycrypto] Installation terminated with an error &quot;Unable to find	vcvarsall.bat&quot;
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#170">[ date ]</a>
+              <a href="thread.html#170">[ thread ]</a>
+              <a href="subject.html#170">[ subject ]</a>
+              <a href="author.html#170">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

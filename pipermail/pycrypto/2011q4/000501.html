@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Public Key encryption of files
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20Key%20encryption%20of%20files&In-Reply-To=CAO2sgosj6URgFkk%3DYDBMYU%3DXVgp2b1zpvZfXxGLP1v23i02MCQ%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000500.html">
+   <LINK REL="Next"  HREF="000502.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Public Key encryption of files</H1>
+    <B>Dean Macinskas</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20Key%20encryption%20of%20files&In-Reply-To=CAO2sgosj6URgFkk%3DYDBMYU%3DXVgp2b1zpvZfXxGLP1v23i02MCQ%40mail.gmail.com"
+       TITLE="[pycrypto] Public Key encryption of files">dmacinskas at geobridge.net
+       </A><BR>
+    <I>Thu Nov 10 12:18:53 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000500.html">[pycrypto] Public Key encryption of files
+</A></li>
+        <LI>Next message: <A HREF="000502.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#501">[ date ]</a>
+              <a href="thread.html#501">[ thread ]</a>
+              <a href="subject.html#501">[ subject ]</a>
+              <a href="author.html#501">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>All blocks need to be 16 bytes.  So for example, if the file is 2,000,005 bytes, you'd encrypt 125,000 16-byte blocks; you then have 5 bytes left over, to which you'd add 11 padding bytes, which can be any binary value and then encrypt that last block.
+
+Some schemes add a header to the beginning of the file with the cleartext length, so the decrypter can easily discard the padding.  Also, consider using CBC mode with a non-zero IV, which has some security advantages.
+
+From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A> [mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>] On Behalf Of John Matthew
+Sent: Thursday, November 10, 2011 12:10 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] Public Key encryption of files
+
+Dean, thanks for the reply
+
+
+Ah, I see.  If I want to encrypt a 2mb file with a Symmetric Key, it just has to have a &quot;16 byte padding&quot; for AES, or do all the chunks need to be 16 bytes?
+
+J
+On Thu, Nov 10, 2011 at 5:17 AM, Dean Macinskas &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dmacinskas at geobridge.net</A>&lt;mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dmacinskas at geobridge.net</A>&gt;&gt; wrote:
+John,
+
+Unless the file is small, the typical way to encrypt a file is to use a symmetric key, like TDES or AES.  Asymmetric key crypto is usually too slow for bulk encryption; you use a symmetric key for that, and store/export the symmetric key using asymmetric key protection.
+
+The block size of a public key is fixed by the length of the key; in other words, if you generate a 2048 bit key, the block size is 2048 bits (256 bytes).  Symmetric key block length is set by the algorithm: 8 bytes for TDES, 16 for AES.  Any data you encrypt has to be padded to a multiple of the block length.
+
+If you use RSA, there are a couple of rules for encrypting data, one of which is that the data has to be numerically less than the public modulus.  This is usually accomplished by setting the left-most bit (MSB) of the data block to zero; another reason why using a public key directly is not a good choice for bulk encryption.
+
+HTH,
+Dean
+
+From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>&lt;mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>&gt; [mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>&lt;mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>&gt;] On Behalf Of John Matthew
+Sent: Tuesday, November 08, 2011 11:59 AM
+To: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>&lt;mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>&gt;
+Subject: [pycrypto] Public Key encryption of files
+
+First off, pycrypto is awesome!  Thank you for creating it!
+
+I'd like to use Public Keys to encrypt files, is this something that seems appropriate for file encryption?
+
+I've noticed that the encrypt method for RSA keys is only 256 bytes, which seems rather small.
+
+I know I could wrap that in a generator, but was hoping for some feedback on another way or a configuration change to increase that number.
+
+Thanks for your contribution, and help.
+
+J
+
+_______________________________________________
+pycrypto mailing list
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>&lt;mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>&gt;
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20111110/bda53c29/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20111110/bda53c29/attachment.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000500.html">[pycrypto] Public Key encryption of files
+</A></li>
+	<LI>Next message: <A HREF="000502.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#501">[ date ]</a>
+              <a href="thread.html#501">[ thread ]</a>
+              <a href="subject.html#501">[ subject ]</a>
+              <a href="author.html#501">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

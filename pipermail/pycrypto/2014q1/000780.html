@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] AES, python 2.7 vs 3
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20AES%2C%20python%202.7%20vs%203&In-Reply-To=%3CC75A84166056C94F84D238A44AF9F6AD06ED39B1%40AUSX10MPC103.AMER.DELL.COM%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000779.html">
+   <LINK REL="Next"  HREF="000768.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] AES, python 2.7 vs 3</H1>
+    <B>Paul_Koning at Dell.com</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20AES%2C%20python%202.7%20vs%203&In-Reply-To=%3CC75A84166056C94F84D238A44AF9F6AD06ED39B1%40AUSX10MPC103.AMER.DELL.COM%3E"
+       TITLE="[pycrypto] AES, python 2.7 vs 3">Paul_Koning at Dell.com
+       </A><BR>
+    <I>Mon Feb 10 08:40:53 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000779.html">[pycrypto] AES, python 2.7 vs 3
+</A></li>
+        <LI>Next message: <A HREF="000768.html">[pycrypto] XML Digital Signature (XML-DSig)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#780">[ date ]</a>
+              <a href="thread.html#780">[ thread ]</a>
+              <a href="subject.html#780">[ subject ]</a>
+              <a href="author.html#780">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Feb 8, 2014, at 3:25 AM, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt; wrote:
+
+&gt;<i> On 7 February 2014 17:01,  &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">Paul_Koning at dell.com</A>&gt; wrote:
+</I>&gt;&gt;<i> That&#8217;s what pycrypto needs to do, yes.  From what Dwayne says, it sounds like that&#8217;s currently not finished yet.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> The easiest way to look at this is as a data type matching exercise.  Cryptographic operations are functions that operate on sequences of bytes.  Unicode strings are NOT sequences of bytes &#8212; they are an entirely different data type.
+</I>&gt;<i> 
+</I>&gt;<i> How (if at all) does that statement change if I am using unicode,
+</I>&gt;<i> utf-8 encoding please Paul?
+</I>&gt;<i> As I understand it, utf-8 constitutes octets? Or am I wrong?
+</I>
+Yes, UTF-8 is one of several encodings you can use for Unicode.  It&#8217;s probably the most popular one for a variety of reasons.  So unless you have a reason to do otherwise, UTF-8 is a good default choice for encoding of Unicode strings.
+
+&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> It is valid to speak of specific encodings of Unicode strings as sequences of bytes, but the key point is that you have to do the encoding &#8212; which means, first of all, choosing WHICH encoding &#8212; in order to have that sequence of bytes.
+</I>&gt;<i> 
+</I>&gt;<i> And how does that match with Python 3, which (appears |  is) based on
+</I>&gt;<i> Unicode strings?
+</I>
+The &#8220;str&#8221; type is Unicode.  To turn it into &#8220;bytes&#8221; &#8212; for I/O, for crypto, or for other purposes that need octet strings, you have to encode the Unicode.  As I mentioned, UTF-8 is a typical choice, but if you had a reason for using something else, you would specify that encoding instead.
+
+For example:
+$ python3
+&gt;&gt;&gt;<i> s=&quot;foo&quot;
+</I>&gt;&gt;&gt;<i> type(s)
+</I>&lt;class 'str'&gt;
+&gt;&gt;&gt;<i> b=s.encode(&quot;utf-8&quot;)
+</I>&gt;&gt;&gt;<i> type(b)
+</I>&lt;class 'bytes'&gt;
+&gt;&gt;&gt;<i> b
+</I>b'foo'
+&gt;&gt;&gt;<i> s=&quot;a&#233;&#246;&quot;
+</I>&gt;&gt;&gt;<i> b=s.encode(&quot;utf-8&quot;)
+</I>&gt;&gt;&gt;<i> b
+</I>b'a\xc3\xa9\xc3\xb6'
+
+&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Since you have to make those choices, it&#8217;s not safe for APIs like crypto to accept strings and effectively do some encoding as a side effect.  Better to require bytes in the interface, and let you handle the encode/decode steps explicitly, in the way you want them to be done.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Thanks for that Paul... you seem to be pointing at Pycrypto as the
+</I>&gt;<i> source of my problem. An approach paper / web page would be very
+</I>&gt;<i> helpful to me (and others facing the same issues) in managing this
+</I>&gt;<i> slippery (to me) aspect of crypto.
+</I>&gt;<i> 
+</I>&gt;<i> Again, thanks for the comments.
+</I>
+This <A HREF="http://docs.python.org/3/howto/unicode.html">http://docs.python.org/3/howto/unicode.html</A> might be helpful for a much more detailed explanation of what I&#8217;ve been talking about.
+
+	paul
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000779.html">[pycrypto] AES, python 2.7 vs 3
+</A></li>
+	<LI>Next message: <A HREF="000768.html">[pycrypto] XML Digital Signature (XML-DSig)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#780">[ date ]</a>
+              <a href="thread.html#780">[ thread ]</a>
+              <a href="subject.html#780">[ subject ]</a>
+              <a href="author.html#780">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

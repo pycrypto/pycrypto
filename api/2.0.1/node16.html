@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>The ElGamal and DSA algorithms</TITLE>
+<META NAME="description" CONTENT="The ElGamal and DSA algorithms">
+<META NAME="keywords" CONTENT="pycrypt">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="pycrypt.css">
+
+<LINK REL="next" HREF="node17.html">
+<LINK REL="previous" HREF="node15.html">
+<LINK REL="up" HREF="node15.html">
+<LINK REL="next" HREF="node17.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html251"
+  HREF="node17.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html247"
+  HREF="node15.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html241"
+  HREF="node15.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html249"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html252"
+  HREF="node17.html">Security Notes for Public-key</A>
+<B> Up:</B> <A NAME="tex2html248"
+  HREF="node15.html">Crypto.PublicKey: Public-Key Algorithms</A>
+<B> Previous:</B> <A NAME="tex2html242"
+  HREF="node15.html">Crypto.PublicKey: Public-Key Algorithms</A>
+ &nbsp; <B>  <A NAME="tex2html250"
+  HREF="node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00061000000000000000">
+The ElGamal and DSA algorithms</A>
+</H2>
+For RSA, the K parameters are unused; if you like, you can just
+pass empty strings.  The ElGamal and DSA algorithms require a real
+K value for technical reasons; see Schneier's book for a detailed
+explanation of the respective algorithms.  This presents a possible
+hazard that can  
+inadvertently reveal the private key.  Without going into the
+mathematical details, the danger is as follows. K is never derived
+or needed by others; theoretically, it can be thrown away once the
+encryption or signing operation is performed.  However, revealing
+K for a given message would enable others to derive the secret key
+data; worse, reusing the same value of K for two different
+messages would also enable someone to derive the secret key data.  An
+adversary could intercept and store every message, and then try deriving
+the secret key from each pair of messages.
+
+<P>
+This places implementors on the horns of a dilemma.  On the one hand,
+you want to store the K values to avoid reusing one; on the other
+hand, storing them means they could fall into the hands of an adversary.
+One can randomly generate K values of a suitable length such as
+128 or 144 bits, and then trust that the random number generator
+probably won't produce a duplicate anytime soon.  This is an
+implementation decision that depends on the desired level of security
+and the expected usage lifetime of a private key.  I can't choose and
+enforce one policy for this, so I've added the K parameter to the
+encrypt and sign methods.  You must choose K by
+generating a string of random data; for ElGamal, when interpreted as a
+big-endian number (with the most significant byte being the first byte
+of the string), K must be relatively prime to self.p-1; any
+size will do, but brute force searches would probably start with small
+primes, so it's probably good to choose fairly large numbers.  It might be
+simplest to generate a prime number of a suitable length using the
+Crypto.Util.number module.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html251"
+  HREF="node17.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html247"
+  HREF="node15.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html241"
+  HREF="node15.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html249"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html252"
+  HREF="node17.html">Security Notes for Public-key</A>
+<B> Up:</B> <A NAME="tex2html248"
+  HREF="node15.html">Crypto.PublicKey: Public-Key Algorithms</A>
+<B> Previous:</B> <A NAME="tex2html242"
+  HREF="node15.html">Crypto.PublicKey: Public-Key Algorithms</A>
+ &nbsp; <B>  <A NAME="tex2html250"
+  HREF="node1.html">Contents</A></B> </DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

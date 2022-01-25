@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] On the future of new ciphers/hashes in PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20On%20the%20future%20of%20new%20ciphers/hashes%20in%20PyCrypto&In-Reply-To=AANLkTinYtSajJU4j1g2zsKyh_qRVKExh8AOUGr14%3DXyY%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000276.html">
+   <LINK REL="Next"  HREF="000279.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] On the future of new ciphers/hashes in PyCrypto</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20On%20the%20future%20of%20new%20ciphers/hashes%20in%20PyCrypto&In-Reply-To=AANLkTinYtSajJU4j1g2zsKyh_qRVKExh8AOUGr14%3DXyY%40mail.gmail.com"
+       TITLE="[pycrypto] On the future of new ciphers/hashes in PyCrypto">dlitz at dlitz.net
+       </A><BR>
+    <I>Fri Oct 22 09:52:57 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000276.html">[pycrypto] On the future of new ciphers/hashes in PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000279.html">[pycrypto] On the future of new ciphers/hashes in PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#278">[ date ]</a>
+              <a href="thread.html#278">[ thread ]</a>
+              <a href="subject.html#278">[ subject ]</a>
+              <a href="author.html#278">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Can block cipher chaining modes be implemented in Python without making 
+ridiculous performance sacrifices?  I'm not a Python performance expert, 
+but I thought the Python function call overhead was too high.
+
+On Thu, Oct 14, 2010 at 11:10:59PM +0200, Legrandin wrote:
+&gt;<i>I think it is worth making a distinction between primitives and protocols.
+</I>&gt;<i>
+</I>&gt;<i>The few ciphers/hashes that currently exist in pycrypto suffice for
+</I>&gt;<i>most needs one may have, and
+</I>&gt;<i>I agree that adding more won't help in 99% of the applications (even
+</I>&gt;<i>though it may look good
+</I>&gt;<i>on a fact sheet) whereas a low-level cipher zoo is hard to maintain.
+</I>&gt;<i>
+</I>&gt;<i>Having said that, one of beauties of pycrypto is the fact that is
+</I>&gt;<i>self-contained and does not require
+</I>&gt;<i>to be combined with further packages. A pluggable system - although
+</I>&gt;<i>elegant - would become
+</I>&gt;<i>less practical and possibly not very considered as a feature. If one
+</I>&gt;<i>day one could prove that pycrypto is
+</I>&gt;<i>indeed missing a primitive used by some real, widespread systems
+</I>&gt;<i>(maybe ECC?) that cannot be sanely
+</I>&gt;<i>replaced by AES/TDES/SHA, I would even urge to still have a C
+</I>&gt;<i>implementation included from some
+</I>&gt;<i>good patent-free library (e.g. tomcrypt) and shipped. So much time saved...
+</I>&gt;<i>
+</I>&gt;<i>Protocols are another beast though: key derivation/management/exchange
+</I>&gt;<i>schemes, wrappers,
+</I>&gt;<i>message authentication codes, etc etc are in most cases independent of
+</I>&gt;<i>the underlying cipher/hash
+</I>&gt;<i>primitive and can be more cleanly and quickly implemented/tested in a
+</I>&gt;<i>high-level language like Python
+</I>&gt;<i>with little performance penalty. PKCS#1 and PBKDF2 are good examples.
+</I>&gt;<i>Even chaining modes
+</I>&gt;<i>for block ciphers look better in python (to me at least).I would
+</I>&gt;<i>really prefer to have these high-level
+</I>&gt;<i>algorithms available in the library and not through some obscure
+</I>&gt;<i>openssl-like library coded in C...
+</I>&gt;<i>
+</I>&gt;<i>My 2 cents... :-)
+</I>&gt;<i>
+</I>&gt;&gt;<i> Going through the bug tracker and the mailing list, a lot of the requests
+</I>&gt;&gt;<i> are to add new algorithms (Camellia, SHA512, TEA, PKCS#1/OAEP, PBKDF2), or
+</I>&gt;&gt;<i> to make changes to the existing implementations (timing attack
+</I>&gt;&gt;<i> countermeasures for the AES module, better prime generation for RSA).
+</I>&gt;<i>
+</I>&gt;&gt;<i> They're all good ideas, but I don't have the time or the expertise needed
+</I>&gt;&gt;<i> to review C implementations of low-level crypto primitives, and frankly, I
+</I>&gt;&gt;<i> have better things to do.
+</I>&gt;<i>
+</I>&gt;&gt;<i> Python does not need its own custom AES implementation.  Neither do Java,
+</I>&gt;&gt;<i> Ruby, Perl, JavaScript, PHP, Go, C++, D, Clojure, Haskell.  It's a waste of
+</I>&gt;&gt;<i> volunteer time, it's bad engineering, and it means that the FOSS community
+</I>&gt;&gt;<i> ends up repeating the same mistakes over and over, year after year, every
+</I>&gt;&gt;<i> time a new language comes out.
+</I>&gt;<i>
+</I>&gt;&gt;<i> I'm putting a stop to it.  I'm declaring a permanent feature freeze on the
+</I>&gt;&gt;<i> C implementations of &lt;Crypto.Cipher.*&gt; and &lt;Crypto.Hash.*&gt;.  New algortihms
+</I>&gt;&gt;<i> will be added only by calling out to existing libraries.  PyCrypto
+</I>&gt;&gt;<i> development will be focused on the API.
+</I>&gt;<i>
+</I>&gt;&gt;<i> I haven't yet figured out exactly how this is going to look.  I'm thinking
+</I>&gt;&gt;<i> of some kind of pluggable backends, sort of like how Java or CryptoAPI, but
+</I>&gt;&gt;<i> with as little API complexity as possible.  Ideas are welcome.
+</I>&gt;<i>
+</I>&gt;&gt;<i> - Dwayne
+</I>&gt;<i>_______________________________________________
+</I>&gt;<i>pycrypto mailing list
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000276.html">[pycrypto] On the future of new ciphers/hashes in PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000279.html">[pycrypto] On the future of new ciphers/hashes in PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#278">[ date ]</a>
+              <a href="thread.html#278">[ thread ]</a>
+              <a href="subject.html#278">[ subject ]</a>
+              <a href="author.html#278">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

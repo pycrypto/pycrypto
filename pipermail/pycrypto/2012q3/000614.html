@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Unrecognized command line option '-mno-cygwin'
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Unrecognized%20command%20line%20option%20%27-mno-cygwin%27&In-Reply-To=%3CCAGfyce2PDLD2VF-A9VR22nZqX4rfbHosxcLkc3Znpko8vHf35w%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000613.html">
+   <LINK REL="Next"  HREF="000615.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Unrecognized command line option '-mno-cygwin'</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Unrecognized%20command%20line%20option%20%27-mno-cygwin%27&In-Reply-To=%3CCAGfyce2PDLD2VF-A9VR22nZqX4rfbHosxcLkc3Znpko8vHf35w%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Unrecognized command line option '-mno-cygwin'">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Sun Jul  8 06:02:42 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000613.html">[pycrypto] Unrecognized command line option '-mno-cygwin'
+</A></li>
+        <LI>Next message: <A HREF="000615.html">[pycrypto] PyCrypto ElGamal code questions/comments
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#614">[ date ]</a>
+              <a href="thread.html#614">[ thread ]</a>
+              <a href="subject.html#614">[ subject ]</a>
+              <a href="author.html#614">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> I&#8217;m trying to build the pycrypto libarary. I browse to the folder where my
+</I>&gt;<i> files are extracted an type &#8216;make&#8217;. Things progress along just fine for
+</I>&gt;<i> quite a few minutes when suddenly I get this error and the process halts:*
+</I>&gt;<i> ***
+</I>&gt;<i>
+</I>&gt;<i> ** **
+</I>&gt;<i>
+</I>&gt;<i> Cc1.exe: error: unrecognized command line option '-mno-cygwin'****
+</I>&gt;<i>
+</I>&gt;<i> Error: command &#8216;gcc&#8217; failed with exit status 1****
+</I>&gt;<i>
+</I>&gt;<i> ** **
+</I>&gt;<i>
+</I>&gt;<i> I&#8217;m working in MinGW (not cygwin). Can anybody suggest how to fix this?
+</I>&gt;<i> Thanks.
+</I>&gt;<i>
+</I>
+It is a known issue of distutils.
+
+Edit C:\Python2.7.1\Lib\distutils\cygwincompiler.py and remove
+'-mno-cygwin' everywhere.
+
+See here:
+
+<A HREF="http://www.secker.nl/2012/03/08/setup-python-2-7-2-and-mingw-on-windows-xp/">http://www.secker.nl/2012/03/08/setup-python-2-7-2-and-mingw-on-windows-xp/</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20120708/32692e65/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20120708/32692e65/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000613.html">[pycrypto] Unrecognized command line option '-mno-cygwin'
+</A></li>
+	<LI>Next message: <A HREF="000615.html">[pycrypto] PyCrypto ElGamal code questions/comments
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#614">[ date ]</a>
+              <a href="thread.html#614">[ thread ]</a>
+              <a href="subject.html#614">[ subject ]</a>
+              <a href="author.html#614">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

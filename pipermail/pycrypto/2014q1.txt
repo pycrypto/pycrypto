@@ -1,0 +1,2376 @@
+From hugh.macdonald at nvizible.com  Tue Jan  7 09:43:03 2014
+From: hugh.macdonald at nvizible.com (Hugh Macdonald)
+Date: Tue, 7 Jan 2014 17:43:03 +0000
+Subject: [pycrypto] Docs/code mis-match - not specifying IV fails
+Message-ID: <CAL_xc9ip-UxK_2=5EvJBtEN9guqwZa-4=xUfCy527uKzj2dycA@mail.gmail.com>
+
+Hi,
+
+I've just been trying to figure out why some code of mine broke after an
+update from 2.0.1 to 2.6.1, and found that I hadn't been passing an IV into
+AES.new() (using MODE_CFB).
+
+Previously, it was happy with this, and, according to the docs here (
+https://www.dlitz.net/software/pycrypto/api/current/), "It is optional and
+when not present it will be given a default value of all zeroes."
+
+Looking at the code that throws the exception (
+https://github.com/dlitz/pycrypto/blob/master/src/block_template.c, line
+163), it doesn't allow for doing what the docs suggest it will.
+
+I'm not sure whether I've either misunderstood something or which of the
+two is wrong, but I thought I'd at least flag it for discussion...
+
+
+Hugh
+
+-- 
+D I S C L A I M E R : This email and any files transmitted with it are 
+intended solely for the intended addressee, and may contain confidential 
+information or material protected by law, copyright or other legislation.  
+If you have received this message in error, please return it to the sender 
+or notify the sender by calling +44 (0)20 3167 3860, and immediately and 
+permanently delete it. You should not copy it or use it for any purpose, 
+nor disclose its contents to any other person. Only the intended recipient 
+may place any reliance upon it. Nvizible Limited accepts no responsibility 
+or liability for emails sent by its employees or personnel which are not 
+sent in the course of its business or that of its clients.
+ 
+Nvizible Limited, 8/9 Carlisle Street, London W1D 3BP .  Registered in 
+England & Wales with Company Number: 6900121
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140107/2dcce815/attachment.html>
+
+From cnibley at gmail.com  Tue Jan  7 16:59:10 2014
+From: cnibley at gmail.com (Charley Nibley)
+Date: Tue, 7 Jan 2014 16:59:10 -0800
+Subject: [pycrypto] Docs/code mis-match - not specifying IV fails
+In-Reply-To: <CAL_xc9ip-UxK_2=5EvJBtEN9guqwZa-4=xUfCy527uKzj2dycA@mail.gmail.com>
+References: <CAL_xc9ip-UxK_2=5EvJBtEN9guqwZa-4=xUfCy527uKzj2dycA@mail.gmail.com>
+Message-ID: <CABRBVqR9XorktfarOshnzVPB5CMCzjG2+onYvYbtHNt7=p3MuQ@mail.gmail.com>
+
+Hi Hugh,
+
+This behavior you are seeing is expected.  It changed with a fix to prevent
+an empty string IV passed to the function. IV is always mandatory even if
+at some point in a previous build it was being passed as all zeros.  I
+believe the doc just needs updating.
+
+See line 173:
+https://github.com/dlitz/pycrypto/commit/411f60f58cea79f7e93476ba0c069b80a2a4c1a0
+
+And see the comments here: https://bugs.launchpad.net/pycrypto/+bug/997464
+
+Charley Nibley
+
+
+On Tue, Jan 7, 2014 at 9:43 AM, Hugh Macdonald
+<hugh.macdonald at nvizible.com>wrote:
+
+> Hi,
+>
+> I've just been trying to figure out why some code of mine broke after an
+> update from 2.0.1 to 2.6.1, and found that I hadn't been passing an IV into
+> AES.new() (using MODE_CFB).
+>
+> Previously, it was happy with this, and, according to the docs here (
+> https://www.dlitz.net/software/pycrypto/api/current/), "It is optional
+> and when not present it will be given a default value of all zeroes."
+>
+> Looking at the code that throws the exception (
+> https://github.com/dlitz/pycrypto/blob/master/src/block_template.c, line
+> 163), it doesn't allow for doing what the docs suggest it will.
+>
+> I'm not sure whether I've either misunderstood something or which of the
+> two is wrong, but I thought I'd at least flag it for discussion...
+>
+>
+> Hugh
+>
+> D I S C L A I M E R : This email and any files transmitted with it are
+> intended solely for the intended addressee, and may contain confidential
+> information or material protected by law, copyright or other legislation.
+> If you have received this message in error, please return it to the sender
+> or notify the sender by calling +44 (0)20 3167 3860, and immediately and
+> permanently delete it. You should not copy it or use it for any purpose,
+> nor disclose its contents to any other person. Only the intended recipient
+> may place any reliance upon it. Nvizible Limited accepts no responsibility
+> or liability for emails sent by its employees or personnel which are not
+> sent in the course of its business or that of its clients.
+>
+> Nvizible Limited, 8/9 Carlisle Street, London W1D 3BP .  Registered in
+> England & Wales with Company Number: 6900121
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140107/1bd828fb/attachment.html>
+
+From hugh.macdonald at nvizible.com  Wed Jan  8 01:32:59 2014
+From: hugh.macdonald at nvizible.com (Hugh Macdonald)
+Date: Wed, 8 Jan 2014 09:32:59 +0000
+Subject: [pycrypto] Docs/code mis-match - not specifying IV fails
+In-Reply-To: <CABRBVqR9XorktfarOshnzVPB5CMCzjG2+onYvYbtHNt7=p3MuQ@mail.gmail.com>
+References: <CAL_xc9ip-UxK_2=5EvJBtEN9guqwZa-4=xUfCy527uKzj2dycA@mail.gmail.com>
+ <CABRBVqR9XorktfarOshnzVPB5CMCzjG2+onYvYbtHNt7=p3MuQ@mail.gmail.com>
+Message-ID: <CAL_xc9iYv1w+OefAVNBQjxFET7=Ofz2Mqxjk15wRtNoVZje-hw@mail.gmail.com>
+
+Hi Charley,
+
+Thanks for clarifying that - that makes sense to me.
+
+
+Cheers
+
+Hugh
+
+
+On 8 January 2014 00:59, Charley Nibley <cnibley at gmail.com> wrote:
+
+> Hi Hugh,
+>
+> This behavior you are seeing is expected.  It changed with a fix to
+> prevent an empty string IV passed to the function. IV is always mandatory
+> even if at some point in a previous build it was being passed as all
+> zeros.  I believe the doc just needs updating.
+>
+> See line 173:
+> https://github.com/dlitz/pycrypto/commit/411f60f58cea79f7e93476ba0c069b80a2a4c1a0
+>
+> And see the comments here: https://bugs.launchpad.net/pycrypto/+bug/997464
+>
+> Charley Nibley
+>
+>
+> On Tue, Jan 7, 2014 at 9:43 AM, Hugh Macdonald <
+> hugh.macdonald at nvizible.com> wrote:
+>
+>> Hi,
+>>
+>> I've just been trying to figure out why some code of mine broke after an
+>> update from 2.0.1 to 2.6.1, and found that I hadn't been passing an IV into
+>> AES.new() (using MODE_CFB).
+>>
+>> Previously, it was happy with this, and, according to the docs here (
+>> https://www.dlitz.net/software/pycrypto/api/current/), "It is optional
+>> and when not present it will be given a default value of all zeroes."
+>>
+>> Looking at the code that throws the exception (
+>> https://github.com/dlitz/pycrypto/blob/master/src/block_template.c, line
+>> 163), it doesn't allow for doing what the docs suggest it will.
+>>
+>> I'm not sure whether I've either misunderstood something or which of the
+>> two is wrong, but I thought I'd at least flag it for discussion...
+>>
+>>
+>> Hugh
+>>
+>> D I S C L A I M E R : This email and any files transmitted with it are
+>> intended solely for the intended addressee, and may contain confidential
+>> information or material protected by law, copyright or other legislation.
+>> If you have received this message in error, please return it to the sender
+>> or notify the sender by calling +44 (0)20 3167 3860, and immediately and
+>> permanently delete it. You should not copy it or use it for any purpose,
+>> nor disclose its contents to any other person. Only the intended recipient
+>> may place any reliance upon it. Nvizible Limited accepts no responsibility
+>> or liability for emails sent by its employees or personnel which are not
+>> sent in the course of its business or that of its clients.
+>>
+>> Nvizible Limited, 8/9 Carlisle Street, London W1D 3BP .  Registered in
+>> England & Wales with Company Number: 6900121
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+
+-- 
+D I S C L A I M E R : This email and any files transmitted with it are 
+intended solely for the intended addressee, and may contain confidential 
+information or material protected by law, copyright or other legislation.  
+If you have received this message in error, please return it to the sender 
+or notify the sender by calling +44 (0)20 3167 3860, and immediately and 
+permanently delete it. You should not copy it or use it for any purpose, 
+nor disclose its contents to any other person. Only the intended recipient 
+may place any reliance upon it. Nvizible Limited accepts no responsibility 
+or liability for emails sent by its employees or personnel which are not 
+sent in the course of its business or that of its clients.
+ 
+Nvizible Limited, 8/9 Carlisle Street, London W1D 3BP .  Registered in 
+England & Wales with Company Number: 6900121
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140108/af732de7/attachment.html>
+
+From dave.pawson at gmail.com  Wed Jan  8 02:00:55 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Wed, 8 Jan 2014 10:00:55 +0000
+Subject: [pycrypto] Docs/code mis-match - not specifying IV fails
+In-Reply-To: <CAL_xc9iYv1w+OefAVNBQjxFET7=Ofz2Mqxjk15wRtNoVZje-hw@mail.gmail.com>
+References: <CAL_xc9ip-UxK_2=5EvJBtEN9guqwZa-4=xUfCy527uKzj2dycA@mail.gmail.com>
+ <CABRBVqR9XorktfarOshnzVPB5CMCzjG2+onYvYbtHNt7=p3MuQ@mail.gmail.com>
+ <CAL_xc9iYv1w+OefAVNBQjxFET7=Ofz2Mqxjk15wRtNoVZje-hw@mail.gmail.com>
+Message-ID: <CAEncD4eAVgEGXPdxCxzHiLS0khkK+8oNMfnLpn+cegNyM6AjWA@mail.gmail.com>
+
+What does not make sense is that this group seems to accept this
+discrepency between
+docs and code.
+
+Does anyone know if the docs maintainer has any interest these days?
+
+regards
+
+On 8 January 2014 09:32, Hugh Macdonald <hugh.macdonald at nvizible.com> wrote:
+> Hi Charley,
+>
+> Thanks for clarifying that - that makes sense to me.
+>
+>
+> Cheers
+>
+> Hugh
+>
+>
+> On 8 January 2014 00:59, Charley Nibley <cnibley at gmail.com> wrote:
+>>
+>> Hi Hugh,
+>>
+>> This behavior you are seeing is expected.  It changed with a fix to
+>> prevent an empty string IV passed to the function. IV is always mandatory
+>> even if at some point in a previous build it was being passed as all zeros.
+>> I believe the doc just needs updating.
+>>
+>> See line 173:
+>> https://github.com/dlitz/pycrypto/commit/411f60f58cea79f7e93476ba0c069b80a2a4c1a0
+>>
+>> And see the comments here: https://bugs.launchpad.net/pycrypto/+bug/997464
+>>
+>> Charley Nibley
+>>
+>>
+>> On Tue, Jan 7, 2014 at 9:43 AM, Hugh Macdonald
+>> <hugh.macdonald at nvizible.com> wrote:
+>>>
+>>> Hi,
+>>>
+>>> I've just been trying to figure out why some code of mine broke after an
+>>> update from 2.0.1 to 2.6.1, and found that I hadn't been passing an IV into
+>>> AES.new() (using MODE_CFB).
+>>>
+>>> Previously, it was happy with this, and, according to the docs here
+>>> (https://www.dlitz.net/software/pycrypto/api/current/), "It is optional and
+>>> when not present it will be given a default value of all zeroes."
+>>>
+>>> Looking at the code that throws the exception
+>>> (https://github.com/dlitz/pycrypto/blob/master/src/block_template.c, line
+>>> 163), it doesn't allow for doing what the docs suggest it will.
+>>>
+>>> I'm not sure whether I've either misunderstood something or which of the
+>>> two is wrong, but I thought I'd at least flag it for discussion...
+>>>
+>>>
+>>> Hugh
+>>>
+>>> D I S C L A I M E R : This email and any files transmitted with it are
+>>> intended solely for the intended addressee, and may contain confidential
+>>> information or material protected by law, copyright or other legislation.
+>>> If you have received this message in error, please return it to the sender
+>>> or notify the sender by calling +44 (0)20 3167 3860, and immediately and
+>>> permanently delete it. You should not copy it or use it for any purpose, nor
+>>> disclose its contents to any other person. Only the intended recipient may
+>>> place any reliance upon it. Nvizible Limited accepts no responsibility or
+>>> liability for emails sent by its employees or personnel which are not sent
+>>> in the course of its business or that of its clients.
+>>>
+>>> Nvizible Limited, 8/9 Carlisle Street, London W1D 3BP .  Registered in
+>>> England & Wales with Company Number: 6900121
+>>>
+>>> _______________________________________________
+>>> pycrypto mailing list
+>>> pycrypto at lists.dlitz.net
+>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>>
+>>
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>
+>
+> D I S C L A I M E R : This email and any files transmitted with it are
+> intended solely for the intended addressee, and may contain confidential
+> information or material protected by law, copyright or other legislation.
+> If you have received this message in error, please return it to the sender
+> or notify the sender by calling +44 (0)20 3167 3860, and immediately and
+> permanently delete it. You should not copy it or use it for any purpose, nor
+> disclose its contents to any other person. Only the intended recipient may
+> place any reliance upon it. Nvizible Limited accepts no responsibility or
+> liability for emails sent by its employees or personnel which are not sent
+> in the course of its business or that of its clients.
+>
+> Nvizible Limited, 8/9 Carlisle Street, London W1D 3BP .  Registered in
+> England & Wales with Company Number: 6900121
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Wed Jan 22 02:30:54 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Wed, 22 Jan 2014 10:30:54 +0000
+Subject: [pycrypto] windows + linux line endings issue
+Message-ID: <CAEncD4cNyTLicEMuucaJUmaBv-Rx+DgyVnKQ7Fe-pWM0NWxyQA@mail.gmail.com>
+
+I want to share an encrypted file across Windows / Linux (say by
+saving the file to Dropbox).
+
+When I encrypt using Linux and decrypt using Windows, the
+line ending differences screw up the decryption.
+
+I think it's a Python issue, but I'm unsure. Has anyone addressed
+this please?
+
+TiA
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From niccokunzmann at rambler.ru  Wed Jan 22 03:01:49 2014
+From: niccokunzmann at rambler.ru (Nicco Kunzmann)
+Date: Wed, 22 Jan 2014 12:01:49 +0100
+Subject: [pycrypto] windows + linux line endings issue
+In-Reply-To: <CAEncD4cNyTLicEMuucaJUmaBv-Rx+DgyVnKQ7Fe-pWM0NWxyQA@mail.gmail.com>
+References: <CAEncD4cNyTLicEMuucaJUmaBv-Rx+DgyVnKQ7Fe-pWM0NWxyQA@mail.gmail.com>
+Message-ID: <52DFA51D.10203@rambler.ru>
+
+Hello,
+
+I do not know your code but could you check that you save (open(..,
+'w*b*')) and load the file (open(..., 'r*b*')) in the binary mode
+instead of text  mode without 'b'?
+
+Greetings!
+
+Am 22.01.2014 11:30, schrieb Dave Pawson:
+> I want to share an encrypted file across Windows / Linux (say by
+> saving the file to Dropbox).
+>
+> When I encrypt using Linux and decrypt using Windows, the
+> line ending differences screw up the decryption.
+>
+> I think it's a Python issue, but I'm unsure. Has anyone addressed
+> this please?
+>
+> TiA
+>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140122/46b8efd2/attachment.html>
+
+From dave.pawson at gmail.com  Wed Jan 22 03:15:17 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Wed, 22 Jan 2014 11:15:17 +0000
+Subject: [pycrypto] windows + linux line endings issue
+In-Reply-To: <52DFA51D.10203@rambler.ru>
+References: <CAEncD4cNyTLicEMuucaJUmaBv-Rx+DgyVnKQ7Fe-pWM0NWxyQA@mail.gmail.com>
+ <52DFA51D.10203@rambler.ru>
+Message-ID: <CAEncD4fW=LWU-dSQ5HZrR8XH2weowXvf2o-F1hTn-UF1wvfp8w@mail.gmail.com>
+
+On 22 January 2014 11:01, Nicco Kunzmann <niccokunzmann at rambler.ru> wrote:
+> Hello,
+>
+> I do not know your code but could you check that you save (open(.., 'wb'))
+> and load the file (open(..., 'rb')) in the binary mode instead of text  mode
+> without 'b'?
+>
+> Greetings!
+
+Hi Nicco.
+
+with open(in_filename, 'rb') as infile:
+        with open(out_filename, 'wb') as outfile:
+
+is used to read plain text, write encrypted
+and
+
+ with open(in_filename, 'rb') as infile:
+for decrypt.
+
+Google searching suggested that - but I was already using it.
+  Not sure what else affects it?
+
+regards
+
+
+
+
+
+>
+> Am 22.01.2014 11:30, schrieb Dave Pawson:
+>
+> I want to share an encrypted file across Windows / Linux (say by
+> saving the file to Dropbox).
+>
+> When I encrypt using Linux and decrypt using Windows, the
+> line ending differences screw up the decryption.
+>
+> I think it's a Python issue, but I'm unsure. Has anyone addressed
+> this please?
+>
+> TiA
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From helderijs at gmail.com  Mon Jan 27 13:35:28 2014
+From: helderijs at gmail.com (Legrandin)
+Date: Mon, 27 Jan 2014 22:35:28 +0100
+Subject: [pycrypto] Any progress with pycrypto 2.7?
+Message-ID: <CAGfyce0tbAYya=84b79eNHQVRhFJvNGv6pxUAKsxqpUOPDhG3A@mail.gmail.com>
+
+The current alpha1 version contains a few critical bugs which make it
+highly unsuitable for release:
+1) Hard crash on recent recent Intel CPUs (due gcc and AESNI)
+2) Potential DoS when importing an RSA key (segfault of the interpreter)
+3) Silent, incorrect HMAC construction for SHA-2
+
+Is there any chance the relevant patches are applied on the short term?
+It would be great to fix at least the version which is available from
+download from the website.
+
+Besides, is there any news about 2.8? I recall some solid plans for
+internal refactoring plus there are 62 open bug reports and 26 pull
+requests open.
+I am really interested in seeing progress so if there anything that
+can be done to help, let me know.
+
+L.
+
+From dave.pawson at gmail.com  Mon Feb  3 01:39:43 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Mon, 3 Feb 2014 09:39:43 +0000
+Subject: [pycrypto] Unicode?
+Message-ID: <CAEncD4eWkV-pH14iJWFCndt9=Z9c0k0uOgJNNozipFnn9DQgGw@mail.gmail.com>
+
+I'm having a problem 'sharing' an encrypted file between
+MSDOS and Linux.
+
+so I thought I'd replace \nl in the plain text with a non ASCII
+character prior to encryption.
+
+encryptor = AES.new(key, AES.MODE_CBC, iv)
+outfile.write(encryptor.encrypt(chunk))
+
+gives me
+
+ File "/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py",
+line 244, in encrypt
+    return self._cipher.encrypt(plaintext)
+UnicodeEncodeError: 'ascii' codec can't encode character u'\u2022' in
+position 34: ordinal not in range(128)
+
+
+It would seem I can't use non-ASCII characters, at least with AES, is
+this right ?
+
+If not, how to address it please?
+
+
+regards
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Mon Feb  3 02:35:03 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Mon, 3 Feb 2014 10:35:03 +0000
+Subject: [pycrypto] Unicode?
+In-Reply-To: <CAEncD4eWkV-pH14iJWFCndt9=Z9c0k0uOgJNNozipFnn9DQgGw@mail.gmail.com>
+References: <CAEncD4eWkV-pH14iJWFCndt9=Z9c0k0uOgJNNozipFnn9DQgGw@mail.gmail.com>
+Message-ID: <CAEncD4fpFxt47dGVSLiryL8iPqZSqhJkL0YZHqSDUSML-c+e2A@mail.gmail.com>
+
+Now resolved.
+Source plain text is created / modified in either DOS or Linux (np to add Mac)
+
+read using
+chunk = unicode(infile.read(chunksize))
+# replace newline as appropriate
+chunk=replaceNL(chunk)
+# Convert to byte string
+chunk=safe_str(chunk)
+encrypt and write to disk
+
+
+# for decrypt
+#Iterate over file to read into string
+# replace the individual bytes of the Unicode character (u2022 in my case)
+# with \n for the local machine
+retval = replaceBullet(retval)
+
+code below
+
+#
+#Swap \n for \u2022
+#
+def replaceNL(str):
+    # If DOS, replace \r\x0A
+    # If Unix, replace \n
+    lineEnd=u'\n'
+    if string.find(str,'\r\x0a'):
+        lineEnd=u'\r\x0A'
+    return string.replace(str,lineEnd,u'\u2022')
+
+#
+# Replace bullet by \n
+#
+def replaceBullet(bstr):
+    return string.replace(bstr,u'\\u2022',u'\n')
+
+
+
+def safe_str(obj):
+    """ return the byte string representation of obj """
+    try:
+        return str(obj)
+    except UnicodeEncodeError:
+        # obj is unicode
+        return unicode(obj).encode('unicode_escape')
+
+HTH others, though it seems messy, it works.
+
+Dave
+
+
+On 3 February 2014 09:39, Dave Pawson <dave.pawson at gmail.com> wrote:
+> I'm having a problem 'sharing' an encrypted file between
+> MSDOS and Linux.
+>
+> so I thought I'd replace \nl in the plain text with a non ASCII
+> character prior to encryption.
+>
+> encryptor = AES.new(key, AES.MODE_CBC, iv)
+> outfile.write(encryptor.encrypt(chunk))
+>
+> gives me
+>
+>  File "/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py",
+> line 244, in encrypt
+>     return self._cipher.encrypt(plaintext)
+> UnicodeEncodeError: 'ascii' codec can't encode character u'\u2022' in
+> position 34: ordinal not in range(128)
+>
+>
+> It would seem I can't use non-ASCII characters, at least with AES, is
+> this right ?
+>
+> If not, how to address it please?
+>
+>
+> regards
+>
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From jrgray at gmail.com  Mon Feb  3 04:40:14 2014
+From: jrgray at gmail.com (Jeremy Gray)
+Date: Mon, 3 Feb 2014 07:40:14 -0500
+Subject: [pycrypto] Unicode?
+In-Reply-To: <CAEncD4fpFxt47dGVSLiryL8iPqZSqhJkL0YZHqSDUSML-c+e2A@mail.gmail.com>
+References: <CAEncD4eWkV-pH14iJWFCndt9=Z9c0k0uOgJNNozipFnn9DQgGw@mail.gmail.com>
+ <CAEncD4fpFxt47dGVSLiryL8iPqZSqhJkL0YZHqSDUSML-c+e2A@mail.gmail.com>
+Message-ID: <CANqwJFjV2SSsh8Ctvpi3_fDM8ssc=itGx=iJxP_z+uS9=7oX4w@mail.gmail.com>
+
+I may not understand the constraints of your situation, but wouldn't
+python's "universal newlines" file-open mode achieve what you want?  infile
+= open(filename, 'Urb')
+
+--Jeremy
+
+
+On Mon, Feb 3, 2014 at 5:35 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+
+> Now resolved.
+> Source plain text is created / modified in either DOS or Linux (np to add
+> Mac)
+>
+> read using
+> chunk = unicode(infile.read(chunksize))
+> # replace newline as appropriate
+> chunk=replaceNL(chunk)
+> # Convert to byte string
+> chunk=safe_str(chunk)
+> encrypt and write to disk
+>
+>
+> # for decrypt
+> #Iterate over file to read into string
+> # replace the individual bytes of the Unicode character (u2022 in my case)
+> # with \n for the local machine
+> retval = replaceBullet(retval)
+>
+> code below
+>
+> #
+> #Swap \n for \u2022
+> #
+> def replaceNL(str):
+>     # If DOS, replace \r\x0A
+>     # If Unix, replace \n
+>     lineEnd=u'\n'
+>     if string.find(str,'\r\x0a'):
+>         lineEnd=u'\r\x0A'
+>     return string.replace(str,lineEnd,u'\u2022')
+>
+> #
+> # Replace bullet by \n
+> #
+> def replaceBullet(bstr):
+>     return string.replace(bstr,u'\\u2022',u'\n')
+>
+>
+>
+> def safe_str(obj):
+>     """ return the byte string representation of obj """
+>     try:
+>         return str(obj)
+>     except UnicodeEncodeError:
+>         # obj is unicode
+>         return unicode(obj).encode('unicode_escape')
+>
+> HTH others, though it seems messy, it works.
+>
+> Dave
+>
+>
+> On 3 February 2014 09:39, Dave Pawson <dave.pawson at gmail.com> wrote:
+> > I'm having a problem 'sharing' an encrypted file between
+> > MSDOS and Linux.
+> >
+> > so I thought I'd replace \nl in the plain text with a non ASCII
+> > character prior to encryption.
+> >
+> > encryptor = AES.new(key, AES.MODE_CBC, iv)
+> > outfile.write(encryptor.encrypt(chunk))
+> >
+> > gives me
+> >
+> >  File "/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py",
+> > line 244, in encrypt
+> >     return self._cipher.encrypt(plaintext)
+> > UnicodeEncodeError: 'ascii' codec can't encode character u'\u2022' in
+> > position 34: ordinal not in range(128)
+> >
+> >
+> > It would seem I can't use non-ASCII characters, at least with AES, is
+> > this right ?
+> >
+> > If not, how to address it please?
+> >
+> >
+> > regards
+> >
+> >
+> > --
+> > Dave Pawson
+> > XSLT XSL-FO FAQ.
+> > Docbook FAQ.
+> > http://www.dpawson.co.uk
+>
+>
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140203/88c7c334/attachment.html>
+
+From dave.pawson at gmail.com  Mon Feb  3 05:21:28 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Mon, 3 Feb 2014 13:21:28 +0000
+Subject: [pycrypto] Unicode?
+In-Reply-To: <CANqwJFjV2SSsh8Ctvpi3_fDM8ssc=itGx=iJxP_z+uS9=7oX4w@mail.gmail.com>
+References: <CAEncD4eWkV-pH14iJWFCndt9=Z9c0k0uOgJNNozipFnn9DQgGw@mail.gmail.com>
+ <CAEncD4fpFxt47dGVSLiryL8iPqZSqhJkL0YZHqSDUSML-c+e2A@mail.gmail.com>
+ <CANqwJFjV2SSsh8Ctvpi3_fDM8ssc=itGx=iJxP_z+uS9=7oX4w@mail.gmail.com>
+Message-ID: <CAEncD4eja_Su42nR-6QLcM578RBsrF+KyNDZ9R_8_s2S+7GTvw@mail.gmail.com>
+
+<grin/>
+Not sure Jeremy! I'd never heard of it.
+I'll let you know.... I'm assuming it is 2.x compatible?
+
+regards
+
+On 3 February 2014 12:40, Jeremy Gray <jrgray at gmail.com> wrote:
+> I may not understand the constraints of your situation, but wouldn't
+> python's "universal newlines" file-open mode achieve what you want?  infile
+> = open(filename, 'Urb')
+>
+> --Jeremy
+>
+>
+> On Mon, Feb 3, 2014 at 5:35 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+>>
+>> Now resolved.
+>> Source plain text is created / modified in either DOS or Linux (np to add
+>> Mac)
+>>
+>> read using
+>> chunk = unicode(infile.read(chunksize))
+>> # replace newline as appropriate
+>> chunk=replaceNL(chunk)
+>> # Convert to byte string
+>> chunk=safe_str(chunk)
+>> encrypt and write to disk
+>>
+>>
+>> # for decrypt
+>> #Iterate over file to read into string
+>> # replace the individual bytes of the Unicode character (u2022 in my case)
+>> # with \n for the local machine
+>> retval = replaceBullet(retval)
+>>
+>> code below
+>>
+>> #
+>> #Swap \n for \u2022
+>> #
+>> def replaceNL(str):
+>>     # If DOS, replace \r\x0A
+>>     # If Unix, replace \n
+>>     lineEnd=u'\n'
+>>     if string.find(str,'\r\x0a'):
+>>         lineEnd=u'\r\x0A'
+>>     return string.replace(str,lineEnd,u'\u2022')
+>>
+>> #
+>> # Replace bullet by \n
+>> #
+>> def replaceBullet(bstr):
+>>     return string.replace(bstr,u'\\u2022',u'\n')
+>>
+>>
+>>
+>> def safe_str(obj):
+>>     """ return the byte string representation of obj """
+>>     try:
+>>         return str(obj)
+>>     except UnicodeEncodeError:
+>>         # obj is unicode
+>>         return unicode(obj).encode('unicode_escape')
+>>
+>> HTH others, though it seems messy, it works.
+>>
+>> Dave
+>>
+>>
+>> On 3 February 2014 09:39, Dave Pawson <dave.pawson at gmail.com> wrote:
+>> > I'm having a problem 'sharing' an encrypted file between
+>> > MSDOS and Linux.
+>> >
+>> > so I thought I'd replace \nl in the plain text with a non ASCII
+>> > character prior to encryption.
+>> >
+>> > encryptor = AES.new(key, AES.MODE_CBC, iv)
+>> > outfile.write(encryptor.encrypt(chunk))
+>> >
+>> > gives me
+>> >
+>> >  File "/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py",
+>> > line 244, in encrypt
+>> >     return self._cipher.encrypt(plaintext)
+>> > UnicodeEncodeError: 'ascii' codec can't encode character u'\u2022' in
+>> > position 34: ordinal not in range(128)
+>> >
+>> >
+>> > It would seem I can't use non-ASCII characters, at least with AES, is
+>> > this right ?
+>> >
+>> > If not, how to address it please?
+>> >
+>> >
+>> > regards
+>> >
+>> >
+>> > --
+>> > Dave Pawson
+>> > XSLT XSL-FO FAQ.
+>> > Docbook FAQ.
+>> > http://www.dpawson.co.uk
+>>
+>>
+>>
+>> --
+>> Dave Pawson
+>> XSLT XSL-FO FAQ.
+>> Docbook FAQ.
+>> http://www.dpawson.co.uk
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From jrgray at gmail.com  Mon Feb  3 05:59:39 2014
+From: jrgray at gmail.com (Jeremy Gray)
+Date: Mon, 3 Feb 2014 08:59:39 -0500
+Subject: [pycrypto] Unicode?
+In-Reply-To: <CAEncD4eja_Su42nR-6QLcM578RBsrF+KyNDZ9R_8_s2S+7GTvw@mail.gmail.com>
+References: <CAEncD4eWkV-pH14iJWFCndt9=Z9c0k0uOgJNNozipFnn9DQgGw@mail.gmail.com>
+ <CAEncD4fpFxt47dGVSLiryL8iPqZSqhJkL0YZHqSDUSML-c+e2A@mail.gmail.com>
+ <CANqwJFjV2SSsh8Ctvpi3_fDM8ssc=itGx=iJxP_z+uS9=7oX4w@mail.gmail.com>
+ <CAEncD4eja_Su42nR-6QLcM578RBsrF+KyNDZ9R_8_s2S+7GTvw@mail.gmail.com>
+Message-ID: <CANqwJFh3swP0Qh2AwSMQzm2n40qCSOSME1DrofTNVN3Rcouw-g@mail.gmail.com>
+
+> <grin/>
+> Not sure Jeremy! I'd never heard of it.
+>
+
+Actually, it looks like 'rU' might be the way to go, not 'Urb'. I've never
+used it but probably should. :-)
+
+
+> I'll let you know.... I'm assuming it is 2.x compatible?
+>
+
+yes 2.7, not sure about earlier
+
+--Jeremy
+
+
+
+
+>
+> regards
+>
+> On 3 February 2014 12:40, Jeremy Gray <jrgray at gmail.com> wrote:
+> > I may not understand the constraints of your situation, but wouldn't
+> > python's "universal newlines" file-open mode achieve what you want?
+>  infile
+> > = open(filename, 'Urb')
+> >
+> > --Jeremy
+> >
+> >
+> > On Mon, Feb 3, 2014 at 5:35 AM, Dave Pawson <dave.pawson at gmail.com>
+> wrote:
+> >>
+> >> Now resolved.
+> >> Source plain text is created / modified in either DOS or Linux (np to
+> add
+> >> Mac)
+> >>
+> >> read using
+> >> chunk = unicode(infile.read(chunksize))
+> >> # replace newline as appropriate
+> >> chunk=replaceNL(chunk)
+> >> # Convert to byte string
+> >> chunk=safe_str(chunk)
+> >> encrypt and write to disk
+> >>
+> >>
+> >> # for decrypt
+> >> #Iterate over file to read into string
+> >> # replace the individual bytes of the Unicode character (u2022 in my
+> case)
+> >> # with \n for the local machine
+> >> retval = replaceBullet(retval)
+> >>
+> >> code below
+> >>
+> >> #
+> >> #Swap \n for \u2022
+> >> #
+> >> def replaceNL(str):
+> >>     # If DOS, replace \r\x0A
+> >>     # If Unix, replace \n
+> >>     lineEnd=u'\n'
+> >>     if string.find(str,'\r\x0a'):
+> >>         lineEnd=u'\r\x0A'
+> >>     return string.replace(str,lineEnd,u'\u2022')
+> >>
+> >> #
+> >> # Replace bullet by \n
+> >> #
+> >> def replaceBullet(bstr):
+> >>     return string.replace(bstr,u'\\u2022',u'\n')
+> >>
+> >>
+> >>
+> >> def safe_str(obj):
+> >>     """ return the byte string representation of obj """
+> >>     try:
+> >>         return str(obj)
+> >>     except UnicodeEncodeError:
+> >>         # obj is unicode
+> >>         return unicode(obj).encode('unicode_escape')
+> >>
+> >> HTH others, though it seems messy, it works.
+> >>
+> >> Dave
+> >>
+> >>
+> >> On 3 February 2014 09:39, Dave Pawson <dave.pawson at gmail.com> wrote:
+> >> > I'm having a problem 'sharing' an encrypted file between
+> >> > MSDOS and Linux.
+> >> >
+> >> > so I thought I'd replace \nl in the plain text with a non ASCII
+> >> > character prior to encryption.
+> >> >
+> >> > encryptor = AES.new(key, AES.MODE_CBC, iv)
+> >> > outfile.write(encryptor.encrypt(chunk))
+> >> >
+> >> > gives me
+> >> >
+> >> >  File "/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py",
+> >> > line 244, in encrypt
+> >> >     return self._cipher.encrypt(plaintext)
+> >> > UnicodeEncodeError: 'ascii' codec can't encode character u'\u2022' in
+> >> > position 34: ordinal not in range(128)
+> >> >
+> >> >
+> >> > It would seem I can't use non-ASCII characters, at least with AES, is
+> >> > this right ?
+> >> >
+> >> > If not, how to address it please?
+> >> >
+> >> >
+> >> > regards
+> >> >
+> >> >
+> >> > --
+> >> > Dave Pawson
+> >> > XSLT XSL-FO FAQ.
+> >> > Docbook FAQ.
+> >> > http://www.dpawson.co.uk
+> >>
+> >>
+> >>
+> >> --
+> >> Dave Pawson
+> >> XSLT XSL-FO FAQ.
+> >> Docbook FAQ.
+> >> http://www.dpawson.co.uk
+> >> _______________________________________________
+> >> pycrypto mailing list
+> >> pycrypto at lists.dlitz.net
+> >> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >
+> >
+> >
+> > _______________________________________________
+> > pycrypto mailing list
+> > pycrypto at lists.dlitz.net
+> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >
+>
+>
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140203/dd2d7c15/attachment-0001.html>
+
+From dave.pawson at gmail.com  Mon Feb  3 06:02:04 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Mon, 3 Feb 2014 14:02:04 +0000
+Subject: [pycrypto] Unicode?
+In-Reply-To: <CANqwJFjV2SSsh8Ctvpi3_fDM8ssc=itGx=iJxP_z+uS9=7oX4w@mail.gmail.com>
+References: <CAEncD4eWkV-pH14iJWFCndt9=Z9c0k0uOgJNNozipFnn9DQgGw@mail.gmail.com>
+ <CAEncD4fpFxt47dGVSLiryL8iPqZSqhJkL0YZHqSDUSML-c+e2A@mail.gmail.com>
+ <CANqwJFjV2SSsh8Ctvpi3_fDM8ssc=itGx=iJxP_z+uS9=7oX4w@mail.gmail.com>
+Message-ID: <CAEncD4c0sC+YH=qNGRpHfz8BFt_v7Jw7JLwbHEbD2cnEG2dhyg@mail.gmail.com>
+
+Doh! Don't you just hate those smart guys :-)
+
+Many thanks Jeremy, that works perfectly without the oddities.
+
+Lesson learned.
+
+DaveP
+
+On 3 February 2014 12:40, Jeremy Gray <jrgray at gmail.com> wrote:
+> I may not understand the constraints of your situation, but wouldn't
+> python's "universal newlines" file-open mode achieve what you want?  infile
+> = open(filename, 'Urb')
+>
+> --Jeremy
+>
+>
+> On Mon, Feb 3, 2014 at 5:35 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+>>
+>> Now resolved.
+>> Source plain text is created / modified in either DOS or Linux (np to add
+>> Mac)
+>>
+>> read using
+>> chunk = unicode(infile.read(chunksize))
+>> # replace newline as appropriate
+>> chunk=replaceNL(chunk)
+>> # Convert to byte string
+>> chunk=safe_str(chunk)
+>> encrypt and write to disk
+>>
+>>
+>> # for decrypt
+>> #Iterate over file to read into string
+>> # replace the individual bytes of the Unicode character (u2022 in my case)
+>> # with \n for the local machine
+>> retval = replaceBullet(retval)
+>>
+>> code below
+>>
+>> #
+>> #Swap \n for \u2022
+>> #
+>> def replaceNL(str):
+>>     # If DOS, replace \r\x0A
+>>     # If Unix, replace \n
+>>     lineEnd=u'\n'
+>>     if string.find(str,'\r\x0a'):
+>>         lineEnd=u'\r\x0A'
+>>     return string.replace(str,lineEnd,u'\u2022')
+>>
+>> #
+>> # Replace bullet by \n
+>> #
+>> def replaceBullet(bstr):
+>>     return string.replace(bstr,u'\\u2022',u'\n')
+>>
+>>
+>>
+>> def safe_str(obj):
+>>     """ return the byte string representation of obj """
+>>     try:
+>>         return str(obj)
+>>     except UnicodeEncodeError:
+>>         # obj is unicode
+>>         return unicode(obj).encode('unicode_escape')
+>>
+>> HTH others, though it seems messy, it works.
+>>
+>> Dave
+>>
+>>
+>> On 3 February 2014 09:39, Dave Pawson <dave.pawson at gmail.com> wrote:
+>> > I'm having a problem 'sharing' an encrypted file between
+>> > MSDOS and Linux.
+>> >
+>> > so I thought I'd replace \nl in the plain text with a non ASCII
+>> > character prior to encryption.
+>> >
+>> > encryptor = AES.new(key, AES.MODE_CBC, iv)
+>> > outfile.write(encryptor.encrypt(chunk))
+>> >
+>> > gives me
+>> >
+>> >  File "/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py",
+>> > line 244, in encrypt
+>> >     return self._cipher.encrypt(plaintext)
+>> > UnicodeEncodeError: 'ascii' codec can't encode character u'\u2022' in
+>> > position 34: ordinal not in range(128)
+>> >
+>> >
+>> > It would seem I can't use non-ASCII characters, at least with AES, is
+>> > this right ?
+>> >
+>> > If not, how to address it please?
+>> >
+>> >
+>> > regards
+>> >
+>> >
+>> > --
+>> > Dave Pawson
+>> > XSLT XSL-FO FAQ.
+>> > Docbook FAQ.
+>> > http://www.dpawson.co.uk
+>>
+>>
+>>
+>> --
+>> Dave Pawson
+>> XSLT XSL-FO FAQ.
+>> Docbook FAQ.
+>> http://www.dpawson.co.uk
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Mon Feb  3 06:14:25 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Mon, 3 Feb 2014 14:14:25 +0000
+Subject: [pycrypto] AES, python 2.7 vs 3
+Message-ID: <CAEncD4dJXvFDeKq3aNqQ5vi1VwLDifzZJrDUxyGxaP+eCZrckw@mail.gmail.com>
+
+  iv = ''.join(chr(random.randint(0, 0xFF)) for i in range(16))
+    print("key is %d, iv is %d" % (len(key), len(iv)))
+    encryptor = AES.new(key, AES.MODE_CBC, iv)
+
+prints 16 bytes for both key and iv.
+
+runs fine under python 2.7.5
+Under python 3
+
+key is 16, iv is 16
+Traceback (most recent call last):
+  File "testNL.py", line 134, in <module>
+    encrypt_file(key,plainfile,encfile)
+  File "testNL.py", line 40, in encrypt_file
+    encryptor = AES.new(key, AES.MODE_CBC, iv)
+  File "/usr/lib64/python3.3/site-packages/Crypto/Cipher/AES.py", line
+95, in new
+    return AESCipher(key, *args, **kwargs)
+  File "/usr/lib64/python3.3/site-packages/Crypto/Cipher/AES.py", line
+59, in __init__
+    blockalgo.BlockAlgo.__init__(self, _AES, key, *args, **kwargs)
+  File "/usr/lib64/python3.3/site-packages/Crypto/Cipher/blockalgo.py",
+line 141, in __init__
+    self._cipher = factory.new(key, *args, **kwargs)
+ValueError: IV must be 16 bytes long
+
+
+yet again the print statement shows 16 for the length of both?
+
+Any suggestions where to start looking please?
+
+DaveP
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From mirko.dziadzka at gmail.com  Mon Feb  3 06:51:06 2014
+From: mirko.dziadzka at gmail.com (Mirko Dziadzka)
+Date: Mon, 3 Feb 2014 15:51:06 +0100
+Subject: [pycrypto] AES, python 2.7 vs 3
+In-Reply-To: <CAEncD4dJXvFDeKq3aNqQ5vi1VwLDifzZJrDUxyGxaP+eCZrckw@mail.gmail.com>
+References: <CAEncD4dJXvFDeKq3aNqQ5vi1VwLDifzZJrDUxyGxaP+eCZrckw@mail.gmail.com>
+Message-ID: <60E10C8A-0D99-498B-8F81-28C942D52960@gmail.com>
+
+Hi
+
+Without testing or verifying:
+
+You should probably use bytes in Python 3, not characters.
+
+> v = ''.join(chr(random.randint(0, 0xFF)) for i in range(16))
+
+creates a string of 16 (unicode) characters in Python 3
+
+iv = os.urandom(16)
+
+creates 16 bytes
+
+    Mirko
+
+
+
+From dave.pawson at gmail.com  Mon Feb  3 06:56:24 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Mon, 3 Feb 2014 14:56:24 +0000
+Subject: [pycrypto] AES, python 2.7 vs 3
+In-Reply-To: <60E10C8A-0D99-498B-8F81-28C942D52960@gmail.com>
+References: <CAEncD4dJXvFDeKq3aNqQ5vi1VwLDifzZJrDUxyGxaP+eCZrckw@mail.gmail.com>
+ <60E10C8A-0D99-498B-8F81-28C942D52960@gmail.com>
+Message-ID: <CAEncD4ex63yBS4PGujXBF9G-JjdkfDpmzdB5AUK6whyOF+cvsA@mail.gmail.com>
+
+On 3 February 2014 14:51, Mirko Dziadzka <mirko.dziadzka at gmail.com> wrote:
+> Hi
+>
+> Without testing or verifying:
+>
+> You should probably use bytes in Python 3, not characters.
+>
+>> v = ''.join(chr(random.randint(0, 0xFF)) for i in range(16))
+>
+> creates a string of 16 (unicode) characters in Python 3
+>
+> iv = os.urandom(16)
+>
+> creates 16 bytes
+>
+>     Mirko
+
+Which is what I had (and works fine in 2.7)
+
+iv = Random.new().read(AES.block_size)
+seems to work OK in 3.3
+
+
+regards
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From anurag.chourasia at gmail.com  Wed Feb  5 18:54:31 2014
+From: anurag.chourasia at gmail.com (Anurag Chourasia)
+Date: Wed, 5 Feb 2014 23:54:31 -0300
+Subject: [pycrypto] XML Digital Signature (XML-DSig)
+Message-ID: <CANFgmFAYCrhYmJL1_BuYPTh1zAYpYDZhA-uaYU_SJs8ipKp7hw@mail.gmail.com>
+
+Hi All,
+
+Is it possible to digitally sign <http://www.w3.org/TR/xmldsig-core/> a XML
+document using the PyCrypto library, provided that I have the certificate
+in .pfx format?
+
+A sample signed XML is at http://dpaste.com/1587241
+
+I am a little thin on the concept and appreciate your comments and guidance.
+
+Regards,
+Anurag
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140205/2c09ed64/attachment.html>
+
+From dlitz at dlitz.net  Thu Feb  6 08:49:50 2014
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Thu, 6 Feb 2014 08:49:50 -0800
+Subject: [pycrypto] AES, python 2.7 vs 3
+In-Reply-To: <60E10C8A-0D99-498B-8F81-28C942D52960@gmail.com>
+References: <CAEncD4dJXvFDeKq3aNqQ5vi1VwLDifzZJrDUxyGxaP+eCZrckw@mail.gmail.com>
+ <60E10C8A-0D99-498B-8F81-28C942D52960@gmail.com>
+Message-ID: <20140206164950.GB1152@rivest.dlitz.net>
+
+On Mon, Feb 03, 2014 at 03:51:06PM +0100, Mirko Dziadzka wrote:
+>Hi
+>
+>Without testing or verifying:
+>
+>You should probably use bytes in Python 3, not characters.
+
+Yeah, this is a known bug.   Under Python 3, PyCrypto should raise a 
+TypeError in most places where unicode strings are used instead of 
+bytes, but right now it just does weird things.  Sorry about that.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Thu Feb  6 09:12:31 2014
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Thu, 6 Feb 2014 09:12:31 -0800
+Subject: [pycrypto] XML Digital Signature (XML-DSig)
+In-Reply-To: <CANFgmFAYCrhYmJL1_BuYPTh1zAYpYDZhA-uaYU_SJs8ipKp7hw@mail.gmail.com>
+References: <CANFgmFAYCrhYmJL1_BuYPTh1zAYpYDZhA-uaYU_SJs8ipKp7hw@mail.gmail.com>
+Message-ID: <20140206171231.GC1152@rivest.dlitz.net>
+
+On Wed, Feb 05, 2014 at 11:54:31PM -0300, Anurag Chourasia wrote:
+>Hi All,
+>
+>Is it possible to digitally sign <http://www.w3.org/TR/xmldsig-core/> a XML
+>document using the PyCrypto library, provided that I have the certificate
+>in .pfx format?
+>
+>A sample signed XML is at http://dpaste.com/1587241
+>
+>I am a little thin on the concept and appreciate your comments and guidance.
+
+Implementing the XML Security spec is way beyond the scope of PyCrypto.  
+See https://www.cs.auckland.ac.nz/~pgut001/pubs/xmlsec.txt
+
+It's a really terrible idea anyway.  Individually, X.509 and XML 
+Canonicalization are complicated, overengineered specifications.  
+Exposing their *combined* complexity to attackers is not advisable.
+
+If, for legacy reasons, you still need to do this, you might be able to 
+use an external library (such as pyxmlsec or pyxser) to do most of the 
+work, but the only recommendation I can give is "don't do that".
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Thu Feb  6 09:51:39 2014
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Thu, 6 Feb 2014 09:51:39 -0800
+Subject: [pycrypto] Need your input: Major modernization;
+ dropping legacy Python support?
+In-Reply-To: <20131030172448.GB17774@ramacher.at>
+References: <20131030060924.GC5005@rivest.dlitz.net>
+ <20131030172448.GB17774@ramacher.at>
+Message-ID: <20140206175139.GA1741@rivest.dlitz.net>
+
+On Wed, Oct 30, 2013 at 06:24:48PM +0100, Sebastian Ramacher wrote:
+>> 2. I'm thinking of pulling in additional dependencies (e.g. cffi),
+>> requiring setuptools, and basically joining what the rest of the
+>> Python community is doing in 2013.
+>>
+>> 3. What if src/*.c were removed, and any relevant C code moved into
+>> an    independent library, which could be loaded using cffi?  (This
+>> is    basically what we need to do to support PyPy properly.)
+>
+>I wouldn't mind if the C code is moved into a library, however cffi
+>doesn't seem to be ready to be used in binary distributions without
+>resorting to hacks ([1] for the upstream bug, [2] for a very short
+>thread on debian-python). I'm told that this will be fixed in cffi at
+>some point.
+>
+>I've always had a good experience with Cython. What do you thinkg about
+>that?
+>
+>Anyway, as long as we are not starting to use ctypes, I'll be fine.
+>Depending on the timeframe of this change, I'd prefer PyCrypto to use
+>someting that does not require hacks in binary distributions. If cffi is
+>fixed until the change happens, I won't complain.
+>
+>[1] https://bitbucket.org/cffi/cffi/issue/109/enable-sane-packaging-for-cffi
+>[2] https://lists.debian.org/debian-python/2013/10/msg00070.html
+
+ctypes is definitely not on the list.
+
+ From what I understand, CFFI will only try to build binaries if they're 
+not already found.  I think as long as packages that use CFFI include 
+the appropriate rules in their `setup.py build_ext` process, it 
+shouldn't be a problem.  (I'd certainly work with you to make sure the 
+packaging isn't a nightmare.)
+
+>> 4. What if Crypto.* became a wrapper around some other crypto library?
+>
+>This depends on the crypto library you're thinking of. If it's openssl,
+>then all the GPL licensed reverse dependencies might have a problem (at
+>least in Debian).
+>
+>> 5. The Apache License 2.0.  What if PyCrypto were licensed under it,
+>> or    included dependencies that are licensed under it?
+>
+>With my Debian maintainer hat on, this would be a problem for me. We
+>still ship software that is GPL 2 only that depends on PyCrypto.
+>However, GPL 2 and the Apache License 2.0 are incompatible.
+>
+>Examples of these packages include revelation and pymsnt (I stopped
+>searching for GPL 2 only reverse dependencies after I've found two).
+>
+>Of course, if the license changes or python-crypto starts depending on
+>something licensed under Apache 2.0 this needs to be checked on a case by
+>case basis, but I'd rather avoid it if there is no really good reason to
+>do so.
+
+Ugh, GPL 2 only.  I wish people would at least do "or any later 
+version".
+
+I'm thinking of merging with the folks at https://cryptography.io/, 
+which is covered by an Apache 2.0 license.  My concern is that there are 
+a really small number of good crypto implementers in the FOSS world, and 
+we're all working on different projects, so Linus' Law isn't really 
+taking effect, to the detriment of our users.
+
+With the increase in direct, state-sponsored attacks on deployed 
+cryptosystems, there's a renewed interest in deploying "crypto 
+everywhere", but our APIs are all terrible, our implementations are 
+questionable, our protocols are error-prone.  I feel that we really need 
+to combine our efforts if we want to have any hope of fixing these 
+problems so that application developers can provide real security to us 
+all.  If it means cutting loose a few rarely-used GPL2-only packages, it 
+might be worth it.
+
+How bad is the situation with GPL2-only packages?
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Thu Feb  6 09:55:24 2014
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Thu, 6 Feb 2014 09:55:24 -0800
+Subject: [pycrypto] Any progress with pycrypto 2.7?
+In-Reply-To: <CAGfyce0tbAYya=84b79eNHQVRhFJvNGv6pxUAKsxqpUOPDhG3A@mail.gmail.com>
+References: <CAGfyce0tbAYya=84b79eNHQVRhFJvNGv6pxUAKsxqpUOPDhG3A@mail.gmail.com>
+Message-ID: <20140206175524.GD1152@rivest.dlitz.net>
+
+On Mon, Jan 27, 2014 at 10:35:28PM +0100, Legrandin wrote:
+>The current alpha1 version contains a few critical bugs which make it
+>highly unsuitable for release:
+>1) Hard crash on recent recent Intel CPUs (due gcc and AESNI)
+>2) Potential DoS when importing an RSA key (segfault of the interpreter)
+>3) Silent, incorrect HMAC construction for SHA-2
+>
+>Is there any chance the relevant patches are applied on the short term?
+>It would be great to fix at least the version which is available from
+>download from the website.
+
+I'll see if I can find some time this weekend to take care of some of 
+these issues.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From anurag.chourasia at gmail.com  Thu Feb  6 20:10:07 2014
+From: anurag.chourasia at gmail.com (Anurag Chourasia)
+Date: Fri, 7 Feb 2014 01:10:07 -0300
+Subject: [pycrypto] Public Key (X.509) in Modulus/Exponent Format
+Message-ID: <CANFgmFAHKh_P_pGG-wYm9j+jEqeeMFk2ZSoOMGEMQOUmOqN7ZA@mail.gmail.com>
+
+Hi All,
+
+Is it possible to get a Modulus Exponent representation of the public key
+(X.509) using PyCrypto?
+
+For example, the X.509 is
+
+*-----BEGIN CERTIFICATE-----
+MIICLDCCAZWgAwIBAgIQRjRrx4AAVrwR024uxBCzsDANBgkqhkiG9w0BAQUFADAS
+MRAwDgYDVQQDEwdDYXJsUlNBMB4XDTk5MDkxOTAxMDg0N1oXDTM5MTIzMTIzNTk1
+OVowEzERMA8GA1UEAxMIQWxpY2VSU0EwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJ
+AoGBAOCJczmN2PX16Id2OX9OsAW7U4PeD7er3H3HdSkNBS5tEt+mhibU0m+qWCn8
+l+z6glEPMIC+sVCeRkTxLLvYMs/GaG8H2bBgrL7uNAlqE/X3BQWT3166NVbZYf8Z
+f8mB5vhs6odAcO+sbSx0ny36VTq5mXcCpkhSjE7zVzhXdFdfAgMBAAGjgYEwfzAM
+BgNVHRMBAf8EAjAAMA4GA1UdDwEB/wQEAwIGwDAfBgNVHSMEGDAWgBTp4JAnrHgg
+eprTTPJCN04irp44uzAdBgNVHQ4EFgQUd9K00bdMioqjzkWdzuw8oDrj/1AwHwYD
+VR0RBBgwFoEUQWxpY2VSU0FAZXhhbXBsZS5jb20wDQYJKoZIhvcNAQEFBQADgYEA
+PnBHqEjME1iPylFxa042GF0EfoCxjU3MyqOPzH1WyLzPbrMcWakgqgWBqE4lradw
+FHUv9ceb0Q7pY9Jkt8ZmbnMhVN/0uiVdfUnTlGsiNnRzuErsL2Tt0z3Sp0LF6DeK
+tNufZ+S9n/n+dO/q+e5jatg/SyUJtdgadq7rm9tJsCI=
+-----END CERTIFICATE-----*
+
+And i need to get to the following representation
+
+*<RSAKeyValue>
+  <Modulus>
+    4IlzOY3Y9fXoh3Y5f06wBbtTg94Pt6vcfcd1KQ0FLm0S36aGJtTSb6pYKfyX7PqCUQ8wgL6xUJ5GRPEsu9gyz8
+    ZobwfZsGCsvu40CWoT9fcFBZPfXro1Vtlh/xl/yYHm+Gzqh0Bw76xtLHSfLfpVOrmZdwKmSFKMTvNXOFd0V18=
+  </Modulus>
+  <Exponent>AQAB</Exponent>
+</RSAKeyValue>*
+
+Please guide.
+
+Regards,
+Anurag
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140207/43006f21/attachment.html>
+
+From dave.pawson at gmail.com  Thu Feb  6 22:29:31 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 7 Feb 2014 06:29:31 +0000
+Subject: [pycrypto] AES, python 2.7 vs 3
+In-Reply-To: <20140206164950.GB1152@rivest.dlitz.net>
+References: <CAEncD4dJXvFDeKq3aNqQ5vi1VwLDifzZJrDUxyGxaP+eCZrckw@mail.gmail.com>
+ <60E10C8A-0D99-498B-8F81-28C942D52960@gmail.com>
+ <20140206164950.GB1152@rivest.dlitz.net>
+Message-ID: <CAEncD4d=BH1Z6GA-dJ2Yf6Dqgjoh4Z1D1=xMW1mcukCEU4d40A@mail.gmail.com>
+
+On 6 February 2014 16:49, Dwayne Litzenberger <dlitz at dlitz.net> wrote:
+> On Mon, Feb 03, 2014 at 03:51:06PM +0100, Mirko Dziadzka wrote:
+>>
+>> Hi
+>>
+>> Without testing or verifying:
+>>
+>> You should probably use bytes in Python 3, not characters.
+>
+>
+> Yeah, this is a known bug.   Under Python 3, PyCrypto should raise a
+> TypeError in most places where unicode strings are used instead of bytes,
+> but right now it just does weird things.  Sorry about that.
+
+
+Recently playing about with reading / writing between Linux / Windows,
+one symptom I came across was that the decrypted string contained b' <string>'
+is that a part of this bug?
+
+
+regards
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From helderijs at gmail.com  Fri Feb  7 02:52:49 2014
+From: helderijs at gmail.com (Legrandin)
+Date: Fri, 7 Feb 2014 11:52:49 +0100
+Subject: [pycrypto] Public Key (X.509) in Modulus/Exponent Format
+In-Reply-To: <CANFgmFAHKh_P_pGG-wYm9j+jEqeeMFk2ZSoOMGEMQOUmOqN7ZA@mail.gmail.com>
+References: <CANFgmFAHKh_P_pGG-wYm9j+jEqeeMFk2ZSoOMGEMQOUmOqN7ZA@mail.gmail.com>
+Message-ID: <CAGfyce0JvX1PRSVeobsxrqM8X+F-pv2tWzy0g=0grCDS45K3ew@mail.gmail.com>
+
+Hi,
+
+This answer on stackoverflow shows how you can read the RSA public key
+embedded in a PEM X.509 certificate:
+
+http://stackoverflow.com/questions/12911373/how-do-i-use-a-x509-certificate-with-pycrypto
+
+Once you have loaded the RSA public key, you can get modulus and
+exponent in the way you need with something like this:
+
+from Crypto.Util.number import long_to_bytes
+import base64
+
+for part in rsa_key.n, rsa_key.e:
+    print base64.b64encode(long_to_bytes(part))
+
+2014-02-07 5:10 GMT+01:00 Anurag Chourasia <anurag.chourasia at gmail.com>:
+> Hi All,
+>
+> Is it possible to get a Modulus Exponent representation of the public key
+> (X.509) using PyCrypto?
+>
+> For example, the X.509 is
+>
+> -----BEGIN CERTIFICATE-----
+> MIICLDCCAZWgAwIBAgIQRjRrx4AAVrwR024uxBCzsDANBgkqhkiG9w0BAQUFADAS
+> MRAwDgYDVQQDEwdDYXJsUlNBMB4XDTk5MDkxOTAxMDg0N1oXDTM5MTIzMTIzNTk1
+> OVowEzERMA8GA1UEAxMIQWxpY2VSU0EwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJ
+> AoGBAOCJczmN2PX16Id2OX9OsAW7U4PeD7er3H3HdSkNBS5tEt+mhibU0m+qWCn8
+> l+z6glEPMIC+sVCeRkTxLLvYMs/GaG8H2bBgrL7uNAlqE/X3BQWT3166NVbZYf8Z
+> f8mB5vhs6odAcO+sbSx0ny36VTq5mXcCpkhSjE7zVzhXdFdfAgMBAAGjgYEwfzAM
+> BgNVHRMBAf8EAjAAMA4GA1UdDwEB/wQEAwIGwDAfBgNVHSMEGDAWgBTp4JAnrHgg
+> eprTTPJCN04irp44uzAdBgNVHQ4EFgQUd9K00bdMioqjzkWdzuw8oDrj/1AwHwYD
+> VR0RBBgwFoEUQWxpY2VSU0FAZXhhbXBsZS5jb20wDQYJKoZIhvcNAQEFBQADgYEA
+> PnBHqEjME1iPylFxa042GF0EfoCxjU3MyqOPzH1WyLzPbrMcWakgqgWBqE4lradw
+> FHUv9ceb0Q7pY9Jkt8ZmbnMhVN/0uiVdfUnTlGsiNnRzuErsL2Tt0z3Sp0LF6DeK
+> tNufZ+S9n/n+dO/q+e5jatg/SyUJtdgadq7rm9tJsCI=
+> -----END CERTIFICATE-----
+>
+> And i need to get to the following representation
+>
+> <RSAKeyValue>
+>   <Modulus>
+>
+> 4IlzOY3Y9fXoh3Y5f06wBbtTg94Pt6vcfcd1KQ0FLm0S36aGJtTSb6pYKfyX7PqCUQ8wgL6xUJ5GRPEsu9gyz8
+>
+> ZobwfZsGCsvu40CWoT9fcFBZPfXro1Vtlh/xl/yYHm+Gzqh0Bw76xtLHSfLfpVOrmZdwKmSFKMTvNXOFd0V18=
+>   </Modulus>
+>   <Exponent>AQAB</Exponent>
+> </RSAKeyValue>
+>
+> Please guide.
+>
+> Regards,
+> Anurag
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+From Paul_Koning at Dell.com  Fri Feb  7 08:26:43 2014
+From: Paul_Koning at Dell.com (Paul_Koning at Dell.com)
+Date: Fri, 7 Feb 2014 16:26:43 +0000
+Subject: [pycrypto] AES, python 2.7 vs 3
+In-Reply-To: <CAEncD4d=BH1Z6GA-dJ2Yf6Dqgjoh4Z1D1=xMW1mcukCEU4d40A@mail.gmail.com>
+References: <CAEncD4dJXvFDeKq3aNqQ5vi1VwLDifzZJrDUxyGxaP+eCZrckw@mail.gmail.com>
+ <60E10C8A-0D99-498B-8F81-28C942D52960@gmail.com>
+ <20140206164950.GB1152@rivest.dlitz.net>
+ <CAEncD4d=BH1Z6GA-dJ2Yf6Dqgjoh4Z1D1=xMW1mcukCEU4d40A@mail.gmail.com>
+Message-ID: <C75A84166056C94F84D238A44AF9F6AD06ED0FB4@AUSX10MPC103.AMER.DELL.COM>
+
+
+On Feb 7, 2014, at 1:29 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+
+> On 6 February 2014 16:49, Dwayne Litzenberger <dlitz at dlitz.net> wrote:
+>> On Mon, Feb 03, 2014 at 03:51:06PM +0100, Mirko Dziadzka wrote:
+>>> 
+>>> Hi
+>>> 
+>>> Without testing or verifying:
+>>> 
+>>> You should probably use bytes in Python 3, not characters.
+>> 
+>> 
+>> Yeah, this is a known bug.   Under Python 3, PyCrypto should raise a
+>> TypeError in most places where unicode strings are used instead of bytes,
+>> but right now it just does weird things.  Sorry about that.
+> 
+> 
+> Recently playing about with reading / writing between Linux / Windows,
+> one symptom I came across was that the decrypted string contained b' <string>'
+> is that a part of this bug?
+
+b?something? is Python 3 syntax for a ?bytes? literal.
+
+It?s a good idea to spend some time reading the Python 3 documentation on text vs. bytes ? ?str? vs. ?bytes? type.  They really got this right, and it completely cures the ugly mess you get in Python 2 when dealing with strings vs. their encoding.
+
+But it is new, and it?s different from what was done before ? for good reasons.
+
+One short summary is: ?str? contains text, it?s abstract, it represents Unicode characters but does not talk about encoding.  ?bytes? contains sequences of bytes (octets ? 8 bit integers), it?s concrete, it represents encoding of data in the outside world.  You convert ?str? to/from ?bytes? when doing I/O.  Anytime you are doing operations that need sequences of bytes, the type has to be ?bytes?.  Encryption is one such operation.
+
+	paul
+
+From dave.pawson at gmail.com  Fri Feb  7 08:47:21 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 7 Feb 2014 16:47:21 +0000
+Subject: [pycrypto] AES, python 2.7 vs 3
+In-Reply-To: <C75A84166056C94F84D238A44AF9F6AD06ED0FB4@AUSX10MPC103.AMER.DELL.COM>
+References: <CAEncD4dJXvFDeKq3aNqQ5vi1VwLDifzZJrDUxyGxaP+eCZrckw@mail.gmail.com>
+ <60E10C8A-0D99-498B-8F81-28C942D52960@gmail.com>
+ <20140206164950.GB1152@rivest.dlitz.net>
+ <CAEncD4d=BH1Z6GA-dJ2Yf6Dqgjoh4Z1D1=xMW1mcukCEU4d40A@mail.gmail.com>
+ <C75A84166056C94F84D238A44AF9F6AD06ED0FB4@AUSX10MPC103.AMER.DELL.COM>
+Message-ID: <CAEncD4fTL4keSGxiyWWh7DN4AVpxC+i6y11fXYC7MKQm2i66Sg@mail.gmail.com>
+
+Thanks Paul. I was going along those lines, but without much understanding?
+Is it correct that pycrypto relies on byte strings and *cannot* deal
+with Unicode strings?
+
+regards
+
+On 7 February 2014 16:26,  <Paul_Koning at dell.com> wrote:
+>
+> On Feb 7, 2014, at 1:29 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+>
+>> On 6 February 2014 16:49, Dwayne Litzenberger <dlitz at dlitz.net> wrote:
+>>> On Mon, Feb 03, 2014 at 03:51:06PM +0100, Mirko Dziadzka wrote:
+>>>>
+>>>> Hi
+>>>>
+>>>> Without testing or verifying:
+>>>>
+>>>> You should probably use bytes in Python 3, not characters.
+>>>
+>>>
+>>> Yeah, this is a known bug.   Under Python 3, PyCrypto should raise a
+>>> TypeError in most places where unicode strings are used instead of bytes,
+>>> but right now it just does weird things.  Sorry about that.
+>>
+>>
+>> Recently playing about with reading / writing between Linux / Windows,
+>> one symptom I came across was that the decrypted string contained b' <string>'
+>> is that a part of this bug?
+>
+> b?something? is Python 3 syntax for a ?bytes? literal.
+>
+> It?s a good idea to spend some time reading the Python 3 documentation on text vs. bytes ? ?str? vs. ?bytes? type.  They really got this right, and it completely cures the ugly mess you get in Python 2 when dealing with strings vs. their encoding.
+>
+> But it is new, and it?s different from what was done before ? for good reasons.
+>
+> One short summary is: ?str? contains text, it?s abstract, it represents Unicode characters but does not talk about encoding.  ?bytes? contains sequences of bytes (octets ? 8 bit integers), it?s concrete, it represents encoding of data in the outside world.  You convert ?str? to/from ?bytes? when doing I/O.  Anytime you are doing operations that need sequences of bytes, the type has to be ?bytes?.  Encryption is one such operation.
+>
+>         paul
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From Paul_Koning at Dell.com  Fri Feb  7 09:01:04 2014
+From: Paul_Koning at Dell.com (Paul_Koning at Dell.com)
+Date: Fri, 7 Feb 2014 17:01:04 +0000
+Subject: [pycrypto] AES, python 2.7 vs 3
+In-Reply-To: <CAEncD4fTL4keSGxiyWWh7DN4AVpxC+i6y11fXYC7MKQm2i66Sg@mail.gmail.com>
+References: <CAEncD4dJXvFDeKq3aNqQ5vi1VwLDifzZJrDUxyGxaP+eCZrckw@mail.gmail.com>
+ <60E10C8A-0D99-498B-8F81-28C942D52960@gmail.com>
+ <20140206164950.GB1152@rivest.dlitz.net>
+ <CAEncD4d=BH1Z6GA-dJ2Yf6Dqgjoh4Z1D1=xMW1mcukCEU4d40A@mail.gmail.com>
+ <C75A84166056C94F84D238A44AF9F6AD06ED0FB4@AUSX10MPC103.AMER.DELL.COM>
+ <CAEncD4fTL4keSGxiyWWh7DN4AVpxC+i6y11fXYC7MKQm2i66Sg@mail.gmail.com>
+Message-ID: <C75A84166056C94F84D238A44AF9F6AD06ED1633@AUSX10MPC103.AMER.DELL.COM>
+
+That?s what pycrypto needs to do, yes.  From what Dwayne says, it sounds like that?s currently not finished yet.
+
+The easiest way to look at this is as a data type matching exercise.  Cryptographic operations are functions that operate on sequences of bytes.  Unicode strings are NOT sequences of bytes ? they are an entirely different data type.
+
+It is valid to speak of specific encodings of Unicode strings as sequences of bytes, but the key point is that you have to do the encoding ? which means, first of all, choosing WHICH encoding ? in order to have that sequence of bytes.
+
+Since you have to make those choices, it?s not safe for APIs like crypto to accept strings and effectively do some encoding as a side effect.  Better to require bytes in the interface, and let you handle the encode/decode steps explicitly, in the way you want them to be done.
+
+	paul
+
+On Feb 7, 2014, at 11:47 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+
+> Thanks Paul. I was going along those lines, but without much understanding?
+> Is it correct that pycrypto relies on byte strings and *cannot* deal
+> with Unicode strings?
+> 
+> regards
+> 
+> On 7 February 2014 16:26,  <Paul_Koning at dell.com> wrote:
+>> 
+>> On Feb 7, 2014, at 1:29 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+>> 
+>>> On 6 February 2014 16:49, Dwayne Litzenberger <dlitz at dlitz.net> wrote:
+>>>> On Mon, Feb 03, 2014 at 03:51:06PM +0100, Mirko Dziadzka wrote:
+>>>>> 
+>>>>> Hi
+>>>>> 
+>>>>> Without testing or verifying:
+>>>>> 
+>>>>> You should probably use bytes in Python 3, not characters.
+>>>> 
+>>>> 
+>>>> Yeah, this is a known bug.   Under Python 3, PyCrypto should raise a
+>>>> TypeError in most places where unicode strings are used instead of bytes,
+>>>> but right now it just does weird things.  Sorry about that.
+>>> 
+>>> 
+>>> Recently playing about with reading / writing between Linux / Windows,
+>>> one symptom I came across was that the decrypted string contained b' <string>'
+>>> is that a part of this bug?
+>> 
+>> b?something? is Python 3 syntax for a ?bytes? literal.
+>> 
+>> It?s a good idea to spend some time reading the Python 3 documentation on text vs. bytes ? ?str? vs. ?bytes? type.  They really got this right, and it completely cures the ugly mess you get in Python 2 when dealing with strings vs. their encoding.
+>> 
+>> But it is new, and it?s different from what was done before ? for good reasons.
+>> 
+>> One short summary is: ?str? contains text, it?s abstract, it represents Unicode characters but does not talk about encoding.  ?bytes? contains sequences of bytes (octets ? 8 bit integers), it?s concrete, it represents encoding of data in the outside world.  You convert ?str? to/from ?bytes? when doing I/O.  Anytime you are doing operations that need sequences of bytes, the type has to be ?bytes?.  Encryption is one such operation.
+>> 
+>>        paul
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> 
+> 
+> 
+> -- 
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From dave.pawson at gmail.com  Sat Feb  8 00:25:02 2014
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sat, 8 Feb 2014 08:25:02 +0000
+Subject: [pycrypto] AES, python 2.7 vs 3
+In-Reply-To: <C75A84166056C94F84D238A44AF9F6AD06ED1633@AUSX10MPC103.AMER.DELL.COM>
+References: <CAEncD4dJXvFDeKq3aNqQ5vi1VwLDifzZJrDUxyGxaP+eCZrckw@mail.gmail.com>
+ <60E10C8A-0D99-498B-8F81-28C942D52960@gmail.com>
+ <20140206164950.GB1152@rivest.dlitz.net>
+ <CAEncD4d=BH1Z6GA-dJ2Yf6Dqgjoh4Z1D1=xMW1mcukCEU4d40A@mail.gmail.com>
+ <C75A84166056C94F84D238A44AF9F6AD06ED0FB4@AUSX10MPC103.AMER.DELL.COM>
+ <CAEncD4fTL4keSGxiyWWh7DN4AVpxC+i6y11fXYC7MKQm2i66Sg@mail.gmail.com>
+ <C75A84166056C94F84D238A44AF9F6AD06ED1633@AUSX10MPC103.AMER.DELL.COM>
+Message-ID: <CAEncD4cFFA+wa15+W0bqQWU6xuu42b=dvAZVcZd7qPM1beyB+g@mail.gmail.com>
+
+On 7 February 2014 17:01,  <Paul_Koning at dell.com> wrote:
+> That?s what pycrypto needs to do, yes.  From what Dwayne says, it sounds like that?s currently not finished yet.
+>
+> The easiest way to look at this is as a data type matching exercise.  Cryptographic operations are functions that operate on sequences of bytes.  Unicode strings are NOT sequences of bytes ? they are an entirely different data type.
+
+How (if at all) does that statement change if I am using unicode,
+utf-8 encoding please Paul?
+As I understand it, utf-8 constitutes octets? Or am I wrong?
+
+
+>
+> It is valid to speak of specific encodings of Unicode strings as sequences of bytes, but the key point is that you have to do the encoding ? which means, first of all, choosing WHICH encoding ? in order to have that sequence of bytes.
+
+And how does that match with Python 3, which (appears |  is) based on
+Unicode strings?
+
+
+>
+> Since you have to make those choices, it?s not safe for APIs like crypto to accept strings and effectively do some encoding as a side effect.  Better to require bytes in the interface, and let you handle the encode/decode steps explicitly, in the way you want them to be done.
+
+
+Thanks for that Paul... you seem to be pointing at Pycrypto as the
+source of my problem. An approach paper / web page would be very
+helpful to me (and others facing the same issues) in managing this
+slippery (to me) aspect of crypto.
+
+Again, thanks for the comments.
+
+DaveP
+
+
+>
+>         paul
+>
+> On Feb 7, 2014, at 11:47 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+>
+>> Thanks Paul. I was going along those lines, but without much understanding?
+>> Is it correct that pycrypto relies on byte strings and *cannot* deal
+>> with Unicode strings?
+>>
+>> regards
+>>
+>> On 7 February 2014 16:26,  <Paul_Koning at dell.com> wrote:
+>>>
+>>> On Feb 7, 2014, at 1:29 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+>>>
+>>>> On 6 February 2014 16:49, Dwayne Litzenberger <dlitz at dlitz.net> wrote:
+>>>>> On Mon, Feb 03, 2014 at 03:51:06PM +0100, Mirko Dziadzka wrote:
+>>>>>>
+>>>>>> Hi
+>>>>>>
+>>>>>> Without testing or verifying:
+>>>>>>
+>>>>>> You should probably use bytes in Python 3, not characters.
+>>>>>
+>>>>>
+>>>>> Yeah, this is a known bug.   Under Python 3, PyCrypto should raise a
+>>>>> TypeError in most places where unicode strings are used instead of bytes,
+>>>>> but right now it just does weird things.  Sorry about that.
+>>>>
+>>>>
+>>>> Recently playing about with reading / writing between Linux / Windows,
+>>>> one symptom I came across was that the decrypted string contained b' <string>'
+>>>> is that a part of this bug?
+>>>
+>>> b?something? is Python 3 syntax for a ?bytes? literal.
+>>>
+>>> It?s a good idea to spend some time reading the Python 3 documentation on text vs. bytes ? ?str? vs. ?bytes? type.  They really got this right, and it completely cures the ugly mess you get in Python 2 when dealing with strings vs. their encoding.
+>>>
+>>> But it is new, and it?s different from what was done before ? for good reasons.
+>>>
+>>> One short summary is: ?str? contains text, it?s abstract, it represents Unicode characters but does not talk about encoding.  ?bytes? contains sequences of bytes (octets ? 8 bit integers), it?s concrete, it represents encoding of data in the outside world.  You convert ?str? to/from ?bytes? when doing I/O.  Anytime you are doing operations that need sequences of bytes, the type has to be ?bytes?.  Encryption is one such operation.
+>>>
+>>>        paul
+>>> _______________________________________________
+>>> pycrypto mailing list
+>>> pycrypto at lists.dlitz.net
+>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>>
+>>
+>> --
+>> Dave Pawson
+>> XSLT XSL-FO FAQ.
+>> Docbook FAQ.
+>> http://www.dpawson.co.uk
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From Paul_Koning at Dell.com  Mon Feb 10 08:40:53 2014
+From: Paul_Koning at Dell.com (Paul_Koning at Dell.com)
+Date: Mon, 10 Feb 2014 16:40:53 +0000
+Subject: [pycrypto] AES, python 2.7 vs 3
+In-Reply-To: <CAEncD4cFFA+wa15+W0bqQWU6xuu42b=dvAZVcZd7qPM1beyB+g@mail.gmail.com>
+References: <CAEncD4dJXvFDeKq3aNqQ5vi1VwLDifzZJrDUxyGxaP+eCZrckw@mail.gmail.com>
+ <60E10C8A-0D99-498B-8F81-28C942D52960@gmail.com>
+ <20140206164950.GB1152@rivest.dlitz.net>
+ <CAEncD4d=BH1Z6GA-dJ2Yf6Dqgjoh4Z1D1=xMW1mcukCEU4d40A@mail.gmail.com>
+ <C75A84166056C94F84D238A44AF9F6AD06ED0FB4@AUSX10MPC103.AMER.DELL.COM>
+ <CAEncD4fTL4keSGxiyWWh7DN4AVpxC+i6y11fXYC7MKQm2i66Sg@mail.gmail.com>
+ <C75A84166056C94F84D238A44AF9F6AD06ED1633@AUSX10MPC103.AMER.DELL.COM>
+ <CAEncD4cFFA+wa15+W0bqQWU6xuu42b=dvAZVcZd7qPM1beyB+g@mail.gmail.com>
+Message-ID: <C75A84166056C94F84D238A44AF9F6AD06ED39B1@AUSX10MPC103.AMER.DELL.COM>
+
+
+On Feb 8, 2014, at 3:25 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+
+> On 7 February 2014 17:01,  <Paul_Koning at dell.com> wrote:
+>> That?s what pycrypto needs to do, yes.  From what Dwayne says, it sounds like that?s currently not finished yet.
+>> 
+>> The easiest way to look at this is as a data type matching exercise.  Cryptographic operations are functions that operate on sequences of bytes.  Unicode strings are NOT sequences of bytes ? they are an entirely different data type.
+> 
+> How (if at all) does that statement change if I am using unicode,
+> utf-8 encoding please Paul?
+> As I understand it, utf-8 constitutes octets? Or am I wrong?
+
+Yes, UTF-8 is one of several encodings you can use for Unicode.  It?s probably the most popular one for a variety of reasons.  So unless you have a reason to do otherwise, UTF-8 is a good default choice for encoding of Unicode strings.
+
+> 
+> 
+>> 
+>> It is valid to speak of specific encodings of Unicode strings as sequences of bytes, but the key point is that you have to do the encoding ? which means, first of all, choosing WHICH encoding ? in order to have that sequence of bytes.
+> 
+> And how does that match with Python 3, which (appears |  is) based on
+> Unicode strings?
+
+The ?str? type is Unicode.  To turn it into ?bytes? ? for I/O, for crypto, or for other purposes that need octet strings, you have to encode the Unicode.  As I mentioned, UTF-8 is a typical choice, but if you had a reason for using something else, you would specify that encoding instead.
+
+For example:
+$ python3
+>>> s="foo"
+>>> type(s)
+<class 'str'>
+>>> b=s.encode("utf-8")
+>>> type(b)
+<class 'bytes'>
+>>> b
+b'foo'
+>>> s="a??"
+>>> b=s.encode("utf-8")
+>>> b
+b'a\xc3\xa9\xc3\xb6'
+
+> 
+> 
+>> 
+>> Since you have to make those choices, it?s not safe for APIs like crypto to accept strings and effectively do some encoding as a side effect.  Better to require bytes in the interface, and let you handle the encode/decode steps explicitly, in the way you want them to be done.
+> 
+> 
+> Thanks for that Paul... you seem to be pointing at Pycrypto as the
+> source of my problem. An approach paper / web page would be very
+> helpful to me (and others facing the same issues) in managing this
+> slippery (to me) aspect of crypto.
+> 
+> Again, thanks for the comments.
+
+This http://docs.python.org/3/howto/unicode.html might be helpful for a much more detailed explanation of what I?ve been talking about.
+
+	paul
+
+From dlitz at dlitz.net  Fri Feb 21 20:34:09 2014
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Fri, 21 Feb 2014 20:34:09 -0800
+Subject: [pycrypto] Any progress with pycrypto 2.7?
+In-Reply-To: <CAGfyce0tbAYya=84b79eNHQVRhFJvNGv6pxUAKsxqpUOPDhG3A@mail.gmail.com>
+References: <CAGfyce0tbAYya=84b79eNHQVRhFJvNGv6pxUAKsxqpUOPDhG3A@mail.gmail.com>
+Message-ID: <20140222043409.GA26458@rivest.dlitz.net>
+
+For reference, here are the relevant bugs and/or pull requests, where 
+discussion is taking place.  I've added comments to all three.
+
+>1) Hard crash on recent recent Intel CPUs (due gcc and AESNI)
+
+https://github.com/dlitz/pycrypto/pull/62
+
+>2) Potential DoS when importing an RSA key (segfault of the interpreter)
+
+I assume you mean the floating-point exception that occurs when you pass 
+an even modulus to RSA.construct?
+
+https://bugs.launchpad.net/pycrypto/+bug/1193521
+https://github.com/dlitz/pycrypto/pull/50
+
+On pull request #50 ("Add checks to verify correctness of 
+RSA/DSA/ElGamal keys"), it would be helpful if others could chime in 
+about the potential for leaking private keys via timing side-channels.
+
+>3) Silent, incorrect HMAC construction for SHA-2
+
+https://bugs.launchpad.net/pycrypto/+bug/1209399
+https://github.com/dlitz/pycrypto/pull/57
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From sebastian+lists at ramacher.at  Sat Feb 22 12:50:50 2014
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Sat, 22 Feb 2014 21:50:50 +0100
+Subject: [pycrypto] Need your input: Major modernization;
+ dropping legacy Python support?
+In-Reply-To: <20140206175139.GA1741@rivest.dlitz.net>
+References: <20131030060924.GC5005@rivest.dlitz.net>
+ <20131030172448.GB17774@ramacher.at>
+ <20140206175139.GA1741@rivest.dlitz.net>
+Message-ID: <20140222205050.GC7112@ramacher.at>
+
+On 2014-02-06 09:51:39, Dwayne Litzenberger wrote:
+> On Wed, Oct 30, 2013 at 06:24:48PM +0100, Sebastian Ramacher wrote:
+> >>2. I'm thinking of pulling in additional dependencies (e.g. cffi),
+> >>requiring setuptools, and basically joining what the rest of the
+> >>Python community is doing in 2013.
+> >>
+> >>3. What if src/*.c were removed, and any relevant C code moved into
+> >>an    independent library, which could be loaded using cffi?  (This
+> >>is    basically what we need to do to support PyPy properly.)
+> >
+> >I wouldn't mind if the C code is moved into a library, however cffi
+> >doesn't seem to be ready to be used in binary distributions without
+> >resorting to hacks ([1] for the upstream bug, [2] for a very short
+> >thread on debian-python). I'm told that this will be fixed in cffi at
+> >some point.
+> >
+> >I've always had a good experience with Cython. What do you thinkg about
+> >that?
+> >
+> >Anyway, as long as we are not starting to use ctypes, I'll be fine.
+> >Depending on the timeframe of this change, I'd prefer PyCrypto to use
+> >someting that does not require hacks in binary distributions. If cffi is
+> >fixed until the change happens, I won't complain.
+> >
+> >[1] https://bitbucket.org/cffi/cffi/issue/109/enable-sane-packaging-for-cffi
+> >[2] https://lists.debian.org/debian-python/2013/10/msg00070.html
+> 
+> ctypes is definitely not on the list.
+> 
+> From what I understand, CFFI will only try to build binaries if
+> they're not already found.  I think as long as packages that use
+> CFFI include the appropriate rules in their `setup.py build_ext`
+> process, it shouldn't be a problem.  (I'd certainly work with you to
+> make sure the packaging isn't a nightmare.)
+
+cffi 0.8 has been released in the meantime. I hope the issues have been
+fixed, but I haven't had the time to check out the new version.
+
+> >>4. What if Crypto.* became a wrapper around some other crypto library?
+> >
+> >This depends on the crypto library you're thinking of. If it's openssl,
+> >then all the GPL licensed reverse dependencies might have a problem (at
+> >least in Debian).
+> >
+> >>5. The Apache License 2.0.  What if PyCrypto were licensed under it,
+> >>or    included dependencies that are licensed under it?
+> >
+> >With my Debian maintainer hat on, this would be a problem for me. We
+> >still ship software that is GPL 2 only that depends on PyCrypto.
+> >However, GPL 2 and the Apache License 2.0 are incompatible.
+> >
+> >Examples of these packages include revelation and pymsnt (I stopped
+> >searching for GPL 2 only reverse dependencies after I've found two).
+> >
+> >Of course, if the license changes or python-crypto starts depending on
+> >something licensed under Apache 2.0 this needs to be checked on a case by
+> >case basis, but I'd rather avoid it if there is no really good reason to
+> >do so.
+> 
+> Ugh, GPL 2 only.  I wish people would at least do "or any later
+> version".
+> 
+> I'm thinking of merging with the folks at https://cryptography.io/,
+> which is covered by an Apache 2.0 license.
+
+What is the merge going to look like?
+
+> How bad is the situation with GPL2-only packages?
+
+I'll check the reverse dependencies in a couple of days.
+
+Regards
+-- 
+Sebastian Ramacher
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 819 bytes
+Desc: Digital signature
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140222/0da79cc2/attachment.sig>
+
+From helderijs at gmail.com  Tue Mar  4 13:25:25 2014
+From: helderijs at gmail.com (Legrandin)
+Date: Tue, 4 Mar 2014 22:25:25 +0100
+Subject: [pycrypto] Any progress with pycrypto 2.7?
+In-Reply-To: <20140222043409.GA26458@rivest.dlitz.net>
+References: <CAGfyce0tbAYya=84b79eNHQVRhFJvNGv6pxUAKsxqpUOPDhG3A@mail.gmail.com>
+ <20140222043409.GA26458@rivest.dlitz.net>
+Message-ID: <CAGfyce3Gkov=o1iLBNt+ebM6t++Vw-4m1BFg=8yg4vGysq_gsQ@mail.gmail.com>
+
+>> 2) Potential DoS when importing an RSA key (segfault of the interpreter)
+> I assume you mean the floating-point exception that occurs when you pass an
+> even modulus to RSA.construct?
+
+Correct.
+
+> https://bugs.launchpad.net/pycrypto/+bug/1193521
+> https://github.com/dlitz/pycrypto/pull/50
+>
+> On pull request #50 ("Add checks to verify correctness of RSA/DSA/ElGamal
+> keys"), it would be helpful if others could chime in about the potential for
+> leaking private keys via timing side-channels.
+
+In addition to fixing the DoS, PR #50 also replaced the custom
+KeyFormatError exception with ValueError in the DSA code (I wrote it
+before you expressed preference for not having custom exceptions at
+all).
+
+I would actually apply first this other PR:
+
+https://github.com/dlitz/pycrypto/pull/71
+
+Since there are 2 other exception types to fix.
+Hopefully PR #50 still applies cleanly after it.
+
+From wanggang at goldenapptechnology.com  Tue Mar 11 20:22:14 2014
+From: wanggang at goldenapptechnology.com (wanggang)
+Date: Wed, 12 Mar 2014 11:22:14 +0800
+Subject: [pycrypto] Got different PKCS1_v1_5 signature result on the same
+	message & same rsa key pair
+Message-ID: <201403121122133419764@goldenapptechnology.com>
+
+Hi pycrypto,
+
+This may be a simple problem since I am a newbiee to crypto.
+I am not sure why I got different result from PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m))) , 
+I have mentioned the 'stateful' comment in API doc, but still can't fix the code below.
+besides I have used DES for a lot, & never got stuck in such situation.
+
+if __name__ == "__main__":
+    t = (modulus, publicExponent, privateExponent, prime1, prime2, coefficient)
+    lst = [long(x,16) for x in t]
+
+    k = '1234'
+    e1 = RSA.construct(lst).encrypt(m, k)
+    e2 = RSA.construct(lst).encrypt(m, k)
+    assert e1 == e2 # passed
+    
+    signature1 = PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m)))
+    print binascii.b2a_hex(signature1)
+    signature2 = PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m)))
+    print binascii.b2a_hex(signature2)
+    assert signature1==signature2 # why this assertion failed ?
+
+Thank you in advance!    
+--------------
+ Wang Gang
+
+From campadrenalin at gmail.com  Tue Mar 11 22:55:16 2014
+From: campadrenalin at gmail.com (Philip Horger)
+Date: Tue, 11 Mar 2014 22:55:16 -0700
+Subject: [pycrypto] Got different PKCS1_v1_5 signature result on the
+ same message & same rsa key pair
+In-Reply-To: <201403121122133419764@goldenapptechnology.com>
+References: <201403121122133419764@goldenapptechnology.com>
+Message-ID: <CAHAkNZ1T0AD9rdOO4Z-qNDtJW__D4yzAVb8zSSfLeGpLErCbwg@mail.gmail.com>
+
+I'm not the king of crypto, but if I recall correctly, some signature
+standards (and I think PKCS1 is one of them) include a random salt in the
+signature. This happens automatically, behind the scenes, on your behalf.
+So two signatures can be of the same content, with the same key, and not be
+equal - in fact, it's dramatically more likely than not! So you can't rely
+on bit-for-bit equality of signatures.
+
+
+On Tue, Mar 11, 2014 at 8:22 PM, wanggang
+<wanggang at goldenapptechnology.com>wrote:
+
+> Hi pycrypto,
+>
+> This may be a simple problem since I am a newbiee to crypto.
+> I am not sure why I got different result from
+> PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m))) ,
+> I have mentioned the 'stateful' comment in API doc, but still can't fix
+> the code below.
+> besides I have used DES for a lot, & never got stuck in such situation.
+>
+> if __name__ == "__main__":
+>     t = (modulus, publicExponent, privateExponent, prime1, prime2,
+> coefficient)
+>     lst = [long(x,16) for x in t]
+>
+>     k = '1234'
+>     e1 = RSA.construct(lst).encrypt(m, k)
+>     e2 = RSA.construct(lst).encrypt(m, k)
+>     assert e1 == e2 # passed
+>
+>     signature1 = PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m)))
+>     print binascii.b2a_hex(signature1)
+>     signature2 = PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m)))
+>     print binascii.b2a_hex(signature2)
+>     assert signature1==signature2 # why this assertion failed ?
+>
+> Thank you in advance!
+> --------------
+>  Wang Gang
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140311/b842a24a/attachment.html>
+
+From helderijs at gmail.com  Wed Mar 12 03:47:15 2014
+From: helderijs at gmail.com (Legrandin)
+Date: Wed, 12 Mar 2014 11:47:15 +0100
+Subject: [pycrypto] Got different PKCS1_v1_5 signature result on the
+ same message & same rsa key pair
+In-Reply-To: <CAHAkNZ1T0AD9rdOO4Z-qNDtJW__D4yzAVb8zSSfLeGpLErCbwg@mail.gmail.com>
+References: <201403121122133419764@goldenapptechnology.com>
+ <CAHAkNZ1T0AD9rdOO4Z-qNDtJW__D4yzAVb8zSSfLeGpLErCbwg@mail.gmail.com>
+Message-ID: <CAGfyce3FDy=or1eOMmdSnePurU3qs+BH3F1EqU_Fodn83GNFZg@mail.gmail.com>
+
+PKCS#1v1.5 happens to be a deterministic signature scheme, so in theory the
+assertion should not fail.
+
+I believe that the RSA key that Wang Gang is using is not correct.
+For instance, some of the CRT coefficients may not be matching the private
+exponent.
+
+When that happens, the blinding countermeasures will not cancel out and the
+result of RSA operations will be random (in addition to being incorrect).
+
+2014-03-12 6:55 GMT+01:00 Philip Horger <campadrenalin at gmail.com>:
+
+> I'm not the king of crypto, but if I recall correctly, some signature
+> standards (and I think PKCS1 is one of them) include a random salt in the
+> signature. This happens automatically, behind the scenes, on your behalf.
+> So two signatures can be of the same content, with the same key, and not be
+> equal - in fact, it's dramatically more likely than not! So you can't rely
+> on bit-for-bit equality of signatures.
+>
+>
+> On Tue, Mar 11, 2014 at 8:22 PM, wanggang <
+> wanggang at goldenapptechnology.com> wrote:
+>
+>> Hi pycrypto,
+>>
+>> This may be a simple problem since I am a newbiee to crypto.
+>> I am not sure why I got different result from
+>> PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m))) ,
+>> I have mentioned the 'stateful' comment in API doc, but still can't fix
+>> the code below.
+>> besides I have used DES for a lot, & never got stuck in such situation.
+>>
+>> if __name__ == "__main__":
+>>     t = (modulus, publicExponent, privateExponent, prime1, prime2,
+>> coefficient)
+>>     lst = [long(x,16) for x in t]
+>>
+>>     k = '1234'
+>>     e1 = RSA.construct(lst).encrypt(m, k)
+>>     e2 = RSA.construct(lst).encrypt(m, k)
+>>     assert e1 == e2 # passed
+>>
+>>     signature1 = PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m)))
+>>     print binascii.b2a_hex(signature1)
+>>     signature2 = PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m)))
+>>     print binascii.b2a_hex(signature2)
+>>     assert signature1==signature2 # why this assertion failed ?
+>>
+>> Thank you in advance!
+>> --------------
+>>  Wang Gang
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20140312/2620fdef/attachment.html>
+

@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Python%203.x%20vs.%20Python%202.1%20-%20prep%20the%20axe&In-Reply-To=4D1972A2.4080305%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000330.html">
+   <LINK REL="Next"  HREF="000333.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Python 3.x vs. Python 2.1 - prep the axe</H1>
+    <B>Glenn Linderman</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Python%203.x%20vs.%20Python%202.1%20-%20prep%20the%20axe&In-Reply-To=4D1972A2.4080305%40gmx.li"
+       TITLE="[pycrypto] Python 3.x vs. Python 2.1 - prep the axe">v+python at g.nevcal.com
+       </A><BR>
+    <I>Mon Dec 27 23:27:02 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000330.html">[pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+</A></li>
+        <LI>Next message: <A HREF="000333.html">[pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#331">[ date ]</a>
+              <a href="thread.html#331">[ thread ]</a>
+              <a href="subject.html#331">[ subject ]</a>
+              <a href="author.html#331">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 12/27/2010 9:16 PM, Thorsten Behrens wrote:
+&gt;<i> If you can think of a reasonably clean way of handling the &quot;/&quot; vs. &quot;//&quot;
+</I>&gt;<i> issue - or if anyone else can - please share.
+</I>&gt;<i>
+</I>&gt;<i> Barring that, I think my message is: If Python 3.x is to be supported
+</I>&gt;<i> without code duplication, Python 2.1 support may have to go.
+</I>&gt;<i>
+</I>&gt;<i> Yours
+</I>&gt;<i>
+</I>&gt;<i> Thorsten
+</I>&gt;<i>
+</I>&gt;<i>           # if e is given make sure that e and X-1 are coprime
+</I>&gt;<i>           # this is not necessarily a strong prime criterion but useful when
+</I>&gt;<i>           # creating them for RSA where the p-1 and q-1 should be coprime to
+</I>&gt;<i>           # the public exponent e
+</I>&gt;<i>           if e and is_possible_prime:
+</I>&gt;<i>               if e&amp;  1:
+</I>&gt;<i>                   if GCD (e, X-1) != 1:
+</I>&gt;<i>                       is_possible_prime = 0
+</I>&gt;<i>               else:
+</I>&gt;<i>                   # Python 2.1 does not understand //, and 3.x returns a
+</I>&gt;<i> float on /
+</I>&gt;<i>                   # Infinite loop, wheee!!!
+</I>&gt;<i>                   if GCD (e, (X-1)//2) != 1:
+</I>&gt;<i>                       is_possible_prime = 0
+</I>
+Ugly hack, not sure if it is worthwhile.
+
+utils.py:
+def slashslash( a, b ):
+     return a / b
+
+utilsnew.py:
+def slashslash( a, b ):
+     return a // b
+
+in numbers.py:
+
+if sys.version_info[ 0 ] &lt;= 2  and sys.version_info[ 1 ] &lt;= 1:
+     import utils
+else:
+     import utilsnew as utils
+...
+                                   if GCD ( e, utils.slashslash(X-1,2) != 1:
+
+# Not sure if 2.1 will ignore &quot;as&quot; if not executed?  If not, then you 
+play the setup.py with a tiny file.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20101227/aa13763d/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20101227/aa13763d/attachment.htm</A> 
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000330.html">[pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+</A></li>
+	<LI>Next message: <A HREF="000333.html">[pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#331">[ date ]</a>
+              <a href="thread.html#331">[ thread ]</a>
+              <a href="subject.html#331">[ subject ]</a>
+              <a href="author.html#331">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

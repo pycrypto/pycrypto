@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Why p&lt;q in RSA code?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Why%20p%3Cq%20in%20RSA%20code%3F&In-Reply-To=4D3704BF.6000808%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000409.html">
+   <LINK REL="Next"  HREF="000411.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Why p&lt;q in RSA code?</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Why%20p%3Cq%20in%20RSA%20code%3F&In-Reply-To=4D3704BF.6000808%40gmx.li"
+       TITLE="[pycrypto] Why p&lt;q in RSA code?">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Wed Jan 19 12:29:24 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000409.html">[pycrypto] Why p&lt;q in RSA code?
+</A></li>
+        <LI>Next message: <A HREF="000411.html">[pycrypto] Why p&lt;q in RSA code?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#410">[ date ]</a>
+              <a href="thread.html#410">[ thread ]</a>
+              <a href="subject.html#410">[ subject ]</a>
+              <a href="author.html#410">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> I have noticed that - when generating an RSA key - a special check is
+</I>&gt;<i> made to ensure that p&lt;q.
+</I>&gt;<i>
+</I>&gt;<i> That's interesting. This is what I found, which seems to suggest the exact
+</I>&gt;<i> opposite:
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;<i> To generate the primes p and q, generate a random number of [...] If p&lt;q, swap
+</I>&gt;<i> p and q (this only matters if you intend using the CRT form of the private
+</I>&gt;<i> key) [...]
+</I>&gt;&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Taken from <A HREF="http://www.di-mgt.com.au/rsa_alg.html">http://www.di-mgt.com.au/rsa_alg.html</A>
+</I>&gt;<i>
+</I>&gt;<i> That snippet suggests that p&gt;q is desired if using the CRT form of the
+</I>&gt;<i> private key. And we seem to be doing the exact opposite, swapping p and q if
+</I>&gt;<i> p&gt;q.
+</I>
+Makes sense actually...
+
+The rsaDecrypt() routine in _fastmath.c (and possibly soon in
+_slowmath.py ;-)) uses pInv = p^{-1} mod q, that is the u member in a
+pycrypto RSA object.
+In other words, the page you mention and pycrypto are the same if you
+swap p and q.
+
+But still it does not explain *why* it must be p&lt;q or p&gt;q.
+
+PKCS#1 states that qInv must be less than p (and in pycrypto it would
+be pInv to be less than q), but that's fine. All other papers on the
+net (including Handbook of Applied Cryptography) don't set any
+constraint on the relative size of p with respect to q...
+
+I have tried to remove the p/q swappings in pycrypto and the trivial
+test cases that fail if p&gt;q, and everything passes. Not that it proves
+much (there may be probabilistic failures), but still...
+
+On a separate note, LOL for the Nov 15 2010 comment in the page you
+sent the link of.... :-D
+</PRE>
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000409.html">[pycrypto] Why p&lt;q in RSA code?
+</A></li>
+	<LI>Next message: <A HREF="000411.html">[pycrypto] Why p&lt;q in RSA code?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#410">[ date ]</a>
+              <a href="thread.html#410">[ thread ]</a>
+              <a href="subject.html#410">[ subject ]</a>
+              <a href="author.html#410">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

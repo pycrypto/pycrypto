@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Freezing pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Freezing%20pycrypto&In-Reply-To=200910302001.27906.hpj%40urpla.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000153.html">
+   <LINK REL="Next"  HREF="000154.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Freezing pycrypto</H1>
+    <B>Marcin Krol</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Freezing%20pycrypto&In-Reply-To=200910302001.27906.hpj%40urpla.net"
+       TITLE="[pycrypto] Freezing pycrypto">mrkafk at gmail.com
+       </A><BR>
+    <I>Tue Nov  3 08:00:57 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000153.html">[pycrypto] Freezing pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000154.html">[pycrypto] _RSA.py and generate_py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#156">[ date ]</a>
+              <a href="thread.html#156">[ thread ]</a>
+              <a href="subject.html#156">[ subject ]</a>
+              <a href="author.html#156">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello Pete,
+
+I'm trying to use pyinstaller (from svn) and I get this now:
+
+[<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">root at localhost</A> pyinstaller]# python Build.py cssh/cssh.spec
+checking Analysis
+building Analysis because outAnalysis0.toc non existent
+running Analysis outAnalysis0.toc
+Analyzing: support/_mountzlib.py
+Analyzing: support/useUnicode.py
+Analyzing: ../cssh.py
+ldd: warning: you do not have execution permission for 
+`/usr/lib/sse2/libgmp.so.3'
+Traceback (most recent call last):
+   File &quot;Build.py&quot;, line 1158, in &lt;module&gt;
+     main(args[0], configfilename=opts.configfile)
+   File &quot;Build.py&quot;, line 1146, in main
+     build(specfile)
+   File &quot;Build.py&quot;, line 1109, in build
+     execfile(spec)
+   File &quot;cssh/cssh.spec&quot;, line 3, in &lt;module&gt;
+     pathex=['/root/pyinstaller'])
+   File &quot;Build.py&quot;, line 245, in __init__
+     self.__postinit__()
+   File &quot;Build.py&quot;, line 196, in __postinit__
+     self.assemble()
+   File &quot;Build.py&quot;, line 348, in assemble
+     self.fixMissingPythonLib(binaries)
+   File &quot;Build.py&quot;, line 394, in fixMissingPythonLib
+     raise IOError(&quot;Python library not found!&quot;)
+IOError: Python library not found!
+
+Err.. which library is not found?
+
+I have checked in &quot;cssh&quot; dir and there is no txt warnings file in this 
+spec directory at all. So which library is missing?
+
+Commands I ran (after 'make'ing pyinstaller of course):
+
+# python Makespec.py --onefile ../cssh.py
+# python Build.py cssh/cssh.spec
+
+Regards,
+mk
+
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000153.html">[pycrypto] Freezing pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000154.html">[pycrypto] _RSA.py and generate_py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#156">[ date ]</a>
+              <a href="thread.html#156">[ thread ]</a>
+              <a href="subject.html#156">[ subject ]</a>
+              <a href="author.html#156">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,665 @@
+From dave.pawson at gmail.com  Mon Jul 13 21:44:14 2015
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Tue, 14 Jul 2015 05:44:14 +0100
+Subject: [pycrypto] python 3, crypto installation issue?
+In-Reply-To: <20150714023648.GA13138@syra.guest.yvr1.mozilla.com>
+References: <CAEncD4e=2q58XW7GQAnXwbhZeVeQnk=kbGvdzTMNN010JPfd3w@mail.gmail.com>
+ <20150714023648.GA13138@syra.guest.yvr1.mozilla.com>
+Message-ID: <CAEncD4cYsjK6VgiggC+Sgkgh_f2uFxBM-2ke+tVU-oyvPkaOqQ@mail.gmail.com>
+
+Embarrassed.
+Thanks Dwayne
+
+Dave
+
+On 14 July 2015 at 03:36, Dwayne Litzenberger <dlitz at dlitz.net> wrote:
+> On Fri, May 08, 2015 at 12:23:03PM +0100, Dave Pawson wrote:
+>>
+>> Linux, as root.
+>> $ pip3 install Crypto
+>
+>
+> Crypto[1] is not pycrypto[2]:
+>
+> [1] https://pypi.python.org/pypi/crypto
+> [2] https://pypi.python.org/pypi/pycrypto
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+> OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Fri Jul 24 08:40:08 2015
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 24 Jul 2015 16:40:08 +0100
+Subject: [pycrypto] pycrypto Digest, Vol 75, Issue 2
+In-Reply-To: <CADPfvJvtiJY4m8m0HaMtkfXApCRgfjxgNLRzUj=A_Y8n8Ku3_A@mail.gmail.com>
+References: <mailman.1.1434394801.15717.pycrypto@lists.dlitz.net>
+ <CADPfvJvtiJY4m8m0HaMtkfXApCRgfjxgNLRzUj=A_Y8n8Ku3_A@mail.gmail.com>
+Message-ID: <CAEncD4cmNBxt49OdfLmQ_7uhv_Ph5Egj6MnL+zG1=miS73g79Q@mail.gmail.com>
+
+Finally. (With many intervals)
+
+Using visual studio 12.
+Ran the above and I now have a working pycrypto on windows.
+
+Thanks.
+
+
+On 28 June 2015 at 22:58, Max Polk <maxpolk at gmail.com> wrote:
+> From: Dave Pawson <dave.pawson at gmail.com>
+>>
+>> Thanks Max.
+>> simple question, which of the n variants of Vis Studio should we install
+>> please?
+>
+> Successfully tested this just now using pip to install pycrypto in Python 2
+> and 3.
+>
+> Install Microsoft Visual Studio Community 2013.
+>
+> :: Run the batch file to set things
+> C:\whatever\VisualStudio\Common7\Tools\vsvars32.bat
+>
+> :: Python 2 expects Microsoft Visual C++ 9.0
+> set VS90COMNTOOLS=%VS120COMNTOOLS%
+> C:\whatever\Python2\Scripts\pip2 install pycrypto
+>
+> :: Python 3 expects Microsoft Visual C++ 10.0
+> set VS100COMNTOOLS=%VS120COMNTOOLS%
+> C:\whatever\Python3\Scripts\pip3 install pycrypto
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From mail at agraf.me  Mon Aug 10 06:47:47 2015
+From: mail at agraf.me (Alexander Graf)
+Date: Mon, 10 Aug 2015 15:47:47 +0200
+Subject: [pycrypto] [PATCH] PEM: Decode AES-192-CBC and AES-256-CBC keys
+Message-ID: <20150810140959.505F989282@agraf.me>
+
+Adds support for AES-192-CBC and AES-256-CBC ciphers to the PEM decode()
+function. This also adds a deriveKey() function which stretches the
+password to a key as required for decrypting, replacing PBKDF1 for 192
+and 256 bits.
+---
+ lib/Crypto/IO/PEM.py | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/lib/Crypto/IO/PEM.py b/lib/Crypto/IO/PEM.py
+index 89a5689..11dd782 100644
+--- a/lib/Crypto/IO/PEM.py
++++ b/lib/Crypto/IO/PEM.py
+@@ -110,6 +110,27 @@ def decode(pem_data, passphrase=None):
+       been provided or if the passphrase is incorrect.
+     """
+ 
++    def deriveKey(password, salt, keySize):
++        """Stretch the password to a key as required for decrypting.
++
++        This algorithm was derived from the Go source, which itself derived it
++        from the OpenSSL source.
++
++        https://golang.org/src/crypto/x509/pem_decrypt.go
++        """
++        out = b''
++        digest = b''
++        i = 0
++        while i < keySize:
++            md5 = MD5.new()
++            md5.update(digest)
++            md5.update(tobytes(password))
++            md5.update(salt)
++            digest = md5.digest()
++            out = out + digest
++            i = i + len(digest)
++        return out[:keySize]
++
+     # Verify Pre-Encapsulation Boundary
+     r = re.compile("\s*-----BEGIN (.*)-----\n")
+     m = r.match(pem_data)
+@@ -147,6 +168,12 @@ def decode(pem_data, passphrase=None):
+         elif algo == "AES-128-CBC":
+             key = PBKDF1(passphrase, salt[:8], 16, 1, MD5)
+             objdec = AES.new(key, AES.MODE_CBC, salt)
++        elif algo == "AES-192-CBC":
++            key = deriveKey(passphrase, salt[:8], 24)
++            objdec = AES.new(key, AES.MODE_CBC, salt)
++        elif algo == "AES-256-CBC":
++            key = deriveKey(passphrase, salt[:8], 32)
++            objdec = AES.new(key, AES.MODE_CBC, salt)
+         else:
+             raise ValueError("Unsupport PEM encryption algorithm.")
+         lines = lines[2:]
+-- 
+2.1.4
+
+
+From giovanniteratani+pycrypto at gmail.com  Tue Sep 15 03:17:18 2015
+From: giovanniteratani+pycrypto at gmail.com (giomismo)
+Date: Tue, 15 Sep 2015 12:17:18 +0200
+Subject: [pycrypto] Documentation error in
+	"https://www.dlitz.net/software/pycrypto/api/current/"
+Message-ID: <CAGfh73Yy0h3m3u__SirErU+XL0xxC4EuQbu6f9mEkKZbiYEBeA@mail.gmail.com>
+
+ Hi all,
+
+I have found a mistake in the api documentation, but as I am new to the
+list I don't know if this has been noticed yet.
+
+The error resides in "
+https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA-module.html"
+at the following code (at the beginning of the web page):
+
+>>> from Crypto.PublicKey import RSA>>>>>> key = RSA.generate(2048)>>> f = open('mykey.pem','w')>>> f.write(*RSA.exportKey*('PEM'))>>> f.close()...>>> f = open('mykey.pem','r')>>> key = RSA.importKey(f.read())
+
+The write functions uses "RSA.exportKey" where it should be "*key*.exportKey".
+
+
+If this is not the right place to post this issue, please redirect this
+message to the one who should care about it, or tell me who is and I will
+contact with him/her.
+
+Best regards.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20150915/6fdb5629/attachment.html>
+
+From jonasthiem at googlemail.com  Fri Sep 18 18:04:01 2015
+From: jonasthiem at googlemail.com (Jonas Thiem)
+Date: Sat, 19 Sep 2015 03:04:01 +0200
+Subject: [pycrypto] Availability of MODE_GCM
+Message-ID: <CAD7Z2hoh2Q70KPEPvB+yyn1FHs+zHuQvvdK5ig0a2MtWtP0tRw@mail.gmail.com>
+
+Hi *,
+
+first of all thanks for this amazing crypto library!
+
+I would like to ask if there's any sort of idea when 2.7 is becoming
+stable, because I want to use MODE_GCM which doesn't appear to be
+available in earlier versions.
+
+I am asking because while it's doable on Linux to install the
+experimental version, I direct my windows users to
+http://www.voidspace.org.uk/python/modules.shtml#pycrypto - but there,
+no experimental build is available. Since I understand maintaining
+those would be too much effort, ultimately I can only depend on this
+feature if it arrives in stable any time soon.
+
+Regards,
+Jonas Thiem
+
+From dave.pawson at gmail.com  Fri Sep 18 22:50:11 2015
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sat, 19 Sep 2015 06:50:11 +0100
+Subject: [pycrypto] Availability of MODE_GCM
+In-Reply-To: <CAD7Z2hoh2Q70KPEPvB+yyn1FHs+zHuQvvdK5ig0a2MtWtP0tRw@mail.gmail.com>
+References: <CAD7Z2hoh2Q70KPEPvB+yyn1FHs+zHuQvvdK5ig0a2MtWtP0tRw@mail.gmail.com>
+Message-ID: <CAEncD4fJzNkVpb7jS011sLmoPGeSpPsPkVRAn80ZiJCantGtwA@mail.gmail.com>
+
+If you search the list archives, I posted my (successful) build of
+pycrypto following
+the instructions of another list member.
+
+It would be helpful if they were in the project docs though.
+
+regards
+
+On 19 September 2015 at 02:04, Jonas Thiem <jonasthiem at googlemail.com> wrote:
+> Hi *,
+>
+> first of all thanks for this amazing crypto library!
+>
+> I would like to ask if there's any sort of idea when 2.7 is becoming
+> stable, because I want to use MODE_GCM which doesn't appear to be
+> available in earlier versions.
+>
+> I am asking because while it's doable on Linux to install the
+> experimental version, I direct my windows users to
+> http://www.voidspace.org.uk/python/modules.shtml#pycrypto - but there,
+> no experimental build is available. Since I understand maintaining
+> those would be too much effort, ultimately I can only depend on this
+> feature if it arrives in stable any time soon.
+>
+> Regards,
+> Jonas Thiem
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From the2nd at otpme.org  Tue Sep 29 17:34:11 2015
+From: the2nd at otpme.org (the2nd at otpme.org)
+Date: Wed, 30 Sep 2015 02:34:11 +0200
+Subject: [pycrypto] Verifying RSA signature generated by openssl
+Message-ID: <0001254538f9bfa6f28028c18f7125b6@otpme.org>
+
+Hi,
+
+i would like to verify file signatures generated by pycrypto with 
+openssl and vice versa.
+
+My test code is this: http://paste.ubuntu.com/12620657/
+
+This is working fine with pycrypto but when i try to verify the test.sig 
+file with the following openssl command it fails:
+openssl pkeyutl -verify -sigfile test.sig -pubin -inkey pub.pem -in 
+test.txt
+
+If i generated a signature using openssl with the following command:
+openssl pkeyutl -sign -inkey priv.pem -in test.txt -out test.sig
+
+Verification with openssl works fine but not with pycrypto.
+openssl pkeyutl -verify -sigfile test.sig -pubin -inkey pub.pem -in 
+test.txt
+Signature Verified Successfully
+
+I've also tried to use PKCS1_PSS but this does not work too.
+
+Is there anything wrong with my code or is it not possible to verify 
+openssl signatures?
+
+regards
+the2nd
+
+From the2nd at otpme.org  Thu Oct  1 13:50:49 2015
+From: the2nd at otpme.org (the2nd at otpme.org)
+Date: Thu, 01 Oct 2015 22:50:49 +0200
+Subject: [pycrypto] Verifying RSA signature generated by openssl
+In-Reply-To: <0001254538f9bfa6f28028c18f7125b6@otpme.org>
+References: <0001254538f9bfa6f28028c18f7125b6@otpme.org>
+Message-ID: <c3c1781215075913d28b6c92c0cf1329@otpme.org>
+
+Answering to myself as i figured it out now.
+
+There are a lot of posts out there asking how to generate and verify 
+openssh signatures with python but i haven't found one with a working 
+solution.
+
+So i answered to one: http://stackoverflow.com/a/32896372/5399159
+
+Hope this helps someone....
+
+regards
+the2nd
+
+On 2015-09-30 02:34, the2nd at otpme.org wrote:
+> Hi,
+> 
+> i would like to verify file signatures generated by pycrypto with
+> openssl and vice versa.
+> 
+> My test code is this: http://paste.ubuntu.com/12620657/
+> 
+> This is working fine with pycrypto but when i try to verify the
+> test.sig file with the following openssl command it fails:
+> openssl pkeyutl -verify -sigfile test.sig -pubin -inkey pub.pem -in 
+> test.txt
+> 
+> If i generated a signature using openssl with the following command:
+> openssl pkeyutl -sign -inkey priv.pem -in test.txt -out test.sig
+> 
+> Verification with openssl works fine but not with pycrypto.
+> openssl pkeyutl -verify -sigfile test.sig -pubin -inkey pub.pem -in 
+> test.txt
+> Signature Verified Successfully
+> 
+> I've also tried to use PKCS1_PSS but this does not work too.
+> 
+> Is there anything wrong with my code or is it not possible to verify
+> openssl signatures?
+> 
+> regards
+> the2nd
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From jonasthiem at googlemail.com  Sun Oct  4 11:44:15 2015
+From: jonasthiem at googlemail.com (Jonas Thiem)
+Date: Sun, 4 Oct 2015 20:44:15 +0200
+Subject: [pycrypto] Availability of MODE_GCM
+In-Reply-To: <CAEncD4fJzNkVpb7jS011sLmoPGeSpPsPkVRAn80ZiJCantGtwA@mail.gmail.com>
+References: <CAD7Z2hoh2Q70KPEPvB+yyn1FHs+zHuQvvdK5ig0a2MtWtP0tRw@mail.gmail.com>
+ <CAEncD4fJzNkVpb7jS011sLmoPGeSpPsPkVRAn80ZiJCantGtwA@mail.gmail.com>
+Message-ID: <CAD7Z2ho1NMssnh+AntBXoYTzWgzPUdGt2TzjmWVGt-5kUd=4Vw@mail.gmail.com>
+
+Yes but if possible, I don't want people to redirect to some more
+unknown build either just to run my software.. it'd be nice to have
+this in the official release soon.
+
+So if I may ask again, would there be any sort of information
+available on when 2.7 is coming out roughly? (I have alternate plans
+to MODE_GCM, and I'm wondering if I should go for those instead, or
+wait until a stable PyCrypto release is out that supports it)
+
+On Sat, Sep 19, 2015 at 7:50 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+> If you search the list archives, I posted my (successful) build of
+> pycrypto following
+> the instructions of another list member.
+>
+> It would be helpful if they were in the project docs though.
+>
+> regards
+>
+> On 19 September 2015 at 02:04, Jonas Thiem <jonasthiem at googlemail.com> wrote:
+>> Hi *,
+>>
+>> first of all thanks for this amazing crypto library!
+>>
+>> I would like to ask if there's any sort of idea when 2.7 is becoming
+>> stable, because I want to use MODE_GCM which doesn't appear to be
+>> available in earlier versions.
+>>
+>> I am asking because while it's doable on Linux to install the
+>> experimental version, I direct my windows users to
+>> http://www.voidspace.org.uk/python/modules.shtml#pycrypto - but there,
+>> no experimental build is available. Since I understand maintaining
+>> those would be too much effort, ultimately I can only depend on this
+>> feature if it arrives in stable any time soon.
+>>
+>> Regards,
+>> Jonas Thiem
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From the2nd at otpme.org  Sat Oct 10 13:32:55 2015
+From: the2nd at otpme.org (the2nd at otpme.org)
+Date: Sat, 10 Oct 2015 22:32:55 +0200
+Subject: [pycrypto] =?utf-8?q?Security_of_public=5Fkey=2Eencrypt=28=29_and?=
+ =?utf-8?q?_private=5Fkey=2Edecrypt=28=29?=
+Message-ID: <e2da767767d6485894048f9f21637889@otpme.org>
+
+Hi,
+
+I'm not sure if this is the right list to ask my question but i'll give 
+it a try.
+
+After reading the docs and doing some tests i found out that the 
+encrypt()/decrypt() methods of the RSA key object exactly do what i need 
+for OTPme (http://www.otpme.org).
+My requirement is that the ciphertext for the same cleartext will always 
+be the same. Thats not the case when using a scheme like PKCS1_OAEP and 
+i guess that this behavior cannot be changed (probably for a good 
+reason).
+
+To be clear, i'm talking about this methods: 
+https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA._RSAobj-class.html#encrypt
+
+I guess the ciphertext generated by the methods above is vulnerable to 
+brute force attacks. If i encrypt the string "hello world" with the 
+public key and the resulting ciphertext is always the same its easy to 
+brute force. But are there any other security implications when using 
+this methods?
+
+My use case is the following:
+- The user logs in using the OTPme PAM module which sends a auth request 
+the the OTPme server
+- On success the server sends back a session password (32 char hex 
+string)
+- The client generates a RSA key pair
+- The session password is added to the otpme-agent which keeps it in 
+memory only
+- The session password is encrypted with the RSA public key
+- The encrypted session password along with the public key is saved to a 
+file
+- The private key is encrypted using AES with the users password (or 
+some hardware token like the yubikey via HMAC challenge/response)
+- The encrypted private key is saved to a file along with the offline 
+token data
+- From time to time the agent does a renegotiation with the server and 
+gets a new session password
+- The agent encrypts the old password with the public key from the 
+session file and checks if the ciphertext matches the one from the 
+session file
+     - Thats the reason for my initial requirement. Without this check an 
+attacker could create a fake session file with a public key he has the 
+private key for...
+- The agent encrypts the new session password with the public key from 
+the session file and replaces the old encrypted session password with 
+the new one
+
+Thats the short version of what the OTPme client does. There are some 
+more things because it supports offline logins etc. but this should not 
+be important for my question.
+
+So my final question is. Is it secure to save a 32 char hex string 
+encrpyted with the public key encrypt() method?
+
+There are some other things i am unsure about when it comes to AES 
+encryption but thats for another mail....
+
+regards
+the2nd
+
+From jeffery.to at gmail.com  Wed Oct 28 04:03:12 2015
+From: jeffery.to at gmail.com (Jeffery To)
+Date: Wed, 28 Oct 2015 19:03:12 +0800
+Subject: [pycrypto] RIPEMD-160 self-test failure
+Message-ID: <CAJXyS=j2mZff6zrpftDHVD5Q-f1fYaLsR1UgeXQhg5tmontJpw@mail.gmail.com>
+
+Hi,
+
+I'm trying to cross-compile PyCrypto 2.6.1 for OpenWrt (Chaos Calmer 15.05,
+targeting ar71xx). The library compiled without any fatal errors and I'm
+able to package and install on my router (TP-Link TL-MR3020).
+
+To be sure it's working correctly, I transferred setup.py to my router and
+ran the self-test. All the tests passed except for the 9 RIPEMD-160 hash
+tests. The library function(s) seem to return normally, but the returned
+hash is incorrect, e.g.:
+
+FAIL: runTest (Crypto.SelfTest.Hash.common.HashSelfTest)
+RIPEMD #1: '' (empty string)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/site-packages/Crypto/SelfTest/Hash/common.py",
+line 88, in runTest
+    self.assertEqual(self.expected, out1)   # h = .new(); h.update(data);
+h.digest()
+AssertionError: '9c1185a5c5e9fc54612808977ee8f548b2258d31' !=
+'7c7c0f550ddb9e5ebf157869ea147e65cb89bb0e'
+
+I'm unsure how to proceed at this point; my searches on Google haven't
+returned any relevant results. What area/library/etc should I
+investigate/debug to fix this? Any help would be appreciated.
+
+Thanks!
+Jeff
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20151028/6e4b4623/attachment.html>
+
+From helderijs at gmail.com  Thu Oct 29 06:50:01 2015
+From: helderijs at gmail.com (Legrandin)
+Date: Thu, 29 Oct 2015 14:50:01 +0100
+Subject: [pycrypto] RIPEMD-160 self-test failure
+Message-ID: <CAPFZiKuMZq-Y3oWaabEc1522Maj2UxKYx895mnDAaYB-BHdqbg@mail.gmail.com>
+
+Hi,
+
+You most probably get PyCrypto compiled in little-endian mode but your
+router is big endian. There is no clean way to solve this other than
+manually forcing 'PCT_BIG_ENDIAN' to be 1 in setup.py.
+
+L.
+
+2015-10-28 12:03 GMT+01:00 Jeffery To <jeffery.to at gmail.com>:
+> Hi,
+>
+> I'm trying to cross-compile PyCrypto 2.6.1 for OpenWrt (Chaos Calmer 15.05,
+> targeting ar71xx). The library compiled without any fatal errors and I'm
+> able to package and install on my router (TP-Link TL-MR3020).
+>
+> To be sure it's working correctly, I transferred setup.py to my router and
+> ran the self-test. All the tests passed except for the 9 RIPEMD-160 hash
+> tests. The library function(s) seem to return normally, but the returned
+> hash is incorrect, e.g.:
+>
+> FAIL: runTest (Crypto.SelfTest.Hash.common.HashSelfTest)
+> RIPEMD #1: '' (empty string)
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>   File "/usr/lib/python2.7/site-packages/Crypto/SelfTest/Hash/common.py",
+> line 88, in runTest
+>     self.assertEqual(self.expected, out1)   # h = .new(); h.update(data);
+> h.digest()
+> AssertionError: '9c1185a5c5e9fc54612808977ee8f548b2258d31' !=
+> '7c7c0f550ddb9e5ebf157869ea147e65cb89bb0e'
+>
+> I'm unsure how to proceed at this point; my searches on Google haven't
+> returned any relevant results. What area/library/etc should I
+> investigate/debug to fix this? Any help would be appreciated.
+>
+> Thanks!
+> Jeff
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+From jeffery.to at gmail.com  Fri Oct 30 09:27:53 2015
+From: jeffery.to at gmail.com (Jeffery To)
+Date: Sat, 31 Oct 2015 00:27:53 +0800
+Subject: [pycrypto] RIPEMD-160 self-test failure
+In-Reply-To: <CAPFZiKuMZq-Y3oWaabEc1522Maj2UxKYx895mnDAaYB-BHdqbg@mail.gmail.com>
+References: <CAPFZiKuMZq-Y3oWaabEc1522Maj2UxKYx895mnDAaYB-BHdqbg@mail.gmail.com>
+Message-ID: <CAJXyS=hP6aUBELQRe_-vi9dHtFgNU2vRFtpvLyJkAjYjT9uOBQ@mail.gmail.com>
+
+Thanks for your help - endianness was the issue. The tests all pass after
+patching setup.py.
+
+Thanks again!
+Jeff
+
+On Thu, Oct 29, 2015 at 9:50 PM, Legrandin <helderijs at gmail.com> wrote:
+
+> Hi,
+>
+> You most probably get PyCrypto compiled in little-endian mode but your
+> router is big endian. There is no clean way to solve this other than
+> manually forcing 'PCT_BIG_ENDIAN' to be 1 in setup.py.
+>
+> L.
+>
+> 2015-10-28 12:03 GMT+01:00 Jeffery To <jeffery.to at gmail.com>:
+> > Hi,
+> >
+> > I'm trying to cross-compile PyCrypto 2.6.1 for OpenWrt (Chaos Calmer
+> 15.05,
+> > targeting ar71xx). The library compiled without any fatal errors and I'm
+> > able to package and install on my router (TP-Link TL-MR3020).
+> >
+> > To be sure it's working correctly, I transferred setup.py to my router
+> and
+> > ran the self-test. All the tests passed except for the 9 RIPEMD-160 hash
+> > tests. The library function(s) seem to return normally, but the returned
+> > hash is incorrect, e.g.:
+> >
+> > FAIL: runTest (Crypto.SelfTest.Hash.common.HashSelfTest)
+> > RIPEMD #1: '' (empty string)
+> > ----------------------------------------------------------------------
+> > Traceback (most recent call last):
+> >   File "/usr/lib/python2.7/site-packages/Crypto/SelfTest/Hash/common.py",
+> > line 88, in runTest
+> >     self.assertEqual(self.expected, out1)   # h = .new(); h.update(data);
+> > h.digest()
+> > AssertionError: '9c1185a5c5e9fc54612808977ee8f548b2258d31' !=
+> > '7c7c0f550ddb9e5ebf157869ea147e65cb89bb0e'
+> >
+> > I'm unsure how to proceed at this point; my searches on Google haven't
+> > returned any relevant results. What area/library/etc should I
+> > investigate/debug to fix this? Any help would be appreciated.
+> >
+> > Thanks!
+> > Jeff
+> >
+> >
+> > _______________________________________________
+> > pycrypto mailing list
+> > pycrypto at lists.dlitz.net
+> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20151031/158352f0/attachment.html>
+
+From johnthagen at gmail.com  Thu Nov 19 05:42:44 2015
+From: johnthagen at gmail.com (John Hagen)
+Date: Thu, 19 Nov 2015 08:42:44 -0500
+Subject: [pycrypto] 2.6.1 and 2.7a1 fail to install on Python 3.5/Windows.
+ Need a new 2.7a2 tag
+Message-ID: <CALL4rhPiF8UdaCBM6RAZ-atyJROyWeYLkE32oSQg3+WWQPO6=Q@mail.gmail.com>
+
+Both pycrypto 2.6.1 and 2.7a1 fail to install under Python 3.5 on Windows.
+
+The bug is reported here:
+https://github.com/dlitz/pycrypto/issues/168#issuecomment-157234241
+
+And has been fixed here:
+https://github.com/dlitz/pycrypto/pull/46
+
+But without a new release and one that's pushed to PyPI, users will
+continue to get hung up on this.
+
+Is there any reason a 2.7a2 tag can't be pushed to PyPI?
+
+Thanks!
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20151119/3e3a571e/attachment.html>
+

@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ImportError: cannot import name _counter
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20ImportError%3A%20cannot%20import%20name%20_counter&In-Reply-To=%3CCA%2BrTMznFmwyJ1LgRnxxMdq5gS_32nkDGHZa%3DwrHExy2Si7bjZA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000567.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ImportError: cannot import name _counter</H1>
+    <B>Parthy Chandrasekaran</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20ImportError%3A%20cannot%20import%20name%20_counter&In-Reply-To=%3CCA%2BrTMznFmwyJ1LgRnxxMdq5gS_32nkDGHZa%3DwrHExy2Si7bjZA%40mail.gmail.com%3E"
+       TITLE="[pycrypto] ImportError: cannot import name _counter">partheinstein at gmail.com
+       </A><BR>
+    <I>Thu Apr  5 14:47:37 EDT 2012</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000567.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#566">[ date ]</a>
+              <a href="thread.html#566">[ thread ]</a>
+              <a href="subject.html#566">[ subject ]</a>
+              <a href="author.html#566">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I need to install pycryto module to use another module (paramiko).
+I've installed pycrypto 2.5 for Python 2.7 on Windows XP as follows:
+
+C:\Tools\python\pycrypto-2.5.tar\dist\pycrypto-2.5\pycrypto-2.5&gt;python
+setup.py install --install-platbase win32
+running install
+running build
+running build_py
+running build_ext
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+
+running install_lib
+copying build\lib.win32-2.7\Crypto\Cipher\AES.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Cipher\ARC2.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Cipher\ARC4.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Cipher\Blowfish.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Cipher\CAST.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Cipher\DES.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Cipher\DES3.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Cipher\XOR.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Cipher
+copying build\lib.win32-2.7\Crypto\Hash\_MD2.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Hash
+copying build\lib.win32-2.7\Crypto\Hash\_MD4.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Hash
+copying build\lib.win32-2.7\Crypto\Hash\_RIPEMD160.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Hash
+copying build\lib.win32-2.7\Crypto\Hash\_SHA224.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Hash
+copying build\lib.win32-2.7\Crypto\Hash\_SHA256.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Hash
+copying build\lib.win32-2.7\Crypto\Hash\_SHA384.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Hash
+copying build\lib.win32-2.7\Crypto\Hash\_SHA512.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Hash
+copying build\lib.win32-2.7\Crypto\Random\OSRNG\winrandom.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Random\OSRNG
+copying build\lib.win32-2.7\Crypto\Util\strxor.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Util
+copying build\lib.win32-2.7\Crypto\Util\_counter.pyd -&gt;
+C:\Tools\python\Python27\Lib\site-packages\Crypto\Util
+running install_egg_info
+Removing C:\Tools\python\Python27\Lib\site-packages\pycrypto-2.5-py2.7.egg-info
+Writing C:\Tools\python\Python27\Lib\site-packages\pycrypto-2.5-py2.7.egg-info
+
+When I run the self-test for counter, I get an ImportError for _counter:
+
+C:\Tools\python\pycrypto-2.5.tar\dist\pycrypto-2.5\pycrypto-2.5\lib\Crypto\SelfTest\Util&gt;python
+test_Counter.py
+
+  File &quot;test_Counter.py&quot;, line 39, in setUp
+    from Crypto.Util import Counter
+  File &quot;C:\Tools\python\Python27\lib\Crypto\Util\Counter.py&quot;, line30,
+in &lt;module&gt;
+    from Crypto.Util import _counter
+ImportError: cannot import name _counter
+
+Any ideas on how I can resolve this import error?
+
+thanks
+partheinstein
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000567.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#566">[ date ]</a>
+              <a href="thread.html#566">[ thread ]</a>
+              <a href="subject.html#566">[ subject ]</a>
+              <a href="author.html#566">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

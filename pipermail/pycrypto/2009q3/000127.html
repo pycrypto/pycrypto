@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ERROR%3A%20testRsaUnversionedSignAndVerify%20failed&In-Reply-To=20090821015543.GA22301%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000116.html">
+   <LINK REL="Next"  HREF="000117.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ERROR%3A%20testRsaUnversionedSignAndVerify%20failed&In-Reply-To=20090821015543.GA22301%40rivest.dlitz.net"
+       TITLE="[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed">dlitz at dlitz.net
+       </A><BR>
+    <I>Fri Aug 28 10:33:05 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000116.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+        <LI>Next message: <A HREF="000117.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#127">[ date ]</a>
+              <a href="thread.html#127">[ thread ]</a>
+              <a href="subject.html#127">[ subject ]</a>
+              <a href="author.html#127">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Aug 20, 2009 at 09:55:43PM -0400, Dwayne C. Litzenberger wrote:
+&gt;<i>You can use this code.  I hereby release it into the public domain:
+</I>&gt;<i>
+</I>&gt;<i>try:
+</I>&gt;<i>    from Crypto import Random
+</I>&gt;<i>    _rng_instance = Random.new()
+</I>&gt;<i>except ImportError:
+</I>&gt;<i>    class RandomStub:
+</I>&gt;<i>        def read(n):
+</I>&gt;<i>            return os.urandom(n)
+</I>&gt;<i>    _rng_instance = RandomStub()
+</I>&gt;<i>
+</I>&gt;<i>def RandBytes(n):
+</I>&gt;<i>    &quot;&quot;&quot;Return n random bytes.&quot;&quot;&quot;
+</I>&gt;<i>    return _rng_instance.read(n)
+</I>
+Correction: You need not create a global _rng_instance singleton, since 
+Random.new() already does this for you.  Use this code instead:
+
+     # Define the RandBytes function using one of the following
+     # random sources (in preferential order):
+     # 1. Crypto.Random
+     # 2. os.urandom
+     try:
+          from Crypto.Random import get_random_bytes as RandBytes
+     except ImportError:
+          from os import urandom as RandBytes
+
+If you want support for versions of Python prior to 2.4 on Unix, you can do 
+this:
+
+     # Define the RandBytes function using one of the following
+     # random sources (in preferential order):
+     # 1. Crypto.Random
+     # 2. os.urandom
+     # 3. /dev/urandom
+     try:
+          from Crypto.Random import get_random_bytes as RandBytes
+     except ImportError:
+          try:
+              from os import urandom as RandBytes
+          except ImportError:
+              RandBytes = open(&quot;/dev/urandom&quot;, &quot;rb&quot;).read
+
+In any case, RandomPool should not be used at all, ever.
+
+The code above is released into the public domain (copyright abandoned).
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+   Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000116.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+	<LI>Next message: <A HREF="000117.html">[pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#127">[ date ]</a>
+              <a href="thread.html#127">[ thread ]</a>
+              <a href="subject.html#127">[ subject ]</a>
+              <a href="author.html#127">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

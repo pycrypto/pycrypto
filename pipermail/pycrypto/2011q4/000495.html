@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Cannot build 2.4
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Cannot%20build%202.4&In-Reply-To=CAPik8yZAsOVZgR7QgXeB2gji8JH3dyBtn9FsH431rms6COr%2Bdw%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000494.html">
+   <LINK REL="Next"  HREF="000498.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Cannot build 2.4</H1>
+    <B>Tino Dai</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Cannot%20build%202.4&In-Reply-To=CAPik8yZAsOVZgR7QgXeB2gji8JH3dyBtn9FsH431rms6COr%2Bdw%40mail.gmail.com"
+       TITLE="[pycrypto] Cannot build 2.4">oberoc at gmail.com
+       </A><BR>
+    <I>Tue Nov  1 14:24:42 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000494.html">[pycrypto] Cannot build 2.4
+</A></li>
+        <LI>Next message: <A HREF="000498.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#495">[ date ]</a>
+              <a href="thread.html#495">[ thread ]</a>
+              <a href="subject.html#495">[ subject ]</a>
+              <a href="author.html#495">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>You m
+On Nov 1, 2011 4:15 PM, &quot;Paul Hoffman&quot; &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">paul.hoffman at gmail.com</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> Greetings again. Just pulled down 2.4, trying to install it on a
+</I>&gt;<i> Ubuntu box with &quot;python setup.py build&quot;. However:
+</I>&gt;<i>
+</I>&gt;<i> . . .
+</I>&gt;<i> gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes
+</I>&gt;<i> -fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/
+</I>&gt;<i> -I/usr/include/python2.6 -c src/MD2.c -o
+</I>&gt;<i> build/temp.linux-x86_64-2.6/src/MD2.o
+</I>&gt;<i> src/MD2.c:31:20: error: Python.h: No such file or directory
+</I>&gt;<i> src/MD2.c:120: error: expected '=', ',', ';', 'asm' or '__attribute__'
+</I>&gt;<i> before '*' token
+</I>&gt;<i> In file included from src/MD2.c:136:
+</I>&gt;<i> src/hash_template.c:48: error: expected specifier-qualifier-list
+</I>&gt;<i> before 'PyObject_HEAD'
+</I>&gt;<i> src/hash_template.c:59: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before 'PyTypeObject'
+</I>&gt;<i> src/hash_template.c: In function 'newALGobject':
+</I>&gt;<i> src/hash_template.c:69: warning: implicit declaration of function
+</I>'PyObject_New'
+&gt;<i> src/hash_template.c:69: error: expected expression before 'ALGobject'
+</I>&gt;<i> src/hash_template.c: At top level:
+</I>&gt;<i> src/hash_template.c:76: error: expected ')' before '*' token
+</I>&gt;<i> src/hash_template.c:91: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before '*' token
+</I>&gt;<i> src/hash_template.c:110: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before '*' token
+</I>&gt;<i> src/hash_template.c:122: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before '*' token
+</I>&gt;<i> src/hash_template.c:162: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before '*' token
+</I>&gt;<i> src/hash_template.c:181: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before 'ALG_methods'
+</I>&gt;<i> src/hash_template.c:189: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before '*' token
+</I>&gt;<i> src/hash_template.c:214: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before 'ALGtype'
+</I>&gt;<i> src/hash_template.c:265: error: expected '=', ',', ';', 'asm' or
+</I>&gt;<i> '__attribute__' before '*' token
+</I>&gt;<i> src/hash_template.c:298: error: array type has incomplete element type
+</I>&gt;<i> src/hash_template.c:299: error: 'PyCFunction' undeclared here (not in
+</I>&gt;<i> a function)
+</I>&gt;<i> src/hash_template.c:299: error: expected '}' before 'ALG_new'
+</I>&gt;<i> src/hash_template.c: In function 'initMD2':
+</I>&gt;<i> src/hash_template.c:333: error: 'PyObject' undeclared (first use in
+</I>&gt;<i> this function)
+</I>&gt;<i> src/hash_template.c:333: error: (Each undeclared identifier is
+</I>&gt;<i> reported only once
+</I>&gt;<i> src/hash_template.c:333: error: for each function it appears in.)
+</I>&gt;<i> src/hash_template.c:333: error: 'm' undeclared (first use in this
+</I>function)
+&gt;<i> src/hash_template.c:345: error: 'ALGtype' undeclared (first use in
+</I>&gt;<i> this function)
+</I>&gt;<i> src/hash_template.c:345: error: 'PyType_Type' undeclared (first use in
+</I>&gt;<i> this function)
+</I>&gt;<i> src/hash_template.c:346: warning: implicit declaration of function
+</I>&gt;<i> 'Py_InitModule'
+</I>&gt;<i> src/hash_template.c:350: error: 'o' undeclared (first use in this
+</I>function)
+&gt;<i> src/hash_template.c:350: warning: implicit declaration of function
+</I>&gt;<i> 'PyInt_FromLong'
+</I>&gt;<i> src/hash_template.c:350: warning: implicit declaration of function
+</I>&gt;<i> 'PyDict_SetItemString'
+</I>&gt;<i> src/hash_template.c:350: warning: implicit declaration of function
+</I>&gt;<i> 'PyModule_GetDict'
+</I>&gt;<i> src/hash_template.c:350: warning: implicit declaration of function
+</I>'Py_DECREF'
+&gt;<i> src/hash_template.c:354: warning: implicit declaration of function
+</I>&gt;<i> 'PyErr_Occurred'
+</I>&gt;<i> src/hash_template.c:355: warning: implicit declaration of function
+</I>&gt;<i> 'Py_FatalError'
+</I>&gt;<i> error: command 'gcc' failed with exit status 1
+</I>&gt;<i>
+</I>&gt;<i> Clues appreciated.
+</I>&gt;<i>
+</I>&gt;<i> --Paul Hoffman
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>You probably have apt-get install python-dev
+
+-T
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20111101/5f40e9a7/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20111101/5f40e9a7/attachment.htm</A> 
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000494.html">[pycrypto] Cannot build 2.4
+</A></li>
+	<LI>Next message: <A HREF="000498.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#495">[ date ]</a>
+              <a href="thread.html#495">[ thread ]</a>
+              <a href="subject.html#495">[ subject ]</a>
+              <a href="author.html#495">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

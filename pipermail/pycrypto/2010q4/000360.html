@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Wanted: Additional unit tests for Python 3.x porting	effort
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Wanted%3A%20Additional%20unit%20tests%20for%20Python%203.x%20porting%0A%09effort&In-Reply-To=4D1DE73D.90603%40spamfreemail.de">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000359.html">
+   <LINK REL="Next"  HREF="000362.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Wanted: Additional unit tests for Python 3.x porting	effort</H1>
+    <B>Paul Koning</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Wanted%3A%20Additional%20unit%20tests%20for%20Python%203.x%20porting%0A%09effort&In-Reply-To=4D1DE73D.90603%40spamfreemail.de"
+       TITLE="[pycrypto] Wanted: Additional unit tests for Python 3.x porting	effort">paul_koning at dell.com
+       </A><BR>
+    <I>Fri Dec 31 08:24:23 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000359.html">[pycrypto] Wanted: Additional unit tests for Python 3.x porting effort
+</A></li>
+        <LI>Next message: <A HREF="000362.html">[pycrypto] Wanted: Additional unit tests for Python 3.x porting effort
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#360">[ date ]</a>
+              <a href="thread.html#360">[ thread ]</a>
+              <a href="subject.html#360">[ subject ]</a>
+              <a href="author.html#360">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>If I remember right, some versions of pgp used ElGamal, so that might serve as an open reference implementation.  Not as good as test vectors but it's a widely used implementation.
+
+	paul
+
+On Dec 31, 2010, at 9:22 AM, Michael Rodler wrote:
+
+&gt;<i> Hello,
+</I>&gt;<i> 
+</I>&gt;<i> I'd volunteer to write the unit test for ElGamal, but since ElGamal is
+</I>&gt;<i> not standardized, it's pretty hard to find any public test vectors.
+</I>&gt;<i> (quick google search reveals nothing) So you probably need to generate
+</I>&gt;<i> them yourself and I'm not sure how to do that properly. (generate using
+</I>&gt;<i> another library i.e. bouncycastle or using some algebra system i.e.
+</I>&gt;<i> Mathematica, which is probably less error prone?)
+</I>&gt;<i> 
+</I>&gt;<i> If anyone can point me into the right direction, I'd be happy to help.
+</I>&gt;<i> (Obviously not today, so cheers and happy new year ;)
+</I>&gt;<i> 
+</I>&gt;<i> Michael
+</I>&gt;<i> 
+</I>&gt;<i> On 2010-12-31 06:11, Thorsten Behrens wrote:
+</I>&gt;&gt;<i> Crypto.Random.random has unit tests now. A few notes on that:
+</I>&gt;&gt;<i>     - random.shuffle() was broken, it had a TypeError and an 
+</I>&gt;&gt;<i> IndexError. Not my doing, that's always been the case. That's been fixed.
+</I>&gt;&gt;<i>     - random.sample() does not work on 2.1. Not my doing, that's always 
+</I>&gt;&gt;<i> been the case. I will not fix this. Others are welcome to.
+</I>&gt;&gt;<i>     - random does not implement the full compliment of functions that 
+</I>&gt;&gt;<i> Python offers, it is a much smaller subset
+</I>&gt;&gt;<i>     - I somehow doubt anyone ever actually used this interface. We may 
+</I>&gt;&gt;<i> declare it &quot;static for backwards compatibility&quot; and leave well enough alone.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> I will not write unit tests for qNEW, though others are welcome to.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> We still need unit tests for ElGamal and AllOrNothing. Anyone?
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Thorsten
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> On 12/29/2010 4:28 PM, Thorsten Behrens wrote:
+</I>&gt;&gt;&gt;<i> Now that we have a working pycrypto on Python 3.x, it's time to see what
+</I>&gt;&gt;&gt;<i> we don't have unit tests for. See
+</I>&gt;&gt;&gt;<i> <A HREF="https://bugs.launchpad.net/pycrypto/+bug/335995">https://bugs.launchpad.net/pycrypto/+bug/335995</A> for results.
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> Currently, the following are not included in unit testing at all:
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> Protocol/AllOrNothing
+</I>&gt;&gt;&gt;<i> PublicKey/ElGamal
+</I>&gt;&gt;&gt;<i> PublicKey/qNEW
+</I>&gt;&gt;&gt;<i> random/random
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> I'd love some unit tests for those. With public test vectors, please,
+</I>&gt;&gt;&gt;<i> not test vectors derived from pycrypto.
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> Volunteers?
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> Thorsten
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000359.html">[pycrypto] Wanted: Additional unit tests for Python 3.x porting effort
+</A></li>
+	<LI>Next message: <A HREF="000362.html">[pycrypto] Wanted: Additional unit tests for Python 3.x porting effort
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#360">[ date ]</a>
+              <a href="thread.html#360">[ thread ]</a>
+              <a href="subject.html#360">[ subject ]</a>
+              <a href="author.html#360">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

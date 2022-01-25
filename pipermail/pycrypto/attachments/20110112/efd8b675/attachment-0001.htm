@@ -1,0 +1,35 @@
+<tt>
+To&nbsp;all&nbsp;who&nbsp;gave&nbsp;me&nbsp;some&nbsp;of&nbsp;their&nbsp;time.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I&amp;#39;ve&nbsp;sorted&nbsp;the&nbsp;problem,&nbsp;it&nbsp;was&nbsp;how&nbsp;the&nbsp;IV&nbsp;was&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;byte&nbsp;array&nbsp;in&nbsp;AS3.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Thank&nbsp;you&nbsp;all&nbsp;for&nbsp;your&nbsp;help&nbsp;:)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;<br>
+&lt;div&gt;Regards,&lt;/div&gt;&lt;div&gt;Joshua&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Wed,&nbsp;Jan&nbsp;12,&nbsp;2011&nbsp;at&nbsp;1:49&nbsp;PM,&nbsp;Joshua&nbsp;Strauss&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&amp;lt;&lt;a&nbsp;href=&quot;mailto:joshua.a.strauss@gmail.com&quot;&gt;joshua.a.strauss@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex;&quot;&gt;Legrandin,&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I&nbsp;think&nbsp;you&nbsp;are&nbsp;on&nbsp;to&nbsp;something&nbsp;here.&nbsp;Removing&nbsp;the&nbsp;initialization&nbsp;vector&nbsp;from&nbsp;both&nbsp;pycrypto&nbsp;and&nbsp;as3crypto&nbsp;produces&nbsp;the&nbsp;same&nbsp;b64encoded&nbsp;output.&nbsp;I&amp;#39;ve&nbsp;been&nbsp;playing&nbsp;around&nbsp;with&nbsp;different&nbsp;IV&amp;#39;s&nbsp;but&nbsp;I&nbsp;can&nbsp;only&nbsp;get&nbsp;the&nbsp;output&nbsp;to&nbsp;match&nbsp;without&nbsp;the&nbsp;presence&nbsp;of&nbsp;an&nbsp;IV.&lt;/div&gt;<br>
+<br>
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;This&nbsp;does&nbsp;lead&nbsp;me&nbsp;to&nbsp;believe&nbsp;that&nbsp;the&nbsp;IV&nbsp;is&nbsp;the&nbsp;source&nbsp;of&nbsp;my&nbsp;problem&nbsp;but&nbsp;if&nbsp;anyone&nbsp;can&nbsp;think&nbsp;of&nbsp;a&nbsp;reason&nbsp;why&nbsp;this&nbsp;might&nbsp;not&nbsp;be,&nbsp;it&nbsp;would&nbsp;be&nbsp;helpful&nbsp;to&nbsp;know&nbsp;as&nbsp;I&nbsp;don&amp;#39;t&nbsp;want&nbsp;to&nbsp;be&nbsp;on&nbsp;the&nbsp;wrong&nbsp;track.&lt;/div&gt;<br>
+<br>
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I&nbsp;haven&amp;#39;t&nbsp;done&nbsp;much&nbsp;coding&nbsp;at&nbsp;the&nbsp;byte&nbsp;level&nbsp;(I&amp;#39;m&nbsp;mainly&nbsp;a&nbsp;web&nbsp;developer,&nbsp;and&nbsp;not&nbsp;seasoned&nbsp;by&nbsp;any&nbsp;means),&nbsp;I&amp;#39;ll&nbsp;keep&nbsp;trucking&nbsp;from&nbsp;here&nbsp;I&nbsp;suppose.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Regards,&lt;/div&gt;&lt;div&gt;<br>
+<br>
+Joshua&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&nbsp;class=&quot;h5&quot;&gt;&lt;div&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Wed,&nbsp;Jan&nbsp;12,&nbsp;2011&nbsp;at&nbsp;1:15&nbsp;PM,&nbsp;Legrandin&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&amp;lt;&lt;a&nbsp;href=&quot;mailto:gooksankoo@hoiptorrow.mailexpire.com&quot;&nbsp;target=&quot;_blank&quot;&gt;gooksankoo@hoiptorrow.mailexpire.com&lt;/a&gt;&amp;gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;<br>
+<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;&lt;div&gt;&amp;gt;&nbsp; &nbsp; var&nbsp;t_byAry:ByteArray&nbsp;=&nbsp;Hex.toArray(&nbsp;Hex.fromString(&nbsp;t_toEnc&nbsp;)&nbsp;);&lt;br&gt;<br>
+&amp;gt;&nbsp; &nbsp; var&nbsp;t_key:ByteArray&nbsp;=&nbsp;Hex.toArray(&nbsp;Hex.fromString(&nbsp;&amp;#39;Thisisthekey&amp;#39;&nbsp;)&nbsp;);&lt;br&gt;<br>
+&amp;gt;&nbsp; &nbsp; var&nbsp;t_cbc:CBCMode&nbsp;=&nbsp;new&nbsp;CBCMode(&nbsp;new&nbsp;BlowFishKey(&nbsp;t_key&nbsp;),&nbsp;new&nbsp;NullPad&nbsp;);&lt;br&gt;<br>
+&lt;/div&gt;&lt;div&gt;&amp;gt;&nbsp; &nbsp; t_cbc.IV&nbsp;=&nbsp;Hex.toArray(&nbsp;&amp;#39;30313233&amp;#39;&nbsp;);&lt;br&gt;<br>
+&amp;gt;&nbsp; &nbsp; t_cbc.encrypt(&nbsp;t_byAry&nbsp;);&lt;br&gt;<br>
+&amp;gt;&nbsp; &nbsp; t_enc&nbsp;=&nbsp;Base64.encodeByteArray(&nbsp;t_byAry&nbsp;);&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;&lt;div&gt;&amp;gt;&nbsp; &nbsp; &amp;gt;&amp;gt;&amp;gt;&nbsp;from&nbsp;Crypto.Cipher&nbsp;import&nbsp;Blowfish&lt;br&gt;<br>
+&amp;gt;&nbsp; &nbsp; &amp;gt;&amp;gt;&amp;gt;&nbsp;B&nbsp;=&nbsp;Blowfish.new(&nbsp;&amp;#39;Thisisthekey&amp;#39;,&nbsp;Blowfish.MODE_CBC,&nbsp;&amp;#39;30313233&amp;#39;&nbsp;)&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;Could&nbsp;it&nbsp;be&nbsp;that&nbsp;in&nbsp;you&nbsp;AS&nbsp;code&nbsp;your&nbsp;IV&nbsp;is&nbsp;4&nbsp;bytes&nbsp;(0x30,0x31,0x32,0x33)&lt;br&gt;<br>
+which&nbsp;t_cbc.encrypt()&nbsp;silently&nbsp;pads,&nbsp;whereas&nbsp;in&nbsp;the&nbsp;python&nbsp;code&nbsp;it&nbsp;is&nbsp;8&lt;br&gt;<br>
+different&nbsp;bytes&nbsp;(0x33&nbsp;for&nbsp;&amp;#39;3&amp;#39;,&nbsp;0x30&nbsp;for&nbsp;&amp;#39;0&amp;#39;,&nbsp;etc)?&lt;br&gt;<br>
+&lt;font&nbsp;color=&quot;#888888&quot;&gt;&lt;br&gt;<br>
+Legrandin&lt;br&gt;<br>
+&lt;/font&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;<br>
+_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&nbsp;target=&quot;_blank&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;/div&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;<br>
+&lt;/div&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;<br>
+
+</tt>

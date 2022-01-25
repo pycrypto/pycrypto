@@ -1,0 +1,460 @@
+From dave.pawson at gmail.com  Fri May  8 04:23:03 2015
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 8 May 2015 12:23:03 +0100
+Subject: [pycrypto] python 3, crypto installation issue?
+Message-ID: <CAEncD4e=2q58XW7GQAnXwbhZeVeQnk=kbGvdzTMNN010JPfd3w@mail.gmail.com>
+
+Linux, as root.
+$ pip3 install Crypto
+...
+
+Installing collected packages: Crypto, Naked, pyyaml
+  Running setup.py install for pyyaml
+    checking if libyaml is compilable
+    gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1
+-DNDEBUG -O2 -g -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -I/usr/include/python3.4m -c
+build/temp.linux-x86_64-3.4/check_libyaml.c -o
+build/temp.linux-x86_64-3.4/check_libyaml.o
+    build/temp.linux-x86_64-3.4/check_libyaml.c:2:18: fatal error:
+yaml.h: No such file or directory
+     #include <yaml.h>
+                      ^
+    compilation terminated.
+
+    libyaml is not found or a compiler error: forcing --without-libyaml
+    (if libyaml is installed correctly, you may need to
+     specify the option --include-dirs or uncomment and
+     modify the parameter include_dirs in setup.cfg)
+
+Suggestions please?
+
+$pip3 search pyyaml
+pyaml                     - PyYAML-based module to produce
+                            pretty and readable YAML-
+                            serialized data
+PyYAML                    - YAML parser and emitter for
+                            Python
+  INSTALLED: 3.11 (latest)
+
+So it seems I have pyyaml installed?
+
+TiA
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From markgrandi at gmail.com  Fri May  8 10:40:06 2015
+From: markgrandi at gmail.com (mark grandi)
+Date: Fri, 8 May 2015 10:40:06 -0700
+Subject: [pycrypto] python 3, crypto installation issue?
+In-Reply-To: <CAEncD4e=2q58XW7GQAnXwbhZeVeQnk=kbGvdzTMNN010JPfd3w@mail.gmail.com>
+References: <CAEncD4e=2q58XW7GQAnXwbhZeVeQnk=kbGvdzTMNN010JPfd3w@mail.gmail.com>
+Message-ID: <554cf506.2341440a.47fb.0a31@mx.google.com>
+
+The pyyaml package tries to see if yaml.h is installed for optional speedups, but i know the pyyaml package can work without the c extensions, maybe the pycrypto installer doesn't handle that case?
+
+~mark
+
+-----Original Message-----
+From: "Dave Pawson" <dave.pawson at gmail.com>
+Sent: ?5/?8/?2015 4:23 AM
+To: "Pycrypto List" <pycrypto at lists.dlitz.net>
+Subject: [pycrypto] python 3, crypto installation issue?
+
+Linux, as root.
+$ pip3 install Crypto
+...
+
+Installing collected packages: Crypto, Naked, pyyaml
+  Running setup.py install for pyyaml
+    checking if libyaml is compilable
+    gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1
+-DNDEBUG -O2 -g -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -I/usr/include/python3.4m -c
+build/temp.linux-x86_64-3.4/check_libyaml.c -o
+build/temp.linux-x86_64-3.4/check_libyaml.o
+    build/temp.linux-x86_64-3.4/check_libyaml.c:2:18: fatal error:
+yaml.h: No such file or directory
+     #include <yaml.h>
+                      ^
+    compilation terminated.
+
+    libyaml is not found or a compiler error: forcing --without-libyaml
+    (if libyaml is installed correctly, you may need to
+     specify the option --include-dirs or uncomment and
+     modify the parameter include_dirs in setup.cfg)
+
+Suggestions please?
+
+$pip3 search pyyaml
+pyaml                     - PyYAML-based module to produce
+                            pretty and readable YAML-
+                            serialized data
+PyYAML                    - YAML parser and emitter for
+                            Python
+  INSTALLED: 3.11 (latest)
+
+So it seems I have pyyaml installed?
+
+TiA
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20150508/688aa5f9/attachment.html>
+
+From dave.pawson at gmail.com  Fri May  8 11:09:09 2015
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 8 May 2015 19:09:09 +0100
+Subject: [pycrypto] python 3, crypto installation issue?
+In-Reply-To: <554cf506.2341440a.47fb.0a31@mx.google.com>
+References: <CAEncD4e=2q58XW7GQAnXwbhZeVeQnk=kbGvdzTMNN010JPfd3w@mail.gmail.com>
+ <554cf506.2341440a.47fb.0a31@mx.google.com>
+Message-ID: <CAEncD4dupamGPo36sb_V9YK6NJyd0c=jrVs=3EJtvX1mcMP4wA@mail.gmail.com>
+
+Thanks, but I worked round it.
+I installed via the download / setup.py method,  worked fine.
+
+
+Tried to install on Windows 7, 64 bit.
+1. When I select 'all users' for Python 3.4, then pycrypto fails to
+find Python and exits.
+2. When I select 'just current user', then pycrypto installs fine.
+
+crypto seems to look in the 'wrong' place (windows view)
+
+regards
+
+
+On 8 May 2015 at 18:40, mark grandi <markgrandi at gmail.com> wrote:
+> The pyyaml package tries to see if yaml.h is installed for optional
+> speedups, but i know the pyyaml package can work without the c extensions,
+> maybe the pycrypto installer doesn't handle that case?
+>
+> ~mark
+> ________________________________
+> From: Dave Pawson
+> Sent: ?5/?8/?2015 4:23 AM
+> To: Pycrypto List
+> Subject: [pycrypto] python 3, crypto installation issue?
+>
+> Linux, as root.
+> $ pip3 install Crypto
+> ...
+>
+> Installing collected packages: Crypto, Naked, pyyaml
+>   Running setup.py install for pyyaml
+>     checking if libyaml is compilable
+>     gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1
+> -DNDEBUG -O2 -g -pipe -Wall -Werror=format-security
+> -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+> --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic
+> -D_GNU_SOURCE -fPIC -fwrapv -fPIC -I/usr/include/python3.4m -c
+> build/temp.linux-x86_64-3.4/check_libyaml.c -o
+> build/temp.linux-x86_64-3.4/check_libyaml.o
+>     build/temp.linux-x86_64-3.4/check_libyaml.c:2:18: fatal error:
+> yaml.h: No such file or directory
+>      #include <yaml.h>
+>                       ^
+>     compilation terminated.
+>
+>     libyaml is not found or a compiler error: forcing --without-libyaml
+>     (if libyaml is installed correctly, you may need to
+>      specify the option --include-dirs or uncomment and
+>      modify the parameter include_dirs in setup.cfg)
+>
+> Suggestions please?
+>
+> $pip3 search pyyaml
+> pyaml                     - PyYAML-based module to produce
+>                             pretty and readable YAML-
+>                             serialized data
+> PyYAML                    - YAML parser and emitter for
+>                             Python
+>   INSTALLED: 3.11 (latest)
+>
+> So it seems I have pyyaml installed?
+>
+> TiA
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Fri May  8 11:23:06 2015
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 8 May 2015 19:23:06 +0100
+Subject: [pycrypto] Windows64, pycrypto
+Message-ID: <CAEncD4eK+XwirHZHpCKLvnGYs457oPMr=qAHjWjJ7c0Umt_R3g@mail.gmail.com>
+
+>>> from Crypto.Cipher import AES
+Traceback (most recent call last):
+ File "<stdin>", line 1, in <module>
+ File "C:\python34\lib\site-packages\Crypto\Cipher\AES.py", line 50, in <module>
+  from Crypto.Cipher import _AES
+ImportError: DLL load failed: %1 is not a valid Win32 application.
+
+Suggestions please?
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Sat May  9 13:16:06 2015
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sat, 9 May 2015 21:16:06 +0100
+Subject: [pycrypto] Which windows exe please?
+Message-ID: <CAEncD4d=KJ7+tguP+Cu=-x4+RXcPLTKZk_jMqt8Ab0jPg6Pv2g@mail.gmail.com>
+
+windows 7, 64 bit. Installed python 3.4
+Which of the prebuilt pycrypto msi files is
+most reliable please?
+
+tia
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From ibrahimcelikbilek at std.sehir.edu.tr  Mon May 11 05:38:59 2015
+From: ibrahimcelikbilek at std.sehir.edu.tr (Ibrahim Celikbilek)
+Date: Mon, 11 May 2015 15:38:59 +0300
+Subject: [pycrypto] RSA module
+Message-ID: <BCFB4AE7-DC85-4627-A9A4-1409F95F73CA@std.sehir.edu.tr>
+
+how Code  RSA module encryption and decryption write ??
+please help me... 
+
+From maxpolk at gmail.com  Mon Jun  1 22:25:31 2015
+From: maxpolk at gmail.com (Max Polk)
+Date: Tue, 2 Jun 2015 01:25:31 -0400
+Subject: [pycrypto] Compiling on Windows tips
+Message-ID: <CADPfvJs-xcCb42msCYrngP+yrLeoPhrE8WMi=62tC+BkuPoEzg@mail.gmail.com>
+
+I have some notes for compiling pip packages on Windows that may be of use.
+
+To build pycrypto with Visual Studio Express 10, edit the python
+msvc9compiler.py, add the line here above the existing line:
+
+    ld_args.append('/MANIFEST')
+    ld_args.append('/MANIFESTFILE:' + temp_manifest)
+
+Then use this to build:
+
+    set VS90COMNTOOLS=%VS100COMNTOOLS%
+    python setup.py bdist_wininst
+
+The above creates an .exe in the dist directory such as
+pycrypto-2.5.win32-py2.7.exe
+
+In general, for various pip packages that require compiling on Windows such
+as tornado, to compile with Visual Studio from Python, trick Python into
+using an old variable name before calling pip install:
+
+Visual Studio 2010 (VS10):
+SET VS90COMNTOOLS=%VS100COMNTOOLS%
+
+Visual Studio 2012 (VS11):
+SET VS90COMNTOOLS=%VS110COMNTOOLS%
+
+Visual Studio 2013 (VS12):
+SET VS90COMNTOOLS=%VS120COMNTOOLS%
+
+If it is looking for Visual C++ 10, you will set VS100COMNTOOLS instead of
+setting VS90COMNTOOLS.
+
+The above worked for pip install tornado on Windows python 2 and 3.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20150602/9f9ef5cd/attachment.html>
+
+From dave.pawson at gmail.com  Mon Jun 15 09:59:36 2015
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Mon, 15 Jun 2015 17:59:36 +0100
+Subject: [pycrypto] Compiling on Windows tips
+In-Reply-To: <CADPfvJs-xcCb42msCYrngP+yrLeoPhrE8WMi=62tC+BkuPoEzg@mail.gmail.com>
+References: <CADPfvJs-xcCb42msCYrngP+yrLeoPhrE8WMi=62tC+BkuPoEzg@mail.gmail.com>
+Message-ID: <CAEncD4dqu2fx==kZ=4-2jJx2X0h0NgztOe7d4FGbNa9qWEp8gQ@mail.gmail.com>
+
+Thanks Max.
+simple question, which of the n variants of Vis Studio should we install please?
+
+regards
+
+On 2 June 2015 at 06:25, Max Polk <maxpolk at gmail.com> wrote:
+> I have some notes for compiling pip packages on Windows that may be of use.
+>
+> To build pycrypto with Visual Studio Express 10, edit the python
+> msvc9compiler.py, add the line here above the existing line:
+>
+>     ld_args.append('/MANIFEST')
+>     ld_args.append('/MANIFESTFILE:' + temp_manifest)
+>
+> Then use this to build:
+>
+>     set VS90COMNTOOLS=%VS100COMNTOOLS%
+>     python setup.py bdist_wininst
+>
+> The above creates an .exe in the dist directory such as
+> pycrypto-2.5.win32-py2.7.exe
+>
+> In general, for various pip packages that require compiling on Windows such
+> as tornado, to compile with Visual Studio from Python, trick Python into
+> using an old variable name before calling pip install:
+>
+> Visual Studio 2010 (VS10):
+> SET VS90COMNTOOLS=%VS100COMNTOOLS%
+>
+> Visual Studio 2012 (VS11):
+> SET VS90COMNTOOLS=%VS110COMNTOOLS%
+>
+> Visual Studio 2013 (VS12):
+> SET VS90COMNTOOLS=%VS120COMNTOOLS%
+>
+> If it is looking for Visual C++ 10, you will set VS100COMNTOOLS instead of
+> setting VS90COMNTOOLS.
+>
+> The above worked for pip install tornado on Windows python 2 and 3.
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From maxpolk at gmail.com  Sun Jun 28 14:58:19 2015
+From: maxpolk at gmail.com (Max Polk)
+Date: Sun, 28 Jun 2015 17:58:19 -0400
+Subject: [pycrypto] pycrypto Digest, Vol 75, Issue 2
+In-Reply-To: <mailman.1.1434394801.15717.pycrypto@lists.dlitz.net>
+References: <mailman.1.1434394801.15717.pycrypto@lists.dlitz.net>
+Message-ID: <CADPfvJvtiJY4m8m0HaMtkfXApCRgfjxgNLRzUj=A_Y8n8Ku3_A@mail.gmail.com>
+
+From: Dave Pawson <dave.pawson at gmail.com>
+>
+> Thanks Max.
+> simple question, which of the n variants of Vis Studio should we install
+please?
+
+Successfully tested this just now using pip to install pycrypto in Python 2
+and 3.
+
+Install Microsoft Visual Studio Community 2013.
+
+:: Run the batch file to set things
+C:\whatever\VisualStudio\Common7\Tools\vsvars32.bat
+
+:: Python 2 expects Microsoft Visual C++ 9.0
+set VS90COMNTOOLS=%VS120COMNTOOLS%
+C:\whatever\Python2\Scripts\pip2 install pycrypto
+
+:: Python 3 expects Microsoft Visual C++ 10.0
+set VS100COMNTOOLS=%VS120COMNTOOLS%
+C:\whatever\Python3\Scripts\pip3 install pycrypto
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20150628/09210222/attachment.html>
+
+From dave.pawson at gmail.com  Sun Jun 28 23:39:38 2015
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Mon, 29 Jun 2015 07:39:38 +0100
+Subject: [pycrypto] pycrypto Digest, Vol 75, Issue 2
+In-Reply-To: <CADPfvJvtiJY4m8m0HaMtkfXApCRgfjxgNLRzUj=A_Y8n8Ku3_A@mail.gmail.com>
+References: <mailman.1.1434394801.15717.pycrypto@lists.dlitz.net>
+ <CADPfvJvtiJY4m8m0HaMtkfXApCRgfjxgNLRzUj=A_Y8n8Ku3_A@mail.gmail.com>
+Message-ID: <CAEncD4di0UU-0ZnDDxBBTozPAp+N2WvESmuLhnuEVQxNaEJ2NQ@mail.gmail.com>
+
+Thanks Max, I'll give it a try.
+
+Dave
+
+On 28 June 2015 at 22:58, Max Polk <maxpolk at gmail.com> wrote:
+> From: Dave Pawson <dave.pawson at gmail.com>
+>>
+>> Thanks Max.
+>> simple question, which of the n variants of Vis Studio should we install
+>> please?
+>
+> Successfully tested this just now using pip to install pycrypto in Python 2
+> and 3.
+>
+> Install Microsoft Visual Studio Community 2013.
+>
+> :: Run the batch file to set things
+> C:\whatever\VisualStudio\Common7\Tools\vsvars32.bat
+>
+> :: Python 2 expects Microsoft Visual C++ 9.0
+> set VS90COMNTOOLS=%VS120COMNTOOLS%
+> C:\whatever\Python2\Scripts\pip2 install pycrypto
+>
+> :: Python 3 expects Microsoft Visual C++ 10.0
+> set VS100COMNTOOLS=%VS120COMNTOOLS%
+> C:\whatever\Python3\Scripts\pip3 install pycrypto
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+

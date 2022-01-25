@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Bug in Crypto.PublicKey.RSA?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To=48C73904.80602%40broadley.org">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000016.html">
+   <LINK REL="Next"  HREF="000018.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Bug in Crypto.PublicKey.RSA?</H1>
+    <B>Bill Broadley</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To=48C73904.80602%40broadley.org"
+       TITLE="[pycrypto] Bug in Crypto.PublicKey.RSA?">bill at broadley.org
+       </A><BR>
+    <I>Wed Sep 10 02:09:48 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000016.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+        <LI>Next message: <A HREF="000018.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#17">[ date ]</a>
+              <a href="thread.html#17">[ thread ]</a>
+              <a href="subject.html#17">[ subject ]</a>
+              <a href="author.html#17">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Please disregard my gpg benchmark numbers, turns out that gpg --encrypt with a 
+private/public key and --symmetric both use a symmetric encryption for files.
+
+&gt;<i> Oh, as to performance my symmetric vs public key encryption tests didn't find 
+</I>&gt;<i> much difference:
+</I>&gt;<i> $ dd if=/dev/urandom of=/tmp/100MB bs=10240 count=10240
+</I>&gt;<i> $ time (echo a-test-password-of-non-trivial-length | gpg -o /dev/null 
+</I>&gt;<i> --symmetric --passphrase-fd 0  /tmp/100MB)
+</I>&gt;<i> real	0m8.563s
+</I>&gt;<i> user	0m8.513s
+</I>&gt;<i> sys	0m0.052s
+</I>&gt;<i> $ ls -alh /tmp/100MB
+</I>&gt;<i> -rw-r--r-- 1 bill bill 100M 2008-09-09 19:43 /tmp/100MB
+</I>&gt;<i> 
+</I>&gt;<i> Using a 2kbit RSA key:
+</I>&gt;<i> $ gpg --list-keys
+</I>&gt;<i> /home/bill/.gnupg/pubring.gpg
+</I>&gt;<i> -----------------------------
+</I>&gt;<i> pub   1024D/07DDAB8A 2008-09-08
+</I>&gt;<i> uid                  Python benchmark &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">py at bench</A>&gt;
+</I>&gt;<i> sub   2048g/37E185E1 2008-09-08
+</I>&gt;<i> $ time (echo | gpg -o /dev/null -e -r benchmark --passphrase-fd 0 /tmp/100MB )
+</I>&gt;<i> Reading passphrase from file descriptor 0
+</I>&gt;<i> 
+</I>&gt;<i> real	0m9.555s
+</I>&gt;<i> user	0m9.513s
+</I>&gt;<i> sys	0m0.048s
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000016.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+	<LI>Next message: <A HREF="000018.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#17">[ date ]</a>
+              <a href="thread.html#17">[ thread ]</a>
+              <a href="subject.html#17">[ subject ]</a>
+              <a href="author.html#17">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

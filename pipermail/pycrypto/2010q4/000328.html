@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Once again: Python3 with PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=0896bd18-76fb-4da4-82c5-7c2c4b12598c%40email.android.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000327.html">
+   <LINK REL="Next"  HREF="000329.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Once again: Python3 with PyCrypto</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=0896bd18-76fb-4da4-82c5-7c2c4b12598c%40email.android.com"
+       TITLE="[pycrypto] Once again: Python3 with PyCrypto">sbehrens at gmx.li
+       </A><BR>
+    <I>Mon Dec 27 09:58:50 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000327.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000329.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#328">[ date ]</a>
+              <a href="thread.html#328">[ thread ]</a>
+              <a href="subject.html#328">[ subject ]</a>
+              <a href="author.html#328">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 12/27/2010 8:37 AM, Dwayne C. Litzenberger wrote:
+&gt;<i> Wow, it looks like you're really moving things along.
+</I>
+I am. Right now, the tests run and fail. Going through the first batch, 
+it looks like it's all because of string/bytes things that need to be fixed.
+
+I can use your input here, as I have two options with the way I resolve 
+these issues:
+
+Option 1:
+Use helper functions instead of built-ins. Helper functions are used 
+where binary data was intended. For example, ord(x) becomes bord(x), 
+which returns ord(x) on 2.x and x on 3.x
+
+Advantage: Explicit control. Where ord(x) on a text string was truly 
+meant, it can still be called. Nothing unexpected will happen.
+Disadvantage: Need to use the helper functions where before you could 
+use a built-in
+
+Option 2:
+Assign ord = int if Python 3.x is detected.
+
+Advantage: No code changes for ord, things just work.
+Disadvantage: Potential side-effects that would be very hard to track 
+down. Also, wouldn't be consistent with how we need to handle other 
+things such as literals, where b('x') is the only option.
+
+
+I am favoring Option 1, heavily. But before I change the code 
+accordingly, I'd like to know you're good with the proposal.
+
+Thorsten
+
+
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000327.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000329.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#328">[ date ]</a>
+              <a href="thread.html#328">[ thread ]</a>
+              <a href="subject.html#328">[ subject ]</a>
+              <a href="author.html#328">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

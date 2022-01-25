@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Public key algos usage
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20key%20algos%20usage&In-Reply-To=bc7b5ef50911160607l37f73f6bsae0a000cdca6ead3%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000163.html">
+   <LINK REL="Next"  HREF="000166.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Public key algos usage</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20key%20algos%20usage&In-Reply-To=bc7b5ef50911160607l37f73f6bsae0a000cdca6ead3%40mail.gmail.com"
+       TITLE="[pycrypto] Public key algos usage">dlitz at dlitz.net
+       </A><BR>
+    <I>Thu Nov 19 01:34:58 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000163.html">[pycrypto] Public key algos usage
+</A></li>
+        <LI>Next message: <A HREF="000166.html">[pycrypto] python crypto with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#165">[ date ]</a>
+              <a href="thread.html#165">[ thread ]</a>
+              <a href="subject.html#165">[ subject ]</a>
+              <a href="author.html#165">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Nov 16, 2009 at 03:07:49PM +0100, Kiwi wrote:
+&gt;<i>I cannot find documentation on using PyCrypto's public keys algorithms.
+</I>&gt;<i>The main problem is that while I can easily create a private/public
+</I>&gt;<i>keypair and use it, I don't understand how to create an object given
+</I>&gt;<i>only a public key (encryption/verify only).
+</I>&gt;<i>The only documentation says to &quot;look at the source code&quot;.
+</I>&gt;<i>What is the best thing to do at this time?
+</I>&gt;<i>Wait for a definitive API? Use a development version? Use the old
+</I>&gt;<i>undocumented API?
+</I>
+PyCrypto's current public key API is half-baked.  It's experimental and was 
+never really finished.  For example, the RSA module doesn't do any 
+PKCS#1/OAEP padding, and the DSA module doesn't do the necessary hashing 
+step.
+
+The only way you'll achieve any security out of it is to read the source 
+code while simultaneously reading the appropriate standards documents 
+(PKCS#1 or FIPS 186-3).  It's far from where I would like it to be, but as 
+it stands, if you can't figure out the API, you probably shouldn't be using 
+it.
+
+If you want to do real public-key crypto in Python today, you probably want 
+to use a higher-level library like Keyczar or maybe ezPyCrypto (I haven't 
+evaluated either of these, so I make no promises about their security.).
+
+Or just invoke GnuPG. :-/
+
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000163.html">[pycrypto] Public key algos usage
+</A></li>
+	<LI>Next message: <A HREF="000166.html">[pycrypto] python crypto with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#165">[ date ]</a>
+              <a href="thread.html#165">[ thread ]</a>
+              <a href="subject.html#165">[ subject ]</a>
+              <a href="author.html#165">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

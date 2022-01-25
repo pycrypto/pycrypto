@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Initial review of Thorsten's Py3k changes
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Initial%20review%20of%20Thorsten%27s%20Py3k%20changes&In-Reply-To=4DAAF61D.5040408%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000441.html">
+   <LINK REL="Next"  HREF="000445.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Initial review of Thorsten's Py3k changes</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Initial%20review%20of%20Thorsten%27s%20Py3k%20changes&In-Reply-To=4DAAF61D.5040408%40gmx.li"
+       TITLE="[pycrypto] Initial review of Thorsten's Py3k changes">dlitz at dlitz.net
+       </A><BR>
+    <I>Sun Apr 17 15:06:03 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000441.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+        <LI>Next message: <A HREF="000445.html">[pycrypto] PyCrypto 2.3 and unicode
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#442">[ date ]</a>
+              <a href="thread.html#442">[ thread ]</a>
+              <a href="subject.html#442">[ subject ]</a>
+              <a href="author.html#442">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Awesome! Thank you!
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+
+Thorsten Behrens &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">sbehrens at gmx.li</A>&gt; wrote:
+
+I am going back into the code to take a peek at your suggestion. On 1/29/2011 8:47 PM, Dwayne C. Litzenberger wrote: &gt; Have a look in the various common.py files. All of the hex test vectors are &gt; being fed through either a2b_hex or b2a_hex. I think it should be possible &gt; to make versions of b2a_hex and a2b_hex that also do bytes-&gt;str and &gt; str-&gt;bytes conversions, respectively. &gt; &gt; The following code works in both Python 2.1 and Python 3.2b2: &gt; &gt; from binascii import b2a_hex as _b2a_hex, a2b_hex as _a2b_hex &gt; from codecs import ascii_decode as _ascii_decode &gt; def bin2hex(bts): &gt; &quot;&quot;&quot;Like b2a_hex, but returns a str instead of bytes in Python 3.x&quot;&quot;&quot; &gt; return _ascii_decode(_b2a_hex(bts))[0] &gt; def hex2bin(s): &gt; &quot;&quot;&quot;Like a2b_hex, but expects a str instead of bytes in Python 3.x&quot;&quot;&quot; &gt; return _a2b_hex(s.encode('ascii')) This would actually make things worse. That it works at all is to be considered a bug - there's a TODO I have not followed up on yet, and that TODO is to add type-chec
+ king to
+all functions so that an error is returned if a parameter is not &quot;an object interpretable as a buffer of bytes&quot;. That is, if encode() is called with a unicode (str) object, that should raise an error. The reason I believe that pycrypto should check type is that the Python 3.x stdlib behaves that way: &gt;&gt;&gt; from hashlib import sha1 &gt;&gt;&gt; h = sha1() &gt;&gt;&gt; h.update(&quot;lorem&quot;) Traceback (most recent call last): File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt; TypeError: Unicode-objects must be encoded before hashing &gt;&gt;&gt; h.update(b&quot;lorem&quot;) &gt;&gt;&gt; print (h.hexdigest()) b58e92fff5246645f772bfe7a60272f356c0151a For consistency, I have both Crypto.Hash and Crypto.Cipher behaving this way. The changes are in the doc, but in a nutshell: Crypto.Hash Python 3.x: digest() returns a bytes object Python 3.x: hexdigest() returns a bytes object Python 3.x: The passed argument to update() must be an object interpretable as a buffer of bytes Crypto.Cipher new() Python 3.x: ```mode`` is a string object; ```key``` and ``
+ `IV```
+must be objects interpretable as a buffer of bytes. cipher object Python 3.x: ```IV``` is a bytes object. decrypt() Python 3.x: ```string``` must be an object interpretable as a buffer of bytes. decrypt() will return a bytes object. encrypt() Python 3.x: ```string``` must be an object interpretable as a buffer of bytes. encrypt() will return a bytes object. If these new conventions will cause an issue, let's discuss that now, before I add the type-checking. All that having been said, I still think it should be possible to have the vectors be Unicode literals and to convert them to a bytes object when reading them in. It just will need to be done in a different part of the code. Thorsten 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20110417/f6b4bb17/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20110417/f6b4bb17/attachment.htm</A> 
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000441.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+	<LI>Next message: <A HREF="000445.html">[pycrypto] PyCrypto 2.3 and unicode
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#442">[ date ]</a>
+              <a href="thread.html#442">[ thread ]</a>
+              <a href="subject.html#442">[ subject ]</a>
+              <a href="author.html#442">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

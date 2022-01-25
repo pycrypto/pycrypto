@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] PyCrypto AND Crypt_RSA integration
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%20AND%20Crypt_RSA%20integration&In-Reply-To=3c5f192d0902090436r3e9c905n2edd78019033118%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000065.html">
+   <LINK REL="Next"  HREF="000067.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] PyCrypto AND Crypt_RSA integration</H1>
+    <B>Sergey Chernov</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%20AND%20Crypt_RSA%20integration&In-Reply-To=3c5f192d0902090436r3e9c905n2edd78019033118%40mail.gmail.com"
+       TITLE="[pycrypto] PyCrypto AND Crypt_RSA integration">real.sergeych at gmail.com
+       </A><BR>
+    <I>Mon Feb  9 07:07:53 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000065.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+        <LI>Next message: <A HREF="000067.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#66">[ date ]</a>
+              <a href="thread.html#66">[ thread ]</a>
+              <a href="subject.html#66">[ subject ]</a>
+              <a href="author.html#66">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Some time ago I wrote RSA implementation inspired by pycripto, but  
+with some improvements, strictly conforming to RSAES-OAEP standard,  
+with proper padding and (ey generation speedup. It is practically  
+ready to public tests and I use it in one project. I wrote  
+correspondig part for php that works in the project, but it is not yet  
+well tested and is so far in pure php. That means not too fast, by  
+without server-side key generation it is fast enough for my needs. If  
+you are interested I can send you this staff. I intend to make it  
+public under LGPL.
+
+
+
+
+09.02.2009, &#1074; 15:36, Mauricio Arozi &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">mauricioarozi at gmail.com</A>&gt;  
+&#1085;&#1072;&#1087;&#1080;&#1089;&#1072;&#1083;(&#1072;):
+
+&gt;<i> Am I helpless?
+</I>&gt;<i>
+</I>&gt;<i> On Sat, Feb 7, 2009 at 2:37 AM, Mauricio Arozi &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">mauricioarozi at gmail.com</A> 
+</I>&gt;<i> &gt; wrote:
+</I>&gt;<i> 'I'm trying to import/export keys from/to Crypt_RSA, using PyCrypto. '
+</I>&gt;<i> and
+</I>&gt;<i> 'I've made some examples to find out why it's not working'
+</I>&gt;<i>
+</I>&gt;<i> I want to import/export keys directly from/to Crypt_RSA and  
+</I>&gt;<i> PyCrypto.&quot; I'm not able to use the same keys, so I can't verify  
+</I>&gt;<i> signatures, or encrypt/decrypt stuff from php to python and vice- 
+</I>&gt;<i> versa. I want to know how to do it, actually I only need a way to go  
+</I>&gt;<i> with php, I don't depend on Crypt_RSA, it was already there only.
+</I>&gt;<i>
+</I>&gt;<i> So in simple words, I only need to be able to encrypt/decrypt sign  
+</I>&gt;<i> and verify signs on php and python, simultaneously, if possible,  
+</I>&gt;<i> using RSA algo.
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Feb 6, 2009 at 10:56 PM, Mads Kiilerich &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">mads at kiilerich.com</A>&gt;  
+</I>&gt;<i> wrote:
+</I>&gt;<i> Mauricio Arozi wrote, On 02/06/2009 07:53 PM:
+</I>&gt;<i> Hello,
+</I>&gt;<i> I'm trying to import/export keys from/to Crypt_RSA &lt;<A HREF="http://pear.php.net/package/Crypt_RSA">http://pear.php.net/package/Crypt_RSA</A> 
+</I>&gt;<i> &gt;, using PyCrypto &lt;<A HREF="http://www.dlitz.net/software/pycrypto/">http://www.dlitz.net/software/pycrypto/</A>&gt;. My  
+</I>&gt;<i> problem is that while using PyCrypto to generate both public and  
+</I>&gt;<i> private keys, the e(exponent?) is always the same.
+</I>&gt;<i>
+</I>&gt;<i> According to this site: <A HREF="http://pajhome.org.uk/crypt/rsa/rsa.html,">http://pajhome.org.uk/crypt/rsa/rsa.html,</A>  
+</I>&gt;<i> and yet others, the e(exponent?) is used for the public key, and d  
+</I>&gt;<i> for the private key.
+</I>&gt;<i>
+</I>&gt;<i> Yes, many implementations and applications of RSA uses a fixed  
+</I>&gt;<i> exponent - very often 65537 (F4). Usually that is a good decision  
+</I>&gt;<i> and no problem - perhaps except for interoperability.
+</I>&gt;<i>
+</I>&gt;<i> And yes, interoperability is often very hard when implementing  
+</I>&gt;<i> crypto stuff. IMHO an important criteria when selecting a crypto  
+</I>&gt;<i> library is having examples / proof of how it interoperates with  
+</I>&gt;<i> other implementations.
+</I>&gt;<i>
+</I>&gt;<i> It is not clear to me exactly what you are asking for, so I can't  
+</I>&gt;<i> answer that directly - I hope someone else can do that.
+</I>&gt;<i>
+</I>&gt;<i> /Mads
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090209/1d2de4d5/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090209/1d2de4d5/attachment.htm</A> 
+</PRE>
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000065.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+	<LI>Next message: <A HREF="000067.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#66">[ date ]</a>
+              <a href="thread.html#66">[ thread ]</a>
+              <a href="subject.html#66">[ subject ]</a>
+              <a href="author.html#66">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

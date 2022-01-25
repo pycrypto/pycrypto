@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Quick and Easy Email Authentication
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Quick%20and%20Easy%20Email%20Authentication&In-Reply-To=5.2.1.1.0.20090211075934.03ae4478%40mail.ece.arizona.edu">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000068.html">
+   <LINK REL="Next"  HREF="000070.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Quick and Easy Email Authentication</H1>
+    <B>Mads Kiilerich</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Quick%20and%20Easy%20Email%20Authentication&In-Reply-To=5.2.1.1.0.20090211075934.03ae4478%40mail.ece.arizona.edu"
+       TITLE="[pycrypto] Quick and Easy Email Authentication">mads at kiilerich.com
+       </A><BR>
+    <I>Wed Feb 11 15:34:58 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000068.html">[pycrypto] Quick and Easy Email Authentication
+</A></li>
+        <LI>Next message: <A HREF="000070.html">[pycrypto] Quick and Easy Email Authentication
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#69">[ date ]</a>
+              <a href="thread.html#69">[ thread ]</a>
+              <a href="subject.html#69">[ subject ]</a>
+              <a href="author.html#69">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>David MacQuigg wrote, On 02/11/2009 04:41 PM:
+&gt;<i> RSA, maybe some way to do this with hashcodes?  If we can solve this
+</I>&gt;<i> problem, it could lead to a robust, no-exceptions policy on
+</I>&gt;<i> authentication of SMTP mail sessions.
+</I>&gt;<i>   
+</I>
+Such systems already exists, designed and peer reviewed by experts. The 
+primarily problem they face is acceptance - and the lack of acceptance 
+because of the trade-offs made to make the protocols acceptable. And 
+nobody with real-world need for email can rely on such protocols before 
+everybody else uses them, and thus there is no need to deploy the 
+protocols before everybody else uses them.
+
+&gt;<i> Let me try to state the problem in more fundamental terms.  A stranger
+</I>&gt;<i> says HELO this is f33faf76.mailout09.arizona.edu.  The only other
+</I>&gt;<i> information you have to verify that claim is a DNS text record at
+</I>&gt;<i> mailout09.arizona.edu. That record can hold up to 480 bytes of text.
+</I>&gt;<i>   
+</I>
+The DNS system is fundamentally broken and insecure. You shouldn't rely 
+on it at all. Secure DNS is really a must but unfortunately not widely 
+deployed, so we must rely on DNS for functionality but shouldn't rely on 
+it for security.
+
+&gt;<i> criminals.  More secure sites can add additional checks, including a
+</I>&gt;<i> digital signature on the entire message.
+</I>&gt;<i>   
+</I>
+IMHO the right solution to the problem you are trying to solve lies in 
+that direction. Why try to find another and less perfect solution?
+
+But ... this is a (silent) list for python crypto, not for protocol 
+design and email systems. Other lists might be more appropriate.
+
+/Mads
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 3435 bytes
+Desc: S/MIME Cryptographic Signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090211/5f5d77af/attachment.bin">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090211/5f5d77af/attachment.bin</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000068.html">[pycrypto] Quick and Easy Email Authentication
+</A></li>
+	<LI>Next message: <A HREF="000070.html">[pycrypto] Quick and Easy Email Authentication
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#69">[ date ]</a>
+              <a href="thread.html#69">[ thread ]</a>
+              <a href="subject.html#69">[ subject ]</a>
+              <a href="author.html#69">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

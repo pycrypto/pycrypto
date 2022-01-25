@@ -1,0 +1,16 @@
+diff --git a/lib/Crypto/Random/OSRNG/posix.py b/lib/Crypto/Random/OSRNG/posix.py
+index f88cd77..4661708 100644
+--- a/lib/Crypto/Random/OSRNG/posix.py
++++ b/lib/Crypto/Random/OSRNG/posix.py
+@@ -54,7 +54,10 @@ class DevURandomRNG(BaseRNG):
+         self.__file.close()
+ 
+     def _read(self, N):
+-        return self.__file.read(N)
++        data = self.__file.read(N)
++        while len(data) < N:
++            data += self.__file.read(N - len(data))
++        return data
+ 
+ def new(*args, **kwargs):
+     return DevURandomRNG(*args, **kwargs)

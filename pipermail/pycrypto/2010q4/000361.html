@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Comments on Elgamal,	and a broader question: Whither pycrypto?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Comments%20on%20Elgamal%2C%0A%09and%20a%20broader%20question%3A%20Whither%20pycrypto%3F&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000357.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Comments on Elgamal,	and a broader question: Whither pycrypto?</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Comments%20on%20Elgamal%2C%0A%09and%20a%20broader%20question%3A%20Whither%20pycrypto%3F&In-Reply-To="
+       TITLE="[pycrypto] Comments on Elgamal,	and a broader question: Whither pycrypto?">sbehrens at gmx.li
+       </A><BR>
+    <I>Fri Dec 31 08:58:39 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000357.html">[pycrypto] Things that go bump in the night (qNEW)
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#361">[ date ]</a>
+              <a href="thread.html#361">[ thread ]</a>
+              <a href="subject.html#361">[ subject ]</a>
+              <a href="author.html#361">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I've been looking into writing a unit test for Elgamal. What I was 
+looking for were public test vectors. Those don't exist. What I found 
+instead is that our implementation of Elgamal appears insecure.
+
+References:
+Crypto++ notes on Elgamal, <A HREF="http://weidai.com/scan-mirror/sig.html">http://weidai.com/scan-mirror/sig.html</A>
+Crypto++ FAQ on Elgamal key generation, 
+<A HREF="http://www.cryptopp.com/fom-serve/cache/71.html">http://www.cryptopp.com/fom-serve/cache/71.html</A>
+Bleichenbacher paper on forging Elgamal,
+
+<A HREF="ftp://ftp.inf.ethz.ch/pub/crypto/publications/Bleich96.ps">ftp://ftp.inf.ethz.ch/pub/crypto/publications/Bleich96.ps</A>
+IETF paper on DH groups, including pre-computed safe primes, <A HREF="http://tools.ietf.org/html/draft-ietf-ipsec-ike-modp-groups-04">http://tools.ietf.org/html/draft-ietf-ipsec-ike-modp-groups-04</A>
+Wikipedia writeup on Elgamal, <A HREF="http://en.wikipedia.org/wiki/ElGamal_encryption">http://en.wikipedia.org/wiki/ElGamal_encryption</A>
+
+
+What I have found is that pycrypto's Elgamal implementation is, shall we say, naive. Specifically in these regards (and I'll quote others here, these assertions as per crypto safety are not
+mine. The conclusions about elgamal.py are mine):
+
+/- p/  SHOULD be a safe prime, i.e. such that (/p/-1)/2 is prime
+
+   TB: elgamal.py makes no effort to find a safe prime. elgamal.py does not allow the user to pass her own safe prime to the key generator.
+
+- The paper by Bleichenbacher referenced above shows that if/g/  has only small prime factors, and if/g/  divides the order of the group it generates, then signatures can be forged.
+
+   TB: elgamal.py makes no effort to find a safe &quot;g&quot;
+
+- Elgamal encryption is not secure under chosen ciphertext attack. To achieve chosen-ciphertext security, the scheme must be further modified, or an appropriate padding scheme must be used.
+
+   TB: elgamal.py does not implement a padding scheme, or modify Elgamal further afaics.
+
+
+So far on Elgamal. It makes me reluctant to go through with a unit test for Elgamal. I don't want to validate an implementation that is inherently insecure. Changing Elgamal to be more secure is out of scope of my current effort on the code base. I'll leave that to others.
+
+
+The broader question that occurs, particularly also in view of the stdlib-crypto discussion (<A HREF="http://bugs.python.org/issue8998">http://bugs.python.org/issue8998</A>) is: What is pycrypto's intent? What should it be?
+
+Should it be a low-level collection of crypto algorithms, suitable for academic and real work, and requiring a strong understanding of crypto and its complexities in either case, with no safeguards should a user choose to shoot himself in the foot?
+
+Should it be a high-level collection of crypto routines, suitable for the crypto-naive coder, offering safe defaults and a few knobs to influence those parameters that should be able to be chosen by a slightly less crypto-naive coder? Note that this would require vigorous debate about what this second tier should look like, which defaults would be chosen, which knobs would still be exposed, and so on. That debate would have to be carried out in public and would have to include all the other movers-and-shakers in the Python crypto community.
+
+Should it be both, offering a two-tiered API?
+
+And further:
+
+Should pycrypto continue to offer its own implementations of crypto algorithms? Or should it be a Python wrapper for existing implementations such as tomlib, Crypto++ or NSS, relying on those implementations to have been coded in a secure manner?
+
+
+Thank you for reading
+
+Thorsten
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20101231/d4caa98b/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20101231/d4caa98b/attachment.htm</A> 
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000357.html">[pycrypto] Things that go bump in the night (qNEW)
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#361">[ date ]</a>
+              <a href="thread.html#361">[ thread ]</a>
+              <a href="subject.html#361">[ subject ]</a>
+              <a href="author.html#361">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

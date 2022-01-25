@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Changes for _fastmath.c to be able to built on MSVC 9.0	(aka VS2008)
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Changes%20for%20_fastmath.c%20to%20be%20able%20to%20built%20on%20MSVC%209.0%0A%09%28aka%20VS2008%29&In-Reply-To=AANLkTik0Fh2EP%3DNY9oYJ81pFEuTompqGtqVKSVyKCzea%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000279.html">
+   <LINK REL="Next"  HREF="000280.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Changes for _fastmath.c to be able to built on MSVC 9.0	(aka VS2008)</H1>
+    <B>cwt</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Changes%20for%20_fastmath.c%20to%20be%20able%20to%20built%20on%20MSVC%209.0%0A%09%28aka%20VS2008%29&In-Reply-To=AANLkTik0Fh2EP%3DNY9oYJ81pFEuTompqGtqVKSVyKCzea%40mail.gmail.com"
+       TITLE="[pycrypto] Changes for _fastmath.c to be able to built on MSVC 9.0	(aka VS2008)">cwt at bashell.com
+       </A><BR>
+    <I>Fri Oct 15 06:33:29 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000279.html">[pycrypto] On the future of new ciphers/hashes in PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000280.html">[pycrypto] PyCrypto needs your help
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#277">[ date ]</a>
+              <a href="thread.html#277">[ thread ]</a>
+              <a href="subject.html#277">[ subject ]</a>
+              <a href="author.html#277">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I just tried to build pycrypto for python-2.6.6 (x64) on Windows 7, for
+found that it can't build _fastmath because there is no GMP on Windows.
+
+I google for a while and found MPIR (<A HREF="http://www.mpir.org/">http://www.mpir.org/</A>). There is a
+script 'to_gmp.bat' in the MPIR build folder that rename mpir.lib, mpir.dll,
+and the relevant header files to gmp.
+
+After trying for 4 hours, I got a solution. (it may not accurate right, but
+it just works.)
+
+First, I build MPIR as Release|x86 for both lib and dll:
+
+   - open &quot;Visual Studio 2008 x64 Win64 Command Prompt&quot;
+   - cd mpir-2.1.3\build.vc9 # Change to the path that you extract MPIR.
+   - msbuild mpir.sln /p:Configuration=Release /p:Platform=x64
+   /t:lib_mpir_nehalem  # &lt;-- my cpu, you can try others.
+   - msbuild mpir.sln /p:Configuration=Release /p:Platform=x64
+   /t:dll_mpir_nehalem
+   - to_gmp.bat # Convert libraries and headers to GMP.
+
+Then, copy *.h except config.h from *DLL *output to your python\PC
+
+   - cd mpir-2.1.3\build.vc9\dll\x64\Release
+   - mkdir C:\Python26\PC
+   - copy gmp*.h C:\Python26\PC
+   - copy mpir*.h C:\Python26\PC
+
+And copy gmp.lib from *LIB *output to your python\PCbuild\amd64 # *Sound
+weird?* But trust me, I already try other ways and they were failed.
+
+   - mkdir C:\Python26\PCbuild
+   - mkdir C:\Python26\PCbuild\amd64
+   - cd mpir-2.1.3\build.vc9\lib\x64\Release
+   - copy gmp.lib C:\Python26\PCbuild\amd64
+
+Now, in the extracted pycrypto folder, I copy src\_fastmath.c to
+src\_fastmath.cpp and do some changes on _fastmath.cpp to make it C++
+friendly.
+Well, the patch is quite large because I move the whole sieve_base to the
+very top of the file. So you better see the patch file that I'm attached to
+this mail.
+I also change the setup.py to build the _fastmath.cpp instead of
+_fastmath.c.
+Finally, build the pycrypto and install it.
+
+   - python setup.py build
+   - python setup.py install --optimize=1
+
+If you look in the C:\Python26\Lib\site-packages\Crypto\PublicKey, you will
+found _fastmath.pyd.
+Now, the most excited part! Let's benchmark it.
+
+Without _fastmath (you can try it by rename _fastmath.pyd to something such
+as _fastmath.xxx):
+
+In [1]: from datetime import datetime
+
+In [2]: from Crypto.PublicKey import pubkey
+
+In [3]: def tdiff(n):
+   ...:     before = datetime.now()
+   ...:     pubkey.getStrongPrime(n)
+   ...:     print datetime.now()-before
+   ...:
+
+In [4]: tdiff(512)
+0:00:00.348000
+
+In [5]: tdiff(1024)
+0:00:00.565000
+
+In [6]: tdiff(2048)
+0:00:03.308000
+
+In [7]: tdiff(4096)
+0:01:39.202000 # == (1*60)+39.202 == 99.202
+
+With _fastmath:
+
+
+In [1]: from datetime import datetime
+
+In [2]: from Crypto.PublicKey import pubkey
+
+In [3]: def tdiff(n):
+   ...:     before = datetime.now()
+   ...:     pubkey.getStrongPrime(n)
+   ...:     print datetime.now()-before
+   ...:
+
+In [4]: tdiff(512)
+0:00:00.123000
+
+In [5]: tdiff(1024)
+0:00:00.333000
+
+In [6]: tdiff(2048)
+0:00:00.675000
+
+In [7]: tdiff(4096)
+0:00:06.446000
+
+So, the conclusion:
+
+n       without      with         faster
+        _fastmath    _fastmath
+
+512     00.348       00.123        182.93%
+1024    00.565       00.333         69.67%
+2048    03.308       00.675        390.07%
+4096    99.202       06.446       1438.97%
+
+So, I think it's really worth to do (if you're stuck on Windows Platform).
+
+Regards,
+Chaiwat.S
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20101015/ad987b34/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20101015/ad987b34/attachment.htm</A> 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: msvc9-patches.7z
+Type: application/octet-stream
+Size: 13240 bytes
+Desc: not available
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20101015/ad987b34/attachment-0001.obj">http://lists.dlitz.net/pipermail/pycrypto/attachments/20101015/ad987b34/attachment-0001.obj</A> 
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000279.html">[pycrypto] On the future of new ciphers/hashes in PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000280.html">[pycrypto] PyCrypto needs your help
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#277">[ date ]</a>
+              <a href="thread.html#277">[ thread ]</a>
+              <a href="subject.html#277">[ subject ]</a>
+              <a href="author.html#277">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

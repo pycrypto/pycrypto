@@ -1,0 +1,3625 @@
+From christoph.tapler at gmx.net  Sun Apr 11 12:46:20 2010
+From: christoph.tapler at gmx.net (Christoph Tapler)
+Date: Sun, 11 Apr 2010 20:46:20 +0200
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+Message-ID: <4BC218FC.6090106@gmx.net>
+
+Hi,
+
+Short update - a missing string/byte conversion in the test suite caused 
+the high FAIL rate. With the conversion, the PASS/FAIL ratio looks way 
+better (>70% PASS). I assume that the rest of the FAILs have a similar 
+reason. Just tell me if some of you wants the patch.
+
+Cheers,
+Christoph
+
+-------- Original Message --------
+Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+Date: Sun, 11 Apr 2010 12:32:58 +0200
+From: Christoph Tapler <christoph.tapler at gmx.net>
+To: PyCrypto discussion list <pycrypto at lists.dlitz.net>
+
+Hi,
+
+Fyi, I have adapted the test suite and now I am at least able to execute
+it on Python 3.1. However, around 99% of all tests are fail. Moreover,
+at the end of the test suite execution, Python crashes.
+
+Hope to find some time to look into the issues. Anyway, if somebody
+wants to have the patch, please let me know.
+
+Cheers,
+Christoph
+
+On 18.03.2010 02:57, Grail Dane wrote:
+
+> Hi Christoph
+>
+> So I tried the suggestion below but still received the error about
+> import from non-package :(
+>
+> I changed it to read:
+>
+> from Crypto.SelfTest.Cipher import common
+> return common.make_block_tests(AES, "AES", test_data)
+>
+> and it does not error on that but now presents me with a segfault :(
+>
+> So I seem to have gone from bad to worse. So I am hoping someone on this
+> list might be able to suggest how I can track the fault to find out what
+> is wrong now??
+>
+> Cheers
+> Grail
+
+
+From William.Hutton at pnl.gov  Thu Apr  8 14:54:51 2010
+From: William.Hutton at pnl.gov (Hutton, William J)
+Date: Thu, 8 Apr 2010 13:54:51 -0700
+Subject: [pycrypto] Digest and MAC parameters with PBKDF2()
+Message-ID: <C7E390AB.1988%william.hutton@pnl.gov>
+
+The PBKDF2 documentation at http://www.dlitz.net/software/python-pbkdf2/ is
+a little sparse, so I'm hoping someone on the list can answer a few
+questions for me.
+
+1. How can I use hashlib.ripemd160 as the hash function with PBKDF2()
+
+2. What is the difference between the digestmodule parameter and the
+macmodule parameter?
+
+I thought deriving a key using PBKDF2 required a password, salt, iteration
+count, and hash function.
+
+Thanks in advance for any light you can shed on this topic.
+
+
+
+From christoph.tapler at gmx.net  Sun Apr 11 04:32:58 2010
+From: christoph.tapler at gmx.net (Christoph Tapler)
+Date: Sun, 11 Apr 2010 12:32:58 +0200
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <SNT132-w7D83651907ACA4DFEB8C7B12B0@phx.gbl>
+References: <4B8ECD61.9010805@gmx.net>	<SNT132-w4220C660F45FBA7DDE87F1B1390@phx.gbl>	<4B9CFCBE.4020804@gmx.net>,
+	<20100315011040.GA1975@rivest.dlitz.net>	<4B9E9B61.1090205@gmx.net>,
+	<4BA12F21.20100@gmx.net> <SNT132-w7D83651907ACA4DFEB8C7B12B0@phx.gbl>
+Message-ID: <4BC1A55A.4030003@gmx.net>
+
+Hi,
+
+Fyi, I have adapted the test suite and now I am at least able to execute 
+it on Python 3.1. However, around 99% of all tests are fail. Moreover, 
+at the end of the test suite execution, Python crashes.
+
+Hope to find some time to look into the issues. Anyway, if somebody 
+wants to have the patch, please let me know.
+
+Cheers,
+Christoph
+
+On 18.03.2010 02:57, Grail Dane wrote:
+
+> Hi Christoph
+>
+> So I tried the suggestion below but still received the error about
+> import from non-package :(
+>
+> I changed it to read:
+>
+> from Crypto.SelfTest.Cipher import common
+> return common.make_block_tests(AES, "AES", test_data)
+>
+> and it does not error on that but now presents me with a segfault :(
+>
+> So I seem to have gone from bad to worse. So I am hoping someone on this
+> list might be able to suggest how I can track the fault to find out what
+> is wrong now??
+>
+> Cheers
+> Grail
+
+
+From v+python at g.nevcal.com  Mon Apr 12 21:36:51 2010
+From: v+python at g.nevcal.com (Glenn Linderman)
+Date: Mon, 12 Apr 2010 20:36:51 -0700
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <4BC218FC.6090106@gmx.net>
+References: <4BC218FC.6090106@gmx.net>
+Message-ID: <4BC3E6D3.7030903@g.nevcal.com>
+
+On 4/11/2010 11:46 AM, Christoph Tapler wrote:
+> Hi,
+>
+> Short update - a missing string/byte conversion in the test suite caused
+> the high FAIL rate. With the conversion, the PASS/FAIL ratio looks way
+> better (>70% PASS). I assume that the rest of the FAILs have a similar
+> reason. Just tell me if some of you wants the patch.
+>
+> Cheers,
+> Christoph
+>    
+
+This is great news Christoph!  I'm glad to hear of the progress.  I'm 
+not in a position to compile on my new box yet, although in the fullness 
+of time I hope to be able to compile Python and all its dependencies... 
+I have never done that on any box, as yet.  But if you have it in an 
+installable form for Windows, I could try it out with my few test cases 
+from 2.6 -- the encryption aspect of that code is currently disabled in 
+the 3.1 version, but I am hoping to reenable it when you go public with 
+fully working 3.1 version.  So it could help me and help you, to try 
+these cases, perhaps.
+
+Glenn
+
+From grail69 at hotmail.com  Mon Apr 12 23:31:59 2010
+From: grail69 at hotmail.com (Grail Dane)
+Date: Tue, 13 Apr 2010 05:31:59 +0000
+Subject: [pycrypto]  Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <4BC218FC.6090106@gmx.net>
+References: <4BC218FC.6090106@gmx.net>
+Message-ID: <SNT132-w465CC57ED6DEE132ED19BBB1110@phx.gbl>
+
+
+Hi Christoph
+I seem to have been unable to send emails to this list for a while so I hope this one gets through.
+Firstly, great news below and yes please send me patch.
+I have also been working on this but my issue has been that the tests(I have been using test_AES as my test case) have been finishing abruptly witha segfault :(
+I am currently trying to use pdb to step through the code to try and find where it isrunning into problems. Attached is my current patch I am using.
+I am still able to run small test scripts that I have written, like the password one I senta while back.
+I look forward to our collaboration to get this out of the way as it has brought a dependentproject of mine to its knees until I resolve this one :(
+CheersGrail
+
+> Date: Sun, 11 Apr 2010 20:46:20 +0200
+> From: christoph.tapler at gmx.net
+> To: pycrypto at lists.dlitz.net
+> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+> 
+> Hi,
+> 
+> Short update - a missing string/byte conversion in the test suite caused 
+> the high FAIL rate. With the conversion, the PASS/FAIL ratio looks way 
+> better (>70% PASS). I assume that the rest of the FAILs have a similar 
+> reason. Just tell me if some of you wants the patch.
+> 
+> Cheers,
+> Christoph
+> 
+> -------- Original Message --------
+> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+> Date: Sun, 11 Apr 2010 12:32:58 +0200
+> From: Christoph Tapler <christoph.tapler at gmx.net>
+> To: PyCrypto discussion list <pycrypto at lists.dlitz.net>
+> 
+> Hi,
+> 
+> Fyi, I have adapted the test suite and now I am at least able to execute
+> it on Python 3.1. However, around 99% of all tests are fail. Moreover,
+> at the end of the test suite execution, Python crashes.
+> 
+> Hope to find some time to look into the issues. Anyway, if somebody
+> wants to have the patch, please let me know.
+> 
+> Cheers,
+> Christoph
+> 
+> On 18.03.2010 02:57, Grail Dane wrote:
+> 
+> > Hi Christoph
+> >
+> > So I tried the suggestion below but still received the error about
+> > import from non-package :(
+> >
+> > I changed it to read:
+> >
+> > from Crypto.SelfTest.Cipher import common
+> > return common.make_block_tests(AES, "AES", test_data)
+> >
+> > and it does not error on that but now presents me with a segfault :(
+> >
+> > So I seem to have gone from bad to worse. So I am hoping someone on this
+> > list might be able to suggest how I can track the fault to find out what
+> > is wrong now??
+> >
+> > Cheers
+> > Grail
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+ 		 	   		  
+Looking for a hot date? View photos of singles in your area! 		 	   		  
+_________________________________________________________________
+If It Exists, You'll Find it on SEEK. Australia's #1 job site
+http://clk.atdmt.com/NMN/go/157639755/direct/01/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100413/277a0678/attachment-0001.htm 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: pycrypto-2.1.0-python3-1.patch.lzma
+Type: application/octet-stream
+Size: 19859 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20100413/277a0678/attachment-0001.obj 
+
+From Deathzor at Deathzor.com  Sat Apr 17 17:18:57 2010
+From: Deathzor at Deathzor.com (death)
+Date: Sun, 18 Apr 2010 01:18:57 +0200
+Subject: [pycrypto] Exporting/importing RSA publickeys
+Message-ID: <1271546337.2005.15.camel@localhost>
+
+
+i'm just wondering is there a way to import AND export the public keys
+from RSA so i can, send the public key over a socket, import it on the
+otherside so i can create a "secure" socket ( i know authentication is
+not done in this process ). 
+the socket is still subject to a MIM attack, but this is not the point
+at the moment 
+
+it could be my inability to read the documentation but i found no way to
+dump the key, and import it again. 
+
+
+
+
+
+
+From wyuenho at gmail.com  Sun Apr 18 10:52:51 2010
+From: wyuenho at gmail.com (Jimmy Yuen Ho Wong)
+Date: Mon, 19 Apr 2010 00:52:51 +0800
+Subject: [pycrypto] Cheeseshop submission?
+Message-ID: <4BCB38E3.8020600@gmail.com>
+
+Hi,
+
+Thanks for continuing the development of PyCrypto. However, I was just 
+wondering if there's a reason of why 2.1 still hasn't made into PyPI. 
+I'm afraid that people will keep using the buggy 2.0.1 because they 
+didn't know a new version exists.
+
+-- 
+Jimmy Yuen Ho Wong
+
+From don at amberfisharts.com  Sun Apr 18 11:10:22 2010
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Sun, 18 Apr 2010 19:10:22 +0200
+Subject: [pycrypto] Exporting/importing RSA publickeys
+In-Reply-To: <1271546337.2005.15.camel@localhost>
+References: <1271546337.2005.15.camel@localhost>
+Message-ID: <4BCB3CFE.8040303@amberfisharts.com>
+
+Hello death!
+
+The easiest way is to use the pickle module from the python standard library.
+untested pseudo code to show the general idea:
+ >>> key = Crypto.publicKey.RSA.generate(1024)
+ >>> pubkey = key.pubkey()
+ >>> pubkey_string = pickle.dumps(pubkey)
+ >>> socket.send(pubkey_string)
+and on the other side
+ >>> pubkey_string = socket.recv()
+ >>> pubkey = pickle.loads(pubkey_string)
+
+an alternative is to access the relevant attributes of the pubkey and then use the construct method.
+again untested code:
+ >>> key = Crypto.publicKey.RSA.generate(1024)
+ >>> pubkey = key.pubkey()
+ >>> n, e = key.n, key.e
+ >>> # send n and e over socket
+and on the other side
+ >>> # get n and e from the socket
+ >>> pubkey = Crypto.publicKey.RSA.construct((n,e))
+
+I hope this points you in the right direction.
+
+sincerely yours
+//Lorenz
+
+On 04/18/2010 01:18 AM, death wrote:
+>
+> i'm just wondering is there a way to import AND export the public keys
+> from RSA so i can, send the public key over a socket, import it on the
+> otherside so i can create a "secure" socket ( i know authentication is
+> not done in this process ).
+> the socket is still subject to a MIM attack, but this is not the point
+> at the moment
+>
+> it could be my inability to read the documentation but i found no way to
+> dump the key, and import it again.
+
+From gooksankoo at hoiptorrow.mailexpire.com  Sun Apr 18 13:52:51 2010
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Sun, 18 Apr 2010 21:52:51 +0200
+Subject: [pycrypto] Exporting/importing RSA publickeys
+In-Reply-To: <1271546337.2005.15.camel@localhost>
+References: <1271546337.2005.15.camel@localhost>
+Message-ID: <20100418195251.GA15566@shannon>
+
+In addition to the approach Lorenz described, a few months ago I published
+a couple of patches to import and export RSA keys in DER or unencrypted
+PEM format (https://bugs.launchpad.net/pycrypto/+bug/500820). That's
+slightly more generic and standard compliant.
+
+> i'm just wondering is there a way to import AND export the public keys
+> from RSA so i can, send the public key over a socket, import it on the
+> otherside so i can create a "secure" socket ( i know authentication is
+> not done in this process ). 
+> the socket is still subject to a MIM attack, but this is not the point
+> at the moment 
+> 
+> it could be my inability to read the documentation but i found no way to
+> dump the key, and import it again. 
+
+From Deathzor at Deathzor.com  Mon Apr 19 16:11:46 2010
+From: Deathzor at Deathzor.com (death)
+Date: Tue, 20 Apr 2010 00:11:46 +0200
+Subject: [pycrypto] Exporting/importing RSA publickeys ( fixed )
+In-Reply-To: <4BCB3CFE.8040303@amberfisharts.com>
+References: <1271546337.2005.15.camel@localhost>
+	<4BCB3CFE.8040303@amberfisharts.com>
+Message-ID: <1271715106.23746.4.camel@localhost>
+
+Tested and working code for anybody reading the mailing list after the
+fact:
+#pwd is the string where encrypting for sending 
+PWD="encrypt this string for me plz";
+# Generate private key For this node 
+privatekeyClient = RSA.generate(1024)
+#Generate publickey/identy for this node
+publickeyClient = privatekeyClient.publickey()
+#store the publickey 
+stufftosend = {"e":publickeyClient.e,"n":publickeyClient.n} 
+#create a new RSA publickey
+publickeyClient2 = RSA.construct((stufftosend['n'],stufftosend['e']))
+#encrypted_PWD
+encrypted_PWD = publickeyClient2.encrypt(PWD, "")
+print privatekeyClient.decrypt(encrypted_PWD)
+
+Thnx for the advice. 
+
+
+On Sun, 2010-04-18 at 19:10 +0200, Lorenz Quack wrote:
+> Hello death!
+> 
+> The easiest way is to use the pickle module from the python standard library.
+> untested pseudo code to show the general idea:
+>  >>> key = Crypto.publicKey.RSA.generate(1024)
+>  >>> pubkey = key.pubkey()
+>  >>> pubkey_string = pickle.dumps(pubkey)
+>  >>> socket.send(pubkey_string)
+> and on the other side
+>  >>> pubkey_string = socket.recv()
+>  >>> pubkey = pickle.loads(pubkey_string)
+> 
+> an alternative is to access the relevant attributes of the pubkey and then use the construct method.
+> again untested code:
+>  >>> key = Crypto.publicKey.RSA.generate(1024)
+>  >>> pubkey = key.pubkey()
+>  >>> n, e = key.n, key.e
+>  >>> # send n and e over socket
+> and on the other side
+>  >>> # get n and e from the socket
+>  >>> pubkey = Crypto.publicKey.RSA.construct((n,e))
+> 
+> I hope this points you in the right direction.
+> 
+> sincerely yours
+> //Lorenz
+> 
+> On 04/18/2010 01:18 AM, death wrote:
+> >
+> > i'm just wondering is there a way to import AND export the public keys
+> > from RSA so i can, send the public key over a socket, import it on the
+> > otherside so i can create a "secure" socket ( i know authentication is
+> > not done in this process ).
+> > the socket is still subject to a MIM attack, but this is not the point
+> > at the moment
+> >
+> > it could be my inability to read the documentation but i found no way to
+> > dump the key, and import it again.
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-- 
+Death 
+
+Email: Death at Deathzor.com
+Msn: msn at Deathzor.com
+
+
+
+From jdsw2002 at yahoo.com  Sun May  2 14:02:29 2010
+From: jdsw2002 at yahoo.com (jd)
+Date: Sun, 2 May 2010 13:02:29 -0700 (PDT)
+Subject: [pycrypto] Pycrypto question.
+Message-ID: <199797.13530.qm@web114208.mail.gq1.yahoo.com>
+
+Hi everyone, 
+   
+   I am trying to implement a simple pub/private key scheme. Want to encrypt bunch of things and decrypt it using public key (which will be distributed). Pycrypto seems to be perfect. Here is the sample code.. butit fails when I try to decrypt using public key part. Any pointers/suggestions appreciated.
+
+Thanks in advance.
+/Jd
+
+===
+Traceback (most recent call last):
+  File "pub.py", line 24, in <module>
+    pub.decrypt(x)
+  File "build/bdist.linux-i686/egg/Crypto/PublicKey/pubkey.py", line 63, in decrypt
+  File "build/bdist.linux-i686/egg/Crypto/PublicKey/RSA.py", line 184, in _decrypt
+_fastmath.error: Private key not available in this object
+
+
+
+
+===
+
+
+
+from Crypto.Hash import MD5
+from Crypto.PublicKey import RSA
+from Crypto.Util.randpool import RandomPool
+
+#Randomize
+pool =  RandomPool()
+pool.randomize()
+pool.stir_n(5)
+
+# Generate keypair
+RSAkey = RSA.generate(384, pool.get_bytes)   # This will take a while...
+hash = MD5.new("AbCdEf1234").digest()
+signature = RSAkey.sign(hash, "")
+print signature
+print RSAkey.verify(hash, signature)     # This sig will check out
+print RSAkey.verify(hash[:-1], signature)# This sig will fai
+
+x=RSAkey.encrypt("FooBar",0)
+print "Encrypted bytes" ,x
+print "Decrypted again", RSAkey.decrypt(x)
+
+# Got the public key part
+pub = RSAkey.publickey()
+pub.decrypt(x)
+
+
+
+      
+
+From don at amberfisharts.com  Sun May  2 14:13:40 2010
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Sun, 02 May 2010 22:13:40 +0200
+Subject: [pycrypto] Pycrypto question.
+In-Reply-To: <199797.13530.qm@web114208.mail.gq1.yahoo.com>
+References: <199797.13530.qm@web114208.mail.gq1.yahoo.com>
+Message-ID: <4BDDDCF4.6010602@amberfisharts.com>
+
+Hi Jd,
+
+On 05/02/2010 10:02 PM, jd wrote:
+> Hi everyone,
+>
+> I am trying to implement a simple pub/private key scheme. Want to encrypt bunch of things and decrypt it using public
+> key (which will be distributed).
+
+You seem to have some misconceptions about how public key cryptography works.
+I suggest you (re-)read up on it. Wikipedia will probably cover the basics.
+For starters, by definition you use the *public* key for encrypt and the privat one for decryption.
+
+cheers,
+//Lorenz
+
+From v+python at g.nevcal.com  Sun May  2 14:36:57 2010
+From: v+python at g.nevcal.com (Glenn Linderman)
+Date: Sun, 02 May 2010 13:36:57 -0700
+Subject: [pycrypto] Pycrypto question.
+In-Reply-To: <4BDDDCF4.6010602@amberfisharts.com>
+References: <199797.13530.qm@web114208.mail.gq1.yahoo.com>
+	<4BDDDCF4.6010602@amberfisharts.com>
+Message-ID: <4BDDE269.9090601@g.nevcal.com>
+
+On 5/2/2010 1:13 PM, Lorenz Quack wrote:
+> Hi Jd,
+>
+> On 05/02/2010 10:02 PM, jd wrote:
+>    
+>> Hi everyone,
+>>
+>> I am trying to implement a simple pub/private key scheme. Want to encrypt bunch of things and decrypt it using public
+>> key (which will be distributed).
+>>      
+> You seem to have some misconceptions about how public key cryptography works.
+> I suggest you (re-)read up on it. Wikipedia will probably cover the basics.
+> For starters, by definition you use the *public* key for encrypt and the privat one for decryption.
+>    
+
+Indeed, Wikipedia has an article.  And in the first paragraph [1] they 
+describe one use case for encrypting by public key, and decrypting by 
+private key, and another use case for encrypting by private key, and 
+decrypting by public key.  It might be appropriate to figure out what 
+use case the OP has before declaring definitions for a particular use 
+case.  Now as far as what the APIs are called, that might be a different 
+story :)
+
+[1] *Public-key cryptography* is a cryptographic 
+<http://en.wikipedia.org/wiki/Cryptography> approach which involves the 
+use of asymmetric key algorithms instead of or in addition to symmetric 
+key algorithms <http://en.wikipedia.org/wiki/Symmetric_key_algorithm>. 
+Unlike symmetric key algorithms, it does not require a secure 
+<http://en.wikipedia.org/wiki/Secure_channel> initial exchange 
+<http://en.wikipedia.org/wiki/Key_exchange> of one or more secret keys 
+<http://en.wikipedia.org/wiki/Secret_key> to both sender and receiver. 
+The asymmetric key algorithms are used to create a mathematically 
+related key pair: a secret private key and a published public key. Use 
+of these keys allows protection of the authenticity 
+<http://en.wikipedia.org/wiki/Authenticity> of a message by creating a 
+digital signature <http://en.wikipedia.org/wiki/Digital_signature> of a 
+message using the private key, which can be verified using the public 
+key. It also allows protection of the confidentiality 
+<http://en.wikipedia.org/wiki/Confidentiality> and integrity 
+<http://en.wikipedia.org/wiki/Integrity> of a message, by public key 
+encryption <http://en.wikipedia.org/wiki/Encryption>, encrypting the 
+message using the public key, which can only be decrypted using the 
+private key.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100502/96230787/attachment.html 
+
+From don at amberfisharts.com  Sun May  2 14:52:21 2010
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Sun, 02 May 2010 22:52:21 +0200
+Subject: [pycrypto] Pycrypto question.
+In-Reply-To: <4BDDE269.9090601@g.nevcal.com>
+References: <199797.13530.qm@web114208.mail.gq1.yahoo.com>	<4BDDDCF4.6010602@amberfisharts.com>
+	<4BDDE269.9090601@g.nevcal.com>
+Message-ID: <4BDDE605.10100@amberfisharts.com>
+
+On 05/02/2010 10:36 PM, Glenn Linderman wrote:
+> On 5/2/2010 1:13 PM, Lorenz Quack wrote:
+>> Hi Jd,
+>>
+>> On 05/02/2010 10:02 PM, jd wrote:
+>>
+>>> Hi everyone,
+>>>
+>>> I am trying to implement a simple pub/private key scheme. Want to encrypt bunch of things and decrypt it using public
+>>> key (which will be distributed).
+>>>
+>> You seem to have some misconceptions about how public key cryptography works.
+>> I suggest you (re-)read up on it. Wikipedia will probably cover the basics.
+>> For starters, by definition you use the *public* key for encrypt and the privat one for decryption.
+>>
+>
+> Indeed, Wikipedia has an article. And in the first paragraph [1] they
+> describe one use case for encrypting by public key, and decrypting by
+> private key, and another use case for encrypting by private key, and
+> decrypting by public key. It might be appropriate to figure out what use
+> case the OP has before declaring definitions for a particular use case.
+> Now as far as what the APIs are called, that might be a different story :)
+>
+> [1] *Public-key cryptography* is a cryptographic
+> <http://en.wikipedia.org/wiki/Cryptography> approach which involves the
+> use of asymmetric key algorithms instead of or in addition to symmetric
+> key algorithms <http://en.wikipedia.org/wiki/Symmetric_key_algorithm>.
+> Unlike symmetric key algorithms, it does not require a secure
+> <http://en.wikipedia.org/wiki/Secure_channel> initial exchange
+> <http://en.wikipedia.org/wiki/Key_exchange> of one or more secret keys
+> <http://en.wikipedia.org/wiki/Secret_key> to both sender and receiver.
+> The asymmetric key algorithms are used to create a mathematically
+> related key pair: a secret private key and a published public key. Use
+> of these keys allows protection of the authenticity
+> <http://en.wikipedia.org/wiki/Authenticity> of a message by creating a
+> digital signature <http://en.wikipedia.org/wiki/Digital_signature> of a
+> message using the private key, which can be verified using the public
+> key. It also allows protection of the confidentiality
+> <http://en.wikipedia.org/wiki/Confidentiality> and integrity
+> <http://en.wikipedia.org/wiki/Integrity> of a message, by public key
+> encryption <http://en.wikipedia.org/wiki/Encryption>, encrypting the
+> message using the public key, which can only be decrypted using the
+> private key.
+>
+
+Granted "definition" may have been a poor choice of word.
+But AFAIK the use case of "encrypting" via the private key is generally called signing.
+So I assumed that the OP had the wrong idea about how the scheme is used because he didn't
+use the generally accept terminology. If that was presumptuous I hereby apologize.
+
+So, to come back to the OPs question:
+if you use a RSA key to encrypt a message like you did in your example internally it uses the public
+part of the key pair for encryption. you would then have to use the private part to decypt it.
+If on the other hand you really want to encrypt with the private part and decrypt with the public part
+then know that this is usually refered to as signing and verifying (verification?).
+There is also and API for this in PyCrypto.
+
+Hope this is clearer and more helpful than my last message.
+
+have a nice day
+//Lorenz
+
+From jdsw2002 at yahoo.com  Tue May  4 11:04:27 2010
+From: jdsw2002 at yahoo.com (jd)
+Date: Tue, 4 May 2010 10:04:27 -0700 (PDT)
+Subject: [pycrypto] Pycrypto question.
+In-Reply-To: <4BDDE605.10100@amberfisharts.com>
+Message-ID: <153650.14719.qm@web114215.mail.gq1.yahoo.com>
+
+Thanks for the response.(Sorry ..for late response. Somehow this went in to my spam folder.)
+
+Yes, I indeed want to use private key to encrypt (oops.. sign) and decrypt (verify) using public/private key pairs.
+
+
+Would anyone point to the example usage/pseudo code that I can try out.
+
+Didnt find method details over here.
+http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.RSA-module.html
+
+I am assuming that the intent is clear from the example.
+Some Text ===> Encrypt (optionally) sign (using private key) ===> encrypted message
+encrypted message ==> (optionally) Verify and decrypt (using public key) ==> original message (Some Text)
+
+Also, would appreciate if instead of generating keys as in sample program, is there a way to use publick/private keys used by ssh-keygen -t rsa.
+
+Help is much appreciated.
+Thanks
+
+
+
+
+/Jd
+
+
+--- On Sun, 5/2/10, Lorenz Quack <don at amberfisharts.com> wrote:
+
+> From: Lorenz Quack <don at amberfisharts.com>
+> Subject: Re: [pycrypto] Pycrypto question.
+> To: "PyCrypto discussion list" <pycrypto at lists.dlitz.net>
+> Date: Sunday, May 2, 2010, 1:52 PM
+> On 05/02/2010 10:36 PM, Glenn
+> Linderman wrote:
+> > On 5/2/2010 1:13 PM, Lorenz Quack wrote:
+> >> Hi Jd,
+> >>
+> >> On 05/02/2010 10:02 PM, jd wrote:
+> >>
+> >>> Hi everyone,
+> >>>
+> >>> I am trying to implement a simple pub/private
+> key scheme. Want to encrypt bunch of things and decrypt it
+> using public
+> >>> key (which will be distributed).
+> >>>
+> >> You seem to have some misconceptions about how
+> public key cryptography works.
+> >> I suggest you (re-)read up on it. Wikipedia will
+> probably cover the basics.
+> >> For starters, by definition you use the *public*
+> key for encrypt and the privat one for decryption.
+> >>
+> >
+> > Indeed, Wikipedia has an article. And in the first
+> paragraph [1] they
+> > describe one use case for encrypting by public key,
+> and decrypting by
+> > private key, and another use case for encrypting by
+> private key, and
+> > decrypting by public key. It might be appropriate to
+> figure out what use
+> > case the OP has before declaring definitions for a
+> particular use case.
+> > Now as far as what the APIs are called, that might be
+> a different story :)
+> >
+> > [1] *Public-key cryptography* is a cryptographic
+> > <http://en.wikipedia.org/wiki/Cryptography> approach
+> which involves the
+> > use of asymmetric key algorithms instead of or in
+> addition to symmetric
+> > key algorithms <http://en.wikipedia.org/wiki/Symmetric_key_algorithm>.
+> > Unlike symmetric key algorithms, it does not require a
+> secure
+> > <http://en.wikipedia.org/wiki/Secure_channel> initial
+> exchange
+> > <http://en.wikipedia.org/wiki/Key_exchange> of one or
+> more secret keys
+> > <http://en.wikipedia.org/wiki/Secret_key> to both
+> sender and receiver.
+> > The asymmetric key algorithms are used to create a
+> mathematically
+> > related key pair: a secret private key and a published
+> public key. Use
+> > of these keys allows protection of the authenticity
+> > <http://en.wikipedia.org/wiki/Authenticity> of a
+> message by creating a
+> > digital signature <http://en.wikipedia.org/wiki/Digital_signature> of
+> a
+> > message using the private key, which can be verified
+> using the public
+> > key. It also allows protection of the confidentiality
+> > <http://en.wikipedia.org/wiki/Confidentiality> and
+> integrity
+> > <http://en.wikipedia.org/wiki/Integrity> of a
+> message, by public key
+> > encryption <http://en.wikipedia.org/wiki/Encryption>, encrypting
+> the
+> > message using the public key, which can only be
+> decrypted using the
+> > private key.
+> >
+> 
+> Granted "definition" may have been a poor choice of word.
+> But AFAIK the use case of "encrypting" via the private key
+> is generally called signing.
+> So I assumed that the OP had the wrong idea about how the
+> scheme is used because he didn't
+> use the generally accept terminology. If that was
+> presumptuous I hereby apologize.
+> 
+> So, to come back to the OPs question:
+> if you use a RSA key to encrypt a message like you did in
+> your example internally it uses the public
+> part of the key pair for encryption. you would then have to
+> use the private part to decypt it.
+> If on the other hand you really want to encrypt with the
+> private part and decrypt with the public part
+> then know that this is usually refered to as signing and
+> verifying (verification?).
+> There is also and API for this in PyCrypto.
+> 
+> Hope this is clearer and more helpful than my last
+> message.
+> 
+> have a nice day
+> //Lorenz
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> 
+
+
+      
+
+
+From nextstate at gmail.com  Tue May  4 12:11:04 2010
+From: nextstate at gmail.com (Tom Brown)
+Date: Tue, 4 May 2010 11:11:04 -0700
+Subject: [pycrypto] undefined references in winrand
+Message-ID: <x2lfc2281ef1005041111t93c557c9ycc9057ad638a2b63@mail.gmail.com>
+
+Hi,
+
+I'm trying to build pycrypto 2.1.0 on a Windows 7 64bit box. I am using
+mingw to compile. I get a series of undefined references in winrand. The
+full build output is here: http://pastebin.com/aU51V4T8
+
+My Python version is 2.6.5.
+
+Any ideas on what I'm doing wrong?
+
+Thanks,
+Tom
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100504/66a30c8d/attachment.htm 
+
+From don at amberfisharts.com  Tue May  4 13:00:39 2010
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Tue, 04 May 2010 21:00:39 +0200
+Subject: [pycrypto] Pycrypto question.
+In-Reply-To: <153650.14719.qm@web114215.mail.gq1.yahoo.com>
+References: <153650.14719.qm@web114215.mail.gq1.yahoo.com>
+Message-ID: <4BE06ED7.7040003@amberfisharts.com>
+
+Hi jd,
+
+some time ago I wrote a small module which provided me with a API that suited me better than that of PyCrypto.
+I attached a slightly modified version of it. I also added a short example to the end of it. I hope you can find the 
+information you want in there.
+
+Concerning the documentation: I agree, it could be improved. I think you were looking for this [1].
+
+Concerning the import of externally generated keys: I think this came up before on the list or bug tracker.
+AFAIK, it is not directly supported by PyCrypto. However, you can create a key pair from a tuple of numbers
+(for example the public and private exponent and the modulus). This is done with construct function [2].
+You just have to find a way to get to those numbers of your externally generated keys.
+
+I probably should also point out that the usage of RandomPool is strongly discouraged [3] and that there is a Random 
+module in PyCrypto-2.1 that you should use instead.
+
+sincerely yours
+//Lorenz
+
+[1] http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.pubkey.pubkey-class.html
+[2] http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.RSA-module.html
+[3] http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html
+
+
+
+On 05/04/2010 07:04 PM, jd wrote:
+> Thanks for the response.(Sorry ..for late response. Somehow this went in to my spam folder.)
+>
+> Yes, I indeed want to use private key to encrypt (oops.. sign) and decrypt (verify) using public/private key pairs.
+>
+>
+> Would anyone point to the example usage/pseudo code that I can try out.
+>
+> Didnt find method details over here.
+> http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.RSA-module.html
+>
+> I am assuming that the intent is clear from the example.
+> Some Text ===>  Encrypt (optionally) sign (using private key) ===>  encrypted message
+> encrypted message ==>  (optionally) Verify and decrypt (using public key) ==>  original message (Some Text)
+>
+> Also, would appreciate if instead of generating keys as in sample program, is there a way to use publick/private keys used by ssh-keygen -t rsa.
+>
+> Help is much appreciated.
+> Thanks
+>
+>
+>
+>
+> /Jd
+>
+>
+> --- On Sun, 5/2/10, Lorenz Quack<don at amberfisharts.com>  wrote:
+>
+>> From: Lorenz Quack<don at amberfisharts.com>
+>> Subject: Re: [pycrypto] Pycrypto question.
+>> To: "PyCrypto discussion list"<pycrypto at lists.dlitz.net>
+>> Date: Sunday, May 2, 2010, 1:52 PM
+>> On 05/02/2010 10:36 PM, Glenn
+>> Linderman wrote:
+>>> On 5/2/2010 1:13 PM, Lorenz Quack wrote:
+>>>> Hi Jd,
+>>>>
+>>>> On 05/02/2010 10:02 PM, jd wrote:
+>>>>
+>>>>> Hi everyone,
+>>>>>
+>>>>> I am trying to implement a simple pub/private
+>> key scheme. Want to encrypt bunch of things and decrypt it
+>> using public
+>>>>> key (which will be distributed).
+>>>>>
+>>>> You seem to have some misconceptions about how
+>> public key cryptography works.
+>>>> I suggest you (re-)read up on it. Wikipedia will
+>> probably cover the basics.
+>>>> For starters, by definition you use the *public*
+>> key for encrypt and the privat one for decryption.
+>>>>
+>>>
+>>> Indeed, Wikipedia has an article. And in the first
+>> paragraph [1] they
+>>> describe one use case for encrypting by public key,
+>> and decrypting by
+>>> private key, and another use case for encrypting by
+>> private key, and
+>>> decrypting by public key. It might be appropriate to
+>> figure out what use
+>>> case the OP has before declaring definitions for a
+>> particular use case.
+>>> Now as far as what the APIs are called, that might be
+>> a different story :)
+>>>
+>>> [1] *Public-key cryptography* is a cryptographic
+>>> <http://en.wikipedia.org/wiki/Cryptography>  approach
+>> which involves the
+>>> use of asymmetric key algorithms instead of or in
+>> addition to symmetric
+>>> key algorithms<http://en.wikipedia.org/wiki/Symmetric_key_algorithm>.
+>>> Unlike symmetric key algorithms, it does not require a
+>> secure
+>>> <http://en.wikipedia.org/wiki/Secure_channel>  initial
+>> exchange
+>>> <http://en.wikipedia.org/wiki/Key_exchange>  of one or
+>> more secret keys
+>>> <http://en.wikipedia.org/wiki/Secret_key>  to both
+>> sender and receiver.
+>>> The asymmetric key algorithms are used to create a
+>> mathematically
+>>> related key pair: a secret private key and a published
+>> public key. Use
+>>> of these keys allows protection of the authenticity
+>>> <http://en.wikipedia.org/wiki/Authenticity>  of a
+>> message by creating a
+>>> digital signature<http://en.wikipedia.org/wiki/Digital_signature>  of
+>> a
+>>> message using the private key, which can be verified
+>> using the public
+>>> key. It also allows protection of the confidentiality
+>>> <http://en.wikipedia.org/wiki/Confidentiality>  and
+>> integrity
+>>> <http://en.wikipedia.org/wiki/Integrity>  of a
+>> message, by public key
+>>> encryption<http://en.wikipedia.org/wiki/Encryption>, encrypting
+>> the
+>>> message using the public key, which can only be
+>> decrypted using the
+>>> private key.
+>>>
+>>
+>> Granted "definition" may have been a poor choice of word.
+>> But AFAIK the use case of "encrypting" via the private key
+>> is generally called signing.
+>> So I assumed that the OP had the wrong idea about how the
+>> scheme is used because he didn't
+>> use the generally accept terminology. If that was
+>> presumptuous I hereby apologize.
+>>
+>> So, to come back to the OPs question:
+>> if you use a RSA key to encrypt a message like you did in
+>> your example internally it uses the public
+>> part of the key pair for encryption. you would then have to
+>> use the private part to decypt it.
+>> If on the other hand you really want to encrypt with the
+>> private part and decrypt with the public part
+>> then know that this is usually refered to as signing and
+>> verifying (verification?).
+>> There is also and API for this in PyCrypto.
+>>
+>> Hope this is clearer and more helpful than my last
+>> message.
+>>
+>> have a nice day
+>> //Lorenz
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: crypt.py
+Type: text/x-python
+Size: 3969 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20100504/d5ad8e25/attachment.py 
+
+From Deathzor at Deathzor.com  Tue May  4 17:56:10 2010
+From: Deathzor at Deathzor.com (death)
+Date: Wed, 05 May 2010 01:56:10 +0200
+Subject: [pycrypto] Pycrypto question.
+In-Reply-To: <153650.14719.qm@web114215.mail.gq1.yahoo.com>
+References: <153650.14719.qm@web114215.mail.gq1.yahoo.com>
+Message-ID: <1273017370.6581.2.camel@localhost>
+
+Could be a typo here but you use the PUBLIC key to encrypte and verify
+and you use the Private key to SIGN and decrypte and generated the
+public key. 
+
+
+
+On Tue, 2010-05-04 at 10:04 -0700, jd wrote:
+> Thanks for the response.(Sorry ..for late response. Somehow this went in to my spam folder.)
+> 
+> Yes, I indeed want to use private key to encrypt (oops.. sign) and decrypt (verify) using public/private key pairs.
+> 
+> 
+> Would anyone point to the example usage/pseudo code that I can try out.
+> 
+> Didnt find method details over here.
+> http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.RSA-module.html
+> 
+> I am assuming that the intent is clear from the example.
+> Some Text ===> Encrypt (optionally) sign (using private key) ===> encrypted message
+> encrypted message ==> (optionally) Verify and decrypt (using public key) ==> original message (Some Text)
+> 
+> Also, would appreciate if instead of generating keys as in sample program, is there a way to use publick/private keys used by ssh-keygen -t rsa.
+> 
+> Help is much appreciated.
+> Thanks
+> 
+> 
+> 
+> 
+> /Jd
+> 
+> 
+> --- On Sun, 5/2/10, Lorenz Quack <don at amberfisharts.com> wrote:
+> 
+> > From: Lorenz Quack <don at amberfisharts.com>
+> > Subject: Re: [pycrypto] Pycrypto question.
+> > To: "PyCrypto discussion list" <pycrypto at lists.dlitz.net>
+> > Date: Sunday, May 2, 2010, 1:52 PM
+> > On 05/02/2010 10:36 PM, Glenn
+> > Linderman wrote:
+> > > On 5/2/2010 1:13 PM, Lorenz Quack wrote:
+> > >> Hi Jd,
+> > >>
+> > >> On 05/02/2010 10:02 PM, jd wrote:
+> > >>
+> > >>> Hi everyone,
+> > >>>
+> > >>> I am trying to implement a simple pub/private
+> > key scheme. Want to encrypt bunch of things and decrypt it
+> > using public
+> > >>> key (which will be distributed).
+> > >>>
+> > >> You seem to have some misconceptions about how
+> > public key cryptography works.
+> > >> I suggest you (re-)read up on it. Wikipedia will
+> > probably cover the basics.
+> > >> For starters, by definition you use the *public*
+> > key for encrypt and the privat one for decryption.
+> > >>
+> > >
+> > > Indeed, Wikipedia has an article. And in the first
+> > paragraph [1] they
+> > > describe one use case for encrypting by public key,
+> > and decrypting by
+> > > private key, and another use case for encrypting by
+> > private key, and
+> > > decrypting by public key. It might be appropriate to
+> > figure out what use
+> > > case the OP has before declaring definitions for a
+> > particular use case.
+> > > Now as far as what the APIs are called, that might be
+> > a different story :)
+> > >
+> > > [1] *Public-key cryptography* is a cryptographic
+> > > <http://en.wikipedia.org/wiki/Cryptography> approach
+> > which involves the
+> > > use of asymmetric key algorithms instead of or in
+> > addition to symmetric
+> > > key algorithms <http://en.wikipedia.org/wiki/Symmetric_key_algorithm>.
+> > > Unlike symmetric key algorithms, it does not require a
+> > secure
+> > > <http://en.wikipedia.org/wiki/Secure_channel> initial
+> > exchange
+> > > <http://en.wikipedia.org/wiki/Key_exchange> of one or
+> > more secret keys
+> > > <http://en.wikipedia.org/wiki/Secret_key> to both
+> > sender and receiver.
+> > > The asymmetric key algorithms are used to create a
+> > mathematically
+> > > related key pair: a secret private key and a published
+> > public key. Use
+> > > of these keys allows protection of the authenticity
+> > > <http://en.wikipedia.org/wiki/Authenticity> of a
+> > message by creating a
+> > > digital signature <http://en.wikipedia.org/wiki/Digital_signature> of
+> > a
+> > > message using the private key, which can be verified
+> > using the public
+> > > key. It also allows protection of the confidentiality
+> > > <http://en.wikipedia.org/wiki/Confidentiality> and
+> > integrity
+> > > <http://en.wikipedia.org/wiki/Integrity> of a
+> > message, by public key
+> > > encryption <http://en.wikipedia.org/wiki/Encryption>, encrypting
+> > the
+> > > message using the public key, which can only be
+> > decrypted using the
+> > > private key.
+> > >
+> > 
+> > Granted "definition" may have been a poor choice of word.
+> > But AFAIK the use case of "encrypting" via the private key
+> > is generally called signing.
+> > So I assumed that the OP had the wrong idea about how the
+> > scheme is used because he didn't
+> > use the generally accept terminology. If that was
+> > presumptuous I hereby apologize.
+> > 
+> > So, to come back to the OPs question:
+> > if you use a RSA key to encrypt a message like you did in
+> > your example internally it uses the public
+> > part of the key pair for encryption. you would then have to
+> > use the private part to decypt it.
+> > If on the other hand you really want to encrypt with the
+> > private part and decrypt with the public part
+> > then know that this is usually refered to as signing and
+> > verifying (verification?).
+> > There is also and API for this in PyCrypto.
+> > 
+> > Hope this is clearer and more helpful than my last
+> > message.
+> > 
+> > have a nice day
+> > //Lorenz
+> > _______________________________________________
+> > pycrypto mailing list
+> > pycrypto at lists.dlitz.net
+> > http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> > 
+> 
+> 
+>       
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+From jdsw2002 at yahoo.com  Wed May  5 11:05:49 2010
+From: jdsw2002 at yahoo.com (jd)
+Date: Wed, 5 May 2010 10:05:49 -0700 (PDT)
+Subject: [pycrypto] Pycrypto question.
+In-Reply-To: <4BE06ED7.7040003@amberfisharts.com>
+Message-ID: <711000.7120.qm@web114214.mail.gq1.yahoo.com>
+
+Thanks this helps clarify few things. 
+
+Couple od questions.
+1. I am on older version of pycrypto, can I simply use os.urandom for random # ?
+2. Do I really need a separate block encryption for the message ?
+   
+   I know this may sound strange.. but asymmetric keys gives you ability to encrypt right ? So is there a big problem .. using it in the following manner ?
+
+   x=RSAkey.decrypt("Foo Bar")  # This will use the private key
+   
+   pub = RSAkey.publickey() 
+   pub.encrypt(x,0)   # This will use the public key and give me "Foo Bar" back.
+
+   Any restriction on the content being encrypted /decrypted ?
+
+Thanks for awesome response.
+/Jd
+
+
+--- On Tue, 5/4/10, Lorenz Quack <don at amberfisharts.com> wrote:
+
+> From: Lorenz Quack <don at amberfisharts.com>
+> Subject: Re: [pycrypto] Pycrypto question.
+> To: "PyCrypto discussion list" <pycrypto at lists.dlitz.net>
+> Date: Tuesday, May 4, 2010, 12:00 PM
+> Hi jd,
+> 
+> some time ago I wrote a small module which provided me with
+> a API that suited me better than that of PyCrypto.
+> I attached a slightly modified version of it. I also added
+> a short example to the end of it. I hope you can find the 
+> information you want in there.
+> 
+> Concerning the documentation: I agree, it could be
+> improved. I think you were looking for this [1].
+> 
+> Concerning the import of externally generated keys: I think
+> this came up before on the list or bug tracker.
+> AFAIK, it is not directly supported by PyCrypto. However,
+> you can create a key pair from a tuple of numbers
+> (for example the public and private exponent and the
+> modulus). This is done with construct function [2].
+> You just have to find a way to get to those numbers of your
+> externally generated keys.
+> 
+> I probably should also point out that the usage of
+> RandomPool is strongly discouraged [3] and that there is a
+> Random 
+> module in PyCrypto-2.1 that you should use instead.
+> 
+> sincerely yours
+> //Lorenz
+> 
+> [1] http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.pubkey.pubkey-class.html
+> [2] http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.RSA-module.html
+> [3] http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html
+> 
+> 
+> 
+> On 05/04/2010 07:04 PM, jd wrote:
+> > Thanks for the response.(Sorry ..for late response.
+> Somehow this went in to my spam folder.)
+> >
+> > Yes, I indeed want to use private key to encrypt
+> (oops.. sign) and decrypt (verify) using public/private key
+> pairs.
+> >
+> >
+> > Would anyone point to the example usage/pseudo code
+> that I can try out.
+> >
+> > Didnt find method details over here.
+> > http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.RSA-module.html
+> >
+> > I am assuming that the intent is clear from the
+> example.
+> > Some Text ===>? Encrypt (optionally) sign
+> (using private key) ===>? encrypted message
+> > encrypted message ==>? (optionally) Verify and
+> decrypt (using public key) ==>? original message
+> (Some Text)
+> >
+> > Also, would appreciate if instead of generating keys
+> as in sample program, is there a way to use publick/private
+> keys used by ssh-keygen -t rsa.
+> >
+> > Help is much appreciated.
+> > Thanks
+> >
+> >
+> >
+> >
+> > /Jd
+> >
+> >
+> > --- On Sun, 5/2/10, Lorenz Quack<don at amberfisharts.com>?
+> wrote:
+> >
+> >> From: Lorenz Quack<don at amberfisharts.com>
+> >> Subject: Re: [pycrypto] Pycrypto question.
+> >> To: "PyCrypto discussion list"<pycrypto at lists.dlitz.net>
+> >> Date: Sunday, May 2, 2010, 1:52 PM
+> >> On 05/02/2010 10:36 PM, Glenn
+> >> Linderman wrote:
+> >>> On 5/2/2010 1:13 PM, Lorenz Quack wrote:
+> >>>> Hi Jd,
+> >>>>
+> >>>> On 05/02/2010 10:02 PM, jd wrote:
+> >>>>
+> >>>>> Hi everyone,
+> >>>>>
+> >>>>> I am trying to implement a simple
+> pub/private
+> >> key scheme. Want to encrypt bunch of things and
+> decrypt it
+> >> using public
+> >>>>> key (which will be distributed).
+> >>>>>
+> >>>> You seem to have some misconceptions about
+> how
+> >> public key cryptography works.
+> >>>> I suggest you (re-)read up on it.
+> Wikipedia will
+> >> probably cover the basics.
+> >>>> For starters, by definition you use the
+> *public*
+> >> key for encrypt and the privat one for
+> decryption.
+> >>>>
+> >>>
+> >>> Indeed, Wikipedia has an article. And in the
+> first
+> >> paragraph [1] they
+> >>> describe one use case for encrypting by public
+> key,
+> >> and decrypting by
+> >>> private key, and another use case for
+> encrypting by
+> >> private key, and
+> >>> decrypting by public key. It might be
+> appropriate to
+> >> figure out what use
+> >>> case the OP has before declaring definitions
+> for a
+> >> particular use case.
+> >>> Now as far as what the APIs are called, that
+> might be
+> >> a different story :)
+> >>>
+> >>> [1] *Public-key cryptography* is a
+> cryptographic
+> >>> <http://en.wikipedia.org/wiki/Cryptography>?
+> approach
+> >> which involves the
+> >>> use of asymmetric key algorithms instead of or
+> in
+> >> addition to symmetric
+> >>> key algorithms<http://en.wikipedia.org/wiki/Symmetric_key_algorithm>.
+> >>> Unlike symmetric key algorithms, it does not
+> require a
+> >> secure
+> >>> <http://en.wikipedia.org/wiki/Secure_channel>?
+> initial
+> >> exchange
+> >>> <http://en.wikipedia.org/wiki/Key_exchange>? of
+> one or
+> >> more secret keys
+> >>> <http://en.wikipedia.org/wiki/Secret_key>? to
+> both
+> >> sender and receiver.
+> >>> The asymmetric key algorithms are used to
+> create a
+> >> mathematically
+> >>> related key pair: a secret private key and a
+> published
+> >> public key. Use
+> >>> of these keys allows protection of the
+> authenticity
+> >>> <http://en.wikipedia.org/wiki/Authenticity>? of
+> a
+> >> message by creating a
+> >>> digital signature<http://en.wikipedia.org/wiki/Digital_signature>?
+> of
+> >> a
+> >>> message using the private key, which can be
+> verified
+> >> using the public
+> >>> key. It also allows protection of the
+> confidentiality
+> >>> <http://en.wikipedia.org/wiki/Confidentiality>?
+> and
+> >> integrity
+> >>> <http://en.wikipedia.org/wiki/Integrity>? of a
+> >> message, by public key
+> >>> encryption<http://en.wikipedia.org/wiki/Encryption>,
+> encrypting
+> >> the
+> >>> message using the public key, which can only
+> be
+> >> decrypted using the
+> >>> private key.
+> >>>
+> >>
+> >> Granted "definition" may have been a poor choice
+> of word.
+> >> But AFAIK the use case of "encrypting" via the
+> private key
+> >> is generally called signing.
+> >> So I assumed that the OP had the wrong idea about
+> how the
+> >> scheme is used because he didn't
+> >> use the generally accept terminology. If that was
+> >> presumptuous I hereby apologize.
+> >>
+> >> So, to come back to the OPs question:
+> >> if you use a RSA key to encrypt a message like you
+> did in
+> >> your example internally it uses the public
+> >> part of the key pair for encryption. you would
+> then have to
+> >> use the private part to decypt it.
+> >> If on the other hand you really want to encrypt
+> with the
+> >> private part and decrypt with the public part
+> >> then know that this is usually refered to as
+> signing and
+> >> verifying (verification?).
+> >> There is also and API for this in PyCrypto.
+> >>
+> >> Hope this is clearer and more helpful than my
+> last
+> >> message.
+> >>
+> >> have a nice day
+> >> //Lorenz
+> 
+> 
+> -----Inline Attachment Follows-----
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> 
+
+
+      
+
+From Deathzor at Deathzor.com  Wed May  5 13:18:11 2010
+From: Deathzor at Deathzor.com (death)
+Date: Wed, 05 May 2010 21:18:11 +0200
+Subject: [pycrypto] Pycrypto question.
+In-Reply-To: <711000.7120.qm@web114214.mail.gq1.yahoo.com>
+References: <711000.7120.qm@web114214.mail.gq1.yahoo.com>
+Message-ID: <1273087091.2727.1.camel@localhost>
+
+hhhm your trying to decrypted a plan text msg ?. 
+decrypt = going from encrypted to plain text.
+encrypt = going from plain text to encrypted. 
+
+On Wed, 2010-05-05 at 10:05 -0700, jd wrote:
+> 
+>    x=RSAkey.decrypt("Foo Bar")  # This will use the private key
+>    
+>    pub = RSAkey.publickey() 
+>    pub.encrypt(x,0)   # This will use the public key and give me "Foo
+> Bar" back. 
+
+
+From don at amberfisharts.com  Thu May  6 09:28:41 2010
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Thu, 06 May 2010 17:28:41 +0200
+Subject: [pycrypto] Pycrypto question.
+In-Reply-To: <711000.7120.qm@web114214.mail.gq1.yahoo.com>
+References: <711000.7120.qm@web114214.mail.gq1.yahoo.com>
+Message-ID: <4BE2E029.9080708@amberfisharts.com>
+
+Hi again.
+
+1) I don't think os.urandom is cryptographically strong either. Of course it depends on the actual OS used but I don't 
+know of any OS which comes with a cryptographically strong PRNG by default.
+
+2) General wisdom (I didn't benchmark this myself) is that symmetric en-/decryption is faster than asymmetric 
+algorithms. AFAIK that's the main reason a common pattern is to use a symmetric key and only use RSA to distribute that 
+key. From a more practical angle: The symmetric cyphers in PyCrypto are set up to encrypt any message as long as it is a 
+multiple of the block size (which often corresponds to the key size). The asymmetric cyphers on the other hand only 
+en-/decrypt a message which is shorter that the key. So If you really want to use RSA for longer messages you would have 
+to chop the messages into blocks yourself and feed those to the encrypt() method.
+
+cheers
+//Lorenz
+
+
+
+On 05/05/2010 07:05 PM, jd wrote:
+> Thanks this helps clarify few things.
+>
+> Couple od questions.
+> 1. I am on older version of pycrypto, can I simply use os.urandom for random # ?
+> 2. Do I really need a separate block encryption for the message ?
+>
+>     I know this may sound strange.. but asymmetric keys gives you ability to encrypt right ? So is there a big problem .. using it in the following manner ?
+>
+>     x=RSAkey.decrypt("Foo Bar")  # This will use the private key
+>
+>     pub = RSAkey.publickey()
+>     pub.encrypt(x,0)   # This will use the public key and give me "Foo Bar" back.
+>
+>     Any restriction on the content being encrypted /decrypted ?
+>
+> Thanks for awesome response.
+> /Jd
+>
+>
+> --- On Tue, 5/4/10, Lorenz Quack<don at amberfisharts.com>  wrote:
+>
+>> From: Lorenz Quack<don at amberfisharts.com>
+>> Subject: Re: [pycrypto] Pycrypto question.
+>> To: "PyCrypto discussion list"<pycrypto at lists.dlitz.net>
+>> Date: Tuesday, May 4, 2010, 12:00 PM
+>> Hi jd,
+>>
+>> some time ago I wrote a small module which provided me with
+>> a API that suited me better than that of PyCrypto.
+>> I attached a slightly modified version of it. I also added
+>> a short example to the end of it. I hope you can find the
+>> information you want in there.
+>>
+>> Concerning the documentation: I agree, it could be
+>> improved. I think you were looking for this [1].
+>>
+>> Concerning the import of externally generated keys: I think
+>> this came up before on the list or bug tracker.
+>> AFAIK, it is not directly supported by PyCrypto. However,
+>> you can create a key pair from a tuple of numbers
+>> (for example the public and private exponent and the
+>> modulus). This is done with construct function [2].
+>> You just have to find a way to get to those numbers of your
+>> externally generated keys.
+>>
+>> I probably should also point out that the usage of
+>> RandomPool is strongly discouraged [3] and that there is a
+>> Random
+>> module in PyCrypto-2.1 that you should use instead.
+>>
+>> sincerely yours
+>> //Lorenz
+>>
+>> [1] http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.pubkey.pubkey-class.html
+>> [2] http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.RSA-module.html
+>> [3] http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html
+>>
+>>
+>>
+>> On 05/04/2010 07:04 PM, jd wrote:
+>>> Thanks for the response.(Sorry ..for late response.
+>> Somehow this went in to my spam folder.)
+>>>
+>>> Yes, I indeed want to use private key to encrypt
+>> (oops.. sign) and decrypt (verify) using public/private key
+>> pairs.
+>>>
+>>>
+>>> Would anyone point to the example usage/pseudo code
+>> that I can try out.
+>>>
+>>> Didnt find method details over here.
+>>> http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.RSA-module.html
+>>>
+>>> I am assuming that the intent is clear from the
+>> example.
+>>> Some Text ===>   Encrypt (optionally) sign
+>> (using private key) ===>   encrypted message
+>>> encrypted message ==>   (optionally) Verify and
+>> decrypt (using public key) ==>   original message
+>> (Some Text)
+>>>
+>>> Also, would appreciate if instead of generating keys
+>> as in sample program, is there a way to use publick/private
+>> keys used by ssh-keygen -t rsa.
+>>>
+>>> Help is much appreciated.
+>>> Thanks
+>>>
+>>>
+>>>
+>>>
+>>> /Jd
+>>>
+>>>
+>>> --- On Sun, 5/2/10, Lorenz Quack<don at amberfisharts.com>
+>> wrote:
+>>>
+>>>> From: Lorenz Quack<don at amberfisharts.com>
+>>>> Subject: Re: [pycrypto] Pycrypto question.
+>>>> To: "PyCrypto discussion list"<pycrypto at lists.dlitz.net>
+>>>> Date: Sunday, May 2, 2010, 1:52 PM
+>>>> On 05/02/2010 10:36 PM, Glenn
+>>>> Linderman wrote:
+>>>>> On 5/2/2010 1:13 PM, Lorenz Quack wrote:
+>>>>>> Hi Jd,
+>>>>>>
+>>>>>> On 05/02/2010 10:02 PM, jd wrote:
+>>>>>>
+>>>>>>> Hi everyone,
+>>>>>>>
+>>>>>>> I am trying to implement a simple
+>> pub/private
+>>>> key scheme. Want to encrypt bunch of things and
+>> decrypt it
+>>>> using public
+>>>>>>> key (which will be distributed).
+>>>>>>>
+>>>>>> You seem to have some misconceptions about
+>> how
+>>>> public key cryptography works.
+>>>>>> I suggest you (re-)read up on it.
+>> Wikipedia will
+>>>> probably cover the basics.
+>>>>>> For starters, by definition you use the
+>> *public*
+>>>> key for encrypt and the privat one for
+>> decryption.
+>>>>>>
+>>>>>
+>>>>> Indeed, Wikipedia has an article. And in the
+>> first
+>>>> paragraph [1] they
+>>>>> describe one use case for encrypting by public
+>> key,
+>>>> and decrypting by
+>>>>> private key, and another use case for
+>> encrypting by
+>>>> private key, and
+>>>>> decrypting by public key. It might be
+>> appropriate to
+>>>> figure out what use
+>>>>> case the OP has before declaring definitions
+>> for a
+>>>> particular use case.
+>>>>> Now as far as what the APIs are called, that
+>> might be
+>>>> a different story :)
+>>>>>
+>>>>> [1] *Public-key cryptography* is a
+>> cryptographic
+>>>>> <http://en.wikipedia.org/wiki/Cryptography>
+>> approach
+>>>> which involves the
+>>>>> use of asymmetric key algorithms instead of or
+>> in
+>>>> addition to symmetric
+>>>>> key algorithms<http://en.wikipedia.org/wiki/Symmetric_key_algorithm>.
+>>>>> Unlike symmetric key algorithms, it does not
+>> require a
+>>>> secure
+>>>>> <http://en.wikipedia.org/wiki/Secure_channel>
+>> initial
+>>>> exchange
+>>>>> <http://en.wikipedia.org/wiki/Key_exchange>   of
+>> one or
+>>>> more secret keys
+>>>>> <http://en.wikipedia.org/wiki/Secret_key>   to
+>> both
+>>>> sender and receiver.
+>>>>> The asymmetric key algorithms are used to
+>> create a
+>>>> mathematically
+>>>>> related key pair: a secret private key and a
+>> published
+>>>> public key. Use
+>>>>> of these keys allows protection of the
+>> authenticity
+>>>>> <http://en.wikipedia.org/wiki/Authenticity>   of
+>> a
+>>>> message by creating a
+>>>>> digital signature<http://en.wikipedia.org/wiki/Digital_signature>
+>> of
+>>>> a
+>>>>> message using the private key, which can be
+>> verified
+>>>> using the public
+>>>>> key. It also allows protection of the
+>> confidentiality
+>>>>> <http://en.wikipedia.org/wiki/Confidentiality>
+>> and
+>>>> integrity
+>>>>> <http://en.wikipedia.org/wiki/Integrity>   of a
+>>>> message, by public key
+>>>>> encryption<http://en.wikipedia.org/wiki/Encryption>,
+>> encrypting
+>>>> the
+>>>>> message using the public key, which can only
+>> be
+>>>> decrypted using the
+>>>>> private key.
+>>>>>
+>>>>
+>>>> Granted "definition" may have been a poor choice
+>> of word.
+>>>> But AFAIK the use case of "encrypting" via the
+>> private key
+>>>> is generally called signing.
+>>>> So I assumed that the OP had the wrong idea about
+>> how the
+>>>> scheme is used because he didn't
+>>>> use the generally accept terminology. If that was
+>>>> presumptuous I hereby apologize.
+>>>>
+>>>> So, to come back to the OPs question:
+>>>> if you use a RSA key to encrypt a message like you
+>> did in
+>>>> your example internally it uses the public
+>>>> part of the key pair for encryption. you would
+>> then have to
+>>>> use the private part to decypt it.
+>>>> If on the other hand you really want to encrypt
+>> with the
+>>>> private part and decrypt with the public part
+>>>> then know that this is usually refered to as
+>> signing and
+>>>> verifying (verification?).
+>>>> There is also and API for this in PyCrypto.
+>>>>
+>>>> Hope this is clearer and more helpful than my
+>> last
+>>>> message.
+>>>>
+>>>> have a nice day
+>>>> //Lorenz
+>>
+>>
+>> -----Inline Attachment Follows-----
+>>
+
+From jdsw2002 at yahoo.com  Thu May  6 10:42:17 2010
+From: jdsw2002 at yahoo.com (jd)
+Date: Thu, 6 May 2010 09:42:17 -0700 (PDT)
+Subject: [pycrypto] Pycrypto question.
+In-Reply-To: <1273087091.2727.1.camel@localhost>
+Message-ID: <577575.31042.qm@web114212.mail.gq1.yahoo.com>
+
+Plain and cipher are just transformations.... 
+
+/Jd
+
+--- On Wed, 5/5/10, death <Deathzor at Deathzor.com> wrote:
+
+> From: death <Deathzor at Deathzor.com>
+> Subject: Re: [pycrypto] Pycrypto question.
+> To: "PyCrypto discussion list" <pycrypto at lists.dlitz.net>
+> Date: Wednesday, May 5, 2010, 12:18 PM
+> hhhm your trying to decrypted a plan
+> text msg ?. 
+> decrypt = going from encrypted to plain text.
+> encrypt = going from plain text to encrypted. 
+> 
+> On Wed, 2010-05-05 at 10:05 -0700, jd wrote:
+> > 
+> >? ? x=RSAkey.decrypt("Foo Bar")? # This
+> will use the private key
+> >? ? 
+> >? ? pub = RSAkey.publickey() 
+> >? ? pub.encrypt(x,0)???# This
+> will use the public key and give me "Foo
+> > Bar" back. 
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> 
+
+
+      
+
+
+From jdsw2002 at yahoo.com  Thu May  6 10:51:15 2010
+From: jdsw2002 at yahoo.com (jd)
+Date: Thu, 6 May 2010 09:51:15 -0700 (PDT)
+Subject: [pycrypto] Pycrypto question.
+In-Reply-To: <4BE2E029.9080708@amberfisharts.com>
+Message-ID: <479433.49720.qm@web114208.mail.gq1.yahoo.com>
+
+Thanks for the explanation.
+Makes sense.
+
+So the flow looks like.
+
+Plain text --> encrypt using Symmetric Key --> sign using private key -->Signed encrypted message
+
+On the other hand
+Signed encrypted message--> verify using public key --> decrypt using Symmetric key --> Plain message.
+
+one thing that is not clear.. is if using symmetric key for encryption.. then on the other side.. we will need that value along with public key to get the message back. Is symmetric key also made part of the payload ?
+
+( May be I will take another look at the example. )
+
+Thanks
+/Jd
+
+
+--- On Thu, 5/6/10, Lorenz Quack <don at amberfisharts.com> wrote:
+
+> From: Lorenz Quack <don at amberfisharts.com>
+> Subject: Re: [pycrypto] Pycrypto question.
+> To: "PyCrypto discussion list" <pycrypto at lists.dlitz.net>
+> Date: Thursday, May 6, 2010, 8:28 AM
+> Hi again.
+> 
+> 1) I don't think os.urandom is cryptographically strong
+> either. Of course it depends on the actual OS used but I
+> don't 
+> know of any OS which comes with a cryptographically strong
+> PRNG by default.
+> 
+> 2) General wisdom (I didn't benchmark this myself) is that
+> symmetric en-/decryption is faster than asymmetric 
+> algorithms. AFAIK that's the main reason a common pattern
+> is to use a symmetric key and only use RSA to distribute
+> that 
+> key. From a more practical angle: The symmetric cyphers in
+> PyCrypto are set up to encrypt any message as long as it is
+> a 
+> multiple of the block size (which often corresponds to the
+> key size). The asymmetric cyphers on the other hand only 
+> en-/decrypt a message which is shorter that the key. So If
+> you really want to use RSA for longer messages you would
+> have 
+> to chop the messages into blocks yourself and feed those to
+> the encrypt() method.
+> 
+> cheers
+> //Lorenz
+> 
+> 
+> 
+> On 05/05/2010 07:05 PM, jd wrote:
+> > Thanks this helps clarify few things.
+> >
+> > Couple od questions.
+> > 1. I am on older version of pycrypto, can I simply use
+> os.urandom for random # ?
+> > 2. Do I really need a separate block encryption for
+> the message ?
+> >
+> >? ???I know this may sound
+> strange.. but asymmetric keys gives you ability to encrypt
+> right ? So is there a big problem .. using it in the
+> following manner ?
+> >
+> >? ???x=RSAkey.decrypt("Foo
+> Bar")? # This will use the private key
+> >
+> >? ???pub = RSAkey.publickey()
+> >?
+> ???pub.encrypt(x,0)???# This
+> will use the public key and give me "Foo Bar" back.
+> >
+> >? ???Any restriction on the content
+> being encrypted /decrypted ?
+> >
+> > Thanks for awesome response.
+> > /Jd
+> >
+> >
+> > --- On Tue, 5/4/10, Lorenz Quack<don at amberfisharts.com>?
+> wrote:
+> >
+> >> From: Lorenz Quack<don at amberfisharts.com>
+> >> Subject: Re: [pycrypto] Pycrypto question.
+> >> To: "PyCrypto discussion list"<pycrypto at lists.dlitz.net>
+> >> Date: Tuesday, May 4, 2010, 12:00 PM
+> >> Hi jd,
+> >>
+> >> some time ago I wrote a small module which
+> provided me with
+> >> a API that suited me better than that of
+> PyCrypto.
+> >> I attached a slightly modified version of it. I
+> also added
+> >> a short example to the end of it. I hope you can
+> find the
+> >> information you want in there.
+> >>
+> >> Concerning the documentation: I agree, it could
+> be
+> >> improved. I think you were looking for this [1].
+> >>
+> >> Concerning the import of externally generated
+> keys: I think
+> >> this came up before on the list or bug tracker.
+> >> AFAIK, it is not directly supported by PyCrypto.
+> However,
+> >> you can create a key pair from a tuple of numbers
+> >> (for example the public and private exponent and
+> the
+> >> modulus). This is done with construct function
+> [2].
+> >> You just have to find a way to get to those
+> numbers of your
+> >> externally generated keys.
+> >>
+> >> I probably should also point out that the usage
+> of
+> >> RandomPool is strongly discouraged [3] and that
+> there is a
+> >> Random
+> >> module in PyCrypto-2.1 that you should use
+> instead.
+> >>
+> >> sincerely yours
+> >> //Lorenz
+> >>
+> >> [1] http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.pubkey.pubkey-class.html
+> >> [2] http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.RSA-module.html
+> >> [3] http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html
+> >>
+> >>
+> >>
+> >> On 05/04/2010 07:04 PM, jd wrote:
+> >>> Thanks for the response.(Sorry ..for late
+> response.
+> >> Somehow this went in to my spam folder.)
+> >>>
+> >>> Yes, I indeed want to use private key to
+> encrypt
+> >> (oops.. sign) and decrypt (verify) using
+> public/private key
+> >> pairs.
+> >>>
+> >>>
+> >>> Would anyone point to the example usage/pseudo
+> code
+> >> that I can try out.
+> >>>
+> >>> Didnt find method details over here.
+> >>> http://www.dlitz.net/software/pycrypto/apidoc/Crypto.PublicKey.RSA-module.html
+> >>>
+> >>> I am assuming that the intent is clear from
+> the
+> >> example.
+> >>> Some Text ===>???Encrypt
+> (optionally) sign
+> >> (using private key)
+> ===>???encrypted message
+> >>> encrypted message
+> ==>???(optionally) Verify and
+> >> decrypt (using public key)
+> ==>???original message
+> >> (Some Text)
+> >>>
+> >>> Also, would appreciate if instead of
+> generating keys
+> >> as in sample program, is there a way to use
+> publick/private
+> >> keys used by ssh-keygen -t rsa.
+> >>>
+> >>> Help is much appreciated.
+> >>> Thanks
+> >>>
+> >>>
+> >>>
+> >>>
+> >>> /Jd
+> >>>
+> >>>
+> >>> --- On Sun, 5/2/10, Lorenz Quack<don at amberfisharts.com>
+> >> wrote:
+> >>>
+> >>>> From: Lorenz Quack<don at amberfisharts.com>
+> >>>> Subject: Re: [pycrypto] Pycrypto
+> question.
+> >>>> To: "PyCrypto discussion list"<pycrypto at lists.dlitz.net>
+> >>>> Date: Sunday, May 2, 2010, 1:52 PM
+> >>>> On 05/02/2010 10:36 PM, Glenn
+> >>>> Linderman wrote:
+> >>>>> On 5/2/2010 1:13 PM, Lorenz Quack
+> wrote:
+> >>>>>> Hi Jd,
+> >>>>>>
+> >>>>>> On 05/02/2010 10:02 PM, jd wrote:
+> >>>>>>
+> >>>>>>> Hi everyone,
+> >>>>>>>
+> >>>>>>> I am trying to implement a
+> simple
+> >> pub/private
+> >>>> key scheme. Want to encrypt bunch of
+> things and
+> >> decrypt it
+> >>>> using public
+> >>>>>>> key (which will be
+> distributed).
+> >>>>>>>
+> >>>>>> You seem to have some
+> misconceptions about
+> >> how
+> >>>> public key cryptography works.
+> >>>>>> I suggest you (re-)read up on it.
+> >> Wikipedia will
+> >>>> probably cover the basics.
+> >>>>>> For starters, by definition you
+> use the
+> >> *public*
+> >>>> key for encrypt and the privat one for
+> >> decryption.
+> >>>>>>
+> >>>>>
+> >>>>> Indeed, Wikipedia has an article. And
+> in the
+> >> first
+> >>>> paragraph [1] they
+> >>>>> describe one use case for encrypting
+> by public
+> >> key,
+> >>>> and decrypting by
+> >>>>> private key, and another use case for
+> >> encrypting by
+> >>>> private key, and
+> >>>>> decrypting by public key. It might be
+> >> appropriate to
+> >>>> figure out what use
+> >>>>> case the OP has before declaring
+> definitions
+> >> for a
+> >>>> particular use case.
+> >>>>> Now as far as what the APIs are
+> called, that
+> >> might be
+> >>>> a different story :)
+> >>>>>
+> >>>>> [1] *Public-key cryptography* is a
+> >> cryptographic
+> >>>>> <http://en.wikipedia.org/wiki/Cryptography>
+> >> approach
+> >>>> which involves the
+> >>>>> use of asymmetric key algorithms
+> instead of or
+> >> in
+> >>>> addition to symmetric
+> >>>>> key algorithms<http://en.wikipedia.org/wiki/Symmetric_key_algorithm>.
+> >>>>> Unlike symmetric key algorithms, it
+> does not
+> >> require a
+> >>>> secure
+> >>>>> <http://en.wikipedia.org/wiki/Secure_channel>
+> >> initial
+> >>>> exchange
+> >>>>> <http://en.wikipedia.org/wiki/Key_exchange>???of
+> >> one or
+> >>>> more secret keys
+> >>>>> <http://en.wikipedia.org/wiki/Secret_key>???to
+> >> both
+> >>>> sender and receiver.
+> >>>>> The asymmetric key algorithms are used
+> to
+> >> create a
+> >>>> mathematically
+> >>>>> related key pair: a secret private key
+> and a
+> >> published
+> >>>> public key. Use
+> >>>>> of these keys allows protection of
+> the
+> >> authenticity
+> >>>>> <http://en.wikipedia.org/wiki/Authenticity>???of
+> >> a
+> >>>> message by creating a
+> >>>>> digital signature<http://en.wikipedia.org/wiki/Digital_signature>
+> >> of
+> >>>> a
+> >>>>> message using the private key, which
+> can be
+> >> verified
+> >>>> using the public
+> >>>>> key. It also allows protection of the
+> >> confidentiality
+> >>>>> <http://en.wikipedia.org/wiki/Confidentiality>
+> >> and
+> >>>> integrity
+> >>>>> <http://en.wikipedia.org/wiki/Integrity>???of
+> a
+> >>>> message, by public key
+> >>>>> encryption<http://en.wikipedia.org/wiki/Encryption>,
+> >> encrypting
+> >>>> the
+> >>>>> message using the public key, which
+> can only
+> >> be
+> >>>> decrypted using the
+> >>>>> private key.
+> >>>>>
+> >>>>
+> >>>> Granted "definition" may have been a poor
+> choice
+> >> of word.
+> >>>> But AFAIK the use case of "encrypting" via
+> the
+> >> private key
+> >>>> is generally called signing.
+> >>>> So I assumed that the OP had the wrong
+> idea about
+> >> how the
+> >>>> scheme is used because he didn't
+> >>>> use the generally accept terminology. If
+> that was
+> >>>> presumptuous I hereby apologize.
+> >>>>
+> >>>> So, to come back to the OPs question:
+> >>>> if you use a RSA key to encrypt a message
+> like you
+> >> did in
+> >>>> your example internally it uses the
+> public
+> >>>> part of the key pair for encryption. you
+> would
+> >> then have to
+> >>>> use the private part to decypt it.
+> >>>> If on the other hand you really want to
+> encrypt
+> >> with the
+> >>>> private part and decrypt with the public
+> part
+> >>>> then know that this is usually refered to
+> as
+> >> signing and
+> >>>> verifying (verification?).
+> >>>> There is also and API for this in
+> PyCrypto.
+> >>>>
+> >>>> Hope this is clearer and more helpful than
+> my
+> >> last
+> >>>> message.
+> >>>>
+> >>>> have a nice day
+> >>>> //Lorenz
+> >>
+> >>
+> >> -----Inline Attachment Follows-----
+> >>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> 
+
+
+      
+
+From larry.bates at vitalesafe.com  Thu May 13 09:57:00 2010
+From: larry.bates at vitalesafe.com (Larry Bates)
+Date: Thu, 13 May 2010 10:57:00 -0500
+Subject: [pycrypto] Question about AES-NI support
+Message-ID: <001d01caf2b4$ec80a790$c581f6b0$@bates@vitalesafe.com>
+
+I was wondering if/when PyCrypto would have support for new Intel AES-NI
+instructions for accelerating encryption/decryption on those newer CPUs that
+support the hardware instructions?
+
+ 
+
+Thanks in advance,
+
+Larry Bates
+
+vitalEsafe, Inc.
+
+ 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20100513/b0d1808b/attachment.htm 
+
+From dgelman at gmail.com  Tue May 11 16:06:32 2010
+From: dgelman at gmail.com (Daniel Gelman)
+Date: Tue, 11 May 2010 15:06:32 -0700
+Subject: [pycrypto] Digital Signature Example
+Message-ID: <AANLkTiklFPFd7QGbPzi-sHt_TXy3sQ9HdJ5ii-quLsc2@mail.gmail.com>
+
+Hi,
+
+I'm trying to use digital signatures.  However it seems most of the
+examples I can find are using the same key object.  I'd like to
+generate a key pair on system A, transmit the public key to system B,
+then sign and verify a message.  Could anyone give me a simple example
+of this, preferably using DSA?  Thank you so much.
+
+From dgelman at gmail.com  Wed May 12 12:52:05 2010
+From: dgelman at gmail.com (Daniel Gelman)
+Date: Wed, 12 May 2010 11:52:05 -0700
+Subject: [pycrypto] Digital Signature Example
+In-Reply-To: <AANLkTiklFPFd7QGbPzi-sHt_TXy3sQ9HdJ5ii-quLsc2@mail.gmail.com>
+References: <AANLkTiklFPFd7QGbPzi-sHt_TXy3sQ9HdJ5ii-quLsc2@mail.gmail.com>
+Message-ID: <AANLkTik9rH1yCDUVQ4bdSNnrJf3CKgyW3JdSkxXX8YM4@mail.gmail.com>
+
+Hi,
+
+I'm trying to use digital signatures. ?However it seems most of the
+examples I can find are using the same key object. ?I'd like to
+generate a key pair on system A, transmit the public key to system B,
+then sign and verify a message. ?Could anyone give me a simple example
+of this, preferably using DSA? ?Thank you so much.
+
+From don at amberfisharts.com  Fri May 14 04:21:59 2010
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Fri, 14 May 2010 12:21:59 +0200
+Subject: [pycrypto] Question about AES-NI support
+In-Reply-To: <001d01caf2b4$ec80a790$c581f6b0$@bates@vitalesafe.com>
+References: <001d01caf2b4$ec80a790$c581f6b0$@bates@vitalesafe.com>
+Message-ID: <15ea264243a4d31b23caefc7ee817877@localhost>
+
+Hi,
+
+I have no idea. I just wanted to point to an article by intel which
+describes the new instruction set [1].
+It includes examples of the basic instructions and various example
+implementations in C and Assembler.
+It seems to be well written. That might be a good starting point for
+anyone who wants to take a shot at this.
+
+cheers
+//Lorenz
+
+[1] http://software.intel.com/file/24917
+
+
+
+On Thu, 13 May 2010 10:57:00 -0500, "Larry Bates"
+<larry.bates at vitalesafe.com> wrote:
+> I was wondering if/when PyCrypto would have support for new Intel AES-NI
+> instructions for accelerating encryption/decryption on those newer CPUs
+> that
+> support the hardware instructions?
+> 
+>  
+> 
+> Thanks in advance,
+> 
+> Larry Bates
+> 
+> vitalEsafe, Inc.
+
+From jdsw2002 at yahoo.com  Mon May 17 08:48:13 2010
+From: jdsw2002 at yahoo.com (jd)
+Date: Mon, 17 May 2010 07:48:13 -0700 (PDT)
+Subject: [pycrypto] _fastmath None !!
+Message-ID: <681951.67356.qm@web114214.mail.gq1.yahoo.com>
+
+Hi Guys
+    I am serializing the pycrypto keys using pickle.. as suggested in one of recent posts. It is working fine, but giving following problem on cenos 5.1. (stack at the bottom of email)
+
+'NoneType' object has no attribute 'rsa_construct'
+
+
+    I looked at the code.. it seems while constructing _fastmath is used. Any workarounds / fixes ? I do not think changing to saving tuple would help as it would also need to use __setstate__.. 
+
+Help is greatly appreciated.
+Thanks
+/Jd
+
+File "/tg2env/bin/paster", line 7, in ?
+    sys.exit(
+  File "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py", line 84, in run
+    invoke(command, command_name, options, args[1:])
+  File "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py", line 123, in invoke
+    exit_code = runner.run(args)
+  File "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py", line 218, in run
+    result = self.command()
+  File "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py", line 276, in command
+    relative_to=base, global_conf=vars)
+  File "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py", line 311, in loadapp
+    return loadapp(
+  File "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py", line 204, in loadapp
+    return loadobj(APP, uri, name=name, **kw)
+  File "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py", line 225, in loadobj
+    return context.create()
+  File "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py", line 625, in create
+    return self.object_type.invoke(self)
+  File "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py", line 110, in invoke
+    return fix_call(context.object, context.global_conf, **context.local_conf)
+  File "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/util/fixtypeerror.py", line 57, in fix_call
+    val = callable(*args, **kw)
+  File "/m2svn/trunk/src/app/web/app/app/config/middleware.py", line 46, in make_app
+    if verify_license():
+  File "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py", line 2221, in verify_license
+    l_info = read_license_using_embeded(license_file)
+  File "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py", line 2202, in read_license_using_embeded
+    pub_key =get_embeded_key()
+  File "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py", line 2197, in get_embeded_key
+    key = pickle.loads(str)
+  File "/usr/lib64/python2.4/pickle.py", line 1394, in loads
+    return Unpickler(file).load()
+  File "/usr/lib64/python2.4/pickle.py", line 872, in load
+    dispatch[key](self)
+  File "/usr/lib64/python2.4/pickle.py", line 1237, in load_build
+    setstate(state)
+  File "build/bdist.linux-x86_64/egg/Crypto/PublicKey/RSA.py", line 171, in __setstate__
+AttributeError: 'NoneType' object has no attribute 'rsa_construct'
+
+
+      
+
+From don at amberfisharts.com  Mon May 17 09:40:50 2010
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Mon, 17 May 2010 17:40:50 +0200
+Subject: [pycrypto] _fastmath None !!
+In-Reply-To: <681951.67356.qm@web114214.mail.gq1.yahoo.com>
+References: <681951.67356.qm@web114214.mail.gq1.yahoo.com>
+Message-ID: <4BF16382.1060200@amberfisharts.com>
+
+Hi again,
+
+no idea what's going wrong. normally pycrypto should fall back to _slowmath (a pure python implementation) when gmp is 
+not installed meaning _fastmath is not available (_fastmath is a C implementation using gmp).
+
+Maybe you could prvide some more information, like python version, pycrypto version, is gmp installed?
+Also it would be a good idea to provide a small/minimalistic example demonstrating the problem.
+That way it is easyier to figure out if it's a bug in pycrypto or in your code.
+
+cheers,
+//Lorenz
+
+
+
+On 05/17/2010 04:48 PM, jd wrote:
+> Hi Guys
+>      I am serializing the pycrypto keys using pickle.. as suggested in one of recent posts. It is working fine, but giving following problem on cenos 5.1. (stack at the bottom of email)
+>
+> 'NoneType' object has no attribute 'rsa_construct'
+>
+>
+>      I looked at the code.. it seems while constructing _fastmath is used. Any workarounds / fixes ? I do not think changing to saving tuple would help as it would also need to use __setstate__..
+>
+> Help is greatly appreciated.
+> Thanks
+> /Jd
+>
+> File "/tg2env/bin/paster", line 7, in ?
+>      sys.exit(
+>    File "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py", line 84, in run
+>      invoke(command, command_name, options, args[1:])
+>    File "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py", line 123, in invoke
+>      exit_code = runner.run(args)
+>    File "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py", line 218, in run
+>      result = self.command()
+>    File "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py", line 276, in command
+>      relative_to=base, global_conf=vars)
+>    File "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py", line 311, in loadapp
+>      return loadapp(
+>    File "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py", line 204, in loadapp
+>      return loadobj(APP, uri, name=name, **kw)
+>    File "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py", line 225, in loadobj
+>      return context.create()
+>    File "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py", line 625, in create
+>      return self.object_type.invoke(self)
+>    File "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py", line 110, in invoke
+>      return fix_call(context.object, context.global_conf, **context.local_conf)
+>    File "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/util/fixtypeerror.py", line 57, in fix_call
+>      val = callable(*args, **kw)
+>    File "/m2svn/trunk/src/app/web/app/app/config/middleware.py", line 46, in make_app
+>      if verify_license():
+>    File "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py", line 2221, in verify_license
+>      l_info = read_license_using_embeded(license_file)
+>    File "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py", line 2202, in read_license_using_embeded
+>      pub_key =get_embeded_key()
+>    File "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py", line 2197, in get_embeded_key
+>      key = pickle.loads(str)
+>    File "/usr/lib64/python2.4/pickle.py", line 1394, in loads
+>      return Unpickler(file).load()
+>    File "/usr/lib64/python2.4/pickle.py", line 872, in load
+>      dispatch[key](self)
+>    File "/usr/lib64/python2.4/pickle.py", line 1237, in load_build
+>      setstate(state)
+>    File "build/bdist.linux-x86_64/egg/Crypto/PublicKey/RSA.py", line 171, in __setstate__
+> AttributeError: 'NoneType' object has no attribute 'rsa_construct'
+>
+
+
+From jdsw2002 at yahoo.com  Tue May 18 00:19:48 2010
+From: jdsw2002 at yahoo.com (jd)
+Date: Mon, 17 May 2010 23:19:48 -0700 (PDT)
+Subject: [pycrypto] _fastmath None !!
+In-Reply-To: <4BF16382.1060200@amberfisharts.com>
+Message-ID: <713926.74718.qm@web114208.mail.gq1.yahoo.com>
+
+
+Hi Lorenz, 
+   Thanks for quick response.
+
+It is happening on someone else's machine, I have requested them to check and send me details. 
+
+In the mean time I looked that the code.
+In RSA.py
+
+try:
+    from Crypto.PublicKey import _fastmath
+except ImportError:
+    _fastmath = None
+
+
+Could this be problem ?
+Thanks
+/Jd
+
+
+--- On Mon, 5/17/10, Lorenz Quack <don at amberfisharts.com> wrote:
+
+> From: Lorenz Quack <don at amberfisharts.com>
+> Subject: Re: [pycrypto] _fastmath None !!
+> To: "PyCrypto discussion list" <pycrypto at lists.dlitz.net>
+> Date: Monday, May 17, 2010, 8:40 AM
+> Hi again,
+> 
+> no idea what's going wrong. normally pycrypto should fall
+> back to _slowmath (a pure python implementation) when gmp is
+> 
+> not installed meaning _fastmath is not available (_fastmath
+> is a C implementation using gmp).
+> 
+> Maybe you could prvide some more information, like python
+> version, pycrypto version, is gmp installed?
+> Also it would be a good idea to provide a
+> small/minimalistic example demonstrating the problem.
+> That way it is easyier to figure out if it's a bug in
+> pycrypto or in your code.
+> 
+> cheers,
+> //Lorenz
+> 
+> 
+> 
+> On 05/17/2010 04:48 PM, jd wrote:
+> > Hi Guys
+> >? ? ? I am serializing the pycrypto keys
+> using pickle.. as suggested in one of recent posts. It is
+> working fine, but giving following problem on cenos 5.1.
+> (stack at the bottom of email)
+> >
+> > 'NoneType' object has no attribute 'rsa_construct'
+> >
+> >
+> >? ? ? I looked at the code.. it seems
+> while constructing _fastmath is used. Any workarounds /
+> fixes ? I do not think changing to saving tuple would help
+> as it would also need to use __setstate__..
+> >
+> > Help is greatly appreciated.
+> > Thanks
+> > /Jd
+> >
+> > File "/tg2env/bin/paster", line 7, in ?
+> >? ? ? sys.exit(
+> >? ? File
+> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py",
+> line 84, in run
+> >? ? ? invoke(command, command_name,
+> options, args[1:])
+> >? ? File
+> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py",
+> line 123, in invoke
+> >? ? ? exit_code = runner.run(args)
+> >? ? File
+> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py",
+> line 218, in run
+> >? ? ? result = self.command()
+> >? ? File
+> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py",
+> line 276, in command
+> >? ? ? relative_to=base,
+> global_conf=vars)
+> >? ? File
+> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py",
+> line 311, in loadapp
+> >? ? ? return loadapp(
+> >? ? File
+> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+> line 204, in loadapp
+> >? ? ? return loadobj(APP, uri,
+> name=name, **kw)
+> >? ? File
+> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+> line 225, in loadobj
+> >? ? ? return context.create()
+> >? ? File
+> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+> line 625, in create
+> >? ? ? return
+> self.object_type.invoke(self)
+> >? ? File
+> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+> line 110, in invoke
+> >? ? ? return fix_call(context.object,
+> context.global_conf, **context.local_conf)
+> >? ? File
+> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/util/fixtypeerror.py",
+> line 57, in fix_call
+> >? ? ? val = callable(*args, **kw)
+> >? ? File
+> "/m2svn/trunk/src/app/web/app/app/config/middleware.py",
+> line 46, in make_app
+> >? ? ? if verify_license():
+> >? ? File
+> "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py", line
+> 2221, in verify_license
+> >? ? ? l_info =
+> read_license_using_embeded(license_file)
+> >? ? File
+> "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py", line
+> 2202, in read_license_using_embeded
+> >? ? ? pub_key =get_embeded_key()
+> >? ? File
+> "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py", line
+> 2197, in get_embeded_key
+> >? ? ? key = pickle.loads(str)
+> >? ? File "/usr/lib64/python2.4/pickle.py",
+> line 1394, in loads
+> >? ? ? return Unpickler(file).load()
+> >? ? File "/usr/lib64/python2.4/pickle.py",
+> line 872, in load
+> >? ? ? dispatch[key](self)
+> >? ? File "/usr/lib64/python2.4/pickle.py",
+> line 1237, in load_build
+> >? ? ? setstate(state)
+> >? ? File
+> "build/bdist.linux-x86_64/egg/Crypto/PublicKey/RSA.py", line
+> 171, in __setstate__
+> > AttributeError: 'NoneType' object has no attribute
+> 'rsa_construct'
+> >
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> 
+
+
+      
+
+From don at amberfisharts.com  Tue May 18 04:20:32 2010
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Tue, 18 May 2010 12:20:32 +0200
+Subject: [pycrypto] _fastmath None !!
+In-Reply-To: <713926.74718.qm@web114208.mail.gq1.yahoo.com>
+References: <713926.74718.qm@web114208.mail.gq1.yahoo.com>
+Message-ID: <4BF269F0.7080208@amberfisharts.com>
+
+Hi
+
+On 05/18/2010 08:19 AM, jd wrote:
+>
+> Hi Lorenz,
+>     Thanks for quick response.
+>
+> It is happening on someone else's machine, I have requested them to check and send me details.
+>
+> In the mean time I looked that the code.
+> In RSA.py
+>
+> try:
+>      from Crypto.PublicKey import _fastmath
+> except ImportError:
+>      _fastmath = None
+>
+>
+> Could this be problem ?
+
+I don't think so. That should happen when PyCrypto was compiled without gmp support.
+According to my analysis the relevant parts are the __setstate__ method in the class _RSAobj
+and the __init__ in the class RSAImplementation.
+In the __init__ the attribute _math is set which is later being accessed by both the construct
+method and in the _RSAobj.__setstate__ method.
+The way the _math attribute is set seems pretty safe to me so I believe things must be going
+astray somewhere else. But it's hard to tell without any code.
+
+cheers
+//Lorenz
+
+
+> Thanks
+> /Jd
+>
+>
+> --- On Mon, 5/17/10, Lorenz Quack<don at amberfisharts.com>  wrote:
+>
+>> From: Lorenz Quack<don at amberfisharts.com>
+>> Subject: Re: [pycrypto] _fastmath None !!
+>> To: "PyCrypto discussion list"<pycrypto at lists.dlitz.net>
+>> Date: Monday, May 17, 2010, 8:40 AM
+>> Hi again,
+>>
+>> no idea what's going wrong. normally pycrypto should fall
+>> back to _slowmath (a pure python implementation) when gmp is
+>>
+>> not installed meaning _fastmath is not available (_fastmath
+>> is a C implementation using gmp).
+>>
+>> Maybe you could prvide some more information, like python
+>> version, pycrypto version, is gmp installed?
+>> Also it would be a good idea to provide a
+>> small/minimalistic example demonstrating the problem.
+>> That way it is easyier to figure out if it's a bug in
+>> pycrypto or in your code.
+>>
+>> cheers,
+>> //Lorenz
+>>
+>>
+>>
+>> On 05/17/2010 04:48 PM, jd wrote:
+>>> Hi Guys
+>>>        I am serializing the pycrypto keys
+>> using pickle.. as suggested in one of recent posts. It is
+>> working fine, but giving following problem on cenos 5.1.
+>> (stack at the bottom of email)
+>>>
+>>> 'NoneType' object has no attribute 'rsa_construct'
+>>>
+>>>
+>>>        I looked at the code.. it seems
+>> while constructing _fastmath is used. Any workarounds /
+>> fixes ? I do not think changing to saving tuple would help
+>> as it would also need to use __setstate__..
+>>>
+>>> Help is greatly appreciated.
+>>> Thanks
+>>> /Jd
+>>>
+>>> File "/tg2env/bin/paster", line 7, in ?
+>>>        sys.exit(
+>>>      File
+>> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py",
+>> line 84, in run
+>>>        invoke(command, command_name,
+>> options, args[1:])
+>>>      File
+>> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py",
+>> line 123, in invoke
+>>>        exit_code = runner.run(args)
+>>>      File
+>> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py",
+>> line 218, in run
+>>>        result = self.command()
+>>>      File
+>> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py",
+>> line 276, in command
+>>>        relative_to=base,
+>> global_conf=vars)
+>>>      File
+>> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py",
+>> line 311, in loadapp
+>>>        return loadapp(
+>>>      File
+>> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+>> line 204, in loadapp
+>>>        return loadobj(APP, uri,
+>> name=name, **kw)
+>>>      File
+>> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+>> line 225, in loadobj
+>>>        return context.create()
+>>>      File
+>> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+>> line 625, in create
+>>>        return
+>> self.object_type.invoke(self)
+>>>      File
+>> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+>> line 110, in invoke
+>>>        return fix_call(context.object,
+>> context.global_conf, **context.local_conf)
+>>>      File
+>> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/util/fixtypeerror.py",
+>> line 57, in fix_call
+>>>        val = callable(*args, **kw)
+>>>      File
+>> "/m2svn/trunk/src/app/web/app/app/config/middleware.py",
+>> line 46, in make_app
+>>>        if verify_license():
+>>>      File
+>> "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py", line
+>> 2221, in verify_license
+>>>        l_info =
+>> read_license_using_embeded(license_file)
+>>>      File
+>> "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py", line
+>> 2202, in read_license_using_embeded
+>>>        pub_key =get_embeded_key()
+>>>      File
+>> "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py", line
+>> 2197, in get_embeded_key
+>>>        key = pickle.loads(str)
+>>>      File "/usr/lib64/python2.4/pickle.py",
+>> line 1394, in loads
+>>>        return Unpickler(file).load()
+>>>      File "/usr/lib64/python2.4/pickle.py",
+>> line 872, in load
+>>>        dispatch[key](self)
+>>>      File "/usr/lib64/python2.4/pickle.py",
+>> line 1237, in load_build
+>>>        setstate(state)
+>>>      File
+>> "build/bdist.linux-x86_64/egg/Crypto/PublicKey/RSA.py", line
+>> 171, in __setstate__
+>>> AttributeError: 'NoneType' object has no attribute
+>> 'rsa_construct'
+>>>
+
+
+From tobias.koeck at gmail.com  Tue May 18 10:33:25 2010
+From: tobias.koeck at gmail.com (Tobias Koeck)
+Date: Tue, 18 May 2010 18:33:25 +0200
+Subject: [pycrypto] Does Pycrypto work with Python 3.x now?
+In-Reply-To: <4BF269F0.7080208@amberfisharts.com>
+References: <713926.74718.qm@web114208.mail.gq1.yahoo.com>
+	<4BF269F0.7080208@amberfisharts.com>
+Message-ID: <4BF2C155.6020306@gmail.com>
+
+Does Pycrypto work with Python 3.x now?
+
+From christoph.tapler at gmx.net  Tue May 18 10:41:11 2010
+From: christoph.tapler at gmx.net (Christoph Tapler)
+Date: Tue, 18 May 2010 18:41:11 +0200
+Subject: [pycrypto] Does Pycrypto work with Python 3.x now?
+In-Reply-To: <4BF2C155.6020306@gmail.com>
+References: <713926.74718.qm@web114208.mail.gq1.yahoo.com>	<4BF269F0.7080208@amberfisharts.com>
+	<4BF2C155.6020306@gmail.com>
+Message-ID: <4BF2C327.9000705@gmx.net>
+
+Hi Tobias
+
+ > Does Pycrypto work with Python 3.x now?
+
+To my knowledge PyCrypto doesn't work yet with Python 3.x.
+Around 30% of the test cases are still fail. If you want me
+to check which of the components are pass, please let me know.
+
+Cheers,
+Christoph
+
+
+
+From jdsw2002 at yahoo.com  Tue May 18 22:17:52 2010
+From: jdsw2002 at yahoo.com (jd)
+Date: Tue, 18 May 2010 21:17:52 -0700 (PDT)
+Subject: [pycrypto] _fastmath None !!
+Message-ID: <630225.6817.qm@web114216.mail.gq1.yahoo.com>
+
+Ok... here is attached program. 
+
+The problem seems to be 
+a. Either package specific (pycrypto package installed using easy_install and/or from rpm as dependency from paramiko.)
+   I use virtual env, and when I install pycrypto using easy_install, the _fastmath.so is not present in the egg. 
+
+b. serialization of keys in to file.
+
+Basically, if u run the attached program it works on all my test machines.
+If you create the keys and save them on one machine, and try to read them (comment the key generation, saving part), then it does not work on some machines.
+
+I am using picke and base64, to my knowledge both should work across m/c architecture (32bit, 64bit) and different python versions. Or I am mistaken ?
+
+One observation is that the keys generated and saved on a 32 bit machines are running in to the problem when read on a 64 bit machine.  But if I generate it on a 64 bit machine.. it seems to work on a 32 bit machine. 
+
+NOTE: This is just one variable... the machines have different python version, different linux distro..etc.
+
+Thanks in advance.
+
+/Jd
+p.s. I am going to switch serialization and see if that helps.
+
+--- On Tue, 5/18/10, Lorenz Quack <don at amberfisharts.com> wrote:
+
+> From: Lorenz Quack <don at amberfisharts.com>
+> Subject: Re: [pycrypto] _fastmath None !!
+> To: "PyCrypto discussion list" <pycrypto at lists.dlitz.net>
+> Date: Tuesday, May 18, 2010, 3:20 AM
+> Hi
+> 
+> On 05/18/2010 08:19 AM, jd wrote:
+> >
+> > Hi Lorenz,
+> >? ???Thanks for quick response.
+> >
+> > It is happening on someone else's machine, I have
+> requested them to check and send me details.
+> >
+> > In the mean time I looked that the code.
+> > In RSA.py
+> >
+> > try:
+> >? ? ? from Crypto.PublicKey import
+> _fastmath
+> > except ImportError:
+> >? ? ? _fastmath = None
+> >
+> >
+> > Could this be problem ?
+> 
+> I don't think so. That should happen when PyCrypto was
+> compiled without gmp support.
+> According to my analysis the relevant parts are the
+> __setstate__ method in the class _RSAobj
+> and the __init__ in the class RSAImplementation.
+> In the __init__ the attribute _math is set which is later
+> being accessed by both the construct
+> method and in the _RSAobj.__setstate__ method.
+> The way the _math attribute is set seems pretty safe to me
+> so I believe things must be going
+> astray somewhere else. But it's hard to tell without any
+> code.
+> 
+> cheers
+> //Lorenz
+> 
+> 
+> > Thanks
+> > /Jd
+> >
+> >
+> > --- On Mon, 5/17/10, Lorenz Quack<don at amberfisharts.com>?
+> wrote:
+> >
+> >> From: Lorenz Quack<don at amberfisharts.com>
+> >> Subject: Re: [pycrypto] _fastmath None !!
+> >> To: "PyCrypto discussion list"<pycrypto at lists.dlitz.net>
+> >> Date: Monday, May 17, 2010, 8:40 AM
+> >> Hi again,
+> >>
+> >> no idea what's going wrong. normally pycrypto
+> should fall
+> >> back to _slowmath (a pure python implementation)
+> when gmp is
+> >>
+> >> not installed meaning _fastmath is not available
+> (_fastmath
+> >> is a C implementation using gmp).
+> >>
+> >> Maybe you could prvide some more information, like
+> python
+> >> version, pycrypto version, is gmp installed?
+> >> Also it would be a good idea to provide a
+> >> small/minimalistic example demonstrating the
+> problem.
+> >> That way it is easyier to figure out if it's a bug
+> in
+> >> pycrypto or in your code.
+> >>
+> >> cheers,
+> >> //Lorenz
+> >>
+> >>
+> >>
+> >> On 05/17/2010 04:48 PM, jd wrote:
+> >>> Hi Guys
+> >>>? ? ? ? I am serializing
+> the pycrypto keys
+> >> using pickle.. as suggested in one of recent
+> posts. It is
+> >> working fine, but giving following problem on
+> cenos 5.1.
+> >> (stack at the bottom of email)
+> >>>
+> >>> 'NoneType' object has no attribute
+> 'rsa_construct'
+> >>>
+> >>>
+> >>>? ? ? ? I looked at the
+> code.. it seems
+> >> while constructing _fastmath is used. Any
+> workarounds /
+> >> fixes ? I do not think changing to saving tuple
+> would help
+> >> as it would also need to use __setstate__..
+> >>>
+> >>> Help is greatly appreciated.
+> >>> Thanks
+> >>> /Jd
+> >>>
+> >>> File "/tg2env/bin/paster", line 7, in ?
+> >>>? ? ? ? sys.exit(
+> >>>? ? ? File
+> >>
+> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py",
+> >> line 84, in run
+> >>>? ? ? ? invoke(command,
+> command_name,
+> >> options, args[1:])
+> >>>? ? ? File
+> >>
+> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py",
+> >> line 123, in invoke
+> >>>? ? ? ? exit_code =
+> runner.run(args)
+> >>>? ? ? File
+> >>
+> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py",
+> >> line 218, in run
+> >>>? ? ? ? result =
+> self.command()
+> >>>? ? ? File
+> >>
+> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py",
+> >> line 276, in command
+> >>>? ? ? ? relative_to=base,
+> >> global_conf=vars)
+> >>>? ? ? File
+> >>
+> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py",
+> >> line 311, in loadapp
+> >>>? ? ? ? return loadapp(
+> >>>? ? ? File
+> >>
+> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+> >> line 204, in loadapp
+> >>>? ? ? ? return loadobj(APP,
+> uri,
+> >> name=name, **kw)
+> >>>? ? ? File
+> >>
+> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+> >> line 225, in loadobj
+> >>>? ? ? ? return
+> context.create()
+> >>>? ? ? File
+> >>
+> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+> >> line 625, in create
+> >>>? ? ? ? return
+> >> self.object_type.invoke(self)
+> >>>? ? ? File
+> >>
+> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+> >> line 110, in invoke
+> >>>? ? ? ? return
+> fix_call(context.object,
+> >> context.global_conf, **context.local_conf)
+> >>>? ? ? File
+> >>
+> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/util/fixtypeerror.py",
+> >> line 57, in fix_call
+> >>>? ? ? ? val =
+> callable(*args, **kw)
+> >>>? ? ? File
+> >>
+> "/m2svn/trunk/src/app/web/app/app/config/middleware.py",
+> >> line 46, in make_app
+> >>>? ? ? ? if
+> verify_license():
+> >>>? ? ? File
+> >>
+> "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py",
+> line
+> >> 2221, in verify_license
+> >>>? ? ? ? l_info =
+> >> read_license_using_embeded(license_file)
+> >>>? ? ? File
+> >>
+> "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py",
+> line
+> >> 2202, in read_license_using_embeded
+> >>>? ? ? ? pub_key
+> =get_embeded_key()
+> >>>? ? ? File
+> >>
+> "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py",
+> line
+> >> 2197, in get_embeded_key
+> >>>? ? ? ? key =
+> pickle.loads(str)
+> >>>? ? ? File
+> "/usr/lib64/python2.4/pickle.py",
+> >> line 1394, in loads
+> >>>? ? ? ? return
+> Unpickler(file).load()
+> >>>? ? ? File
+> "/usr/lib64/python2.4/pickle.py",
+> >> line 872, in load
+> >>>? ? ? ?
+> dispatch[key](self)
+> >>>? ? ? File
+> "/usr/lib64/python2.4/pickle.py",
+> >> line 1237, in load_build
+> >>>? ? ? ? setstate(state)
+> >>>? ? ? File
+> >>
+> "build/bdist.linux-x86_64/egg/Crypto/PublicKey/RSA.py",
+> line
+> >> 171, in __setstate__
+> >>> AttributeError: 'NoneType' object has no
+> attribute
+> >> 'rsa_construct'
+> >>>
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+      
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: p_test.py
+Type: text/x-python
+Size: 1008 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20100518/0d02169b/attachment.py 
+
+From don at amberfisharts.com  Wed May 19 07:50:51 2010
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Wed, 19 May 2010 15:50:51 +0200
+Subject: [pycrypto] _fastmath None !!
+In-Reply-To: <630225.6817.qm@web114216.mail.gq1.yahoo.com>
+References: <630225.6817.qm@web114216.mail.gq1.yahoo.com>
+Message-ID: <4BF3ECBB.5030401@amberfisharts.com>
+
+Hi,
+
+the code looks fine too me.
+I also ran it and had no problems. Even when generating the keys on my 32-bit Netbook and loading them on my 64-bit 
+desktop I couldn't reproduce the problem (both with and without gmp installed). However both use pycrypto 2.1.0.
+
+Without being able to reproduce the problem I'm afraid I won't be able to help you. Sorry.
+
+cheers and good luck
+//Lorenz
+
+
+
+On 05/19/2010 06:17 AM, jd wrote:
+> Ok... here is attached program.
+>
+> The problem seems to be
+> a. Either package specific (pycrypto package installed using easy_install and/or from rpm as dependency from paramiko.)
+>     I use virtual env, and when I install pycrypto using easy_install, the _fastmath.so is not present in the egg.
+>
+> b. serialization of keys in to file.
+>
+> Basically, if u run the attached program it works on all my test machines.
+> If you create the keys and save them on one machine, and try to read them (comment the key generation, saving part), then it does not work on some machines.
+>
+> I am using picke and base64, to my knowledge both should work across m/c architecture (32bit, 64bit) and different python versions. Or I am mistaken ?
+>
+> One observation is that the keys generated and saved on a 32 bit machines are running in to the problem when read on a 64 bit machine.  But if I generate it on a 64 bit machine.. it seems to work on a 32 bit machine.
+>
+> NOTE: This is just one variable... the machines have different python version, different linux distro..etc.
+>
+> Thanks in advance.
+>
+> /Jd
+> p.s. I am going to switch serialization and see if that helps.
+>
+> --- On Tue, 5/18/10, Lorenz Quack<don at amberfisharts.com>  wrote:
+>
+>> From: Lorenz Quack<don at amberfisharts.com>
+>> Subject: Re: [pycrypto] _fastmath None !!
+>> To: "PyCrypto discussion list"<pycrypto at lists.dlitz.net>
+>> Date: Tuesday, May 18, 2010, 3:20 AM
+>> Hi
+>>
+>> On 05/18/2010 08:19 AM, jd wrote:
+>>>
+>>> Hi Lorenz,
+>>>       Thanks for quick response.
+>>>
+>>> It is happening on someone else's machine, I have
+>> requested them to check and send me details.
+>>>
+>>> In the mean time I looked that the code.
+>>> In RSA.py
+>>>
+>>> try:
+>>>        from Crypto.PublicKey import
+>> _fastmath
+>>> except ImportError:
+>>>        _fastmath = None
+>>>
+>>>
+>>> Could this be problem ?
+>>
+>> I don't think so. That should happen when PyCrypto was
+>> compiled without gmp support.
+>> According to my analysis the relevant parts are the
+>> __setstate__ method in the class _RSAobj
+>> and the __init__ in the class RSAImplementation.
+>> In the __init__ the attribute _math is set which is later
+>> being accessed by both the construct
+>> method and in the _RSAobj.__setstate__ method.
+>> The way the _math attribute is set seems pretty safe to me
+>> so I believe things must be going
+>> astray somewhere else. But it's hard to tell without any
+>> code.
+>>
+>> cheers
+>> //Lorenz
+>>
+>>
+>>> Thanks
+>>> /Jd
+>>>
+>>>
+>>> --- On Mon, 5/17/10, Lorenz Quack<don at amberfisharts.com>
+>> wrote:
+>>>
+>>>> From: Lorenz Quack<don at amberfisharts.com>
+>>>> Subject: Re: [pycrypto] _fastmath None !!
+>>>> To: "PyCrypto discussion list"<pycrypto at lists.dlitz.net>
+>>>> Date: Monday, May 17, 2010, 8:40 AM
+>>>> Hi again,
+>>>>
+>>>> no idea what's going wrong. normally pycrypto
+>> should fall
+>>>> back to _slowmath (a pure python implementation)
+>> when gmp is
+>>>>
+>>>> not installed meaning _fastmath is not available
+>> (_fastmath
+>>>> is a C implementation using gmp).
+>>>>
+>>>> Maybe you could prvide some more information, like
+>> python
+>>>> version, pycrypto version, is gmp installed?
+>>>> Also it would be a good idea to provide a
+>>>> small/minimalistic example demonstrating the
+>> problem.
+>>>> That way it is easyier to figure out if it's a bug
+>> in
+>>>> pycrypto or in your code.
+>>>>
+>>>> cheers,
+>>>> //Lorenz
+>>>>
+>>>>
+>>>>
+>>>> On 05/17/2010 04:48 PM, jd wrote:
+>>>>> Hi Guys
+>>>>>          I am serializing
+>> the pycrypto keys
+>>>> using pickle.. as suggested in one of recent
+>> posts. It is
+>>>> working fine, but giving following problem on
+>> cenos 5.1.
+>>>> (stack at the bottom of email)
+>>>>>
+>>>>> 'NoneType' object has no attribute
+>> 'rsa_construct'
+>>>>>
+>>>>>
+>>>>>          I looked at the
+>> code.. it seems
+>>>> while constructing _fastmath is used. Any
+>> workarounds /
+>>>> fixes ? I do not think changing to saving tuple
+>> would help
+>>>> as it would also need to use __setstate__..
+>>>>>
+>>>>> Help is greatly appreciated.
+>>>>> Thanks
+>>>>> /Jd
+>>>>>
+>>>>> File "/tg2env/bin/paster", line 7, in ?
+>>>>>          sys.exit(
+>>>>>        File
+>>>>
+>> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py",
+>>>> line 84, in run
+>>>>>          invoke(command,
+>> command_name,
+>>>> options, args[1:])
+>>>>>        File
+>>>>
+>> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py",
+>>>> line 123, in invoke
+>>>>>          exit_code =
+>> runner.run(args)
+>>>>>        File
+>>>>
+>> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/command.py",
+>>>> line 218, in run
+>>>>>          result =
+>> self.command()
+>>>>>        File
+>>>>
+>> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py",
+>>>> line 276, in command
+>>>>>          relative_to=base,
+>>>> global_conf=vars)
+>>>>>        File
+>>>>
+>> "/tg2env/lib/python2.4/site-packages/PasteScript-1.7.3-py2.4.egg/paste/script/serve.py",
+>>>> line 311, in loadapp
+>>>>>          return loadapp(
+>>>>>        File
+>>>>
+>> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+>>>> line 204, in loadapp
+>>>>>          return loadobj(APP,
+>> uri,
+>>>> name=name, **kw)
+>>>>>        File
+>>>>
+>> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+>>>> line 225, in loadobj
+>>>>>          return
+>> context.create()
+>>>>>        File
+>>>>
+>> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+>>>> line 625, in create
+>>>>>          return
+>>>> self.object_type.invoke(self)
+>>>>>        File
+>>>>
+>> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/loadwsgi.py",
+>>>> line 110, in invoke
+>>>>>          return
+>> fix_call(context.object,
+>>>> context.global_conf, **context.local_conf)
+>>>>>        File
+>>>>
+>> "/tg2env/lib/python2.4/site-packages/PasteDeploy-1.3.3-py2.4.egg/paste/deploy/util/fixtypeerror.py",
+>>>> line 57, in fix_call
+>>>>>          val =
+>> callable(*args, **kw)
+>>>>>        File
+>>>>
+>> "/m2svn/trunk/src/app/web/app/app/config/middleware.py",
+>>>> line 46, in make_app
+>>>>>          if
+>> verify_license():
+>>>>>        File
+>>>>
+>> "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py",
+>> line
+>>>> 2221, in verify_license
+>>>>>          l_info =
+>>>> read_license_using_embeded(license_file)
+>>>>>        File
+>>>>
+>> "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py",
+>> line
+>>>> 2202, in read_license_using_embeded
+>>>>>          pub_key
+>> =get_embeded_key()
+>>>>>        File
+>>>>
+>> "/m2svn/trunk/src/app/web/app/app/core/utils/utils.py",
+>> line
+>>>> 2197, in get_embeded_key
+>>>>>          key =
+>> pickle.loads(str)
+>>>>>        File
+>> "/usr/lib64/python2.4/pickle.py",
+>>>> line 1394, in loads
+>>>>>          return
+>> Unpickler(file).load()
+>>>>>        File
+>> "/usr/lib64/python2.4/pickle.py",
+>>>> line 872, in load
+>>>>>
+>> dispatch[key](self)
+>>>>>        File
+>> "/usr/lib64/python2.4/pickle.py",
+>>>> line 1237, in load_build
+>>>>>          setstate(state)
+>>>>>        File
+>>>>
+>> "build/bdist.linux-x86_64/egg/Crypto/PublicKey/RSA.py",
+>> line
+>>>> 171, in __setstate__
+>>>>> AttributeError: 'NoneType' object has no
+>> attribute
+>>>> 'rsa_construct'
+>>>>>
+
+
+From don at amberfisharts.com  Thu May 20 07:03:14 2010
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Thu, 20 May 2010 15:03:14 +0200
+Subject: [pycrypto] SHA-224, SHA-384 and SHA-512 Implementations
+Message-ID: <4BF53312.3010705@amberfisharts.com>
+
+Hi,
+
+I just posted a patch series implementing the missing SHA-2 family Hashes.
+Namely: SHA-224, SHA-384 and SHA-512
+If anyone is interested please try them out and let me know if there are any problems.
+I also included test cases in lib/Crypto/SelfTest/Hash
+
+The patches can be found here: https://bugs.launchpad.net/pycrypto/+bug/544792
+
+The main caveat is the way I check for fixed size data types like uint32_t and uint64_t
+in src/hash_SHA2.h.
+If anybody knows a good way to do this please let me know.
+
+Sincerely yours,
+//Lorenz
+
+From jcea at jcea.es  Thu May 20 12:06:39 2010
+From: jcea at jcea.es (Jesus Cea)
+Date: Thu, 20 May 2010 20:06:39 +0200
+Subject: [pycrypto] Help parsing OpenPGP packets and pubkey "normalization"
+Message-ID: <4BF57A2F.3080403@jcea.es>
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Hi, everybody.
+
+I am designing (very preliminary yet) a new PGP keyserver to replace the
+SKS (http://minskyprimus.net/sks/), written in python. The
+syncronization algorithm will be merkle/hash trees
+(http://en.wikipedia.org/wiki/Hash_tree). I am developing the merge tree
+library just now, that I will release as a standalone library thru Pypi
+in a couple of weeks or so. This lib has a lot of value by itself.
+
+The issue that bugs me now is pubkey normalization.
+
+That is, a pubkey in the keyserver network can be updated in two
+different servers with two new signatures:
+
+Server 1: pubkey+sign1
+
+Server 2: pubkey+sign2
+
+After the sync is done, all the network MUST have the very exact key,
+let say:
+
+Server 1: pubkey+sign1+sign2
+
+Server 2: pubkey+sign1+sign2
+
+For server 1, new sign is an (easy) append, but server 2 needs to
+reorder the openpgp packets inside the pubkey.
+
+This is not trivial. You can parse the pubkey bundle, extract the packet
+and sort them in lexicographic order, for instance, paying attention to
+hierachical considerations.
+
+I need to "normalize" the key to ensure that "HASH(pubkey bundle)" is
+the same everywhere, because that is what is feeded to the hasntree to
+syncronize.
+
+How does SKS solve this issue?.
+
+Is there any "good" OpenPGP management library for Python?.
+
+PS: I could store the pubkey subpackets as individual objects in the
+database, skipping the normalization, but performance would suffer (more
+IOPs to disk) and I must parse the OpenPGP pubkey anyway.
+
+- -- 
+Jesus Cea Avion                         _/_/      _/_/_/        _/_/_/
+jcea at jcea.es - http://www.jcea.es/     _/_/    _/_/  _/_/    _/_/  _/_/
+jabber / xmpp:jcea at jabber.org         _/_/    _/_/          _/_/_/_/_/
+.                              _/_/  _/_/    _/_/          _/_/  _/_/
+"Things are not so easy"      _/_/  _/_/    _/_/  _/_/    _/_/  _/_/
+"My name is Dump, Core Dump"   _/_/_/        _/_/_/      _/_/  _/_/
+"El amor es poner tu felicidad en la felicidad de otro" - Leibniz
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iQCVAwUBS/V6Lplgi5GaxT1NAQLcWwP+NkTt14tmg3QSyqcD+ojHa0GO005tyGbf
+emlq1ruitbNjUzDM5qNqi1Qg+LjQKXuz4R1a0MtffoLK7MIDg2GV05+FD9Dh9UKr
+LQhrwpmVLRnToeCdZP00P1+EqBL/fmyWnObyBqBagvqbh7aYGJY4IpfikN8rtcPR
+bfMv5JmJYFg=
+=o+Ah
+-----END PGP SIGNATURE-----
+
+From bulislaw at linux.com  Mon May 31 01:57:34 2010
+From: bulislaw at linux.com (Bartosz Szatkowski)
+Date: Mon, 31 May 2010 09:57:34 +0200
+Subject: [pycrypto] ElGamal - modulo group generator?
+Message-ID: <1275292654.28075.7.camel@bulislaw-laptop>
+
+Hi all,
+i was implementing ElGamal signature on my own and every specification
+that ive read (including elgamals one), says that when generating keys -
+"g" should be the modulo "p" group generator. I was looking for some
+efficient way to compute this and i notice that pycrypot dont really use
+it - there is simple prime instead. Is it a bug(security risk)? Or maybe
+its as good as generator?
+
+pycrypto-2.1.0/lib/Crypto/PublicKey/ElGamal.py: lines 47 +
+
+    # Generate random number g
+    if progress_func:
+        progress_func('g\n')
+    size=bits-1-(ord(randfunc(1)) & 63) # g will be from 1--64 bits
+smaller than p
+    if size<1:
+        size=bits-1
+    while (1):
+        obj.g=bignum(getPrime(size, randfunc))
+        if obj.g < obj.p:
+            break
+        size=(size+1) % bits
+        if size==0:
+            size=4
+
+-- 
+Bartosz Szatkowski
+KeyFP: 1568 D5A7 B14C 0727 1C61 ACFB ABDE C08A DDB7 1F70
+
+The freedom to run a program, for any purpose (freedom 0)
+
+
+From dlitz at dlitz.net  Thu Jun 10 18:35:01 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Thu, 10 Jun 2010 20:35:01 -0400
+Subject: [pycrypto] Cheeseshop submission?
+In-Reply-To: <4BCB38E3.8020600@gmail.com>
+References: <4BCB38E3.8020600@gmail.com>
+Message-ID: <20100611003501.GA9491@rivest.dlitz.net>
+
+On Mon, Apr 19, 2010 at 12:52:51AM +0800, Jimmy Yuen Ho Wong wrote:
+>Hi,
+>
+>Thanks for continuing the development of PyCrypto. However, I was just 
+>wondering if there's a reason of why 2.1 still hasn't made into PyPI. 
+>I'm afraid that people will keep using the buggy 2.0.1 because they 
+>didn't know a new version exists.
+
+Fixed. :-)
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 221 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20100610/19c630d2/attachment.pgp 
+
+From yanagisawa at csg.is.titech.ac.jp  Sat Jun 12 21:39:50 2010
+From: yanagisawa at csg.is.titech.ac.jp (Yoshisato YANAGISAWA)
+Date: Sun, 13 Jun 2010 12:39:50 +0900
+Subject: [pycrypto] Update of the Camellia patch (Bug #258561)
+Message-ID: <4C145306.2010005@csg.is.titech.ac.jp>
+
+Hi all,
+
+I have updated the patch to add support for the Camellia block cipher.
+https://bugs.launchpad.net/pycrypto/+bug/258561
+This feature is listed as the milestone of PyCrypto 2.2.
+
+Will you review it?
+
+Thank you in advance,
+Yoshisato Yanagisawa.
+
+From don at amberfisharts.com  Mon Jun 21 05:19:51 2010
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Mon, 21 Jun 2010 13:19:51 +0200
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <4BC218FC.6090106@gmx.net>
+References: <4BC218FC.6090106@gmx.net>
+Message-ID: <4C1F4AD7.2010902@amberfisharts.com>
+
+Hi there,
+
+has there been further development on py3k porting?
+How about setting up a publicly accessible repository for a pycrypto-py3k branch?
+This would make it easier for others to contribute and track the porting progress.
+
+Dwayne, where do you stand on this? What are your plans for py3k support?
+
+cheers,
+//Lorenz
+
+
+
+On 04/11/2010 08:46 PM, Christoph Tapler wrote:
+> Hi,
+>
+> Short update - a missing string/byte conversion in the test suite caused
+> the high FAIL rate. With the conversion, the PASS/FAIL ratio looks way
+> better (>70% PASS). I assume that the rest of the FAILs have a similar
+> reason. Just tell me if some of you wants the patch.
+>
+> Cheers,
+> Christoph
+>
+> -------- Original Message --------
+> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+> Date: Sun, 11 Apr 2010 12:32:58 +0200
+> From: Christoph Tapler<christoph.tapler at gmx.net>
+> To: PyCrypto discussion list<pycrypto at lists.dlitz.net>
+>
+> Hi,
+>
+> Fyi, I have adapted the test suite and now I am at least able to execute
+> it on Python 3.1. However, around 99% of all tests are fail. Moreover,
+> at the end of the test suite execution, Python crashes.
+>
+> Hope to find some time to look into the issues. Anyway, if somebody
+> wants to have the patch, please let me know.
+>
+> Cheers,
+> Christoph
+>
+> On 18.03.2010 02:57, Grail Dane wrote:
+>
+>> Hi Christoph
+>>
+>> So I tried the suggestion below but still received the error about
+>> import from non-package :(
+>>
+>> I changed it to read:
+>>
+>> from Crypto.SelfTest.Cipher import common
+>> return common.make_block_tests(AES, "AES", test_data)
+>>
+>> and it does not error on that but now presents me with a segfault :(
+>>
+>> So I seem to have gone from bad to worse. So I am hoping someone on this
+>> list might be able to suggest how I can track the fault to find out what
+>> is wrong now??
+>>
+>> Cheers
+>> Grail
+>
+
+
+From christoph.tapler at gmx.net  Mon Jun 21 12:56:12 2010
+From: christoph.tapler at gmx.net (Christoph Tapler)
+Date: Mon, 21 Jun 2010 20:56:12 +0200
+Subject: [pycrypto] Pycrypto working with python 3.0 or 3.1
+In-Reply-To: <4C1F4AD7.2010902@amberfisharts.com>
+References: <4BC218FC.6090106@gmx.net> <4C1F4AD7.2010902@amberfisharts.com>
+Message-ID: <4C1FB5CC.60801@gmx.net>
+
+Hi,
+
+I did a few adaptations in the test suite during the last days.
+Dwayne is about to incorporate them. However, still, pycrypto is not 
+(yet) usable in combination with Python 3.1.
+What I have experienced so far, is that there are still major issues in 
+the library and not only in the test suite.
+
+I would also highly appreciate a repository for pycrypto-py3k. I would 
+be way easier for me to contribute (instead of generating the patches 
+and sending the forth and back). Is there any possibility to set up such 
+a repository?
+
+Kind Regards,
+Christoph
+
+On 21.06.2010 13:19, Lorenz Quack wrote:
+> Hi there,
+>
+> has there been further development on py3k porting?
+> How about setting up a publicly accessible repository for a pycrypto-py3k branch?
+> This would make it easier for others to contribute and track the porting progress.
+>
+> Dwayne, where do you stand on this? What are your plans for py3k support?
+>
+> cheers,
+> //Lorenz
+>
+>
+>
+> On 04/11/2010 08:46 PM, Christoph Tapler wrote:
+>> Hi,
+>>
+>> Short update - a missing string/byte conversion in the test suite caused
+>> the high FAIL rate. With the conversion, the PASS/FAIL ratio looks way
+>> better (>70% PASS). I assume that the rest of the FAILs have a similar
+>> reason. Just tell me if some of you wants the patch.
+>>
+>> Cheers,
+>> Christoph
+>>
+>> -------- Original Message --------
+>> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+>> Date: Sun, 11 Apr 2010 12:32:58 +0200
+>> From: Christoph Tapler<christoph.tapler at gmx.net>
+>> To: PyCrypto discussion list<pycrypto at lists.dlitz.net>
+>>
+>> Hi,
+>>
+>> Fyi, I have adapted the test suite and now I am at least able to execute
+>> it on Python 3.1. However, around 99% of all tests are fail. Moreover,
+>> at the end of the test suite execution, Python crashes.
+>>
+>> Hope to find some time to look into the issues. Anyway, if somebody
+>> wants to have the patch, please let me know.
+>>
+>> Cheers,
+>> Christoph
+>>
+>> On 18.03.2010 02:57, Grail Dane wrote:
+>>
+>>> Hi Christoph
+>>>
+>>> So I tried the suggestion below but still received the error about
+>>> import from non-package :(
+>>>
+>>> I changed it to read:
+>>>
+>>> from Crypto.SelfTest.Cipher import common
+>>> return common.make_block_tests(AES, "AES", test_data)
+>>>
+>>> and it does not error on that but now presents me with a segfault :(
+>>>
+>>> So I seem to have gone from bad to worse. So I am hoping someone on this
+>>> list might be able to suggest how I can track the fault to find out what
+>>> is wrong now??
+>>>
+>>> Cheers
+>>> Grail
+>>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+-- 
+Christoph Tapler
+E-Mail:  christoph.tapler at gmail.com
+Adresse: Langwattstrasse 36, CH - 8125 Zollikerberg
+Telefon: +41 (0) 79 695 24 89
+
+From n3npq at mac.com  Thu May 20 12:38:09 2010
+From: n3npq at mac.com (Jeff Johnson)
+Date: Thu, 20 May 2010 18:38:09 -0000
+Subject: [pycrypto] [Sks-devel] Help parsing OpenPGP packets and pubkey
+	"normalization"
+In-Reply-To: <4BF57A2F.3080403@jcea.es>
+References: <4BF57A2F.3080403@jcea.es>
+Message-ID: <E7B0027C-2410-4810-AF3D-D78282A52B7C@mac.com>
+
+
+On May 20, 2010, at 2:06 PM, Jesus Cea wrote:
+> 
+> Is there any "good" OpenPGP management library for Python?.
+> 
+
+The best (mho only) python+openpgp is in the rPath installer.
+
+Disclaimer:
+	I know all the participants personally.
+
+73 de Jeff
+
+From kaplan+sks at kim-minh.com  Thu May 20 14:08:13 2010
+From: kaplan+sks at kim-minh.com (Kim Minh Kaplan)
+Date: Thu, 20 May 2010 20:08:13 -0000
+Subject: [pycrypto] [Sks-devel] Help parsing OpenPGP packets and pubkey
+	"normalization"
+In-Reply-To: <4BF57A2F.3080403@jcea.es> (Jesus Cea's message of "Thu, 20 May
+	2010 20:06:39 +0200")
+References: <4BF57A2F.3080403@jcea.es>
+Message-ID: <87sk5m5obg.fsf@kim.kim-minh.com>
+
+Jesus Cea writes:
+
+> You can parse the pubkey bundle, extract the packet
+> and sort them in lexicographic order, for instance, paying attention to
+> hierachical considerations.
+>
+> I need to "normalize" the key to ensure that "HASH(pubkey bundle)" is
+> the same everywhere, because that is what is feeded to the hasntree to
+> syncronize.
+>
+> How does SKS solve this issue?.
+
+If my reading is correct, SKS the kind of canonicalization you describe.
+Keys are first parsed with parse_keystr then merged with merge_pkeys.
+See the function merge at
+http://code.google.com/p/sks-keyserver/source/browse/keyMerge.ml#223
+
+-- 
+Kim Minh
+

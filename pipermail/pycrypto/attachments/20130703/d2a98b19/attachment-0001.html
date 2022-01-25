@@ -1,0 +1,56 @@
+<tt>
+&lt;div&nbsp;dir=&quot;ltr&quot;&gt;Hi,&nbsp;I&nbsp;was&nbsp;looking&nbsp;at&nbsp;the&nbsp;pycrypto&nbsp;pull&nbsp;request &lt;a&nbsp;href=&quot;https://github.com/dlitz/pycrypto/pull/32&quot;&gt;https://github.com/dlitz/pycrypto/pull/32&lt;/a&gt;.&nbsp; Just&nbsp;a&nbsp;few&nbsp;comments...&lt;div&nbsp;style&gt;&lt;br&gt;&lt;/div&gt;&lt;div&nbsp;style&gt;*&nbsp;For&nbsp;readability&nbsp;can&nbsp;you&nbsp;pep8&nbsp;format&nbsp;the&nbsp;code?&lt;/div&gt;<br>
+&lt;div&nbsp;style&gt;*&nbsp;RSA,&nbsp;for&nbsp;import/export&nbsp;the&nbsp;protection&nbsp;parameter&nbsp;maybe&nbsp;rename&nbsp;to&nbsp;algo&nbsp;or&nbsp;wrap&nbsp;algo?&nbsp; It&nbsp;evolves&nbsp;from:&nbsp;&#39;protection&#39;&nbsp;to&nbsp;&#39;wrap_algo&#39;&nbsp;to&nbsp;&#39;mode&#39;&nbsp;as&nbsp;it&nbsp;goes&nbsp;down&nbsp;the&nbsp;call&nbsp;stack.&lt;/div&gt;&lt;div&nbsp;style&gt;<br>
+*&nbsp;Also&nbsp;maybe&nbsp;make&nbsp;this&nbsp;parameter&nbsp;an&nbsp;enum/value?&nbsp; Since&nbsp;the&nbsp;long&nbsp;string&nbsp;can&nbsp;be&nbsp;error&nbsp;prone,&nbsp;low&nbsp;level&nbsp;code&nbsp;would&nbsp;need&nbsp;to&nbsp;change&nbsp;anyway&nbsp;if&nbsp;it&nbsp;were&nbsp;either&nbsp;string&nbsp;or&nbsp;int&nbsp;if&nbsp;we&nbsp;support&nbsp;more&nbsp;modes.&lt;/div&gt;&lt;div&nbsp;style&gt;*&nbsp;And&nbsp;last&nbsp;but&nbsp;not&nbsp;least...&nbsp;I&#39;m&nbsp;new&nbsp;to&nbsp;this&nbsp;email&nbsp;list&nbsp;and&nbsp;not&nbsp;sure&nbsp;how&nbsp;often&nbsp;pull&nbsp;requests&nbsp;are&nbsp;accepted&nbsp;but&nbsp;maybe&nbsp;you&nbsp;could&nbsp;reduce&nbsp;the&nbsp;amount&nbsp;of&nbsp;features&nbsp;going&nbsp;in?&nbsp; I&nbsp;know&nbsp;you&nbsp;have&nbsp;another&nbsp;one,&nbsp;51,&nbsp;after&nbsp;this...&nbsp;Maintainer&nbsp;may&nbsp;reluctant&nbsp;to&nbsp;do&nbsp;massive&nbsp;changes&nbsp;all&nbsp;at&nbsp;once?&lt;/div&gt;<br>
+&lt;div&nbsp;style&gt;&lt;br&gt;&lt;/div&gt;&lt;div&nbsp;style&gt;Anyway&nbsp;just&nbsp;ideas...&lt;/div&gt;&lt;div&nbsp;style&gt;Thanks&nbsp;for&nbsp;your&nbsp;time,&lt;/div&gt;&lt;div&nbsp;style&gt;Sincerely,&lt;/div&gt;&lt;div&nbsp;style&gt;Kurt&lt;/div&gt;&lt;div&nbsp;style&gt;&lt;br&gt;&lt;/div&gt;&lt;div&nbsp;style&gt;&lt;br&gt;&lt;/div&gt;<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+&lt;/div&gt;&lt;div&nbsp;class=&quot;gmail_extra&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Wed,&nbsp;Jul&nbsp;3,&nbsp;2013&nbsp;at&nbsp;2:26&nbsp;PM,&nbsp;Legrandin&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&lt;&lt;a&nbsp;href=&quot;mailto:helderijs@gmail.com&quot;&nbsp;target=&quot;_blank&quot;&gt;helderijs@gmail.com&lt;/a&gt;&gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;I&nbsp;find&nbsp;3DES&nbsp;is&nbsp;as&nbsp;good&nbsp;as&nbsp;AES&nbsp;for&nbsp;most&nbsp;practical&nbsp;purposes.&lt;br&gt;<br>
+The&nbsp;main&nbsp;limitation&nbsp;I&nbsp;see&nbsp;is&nbsp;that&nbsp;the&nbsp;current&nbsp;RSA.exportKey()&nbsp;uses&lt;br&gt;<br>
+PEM-level&nbsp;encryption&nbsp;and&nbsp;the&nbsp;MD5-based&nbsp;EVP_BytesToKey&nbsp;function&nbsp;for&nbsp;key&lt;br&gt;<br>
+derivation.&nbsp;Nowadays&nbsp;that&nbsp;is&nbsp;*really*&nbsp;weak.&lt;br&gt;<br>
+&lt;br&gt;<br>
+I&nbsp;opened&nbsp;a&nbsp;pull&nbsp;request&nbsp;[1]&nbsp;with&nbsp;a&nbsp;proposal&nbsp;for&nbsp;adding&nbsp;PKCS#8,&nbsp;since&lt;br&gt;<br>
+it&nbsp;is&nbsp;widely&nbsp;used&nbsp;and&nbsp;it&nbsp;makes&nbsp;it&nbsp;easier&nbsp;to&nbsp;have&nbsp;pluggable&nbsp;algorithms&lt;br&gt;<br>
+(the&nbsp;default&nbsp;combination&nbsp;being&nbsp;PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC&nbsp;but&lt;br&gt;<br>
+PBKDF2WithHMAC-SHA1AndAES128-CBC&nbsp;is&nbsp;available&nbsp;too).&nbsp;It&nbsp;took&nbsp;a&nbsp;few&lt;br&gt;<br>
+iterations,&nbsp;but&nbsp;I&nbsp;am&nbsp;pretty&nbsp;happy&nbsp;with&nbsp;it.&lt;br&gt;<br>
+On&nbsp;top&nbsp;of&nbsp;that&nbsp;I&nbsp;have&nbsp;also&nbsp;just&nbsp;added&nbsp;exportKey/importKey&nbsp;to&nbsp;DSA&nbsp;[2].&lt;br&gt;<br>
+&lt;br&gt;<br>
+Feedback&nbsp;is&nbsp;welcome.&lt;br&gt;<br>
+&lt;br&gt;<br>
+[1]&nbsp;&lt;a&nbsp;href=&quot;https://github.com/dlitz/pycrypto/pull/32&quot;&nbsp;target=&quot;_blank&quot;&gt;https://github.com/dlitz/pycrypto/pull/32&lt;/a&gt;&lt;br&gt;<br>
+[2]&nbsp;&lt;a&nbsp;href=&quot;https://github.com/dlitz/pycrypto/pull/51&quot;&nbsp;target=&quot;_blank&quot;&gt;https://github.com/dlitz/pycrypto/pull/51&lt;/a&gt;&lt;br&gt;<br>
+&lt;br&gt;<br>
+2013/6/28&nbsp;Kurt&nbsp;Vogel&nbsp;&lt;&lt;a&nbsp;href=&quot;mailto:kvogel@mdcom.com&quot;&gt;kvogel@mdcom.com&lt;/a&gt;&gt;:&lt;br&gt;<br>
+&gt;&nbsp;Hello,&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;Wondering&nbsp;if&nbsp;it&nbsp;would&nbsp;be&nbsp;worthwhile&nbsp;to&nbsp;add&nbsp;more&nbsp;encryption&nbsp;options&nbsp;to&nbsp;rsa&lt;br&gt;<br>
+&gt;&nbsp;exportKey()&nbsp;function&nbsp;rather&nbsp;than&nbsp;just&nbsp;DES3?&nbsp; As&nbsp;the&nbsp;default&nbsp;for&nbsp;ssh-keygen&lt;br&gt;<br>
+&gt;&nbsp;-t&nbsp;rsa&nbsp;export&nbsp;is&nbsp;128-bit&nbsp;AES.&nbsp; And&nbsp;maybe&nbsp;allow&nbsp;plug-able&nbsp;hash&nbsp;algorithms&lt;br&gt;<br>
+&gt;&nbsp;such&nbsp;as&nbsp;PBKDF2,&nbsp;Bcrypt,&nbsp;etc.?&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;Thanks,&lt;br&gt;<br>
+&gt;&nbsp;Kurt&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;_______________________________________________&lt;br&gt;<br>
+&gt;&nbsp;pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&gt;&nbsp;&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&gt;&nbsp;&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;<br>
+
+</tt>

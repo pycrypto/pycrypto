@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] PyCrypto AND Crypt_RSA integration
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%20AND%20Crypt_RSA%20integration&In-Reply-To=498CDC52.7010709%40kiilerich.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000063.html">
+   <LINK REL="Next"  HREF="000065.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] PyCrypto AND Crypt_RSA integration</H1>
+    <B>Mauricio Arozi</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%20AND%20Crypt_RSA%20integration&In-Reply-To=498CDC52.7010709%40kiilerich.com"
+       TITLE="[pycrypto] PyCrypto AND Crypt_RSA integration">mauricioarozi at gmail.com
+       </A><BR>
+    <I>Fri Feb  6 22:37:04 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000063.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+        <LI>Next message: <A HREF="000065.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#64">[ date ]</a>
+              <a href="thread.html#64">[ thread ]</a>
+              <a href="subject.html#64">[ subject ]</a>
+              <a href="author.html#64">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>'I'm trying to *import/export keys* from/to
+Crypt_RSA&lt;<A HREF="http://pear.php.net/package/Crypt_RSA">http://pear.php.net/package/Crypt_RSA</A>&gt;,
+using PyCrypto &lt;<A HREF="http://www.dlitz.net/software/pycrypto/">http://www.dlitz.net/software/pycrypto/</A>&gt;. '
+and
+'I've made some examples to find out why *it's not working*'
+
+I want to import/export keys directly from/to
+Crypt_RSA&lt;<A HREF="http://pear.php.net/package/Crypt_RSA">http://pear.php.net/package/Crypt_RSA</A>&gt;and
+PyCrypto &lt;<A HREF="http://www.dlitz.net/software/pycrypto/">http://www.dlitz.net/software/pycrypto/</A>&gt;.&quot; I'm not able to use the
+same keys, so I can't verify signatures, or encrypt/decrypt stuff from php
+to python and vice-versa. I want to know how to do it, actually I only need
+a way to go with php, I don't depend on Crypt_RSA, it was already there
+only.
+
+So in simple words, I only need to be able to encrypt/decrypt sign and
+verify signs on php and python, simultaneously, if possible, using RSA algo.
+
+On Fri, Feb 6, 2009 at 10:56 PM, Mads Kiilerich &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">mads at kiilerich.com</A>&gt; wrote:
+
+&gt;<i> Mauricio Arozi wrote, On 02/06/2009 07:53 PM:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hello,
+</I>&gt;&gt;<i> I'm trying to import/export keys from/to Crypt_RSA &lt;
+</I>&gt;&gt;<i> <A HREF="http://pear.php.net/package/Crypt_RSA">http://pear.php.net/package/Crypt_RSA</A>&gt;, using PyCrypto &lt;
+</I>&gt;&gt;<i> <A HREF="http://www.dlitz.net/software/pycrypto/">http://www.dlitz.net/software/pycrypto/</A>&gt;. My problem is that while using
+</I>&gt;&gt;<i> PyCrypto to generate both public and private keys, the e(exponent?) is
+</I>&gt;&gt;<i> always the same.
+</I>&gt;&gt;<i> According to this site: <A HREF="http://pajhome.org.uk/crypt/rsa/rsa.html,">http://pajhome.org.uk/crypt/rsa/rsa.html,</A> and yet
+</I>&gt;&gt;<i> others, the e(exponent?) is used for the public key, and d for the private
+</I>&gt;&gt;<i> key.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Yes, many implementations and applications of RSA uses a fixed exponent -
+</I>&gt;<i> very often 65537 (F4). Usually that is a good decision and no problem -
+</I>&gt;<i> perhaps except for interoperability.
+</I>&gt;<i>
+</I>&gt;<i> And yes, interoperability is often very hard when implementing crypto
+</I>&gt;<i> stuff. IMHO an important criteria when selecting a crypto library is having
+</I>&gt;<i> examples / proof of how it interoperates with other implementations.
+</I>&gt;<i>
+</I>&gt;<i> It is not clear to me exactly what you are asking for, so I can't answer
+</I>&gt;<i> that directly - I hope someone else can do that.
+</I>&gt;<i>
+</I>&gt;<i> /Mads
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090207/3d2e1449/attachment-0001.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090207/3d2e1449/attachment-0001.htm</A> 
+</PRE>
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000063.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+	<LI>Next message: <A HREF="000065.html">[pycrypto] PyCrypto AND Crypt_RSA integration
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#64">[ date ]</a>
+              <a href="thread.html#64">[ thread ]</a>
+              <a href="subject.html#64">[ subject ]</a>
+              <a href="author.html#64">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

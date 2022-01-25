@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Initial review of Thorsten's Py3k changes
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Initial%20review%20of%20Thorsten%27s%20Py3k%20changes&In-Reply-To=20110110044938.GA12449%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000413.html">
+   <LINK REL="Next"  HREF="000407.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Initial review of Thorsten's Py3k changes</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Initial%20review%20of%20Thorsten%27s%20Py3k%20changes&In-Reply-To=20110110044938.GA12449%40rivest.dlitz.net"
+       TITLE="[pycrypto] Initial review of Thorsten's Py3k changes">sbehrens at gmx.li
+       </A><BR>
+    <I>Tue Jan 11 09:28:59 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000413.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+        <LI>Next message: <A HREF="000407.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#395">[ date ]</a>
+              <a href="thread.html#395">[ thread ]</a>
+              <a href="subject.html#395">[ subject ]</a>
+              <a href="author.html#395">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dwayne,
+
+upon further thought, how would the following work for you to address 
+your concerns:
+
+- b('something') vs 'something': Leave literals encased in b(). To 
+assure that no malicious changes have been made, use a 30-day trial 
+version of Beyond Compare 3, which will, in it's &quot;Text Compare&quot; 
+function, highlight the exact changes on each line. It exists for Linux 
+and Windows. vimdiff may work just as well, of course. 
+<A HREF="http://www.scootersoftware.com/download.php">http://www.scootersoftware.com/download.php</A>
+
+- Multiple commits, too much &quot;history of work&quot;, not enough &quot;this is the 
+change&quot;: Would you like me to create a py3kmk2 branch, and have a single 
+commit in it with all the changes made?
+   I don't think I am going to be very successful with rebase.
+
+Yours
+Thorsten
+
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000413.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+	<LI>Next message: <A HREF="000407.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#395">[ date ]</a>
+              <a href="thread.html#395">[ thread ]</a>
+              <a href="subject.html#395">[ subject ]</a>
+              <a href="author.html#395">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

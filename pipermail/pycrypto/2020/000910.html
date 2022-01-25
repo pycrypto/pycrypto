@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] AES128 Countermode in Cryptodome vs OpenSSL/BouncyCastle/Erlang
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20AES128%20Countermode%20in%20Cryptodome%20vs%0A%20OpenSSL/BouncyCastle/Erlang&In-Reply-To=%3CAM0PR05MB65316709C2D088AD23EDE6A6B4DB0%40AM0PR05MB6531.eurprd05.prod.outlook.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000909.html">
+   <LINK REL="Next"  HREF="000911.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] AES128 Countermode in Cryptodome vs OpenSSL/BouncyCastle/Erlang</H1>
+    <B>Anders Munch</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20AES128%20Countermode%20in%20Cryptodome%20vs%0A%20OpenSSL/BouncyCastle/Erlang&In-Reply-To=%3CAM0PR05MB65316709C2D088AD23EDE6A6B4DB0%40AM0PR05MB6531.eurprd05.prod.outlook.com%3E"
+       TITLE="[pycrypto] AES128 Countermode in Cryptodome vs OpenSSL/BouncyCastle/Erlang">ajm at flonidan.dk
+       </A><BR>
+    <I>Wed Apr 15 11:07:25 UTC 2020</I>
+    <P><UL>
+        <LI>Previous message (by thread): <A HREF="000909.html">[pycrypto] AES128 Countermode in Cryptodome vs OpenSSL/BouncyCastle/Erlang
+</A></li>
+        <LI>Next message (by thread): <A HREF="000911.html">[pycrypto] macOS, pip3 install pycrypto: fatal error: 'gmp.h' file not found?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#910">[ date ]</a>
+              <a href="thread.html#910">[ thread ]</a>
+              <a href="subject.html#910">[ subject ]</a>
+              <a href="author.html#910">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dirk-Willem van Gulik wrote:
+&gt;<i> key = b&quot;0&quot; * 32
+</I>
+A 256-bit key for AES-128? You may have better results with:
+
+key = b&quot;\0&quot; * 16
+
+regards, Anders
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message (by thread): <A HREF="000909.html">[pycrypto] AES128 Countermode in Cryptodome vs OpenSSL/BouncyCastle/Erlang
+</A></li>
+	<LI>Next message (by thread): <A HREF="000911.html">[pycrypto] macOS, pip3 install pycrypto: fatal error: 'gmp.h' file not found?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#910">[ date ]</a>
+              <a href="thread.html#910">[ thread ]</a>
+              <a href="subject.html#910">[ subject ]</a>
+              <a href="author.html#910">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

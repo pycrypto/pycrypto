@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Need your input: Major modernization; dropping legacy Python support?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Need%20your%20input%3A%20Major%20modernization%3B%0A%20dropping%20legacy%20Python%20support%3F&In-Reply-To=%3CCAHAkNZ1ZtpQc1zDoVz3Zeaqrj8gjsoBBGEWNKuZmxxKiWU%3DRLw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000718.html">
+   <LINK REL="Next"  HREF="000720.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Need your input: Major modernization; dropping legacy Python support?</H1>
+    <B>Philip Horger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Need%20your%20input%3A%20Major%20modernization%3B%0A%20dropping%20legacy%20Python%20support%3F&In-Reply-To=%3CCAHAkNZ1ZtpQc1zDoVz3Zeaqrj8gjsoBBGEWNKuZmxxKiWU%3DRLw%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Need your input: Major modernization; dropping legacy Python support?">campadrenalin at gmail.com
+       </A><BR>
+    <I>Wed Oct 30 08:44:13 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000718.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+        <LI>Next message: <A HREF="000720.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#719">[ date ]</a>
+              <a href="thread.html#719">[ thread ]</a>
+              <a href="subject.html#719">[ subject ]</a>
+              <a href="author.html#719">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I think you're going to get mostly anecdotal answers to this, fairly
+personal to whoever is answering it, but here's what I consider important:
+
+   - Clean, modern, easy-to-use API (that limits your ability to
+   accidentally misuse stuff)
+   - Modularity
+   - Rapid development/developer-friendly codebase
+   - Nice documentation (willing to contribute to this personally)
+   - Elliptic curve cryptography (ECC)
+   - Ability to install via pip, even on machines that don't already have
+   libsomething installed.
+
+Conversely, I don't care about the following (although some/many probably
+will):
+
+   - Backwards compatibility. As long as there's documentation, I'd rather
+   deal with the byproducts of progress than a crippled interface.
+   - Distro packaging.
+   - Internal details of how PyCrypto works, as long as it fulfills the
+   above wishlist.
+   - Legacy Python versions (your definition matches mine).
+   - License, so long as I can use it from an LGPL package (which seems
+   compatible with Apache2)
+
+
+Hopefully this feedback helps!
+
+Philip Horger
+
+
+On Tue, Oct 29, 2013 at 11:58 PM, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt; wrote:
+
+&gt;<i> On 30 October 2013 06:09, Dwayne Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt; 1. How many of you would really care if PyCrypto 2.6 was that last
+</I>&gt;<i> &gt; version to support legacy versions of Python?  By &quot;legacy&quot;, I mean    all
+</I>&gt;<i> &gt; versions of Python that are NOT one of these:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     - Python 2.6.x
+</I>&gt;<i> &gt;     - Python 2.7.x
+</I>&gt;<i> &gt;     - Python 3.3 and above.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;    I'd continue to make bugfix releases of PyCrypto 2.6.x, but add no
+</I>&gt;<i> &gt; more substantial new features.
+</I>&gt;<i>
+</I>&gt;<i> For some reason, Fedora is still pushing Python 2.7, so I'd be happy
+</I>&gt;<i> with this position.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> &gt; 4. What if Crypto.* became a wrapper around some other crypto library?
+</I>&gt;<i>
+</I>&gt;<i> What logic please?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> &gt; Of particular concern is FOSS distributors packaging PyCrypto (e.g.
+</I>&gt;<i>  Linux
+</I>&gt;<i> &gt; distros, *BSD ports trees, MacPorts/HomeBrew, etc.), and anything else
+</I>&gt;<i> that
+</I>&gt;<i> &gt; might impact a large number of downstream end-users.
+</I>&gt;<i>
+</I>&gt;<i> Fedora seems a long way behind with the Python versions.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I'm beginning to wonder how the risk of downstream forks compares to the
+</I>&gt;<i> &gt; risks that users face when developers still don't have a highly-visible,
+</I>&gt;<i> &gt; easy-to-use Python crypto API.  It might be better to merge PyCrypto with
+</I>&gt;<i> &gt; one or more other Python crypto libraries...
+</I>&gt;<i>
+</I>&gt;<i> I'll leave that to the more knowledgable.
+</I>&gt;<i> My position is I'm grateful for the code - meets my needs.
+</I>&gt;<i>
+</I>&gt;<i> regards
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dave Pawson
+</I>&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;<i> Docbook FAQ.
+</I>&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20131030/fecad754/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20131030/fecad754/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000718.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+	<LI>Next message: <A HREF="000720.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#719">[ date ]</a>
+              <a href="thread.html#719">[ thread ]</a>
+              <a href="subject.html#719">[ subject ]</a>
+              <a href="author.html#719">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

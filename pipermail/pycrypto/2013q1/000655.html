@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Building pycrypto on HP-UX 11.31
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Building%20pycrypto%20on%20HP-UX%2011.31&In-Reply-To=%3C5125E318.30205%40dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000654.html">
+   <LINK REL="Next"  HREF="000657.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Building pycrypto on HP-UX 11.31</H1>
+    <B>Dwayne Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Building%20pycrypto%20on%20HP-UX%2011.31&In-Reply-To=%3C5125E318.30205%40dlitz.net%3E"
+       TITLE="[pycrypto] Building pycrypto on HP-UX 11.31">dlitz at dlitz.net
+       </A><BR>
+    <I>Thu Feb 21 01:04:24 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000654.html">[pycrypto] Building pycrypto on HP-UX 11.31
+</A></li>
+        <LI>Next message: <A HREF="000657.html">[pycrypto] BouncyCastle to PyCrypto translation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#655">[ date ]</a>
+              <a href="thread.html#655">[ thread ]</a>
+              <a href="subject.html#655">[ subject ]</a>
+              <a href="author.html#655">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 02/20/2013 03:57 PM, Andrew Cooper wrote:
+&gt;<i>
+</I>&gt;<i> On 20/02/2013 14:14, Adam Woodbeck wrote:
+</I>&gt;&gt;<i> Has anyone successfully built pycrypto 2.6 on HP-UX 11.31?  I'm 
+</I>&gt;&gt;<i> having a slight struggle with the build process, the latest of which 
+</I>&gt;&gt;<i> are the following errors:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &quot;src/hash_SHA2.h&quot;, line 91: error #2020: identifier &quot;U32&quot; is undefined
+</I>&gt;&gt;<i>   typedef U32 sha2_word_t;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &quot;src/hash_SHA2_template.c&quot;, line 175: error #2020: identifier &quot;U8&quot; is 
+</I>&gt;&gt;<i> undefined
+</I>&gt;&gt;<i>   hash_update (hash_state *self, const U8 *buf, int len)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 2 errors detected in the compilation of &quot;src/SHA256.c&quot;.
+</I>&gt;<i> Probably worth using uint32_t and uint8_t respectively, as they 
+</I>&gt;<i> substantially more standard than U32 and U8 in the world of C.
+</I>I think the problem is in src/hash_SHA2.h.  There's no #else case, and 
+there probably should be:
+
+    /* determine fixed size types */
+    #if defined(__STDC_VERSION__) &amp;&amp; (__STDC_VERSION__ &gt;= 199901L)
+    #include &lt;stdint.h&gt;
+    typedef uint8_t                U8;
+    typedef uint32_t            U32;
+    typedef uint64_t            U64;
+    #elif defined(_MSC_VER)
+    typedef unsigned char        U8;
+    typedef unsigned __int64    U64;
+    typedef unsigned int        U32;
+    #elif defined(__sun) || defined(__sun__)
+    #include &lt;sys/inttypes.h&gt;
+    typedef uint8_t                U8;
+    typedef uint32_t            U32;
+    typedef uint64_t            U64;
+    #endif
+
+Actually, the problem is that there are a bunch of different ways that 
+integer types are being defined in PyCrypto.  Time to move this over to 
+a common include file and let autoconf figure out the details.
+
+Adam, could you pull the hpux-wip branch of pycrypto, run &quot;python 
+setup.py build test&quot; and see if it works with my changes?  (Don't derive 
+your own branches on top of -wip branches, though, since I delete/rebase 
+them often!)
+
+Basic instructions are as follows:
+
+     git clone <A HREF="https://github.com/dlitz/pycrypto">https://github.com/dlitz/pycrypto</A>
+     cd pycrypto
+     git checkout hpux-wip
+     python setup.py build test
+
+Alternatively, if you don't have git installed, you can do this:
+
+     # somehow download and unzip 
+<A HREF="https://github.com/dlitz/pycrypto/archive/11559ddebbba3a4d4552a5038392d1cbaf11fbe6.zip">https://github.com/dlitz/pycrypto/archive/11559ddebbba3a4d4552a5038392d1cbaf11fbe6.zip</A>
+     cd pycrypto-1159dd*
+     python setup.py build test
+
+If this works, I'll apply the changes to the master branch and include 
+it in the next release.
+
+Cheers,
+- Dwayne
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20130221/c45cca29/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20130221/c45cca29/attachment.html</A>&gt;
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000654.html">[pycrypto] Building pycrypto on HP-UX 11.31
+</A></li>
+	<LI>Next message: <A HREF="000657.html">[pycrypto] BouncyCastle to PyCrypto translation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#655">[ date ]</a>
+              <a href="thread.html#655">[ thread ]</a>
+              <a href="subject.html#655">[ subject ]</a>
+              <a href="author.html#655">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

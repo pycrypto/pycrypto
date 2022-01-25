@@ -1,0 +1,252 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Ask help for java2python rewrite for AES decrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Ask%20help%20for%20java2python%20rewrite%20for%20AES%20decrypto&In-Reply-To=%3C8287917590106489675%40unknownmsgid%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000643.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Ask help for java2python rewrite for AES decrypto</H1>
+    <B>Joel Edwards</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Ask%20help%20for%20java2python%20rewrite%20for%20AES%20decrypto&In-Reply-To=%3C8287917590106489675%40unknownmsgid%3E"
+       TITLE="[pycrypto] Ask help for java2python rewrite for AES decrypto">joeledwards at gmail.com
+       </A><BR>
+    <I>Fri Dec 28 04:16:42 PST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000643.html">[pycrypto] Ask help for java2python rewrite for AES decrypto
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#644">[ date ]</a>
+              <a href="thread.html#644">[ thread ]</a>
+              <a href="subject.html#644">[ subject ]</a>
+              <a href="author.html#644">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>There is a good implementation available on the AES Crypt website.
+
+Java version overview
+<A HREF="http://www.aescrypt.com/java_aes_crypt.html">http://www.aescrypt.com/java_aes_crypt.html</A>
+
+Download page
+<A HREF="https://www.aescrypt.com/download/">https://www.aescrypt.com/download/</A>
+
+A lot of the code is designed around AES Crypt's file format, but as long
+as you evaluate that first, you should be able to get a good idea of how to
+set things up correctly.
+
+Keep in mind that only 128-bit encryption is available with the standard
+Java lib, and AES Crypt is written for 256-bit encryption. So you will need
+to either adapt their work to a 128-bit key size, or (assuming no
+restrictions apply) download the &quot;Java Cryptography Extension (JCE)
+Unlimited Strength Jurisdiction Policy Files&quot; from
+Oracle&lt;<A HREF="http://www.oracle.com/technetwork/java/javase/downloads/index.html">http://www.oracle.com/technetwork/java/javase/downloads/index.html</A>&gt;
+.
+
+Let me know if you have additional questions. You may contact me directly
+if you wish, seeing as this is a pycrypto group.
+
+Joel (Via Mobile)
+
+On Dec 28, 2012, at 2:16, &quot;steve.yi&quot; &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">steve.yi at 139.com</A>&gt; wrote:
+
+
+Hi Pycryptors,
+
+I got some requests from my clients, his requests are xml formatted
+encrypted by AES with Java.
+
+I decide to use pycrypto to decrypt these xml requests. But i am not
+familiar with Java.
+
+Someone can help? Thanks a lot. Java codes as follows,
+
+
+Encrypt.java
+============
+
+
+import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
+public class Encrypt {
+public password = &quot;123456&quot;;
+    public Encrypt(String password) {
+super();
+this.password = password;
+}
+/**
+     * &#21152;&#23494;
+     *
+     * @param content &#38656;&#35201;&#21152;&#23494;&#30340;&#20869;&#23481;
+     * @param password  &#21152;&#23494;&#23494;&#30721;
+     * @return
+     */
+    public static byte[] encrypt(String content, String password) {
+            try {
+
+                    KeyGenerator kgen = KeyGenerator.getInstance(&quot;AES&quot;);
+//AES&#23494;&#38053;&#29983;&#25104;&#22120;
+                    //128&#26159;&#23494;&#38053;&#30340;&#38271;&#24230;  SecureRandom&#26159;&#38543;&#26426;&#29983;&#25104;&#25968;  &#20294;&#26159;&#25105;&#20204;&#38656;&#35201;&#25668;&#20837;&#30830;&#23450;&#30340;&#20540;
+                    kgen.init(128, new
+SecureRandom(password.getBytes()));//&#21021;&#22987;&#21270;&#23494;&#38053;
+                    SecretKey secretKey = kgen.generateKey();
+//&#20998;&#32452;&#31192;&#23494;&#23494;&#38053;&#65288;&#24182;&#20026;&#20854;&#25552;&#20379;&#31867;&#22411;&#23433;&#20840;&#65289;
+                    byte[] enCodeFormat = secretKey.getEncoded();
+                    SecretKeySpec key = new SecretKeySpec(enCodeFormat,
+&quot;AES&quot;); //&#23545;&#20135;&#29983;&#30340;&#23494;&#38053;&#20877;&#36827;&#34892;&#23553;&#35013;
+                    Cipher cipher = Cipher.getInstance(&quot;AES&quot;);// &#21019;&#24314;&#23494;&#30721;&#22120;
+                    byte[] byteContent = content.getBytes(&quot;utf-8&quot;);
+ //&#33719;&#24471;&#21407;&#25991;utf-8&#32534;&#30721;&#26684;&#24335;&#30340;&#23383;&#33410;&#25968;
+                    cipher.init(Cipher.ENCRYPT_MODE, key);// &#21152;&#23494;&#21021;&#22987;&#21270;
+Cipher.ENCRYPT_MODE&#20026;&#21152;&#23494;
+                    byte[] result = cipher.doFinal(byteContent);  //&#23494;&#30721;&#22120;&#25191;&#34892;&#21152;&#23494;
+&#24182;&#29983;&#25104;&#21152;&#23494;&#23383;&#33410;&#25968;&#32452;
+                    return result; // &#21152;&#23494;
+            } catch (Exception e) {
+                    e.printStackTrace();
+            }
+            return null;
+    }
+    /**&#35299;&#23494;
+     * @param content  &#24453;&#35299;&#23494;&#20869;&#23481;
+     * @param password &#35299;&#23494;&#23494;&#38053;
+     * @return
+     */
+    public static String decrypt(byte[] content, String password) {
+            try {
+                     KeyGenerator kgen = KeyGenerator.getInstance(&quot;AES&quot;);
+ //AES&#23494;&#38053;&#29983;&#25104;&#22120;
+                     //128&#26159;&#23494;&#38053;&#30340;&#38271;&#24230;  SecureRandom&#26159;&#38543;&#26426;&#29983;&#25104;&#25968;  &#20294;&#26159;&#25105;&#20204;&#38656;&#35201;&#25668;&#20837;&#30830;&#23450;&#30340;&#20540;
+                     kgen.init(128, new SecureRandom(password.getBytes()));
+ //&#21021;&#22987;&#21270;&#23494;&#38053;
+                     SecretKey secretKey = kgen.generateKey();
+ //&#20998;&#32452;&#31192;&#23494;&#23494;&#38053;&#65288;&#24182;&#20026;&#20854;&#25552;&#20379;&#31867;&#22411;&#23433;&#20840;&#65289;
+                     byte[] enCodeFormat = secretKey.getEncoded();
+                     SecretKeySpec key = new SecretKeySpec(enCodeFormat,
+&quot;AES&quot;);  //&#23545;&#20135;&#29983;&#30340;&#23494;&#38053;&#20877;&#36827;&#34892;&#23553;&#35013;
+                     Cipher cipher = Cipher.getInstance(&quot;AES&quot;);// &#21019;&#24314;&#23494;&#30721;&#22120;
+                    cipher.init(Cipher.DECRYPT_MODE, key);// &#35299;&#23494;&#21021;&#22987;&#21270;
+Cipher.DECRYPT_MODE&#20026;&#35299;&#23494;
+                    byte[] result = cipher.doFinal(content);  //&#23494;&#30721;&#22120;&#25191;&#34892;&#35299;&#23494;&#23494;
+&#24182;&#29983;&#25104;&#35299;&#23494;&#23494;&#23383;&#33410;&#25968;&#32452;
+                    return new String(result); // &#35299;&#23494;
+            } catch (Exception e) {
+                    e.printStackTrace();
+            }
+            return null;
+    }
+
+
+    public static String parseByte2HexStr(byte buf[]){
+    StringBuffer sb=new StringBuffer();
+    for(int i=0;i&lt;buf.length;i++){
+    String hex=Integer.toHexString(buf[i]&amp;0xFF);
+    if(hex.length()==1){
+    hex='0' + hex;
+    }
+    sb.append(hex.toUpperCase());
+    }
+    return sb.toString();
+    }
+
+
+    public static byte[] parseHexStr2Byte(String hexStr){
+    if(hexStr.length()&lt;1)
+    return null;
+    byte[]result=new byte[hexStr.length()/2];
+    for(int i=0;i&lt;hexStr.length()/2;i++){
+    int high=Integer.parseInt(hexStr.substring(i*2,i*2+1),16);
+    int low=Integer.parseInt(hexStr.substring(i*2+1,i*2+2),16);
+    result[i]=(byte)(high*16+low);
+    }
+    return result;
+    }
+
+    public static void main(String args[]) throws
+UnsupportedEncodingException {
+    String content = &quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;&quot;+
+    &quot;&lt;request&gt;&quot;+
+      &quot;&lt;company&gt;1&lt;/company&gt;&quot;+
+    &quot;&lt;requestId&gt;2&lt;/requestId&gt;&quot;+
+    &quot;&lt;Create&gt;&quot;+
+    &quot;&lt;CreateHost&gt;&quot;+
+    &quot;&lt;userId&gt;3&lt;/userId&gt;&quot;+
+    &quot;&lt;transactionId&gt;4&lt;/transactionId&gt;&quot;+
+    &quot;&lt;timestamp&gt;5&lt;/timestamp&gt;&quot;+
+    &quot;&lt;core&gt;6&lt;/core&gt;&quot;+
+    &quot;&lt;memory&gt;7&lt;/memory&gt;&quot;+
+    &quot;&lt;os&gt;4&lt;/os&gt;&quot;+
+    &quot;&lt;groupName&gt;5&lt;/groupName&gt;&quot;+
+    &quot;&lt;hostSpecId&gt;5&lt;/hostSpecId&gt;&quot;+
+    &quot;&lt;path&gt;6&lt;/path&gt;&quot;+
+    &quot;&lt;/CreateHost&gt;&quot;+
+    &quot;&lt;CreateIp&gt;&quot;+
+    &quot;&lt;transactionId&gt;6&lt;/transactionId&gt;&quot;+
+    &quot;&lt;netSpeed&gt;6&lt;/netSpeed&gt;&quot;+
+    &quot;&lt;ip&gt;7&lt;/ip&gt;&quot;+
+    &quot;&lt;/CreateIp &gt;&quot;+
+    &quot;&lt;CreateDisk&gt;&quot;+
+    &quot;&lt;transactionId&gt;7&lt;/transactionId&gt;&quot;+
+    &quot;&lt;disk&gt;7&lt;/disk&gt;&quot;+
+    &quot;&lt;/CreateDisk&gt;&quot;+
+    &quot;&lt;/Create&gt;&quot;+
+    &quot;&lt;/request&gt;&quot;;
+    System.out.println(&quot;content:&quot;+content);
+     System.out.println(&quot;encrypted:&quot;+(parseByte2HexStr(Encrypt.encrypt(content,
+&quot;123456&quot;))));
+     System.out.println(&quot;decrypted:&quot;+Encrypt.decrypt(parseHexStr2Byte(parseByte2HexStr(Encrypt.encrypt(content,
+&quot;123456&quot;))),&quot;123456&quot;));
+    }
+
+
+}
+
+_______________________________________________
+pycrypto mailing list
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20121228/941a20fe/attachment-0001.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20121228/941a20fe/attachment-0001.html</A>&gt;
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000643.html">[pycrypto] Ask help for java2python rewrite for AES decrypto
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#644">[ date ]</a>
+              <a href="thread.html#644">[ thread ]</a>
+              <a href="subject.html#644">[ subject ]</a>
+              <a href="author.html#644">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

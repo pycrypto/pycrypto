@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] installing pycrypto on OS X 10.6
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20installing%20pycrypto%20on%20OS%20X%2010.6&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000255.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] installing pycrypto on OS X 10.6</H1>
+    <B>Brendan Simon (eTRIX)</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20installing%20pycrypto%20on%20OS%20X%2010.6&In-Reply-To="
+       TITLE="[pycrypto] installing pycrypto on OS X 10.6">brendan.simon at etrix.com.au
+       </A><BR>
+    <I>Mon Jul 19 06:48:12 CST 2010</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000255.html">[pycrypto] ANNOUNCING Tahoe, the Least-Authority File System, v1.7.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#254">[ date ]</a>
+              <a href="thread.html#254">[ thread ]</a>
+              <a href="subject.html#254">[ subject ]</a>
+              <a href="author.html#254">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE> I have the following error while installing pycrypto on Mac OS X 10.6
+(via easy_install).
+
+    $ sudo easy_install -z pycrypto
+    Password:
+    Searching for pycrypto
+    Reading <A HREF="http://pypi.python.org/simple/pycrypto/">http://pypi.python.org/simple/pycrypto/</A>
+    Reading <A HREF="http://pycrypto.sourceforge.net">http://pycrypto.sourceforge.net</A>
+    Reading <A HREF="http://www.amk.ca/python/code/crypto">http://www.amk.ca/python/code/crypto</A>
+    Reading <A HREF="http://www.pycrypto.org/">http://www.pycrypto.org/</A>
+    Best match: pycrypto 2.1.0
+    Downloading <A HREF="http://www.pycrypto.org/files/pycrypto-2.1.0.tar.gz">http://www.pycrypto.org/files/pycrypto-2.1.0.tar.gz</A>
+    Processing pycrypto-2.1.0.tar.gz
+    Running pycrypto-2.1.0/setup.py -q bdist_egg --dist-dir
+    /tmp/easy_install-zE_nrE/pycrypto-2.1.0/egg-dist-tmp-izxAlH
+    warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+    Compiling with an SDK that doesn't seem to exist:
+    /Developer/SDKs/MacOSX10.4u.sdk
+    Please check your Xcode installation
+    cc1: error: unrecognized command line option &quot;-Wno-long-double&quot;
+    cc1: error: unrecognized command line option &quot;-Wno-long-double&quot;
+    lipo: can't figure out the architecture type of: /var/tmp//cc1UrVQ6.out
+    error: Setup script exited with error: command 'gcc' failed with
+    exit status 1
+
+
+Why does the installer insist in using SDK for OS X 10.4 ??
+Other easy_installs don't seem to have that restriction !!
+
+My OS X 10.6 system has the following SDKs installed.
+
+    $ ls -l /Developer/SDKs/
+    drwxr-xr-x  7 root  wheel  238 30 Jun  2009 MacOSX10.5.sdk
+    drwxr-xr-x  7 root  wheel  238  3 Aug  2009 MacOSX10.6.sdk
+
+
+I have read one solution is to install the SDK 10.4, but that seems a
+bit of a kludge.
+Has anyone got this working with SDK 10.6 ??
+
+Thanks, Brendan.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100719/1dfa0657/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100719/1dfa0657/attachment.html</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000255.html">[pycrypto] ANNOUNCING Tahoe, the Least-Authority File System, v1.7.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#254">[ date ]</a>
+              <a href="thread.html#254">[ thread ]</a>
+              <a href="subject.html#254">[ subject ]</a>
+              <a href="author.html#254">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

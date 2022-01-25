@@ -1,0 +1,4496 @@
+From xueyu7452 at gmail.com  Fri Oct  8 02:31:33 2010
+From: xueyu7452 at gmail.com (yu xue)
+Date: Fri, 8 Oct 2010 16:31:33 +0800
+Subject: [pycrypto] a problem when build pycrypto
+Message-ID: <AANLkTikFQ9OGVAFT0ykL3jEeMZoadnr8VquyuNX2M8mP@mail.gmail.com>
+
+Hello, everyone:
+I met a problem when trying to build pycrypto on a linux machine, the errors
+which are reported are as follows:
+
+
+gcc -pthread -shared build/temp.linux-i686-2.6/src/MD2.o -o
+build/lib.linux-i686-2.6/Crypto/Hash/MD2.so
+building 'Crypto.Hash.MD4' extension
+gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC
+-std=c99 -O3 -fomit-frame-pointer -Isrc/
+-I/home/xueyu/bin/bin/include/python2.6 -c src/MD4.c -o
+build/temp.linux-i686-2.6/src/MD4.o
+gcc -pthread -shared build/temp.linux-i686-2.6/src/MD4.o -o
+build/lib.linux-i686-2.6/Crypto/Hash/MD4.so
+building 'Crypto.Hash.SHA256' extension
+gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC
+-std=c99 -O3 -fomit-frame-pointer -Isrc/
+-I/home/xueyu/bin/bin/include/python2.6 -c src/SHA256.c -o
+build/temp.linux-i686-2.6/src/SHA256.o
+/tmp/cc8i7etX.s: Assembler messages:
+/tmp/cc8i7etX.s:1692: Error: symbol `fstat64' is already defined
+/tmp/cc8i7etX.s:1710: Error: symbol `lstat64' is already defined
+/tmp/cc8i7etX.s:1728: Error: symbol `stat64' is already defined
+error: command 'gcc' failed with exit status 1
+And everytime I re-built the pycrypto, the directories which has "Error:
+symbol 'fstat64/lstat64/stat64' " are different, e.g. they are maybe
+/tmp/ccHKWjgr.s or /tmp/ccL9eDaZ.s etc...
+
+Gcc is 4.3.2, python is 2.6. And I don't have root priviledge , so I don't
+know whether this is matters. Thank you!
+
+Regards
+   Yu Xue
+
+---
+
+     ??
+??!
+                       ??
+
+                   ????
+                   ??????
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20101008/783257dc/attachment.html 
+
+From gooksankoo at hoiptorrow.mailexpire.com  Thu Oct 14 15:10:59 2010
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Thu, 14 Oct 2010 23:10:59 +0200
+Subject: [pycrypto] On the future of new ciphers/hashes in PyCrypto
+Message-ID: <AANLkTinYtSajJU4j1g2zsKyh_qRVKExh8AOUGr14=XyY@mail.gmail.com>
+
+I think it is worth making a distinction between primitives and protocols.
+
+The few ciphers/hashes that currently exist in pycrypto suffice for
+most needs one may have, and
+I agree that adding more won't help in 99% of the applications (even
+though it may look good
+on a fact sheet) whereas a low-level cipher zoo is hard to maintain.
+
+Having said that, one of beauties of pycrypto is the fact that is
+self-contained and does not require
+to be combined with further packages. A pluggable system - although
+elegant - would become
+less practical and possibly not very considered as a feature. If one
+day one could prove that pycrypto is
+indeed missing a primitive used by some real, widespread systems
+(maybe ECC?) that cannot be sanely
+replaced by AES/TDES/SHA, I would even urge to still have a C
+implementation included from some
+good patent-free library (e.g. tomcrypt) and shipped. So much time saved...
+
+Protocols are another beast though: key derivation/management/exchange
+schemes, wrappers,
+message authentication codes, etc etc are in most cases independent of
+the underlying cipher/hash
+primitive and can be more cleanly and quickly implemented/tested in a
+high-level language like Python
+with little performance penalty. PKCS#1 and PBKDF2 are good examples.
+Even chaining modes
+for block ciphers look better in python (to me at least).I would
+really prefer to have these high-level
+algorithms available in the library and not through some obscure
+openssl-like library coded in C...
+
+My 2 cents... :-)
+
+> Going through the bug tracker and the mailing list, a lot of the requests
+> are to add new algorithms (Camellia, SHA512, TEA, PKCS#1/OAEP, PBKDF2), or
+> to make changes to the existing implementations (timing attack
+> countermeasures for the AES module, better prime generation for RSA).
+
+> They're all good ideas, but I don't have the time or the expertise needed
+> to review C implementations of low-level crypto primitives, and frankly, I
+> have better things to do.
+
+> Python does not need its own custom AES implementation.  Neither do Java,
+> Ruby, Perl, JavaScript, PHP, Go, C++, D, Clojure, Haskell.  It's a waste of
+> volunteer time, it's bad engineering, and it means that the FOSS community
+> ends up repeating the same mistakes over and over, year after year, every
+> time a new language comes out.
+
+> I'm putting a stop to it.  I'm declaring a permanent feature freeze on the
+> C implementations of <Crypto.Cipher.*> and <Crypto.Hash.*>.  New algortihms
+> will be added only by calling out to existing libraries.  PyCrypto
+> development will be focused on the API.
+
+> I haven't yet figured out exactly how this is going to look.  I'm thinking
+> of some kind of pluggable backends, sort of like how Java or CryptoAPI, but
+> with as little API complexity as possible.  Ideas are welcome.
+
+> - Dwayne
+
+From cwt at bashell.com  Fri Oct 15 06:33:29 2010
+From: cwt at bashell.com (cwt)
+Date: Fri, 15 Oct 2010 19:33:29 +0700
+Subject: [pycrypto] Changes for _fastmath.c to be able to built on MSVC 9.0
+	(aka VS2008)
+In-Reply-To: <AANLkTik0Fh2EP=NY9oYJ81pFEuTompqGtqVKSVyKCzea@mail.gmail.com>
+References: <AANLkTik0Fh2EP=NY9oYJ81pFEuTompqGtqVKSVyKCzea@mail.gmail.com>
+Message-ID: <AANLkTi=4h3=RKks3VcEuaRxdcLY=ACPzBq54jbYqsj2=@mail.gmail.com>
+
+Hi,
+
+I just tried to build pycrypto for python-2.6.6 (x64) on Windows 7, for
+found that it can't build _fastmath because there is no GMP on Windows.
+
+I google for a while and found MPIR (http://www.mpir.org/). There is a
+script 'to_gmp.bat' in the MPIR build folder that rename mpir.lib, mpir.dll,
+and the relevant header files to gmp.
+
+After trying for 4 hours, I got a solution. (it may not accurate right, but
+it just works.)
+
+First, I build MPIR as Release|x86 for both lib and dll:
+
+   - open "Visual Studio 2008 x64 Win64 Command Prompt"
+   - cd mpir-2.1.3\build.vc9 # Change to the path that you extract MPIR.
+   - msbuild mpir.sln /p:Configuration=Release /p:Platform=x64
+   /t:lib_mpir_nehalem  # <-- my cpu, you can try others.
+   - msbuild mpir.sln /p:Configuration=Release /p:Platform=x64
+   /t:dll_mpir_nehalem
+   - to_gmp.bat # Convert libraries and headers to GMP.
+
+Then, copy *.h except config.h from *DLL *output to your python\PC
+
+   - cd mpir-2.1.3\build.vc9\dll\x64\Release
+   - mkdir C:\Python26\PC
+   - copy gmp*.h C:\Python26\PC
+   - copy mpir*.h C:\Python26\PC
+
+And copy gmp.lib from *LIB *output to your python\PCbuild\amd64 # *Sound
+weird?* But trust me, I already try other ways and they were failed.
+
+   - mkdir C:\Python26\PCbuild
+   - mkdir C:\Python26\PCbuild\amd64
+   - cd mpir-2.1.3\build.vc9\lib\x64\Release
+   - copy gmp.lib C:\Python26\PCbuild\amd64
+
+Now, in the extracted pycrypto folder, I copy src\_fastmath.c to
+src\_fastmath.cpp and do some changes on _fastmath.cpp to make it C++
+friendly.
+Well, the patch is quite large because I move the whole sieve_base to the
+very top of the file. So you better see the patch file that I'm attached to
+this mail.
+I also change the setup.py to build the _fastmath.cpp instead of
+_fastmath.c.
+Finally, build the pycrypto and install it.
+
+   - python setup.py build
+   - python setup.py install --optimize=1
+
+If you look in the C:\Python26\Lib\site-packages\Crypto\PublicKey, you will
+found _fastmath.pyd.
+Now, the most excited part! Let's benchmark it.
+
+Without _fastmath (you can try it by rename _fastmath.pyd to something such
+as _fastmath.xxx):
+
+In [1]: from datetime import datetime
+
+In [2]: from Crypto.PublicKey import pubkey
+
+In [3]: def tdiff(n):
+   ...:     before = datetime.now()
+   ...:     pubkey.getStrongPrime(n)
+   ...:     print datetime.now()-before
+   ...:
+
+In [4]: tdiff(512)
+0:00:00.348000
+
+In [5]: tdiff(1024)
+0:00:00.565000
+
+In [6]: tdiff(2048)
+0:00:03.308000
+
+In [7]: tdiff(4096)
+0:01:39.202000 # == (1*60)+39.202 == 99.202
+
+With _fastmath:
+
+
+In [1]: from datetime import datetime
+
+In [2]: from Crypto.PublicKey import pubkey
+
+In [3]: def tdiff(n):
+   ...:     before = datetime.now()
+   ...:     pubkey.getStrongPrime(n)
+   ...:     print datetime.now()-before
+   ...:
+
+In [4]: tdiff(512)
+0:00:00.123000
+
+In [5]: tdiff(1024)
+0:00:00.333000
+
+In [6]: tdiff(2048)
+0:00:00.675000
+
+In [7]: tdiff(4096)
+0:00:06.446000
+
+So, the conclusion:
+
+n       without      with         faster
+        _fastmath    _fastmath
+
+512     00.348       00.123        182.93%
+1024    00.565       00.333         69.67%
+2048    03.308       00.675        390.07%
+4096    99.202       06.446       1438.97%
+
+So, I think it's really worth to do (if you're stuck on Windows Platform).
+
+Regards,
+Chaiwat.S
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20101015/ad987b34/attachment.htm 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: msvc9-patches.7z
+Type: application/octet-stream
+Size: 13240 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20101015/ad987b34/attachment-0001.obj 
+
+From dlitz at dlitz.net  Fri Oct 22 09:52:57 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 22 Oct 2010 11:52:57 -0400
+Subject: [pycrypto] On the future of new ciphers/hashes in PyCrypto
+In-Reply-To: <AANLkTinYtSajJU4j1g2zsKyh_qRVKExh8AOUGr14=XyY@mail.gmail.com>
+References: <AANLkTinYtSajJU4j1g2zsKyh_qRVKExh8AOUGr14=XyY@mail.gmail.com>
+Message-ID: <20101022155257.GA29765@rivest.dlitz.net>
+
+Can block cipher chaining modes be implemented in Python without making 
+ridiculous performance sacrifices?  I'm not a Python performance expert, 
+but I thought the Python function call overhead was too high.
+
+On Thu, Oct 14, 2010 at 11:10:59PM +0200, Legrandin wrote:
+>I think it is worth making a distinction between primitives and protocols.
+>
+>The few ciphers/hashes that currently exist in pycrypto suffice for
+>most needs one may have, and
+>I agree that adding more won't help in 99% of the applications (even
+>though it may look good
+>on a fact sheet) whereas a low-level cipher zoo is hard to maintain.
+>
+>Having said that, one of beauties of pycrypto is the fact that is
+>self-contained and does not require
+>to be combined with further packages. A pluggable system - although
+>elegant - would become
+>less practical and possibly not very considered as a feature. If one
+>day one could prove that pycrypto is
+>indeed missing a primitive used by some real, widespread systems
+>(maybe ECC?) that cannot be sanely
+>replaced by AES/TDES/SHA, I would even urge to still have a C
+>implementation included from some
+>good patent-free library (e.g. tomcrypt) and shipped. So much time saved...
+>
+>Protocols are another beast though: key derivation/management/exchange
+>schemes, wrappers,
+>message authentication codes, etc etc are in most cases independent of
+>the underlying cipher/hash
+>primitive and can be more cleanly and quickly implemented/tested in a
+>high-level language like Python
+>with little performance penalty. PKCS#1 and PBKDF2 are good examples.
+>Even chaining modes
+>for block ciphers look better in python (to me at least).I would
+>really prefer to have these high-level
+>algorithms available in the library and not through some obscure
+>openssl-like library coded in C...
+>
+>My 2 cents... :-)
+>
+>> Going through the bug tracker and the mailing list, a lot of the requests
+>> are to add new algorithms (Camellia, SHA512, TEA, PKCS#1/OAEP, PBKDF2), or
+>> to make changes to the existing implementations (timing attack
+>> countermeasures for the AES module, better prime generation for RSA).
+>
+>> They're all good ideas, but I don't have the time or the expertise needed
+>> to review C implementations of low-level crypto primitives, and frankly, I
+>> have better things to do.
+>
+>> Python does not need its own custom AES implementation.  Neither do Java,
+>> Ruby, Perl, JavaScript, PHP, Go, C++, D, Clojure, Haskell.  It's a waste of
+>> volunteer time, it's bad engineering, and it means that the FOSS community
+>> ends up repeating the same mistakes over and over, year after year, every
+>> time a new language comes out.
+>
+>> I'm putting a stop to it.  I'm declaring a permanent feature freeze on the
+>> C implementations of <Crypto.Cipher.*> and <Crypto.Hash.*>.  New algortihms
+>> will be added only by calling out to existing libraries.  PyCrypto
+>> development will be focused on the API.
+>
+>> I haven't yet figured out exactly how this is going to look.  I'm thinking
+>> of some kind of pluggable backends, sort of like how Java or CryptoAPI, but
+>> with as little API complexity as possible.  Ideas are welcome.
+>
+>> - Dwayne
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From paul_koning at dell.com  Fri Oct 22 10:00:44 2010
+From: paul_koning at dell.com (Paul Koning)
+Date: Fri, 22 Oct 2010 12:00:44 -0400
+Subject: [pycrypto] On the future of new ciphers/hashes in PyCrypto
+In-Reply-To: <20101022155257.GA29765@rivest.dlitz.net>
+References: <AANLkTinYtSajJU4j1g2zsKyh_qRVKExh8AOUGr14=XyY@mail.gmail.com>
+	<20101022155257.GA29765@rivest.dlitz.net>
+Message-ID: <B40EAB4C-D5B3-4C2A-AE59-CABB3EF8FC5C@dell.com>
+
+I tend to think of ciphers and modes as belonging together, while protocols are separate.  The former I'd expect to find in C, the latter in Python.  But you're right, that assumption depends on the guess that Python call overhead is too high to construct modes in Python out of single-block cipher operations done in C.
+
+That said, I don't know if that's the actual issue.  You make a comment about not wanting to add new algorithms, such as Camellia and TEA (ciphers) and PKCS1 (a protocol, essentially) or PKDF2 (no idea what that is).
+
+In all cases, one of the questions to ask is whether adding lots of things is a good idea.  When crypto is involved, more is NOT necessarily a good thing.  Adding ciphers of uncertain strength (like TEA) or limited applicability along with limited evaluation (Camellia, perhaps?) isn't all that helpful.  I'd much rather see a small library that supports known strong ciphers, modes, and protocols only.
+
+	paul
+
+On Oct 22, 2010, at 11:52 AM, Dwayne C. Litzenberger wrote:
+
+> Can block cipher chaining modes be implemented in Python without making 
+> ridiculous performance sacrifices?  I'm not a Python performance expert, 
+> but I thought the Python function call overhead was too high.
+> 
+> On Thu, Oct 14, 2010 at 11:10:59PM +0200, Legrandin wrote:
+>> I think it is worth making a distinction between primitives and protocols.
+>> 
+>> The few ciphers/hashes that currently exist in pycrypto suffice for
+>> most needs one may have, and
+>> I agree that adding more won't help in 99% of the applications (even
+>> though it may look good
+>> on a fact sheet) whereas a low-level cipher zoo is hard to maintain.
+>> 
+>> Having said that, one of beauties of pycrypto is the fact that is
+>> self-contained and does not require
+>> to be combined with further packages. A pluggable system - although
+>> elegant - would become
+>> less practical and possibly not very considered as a feature. If one
+>> day one could prove that pycrypto is
+>> indeed missing a primitive used by some real, widespread systems
+>> (maybe ECC?) that cannot be sanely
+>> replaced by AES/TDES/SHA, I would even urge to still have a C
+>> implementation included from some
+>> good patent-free library (e.g. tomcrypt) and shipped. So much time saved...
+>> 
+>> Protocols are another beast though: key derivation/management/exchange
+>> schemes, wrappers,
+>> message authentication codes, etc etc are in most cases independent of
+>> the underlying cipher/hash
+>> primitive and can be more cleanly and quickly implemented/tested in a
+>> high-level language like Python
+>> with little performance penalty. PKCS#1 and PBKDF2 are good examples.
+>> Even chaining modes
+>> for block ciphers look better in python (to me at least).I would
+>> really prefer to have these high-level
+>> algorithms available in the library and not through some obscure
+>> openssl-like library coded in C...
+>> 
+>> My 2 cents... :-)
+>> 
+>>> Going through the bug tracker and the mailing list, a lot of the requests
+>>> are to add new algorithms (Camellia, SHA512, TEA, PKCS#1/OAEP, PBKDF2), or
+>>> to make changes to the existing implementations (timing attack
+>>> countermeasures for the AES module, better prime generation for RSA).
+>> 
+>>> They're all good ideas, but I don't have the time or the expertise needed
+>>> to review C implementations of low-level crypto primitives, and frankly, I
+>>> have better things to do.
+>> 
+>>> Python does not need its own custom AES implementation.  Neither do Java,
+>>> Ruby, Perl, JavaScript, PHP, Go, C++, D, Clojure, Haskell.  It's a waste of
+>>> volunteer time, it's bad engineering, and it means that the FOSS community
+>>> ends up repeating the same mistakes over and over, year after year, every
+>>> time a new language comes out.
+>> 
+>>> I'm putting a stop to it.  I'm declaring a permanent feature freeze on the
+>>> C implementations of <Crypto.Cipher.*> and <Crypto.Hash.*>.  New algortihms
+>>> will be added only by calling out to existing libraries.  PyCrypto
+>>> development will be focused on the API.
+>> 
+>>> I haven't yet figured out exactly how this is going to look.  I'm thinking
+>>> of some kind of pluggable backends, sort of like how Java or CryptoAPI, but
+>>> with as little API complexity as possible.  Ideas are welcome.
+>> 
+>>> - Dwayne
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>> 
+> 
+> -- 
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From dlitz at dlitz.net  Sun Oct 24 15:41:20 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 24 Oct 2010 17:41:20 -0400
+Subject: [pycrypto] PyCrypto needs your help
+Message-ID: <20101024214120.GA29844@rivest.dlitz.net>
+
+Does anybody want to take the lead on PyCrypto development?  I haven't been 
+giving PyCrypto the attention it needs, and I don't really see myself 
+spending a lot of time on it in the near future.
+
+I'm happy to continue doing what I've been doing, which isn't much, but if 
+somebody with more spare time on their hands would like step up and take 
+the lead on this project, or even just make a few releases, please speak 
+up.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From onny at project-insanity.org  Mon Nov  1 02:53:28 2010
+From: onny at project-insanity.org (onny)
+Date: Mon, 01 Nov 2010 09:53:28 +0100 (CET)
+Subject: [pycrypto] Patched pycrypto2.3 for python3.1
+Message-ID: <20101101090532.0F6101F8712@mail.project-insanity.org>
+
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20101101/1ec9459c/attachment.htm 
+
+From francoissanty at gmail.com  Fri Nov 12 05:19:53 2010
+From: francoissanty at gmail.com (=?ISO-8859-1?Q?Fran=E7ois_Santy?=)
+Date: Fri, 12 Nov 2010 12:19:53 +0100
+Subject: [pycrypto] RSA importKey
+Message-ID: <AANLkTinn5Uzn7-R_-Ax5Jk0ar=cAz_vO+CZ3DG81pPY5@mail.gmail.com>
+
+Hi everybody !
+
+I'm currently working with pycrypto and I want to import public and private
+keys from DER files.
+I found a piece of code that shows how to proceed, but it isn't working
+anyway !
+Here is the code I'm using:
+
+f = file("./public_key.der")
+key = RSA.importKey(f.read())
+
+It tells me *'module' object has no attribute 'importKey'. *It's rather
+strange since the method appears explicitely in the file
+/lib/Crypto/PublicKey/RSA.py*.*
+*
+*
+What am I doing wrong ?
+
+Thanks.
+
+-- 
+Fran?ois S.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20101112/cfba0700/attachment.htm 
+
+From francoissanty at gmail.com  Fri Nov 12 07:32:45 2010
+From: francoissanty at gmail.com (=?ISO-8859-1?Q?Fran=E7ois_Santy?=)
+Date: Fri, 12 Nov 2010 14:32:45 +0100
+Subject: [pycrypto] RSA importKey
+In-Reply-To: <AANLkTinn5Uzn7-R_-Ax5Jk0ar=cAz_vO+CZ3DG81pPY5@mail.gmail.com>
+References: <AANLkTinn5Uzn7-R_-Ax5Jk0ar=cAz_vO+CZ3DG81pPY5@mail.gmail.com>
+Message-ID: <AANLkTime7egFD=VuHy7SztA-qqygqr8tEn=9OrQXTKvC@mail.gmail.com>
+
+I have another Question concernant PyCrypto's implementation of RSA: which
+encryption mode is it using?
+I had to use PyCrypto's implementation of DES recently, and I could easily
+choose between several modes (MODE_EBC, MODE_CBC,...), but unfortunatly, I
+can't find these modes in RSA.
+
+The same question applied for the Padding options. Can I choose between
+PKCS5Padding and PKCS1Padding ?
+
+Thanks !
+
+2010/11/12 Fran?ois Santy <francoissanty at gmail.com>
+
+> Hi everybody !
+>
+> I'm currently working with pycrypto and I want to import public and private
+> keys from DER files.
+> I found a piece of code that shows how to proceed, but it isn't working
+> anyway !
+> Here is the code I'm using:
+>
+> f = file("./public_key.der")
+> key = RSA.importKey(f.read())
+>
+> It tells me *'module' object has no attribute 'importKey'. *It's rather
+> strange since the method appears explicitely in the file
+> /lib/Crypto/PublicKey/RSA.py*.*
+> *
+> *
+> What am I doing wrong ?
+>
+> Thanks.
+>
+> --
+> Fran?ois S.
+>
+
+
+
+-- 
+Fran?ois S.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20101112/aeeeeae8/attachment.htm 
+
+From gooksankoo at hoiptorrow.mailexpire.com  Sun Nov 14 17:04:37 2010
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Mon, 15 Nov 2010 00:04:37 +0100
+Subject: [pycrypto] RSA importKey
+In-Reply-To: <AANLkTime7egFD=VuHy7SztA-qqygqr8tEn=9OrQXTKvC@mail.gmail.com>
+References: <AANLkTinn5Uzn7-R_-Ax5Jk0ar=cAz_vO+CZ3DG81pPY5@mail.gmail.com>
+	<AANLkTime7egFD=VuHy7SztA-qqygqr8tEn=9OrQXTKvC@mail.gmail.com>
+Message-ID: <20101114230437.GA1149@shannon>
+
+Hi Francois,
+
+importKey was included in pycrypto 2.2. Try to print Crypto.__version__
+to see which library your interpreter is picking up (most likely an
+older one).
+
+RSA in pycrypto currently uses no padding: it directly carries out the
+exponentiation. Last year I created a patch to pycrypto 2.1 to support PKCS#1 v1.5
+padding. You can find it here https://bugs.launchpad.net/pycrypto/+bug/502291 .
+BTW, PKCS#5 is not applicable to RSA.
+
+Legrandin
+
+>    I have another Question concernant PyCrypto's implementation of RSA: which
+>    encryption mode is it using? 
+>    I had to use PyCrypto's implementation of DES recently, and I could easily
+>    choose between several modes (MODE_EBC, MODE_CBC,...), but unfortunatly, I
+>    can't find these modes in RSA.
+>    The same question applied for the Padding options. Can I choose between
+>    PKCS5Padding and PKCS1Padding ?
+>    Thanks !
+> 
+>    2010/11/12 Franc,ois Santy <francoissanty at gmail.com>
+> 
+>      Hi everybody !
+>      I'm currently working with pycrypto and I want to import public and
+>      private keys from DER files.
+>      I found a piece of code that shows how to proceed, but it isn't working
+>      anyway !
+>      Here is the code I'm using:
+> 
+>        f = file("./public_key.der")
+>        key = RSA.importKey(f.read())
+> 
+>      It tells me 'module' object has no attribute 'importKey'. It's rather
+>      strange since the method appears explicitely in the file
+>      /lib/Crypto/PublicKey/RSA.py.
+>      What am I doing wrong ?
+>      Thanks.
+>      --
+>      Franc,ois S.
+> 
+>    --
+>    Franc,ois S.
+
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From JB.Imm at gmx.de  Tue Nov 23 07:23:16 2010
+From: JB.Imm at gmx.de (Johannes Bauer)
+Date: Tue, 23 Nov 2010 14:23:16 +0100
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+Message-ID: <4CEBC044.2010103@gmx.de>
+
+Hi there,
+
+I wanted to ask what the current status of PyCrypto together with
+Python3 is.
+
+I found three patches on the mailing list, all of which are against
+2.1.0 and none of which work.
+
+Two were in a ZIP archive, I found them in pycrypto-patches.zip
+http://lists.dlitz.net/pipermail/pycrypto/attachments/20100228/349e8dc6/attachment-0001.obj
+
+They both patch fine against 2.1.0, but when running, they tell me both
+the same error message:
+
+Python 3.1.2 (r312:79147, Apr 15 2010, 15:35:48)
+[GCC 4.4.3] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from Crypto.Cipher import AES
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+SystemError: NULL result without error in PyObject_Call
+>>>
+
+The third I found here (pycrypto-2.1.0-python3-1.patch.bz2).
+http://lists.dlitz.net/pipermail/pycrypto/attachments/20100115/0432fbaf/attachment-0001.bin
+
+
+It also compiles, but when trying to access the library, it yields
+
+Python 3.1.2 (r312:79147, Apr 15 2010, 15:35:48)
+[GCC 4.4.3] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from Crypto.Cipher import AES
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ImportError: Crypto/Cipher/AES.so: undefined symbol: PyString_AsString
+>>>
+
+I also tried the GIT version, which also doesn't work (cannot even run
+setup.py with Python3).
+
+Is any Python3 support planned at all? Are there any working patches (or
+even a GIT branch)?
+
+Regards,
+Johannes
+
+From dlitz at dlitz.net  Mon Nov 29 21:46:36 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 29 Nov 2010 22:46:36 -0500
+Subject: [pycrypto] Policy changes - Now accepting patches from the U.S.
+Message-ID: <20101130034636.GA22729@rivest.dlitz.net>
+
+I've released "PyCrypto Code Submission Requirements - Rev. D":
+
+     http://www.dlitz.net/software/pycrypto/submission-requirements/
+
+This is the same as revision C, except I'm now accepting patches from U.S.  
+contributors.
+
+My original concern was that, hypothetically, U.S. export regulations could 
+in the future become incompatible with Canadian regulations such that it 
+would be impossible to simultaneously comply with both.  That's still a 
+risk, but I don't have any reason to think it will happen any time soon, 
+and I don't know what that would imply anyway.  If it ever happens, I'll 
+probably just stop distributing PyCrypto and move on to other things.
+
+My main concern right now is to facilitate code contributions to PyCrypto 
+from the largest number of contributors with a minimum amount of time on my 
+part.  Consequently, I've also put the source code up on GitHub:
+
+     https://github.com/dlitz/pycrypto
+
+If you want to send me changes, please just fork it on GitHub, push your 
+changes to a branch on your own repository, run the test suite with *at 
+least* Python 2.1 and the latest 2.x release, through and send me a push 
+request.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Mon Nov 29 22:01:58 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 29 Nov 2010 23:01:58 -0500
+Subject: [pycrypto] Suggestions for patches
+In-Reply-To: <20101130034636.GA22729@rivest.dlitz.net>
+References: <20101130034636.GA22729@rivest.dlitz.net>
+Message-ID: <20101130040158.GB22729@rivest.dlitz.net>
+
+Here are some ideas for PyCrypto patches:
+
+- Documentation updates
+
+- Bugfixes
+
+- Python 3.x support, with some sane way of maintaining Python 2.x support 
+   for the forseeable future.  I would like to see somebody champion this, 
+   with discussion on how this could realistically work, rather than just 
+   one-off code dumps.
+
+- Build autoconfiguration improvements
+
+- 64-bit Windows support
+
+- Camellia.  Maybe.  I don't want lots of new algorithms, but having more 
+   than one cipher with a 128-bit block size is probably a good idea, 
+   assuming the code is clean and doesn't carry any substantial copyright 
+   restrictions.
+
+Here are some tips for getting your patches accepted, taken from 
+http://www.pycrypto.org/:
+
+- Don't needlessly break compatibility with older versions of PyCrypto. 
+   Patches that break compatibility with older version of PyCrypto, 
+   especially PyCrypto 2.0.1, will need an explanation about why it's worth 
+   breaking compatibility. Exception: Removing buggy code that nobody uses 
+   is fine.
+
+- Don't needlessly break compatibility with older versions of Python. Run 
+   the test suite using Python 2.1 and the latest version of Python 2.x.
+
+- Don't needlessly add complexity. The more complex the code is, the harder 
+   it is to maintain, and the more likely it is to have bugs.
+
+- Don't needlessly add features. Seriously. X.509 doesn't belong in 
+   PyCrypto. Or anywhere, really.
+
+- Don't create copyright headaches. It took me the better part of a year to 
+   sort out the licensing ambiguities in PyCrypto 2.0.1. If you're adding 
+   new files, include the standard PyCrypto public domain dedication at the 
+   top.
+
+- Whatever you do in _fastmath.c, also do in _slowmath.py. PyCrypto has two 
+   math libraries: one that depends on libgmp, and one that doesn't. They 
+   need to be kept synchronized with each other.
+
+- Make small, incremental, well-documented changes. Your commit messages 
+   should be clear and detailed. Include any applicable background 
+   information. Your patches should do one thing. Your code should have 
+   sensible comments.
+
+I still don't have a lot of time to actually write code, but I'm going to 
+try to be more responsive to posts on the mailing list, especially if those 
+posts can be read and responded to on my phone. :-)
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Mon Nov 29 22:07:13 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 29 Nov 2010 23:07:13 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4CEBC044.2010103@gmx.de>
+References: <4CEBC044.2010103@gmx.de>
+Message-ID: <20101130040713.GC22729@rivest.dlitz.net>
+
+Hi Johannes,
+
+Would you like to champion Python 3.x support?  I don't really know what's 
+involved in doing Py3k support, but I'd like to see it happen, provided 
+that it doesn't involve breaking Python 2.x support or a lot of unnecessary 
+code duplication.  How do other Python projects that have C code maintain 
+compatibility across both Python 2.x and 3.x?
+
+- Dwayne
+
+On Tue, Nov 23, 2010 at 02:23:16PM +0100, Johannes Bauer wrote:
+>Hi there,
+>
+>I wanted to ask what the current status of PyCrypto together with
+>Python3 is.
+>
+>I found three patches on the mailing list, all of which are against
+>2.1.0 and none of which work.
+>
+>Two were in a ZIP archive, I found them in pycrypto-patches.zip
+>http://lists.dlitz.net/pipermail/pycrypto/attachments/20100228/349e8dc6/attachment-0001.obj
+>
+>They both patch fine against 2.1.0, but when running, they tell me both
+>the same error message:
+>
+>Python 3.1.2 (r312:79147, Apr 15 2010, 15:35:48)
+>[GCC 4.4.3] on linux2
+>Type "help", "copyright", "credits" or "license" for more information.
+>>>> from Crypto.Cipher import AES
+>Traceback (most recent call last):
+>  File "<stdin>", line 1, in <module>
+>SystemError: NULL result without error in PyObject_Call
+>>>>
+>
+>The third I found here (pycrypto-2.1.0-python3-1.patch.bz2).
+>http://lists.dlitz.net/pipermail/pycrypto/attachments/20100115/0432fbaf/attachment-0001.bin
+>
+>
+>It also compiles, but when trying to access the library, it yields
+>
+>Python 3.1.2 (r312:79147, Apr 15 2010, 15:35:48)
+>[GCC 4.4.3] on linux2
+>Type "help", "copyright", "credits" or "license" for more information.
+>>>> from Crypto.Cipher import AES
+>Traceback (most recent call last):
+>  File "<stdin>", line 1, in <module>
+>ImportError: Crypto/Cipher/AES.so: undefined symbol: PyString_AsString
+>>>>
+>
+>I also tried the GIT version, which also doesn't work (cannot even run
+>setup.py with Python3).
+>
+>Is any Python3 support planned at all? Are there any working patches (or
+>even a GIT branch)?
+>
+>Regards,
+>Johannes
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Mon Nov 29 22:14:38 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 29 Nov 2010 23:14:38 -0500
+Subject: [pycrypto] RSA importKey
+In-Reply-To: <AANLkTime7egFD=VuHy7SztA-qqygqr8tEn=9OrQXTKvC@mail.gmail.com>
+References: <AANLkTinn5Uzn7-R_-Ax5Jk0ar=cAz_vO+CZ3DG81pPY5@mail.gmail.com>
+	<AANLkTime7egFD=VuHy7SztA-qqygqr8tEn=9OrQXTKvC@mail.gmail.com>
+Message-ID: <20101130041438.GD22729@rivest.dlitz.net>
+
+Hi Fran?ois,
+
+PyCrypto doesn't currently have any RSA padding support; it merely provides 
+the RSA modular exponentiation primitive.
+
+Actually, the whole Crypto.PublicKey API is a minefield.  It's 
+overgeneralized, and it almost never does what you would expect it to do.  
+I'd love to see proposals a well-designed replacement API that doesn't add 
+a ton of complexity.
+
+Cheers,
+- Dwayne
+
+On Fri, Nov 12, 2010 at 02:32:45PM +0100, Fran?ois Santy wrote:
+>I have another Question concernant PyCrypto's implementation of RSA: which
+>encryption mode is it using?
+>I had to use PyCrypto's implementation of DES recently, and I could easily
+>choose between several modes (MODE_EBC, MODE_CBC,...), but unfortunatly, I
+>can't find these modes in RSA.
+>
+>The same question applied for the Padding options. Can I choose between
+>PKCS5Padding and PKCS1Padding ?
+>
+>Thanks !
+>
+>2010/11/12 Fran?ois Santy <francoissanty at gmail.com>
+>
+>> Hi everybody !
+>>
+>> I'm currently working with pycrypto and I want to import public and private
+>> keys from DER files.
+>> I found a piece of code that shows how to proceed, but it isn't working
+>> anyway !
+>> Here is the code I'm using:
+>>
+>> f = file("./public_key.der")
+>> key = RSA.importKey(f.read())
+>>
+>> It tells me *'module' object has no attribute 'importKey'. *It's rather
+>> strange since the method appears explicitely in the file
+>> /lib/Crypto/PublicKey/RSA.py*.*
+>> *
+>> *
+>> What am I doing wrong ?
+>>
+>> Thanks.
+>>
+>> --
+>> Fran?ois S.
+>>
+>
+>
+>
+>-- 
+>Fran?ois S.
+
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+   OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Mon Nov 29 22:21:35 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 29 Nov 2010 23:21:35 -0500
+Subject: [pycrypto] a problem when build pycrypto
+In-Reply-To: <AANLkTikFQ9OGVAFT0ykL3jEeMZoadnr8VquyuNX2M8mP@mail.gmail.com>
+References: <AANLkTikFQ9OGVAFT0ykL3jEeMZoadnr8VquyuNX2M8mP@mail.gmail.com>
+Message-ID: <20101130042135.GE22729@rivest.dlitz.net>
+
+Strange.  I develop on Linux i686 using gcc 4.4, and it works find.  Does 
+this machine also have gcc 4.x installed?
+
+It looks like you built your own Python.  How was the build configured?
+
+Cheers,
+- Dwayne
+
+On Fri, Oct 08, 2010 at 04:31:33PM +0800, yu xue wrote:
+>Hello, everyone:
+>I met a problem when trying to build pycrypto on a linux machine, the errors
+>which are reported are as follows:
+>
+>
+>gcc -pthread -shared build/temp.linux-i686-2.6/src/MD2.o -o
+>build/lib.linux-i686-2.6/Crypto/Hash/MD2.so
+>building 'Crypto.Hash.MD4' extension
+>gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC
+>-std=c99 -O3 -fomit-frame-pointer -Isrc/
+>-I/home/xueyu/bin/bin/include/python2.6 -c src/MD4.c -o
+>build/temp.linux-i686-2.6/src/MD4.o
+>gcc -pthread -shared build/temp.linux-i686-2.6/src/MD4.o -o
+>build/lib.linux-i686-2.6/Crypto/Hash/MD4.so
+>building 'Crypto.Hash.SHA256' extension
+>gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC
+>-std=c99 -O3 -fomit-frame-pointer -Isrc/
+>-I/home/xueyu/bin/bin/include/python2.6 -c src/SHA256.c -o
+>build/temp.linux-i686-2.6/src/SHA256.o
+>/tmp/cc8i7etX.s: Assembler messages:
+>/tmp/cc8i7etX.s:1692: Error: symbol `fstat64' is already defined
+>/tmp/cc8i7etX.s:1710: Error: symbol `lstat64' is already defined
+>/tmp/cc8i7etX.s:1728: Error: symbol `stat64' is already defined
+>error: command 'gcc' failed with exit status 1
+>And everytime I re-built the pycrypto, the directories which has "Error:
+>symbol 'fstat64/lstat64/stat64' " are different, e.g. they are maybe
+>/tmp/ccHKWjgr.s or /tmp/ccL9eDaZ.s etc...
+>
+>Gcc is 4.3.2, python is 2.6. And I don't have root priviledge , so I don't
+>know whether this is matters. Thank you!
+>
+>Regards
+>   Yu Xue
+>
+>---
+>
+>     ??
+>??!
+>                       ??
+>
+>                   ????
+>                   ??????
+
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Mon Nov 29 22:34:25 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 29 Nov 2010 23:34:25 -0500
+Subject: [pycrypto] Help on PyCrypto errors on 64-bit Windows
+In-Reply-To: <76867.84694.qm@web62304.mail.re1.yahoo.com>
+References: <76867.84694.qm@web62304.mail.re1.yahoo.com>
+Message-ID: <20101130043425.GF22729@rivest.dlitz.net>
+
+Hi Peter,
+
+So far, PyCrypto doesn't build on Win64.  I tried getting Win64 support 
+working one day by renting a Win64 virtual machine from Amazon, but I 
+wasn't able to make it work, and it seems to be a bug in Python distutils, 
+but I could be wrong.
+
+Also, there's not much point in asking for a "64-bit precompiled 
+winrandom", because you would also need a precompiled MD2, MD5, AES, 
+_fastmath, ...  Most of the intersting stuff in PyCrypto is written in C, 
+so what you need is for somebody to figure out the problems with building 
+PyCrypto (and C Python modules in general) on Win64.
+
+Cheers,
+- Dwayne
+
+On Fri, Aug 13, 2010 at 05:11:54PM -0700, Peter Bee wrote:
+>Hi,
+>
+>I am setting Fabric on my 64-bit Win (2008 Server R2, with Python 2.6.5 installed, also have paramiko-1.7.6, pycrypto 2.2, and Fabric-0.9.1 on the system) system, and ran into the famous error below:
+>?
+>?
+>Traceback (most recent call last):
+>? File "C:\Python26\Scripts\fab-script.py", line 9, in <module>
+>??? load_entry_point('Fabric==0.9.1', 'console_scripts', 'fab')()
+>? File "C:\Python26\lib\site-packages\pkg_resources.py", line 305, in load_entry
+>_point
+>??? return get_distribution(dist).load_entry_point(group, name)
+>? File "C:\Python26\lib\site-packages\pkg_resources.py", line 2244, in load_entr
+>y_point
+>??? return ep.load()
+>? File "C:\Python26\lib\site-packages\pkg_resources.py", line 1954, in load
+>??? entry = __import__(self.module_name, globals(),globals(), ['__name__'])
+>? File "C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\main.py", li
+>ne 17, in <module>
+>??? from fabric import api # For checking callables against the API
+>? File "C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\api.py", lin
+>e 9, in <module>
+>??? from fabric.context_managers import cd, hide, settings, show
+>? File "C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\context_mana
+>gers.py", line 12, in <module>
+>??? from fabric.state import env, output
+>? File "C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\state.py", l
+>ine 9, in <module>
+>??? from fabric.network import HostConnectionCache
+>? File "C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\network.py",
+>?line 19, in <module>
+>??? abort("paramiko is a required module. Please install it:\n\t$ sudo easy_inst
+>all paramiko")
+>? File "C:\Python26\lib\site-packages\fabric-0.9.1-py2.6.egg\fabric\utils.py", l
+>ine 21, in abort
+>??? from fabric.state import output
+>ImportError: cannot import name output
+>?
+>I was pointed to http://code.fabfile.org/issues/show/194, which mentioned that I need a 64-bit precompiled winrandom. 
+>?
+>I have been trying to search and create one, but no luch so far. Can any of you help me locate one, or provide information on how to build one?
+>?
+>Your help is very appreciated.
+>
+>
+>Thanks,
+>Peter
+>
+>
+>      
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From paul_koning at dell.com  Tue Nov 30 05:49:17 2010
+From: paul_koning at dell.com (Paul Koning)
+Date: Tue, 30 Nov 2010 06:49:17 -0500
+Subject: [pycrypto] Policy changes - Now accepting patches from the U.S.
+In-Reply-To: <20101130034636.GA22729@rivest.dlitz.net>
+References: <20101130034636.GA22729@rivest.dlitz.net>
+Message-ID: <215DEB43-3463-475A-BE51-16662D777EDB@dell.com>
+
+
+On Nov 29, 2010, at 10:46 PM, Dwayne C. Litzenberger wrote:
+
+> I've released "PyCrypto Code Submission Requirements - Rev. D":
+> 
+>     http://www.dlitz.net/software/pycrypto/submission-requirements/
+> 
+> This is the same as revision C, except I'm now accepting patches from U.S.  
+> contributors.
+> 
+> My original concern was that, hypothetically, U.S. export regulations could 
+> in the future become incompatible with Canadian regulations such that it 
+> would be impossible to simultaneously comply with both.  That's still a 
+> risk, but I don't have any reason to think it will happen any time soon, 
+> and I don't know what that would imply anyway.  If it ever happens, I'll 
+> probably just stop distributing PyCrypto and move on to other things.
+
+Isn't this already the case right now that the regulations are different?  Possibly the *outcome*, for the case of PyCrypto at least, it similar enough, but from what I remember the actual rules are quite different.
+
+It seems to me a bit like taking a BSD-licensed project and deciding to accept GPL-licensed contributions.  The result is still open source but it does makea  difference.
+
+In this case, it seems to me you're changing PyCrypto from a project that is NOT "subject to the EAL" (the U.S. Export regulations) to one that is.  Are you sure you want to do that?
+
+	paul
+
+
+From dlitz at dlitz.net  Tue Nov 30 06:42:10 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Tue, 30 Nov 2010 07:42:10 -0500
+Subject: [pycrypto] PyCrypto TSU NOTIFICATION
+Message-ID: <20101130124210.GB31514@rivest.dlitz.net>
+
+-----BEGIN PGP SIGNED MESSAGE-----
+
+########################################################
+#
+# This is a proof of posting certificate from
+# stamper.itconsult.co.uk certifying that a user
+# claiming to be:-
+#     dlitz at dlitz.net
+# requested that this message be sent to:-
+#     crypt at bis.doc.gov
+#     enc at nsa.gov
+#     web_site at bis.doc.gov
+#     pycrypto at lists.dlitz.net
+#     PYTHON-CRYPTO at NIC.SURFNET.NL
+#     dlitz at dlitz.net
+#
+# This certificate was issued at 12:45 (GMT)
+# on Tuesday 30 November 2010 with reference 0639348
+#
+# CAUTION: while the message may well be from the sender
+#          indicated in the "From:" header, the sender
+#          has NOT been authenticated by this service
+#
+# For information about the Stamper service see
+#        http://www.itconsult.co.uk/stamper.htm
+#
+########################################################
+
+SUBMISSION TYPE: TSU
+SUBMITTED BY: Dwayne C. Litzenberger
+SUBMITTED FOR: Dwayne C. Litzenberger
+POINT OF CONTACT: Dwayne C. Litzenberger
+PHONE and/or FAX: +1-613-693-1296
+MANUFACTURER: n/a
+PRODUCT NAME/MODEL #: The Python Cryptography Toolkit ("PyCrypto")
+ECCN: 5D002
+
+NOTIFICATION: https://github.com/dlitz/pycrypto
+
+Note: I am a Canadian citizen.  I do not believe that PyCrypto contains 
+enough US-origin cryptography to be covered by U.S. export controls, but I 
+am submitting this anyway.
+
+(Sorry for spamming the lists, but I want there to be a record of this.)
+
+- -- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+   OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: 2.6.3i
+Charset: noconv
+Comment: Stamper Reference Id: 0639348
+
+iQEVAgUBTPTxzYGVnbVwth+BAQHyFwf9GaOJC7prwmqVbrc6RiAZvZfIsxLaLVaV
+1e7BhobldJ+f50zyn+qfkF96d8v2tqF2uvEKMyGKHlv+bL7Iy9GEXv2d9PQee9Pn
+mUUwbsxrv0Mv+n6uPe+K0UfvQnvBussm/9mbqVvgZwdnFvwUzwO7EcXBnv4Ttc8I
+lIdPMEhu9YnRi8oz4jxR7wP8zwzyfSyd2NuiLzwcndCGfeMnon+ALztPfRuA0Bes
+klE/Y40xvF5cJir5dDdXsCZqtGoodfc6A96Jc4NsvVQ1KurdYkySliaCq1tGmSJR
+HT16p2sTp/4564h8UiRLYR4uX+NeCVQiRsNc9zCkaOAIKWZQrxxsgg==
+=ZNuM
+-----END PGP SIGNATURE-----
+
+
+From dlitz at dlitz.net  Tue Nov 30 07:08:37 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Tue, 30 Nov 2010 08:08:37 -0500
+Subject: [pycrypto] Policy changes - Now accepting patches from the U.S.
+In-Reply-To: <215DEB43-3463-475A-BE51-16662D777EDB@dell.com>
+References: <20101130034636.GA22729@rivest.dlitz.net>
+	<215DEB43-3463-475A-BE51-16662D777EDB@dell.com>
+Message-ID: <20101130130837.GA31072@rivest.dlitz.net>
+
+On Tue, Nov 30, 2010 at 06:49:17AM -0500, Paul Koning wrote:
+>In this case, it seems to me you're changing PyCrypto from a project that 
+>is NOT "subject to the EAL" (the U.S. Export regulations) to one that is.  
+>Are you sure you want to do that?
+
+No, I'm not sure, really.  All of your concerns are valid.
+
+However, PyCrypto is stagnating, and I think it's partly due to the 
+no-US-origin policy that I had adopted.  Instead of having a lot of people 
+contributing to PyCrypto, we have a lot of people asking for things on the 
+mailing list, but not contributing because I've told them that they can't.
+If PyCrypto had been getting the contributions it needs from outside the 
+US, I would have maintained the old policy.
+
+Also, I've always *acted* as if the US rules applied to PyCrypto, even 
+though I strongly suspect that they don't, because I've never been sure 
+enough about it to be confident in completely ignoring the US rules.  This 
+has put me into the bizarre situation of following the US rules, but not 
+accepting US contributions.
+
+In any case, there's no reason to panic.  Because of the way the 
+regulations work, the US rules don't automatically apply just because there 
+are 10 lines of US-origin code in PyCrypto.  It's some weird rule like 
+"over 50% of the value of the export", so if the people who are concerned 
+about this policy change can garner the necessary non-US contributions so 
+that they clearly overwhelm US contributions, please do so.  It shouldn't 
+be impossible: there have been very, very few people contributing to 
+PyCrypto lately.  (Thank you to those people!)
+
+As for the actual regulations, from my perspective, the current Canadian 
+and American rules aren't that different from each other, as far as 
+software "in the public domain" are concerned.  Both countries maintain 
+lists of countries that you can't deliberately export to, and the US 
+additionally requires a one-time "TSU NOTIFICATION" email.
+
+Sigh.  I just wish crypto would get dropped from Wassenaar so that we could 
+stop having these useless converations.  I can dream...
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From paul_koning at dell.com  Tue Nov 30 10:06:58 2010
+From: paul_koning at dell.com (Paul Koning)
+Date: Tue, 30 Nov 2010 11:06:58 -0500
+Subject: [pycrypto] Policy changes - Now accepting patches from the U.S.
+In-Reply-To: <20101130130837.GA31072@rivest.dlitz.net>
+References: <20101130034636.GA22729@rivest.dlitz.net>
+	<215DEB43-3463-475A-BE51-16662D777EDB@dell.com>
+	<20101130130837.GA31072@rivest.dlitz.net>
+Message-ID: <5554F2E5-58FF-42DD-8552-1410CA55F96B@dell.com>
+
+
+On Nov 30, 2010, at 8:08 AM, Dwayne C. Litzenberger wrote:
+
+> On Tue, Nov 30, 2010 at 06:49:17AM -0500, Paul Koning wrote:
+>> In this case, it seems to me you're changing PyCrypto from a project that 
+>> is NOT "subject to the EAL" (the U.S. Export regulations) to one that is.  
+>> Are you sure you want to do that?
+> 
+> No, I'm not sure, really.  All of your concerns are valid.
+> 
+> However, PyCrypto is stagnating, and I think it's partly due to the 
+> no-US-origin policy that I had adopted.  Instead of having a lot of people 
+> contributing to PyCrypto, we have a lot of people asking for things on the 
+> mailing list, but not contributing because I've told them that they can't.
+> If PyCrypto had been getting the contributions it needs from outside the 
+> US, I would have maintained the old policy.
+
+Indeed it's a limitation.  I remember the exact same issue in the days of the FreeSWAN project (which was also Canada-based, and had a strict "no US contributions" policy that was not relaxed).
+
+> 
+> Also, I've always *acted* as if the US rules applied to PyCrypto, even 
+> though I strongly suspect that they don't, because I've never been sure 
+> enough about it to be confident in completely ignoring the US rules.  This 
+> has put me into the bizarre situation of following the US rules, but not 
+> accepting US contributions.
+> 
+> In any case, there's no reason to panic.  Because of the way the 
+> regulations work, the US rules don't automatically apply just because there 
+> are 10 lines of US-origin code in PyCrypto.  It's some weird rule like 
+> "over 50% of the value of the export", so if the people who are concerned 
+> about this policy change can garner the necessary non-US contributions so 
+> that they clearly overwhelm US contributions, please do so.  It shouldn't 
+> be impossible: there have been very, very few people contributing to 
+> PyCrypto lately.  (Thank you to those people!)
+
+50%?  I must admit that it's a while since I seriously studied the rules.  So I did some reading.  There are definitions of what fraction is "de minimis" ("too small to matter") -- the one that appears to apply is 10%.  And there are some conditions where *any* contribution is enough to matter; I did not analyze all the specifics. (If you want to do the reading, see section 734 of the US export regulations.)
+> 
+> As for the actual regulations, from my perspective, the current Canadian 
+> and American rules aren't that different from each other, as far as 
+> software "in the public domain" are concerned.  Both countries maintain 
+> lists of countries that you can't deliberately export to, and the US 
+> additionally requires a one-time "TSU NOTIFICATION" email.
+
+One consideration is that you may be traveling down a one way road.  Once you take this step you can't go back.  While today's regulations may make that tolerable, tomorrow's may not be so benign.  The export rules are subject to random change at any time, without any rational process involved.
+> 
+> Sigh.  I just wish crypto would get dropped from Wassenaar so that we could 
+> stop having these useless converations.  I can dream...
+
+Indeed.  But as I said, these things are not subject to anything even remotely resembling rational processes.
+
+	paul
+
+
+From dlitz at dlitz.net  Tue Nov 30 18:06:22 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Tue, 30 Nov 2010 19:06:22 -0500
+Subject: [pycrypto] Policy changes - Now accepting patches from the U.S.
+In-Reply-To: <5554F2E5-58FF-42DD-8552-1410CA55F96B@dell.com>
+References: <20101130034636.GA22729@rivest.dlitz.net>
+	<215DEB43-3463-475A-BE51-16662D777EDB@dell.com>
+	<20101130130837.GA31072@rivest.dlitz.net>
+	<5554F2E5-58FF-42DD-8552-1410CA55F96B@dell.com>
+Message-ID: <20101201000622.GA8651@rivest.dlitz.net>
+
+On Tue, Nov 30, 2010 at 11:06:58AM -0500, Paul Koning wrote:
+>Indeed it's a limitation.  I remember the exact same issue in the days of 
+>the FreeSWAN project (which was also Canada-based, and had a strict "no US 
+>contributions" policy that was not relaxed).
+
+Does anybody actually still use FreeS/WAN?
+
+On the other hand, other large projects, like Debian, Ubuntu, Mozilla, 
+etc., have integrated crypto into their main distributions.  If the people 
+in the Canadian or U.S. government(s) do something stupid with crypto 
+export laws, it's not just going to be PyCrypto that's affected.
+
+>50%?  I must admit that it's a while since I seriously studied the rules.  
+>So I did some reading.  There are definitions of what fraction is "de 
+>minimis" ("too small to matter") -- the one that appears to apply is 10%.  
+>And there are some conditions where *any* contribution is enough to 
+>matter; I did not analyze all the specifics. (If you want to do the 
+>reading, see section 734 of the US export regulations.)
+
+Oh, I don't know; you're probably right.  One of the painful things about 
+this is that I don't have an international traffic-in-arms lawyer on 
+retainer.
+
+>> As for the actual regulations, from my perspective, the current Canadian 
+>> and American rules aren't that different from each other, as far as 
+>> software "in the public domain" are concerned.  Both countries maintain 
+>> lists of countries that you can't deliberately export to, and the US 
+>> additionally requires a one-time "TSU NOTIFICATION" email.
+>
+>One consideration is that you may be traveling down a one way road.  Once 
+>you take this step you can't go back.  While today's regulations may make 
+>that tolerable, tomorrow's may not be so benign.  The export rules are 
+>subject to random change at any time, without any rational process 
+>involved.
+
+I agree; that was the reason that I implemented the no-US-origin policy in 
+the first place.  However, I'm tired of turning down good patches from 
+people, while not getting patchees from outside the US.  At the current 
+rate, Python 3.x support is never going to happen.  *Something* needs to 
+change.
+
+<rant>
+     You talk about rational processes... *Legislation* is also subject to 
+     random change at any time, without any rational process involved.  Look 
+     at what's happening with copyright.  Look at how effectively we're 
+     dealing with global warming.  Look at software patents, the DMCA, 
+     Australian wiretap laws, airport security.
+
+     In democratic countries, the laws are only going to be rational if the 
+     people are, so people need to be taught how to think rationally---heck, 
+     even to *value* thinking rationally.  Every minute I spend not worrying 
+     about where patches come from is a minute that I can spend helping 
+     organizations like CFI, EFF, ACLU, RDFRS, and JREF to promote rational, 
+     evidence-based reasoning.
+</rant>
+
+If you want to put together a group of non-US people who will actually 
+contribute patches of suitable quality, then I'll do what I can to help 
+you.  My offer to hand over control of PyCrypto to somebody else still 
+stands.[1]
+
+In other words, I agree, but show me the code.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+[1] http://lists.dlitz.net/pipermail/pycrypto/2010q4/000280.html
+
+From paul_koning at dell.com  Tue Nov 30 20:03:09 2010
+From: paul_koning at dell.com (Paul Koning)
+Date: Tue, 30 Nov 2010 21:03:09 -0500
+Subject: [pycrypto] Policy changes - Now accepting patches from the U.S.
+In-Reply-To: <20101201000622.GA8651@rivest.dlitz.net>
+References: <20101130034636.GA22729@rivest.dlitz.net>
+	<215DEB43-3463-475A-BE51-16662D777EDB@dell.com>
+	<20101130130837.GA31072@rivest.dlitz.net>
+	<5554F2E5-58FF-42DD-8552-1410CA55F96B@dell.com>
+	<20101201000622.GA8651@rivest.dlitz.net>
+Message-ID: <70B4E017-AED6-4D57-8463-522C49C2C0BC@dell.com>
+
+
+On Nov 30, 2010, at 7:06 PM, Dwayne C. Litzenberger wrote:
+
+> On Tue, Nov 30, 2010 at 11:06:58AM -0500, Paul Koning wrote:
+>> Indeed it's a limitation.  I remember the exact same issue in the days of 
+>> the FreeSWAN project (which was also Canada-based, and had a strict "no US 
+>> contributions" policy that was not relaxed).
+> 
+> Does anybody actually still use FreeS/WAN?
+
+I don't know.  I was talking about back in 1999 or so when it was the only open source IPsec out there, and a pioneering effort in getting around the US restrictions.  (The open source and mass market exceptions did not yet exist then; it's possible that FreeSWAN along with PGP may have helped bring them into existence.)
+> ...
+> If you want to put together a group of non-US people who will actually 
+> contribute patches of suitable quality, then I'll do what I can to help 
+> you.  My offer to hand over control of PyCrypto to somebody else still 
+> stands.[1]
+> 
+> In other words, I agree, but show me the code.
+
+Unfortunately I'm not in any position to do that, partly from lack of knowledge and partly because I'm a US person.  And I don't want to come across as objecting to your plan.  My intent was to raise some questions to make sure that the implications were understood.  As you said, it's a mess and hard to make sense of, especially for us non-lawyers.
+
+	paul
+
+
+From tobias.koeck at gmail.com  Tue Nov 30 22:27:22 2010
+From: tobias.koeck at gmail.com (=?ISO-8859-1?Q?Tobias_K=F6ck?=)
+Date: Wed, 01 Dec 2010 05:27:22 +0100
+Subject: [pycrypto] Policy changes - Now accepting patches from the U.S.
+In-Reply-To: <20101201000622.GA8651@rivest.dlitz.net>
+References: <20101130034636.GA22729@rivest.dlitz.net>	<215DEB43-3463-475A-BE51-16662D777EDB@dell.com>	<20101130130837.GA31072@rivest.dlitz.net>	<5554F2E5-58FF-42DD-8552-1410CA55F96B@dell.com>
+	<20101201000622.GA8651@rivest.dlitz.net>
+Message-ID: <4CF5CEAA.2030500@gmail.com>
+
+Actually nobody knows from where you are sending your contribution. And
+I don't how Debian and Adobe (Acrobat) is handling it. At least Adobe
+has 256 bit AES encryption included.
+
+From eric at rf.com  Wed Dec  8 21:29:24 2010
+From: eric at rf.com (Eric Chamberlain)
+Date: Wed, 8 Dec 2010 19:29:24 -0800
+Subject: [pycrypto] Blowfish breaks between versions 2.0.1 and 2.3
+Message-ID: <D45D6709-D9B6-42F3-9710-9803AB5C127A@rf.com>
+
+Hello,
+
+With version 2.0.1 our code works fine, but after upgrading to 2.3,
+
+	blowfish = Blowfish.new(SECRET_KEY)
+
+generates the following error:
+
+	ValueError: Maximum key size is 448 bits
+
+Our SECRET_KEYs are 74 ASCII characters long and we can't easily change them, given the amount of data encrypted with the keys.
+
+Is it possible to bring back the 2.0.1 behavior and allow keys of arbitrary length?
+
+--
+Eric Chamberlain
+
+
+
+
+
+From electronixtar at gmail.com  Mon Dec 13 04:53:33 2010
+From: electronixtar at gmail.com (est)
+Date: Mon, 13 Dec 2010 18:53:33 +0800
+Subject: [pycrypto] Rewrite bcrypt in PyCrypto so we can use it on Google
+	App Engine
+Message-ID: <AANLkTik41hPU0ZWZKyGCmmWYXZtWcVJx5rozn84Pq-V9@mail.gmail.com>
+
+Hi guys, In the light of recent Gawker breakout, lots of communities
+are discussing what's the best practice for storing passwords. Like
+this on on HN suggested
+
+http://news.ycombinator.com/item?id=1998819
+
+> Use bcrypt. Use bcrypt. Use bcrypt.
+
+But the py-bcrypt library is written with C, and customized gensalt()
+function. It it not available on Google App Engine. But Google App
+Engine actually supports PyCrypto.
+
+I am not an security expert, anyone can help rewrite py-bcrypt using PyCrypto?
+
+Thanks and regards,
+
+est
+
+From richmoore44 at gmail.com  Thu Dec 16 07:44:25 2010
+From: richmoore44 at gmail.com (Richard Moore)
+Date: Thu, 16 Dec 2010 13:44:25 +0000
+Subject: [pycrypto] Pycrypto openssl interoperability
+Message-ID: <AANLkTimuhEpqmv5kLwW_W04Of6_GsJrL51b_w3Eo73Di@mail.gmail.com>
+
+Hi,
+
+I'm new to pycrypto and have playing around with it a bit. I can
+successfully encrypt and decrypt things using the library, however in
+order to check I was doing things correctly, I've tried to decrypt
+something encrypted with openssl - sadly without success.
+
+Encrypt the file secrets.txt using openssl, AES 128bit CBC. The
+password is read from the file pass.txt:
+
+openssl enc -aes-128-cbc -pass file:pass.txt -a -in secrets.txt -out
+secrets.txt.enc
+
+Then decrypt the result using pycrypto:
+
+from Crypto.Cipher import AES
+from base64 import b64encode, b64decode
+
+f = open('pass.txt')
+key = f.read()
+aes = AES.new(key, AES.MODE_CBC)
+
+f = open('secrets.txt.enc')
+b64_cipher_text = f.read()
+cipher_text = b64decode(b64_cipher_text)
+print aes.decrypt(cipher_text)
+
+Can anyone tell me where I'm going wrong, or perhaps has an example of
+working interoperability with openssl?
+
+Cheers
+
+Rich.
+
+From gooksankoo at hoiptorrow.mailexpire.com  Fri Dec 17 10:18:28 2010
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Fri, 17 Dec 2010 17:18:28 +0100
+Subject: [pycrypto] Pycrypto openssl interoperability
+In-Reply-To: <AANLkTimuhEpqmv5kLwW_W04Of6_GsJrL51b_w3Eo73Di@mail.gmail.com>
+References: <AANLkTimuhEpqmv5kLwW_W04Of6_GsJrL51b_w3Eo73Di@mail.gmail.com>
+Message-ID: <20101217161828.GA21750@shannon>
+
+Hi,
+
+My guess is that the openssl option "-pass" allows you to enter
+some arbitrary text from which the actual key is *derived*.
+You should try to use "-K" instead of "-pass".
+
+Legrandin
+
+> Encrypt the file secrets.txt using openssl, AES 128bit CBC. The
+> password is read from the file pass.txt:
+> 
+> openssl enc -aes-128-cbc -pass file:pass.txt -a -in secrets.txt -out
+> secrets.txt.enc
+
+From richmoore44 at gmail.com  Sat Dec 18 04:00:08 2010
+From: richmoore44 at gmail.com (Richard Moore)
+Date: Sat, 18 Dec 2010 10:00:08 +0000
+Subject: [pycrypto] Pycrypto openssl interoperability
+In-Reply-To: <20101217161828.GA21750@shannon>
+References: <AANLkTimuhEpqmv5kLwW_W04Of6_GsJrL51b_w3Eo73Di@mail.gmail.com>
+	<20101217161828.GA21750@shannon>
+Message-ID: <AANLkTimHfwrHrhBQi3BZgtecFCOdANOtGC5=qcZkmHNW@mail.gmail.com>
+
+On Fri, Dec 17, 2010 at 4:18 PM, Legrandin
+<gooksankoo at hoiptorrow.mailexpire.com> wrote:
+> Hi,
+>
+> My guess is that the openssl option "-pass" allows you to enter
+> some arbitrary text from which the actual key is *derived*.
+> You should try to use "-K" instead of "-pass".
+
+Thanks, yes using -K to specify the key and -iv to give the
+initialisation vector solved it.
+
+Cheers
+
+Rich.
+
+From sbehrens at gmx.li  Wed Dec 22 20:01:20 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 22 Dec 2010 21:01:20 -0500
+Subject: [pycrypto] Help on PyCrypto errors on 64-bit Windows
+Message-ID: <4D12AD70.7070202@gmx.li>
+
+>>
+So far, PyCrypto doesn't build on Win64.  [..] it seems to be a bug in Python distutils,
+>>
+
+Correct, there's an issue with the distutils when using VC++ 2008 Express. It works fine with Pro.
+
+I compiled pycrypto 2.3.1 on Win7-64 with python2.7.1-64. "setup.py test" was successful. Are there further unit tests that could be run to verify that pycrypto works well on x64 and this issue has now been laid to rest?
+
+The steps I took to compile can be found here: https://yorickdowne.wordpress.com/2010/12/22/compiling-pycrypto-on-win7-64/
+
+Yours
+Thorsten
+
+
+
+From sbehrens at gmx.li  Wed Dec 22 20:11:19 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 22 Dec 2010 21:11:19 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+Message-ID: <4D12AFC7.4060706@gmx.li>
+
+Johannes, Dwayne,
+
+now that pycrypto accepts US contributions, I'm happy to at least give Python 3.x support some thought and investigation. So as to not re-invent the wheel: Johannes, what's the status of your efforts to date?
+
+>>
+I don't really know what's  involved in doing Py3k support, but I'd like to see it happen, provided
+that it doesn't involve breaking Python 2.x support or a lot of unnecessary code duplication.
+>>
+
+Agreed. It's a matter of staying away from 3.x-only features (a pretty good list can be found here: http://sayspy.blogspot.com/2010/08/what-will-forever-be-exclusive-to.html), and I'd say even features that have been backported into 2.6 and 2.7. That is, focus on rewriting things that will break 3.x in such a way that they stay supported in 2.x. I'll caution that I haven't been through that exercise. I imagine it should be non-trivial but also not a huge pain for pycrypto, but I'm not willing to wager on that hunch.
+
+The biggest hurdle has already been overcome: You'd like to see it happen. That's not a given in the Python community right now, I am made to understand. :)
+
+>>
+How do other Python projects that have C code maintain  compatibility across both Python 2.x and 3.x?
+>>
+
+There are some guidelines at http://docs.python.org/release/3.0.1/howto/cporting.html#cporting-howto. Looks like the int/long unification can be handled pretty well, by using aliases. str/unicode may be an issue, since 2.6 has a compatibility header, but earlier versions don't. Depends on how much those functions are in use in the pycrypto C modules. And then there's module unit/status, which looks like a pain, though do-able.
+
+Yours
+Thorsten
+
+
+
+From sbehrens at gmx.li  Thu Dec 23 01:56:29 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Thu, 23 Dec 2010 02:56:29 -0500
+Subject: [pycrypto] _fastmath.c now compiles with VC++ 2008
+Message-ID: <4D1300AD.8020505@gmx.li>
+
+Dwayne,
+
+I've committed a couple changes to git.
+
+The changes allow _fastmath.c to compile using VC++ 2008 Express.
+
+The changes to setup.py allow the use of libmpir as an alternative to 
+libgmp. The main reason for that latter change is that mpir, which is a 
+gmp fork, is friendly to being built with VC++, whereas gmp is not. As 
+libmpir comes with a gmp.h header, only setup.py needed to be changed 
+for libmpir support.
+
+Let me know if I'm not using your source repository in the way you 
+intended it, btw.
+
+All the best
+Thorsten
+
+
+From dlitz at dlitz.net  Thu Dec 23 17:36:30 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Thu, 23 Dec 2010 18:36:30 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D12AFC7.4060706@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>
+Message-ID: <f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+
+One thing I want to be clear about is that Python 2.x compatibility should go back as far as 2.1, or 2.2 at the latest.  It's not acceptable to tell people running 2.2 to "just upgrade to 2.6".
+
+"Thorsten Behrens" <sbehrens at gmx.li> wrote:
+
+>Johannes, Dwayne,
+>
+>now that pycrypto accepts US contributions, I'm happy to at least give
+>Python 3.x support some thought and investigation. So as to not
+>re-invent the wheel: Johannes, what's the status of your efforts to
+>date?
+>
+>>>
+>I don't really know what's  involved in doing Py3k support, but I'd
+>like to see it happen, provided
+>that it doesn't involve breaking Python 2.x support or a lot of
+>unnecessary code duplication.
+>>>
+>
+>Agreed. It's a matter of staying away from 3.x-only features (a pretty
+>good list can be found here:
+>http://sayspy.blogspot.com/2010/08/what-will-forever-be-exclusive-to.html),
+>and I'd say even features that have been backported into 2.6 and 2.7.
+>That is, focus on rewriting things that will break 3.x in such a way
+>that they stay supported in 2.x. I'll caution that I haven't been
+>through that exercise. I imagine it should be non-trivial but also not
+>a huge pain for pycrypto, but I'm not willing to wager on that hunch.
+>
+>The biggest hurdle has already been overcome: You'd like to see it
+>happen. That's not a given in the Python community right now, I am made
+>to understand. :)
+>
+>>>
+>How do other Python projects that have C code maintain  compatibility
+>across both Python 2.x and 3.x?
+>>>
+>
+>There are some guidelines at
+>http://docs.python.org/release/3.0.1/howto/cporting.html#cporting-howto.
+>Looks like the int/long unification can be handled pretty well, by
+>using aliases. str/unicode may be an issue, since 2.6 has a
+>compatibility header, but earlier versions don't. Depends on how much
+>those functions are in use in the pycrypto C modules. And then there's
+>module unit/status, which looks like a pain, though do-able.
+>
+>Yours
+>Thorsten
+>
+>
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+
+From sbehrens at gmx.li  Thu Dec 23 19:20:28 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Thu, 23 Dec 2010 20:20:28 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+Message-ID: <4D13F55C.8020800@gmx.li>
+
+Dwayne,
+
+I've looked into this some more. There are two basic approaches:
+
+a) Create .py code that will work in Python 2.x and 3.x. Code will 
+become uglier; for example try except blocks have to be used for 
+imports. One can catch a glimpse here: 
+http://pydev.blogspot.com/2008/11/making-code-work-in-python-2-and-3.html
+
+b) Leave .py code to be written for Python 2.x, with some cleanup 
+applied to redo constructs that cannot be converted by 2to3. When ready 
+to release, run 2to3 on the source tree, and release two versions: One 
+for Python 2.x, one for Python 3.x.
+
+b) is how the authors of Python intend things to be, and is likely the 
+cleanest way of operation. I don't relish the idea of following a) and 
+butchering the 2.x code so it will run in both 2.x and 3.x without change.
+
+The C code will require some #defines and some #ifdefs in places, to 
+deal with int/long, the fact that bytes are a type now and shouldn't be 
+strings (can be done with defines), and the module initialization code.
+
+Are you comfortable with b)? Objections? Reservations?
+
+If you are good to give it a go, I'd need to know from you how you like 
+to handle branches in git. I'd assume that this work should be carried 
+out in a separate branch, not the trunk. This is going to touch a lot of 
+files.
+
+Yours
+Thorsten
+
+
+From sbehrens at gmx.li  Thu Dec 23 17:59:27 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Thu, 23 Dec 2010 18:59:27 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+Message-ID: <4D13E25F.5030106@gmx.li>
+
+On 12/23/2010 6:36 PM, Dwayne C. Litzenberger wrote:
+> One thing I want to be clear about is that Python 2.x compatibility should go back as far as 2.1, or 2.2 at the latest.  It's not acceptable to tell people running 2.2 to "just upgrade to 2.6".
+Sure, I get that. I am having a hard time testing 2.1, because VC++ 2008 
+doesn't seem to play well with it. Suggestions? -c cygwin?
+
+
+
+
+From sbehrens at gmx.li  Thu Dec 23 19:04:23 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Thu, 23 Dec 2010 20:04:23 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D13E25F.5030106@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+	<4D13E25F.5030106@gmx.li>
+Message-ID: <4D13F197.3060304@gmx.li>
+
+This is most vexing.
+
+Using VC++ 2008, I can build, but not test - wrong version of VC++ for 
+Python 2.1.
+
+Using gcc in cygwin, I cannot build - issue with LONG_BIT definition. 
+Although it's a 32-bit gcc, LONG_BIT is defined as 64, and that makes 
+python21 most unhappy.
+
+Suggestions welcome. Push comes to shove, if you have a working build 
+environment for 2.1, maybe you can test changes. Or if you can suggest a 
+Linux distribution that has a working 2.1 tool-chain, I could run that 
+in a VM and test from there.
+
+Thorsten
+
+On 12/23/2010 6:59 PM, Thorsten Behrens wrote:
+> On 12/23/2010 6:36 PM, Dwayne C. Litzenberger wrote:
+>> One thing I want to be clear about is that Python 2.x compatibility 
+>> should go back as far as 2.1, or 2.2 at the latest.  It's not 
+>> acceptable to tell people running 2.2 to "just upgrade to 2.6".
+> Sure, I get that. I am having a hard time testing 2.1, because VC++ 
+> 2008 doesn't seem to play well with it. Suggestions? -c cygwin?
+>
+>
+>
+
+
+From dlitz at dlitz.net  Thu Dec 23 20:00:36 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Thu, 23 Dec 2010 21:00:36 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D13E25F.5030106@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+	<4D13E25F.5030106@gmx.li>
+Message-ID: <20101224020036.GD11168@rivest.dlitz.net>
+
+On Thu, Dec 23, 2010 at 06:59:27PM -0500, Thorsten Behrens wrote:
+>On 12/23/2010 6:36 PM, Dwayne C. Litzenberger wrote:
+>> One thing I want to be clear about is that Python 2.x compatibility should go back as far as 2.1, or 2.2 at the latest.  It's not acceptable to tell people running 2.2 to "just upgrade to 2.6".
+>Sure, I get that. I am having a hard time testing 2.1, because VC++ 2008 
+>doesn't seem to play well with it. Suggestions? -c cygwin?
+
+I've been using MinGW.  You're not really supposed to do that, because they 
+have different stdlibs (things like FILE* can break), but it works fine for 
+PyCrypto.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Thu Dec 23 20:08:31 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Thu, 23 Dec 2010 21:08:31 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D13F197.3060304@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+	<4D13E25F.5030106@gmx.li> <4D13F197.3060304@gmx.li>
+Message-ID: <20101224020831.GE11168@rivest.dlitz.net>
+
+
+On Thu, Dec 23, 2010 at 08:04:23PM -0500, Thorsten Behrens wrote:
+>Or if you can suggest a Linux distribution that has a working 2.1 
+>tool-chain, I could run that in a VM and test from there.
+
+Any modern Linux distro will do.  I typically just build the older (and 
+newer) Python distributions from source, like this:
+
+~$ mkdir -p ~/python2.1/src
+~$ cd ~/python2.1/src
+~/python2.1/src$ tar xzf ~/Downloads/Python-2.1.3.tgz
+~/python2.1/src$ mkdir build
+~/python2.1/src/build$ cd build
+~/python2.1/src/build$ ../Python-2.1.3/configure --prefix=$HOME/python2.1
+~/python2.1/src/build$ make -j4
+~/python2.1/src/build$ make install
+
+Then, in the pycrypto source tree, I do something like this:
+
+~/pycrypto-2.x$ ~/python2.1/bin/python setup.py build test
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Thu Dec 23 20:16:08 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Thu, 23 Dec 2010 21:16:08 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D13F55C.8020800@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+	<4D13F55C.8020800@gmx.li>
+Message-ID: <20101224021608.GF11168@rivest.dlitz.net>
+
+On Thu, Dec 23, 2010 at 08:20:28PM -0500, Thorsten Behrens wrote:
+>Dwayne,
+>
+>I've looked into this some more. There are two basic approaches:
+>
+>a) Create .py code that will work in Python 2.x and 3.x. Code will 
+>become uglier; for example try except blocks have to be used for 
+>imports. One can catch a glimpse here: 
+>http://pydev.blogspot.com/2008/11/making-code-work-in-python-2-and-3.html
+>
+>b) Leave .py code to be written for Python 2.x, with some cleanup 
+>applied to redo constructs that cannot be converted by 2to3. When ready 
+>to release, run 2to3 on the source tree, and release two versions: One 
+>for Python 2.x, one for Python 3.x.
+>
+>b) is how the authors of Python intend things to be, and is likely the 
+>cleanest way of operation. I don't relish the idea of following a) and 
+>butchering the 2.x code so it will run in both 2.x and 3.x without change.
+>
+>The C code will require some #defines and some #ifdefs in places, to 
+>deal with int/long, the fact that bytes are a type now and shouldn't be 
+>strings (can be done with defines), and the module initialization code.
+>
+>Are you comfortable with b)? Objections? Reservations?
+
+That sounds good to me, as long as it's not error-prone.  I don't have a 
+problem with limiting myself to certain constructs, since I've been doing 
+that for Python 2.1 support anyway.
+
+>If you are good to give it a go, I'd need to know from you how you like 
+>to handle branches in git. I'd assume that this work should be carried 
+>out in a separate branch, not the trunk. This is going to touch a lot of 
+>files.
+
+Yes, it'll be in a separate branch for now.  As for the specifics, I don't   
+know.  Try something and we'll see how it goes.  At some point, I might 
+want to refactor it, but we'll deal with that when we have something more 
+concrete.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Thu Dec 23 20:18:15 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Thu, 23 Dec 2010 21:18:15 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <20101224020036.GD11168@rivest.dlitz.net>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+	<4D13E25F.5030106@gmx.li> <20101224020036.GD11168@rivest.dlitz.net>
+Message-ID: <20101224021815.GG11168@rivest.dlitz.net>
+
+On 12/23/2010 6:36 PM, Dwayne C. Litzenberger wrote:
+> One thing I want to be clear about is that Python 2.x compatibility 
+> should go back as far as 2.1, or 2.2 at the latest.  It's not acceptable 
+> to tell people running 2.2 to "just upgrade to 2.6".
+
+Also, down the road, I could be convinced to drop Python 2.1 support, if I 
+had some concrete examples showing that the result would be substantially 
+less error-prone, easier to maintain, etc.  So far, it's been easy enough 
+to maintain support for Python 2.1, but if we *need* to drop 2.1 support in 
+order to add 3.x support, then so be it.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From sbehrens at gmx.li  Thu Dec 23 20:19:47 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Thu, 23 Dec 2010 21:19:47 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <20101224020831.GE11168@rivest.dlitz.net>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>
+	<4D13F197.3060304@gmx.li> <20101224020831.GE11168@rivest.dlitz.net>
+Message-ID: <4D140343.9010703@gmx.li>
+
+
+> Any modern Linux distro will do.  I typically just build the older (and
+> newer) Python distributions from source, like this:
+Thanks. I've found an old copy of Visual C++ Toolkit 2003 and augmented 
+it with SDKs. I can build and test against Python21, now. If that ever 
+gets too cumbersome, I'll definitely fall back to the Linux method. It 
+sounds a lot cleaner.
+
+On that note: The recent commits check out against Python21.
+
+Yours
+Thorsten
+
+
+From arfrever.fta at gmail.com  Thu Dec 23 20:26:30 2010
+From: arfrever.fta at gmail.com (Arfrever Frehtes Taifersar Arahesis)
+Date: Fri, 24 Dec 2010 03:26:30 +0100
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D13F55C.8020800@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+	<4D13F55C.8020800@gmx.li>
+Message-ID: <201012240326.31374.Arfrever.FTA@gmail.com>
+
+2010-12-24 02:20:28 Thorsten Behrens napisa?(a):
+> I've looked into this some more. There are two basic approaches:
+> 
+> a) Create .py code that will work in Python 2.x and 3.x. Code will 
+> become uglier; for example try except blocks have to be used for 
+> imports. One can catch a glimpse here: 
+> http://pydev.blogspot.com/2008/11/making-code-work-in-python-2-and-3.html
+> 
+> b) Leave .py code to be written for Python 2.x, with some cleanup 
+> applied to redo constructs that cannot be converted by 2to3. When ready 
+> to release, run 2to3 on the source tree, and release two versions: One 
+> for Python 2.x, one for Python 3.x.
+
+setup.py can automatically run 2to3:
+
+try:
+  # Python 3
+  from distutils.command.build_py import build_py_2to3 as build_py
+except ImportError:
+  # Python 2
+  from distutils.command.build_py import build_py
+
+-- 
+Arfrever Frehtes Taifersar Arahesis
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: This is a digitally signed message part.
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20101224/710c88fd/attachment.pgp 
+
+From sbehrens at gmx.li  Thu Dec 23 21:45:49 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Thu, 23 Dec 2010 22:45:49 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <201012240326.31374.Arfrever.FTA@gmail.com>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13F55C.8020800@gmx.li>
+	<201012240326.31374.Arfrever.FTA@gmail.com>
+Message-ID: <4D14176D.80706@gmx.li>
+
+On 12/23/2010 9:26 PM, Arfrever Frehtes Taifersar Arahesis wrote:
+> setup.py can automatically run 2to3:
+Very clever, I like it! Automatic 2to3 it is.
+
+git has a py3k branch now. I'm going through some of the warnings that 
+python27 -3 setup.py test spits out. Once that's done, that'll be commit 
+the first, and then comes working on the C code. After that we'll see 
+how badly things are broken.
+
+Thorsten
+
+
+From v+python at g.nevcal.com  Thu Dec 23 21:51:58 2010
+From: v+python at g.nevcal.com (Glenn Linderman)
+Date: Thu, 23 Dec 2010 19:51:58 -0800
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D12AFC7.4060706@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>
+Message-ID: <4D1418DE.7000002@g.nevcal.com>
+
+On 12/22/2010 6:11 PM, Thorsten Behrens wrote:
+> now that pycrypto accepts US contributions, I'm happy to at least give Python 3.x support some thought and investigation.
+
+I applaud your efforts.  PyCrypto on 3.x would be good to see!
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20101223/938179ab/attachment.htm 
+
+From sbehrens at gmx.li  Thu Dec 23 22:51:33 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Thu, 23 Dec 2010 23:51:33 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <20101224021815.GG11168@rivest.dlitz.net>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>
+	<20101224020036.GD11168@rivest.dlitz.net>
+	<20101224021815.GG11168@rivest.dlitz.net>
+Message-ID: <4D1426D5.80400@gmx.li>
+
+On 12/23/2010 9:18 PM, Dwayne C. Litzenberger wrote:
+> Also, down the road, I could be convinced to drop Python 2.1 support, if I
+> had some concrete examples showing that the result would be substantially
+> less error-prone, easier to maintain, etc.
+So far, it doesn't look like that's needed. dict.has_key() cannot be 
+replaced with "in" for 2.1, but 2to3 seems to handle it fine.
+
+Does "setup.py test" touch all of the pycrypto library, or only part of 
+it? That is, can I rely on its output to know whether a conversion to 
+Python 3.x was successful?
+
+I can use some assistance with asn1.py. It defines the magic slice 
+methods. These are gone for good in Python 3.x (deprecated since Python 
+2.0). My understanding is that in Python 2.x, it's still necessary to 
+define these, as they may get called when the parent class has them. 
+Fair enough.
+
+As I understand it, in 3.x, the item methods are called with a sequence 
+wherever a slice method would have been called before. Given this code, 
+then, is that going to cause issues? Do the item methods need to be 
+changed to make sure the class still behaves as expected under 3.x?
+
+class DerSequence(DerObject):
+     def __init__(self):
+         DerObject.__init__(self, 'SEQUENCE')
+         self._seq = []
+     def __delitem__(self, n):
+         del self._seq[n]
+     def __getitem__(self, n):
+         return self._seq[n]
+     def __setitem__(self, key, value):
+         self._seq[key] = value
+     def __setslice__(self,i,j,sequence):
+         self._seq[i:j] = sequence
+     def __delslice__(self,i,j):
+         del self._seq[i:j]
+     def __getslice__(self, i, j):
+         return self._seq[max(0, i):max(0, j)]
+     def __len__(self):
+         return len(self._seq)
+     def append(self, item):
+         return self._seq.append(item)
+
+
+From dlitz at dlitz.net  Fri Dec 24 00:48:44 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 24 Dec 2010 01:48:44 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D1426D5.80400@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+	<4D13E25F.5030106@gmx.li> <20101224020036.GD11168@rivest.dlitz.net>
+	<20101224021815.GG11168@rivest.dlitz.net> <4D1426D5.80400@gmx.li>
+Message-ID: <20101224064844.GA13502@rivest.dlitz.net>
+
+On Thu, Dec 23, 2010 at 11:51:33PM -0500, Thorsten Behrens wrote:
+>On 12/23/2010 9:18 PM, Dwayne C. Litzenberger wrote:
+>> Also, down the road, I could be convinced to drop Python 2.1 support, if I
+>> had some concrete examples showing that the result would be substantially
+>> less error-prone, easier to maintain, etc.
+>So far, it doesn't look like that's needed. dict.has_key() cannot be 
+>replaced with "in" for 2.1, but 2to3 seems to handle it fine.
+
+Excellent.  Thanks for that insight.
+
+>Does "setup.py test" touch all of the pycrypto library, or only part of 
+>it? That is, can I rely on its output to know whether a conversion to 
+>Python 3.x was successful?
+
+Only part of it.  I'd love to see more tests.
+
+If you end up writing more tests that include test vectors, be sure to 
+always include comments that describe where the test vectors came from, and 
+avoid generating test vectors using PyCrypto itself (there could be more 
+bugs like the SHA256 56-modulo-64 bug, and I don't want them enshrined in 
+the test suite).
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From sbehrens at gmx.li  Fri Dec 24 16:15:03 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Fri, 24 Dec 2010 17:15:03 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <20101224064844.GA13502@rivest.dlitz.net>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>
+	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>
+	<4D1426D5.80400@gmx.li> <20101224064844.GA13502@rivest.dlitz.net>
+Message-ID: <4D151B67.5000101@gmx.li>
+
+Well, it builds, and it crashes. Progress? :D
+
+The good news is it still works fine on python21 and python27.
+
+All I've done so far is make the .py stuff work, and apply the patches 
+that Grail Dane had worked on earlier in the year, plus some changes to 
+make things compile. More work to be done - I guess now it's time to 
+attempt to understand what it is I am doing in the first place.
+
+I haven't committed the changes yet, and I'm happy to putz around with 
+this on my own. But if there's an enterprising soul out there who wants 
+to have a go at seeing just how I screwed things up now, let me know, 
+and I'll commit the py3k branch.
+
+For giggles, here are some of the warnings I get on compile time. 
+Clearly, the module definition section needs quite a bit of work.
+ >
+building 'Crypto.Random.OSRNG.winrandom' extension
+C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\BIN\amd64\cl.exe 
+/c /nologo /Ox /MD /W3 /GS- /DNDEBUG -Isrc/ -Isrc/inc-msvc/
+  -Id:\python31\include -Id:\python31\PC /Tcsrc/winrand.c 
+/Fobuild\temp.win-amd64-3.1\Release\src/winrand.obj
+winrand.c
+src/winrand.c(222) : warning C4113: 'destructor' differs in parameter 
+lists from 'printfunc'
+src/winrand.c(222) : warning C4133: 'initializing' : incompatible types 
+- from 'destructor' to 'printfunc'
+src/winrand.c(237) : warning C4047: 'initializing' : 'const char *' 
+differs in levels of indirection from 'long'
+src/winrand.c(245) : warning C4133: 'initializing' : incompatible types 
+- from 'PyMethodDef *' to 'PyMemberDef *'
+C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\BIN\amd64\link.exe 
+/DLL /nologo /INCREMENTAL:NO /LIBPATH:d:\python31\libs /L
+IBPATH:d:\python31\PCbuild\amd64 ws2_32.lib advapi32.lib 
+/EXPORT:PyInit_winrandom build\temp.win-amd64-3.1\Release\src/winrand.obj
+  /OUT:build\lib.win-amd64-3.1\Crypto\Random\OSRNG\winrandom.pyd 
+/IMPLIB:build\temp.win-amd64-3.1\Release\src\winrandom.lib /MANIFE
+STFILE:build\temp.win-amd64-3.1\Release\src\winrandom.pyd.manifest
+winrand.obj : warning LNK4197: export 'PyInit_winrandom' specified 
+multiple times; using first specification
+    Creating library build\temp.win-amd64-3.1\Release\src\winrandom.lib 
+and object build\temp.win-amd64-3.1\Release\src\winrandom.e
+xp
+C:\Program Files\Microsoft SDKs\Windows\v7.0\bin\x64\mt.exe -nologo 
+-manifest build\temp.win-amd64-3.1\Release\src\winrandom.pyd.m
+anifest 
+-outputresource:build\lib.win-amd64-3.1\Crypto\Random\OSRNG\winrandom.pyd;2
+ >>
+
+Thorsten
+
+
+From sbehrens at gmx.li  Fri Dec 24 18:24:43 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Fri, 24 Dec 2010 19:24:43 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D151B67.5000101@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>	<4D1426D5.80400@gmx.li>
+	<20101224064844.GA13502@rivest.dlitz.net> <4D151B67.5000101@gmx.li>
+Message-ID: <4D1539CB.6000600@gmx.li>
+
+Still crashing, just not on importing winrandom any more. I found the 
+typo there. More errors remain, clearly.
+
+I have a question regarding the str/bytes situation in Python 3. Take 
+this example from Counter.py:
+
+     if sys.version_info[0] is 2:
+         if little_endian:
+             return _counter._newLE(str(prefix), str(suffix), initval, 
+allow_wraparound=allow_wraparound, disable_shortcut=disable_shortcut)
+         else:
+             return _counter._newBE(str(prefix), str(suffix), initval, 
+allow_wraparound=allow_wraparound, disable_shortcut=disable_shortcut)
+     else:
+         if little_endian:
+             return _counter._newLE(prefix.encode(), suffix.encode(), 
+initval.encode(), allow_wraparound=allow_wraparound, 
+disable_shortcut=disable_shortcut)
+         else:
+             return _counter._newBE(prefix.encode(), suffix.encode(), 
+initval.encode(), allow_wraparound=allow_wraparound, 
+disable_shortcut=disable_shortcut)
+
+Not having had that much exposure to this code, my question is: Would it 
+be safe to just use .encode() throughout, without the check for Python 
+version? From all I can tell, it'll work as desired - but there may be a 
+corner case I haven't considered. Essentially, can I collapse the above 
+again to:
+
+     if little_endian:
+         return _counter._newLE(prefix.encode(), suffix.encode(), 
+initval.encode(), allow_wraparound=allow_wraparound, 
+disable_shortcut=disable_shortcut)
+     else:
+         return _counter._newBE(prefix.encode(), suffix.encode(), 
+initval.encode(), allow_wraparound=allow_wraparound, 
+disable_shortcut=disable_shortcut)
+
+for all versions of Python, 2.x and 3.x.
+
+Dwayne, can you shed some light?
+
+Thorsten
+
+
+From sbehrens at gmx.li  Fri Dec 24 18:48:24 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Fri, 24 Dec 2010 19:48:24 -0500
+Subject: [pycrypto] _fastmath.c on 64-bit, compile-time warnings
+In-Reply-To: <4D1539CB.6000600@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>	<4D1426D5.80400@gmx.li>	<20101224064844.GA13502@rivest.dlitz.net>
+	<4D151B67.5000101@gmx.li> <4D1539CB.6000600@gmx.li>
+Message-ID: <4D153F58.8020205@gmx.li>
+
+_fastmath.c gives out some warnings along the lines of "you may lose 
+data because you are forcing a 64-bit value into a 32-bit value" when 
+compiling pycrypto as a native 64-bit module.
+
+I don't want to get too side-tracked right now - but could someone take 
+a look and see whether these warnings are harmless? And even if they are 
+harmless, whether the code could be changed to avoid the warnings 
+without breaking the code?
+
+src/_fastmath.c(62) : warning C4244: '=' : conversion from 'Py_ssize_t' 
+to 'int', possible loss of data
+src/_fastmath.c(64) : warning C4244: '=' : conversion from 'Py_ssize_t' 
+to 'int', possible loss of data
+src/_fastmath.c(88) : warning C4267: 'initializing' : conversion from 
+'size_t' to 'int', possible loss of data
+src/_fastmath.c(1096) : warning C4267: 'function' : conversion from 
+'size_t' to 'unsigned long', possible loss of data
+src/_fastmath.c(1177) : warning C4244: '=' : conversion from 
+'mp_bitcnt_t' to 'unsigned long', possible loss of data
+src/_fastmath.c(1180) : warning C4018: '<' : signed/unsigned mismatch
+src/_fastmath.c(1182) : warning C4018: '<' : signed/unsigned mismatch
+
+Thorsten
+
+
+From dlitz at dlitz.net  Sat Dec 25 10:36:27 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sat, 25 Dec 2010 09:36:27 -0700
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D1539CB.6000600@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+	<4D13E25F.5030106@gmx.li> <20101224020036.GD11168@rivest.dlitz.net>
+	<20101224021815.GG11168@rivest.dlitz.net> <4D1426D5.80400@gmx.li>
+	<20101224064844.GA13502@rivest.dlitz.net>
+	<4D151B67.5000101@gmx.li> <4D1539CB.6000600@gmx.li>
+Message-ID: <e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>
+
+I'm on vacation, so I won't be able to look at this until early January, but off the top of my head... does .encode() work in Python 2.1?
+
+"Thorsten Behrens" <sbehrens at gmx.li> wrote:
+
+>Still crashing, just not on importing winrandom any more. I found the 
+>typo there. More errors remain, clearly.
+>
+>I have a question regarding the str/bytes situation in Python 3. Take 
+>this example from Counter.py:
+>
+>     if sys.version_info[0] is 2:
+>         if little_endian:
+>             return _counter._newLE(str(prefix), str(suffix), initval, 
+>allow_wraparound=allow_wraparound, disable_shortcut=disable_shortcut)
+>         else:
+>             return _counter._newBE(str(prefix), str(suffix), initval, 
+>allow_wraparound=allow_wraparound, disable_shortcut=disable_shortcut)
+>     else:
+>         if little_endian:
+>             return _counter._newLE(prefix.encode(), suffix.encode(), 
+>initval.encode(), allow_wraparound=allow_wraparound, 
+>disable_shortcut=disable_shortcut)
+>         else:
+>             return _counter._newBE(prefix.encode(), suffix.encode(), 
+>initval.encode(), allow_wraparound=allow_wraparound, 
+>disable_shortcut=disable_shortcut)
+>
+>Not having had that much exposure to this code, my question is: Would
+>it 
+>be safe to just use .encode() throughout, without the check for Python 
+>version? From all I can tell, it'll work as desired - but there may be
+>a 
+>corner case I haven't considered. Essentially, can I collapse the above
+>
+>again to:
+>
+>     if little_endian:
+>         return _counter._newLE(prefix.encode(), suffix.encode(), 
+>initval.encode(), allow_wraparound=allow_wraparound, 
+>disable_shortcut=disable_shortcut)
+>     else:
+>         return _counter._newBE(prefix.encode(), suffix.encode(), 
+>initval.encode(), allow_wraparound=allow_wraparound, 
+>disable_shortcut=disable_shortcut)
+>
+>for all versions of Python, 2.x and 3.x.
+>
+>Dwayne, can you shed some light?
+>
+>Thorsten
+>
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+
+From sbehrens at gmx.li  Sat Dec 25 10:46:54 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Sat, 25 Dec 2010 11:46:54 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>
+	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>
+	<4D1426D5.80400@gmx.li>	<20101224064844.GA13502@rivest.dlitz.net>	<4D151B67.5000101@gmx.li>
+	<4D1539CB.6000600@gmx.li>
+	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>
+Message-ID: <4D161FFE.3040002@gmx.li>
+
+On 12/25/2010 11:36 AM, Dwayne C. Litzenberger wrote:
+> I'm on vacation, so I won't be able to look at this until early January, but off the top of my head... does .encode() work in Python 2.1?
+It does.
+
+Thorsten
+
+
+From sbehrens at gmx.li  Sun Dec 26 14:24:40 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Sun, 26 Dec 2010 15:24:40 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D161FFE.3040002@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>	<4D1426D5.80400@gmx.li>	<20101224064844.GA13502@rivest.dlitz.net>	<4D151B67.5000101@gmx.li>	<4D1539CB.6000600@gmx.li>	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>
+	<4D161FFE.3040002@gmx.li>
+Message-ID: <4D17A488.1080002@gmx.li>
+
+Quick update on where this stands right now.
+
+As predicted, the module handling changes with Python 3.x were a pain. I 
+think I have them under control now. At least "python setup.py test" no 
+longer crashes immediately. It now gets far enough to complain about 
+bytes/unicode errors.
+
+I haven't attempted _fastmath.c on Python 3.x yet. I'll do that last, 
+when everything else works.
+
+C modules will give link-time errors, like so: "_counter.obj : warning 
+LNK4197: export 'init_counter' specified multiple times; using first 
+specification". This is an issue in distutils. See python issue 9709. 
+There's nothing we can do until Python fixes distutils - of course any 
+pre-compiled binaries can be built with the distutils fix in, and the 
+README can warn people of this.
+
+The code still works with Python27, but I broke Python21. Specifically, 
+I am having a hard time with string literals. The main work remaining 
+now is to flush out string to bytes/unicode changes between 2.x and 3.x, 
+and adapt the code. I thought I had this licked, but I clearly don't.
+
+I am currently not handling literals well. This is what I tried:
+         if sys.version_info[0] is 2:
+             seed = "".join(seed)
+         else:
+             seed = b"".join(seed)
+
+And that gives a "SyntaxError: invalid syntax" at run time. Of course it 
+does.
+
+django has been moved to be 2.x/3.x compatible. I'll see what they did 
+and try to replicate it. I'm hoping it'll take care of these type of issues.
+
+Assignment to True and False in pycrypto_compat.py is an issue. Right 
+now, I just don't import pycrypto_compat.py when Python 3.x is detected. 
+That still gives install-time errors on Python 3.x. The only option I 
+can think of right now is to exclude the offending file from install in 
+setup.py if Python 3.x is detected.
+
+Thorsten
+
+
+From dlitz at dlitz.net  Mon Dec 27 07:37:40 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 27 Dec 2010 06:37:40 -0700
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D17A488.1080002@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+	<4D13E25F.5030106@gmx.li> <20101224020036.GD11168@rivest.dlitz.net>
+	<20101224021815.GG11168@rivest.dlitz.net> <4D1426D5.80400@gmx.li>
+	<20101224064844.GA13502@rivest.dlitz.net>
+	<4D151B67.5000101@gmx.li> <4D1539CB.6000600@gmx.li>
+	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>
+	<4D161FFE.3040002@gmx.li> <4D17A488.1080002@gmx.li>
+Message-ID: <0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>
+
+Wow, it looks like you're really moving things along.  Thanks, Thorsten!
+
+"Thorsten Behrens" <sbehrens at gmx.li> wrote:
+
+>Quick update on where this stands right now.
+>
+>As predicted, the module handling changes with Python 3.x were a pain.
+>I 
+>think I have them under control now. At least "python setup.py test" no
+>
+>longer crashes immediately. It now gets far enough to complain about 
+>bytes/unicode errors.
+>
+>I haven't attempted _fastmath.c on Python 3.x yet. I'll do that last, 
+>when everything else works.
+>
+>C modules will give link-time errors, like so: "_counter.obj : warning 
+>LNK4197: export 'init_counter' specified multiple times; using first 
+>specification". This is an issue in distutils. See python issue 9709. 
+>There's nothing we can do until Python fixes distutils - of course any 
+>pre-compiled binaries can be built with the distutils fix in, and the 
+>README can warn people of this.
+>
+>The code still works with Python27, but I broke Python21. Specifically,
+>
+>I am having a hard time with string literals. The main work remaining 
+>now is to flush out string to bytes/unicode changes between 2.x and
+>3.x, 
+>and adapt the code. I thought I had this licked, but I clearly don't.
+>
+>I am currently not handling literals well. This is what I tried:
+>         if sys.version_info[0] is 2:
+>             seed = "".join(seed)
+>         else:
+>             seed = b"".join(seed)
+>
+>And that gives a "SyntaxError: invalid syntax" at run time. Of course
+>it 
+>does.
+>
+>django has been moved to be 2.x/3.x compatible. I'll see what they did 
+>and try to replicate it. I'm hoping it'll take care of these type of
+>issues.
+>
+>Assignment to True and False in pycrypto_compat.py is an issue. Right 
+>now, I just don't import pycrypto_compat.py when Python 3.x is
+>detected. 
+>That still gives install-time errors on Python 3.x. The only option I 
+>can think of right now is to exclude the offending file from install in
+>
+>setup.py if Python 3.x is detected.
+>
+>Thorsten
+>
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+
+From sbehrens at gmx.li  Mon Dec 27 09:58:50 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Mon, 27 Dec 2010 10:58:50 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>
+	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>
+	<4D1426D5.80400@gmx.li>	<20101224064844.GA13502@rivest.dlitz.net>	<4D151B67.5000101@gmx.li>
+	<4D1539CB.6000600@gmx.li>	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>	<4D161FFE.3040002@gmx.li>
+	<4D17A488.1080002@gmx.li>
+	<0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>
+Message-ID: <4D18B7BA.30604@gmx.li>
+
+
+On 12/27/2010 8:37 AM, Dwayne C. Litzenberger wrote:
+> Wow, it looks like you're really moving things along.
+
+I am. Right now, the tests run and fail. Going through the first batch, 
+it looks like it's all because of string/bytes things that need to be fixed.
+
+I can use your input here, as I have two options with the way I resolve 
+these issues:
+
+Option 1:
+Use helper functions instead of built-ins. Helper functions are used 
+where binary data was intended. For example, ord(x) becomes bord(x), 
+which returns ord(x) on 2.x and x on 3.x
+
+Advantage: Explicit control. Where ord(x) on a text string was truly 
+meant, it can still be called. Nothing unexpected will happen.
+Disadvantage: Need to use the helper functions where before you could 
+use a built-in
+
+Option 2:
+Assign ord = int if Python 3.x is detected.
+
+Advantage: No code changes for ord, things just work.
+Disadvantage: Potential side-effects that would be very hard to track 
+down. Also, wouldn't be consistent with how we need to handle other 
+things such as literals, where b('x') is the only option.
+
+
+I am favoring Option 1, heavily. But before I change the code 
+accordingly, I'd like to know you're good with the proposal.
+
+Thorsten
+
+
+
+From sbehrens at gmx.li  Mon Dec 27 13:47:47 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Mon, 27 Dec 2010 14:47:47 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D18B7BA.30604@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>	<4D1426D5.80400@gmx.li>	<20101224064844.GA13502@rivest.dlitz.net>	<4D151B67.5000101@gmx.li>	<4D1539CB.6000600@gmx.li>	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>	<4D161FFE.3040002@gmx.li>	<4D17A488.1080002@gmx.li>	<0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>
+	<4D18B7BA.30604@gmx.li>
+Message-ID: <4D18ED63.2030909@gmx.li>
+
+Replying to myself, pathetic ...
+
+I thought about the question of helper functions some more while 
+repairing the snow-blower. I am going to use helpers, not redefine 
+existing functions, because:
+
+- No potential for shooting self in foot
+- Code becomes self-documenting as far as text/data strings go. It'll be 
+blatantly obvious what is a text string (expected result, for example), 
+and what is data string (byte string)
+- Easier to maintain. No "why's there an ord() there? Why's it behave 
+like that? Huh?!?"
+
+Nothing to see here, move along :).
+
+Thorsten
+
+
+From sbehrens at gmx.li  Mon Dec 27 23:16:18 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Tue, 28 Dec 2010 00:16:18 -0500
+Subject: [pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+In-Reply-To: <4D1426D5.80400@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>
+	<4D1426D5.80400@gmx.li>
+Message-ID: <4D1972A2.4080305@gmx.li>
+
+On 12/23/2010 11:51 PM, Thorsten Behrens wrote:
+> On 12/23/2010 9:18 PM, Dwayne C. Litzenberger wrote:
+>> Also, down the road, I could be convinced to drop Python 2.1 support, if I
+>> had some concrete examples showing that the result would be substantially
+>> less error-prone, easier to maintain, etc.
+> So far, it doesn't look like that's needed. dict.has_key() cannot be
+> replaced with "in" for 2.1, but 2to3 seems to handle it fine.
+
+I've run into a bit of a snag. The / operator in 2.x returns an int, and 
+in 3.x it can return a float. This causes an infinite loop in 
+numbers.py. I can solve it with //, which is supported from 2.2 on, but 
+not in 2.1.
+
+I've pasted the offending code snippet from numbers.py below, in the 
+form that doesn't cause an infinite loop in 3.x.
+
+I'm at a bit of a loss here. int(math.floor(a/b)) is not an option due 
+to the size of the operands - it actually fails on 2.1, and gives 
+incorrect results on 3.x. That means I am stuck with //.
+
+I don't know how to "import something" and have "something" show up in 
+the namespace above. I don't think it works that way, unlike a C 
+#include. That means I can't just bring the right function in depending 
+on version. And even if I could, 2.1 doesn't have the "as" keyword, so 
+it would never show up with the right numbers.getStrongPrime name 
+anyway, even _if_ such nested namespace manipulations were supported. 
+Which I don't think they are.
+
+I can't just "if sys.version" the offending code snippet, either: 2.1 
+will still complain that // is a syntax error.
+
+We could duplicate the code and have setup.py bring in a special-cased 
+numbers.py for 2.1. I'm not sure how to do that with setup.py, but 
+there's got to be a way, even if it's just renaming files as needed.
+
+But that means duplicating an entire module, which is ugly. And I can't 
+guarantee that this is the only occurrence of / that causes issues. In 
+fact, I'd wager some beer that it likely isn't.
+
+If you can think of a reasonably clean way of handling the "/" vs. "//" 
+issue - or if anyone else can - please share.
+
+Barring that, I think my message is: If Python 3.x is to be supported 
+without code duplication, Python 2.1 support may have to go.
+
+Yours
+
+Thorsten
+
+         # if e is given make sure that e and X-1 are coprime
+         # this is not necessarily a strong prime criterion but useful when
+         # creating them for RSA where the p-1 and q-1 should be coprime to
+         # the public exponent e
+         if e and is_possible_prime:
+             if e & 1:
+                 if GCD (e, X-1) != 1:
+                     is_possible_prime = 0
+             else:
+                 # Python 2.1 does not understand //, and 3.x returns a 
+float on /
+                 # Infinite loop, wheee!!!
+                 if GCD (e, (X-1)//2) != 1:
+                     is_possible_prime = 0
+
+From v+python at g.nevcal.com  Mon Dec 27 23:27:02 2010
+From: v+python at g.nevcal.com (Glenn Linderman)
+Date: Mon, 27 Dec 2010 21:27:02 -0800
+Subject: [pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+In-Reply-To: <4D1972A2.4080305@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>	<4D1426D5.80400@gmx.li>
+	<4D1972A2.4080305@gmx.li>
+Message-ID: <4D197526.5000802@g.nevcal.com>
+
+On 12/27/2010 9:16 PM, Thorsten Behrens wrote:
+> If you can think of a reasonably clean way of handling the "/" vs. "//"
+> issue - or if anyone else can - please share.
+>
+> Barring that, I think my message is: If Python 3.x is to be supported
+> without code duplication, Python 2.1 support may have to go.
+>
+> Yours
+>
+> Thorsten
+>
+>           # if e is given make sure that e and X-1 are coprime
+>           # this is not necessarily a strong prime criterion but useful when
+>           # creating them for RSA where the p-1 and q-1 should be coprime to
+>           # the public exponent e
+>           if e and is_possible_prime:
+>               if e&  1:
+>                   if GCD (e, X-1) != 1:
+>                       is_possible_prime = 0
+>               else:
+>                   # Python 2.1 does not understand //, and 3.x returns a
+> float on /
+>                   # Infinite loop, wheee!!!
+>                   if GCD (e, (X-1)//2) != 1:
+>                       is_possible_prime = 0
+
+Ugly hack, not sure if it is worthwhile.
+
+utils.py:
+def slashslash( a, b ):
+     return a / b
+
+utilsnew.py:
+def slashslash( a, b ):
+     return a // b
+
+in numbers.py:
+
+if sys.version_info[ 0 ] <= 2  and sys.version_info[ 1 ] <= 1:
+     import utils
+else:
+     import utilsnew as utils
+...
+                                   if GCD ( e, utils.slashslash(X-1,2) != 1:
+
+# Not sure if 2.1 will ignore "as" if not executed?  If not, then you 
+play the setup.py with a tiny file.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20101227/aa13763d/attachment.htm 
+
+From sbehrens at gmx.li  Mon Dec 27 23:39:59 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Tue, 28 Dec 2010 00:39:59 -0500
+Subject: [pycrypto] Python 3.x vs. Python 2.1 - stay of execution
+In-Reply-To: <4D1972A2.4080305@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>	<4D1426D5.80400@gmx.li>
+	<4D1972A2.4080305@gmx.li>
+Message-ID: <4D19782F.3060002@gmx.li>
+
+Writing this stuff out helps me think about it. I have a solution. When, 
+or if, the 3.x port is successful, the fate of 2.1 can be decided.
+
+For now, I have created two files: Util/py21floordiv.py and 
+Util/floordiv.py. In Util/number.py, I then include based on version:
+
+if sys.version[0:3] == "2.1":
+     from Crypto.Util.py21floordiv import *
+else:
+     from Crypto.Util.floordiv import *
+
+The offending code snippet
+
+     if GCD (e, (X-1)/2) != 1:
+
+becomes
+
+     if GCD (e, floordiv((X-1),2)) != 1:
+
+This works on Python 2.1, 2.7 and 3.1
+
+Thorsten
+
+On 12/28/2010 12:16 AM, Thorsten Behrens wrote:
+> I've run into a bit of a snag. The / operator in 2.x returns an int, and
+> in 3.x it can return a float. This causes an infinite loop in
+> numbers.py. I can solve it with //, which is supported from 2.2 on, but
+> not in 2.1.
+
+
+From sbehrens at gmx.li  Mon Dec 27 23:45:19 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Tue, 28 Dec 2010 00:45:19 -0500
+Subject: [pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+In-Reply-To: <4D197526.5000802@g.nevcal.com>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>	<4D1426D5.80400@gmx.li>	<4D1972A2.4080305@gmx.li>
+	<4D197526.5000802@g.nevcal.com>
+Message-ID: <4D19796F.2080103@gmx.li>
+
+
+> Ugly hack, not sure if it is worthwhile.
+
+Thanks, Glenn. I got to the same conclusion. I often just need to write 
+it out to think clearly about it.
+
+2.1 won't ignore "as", but I can do "from utilsnew import *" and "from 
+utils import *" instead.
+
+It is ugly, absolutely. But it works. 2.1's on life support. It's 
+creaking, but it holds. :)
+
+Thorsten
+
+
+From anurag.chourasia at gmail.com  Tue Dec 28 13:44:13 2010
+From: anurag.chourasia at gmail.com (Anurag Chourasia)
+Date: Wed, 29 Dec 2010 01:14:13 +0530
+Subject: [pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -
+	SHA1withRSA
+Message-ID: <AANLkTinAtfwvRx81DXbfJjhVxwUj9FgwBzruAnj622Jj@mail.gmail.com>
+
+Hi All,
+
+I have a Private key and Public Key which comes in an XML in the following
+form.
+
+<RSASK>-----BEGIN RSA PRIVATE KEY-----
+MIIBOgIBAAJBALWmf82Fh6TUrzE5TV7BoLdamFWd/nGFzSNLtYsncENI07X47XKC
+G/YDRZeRcWKq+6P1pbM9ejgjXF72FCZZbL8CAQMCQHkZqokDr8M4dMt7iOnWayTn
+EDkT/vZZM2zdI7IaSteEwnbsIYjcAIkD0m3E2vZA9oNcjwEQ19ZXjyAhh+Y7B3sC
+IQDkhKYQUGPErXMsxhRDXlvpBzjPq7pGCTaY3th2KszAOwIhAMt+8KrU1FZ7Cl0s
+1eWS7aDXsf+F6fBtaWzP61IiNCFNAiEAmFhutYrtLcj3cy64LOmSm1ol38fRhAYk
+ZenlpByIgCcCIQCHqfXHOI2O/LGTczlDt0kV5SFVA/FK85ud3/I2wXgWMwIhAMXy
+zk5RMjE25Y+PFyevn4j1nWme6cvbv49g1OCZkZxE -----END RSA PRIVATE
+KEY-----</RSASK>
+
+<RSAPUBK>-----BEGIN PUBLIC KEY-----
+MFowDQYJKoZIhvcNAQEBBQADSQAwRgJBALWmf82Fh6TUrzE5TV7BoLdamFWd/nGF
+zSNLtYsncENI07X47XKCG/YDRZeRcWKq+6P1pbM9ejgjXF72FCZZbL8CAQM= -----END PUBLIC
+KEY-----</RSAPUBK>
+
+I need to use the "Private Key" above and transform a stream of text into a
+"Digital Signature (DER Encoded PKCS#1)" utilizing the "Private Key".
+
+Could you please let me know how I could use Crypto to meet this
+requirement. Appreciate if you could help me with a simple code snippet.
+
+Thanks for your help on this.
+
+Regards,
+Anurag
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20101229/88717e2e/attachment.htm 
+
+From sbehrens at gmx.li  Tue Dec 28 14:02:58 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Tue, 28 Dec 2010 15:02:58 -0500
+Subject: [pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -
+ SHA1withRSA
+In-Reply-To: <AANLkTinAtfwvRx81DXbfJjhVxwUj9FgwBzruAnj622Jj@mail.gmail.com>
+References: <AANLkTinAtfwvRx81DXbfJjhVxwUj9FgwBzruAnj622Jj@mail.gmail.com>
+Message-ID: <4D1A4272.5080002@gmx.li>
+
+On 12/28/2010 2:44 PM, Anurag Chourasia wrote:
+>
+> I have a Private key and Public Key which comes in an XML in the 
+> following form.
+[..]
+> Could you please let me know how I could use Crypto to meet this 
+> requirement. Appreciate if you could help me with a simple code snippet.
+>
+
+Is this homework? :)
+
+If so, I'd give you a hint: Take a good look at the test routines in 
+Crypto/Selftest, they are examples of how to use the library.
+
+Thorsten
+
+
+From anurag.chourasia at gmail.com  Tue Dec 28 14:05:17 2010
+From: anurag.chourasia at gmail.com (Anurag Chourasia)
+Date: Wed, 29 Dec 2010 01:35:17 +0530
+Subject: [pycrypto] SHA Vs SHA1
+Message-ID: <AANLkTinnA-VWtxx0veR+TiW+v87yi4SKDkH67JbVc5AU@mail.gmail.com>
+
+Hi All,
+
+Is SHA same as SHA-1?
+
+For example, if I am doing this using Crytpo
+
+from Crypto.Hash import SHA
+m = SHA.new()
+m.update('ABC')
+m.digest()
+m.hexdigest()
+
+Then am i using SHA-0?
+
+Or am i using SHA-1?
+
+http://en.wikipedia.org/wiki/SHA-1
+
+Please guide.
+
+Regards,
+Anurag
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20101229/17550bc4/attachment.htm 
+
+From anurag.chourasia at gmail.com  Tue Dec 28 14:14:18 2010
+From: anurag.chourasia at gmail.com (Anurag Chourasia)
+Date: Wed, 29 Dec 2010 01:44:18 +0530
+Subject: [pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -
+	SHA1withRSA
+In-Reply-To: <4D1A4272.5080002@gmx.li>
+References: <AANLkTinAtfwvRx81DXbfJjhVxwUj9FgwBzruAnj622Jj@mail.gmail.com>
+	<4D1A4272.5080002@gmx.li>
+Message-ID: <AANLkTimZKjWhNzQ+D22RP36yBDgX5jJUrdh3KYk+Bbku@mail.gmail.com>
+
+Hi Thorsten,
+
+Thanks for the response.
+
+It wasn't for Home Work :-)
+
+I went through some examples and I understand that to achieve my goal i have
+to do two things.
+
+1. Compute the Hash Value of my Data.
+2. Sign the computed Hash Value with my Private Key.
+
+To achieve 1 above, i believe that the following code will help me (assuming
+that data is ABC).
+
+from Crypto.Hash import SHA
+m = SHA.new()
+m.update('ABC')
+
+What I am not sure is if I should use
+
+m.digest()
+or
+m.hexdigest() as the computed hash value.
+
+Following this, how can i use Crypto again to Sign the computed Hash Value
+using the Private Key?
+
+Appreciate your help on this.
+
+Regards,
+Anurag
+
+On Wed, Dec 29, 2010 at 1:32 AM, Thorsten Behrens <sbehrens at gmx.li> wrote:
+
+> On 12/28/2010 2:44 PM, Anurag Chourasia wrote:
+> >
+> > I have a Private key and Public Key which comes in an XML in the
+> > following form.
+> [..]
+> > Could you please let me know how I could use Crypto to meet this
+> > requirement. Appreciate if you could help me with a simple code snippet.
+> >
+>
+> Is this homework? :)
+>
+> If so, I'd give you a hint: Take a good look at the test routines in
+> Crypto/Selftest, they are examples of how to use the library.
+>
+> Thorsten
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20101229/c9dade59/attachment.htm 
+
+From sbehrens at gmx.li  Tue Dec 28 15:22:17 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Tue, 28 Dec 2010 16:22:17 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D18ED63.2030909@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>	<4D1426D5.80400@gmx.li>	<20101224064844.GA13502@rivest.dlitz.net>	<4D151B67.5000101@gmx.li>	<4D1539CB.6000600@gmx.li>	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>	<4D161FFE.3040002@gmx.li>	<4D17A488.1080002@gmx.li>	<0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>	<4D18B7BA.30604@gmx.li>
+	<4D18ED63.2030909@gmx.li>
+Message-ID: <4D1A5509.2020604@gmx.li>
+
+How about them apples.
+
+D:\Users\Soenke\Documents\Source\pycrypto>python --version
+Python 3.1.3
+
+D:\Users\Soenke\Documents\Source\pycrypto>python setup.py test
+running test
+..................................................................................................................................
+..................................................................................................................................
+..................................................................................................................................
+..................................................................................................................................
+..................................................................................................................................
+..................................................................................................................................
+.............................................................................................................SelfTest: 
+You can ign
+ore the RandomPool_DeprecationWarning that follows.
+build\lib.win-amd64-3.1\Crypto\Util\randpool.py:40: 
+RandomPool_DeprecationWarning: This application uses RandomPool, which 
+is BROK
+EN in older releases.  See http://www.pycrypto.org/randpool-broken
+   RandomPool_DeprecationWarning)
+.....................
+----------------------------------------------------------------------
+Ran 910 tests in 28.723s
+
+OK
+
+Alright, allow me to bask in this for a second. Okay, I'm good.
+
+This also still builds and tests correctly on Python 2.7, 2.2 and2.1.
+
+I'll commit this to the py3k branch. It's not ready to be merged yet. 
+Here's the TODO as I have it:
+
+TODO:
+- Check for type of string in functions and throw an error when it's not 
+correct. While at it, ensure that functions observe the guidelines below 
+re type.
+   This is friendlier than just relying on Python's errors.
+- Document the expected types for functions. The cipher, the key and the 
+input texts are byte-strings. Plaintext decodes are byte-strings 
+currently, this needs review.
+   In keeping with how Python 3.x's hash functions work, the input MODE 
+is a text string. hexdigest() returns a text string, and digest() 
+returns a byte-string.
+- Compile and test _fastmath.c
+- Go through test cases and see which modules are not covered
+
+Volunteers for any of those?
+
+Here is a writeup of what was changed:
+
+Py code:
+
+setup.py invokes 2to3 automatically. This handles int/long and print 
+issues, among others.
+setup.py will touch nt.py on win32 after build and build again. This is 
+necessary so 2to3 can do its magic on that file.
+
+There are still a lot of places in the code that need manual attention 
+even with 2to3. They mostly have to do with string (2.x) vs. 
+byte/unicode (3.x) representation
+
+Use "if sys.version_info[0] is 2:" where needed. Ideally, most of the 
+conditional code can be in py3compat.
+
+Replace str(x) with bstr(x) if bytes were intended. Becomes str(x) in 
+2.x and bytes(x) in 3.x through py3compat module.
+Replace chr(x) with bchr(x) if bytes were intended. Becomes chr(x) in 
+2.x and bytes([x]) in 3.x through py3compat module.
+Replace ord(x) with bord(x) if bytes were intended. Becomes ord(x) in 
+2.x and x in 3.x through py3compat module.
+
+Comparing a string index to a string literal needs to be changed in 3.x, 
+as b'string'[0] returns an integer, not b's'.
+The comparison can be fixed by indexing the right side, too: "if 
+s[0]==b('\x30')[0]:" or "if self.typeTag!=self.typeTags['SEQUENCE'][0]:"
+
+String literals need to be bytes if bytes were intended.
+Replace "x" with b("x") if bytes were intended. Becomes "x" in 2.x, and 
+s.encode("x","latin-1") in 3.x through py3compat module.
+For example, '"".join' is replaced by 'b("").join', and 's = ""' becomes 
+'s = b("")'.
+Search for \x to find literals that may have been intended as byte strings
+!! However, where a human-readable ASCII text string output was 
+intended, such as in AllOrNothing.undigest(), leave as a string literal !!
+
+Only load python_compat.py "if sys.version_info[0] is 2 and 
+sys.version_info[1] is 1:" .
+The assignment to True, False generates syntax errors in 3.x, and >= 2.2 
+don't need the compatibility code.
+
+Where print is used with >> to redirect, use a separate function 
+instead. See setup.py for an example
+
+The string module has been changed in 3.x. It lost join and split, 
+maketrans now expects bytes, and so on.
+Replace string.join(a,b) with b.join(a).
+Replace string.split(a) with a.split().
+Replace body of white-space-stripping functions with 'return 
+"".join(s.split())'
+
+Integer division via the "/" operator can return a float in 3.x. This 
+causes issues in Util.number.getStrongPrime. As 2.1 does not support
+the "//" operator, a helper function "floordiv()" is brought in via 'if 
+sys.version_info' from floordiv.py or py21floordiv.py.
+
+
+C code:
+
+Extended "pycrypto_compat.h". It handles #define's for Python 3.x 
+forward compatibility
+
+#include "pycrypto_compat.h"
+// All other local includes after this, so they can benefit from the 
+definitions in pycrypto_compat.h
+
+The compat header #defines IS_PY3K if compiling on 3.x
+The compat header #defines PyBytes_*, PyUnicode_*, PyBytesObject to 
+resolve to their PyString* counterparts if compiling on 2.x.
+PyLong_* can be dangerous depending on code construct (think an if that 
+runs PyInt_* with else PyLong_*),
+therefore it is #defined in each individual module if needed and safe to 
+do so.
+
+PyString_* has been replaced with PyBytes_* or PyUnicode_* depending on 
+intent
+PyStringObject has been replaced with PyBytesObject or PyUnicodeObject 
+depending on intent.
+PyInt_* has been replaced with PyLong_*, where safe to do (in all cases 
+so far)
+
+The C code uses "#ifdef IS_PY3K" liberally.
+Code duplication has been avoided.
+
+Module initialization and module structure differ significantly in 3.x. 
+Conditionals take care of it.
+
+myModuleType.ob_type assignment conditionally becomes PyTypeReady for 3.x.
+
+getattr cannot be used to check against custom attributes in 3.x. For 
+3.x, conditional code uses getattro
+and PyUnicode_CompareWithASCIIString instead of strcmp
+
+hexdigest() needed to be changed to return a Unicode object with 3.x
+
+
+From sbehrens at gmx.li  Tue Dec 28 15:53:30 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Tue, 28 Dec 2010 16:53:30 -0500
+Subject: [pycrypto] SHA Vs SHA1
+In-Reply-To: <AANLkTinnA-VWtxx0veR+TiW+v87yi4SKDkH67JbVc5AU@mail.gmail.com>
+References: <AANLkTinnA-VWtxx0veR+TiW+v87yi4SKDkH67JbVc5AU@mail.gmail.com>
+Message-ID: <4D1A5C5A.6070500@gmx.li>
+
+On 12/28/2010 3:05 PM, Anurag Chourasia wrote:
+> Hi All,
+>
+> Is SHA same as SHA-1?
+Yes. It actually is just a wrapper for Python's hashlib.sha1
+
+"SHA-0" was withdrawn shortly after publication. I can't think of any 
+platform that would actually implement it.
+
+Thorsten
+
+
+From sbehrens at gmx.li  Tue Dec 28 16:09:38 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Tue, 28 Dec 2010 17:09:38 -0500
+Subject: [pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -
+ SHA1withRSA
+In-Reply-To: <AANLkTimZKjWhNzQ+D22RP36yBDgX5jJUrdh3KYk+Bbku@mail.gmail.com>
+References: <AANLkTinAtfwvRx81DXbfJjhVxwUj9FgwBzruAnj622Jj@mail.gmail.com>
+	<4D1A4272.5080002@gmx.li>
+	<AANLkTimZKjWhNzQ+D22RP36yBDgX5jJUrdh3KYk+Bbku@mail.gmail.com>
+Message-ID: <4D1A6022.4020400@gmx.li>
+
+ >> It wasn't for Home Work :-)
+
+Okay :D
+
+>
+> m.digest()
+> or
+> m.hexdigest() as the computed hash value.
+
+That depends on what you want to do next. m.digest() returns the digest 
+in binary form, ready to be used for further manipulation, such as 
+having it signed. m.hexdigest() returns it in a form suitable for 
+inclusion in a text transmission, such as email.
+
+> Following this, how can i use Crypto again to Sign the computed Hash 
+> Value using the Private Key?
+>
+PKCS #1 has not been integrated into trunk yet. There is a patch 
+available, though, here: https://bugs.launchpad.net/pycrypto/+bug/502291
+
+Thorsten
+
+
+From anurag.chourasia at gmail.com  Tue Dec 28 19:32:39 2010
+From: anurag.chourasia at gmail.com (Anurag Chourasia)
+Date: Wed, 29 Dec 2010 07:02:39 +0530
+Subject: [pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -
+	SHA1withRSA
+In-Reply-To: <4D1A6022.4020400@gmx.li>
+References: <AANLkTinAtfwvRx81DXbfJjhVxwUj9FgwBzruAnj622Jj@mail.gmail.com>
+	<4D1A4272.5080002@gmx.li>
+	<AANLkTimZKjWhNzQ+D22RP36yBDgX5jJUrdh3KYk+Bbku@mail.gmail.com>
+	<4D1A6022.4020400@gmx.li>
+Message-ID: <AANLkTi=CBOuOw8VjwcRc6OvNpRQsmHbjq4jDRdQYkxwR@mail.gmail.com>
+
+Hi Thorsten,
+
+Thanks for the information. I believe that the patch that you mentioned will
+help me :-)
+
+The patch mentioned in your email was from January 2010 and is in the form
+of a diff between files.
+
+Are we supposed to make those modifications manually or is there a
+downloadable somewhere? I am wondering if there is any specific reason that
+the change is not a part of the mainstream that a user like me should be
+aware of or better if the files are going to be included in the Trunk
+anytime soon :-)
+
+Thanks again for your help today.
+
+Regards,
+Anurag
+
+On Wed, Dec 29, 2010 at 3:39 AM, Thorsten Behrens <sbehrens at gmx.li> wrote:
+
+>  >> It wasn't for Home Work :-)
+>
+> Okay :D
+>
+> >
+> > m.digest()
+> > or
+> > m.hexdigest() as the computed hash value.
+>
+> That depends on what you want to do next. m.digest() returns the digest
+> in binary form, ready to be used for further manipulation, such as
+> having it signed. m.hexdigest() returns it in a form suitable for
+> inclusion in a text transmission, such as email.
+>
+> > Following this, how can i use Crypto again to Sign the computed Hash
+> > Value using the Private Key?
+> >
+> PKCS #1 has not been integrated into trunk yet. There is a patch
+> available, though, here: https://bugs.launchpad.net/pycrypto/+bug/502291
+>
+> Thorsten
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20101229/02b70f36/attachment.htm 
+
+From sbehrens at gmx.li  Tue Dec 28 19:41:40 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Tue, 28 Dec 2010 20:41:40 -0500
+Subject: [pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -
+ SHA1withRSA
+In-Reply-To: <AANLkTi=CBOuOw8VjwcRc6OvNpRQsmHbjq4jDRdQYkxwR@mail.gmail.com>
+References: <AANLkTinAtfwvRx81DXbfJjhVxwUj9FgwBzruAnj622Jj@mail.gmail.com>	<4D1A4272.5080002@gmx.li>	<AANLkTimZKjWhNzQ+D22RP36yBDgX5jJUrdh3KYk+Bbku@mail.gmail.com>	<4D1A6022.4020400@gmx.li>
+	<AANLkTi=CBOuOw8VjwcRc6OvNpRQsmHbjq4jDRdQYkxwR@mail.gmail.com>
+Message-ID: <4D1A91D4.9020509@gmx.li>
+
+On 12/28/2010 8:32 PM, Anurag Chourasia wrote:
+>
+> The patch mentioned in your email was from January 2010 and is in the 
+> form of a diff between files.
+
+Yeah, you'd have to apply manually to the current release, if files 
+changed. If you need a copy of "patch", there's one in the Cygwin package.
+
+> Are we supposed to make those modifications manually or is there a 
+> downloadable somewhere? I am wondering if there is any specific reason 
+> that the change is not a part of the mainstream that a user like me 
+> should be aware of or better if the files are going to be included in 
+> the Trunk anytime soon :-)
+
+That's a question for Dwayne, the maintainer of the package, who is on 
+vacation right now. I'm just a user.
+
+I don't think git was set up in January, that's why emailed patches. 
+That's my theory anyway :).
+
+Thorsten
+
+
+From dlitz at dlitz.net  Wed Dec 29 00:35:58 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Wed, 29 Dec 2010 00:35:58 -0600
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D1A5509.2020604@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+	<4D13E25F.5030106@gmx.li> <20101224020036.GD11168@rivest.dlitz.net>
+	<20101224021815.GG11168@rivest.dlitz.net> <4D1426D5.80400@gmx.li>
+	<20101224064844.GA13502@rivest.dlitz.net>
+	<4D151B67.5000101@gmx.li> <4D1539CB.6000600@gmx.li>
+	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>
+	<4D161FFE.3040002@gmx.li> <4D17A488.1080002@gmx.li>
+	<0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>
+	<4D18B7BA.30604@gmx.li> <4D18ED63.2030909@gmx.li>
+	<4D1A5509.2020604@gmx.li>
+Message-ID: <ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>
+
+Still on vacation, but.... Awesome!  Good work!
+
+"Thorsten Behrens" <sbehrens at gmx.li> wrote:
+
+>How about them apples.
+>
+>D:\Users\Soenke\Documents\Source\pycrypto>python --version
+>Python 3.1.3
+>
+>D:\Users\Soenke\Documents\Source\pycrypto>python setup.py test
+>running test
+>..................................................................................................................................
+>..................................................................................................................................
+>..................................................................................................................................
+>..................................................................................................................................
+>..................................................................................................................................
+>..................................................................................................................................
+>.............................................................................................................SelfTest:
+>
+>You can ign
+>ore the RandomPool_DeprecationWarning that follows.
+>build\lib.win-amd64-3.1\Crypto\Util\randpool.py:40: 
+>RandomPool_DeprecationWarning: This application uses RandomPool, which 
+>is BROK
+>EN in older releases.  See http://www.pycrypto.org/randpool-broken
+>   RandomPool_DeprecationWarning)
+>.....................
+>----------------------------------------------------------------------
+>Ran 910 tests in 28.723s
+>
+>OK
+>
+>Alright, allow me to bask in this for a second. Okay, I'm good.
+>
+>This also still builds and tests correctly on Python 2.7, 2.2 and2.1.
+>
+>I'll commit this to the py3k branch. It's not ready to be merged yet. 
+>Here's the TODO as I have it:
+>
+>TODO:
+>- Check for type of string in functions and throw an error when it's
+>not 
+>correct. While at it, ensure that functions observe the guidelines
+>below 
+>re type.
+>   This is friendlier than just relying on Python's errors.
+>- Document the expected types for functions. The cipher, the key and
+>the 
+>input texts are byte-strings. Plaintext decodes are byte-strings 
+>currently, this needs review.
+>  In keeping with how Python 3.x's hash functions work, the input MODE 
+>is a text string. hexdigest() returns a text string, and digest() 
+>returns a byte-string.
+>- Compile and test _fastmath.c
+>- Go through test cases and see which modules are not covered
+>
+>Volunteers for any of those?
+>
+>Here is a writeup of what was changed:
+>
+>Py code:
+>
+>setup.py invokes 2to3 automatically. This handles int/long and print 
+>issues, among others.
+>setup.py will touch nt.py on win32 after build and build again. This is
+>
+>necessary so 2to3 can do its magic on that file.
+>
+>There are still a lot of places in the code that need manual attention 
+>even with 2to3. They mostly have to do with string (2.x) vs. 
+>byte/unicode (3.x) representation
+>
+>Use "if sys.version_info[0] is 2:" where needed. Ideally, most of the 
+>conditional code can be in py3compat.
+>
+>Replace str(x) with bstr(x) if bytes were intended. Becomes str(x) in 
+>2.x and bytes(x) in 3.x through py3compat module.
+>Replace chr(x) with bchr(x) if bytes were intended. Becomes chr(x) in 
+>2.x and bytes([x]) in 3.x through py3compat module.
+>Replace ord(x) with bord(x) if bytes were intended. Becomes ord(x) in 
+>2.x and x in 3.x through py3compat module.
+>
+>Comparing a string index to a string literal needs to be changed in
+>3.x, 
+>as b'string'[0] returns an integer, not b's'.
+>The comparison can be fixed by indexing the right side, too: "if 
+>s[0]==b('\x30')[0]:" or "if
+>self.typeTag!=self.typeTags['SEQUENCE'][0]:"
+>
+>String literals need to be bytes if bytes were intended.
+>Replace "x" with b("x") if bytes were intended. Becomes "x" in 2.x, and
+>
+>s.encode("x","latin-1") in 3.x through py3compat module.
+>For example, '"".join' is replaced by 'b("").join', and 's = ""'
+>becomes 
+>'s = b("")'.
+>Search for \x to find literals that may have been intended as byte
+>strings
+>!! However, where a human-readable ASCII text string output was 
+>intended, such as in AllOrNothing.undigest(), leave as a string literal
+>!!
+>
+>Only load python_compat.py "if sys.version_info[0] is 2 and 
+>sys.version_info[1] is 1:" .
+>The assignment to True, False generates syntax errors in 3.x, and >=
+>2.2 
+>don't need the compatibility code.
+>
+>Where print is used with >> to redirect, use a separate function 
+>instead. See setup.py for an example
+>
+>The string module has been changed in 3.x. It lost join and split, 
+>maketrans now expects bytes, and so on.
+>Replace string.join(a,b) with b.join(a).
+>Replace string.split(a) with a.split().
+>Replace body of white-space-stripping functions with 'return 
+>"".join(s.split())'
+>
+>Integer division via the "/" operator can return a float in 3.x. This 
+>causes issues in Util.number.getStrongPrime. As 2.1 does not support
+>the "//" operator, a helper function "floordiv()" is brought in via 'if
+>
+>sys.version_info' from floordiv.py or py21floordiv.py.
+>
+>
+>C code:
+>
+>Extended "pycrypto_compat.h". It handles #define's for Python 3.x 
+>forward compatibility
+>
+>#include "pycrypto_compat.h"
+>// All other local includes after this, so they can benefit from the 
+>definitions in pycrypto_compat.h
+>
+>The compat header #defines IS_PY3K if compiling on 3.x
+>The compat header #defines PyBytes_*, PyUnicode_*, PyBytesObject to 
+>resolve to their PyString* counterparts if compiling on 2.x.
+>PyLong_* can be dangerous depending on code construct (think an if that
+>
+>runs PyInt_* with else PyLong_*),
+>therefore it is #defined in each individual module if needed and safe
+>to 
+>do so.
+>
+>PyString_* has been replaced with PyBytes_* or PyUnicode_* depending on
+>
+>intent
+>PyStringObject has been replaced with PyBytesObject or PyUnicodeObject 
+>depending on intent.
+>PyInt_* has been replaced with PyLong_*, where safe to do (in all cases
+>
+>so far)
+>
+>The C code uses "#ifdef IS_PY3K" liberally.
+>Code duplication has been avoided.
+>
+>Module initialization and module structure differ significantly in 3.x.
+>
+>Conditionals take care of it.
+>
+>myModuleType.ob_type assignment conditionally becomes PyTypeReady for
+>3.x.
+>
+>getattr cannot be used to check against custom attributes in 3.x. For 
+>3.x, conditional code uses getattro
+>and PyUnicode_CompareWithASCIIString instead of strcmp
+>
+>hexdigest() needed to be changed to return a Unicode object with 3.x
+>
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+
+From dlitz at dlitz.net  Wed Dec 29 00:37:01 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Wed, 29 Dec 2010 00:37:01 -0600
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D18ED63.2030909@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+	<4D13E25F.5030106@gmx.li> <20101224020036.GD11168@rivest.dlitz.net>
+	<20101224021815.GG11168@rivest.dlitz.net> <4D1426D5.80400@gmx.li>
+	<20101224064844.GA13502@rivest.dlitz.net>
+	<4D151B67.5000101@gmx.li> <4D1539CB.6000600@gmx.li>
+	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>
+	<4D161FFE.3040002@gmx.li> <4D17A488.1080002@gmx.li>
+	<0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>
+	<4D18B7BA.30604@gmx.li> <4D18ED63.2030909@gmx.li>
+Message-ID: <50c33634-528f-41f5-91e8-1aeb4bb210e2@email.android.com>
+
+Sounds good.
+
+"Thorsten Behrens" <sbehrens at gmx.li> wrote:
+
+>Replying to myself, pathetic ...
+>
+>I thought about the question of helper functions some more while 
+>repairing the snow-blower. I am going to use helpers, not redefine 
+>existing functions, because:
+>
+>- No potential for shooting self in foot
+>- Code becomes self-documenting as far as text/data strings go. It'll
+>be 
+>blatantly obvious what is a text string (expected result, for example),
+>
+>and what is data string (byte string)
+>- Easier to maintain. No "why's there an ord() there? Why's it behave 
+>like that? Huh?!?"
+>
+>Nothing to see here, move along :).
+>
+>Thorsten
+>
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+
+From dlitz at dlitz.net  Wed Dec 29 00:39:12 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Wed, 29 Dec 2010 00:39:12 -0600
+Subject: [pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+In-Reply-To: <4D1972A2.4080305@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+	<4D13E25F.5030106@gmx.li> <20101224020036.GD11168@rivest.dlitz.net>
+	<20101224021815.GG11168@rivest.dlitz.net>
+	<4D1426D5.80400@gmx.li> <4D1972A2.4080305@gmx.li>
+Message-ID: <d6af11c0-4ac9-4108-8a6b-becb60f13a0e@email.android.com>
+
+To do integer division a/b across Python 2.1 through 2.7 (including support for floatdiv), PyCrypto already uses divmod(a,b)[0] IIRC.
+
+"Thorsten Behrens" <sbehrens at gmx.li> wrote:
+
+>On 12/23/2010 11:51 PM, Thorsten Behrens wrote:
+>> On 12/23/2010 9:18 PM, Dwayne C. Litzenberger wrote:
+>>> Also, down the road, I could be convinced to drop Python 2.1
+>support, if I
+>>> had some concrete examples showing that the result would be
+>substantially
+>>> less error-prone, easier to maintain, etc.
+>> So far, it doesn't look like that's needed. dict.has_key() cannot be
+>> replaced with "in" for 2.1, but 2to3 seems to handle it fine.
+>
+>I've run into a bit of a snag. The / operator in 2.x returns an int,
+>and 
+>in 3.x it can return a float. This causes an infinite loop in 
+>numbers.py. I can solve it with //, which is supported from 2.2 on, but
+>
+>not in 2.1.
+>
+>I've pasted the offending code snippet from numbers.py below, in the 
+>form that doesn't cause an infinite loop in 3.x.
+>
+>I'm at a bit of a loss here. int(math.floor(a/b)) is not an option due 
+>to the size of the operands - it actually fails on 2.1, and gives 
+>incorrect results on 3.x. That means I am stuck with //.
+>
+>I don't know how to "import something" and have "something" show up in 
+>the namespace above. I don't think it works that way, unlike a C 
+>#include. That means I can't just bring the right function in depending
+>
+>on version. And even if I could, 2.1 doesn't have the "as" keyword, so 
+>it would never show up with the right numbers.getStrongPrime name 
+>anyway, even _if_ such nested namespace manipulations were supported. 
+>Which I don't think they are.
+>
+>I can't just "if sys.version" the offending code snippet, either: 2.1 
+>will still complain that // is a syntax error.
+>
+>We could duplicate the code and have setup.py bring in a special-cased 
+>numbers.py for 2.1. I'm not sure how to do that with setup.py, but 
+>there's got to be a way, even if it's just renaming files as needed.
+>
+>But that means duplicating an entire module, which is ugly. And I can't
+>
+>guarantee that this is the only occurrence of / that causes issues. In 
+>fact, I'd wager some beer that it likely isn't.
+>
+>If you can think of a reasonably clean way of handling the "/" vs. "//"
+>
+>issue - or if anyone else can - please share.
+>
+>Barring that, I think my message is: If Python 3.x is to be supported 
+>without code duplication, Python 2.1 support may have to go.
+>
+>Yours
+>
+>Thorsten
+>
+>         # if e is given make sure that e and X-1 are coprime
+>     # this is not necessarily a strong prime criterion but useful when
+>     # creating them for RSA where the p-1 and q-1 should be coprime to
+>         # the public exponent e
+>         if e and is_possible_prime:
+>             if e & 1:
+>                 if GCD (e, X-1) != 1:
+>                     is_possible_prime = 0
+>             else:
+>                # Python 2.1 does not understand //, and 3.x returns a 
+>float on /
+>                 # Infinite loop, wheee!!!
+>                 if GCD (e, (X-1)//2) != 1:
+>                     is_possible_prime = 0
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+
+From dlitz at dlitz.net  Wed Dec 29 00:41:17 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Wed, 29 Dec 2010 00:41:17 -0600
+Subject: [pycrypto] Create a Digital Signature (DER Encoded PKCS#1)
+	-	SHA1withRSA
+In-Reply-To: <AANLkTi=CBOuOw8VjwcRc6OvNpRQsmHbjq4jDRdQYkxwR@mail.gmail.com>
+References: <AANLkTinAtfwvRx81DXbfJjhVxwUj9FgwBzruAnj622Jj@mail.gmail.com>
+	<4D1A4272.5080002@gmx.li>
+	<AANLkTimZKjWhNzQ+D22RP36yBDgX5jJUrdh3KYk+Bbku@mail.gmail.com>
+	<4D1A6022.4020400@gmx.li>
+	<AANLkTi=CBOuOw8VjwcRc6OvNpRQsmHbjq4jDRdQYkxwR@mail.gmail.com>
+Message-ID: <f2f79a9a-4c56-4a7a-a0ba-22c91e84defd@email.android.com>
+
+I'll have to look at this when I get back from my vacation.  Maybe file a bug report, or add a comment to an existing report if there is one already?
+
+"Anurag Chourasia" <anurag.chourasia at gmail.com> wrote:
+
+>Hi Thorsten,
+>
+>Thanks for the information. I believe that the patch that you mentioned
+>will
+>help me :-)
+>
+>The patch mentioned in your email was from January 2010 and is in the
+>form
+>of a diff between files.
+>
+>Are we supposed to make those modifications manually or is there a
+>downloadable somewhere? I am wondering if there is any specific reason
+>that
+>the change is not a part of the mainstream that a user like me should
+>be
+>aware of or better if the files are going to be included in the Trunk
+>anytime soon :-)
+>
+>Thanks again for your help today.
+>
+>Regards,
+>Anurag
+>
+>On Wed, Dec 29, 2010 at 3:39 AM, Thorsten Behrens <sbehrens at gmx.li>
+>wrote:
+>
+>>  >> It wasn't for Home Work :-)
+>>
+>> Okay :D
+>>
+>> >
+>> > m.digest()
+>> > or
+>> > m.hexdigest() as the computed hash value.
+>>
+>> That depends on what you want to do next. m.digest() returns the
+>digest
+>> in binary form, ready to be used for further manipulation, such as
+>> having it signed. m.hexdigest() returns it in a form suitable for
+>> inclusion in a text transmission, such as email.
+>>
+>> > Following this, how can i use Crypto again to Sign the computed
+>Hash
+>> > Value using the Private Key?
+>> >
+>> PKCS #1 has not been integrated into trunk yet. There is a patch
+>> available, though, here:
+>https://bugs.launchpad.net/pycrypto/+bug/502291
+>>
+>> Thorsten
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+
+From sbehrens at gmx.li  Wed Dec 29 03:55:13 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 29 Dec 2010 04:55:13 -0500
+Subject: [pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+In-Reply-To: <d6af11c0-4ac9-4108-8a6b-becb60f13a0e@email.android.com>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>
+	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>	<4D1426D5.80400@gmx.li>
+	<4D1972A2.4080305@gmx.li>
+	<d6af11c0-4ac9-4108-8a6b-becb60f13a0e@email.android.com>
+Message-ID: <4D1B0581.1020109@gmx.li>
+
+On 12/29/2010 1:39 AM, Dwayne C. Litzenberger wrote:
+> To do integer division a/b across Python 2.1 through 2.7 (including support for floatdiv), PyCrypto already uses divmod(a,b)[0] IIRC.
+Clever. That would explain why I only ran into one instance of integer 
+division causing issues. I'll remove the floordiv/py21floordiv hack and 
+replace with divmod(a,b)[0].
+
+
+From sbehrens at gmx.li  Wed Dec 29 06:10:04 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 29 Dec 2010 07:10:04 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>
+	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>
+	<4D1426D5.80400@gmx.li>	<20101224064844.GA13502@rivest.dlitz.net>	<4D151B67.5000101@gmx.li>
+	<4D1539CB.6000600@gmx.li>	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>	<4D161FFE.3040002@gmx.li>
+	<4D17A488.1080002@gmx.li>	<0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>	<4D18B7BA.30604@gmx.li>
+	<4D18ED63.2030909@gmx.li>	<4D1A5509.2020604@gmx.li>
+	<ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>
+Message-ID: <4D1B251C.8090903@gmx.li>
+
+On 12/29/2010 1:35 AM, Dwayne C. Litzenberger wrote:
+> Still on vacation, but.... Awesome!  Good work!
+Thanks.
+
+Complete noob question: How do I "git push" my branch back up to you? Or 
+the changes to _fastmath.c I made to master, for that matter?
+
+Or do you prefer that I have git create a patch file and mail that to you?
+
+Thorsten
+
+
+From anurag.chourasia at gmail.com  Wed Dec 29 07:47:40 2010
+From: anurag.chourasia at gmail.com (Anurag Chourasia)
+Date: Wed, 29 Dec 2010 19:17:40 +0530
+Subject: [pycrypto] Create a Digital Signature (DER Encoded PKCS#1) -
+	SHA1withRSA
+In-Reply-To: <f2f79a9a-4c56-4a7a-a0ba-22c91e84defd@email.android.com>
+References: <AANLkTinAtfwvRx81DXbfJjhVxwUj9FgwBzruAnj622Jj@mail.gmail.com>
+	<4D1A4272.5080002@gmx.li>
+	<AANLkTimZKjWhNzQ+D22RP36yBDgX5jJUrdh3KYk+Bbku@mail.gmail.com>
+	<4D1A6022.4020400@gmx.li>
+	<AANLkTi=CBOuOw8VjwcRc6OvNpRQsmHbjq4jDRdQYkxwR@mail.gmail.com>
+	<f2f79a9a-4c56-4a7a-a0ba-22c91e84defd@email.android.com>
+Message-ID: <AANLkTimDBF4zyvgmW_eR5oE+FycVh9tcFhhkNq8frimq@mail.gmail.com>
+
+Hi Dwayne,
+
+I have added a comment to the existing report at
+https://bugs.launchpad.net/pycrypto/+bug/502291
+
+Appreciate your help in getting this into the mainstream.
+
+<https://bugs.launchpad.net/pycrypto/+bug/502291>Regards,
+Anurag
+
+On Wed, Dec 29, 2010 at 12:11 PM, Dwayne C. Litzenberger <dlitz at dlitz.net>wrote:
+
+> I'll have to look at this when I get back from my vacation.  Maybe file a
+> bug report, or add a comment to an existing report if there is one already?
+>
+> "Anurag Chourasia" <anurag.chourasia at gmail.com> wrote:
+>
+> >Hi Thorsten,
+> >
+> >Thanks for the information. I believe that the patch that you mentioned
+> >will
+> >help me :-)
+> >
+> >The patch mentioned in your email was from January 2010 and is in the
+> >form
+> >of a diff between files.
+> >
+> >Are we supposed to make those modifications manually or is there a
+> >downloadable somewhere? I am wondering if there is any specific reason
+> >that
+> >the change is not a part of the mainstream that a user like me should
+> >be
+> >aware of or better if the files are going to be included in the Trunk
+> >anytime soon :-)
+> >
+> >Thanks again for your help today.
+> >
+> >Regards,
+> >Anurag
+> >
+> >On Wed, Dec 29, 2010 at 3:39 AM, Thorsten Behrens <sbehrens at gmx.li>
+> >wrote:
+> >
+> >>  >> It wasn't for Home Work :-)
+> >>
+> >> Okay :D
+> >>
+> >> >
+> >> > m.digest()
+> >> > or
+> >> > m.hexdigest() as the computed hash value.
+> >>
+> >> That depends on what you want to do next. m.digest() returns the
+> >digest
+> >> in binary form, ready to be used for further manipulation, such as
+> >> having it signed. m.hexdigest() returns it in a form suitable for
+> >> inclusion in a text transmission, such as email.
+> >>
+> >> > Following this, how can i use Crypto again to Sign the computed
+> >Hash
+> >> > Value using the Private Key?
+> >> >
+> >> PKCS #1 has not been integrated into trunk yet. There is a patch
+> >> available, though, here:
+> >https://bugs.launchpad.net/pycrypto/+bug/502291
+> >>
+> >> Thorsten
+> >>
+> >> _______________________________________________
+> >> pycrypto mailing list
+> >> pycrypto at lists.dlitz.net
+> >> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> >>
+> >_______________________________________________
+> >pycrypto mailing list
+> >pycrypto at lists.dlitz.net
+> >http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+> --
+> Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20101229/688b4f28/attachment.htm 
+
+From dlitz at dlitz.net  Wed Dec 29 09:44:56 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Wed, 29 Dec 2010 09:44:56 -0600
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D1B251C.8090903@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+	<4D13E25F.5030106@gmx.li> <20101224020036.GD11168@rivest.dlitz.net>
+	<20101224021815.GG11168@rivest.dlitz.net> <4D1426D5.80400@gmx.li>
+	<20101224064844.GA13502@rivest.dlitz.net>
+	<4D151B67.5000101@gmx.li> <4D1539CB.6000600@gmx.li>
+	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>
+	<4D161FFE.3040002@gmx.li> <4D17A488.1080002@gmx.li>
+	<0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>
+	<4D18B7BA.30604@gmx.li> <4D18ED63.2030909@gmx.li>
+	<4D1A5509.2020604@gmx.li>
+	<ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>
+	<4D1B251C.8090903@gmx.li>
+Message-ID: <64d92a8d-e3eb-40f4-986e-c2d37ca30a83@email.android.com>
+
+If you're making lots of changes, it's probably easiest if you fork https://github.com/dlitz/pycrypto and push your changes to the master and py3k branches there.
+
+"Thorsten Behrens" <sbehrens at gmx.li> wrote:
+
+>On 12/29/2010 1:35 AM, Dwayne C. Litzenberger wrote:
+>> Still on vacation, but.... Awesome!  Good work!
+>Thanks.
+>
+>Complete noob question: How do I "git push" my branch back up to you?
+>Or 
+>the changes to _fastmath.c I made to master, for that matter?
+>
+>Or do you prefer that I have git create a patch file and mail that to
+>you?
+>
+>Thorsten
+
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+
+From don at amberfisharts.com  Wed Dec 29 11:21:57 2010
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Wed, 29 Dec 2010 18:21:57 +0100
+Subject: [pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+In-Reply-To: <4D1972A2.4080305@gmx.li>
+References: "\"<4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>"
+	<20101224020036.GD11168@rivest.dlitz.net>"
+	<20101224021815.GG11168@rivest.dlitz.net> <4D1426D5.80400@gmx.li>
+	<4D1972A2.4080305@gmx.li>
+Message-ID: <f6d05cb327ed3126fc62b5dbff1a5144@amberfisharts.com>
+
+ Hi
+
+ If the only occurrence of this problem is with divisions by 2 then 
+ couldn't you use a>>1 instead?
+
+ cheers and great to see some more effort and progress on py3k support.
+ //Lorenz
+ 
+ On Tue, 28 Dec 2010 00:16:18 -0500, Thorsten Behrens <sbehrens at gmx.li> 
+ wrote:
+> On 12/23/2010 11:51 PM, Thorsten Behrens wrote:
+>> On 12/23/2010 9:18 PM, Dwayne C. Litzenberger wrote:
+>>> Also, down the road, I could be convinced to drop Python 2.1 
+>>> support, if I
+>>> had some concrete examples showing that the result would be 
+>>> substantially
+>>> less error-prone, easier to maintain, etc.
+>> So far, it doesn't look like that's needed. dict.has_key() cannot be
+>> replaced with "in" for 2.1, but 2to3 seems to handle it fine.
+>
+> I've run into a bit of a snag. The / operator in 2.x returns an int, 
+> and
+> in 3.x it can return a float. This causes an infinite loop in
+> numbers.py. I can solve it with //, which is supported from 2.2 on, 
+> but
+> not in 2.1.
+>
+> I've pasted the offending code snippet from numbers.py below, in the
+> form that doesn't cause an infinite loop in 3.x.
+>
+> I'm at a bit of a loss here. int(math.floor(a/b)) is not an option 
+> due
+> to the size of the operands - it actually fails on 2.1, and gives
+> incorrect results on 3.x. That means I am stuck with //.
+>
+> I don't know how to "import something" and have "something" show up 
+> in
+> the namespace above. I don't think it works that way, unlike a C
+> #include. That means I can't just bring the right function in 
+> depending
+> on version. And even if I could, 2.1 doesn't have the "as" keyword, 
+> so
+> it would never show up with the right numbers.getStrongPrime name
+> anyway, even _if_ such nested namespace manipulations were supported.
+> Which I don't think they are.
+>
+> I can't just "if sys.version" the offending code snippet, either: 2.1
+> will still complain that // is a syntax error.
+>
+> We could duplicate the code and have setup.py bring in a 
+> special-cased
+> numbers.py for 2.1. I'm not sure how to do that with setup.py, but
+> there's got to be a way, even if it's just renaming files as needed.
+>
+> But that means duplicating an entire module, which is ugly. And I 
+> can't
+> guarantee that this is the only occurrence of / that causes issues. 
+> In
+> fact, I'd wager some beer that it likely isn't.
+>
+> If you can think of a reasonably clean way of handling the "/" vs. 
+> "//"
+> issue - or if anyone else can - please share.
+>
+> Barring that, I think my message is: If Python 3.x is to be supported
+> without code duplication, Python 2.1 support may have to go.
+>
+> Yours
+>
+> Thorsten
+>
+>          # if e is given make sure that e and X-1 are coprime
+>          # this is not necessarily a strong prime criterion but 
+> useful when
+>          # creating them for RSA where the p-1 and q-1 should be 
+> coprime to
+>          # the public exponent e
+>          if e and is_possible_prime:
+>              if e & 1:
+>                  if GCD (e, X-1) != 1:
+>                      is_possible_prime = 0
+>              else:
+>                  # Python 2.1 does not understand //, and 3.x returns 
+> a
+> float on /
+>                  # Infinite loop, wheee!!!
+>                  if GCD (e, (X-1)//2) != 1:
+>                      is_possible_prime = 0
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From sbehrens at gmx.li  Wed Dec 29 12:16:37 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 29 Dec 2010 13:16:37 -0500
+Subject: [pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+In-Reply-To: <f6d05cb327ed3126fc62b5dbff1a5144@amberfisharts.com>
+References: "\"<4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>"	<20101224020036.GD11168@rivest.dlitz.net>"	<20101224021815.GG11168@rivest.dlitz.net>
+	<4D1426D5.80400@gmx.li>	<4D1972A2.4080305@gmx.li>
+	<f6d05cb327ed3126fc62b5dbff1a5144@amberfisharts.com>
+Message-ID: <4D1B7B05.4030701@gmx.li>
+
+On 12/29/2010 12:21 PM, don at amberfisharts.com wrote:
+>   Hi
+>
+>   If the only occurrence of this problem is with divisions by 2 then
+>   couldn't you use a>>1 instead?
+It's actually very_large_number // another_very_large_number.
+
+Dwayne's divmod(a,b)[0] method works perfectly.
+
+Thorsten
+
+
+From sbehrens at gmx.li  Wed Dec 29 12:19:28 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 29 Dec 2010 13:19:28 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <64d92a8d-e3eb-40f4-986e-c2d37ca30a83@email.android.com>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>
+	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>
+	<4D1426D5.80400@gmx.li>	<20101224064844.GA13502@rivest.dlitz.net>	<4D151B67.5000101@gmx.li>
+	<4D1539CB.6000600@gmx.li>	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>	<4D161FFE.3040002@gmx.li>
+	<4D17A488.1080002@gmx.li>	<0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>	<4D18B7BA.30604@gmx.li>
+	<4D18ED63.2030909@gmx.li>	<4D1A5509.2020604@gmx.li>	<ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>	<4D1B251C.8090903@gmx.li>
+	<64d92a8d-e3eb-40f4-986e-c2d37ca30a83@email.android.com>
+Message-ID: <4D1B7BB0.6050201@gmx.li>
+
+On 12/29/2010 10:44 AM, Dwayne C. Litzenberger wrote:
+> If you're making lots of changes, it's probably easiest if you fork https://github.com/dlitz/pycrypto and push your changes to the master and py3k branches there.
+I can do that as an interim step. I have no desire to actually fork 
+pycrypto, though. I'd like to see these changes land on trunk, for a 
+pycrypto that can build and run on 2.1 through 2.7 as well as 3.1/3.2.
+
+Do I hear you right that you'd like to see a forked repository so you 
+can check it out and be comfortable with it, and then merge the changes 
+back into your master repository?
+
+Thorsten
+
+
+From sbehrens at gmx.li  Wed Dec 29 13:38:17 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 29 Dec 2010 14:38:17 -0500
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D1B7BB0.6050201@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>	<4D13E25F.5030106@gmx.li>	<20101224020036.GD11168@rivest.dlitz.net>	<20101224021815.GG11168@rivest.dlitz.net>	<4D1426D5.80400@gmx.li>	<20101224064844.GA13502@rivest.dlitz.net>	<4D151B67.5000101@gmx.li>	<4D1539CB.6000600@gmx.li>	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>	<4D161FFE.3040002@gmx.li>	<4D17A488.1080002@gmx.li>	<0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>	<4D18B7BA.30604@gmx.li>	<4D18ED63.2030909@gmx.li>	<4D1A5509.2020604@gmx.li>	<ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>	<4D1B251C.8090903@gmx.li>	<64d92a8d-e3eb-40f4-986e-c2d37ca30a83@email.android.com>
+	<4D1B7BB0.6050201@gmx.li>
+Message-ID: <4D1B8E29.2020603@gmx.li>
+
+On 12/29/2010 10:44 AM, Dwayne C. Litzenberger wrote:
+>> If you're making lots of changes, it's probably easiest if you fork https://github.com/dlitz/pycrypto and push your changes to the master and py3k branches there.
+I get it now. Pull requests. I had not used github before. This is nice 
+stuff.
+
+Project's been forked. I will continue to work on it until I think it's 
+good, and then issue a pull request.
+
+To those who wanted a pycrypto on 3.x, can I encourage you good folk to 
+git clone https://github.com/yorickdowne/pycrypto.git and give it a 
+thorough whacking? Please feed back any issues you find, as well as 
+successes on platforms other than Win7-64.
+
+Thorsten
+
+
+From dlitz at dlitz.net  Wed Dec 29 14:41:54 2010
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Wed, 29 Dec 2010 14:41:54 -0600
+Subject: [pycrypto] Once again: Python3 with PyCrypto
+In-Reply-To: <4D1B7BB0.6050201@gmx.li>
+References: <4D12AFC7.4060706@gmx.li>
+	<f1a74599-24ed-4ad1-b732-762e6568502b@email.android.com>
+	<4D13E25F.5030106@gmx.li> <20101224020036.GD11168@rivest.dlitz.net>
+	<20101224021815.GG11168@rivest.dlitz.net> <4D1426D5.80400@gmx.li>
+	<20101224064844.GA13502@rivest.dlitz.net>
+	<4D151B67.5000101@gmx.li> <4D1539CB.6000600@gmx.li>
+	<e53d57ef-e473-47d4-8ab5-d3ce3f3c0c52@email.android.com>
+	<4D161FFE.3040002@gmx.li> <4D17A488.1080002@gmx.li>
+	<0896bd18-76fb-4da4-82c5-7c2c4b12598c@email.android.com>
+	<4D18B7BA.30604@gmx.li> <4D18ED63.2030909@gmx.li>
+	<4D1A5509.2020604@gmx.li>
+	<ece7c485-8b01-4d44-9a69-5b1057b92263@email.android.com>
+	<4D1B251C.8090903@gmx.li>
+	<64d92a8d-e3eb-40f4-986e-c2d37ca30a83@email.android.com>
+	<4D1B7BB0.6050201@gmx.li>
+Message-ID: <cf2cdd59-e4df-4a7d-89d4-5b94afe9e98d@email.android.com>
+
+Yes, exactly. :-)
+
+"Thorsten Behrens" <sbehrens at gmx.li> wrote:
+
+>On 12/29/2010 10:44 AM, Dwayne C. Litzenberger wrote:
+>> If you're making lots of changes, it's probably easiest if you fork
+>https://github.com/dlitz/pycrypto and push your changes to the master
+>and py3k branches there.
+>I can do that as an interim step. I have no desire to actually fork 
+>pycrypto, though. I'd like to see these changes land on trunk, for a 
+>pycrypto that can build and run on 2.1 through 2.7 as well as 3.1/3.2.
+>
+>Do I hear you right that you'd like to see a forked repository so you 
+>can check it out and be comfortable with it, and then merge the changes
+>
+>back into your master repository?
+>
+>Thorsten
+>
+>_______________________________________________
+>pycrypto mailing list
+>pycrypto at lists.dlitz.net
+>http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+
+From sbehrens at gmx.li  Wed Dec 29 15:28:14 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 29 Dec 2010 16:28:14 -0500
+Subject: [pycrypto] Wanted: Additional unit tests for Python 3.x porting
+	effort
+Message-ID: <4D1BA7EE.6030300@gmx.li>
+
+Now that we have a working pycrypto on Python 3.x, it's time to see what 
+we don't have unit tests for. See 
+https://bugs.launchpad.net/pycrypto/+bug/335995 for results.
+
+Currently, the following are not included in unit testing at all:
+
+Protocol/AllOrNothing
+PublicKey/ElGamal
+PublicKey/qNEW
+random/random
+
+I'd love some unit tests for those. With public test vectors, please, 
+not test vectors derived from pycrypto.
+
+Volunteers?
+
+Thorsten
+
+
+From sbehrens at gmx.li  Wed Dec 29 21:55:41 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 29 Dec 2010 22:55:41 -0500
+Subject: [pycrypto] Things that go bump in the night (qNEW)
+Message-ID: <4D1C02BD.4020106@gmx.li>
+
+I've been looking at the functions that don't have unit tests, among 
+them PublicKey/qNEW. It puzzled me for a bit - qNEW is not an algorithm 
+I know, can successfully google for, or find in other crypto packages.
+Looking at the source, though, it seems to be a cousin of DSA, with a 
+few differences in the fundamentals (bit sizes of q and p, for one), and 
+a lot of differences in the specifics.
+
+I am not going to write any unit tests for qNEW.
+
+It may be a DSA-variant, in which case it is covered already by DSA.py. 
+Or it may be a DSA-derivative that's never been standardized, and thus 
+scrutinized, and if that's true, then it should just be stricken from 
+the code. Given that there's really no documentation on it either in the 
+package or anywhere, I'd wager beer that it's not in serious use 
+anywhere, anyway.
+
+Thorsten
+
+
+From sbehrens at gmx.li  Thu Dec 30 23:11:28 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Fri, 31 Dec 2010 00:11:28 -0500
+Subject: [pycrypto] Wanted: Additional unit tests for Python 3.x porting
+ effort
+In-Reply-To: <4D1BA7EE.6030300@gmx.li>
+References: <4D1BA7EE.6030300@gmx.li>
+Message-ID: <4D1D6600.6050603@gmx.li>
+
+Crypto.Random.random has unit tests now. A few notes on that:
+     - random.shuffle() was broken, it had a TypeError and an 
+IndexError. Not my doing, that's always been the case. That's been fixed.
+     - random.sample() does not work on 2.1. Not my doing, that's always 
+been the case. I will not fix this. Others are welcome to.
+     - random does not implement the full compliment of functions that 
+Python offers, it is a much smaller subset
+     - I somehow doubt anyone ever actually used this interface. We may 
+declare it "static for backwards compatibility" and leave well enough alone.
+
+I will not write unit tests for qNEW, though others are welcome to.
+
+We still need unit tests for ElGamal and AllOrNothing. Anyone?
+
+Thorsten
+
+On 12/29/2010 4:28 PM, Thorsten Behrens wrote:
+> Now that we have a working pycrypto on Python 3.x, it's time to see what
+> we don't have unit tests for. See
+> https://bugs.launchpad.net/pycrypto/+bug/335995 for results.
+>
+> Currently, the following are not included in unit testing at all:
+>
+> Protocol/AllOrNothing
+> PublicKey/ElGamal
+> PublicKey/qNEW
+> random/random
+>
+> I'd love some unit tests for those. With public test vectors, please,
+> not test vectors derived from pycrypto.
+>
+> Volunteers?
+>
+> Thorsten
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+From michael.r at spamfreemail.de  Fri Dec 31 08:22:53 2010
+From: michael.r at spamfreemail.de (Michael Rodler)
+Date: Fri, 31 Dec 2010 15:22:53 +0100
+Subject: [pycrypto] Wanted: Additional unit tests for Python 3.x porting
+ effort
+In-Reply-To: <4D1D6600.6050603@gmx.li>
+References: <4D1BA7EE.6030300@gmx.li> <4D1D6600.6050603@gmx.li>
+Message-ID: <4D1DE73D.90603@spamfreemail.de>
+
+Hello,
+
+I'd volunteer to write the unit test for ElGamal, but since ElGamal is
+not standardized, it's pretty hard to find any public test vectors.
+(quick google search reveals nothing) So you probably need to generate
+them yourself and I'm not sure how to do that properly. (generate using
+another library i.e. bouncycastle or using some algebra system i.e.
+Mathematica, which is probably less error prone?)
+
+If anyone can point me into the right direction, I'd be happy to help.
+(Obviously not today, so cheers and happy new year ;)
+
+Michael
+
+On 2010-12-31 06:11, Thorsten Behrens wrote:
+> Crypto.Random.random has unit tests now. A few notes on that:
+>      - random.shuffle() was broken, it had a TypeError and an 
+> IndexError. Not my doing, that's always been the case. That's been fixed.
+>      - random.sample() does not work on 2.1. Not my doing, that's always 
+> been the case. I will not fix this. Others are welcome to.
+>      - random does not implement the full compliment of functions that 
+> Python offers, it is a much smaller subset
+>      - I somehow doubt anyone ever actually used this interface. We may 
+> declare it "static for backwards compatibility" and leave well enough alone.
+>
+> I will not write unit tests for qNEW, though others are welcome to.
+>
+> We still need unit tests for ElGamal and AllOrNothing. Anyone?
+>
+> Thorsten
+>
+> On 12/29/2010 4:28 PM, Thorsten Behrens wrote:
+>> Now that we have a working pycrypto on Python 3.x, it's time to see what
+>> we don't have unit tests for. See
+>> https://bugs.launchpad.net/pycrypto/+bug/335995 for results.
+>>
+>> Currently, the following are not included in unit testing at all:
+>>
+>> Protocol/AllOrNothing
+>> PublicKey/ElGamal
+>> PublicKey/qNEW
+>> random/random
+>>
+>> I'd love some unit tests for those. With public test vectors, please,
+>> not test vectors derived from pycrypto.
+>>
+>> Volunteers?
+>>
+>> Thorsten
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From paul_koning at dell.com  Fri Dec 31 08:24:23 2010
+From: paul_koning at dell.com (Paul Koning)
+Date: Fri, 31 Dec 2010 09:24:23 -0500
+Subject: [pycrypto] Wanted: Additional unit tests for Python 3.x porting
+	effort
+In-Reply-To: <4D1DE73D.90603@spamfreemail.de>
+References: <4D1BA7EE.6030300@gmx.li> <4D1D6600.6050603@gmx.li>
+	<4D1DE73D.90603@spamfreemail.de>
+Message-ID: <64C91145-7EBA-4E8A-A99A-A83AFC0A8ADA@dell.com>
+
+If I remember right, some versions of pgp used ElGamal, so that might serve as an open reference implementation.  Not as good as test vectors but it's a widely used implementation.
+
+	paul
+
+On Dec 31, 2010, at 9:22 AM, Michael Rodler wrote:
+
+> Hello,
+> 
+> I'd volunteer to write the unit test for ElGamal, but since ElGamal is
+> not standardized, it's pretty hard to find any public test vectors.
+> (quick google search reveals nothing) So you probably need to generate
+> them yourself and I'm not sure how to do that properly. (generate using
+> another library i.e. bouncycastle or using some algebra system i.e.
+> Mathematica, which is probably less error prone?)
+> 
+> If anyone can point me into the right direction, I'd be happy to help.
+> (Obviously not today, so cheers and happy new year ;)
+> 
+> Michael
+> 
+> On 2010-12-31 06:11, Thorsten Behrens wrote:
+>> Crypto.Random.random has unit tests now. A few notes on that:
+>>     - random.shuffle() was broken, it had a TypeError and an 
+>> IndexError. Not my doing, that's always been the case. That's been fixed.
+>>     - random.sample() does not work on 2.1. Not my doing, that's always 
+>> been the case. I will not fix this. Others are welcome to.
+>>     - random does not implement the full compliment of functions that 
+>> Python offers, it is a much smaller subset
+>>     - I somehow doubt anyone ever actually used this interface. We may 
+>> declare it "static for backwards compatibility" and leave well enough alone.
+>> 
+>> I will not write unit tests for qNEW, though others are welcome to.
+>> 
+>> We still need unit tests for ElGamal and AllOrNothing. Anyone?
+>> 
+>> Thorsten
+>> 
+>> On 12/29/2010 4:28 PM, Thorsten Behrens wrote:
+>>> Now that we have a working pycrypto on Python 3.x, it's time to see what
+>>> we don't have unit tests for. See
+>>> https://bugs.launchpad.net/pycrypto/+bug/335995 for results.
+>>> 
+>>> Currently, the following are not included in unit testing at all:
+>>> 
+>>> Protocol/AllOrNothing
+>>> PublicKey/ElGamal
+>>> PublicKey/qNEW
+>>> random/random
+>>> 
+>>> I'd love some unit tests for those. With public test vectors, please,
+>>> not test vectors derived from pycrypto.
+>>> 
+>>> Volunteers?
+>>> 
+>>> Thorsten
+>>> 
+>>> _______________________________________________
+>>> pycrypto mailing list
+>>> pycrypto at lists.dlitz.net
+>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>> 
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> 
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From sbehrens at gmx.li  Fri Dec 31 08:58:39 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Fri, 31 Dec 2010 09:58:39 -0500
+Subject: [pycrypto] Comments on Elgamal,
+	and a broader question: Whither pycrypto?
+Message-ID: <4D1DEF9F.7020101@gmx.li>
+
+I've been looking into writing a unit test for Elgamal. What I was 
+looking for were public test vectors. Those don't exist. What I found 
+instead is that our implementation of Elgamal appears insecure.
+
+References:
+Crypto++ notes on Elgamal, http://weidai.com/scan-mirror/sig.html
+Crypto++ FAQ on Elgamal key generation, 
+http://www.cryptopp.com/fom-serve/cache/71.html
+Bleichenbacher paper on forging Elgamal,
+
+ftp://ftp.inf.ethz.ch/pub/crypto/publications/Bleich96.ps
+IETF paper on DH groups, including pre-computed safe primes, http://tools.ietf.org/html/draft-ietf-ipsec-ike-modp-groups-04
+Wikipedia writeup on Elgamal, http://en.wikipedia.org/wiki/ElGamal_encryption
+
+
+What I have found is that pycrypto's Elgamal implementation is, shall we say, naive. Specifically in these regards (and I'll quote others here, these assertions as per crypto safety are not
+mine. The conclusions about elgamal.py are mine):
+
+/- p/  SHOULD be a safe prime, i.e. such that (/p/-1)/2 is prime
+
+   TB: elgamal.py makes no effort to find a safe prime. elgamal.py does not allow the user to pass her own safe prime to the key generator.
+
+- The paper by Bleichenbacher referenced above shows that if/g/  has only small prime factors, and if/g/  divides the order of the group it generates, then signatures can be forged.
+
+   TB: elgamal.py makes no effort to find a safe "g"
+
+- Elgamal encryption is not secure under chosen ciphertext attack. To achieve chosen-ciphertext security, the scheme must be further modified, or an appropriate padding scheme must be used.
+
+   TB: elgamal.py does not implement a padding scheme, or modify Elgamal further afaics.
+
+
+So far on Elgamal. It makes me reluctant to go through with a unit test for Elgamal. I don't want to validate an implementation that is inherently insecure. Changing Elgamal to be more secure is out of scope of my current effort on the code base. I'll leave that to others.
+
+
+The broader question that occurs, particularly also in view of the stdlib-crypto discussion (http://bugs.python.org/issue8998) is: What is pycrypto's intent? What should it be?
+
+Should it be a low-level collection of crypto algorithms, suitable for academic and real work, and requiring a strong understanding of crypto and its complexities in either case, with no safeguards should a user choose to shoot himself in the foot?
+
+Should it be a high-level collection of crypto routines, suitable for the crypto-naive coder, offering safe defaults and a few knobs to influence those parameters that should be able to be chosen by a slightly less crypto-naive coder? Note that this would require vigorous debate about what this second tier should look like, which defaults would be chosen, which knobs would still be exposed, and so on. That debate would have to be carried out in public and would have to include all the other movers-and-shakers in the Python crypto community.
+
+Should it be both, offering a two-tiered API?
+
+And further:
+
+Should pycrypto continue to offer its own implementations of crypto algorithms? Or should it be a Python wrapper for existing implementations such as tomlib, Crypto++ or NSS, relying on those implementations to have been coded in a secure manner?
+
+
+Thank you for reading
+
+Thorsten
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20101231/d4caa98b/attachment.htm 
+
+From sbehrens at gmx.li  Fri Dec 31 09:00:28 2010
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Fri, 31 Dec 2010 10:00:28 -0500
+Subject: [pycrypto] Wanted: Additional unit tests for Python 3.x porting
+ effort
+In-Reply-To: <4D1DE73D.90603@spamfreemail.de>
+References: <4D1BA7EE.6030300@gmx.li> <4D1D6600.6050603@gmx.li>
+	<4D1DE73D.90603@spamfreemail.de>
+Message-ID: <4D1DF00C.9070503@gmx.li>
+
+On 12/31/2010 9:22 AM, Michael Rodler wrote:
+> I'd volunteer to write the unit test for ElGamal, but since ElGamal is
+> not standardized, it's pretty hard to find any public test vectors.
+I don't think they exist. See my notes on Elgamal I just shot out to the 
+list. I am reconsidering the wisdom of providing a unit test for 
+elgamal.py in its current form.
+
+Thanks for stepping up to the plate! And happy new year to you, too!
+
+Thorsten
+
+
+From micke.modin at gmail.com  Tue Oct 26 15:27:21 2010
+From: micke.modin at gmail.com (Mikael Modin)
+Date: Tue, 26 Oct 2010 21:27:21 -0000
+Subject: [pycrypto] Key generation and storage
+Message-ID: <AANLkTimcy6nK2MuzB2GJduUVeefeba3X2rq6sjs9=Rk=@mail.gmail.com>
+
+Hi,
+
+I'm working on a small time report project and have implemented a
+cache mode for offline work, normally it reports to a server. Since
+the users shouldn't be able to add 50 hours to their time reports at
+will I thought it would be a good idea to encrypt it. I've implemented
+a simple solution using a fixed key and AES using pyCrypto, but I'm
+having some thoughts regarding the key. I know it will be impossible
+to provide any real security since the client will be running on their
+machine on hardware I have no control over, but since it will most
+likely be mainly 40 year old stay-at-home-moms working in their spare
+time I figure some kind of encryption would be enough.
+
+Currently I'm using a hardcoded key but that feels really bad so I'm
+wondering how to solve the key generation and storage issue. As I see
+it there are two options:
+a) secret key, stick with AES. Base the key on a hash of user+password
+something similar and store it in a file with a name they likely won't
+like to touch, "vs_core.dll" or something. Security by obfuscation.
+b) public/private key. the problem here is that since the client need
+both to encrypt and decrypt again before sending all the chached time
+reports. store the keys similar to a)
+c) public/private key. the server generates the pair and send the
+public key to the client who uses it to encrypt the cache and then
+simply uploads the encrypted data to the server. This has the
+disadvantage that it might become a fairly large upload in one chunk,
+but could probably be solved in other ways.
+
+Do you have any other suggestions?
+
+Kind regards,
+Mikael Modin
+
+From ipatrol6010 at yahoo.com  Sun Nov 14 11:24:12 2010
+From: ipatrol6010 at yahoo.com (ipatrol6010 at yahoo.com)
+Date: Sun, 14 Nov 2010 17:24:12 -0000
+Subject: [pycrypto] AMD64 binaries for Python 2.7
+Message-ID: <810516.26243.qm@web45410.mail.sp1.yahoo.com>
+
+  I just compiled this for anyone interested. If you have a webpage with
+a list of module binaries, that would be swell. Also, I have it hosted
+here <http://www.filesavr.com/B9GGANJA6JBWR7H> in case you have any
+legal issues with actually storing it (though given the state of affairs
+these days, I wouldn't be worried).
+
+
+
+
+
+
+
+      
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20101114/bf0f3dea/attachment-0001.htm 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: pycrypto-2.3.win-amd64-py2.7.exe
+Type: application/octet-stream
+Size: 572315 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20101114/bf0f3dea/attachment-0001.obj 
+

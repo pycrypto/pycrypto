@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Library design philosophy
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Library%20design%20philosophy&In-Reply-To=49E255BB.2010200%40kiilerich.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000087.html">
+   <LINK REL="Next"  HREF="000090.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Library design philosophy</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Library%20design%20philosophy&In-Reply-To=49E255BB.2010200%40kiilerich.com"
+       TITLE="[pycrypto] Library design philosophy">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Mon Apr 13 06:54:42 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000087.html">[pycrypto] Library design philosophy
+</A></li>
+        <LI>Next message: <A HREF="000090.html">[pycrypto] Library design philosophy
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#88">[ date ]</a>
+              <a href="thread.html#88">[ thread ]</a>
+              <a href="subject.html#88">[ subject ]</a>
+              <a href="author.html#88">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> Well ... you can have your opinion if I (a random user) can have mine ;-)
+</I>
+I was just throwing my stone into the water... :-)
+
+&gt;<i> Pycrypto does not claim to be a pure-python crypto library. If you  
+</I>&gt;<i> expect it to be that then it probably won't meet your expectations.
+</I>&gt;<i>
+</I>&gt;<i> Pycrypto _is_ cross-platform, and written in a combination of platform  
+</I>&gt;<i> independent C and python, just like Python is.
+</I>
+My claim goes exactly over the fact that platforms where no suitable
+compiler is present or accessible are not supported. Moreover platform
+independent C really does not exist (see my previous message).
+
+I don't have real expectations, it is (was) just unclear to me what
+the purpose of the library is, and why would one use it. The feeling
+I have is that it tries to be used in two camps, without being really
+good in any.
+
+&gt;<i> (FWIW, pycrypto _is_  
+</I>&gt;<i> partly a &quot;libtomcrypt wrapper&quot;, see  
+</I>&gt;<i> <A HREF="http://www.dlitz.net/software/pycrypto/doc/#credits.">http://www.dlitz.net/software/pycrypto/doc/#credits.</A>) Pycrypto _is_  
+</I>&gt;<i> fast. Perhaps not as fast as other optimized libraries are, but it can  
+</I>&gt;<i> be used where performance is important.
+</I>
+Borrowing SHA256 from libtomcrypt does not make it a wrapper to it, first
+because it goes only over SHA256, and second future improvements and bugfixes
+in libtomcrypt will probably never end up in this local version.
+
+&gt;<i> Some advantages of pycrypto are that it is small, has a simple pythonic  
+</I>&gt;<i> API, and don't have any external dependencies. It is not a incomplete  
+</I>&gt;<i> wrapper of a huge and complex API (such as the openssl API).
+</I>
+Agreed, even though it is not clear to me whether you refer to any
+existing wrapper. M2crypto seems pretty good for instance.
+
+&gt;<i> Pure python implementations _could_ be added, but they would probably  
+</I>&gt;<i> not really be usable. Users getting this slow fallback would probably be  
+</I>&gt;<i> annoyed or complain about the performance instead of fixing the problem  
+</I>&gt;<i> by installing the right compiled version.
+</I>
+I saw several times remarks to urge &quot;normal&quot; users not to use pycryto directly
+(e.g. RSA schoolbook encryption), but to rely on savier, higher-level code.
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000087.html">[pycrypto] Library design philosophy
+</A></li>
+	<LI>Next message: <A HREF="000090.html">[pycrypto] Library design philosophy
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#88">[ date ]</a>
+              <a href="thread.html#88">[ thread ]</a>
+              <a href="subject.html#88">[ subject ]</a>
+              <a href="author.html#88">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Use of Fortuna Algo / Seeding Randomness
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Use%20of%20Fortuna%20Algo%20/%20Seeding%20Randomness&In-Reply-To=%3C20120113164401.GE5544%40rivest.dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000533.html">
+   <LINK REL="Next"  HREF="000535.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Use of Fortuna Algo / Seeding Randomness</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Use%20of%20Fortuna%20Algo%20/%20Seeding%20Randomness&In-Reply-To=%3C20120113164401.GE5544%40rivest.dlitz.net%3E"
+       TITLE="[pycrypto] Use of Fortuna Algo / Seeding Randomness">dlitz at dlitz.net
+       </A><BR>
+    <I>Fri Jan 13 11:44:01 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000533.html">[pycrypto] reg current work in pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000535.html">[pycrypto] ANN: PyCrypto 2.5 released
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#534">[ date ]</a>
+              <a href="thread.html#534">[ thread ]</a>
+              <a href="subject.html#534">[ subject ]</a>
+              <a href="author.html#534">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Nov 19, 2011 at 09:21:43AM -0800, Ben Smith wrote:
+&gt;<i>Hi Everyone -
+</I>&gt;<i>
+</I>&gt;<i>I'm new to this package, so I'm sure I'm just dumb and it is obvious how 
+</I>&gt;<i>to do this.    I want to use the fortuna algo in a simulation environment 
+</I>&gt;<i>(economics if anyone cares), my particular problem I'm trying to solve 
+</I>&gt;<i>would be biased using Mersenne twister (which seems to be the default 
+</I>&gt;<i>everyone uses), and fortuna seems to be the best option given the aspects 
+</I>&gt;<i>of randomness I care about for this problem.
+</I>&gt;<i>
+</I>&gt;<i>Anyhow, I want to seed fortuna with a file I have of atmospheric noise; I 
+</I>&gt;<i>haven't been able to find a doc specifying how to do this.
+</I>
+There's no supported way of doing this in PyCrypto.  The best way to do 
+this, on Linux, would be to just write the data to /dev/random (or install 
+the &quot;entropy-gathering daemon&quot;) and just use Crypto.Random normally.  You 
+won't be able to tell the difference (and if you do, it's a security hole 
+that should be disclosed!)
+
+In theory, however, you could edit 
+Crypto/Random/_UserFriendlyRNG._EntropyCollector and add another 
+_EntropySource instance, then invoke the _EntropySource#feed method for 
+each atmospheric noise reading.
+
+Fortuna's accumulator has 32 pools, and the idea is to spread the entropy 
+uniformly across these pools.  This is ultimately done by invoking 
+FortunaAccumulator#add_random_event, which takes the following parameters:
+
+     - source_number
+         A fixed number (from 0 to 255) that is unique for each entropy 
+         source.  PyCrypto selects numbers starting from 255, so I suggest 
+         that you use a numbers starting from 0.
+     - pool_number
+         Every time your entropy source invokes add_random_event, it should 
+         increment this number, starting at 0, 1, ..., 31, and then wrapping 
+         back to 0.
+     - data
+         The bytes representing your random data.
+
+Honestly, though, you should just use Crypto.Random as-is.  If this is a 
+desktop computer with a keyboard and mouse, there's really no reason to 
+delve into the implementation of Crypto.Random.  Your operating system 
+already has enough entropy to generate cryptographically-secure random 
+numbers that are indistinguishable from a truly random source.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000533.html">[pycrypto] reg current work in pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000535.html">[pycrypto] ANN: PyCrypto 2.5 released
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#534">[ date ]</a>
+              <a href="thread.html#534">[ thread ]</a>
+              <a href="subject.html#534">[ subject ]</a>
+              <a href="author.html#534">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,1424 @@
+From gooksankoo at hoiptorrow.mailexpire.com  Sun Apr 12 08:36:21 2009
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Sun, 12 Apr 2009 16:36:21 +0200
+Subject: [pycrypto] Library design philosophy
+Message-ID: <20090412143621.GA19936@shannon>
+
+Hi,
+
+I think that pycrypto is a great project, but the dependency
+on the C files to carry out the core operation in a way defeats
+the purpose of the library (i.e. being scriptable and platform
+independent).
+
+Of course performance is important, but if I really need to be fast
+my first choice is to use some wrapper to openssl or libtomcrypt
+(e.g m2crypto). On the other hand, the most value I find in pycrypto
+is it being (also) a command-line crypto workbench.
+
+What's your view on this? I appreciate that for some algorithms
+both versions can be used (C vs python), but for instance there is no way
+to use AES w/o having to go through the compilation step. To me, it's
+should be the other way around, first Python code, then C routines.
+
+Cheers,
+
+Legrandin
+
+
+
+From mads at kiilerich.com  Sun Apr 12 14:57:31 2009
+From: mads at kiilerich.com (Mads Kiilerich)
+Date: Sun, 12 Apr 2009 22:57:31 +0200
+Subject: [pycrypto] Library design philosophy
+In-Reply-To: <20090412143621.GA19936@shannon>
+References: <20090412143621.GA19936@shannon>
+Message-ID: <49E255BB.2010200@kiilerich.com>
+
+Legrandin wrote, On 04/12/2009 04:36 PM
+> I think that pycrypto is a great project, but the dependency
+> on the C files to carry out the core operation in a way defeats
+> the purpose of the library (i.e. being scriptable and platform
+> independent).
+>
+> Of course performance is important, but if I really need to be fast
+> my first choice is to use some wrapper to openssl or libtomcrypt
+> (e.g m2crypto). On the other hand, the most value I find in pycrypto
+> is it being (also) a command-line crypto workbench.
+>
+> What's your view on this? I appreciate that for some algorithms
+> both versions can be used (C vs python), but for instance there is no way
+> to use AES w/o having to go through the compilation step. To me, it's
+> should be the other way around, first Python code, then C routines.
+>    
+
+Well ... you can have your opinion if I (a random user) can have mine ;-)
+
+Pycrypto does not claim to be a pure-python crypto library. If you 
+expect it to be that then it probably won't meet your expectations.
+
+Pycrypto _is_ cross-platform, and written in a combination of platform 
+independent C and python, just like Python is. (FWIW, pycrypto _is_ 
+partly a "libtomcrypt wrapper", see 
+http://www.dlitz.net/software/pycrypto/doc/#credits.) Pycrypto _is_ 
+fast. Perhaps not as fast as other optimized libraries are, but it can 
+be used where performance is important.
+
+Some advantages of pycrypto are that it is small, has a simple pythonic 
+API, and don't have any external dependencies. It is not a incomplete 
+wrapper of a huge and complex API (such as the openssl API).
+
+Pure python implementations _could_ be added, but they would probably 
+not really be usable. Users getting this slow fallback would probably be 
+annoyed or complain about the performance instead of fixing the problem 
+by installing the right compiled version. It would also double the cost 
+of maintenance of the library. But a pure python implementation would be 
+convenient for verification of correctness and for documentation purposes.
+
+(Note: I don't understand your comments about being scriptable and a 
+command-line crypto workbench. That seems to be features related to 
+using Python, independent of which crypto library you use.)
+
+/Mads
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 3435 bytes
+Desc: S/MIME Cryptographic Signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20090412/39e4e817/attachment.bin 
+
+From jamesd at echeque.com  Sun Apr 12 20:13:06 2009
+From: jamesd at echeque.com (James A. Donald)
+Date: Mon, 13 Apr 2009 12:13:06 +1000
+Subject: [pycrypto] Library design philosophy
+In-Reply-To: <49E255BB.2010200@kiilerich.com>
+References: <20090412143621.GA19936@shannon> <49E255BB.2010200@kiilerich.com>
+Message-ID: <49E29FB2.6060805@echeque.com>
+
+Mads Kiilerich wrote:
+> Pure python implementations _could_ be added, but they would probably 
+> not really be usable.
+
+Quite so:
+
+Doing crypto in pure python is evil.  No one should ever do it, and any 
+package that does it is wrong.
+
+
+From gooksankoo at hoiptorrow.mailexpire.com  Mon Apr 13 04:46:52 2009
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Mon, 13 Apr 2009 12:46:52 +0200
+Subject: [pycrypto] Library design philosophy
+In-Reply-To: <49E29FB2.6060805@echeque.com>
+References: <20090412143621.GA19936@shannon> <49E255BB.2010200@kiilerich.com>
+	<49E29FB2.6060805@echeque.com>
+Message-ID: <20090413104652.GA21388@shannon>
+
+> Doing crypto in pure python is evil.  No one should ever do it, and any 
+> package that does it is wrong.
+
+Statements like "Doing xxx is evil" are evil. :-)
+
+It is only a matter of context. You probably have the bulk data processing
+in mind, in which case I agree that using pure python is a bad design choice.
+
+Other contexts you may want to consider are the following:
+
+- getting optimized crypto is tricky AND platform dependent. Regression tests
+  in C are a pain to write. Having them in python offers a quicker path to bug fixing.
+- producing test vectors for protocols is a pain in C, and straightforward
+  in python
+- algorithms used for key exchange are typically used only once in a while
+  on the client side and they are not the best candidates for optimization
+- it is faster to introduce a new crypto routine or extend an existing one
+  in python than in C. This is essential for prototyping, which is a field
+  python excel in.
+
+Moreover two facts that I see overlooked are that portable C does not exist,
+and out there we have plenty of different device/compiler combinations that
+will interpret in different ways your well-thought source code. Maybe the
+python runtime you are relying on was built with special tricks, and in order
+to compile your library you have to re-invent te wheel once again.
+
+JIT compilers are also on the rise for python, and when they get mature, the
+performance gap will be consistently reduced. Not a reason for not having the
+most common crypto blocks in optimized C, like DES, AES, SHA-1. But I also
+think that one should not have to install an optional library to use DES, AES,
+SHA-1: the standard one should provide them straightaway.
+
+Cheers,
+
+Legrandin
+
+
+From gooksankoo at hoiptorrow.mailexpire.com  Mon Apr 13 06:54:42 2009
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Mon, 13 Apr 2009 14:54:42 +0200
+Subject: [pycrypto] Library design philosophy
+In-Reply-To: <49E255BB.2010200@kiilerich.com>
+References: <20090412143621.GA19936@shannon> <49E255BB.2010200@kiilerich.com>
+Message-ID: <20090413125442.GB21388@shannon>
+
+> Well ... you can have your opinion if I (a random user) can have mine ;-)
+
+I was just throwing my stone into the water... :-)
+
+> Pycrypto does not claim to be a pure-python crypto library. If you  
+> expect it to be that then it probably won't meet your expectations.
+>
+> Pycrypto _is_ cross-platform, and written in a combination of platform  
+> independent C and python, just like Python is.
+
+My claim goes exactly over the fact that platforms where no suitable
+compiler is present or accessible are not supported. Moreover platform
+independent C really does not exist (see my previous message).
+
+I don't have real expectations, it is (was) just unclear to me what
+the purpose of the library is, and why would one use it. The feeling
+I have is that it tries to be used in two camps, without being really
+good in any.
+
+> (FWIW, pycrypto _is_  
+> partly a "libtomcrypt wrapper", see  
+> http://www.dlitz.net/software/pycrypto/doc/#credits.) Pycrypto _is_  
+> fast. Perhaps not as fast as other optimized libraries are, but it can  
+> be used where performance is important.
+
+Borrowing SHA256 from libtomcrypt does not make it a wrapper to it, first
+because it goes only over SHA256, and second future improvements and bugfixes
+in libtomcrypt will probably never end up in this local version.
+
+> Some advantages of pycrypto are that it is small, has a simple pythonic  
+> API, and don't have any external dependencies. It is not a incomplete  
+> wrapper of a huge and complex API (such as the openssl API).
+
+Agreed, even though it is not clear to me whether you refer to any
+existing wrapper. M2crypto seems pretty good for instance.
+
+> Pure python implementations _could_ be added, but they would probably  
+> not really be usable. Users getting this slow fallback would probably be  
+> annoyed or complain about the performance instead of fixing the problem  
+> by installing the right compiled version.
+
+I saw several times remarks to urge "normal" users not to use pycryto directly
+(e.g. RSA schoolbook encryption), but to rely on savier, higher-level code.
+
+From bogus@does.not.exist.com  Sun Apr 12 08:35:41 2009
+From: bogus@does.not.exist.com ()
+Date: Sun, 12 Apr 2009 14:35:41 -0000
+Subject: No subject
+Message-ID: <mailman.0.1239627266.1077.pycrypto@lists.dlitz.net>
+
+knows how to deal with performance trade-offs, and do not need to be patronized.
+
+Note that we should also define what "too slow" means, 2x? 20x? 50x? What 
+would be an acceptable slow-down, provided that we know that by the time
+performance has become a problem, the *advanced* user would have already
+switched to an optimized library/wrapper?
+
+For instance, the Actionscript crypto library as3crypto is completely written
+in AS:
+
+http://crypto.hurlant.com/demo/srcview/
+
+and one positive performance report:
+
+http://drawlogic.com/2008/02/18/as3-cryptography-libraries/
+
+Note the remark "since most of this is client side and only one user would be
+using it this is not an issue - server side is where this can have scale problems
+from parallel execution but flash is rarely server side if it is too slow,
+but it is quite fast".
+
+> It would also double the cost  
+> of maintenance of the library. But a pure python implementation would be  
+> convenient for verification of correctness and for documentation 
+> purposes.
+
+Correct, so the cost doesn't double actually. :-)
+
+> (Note: I don't understand your comments about being scriptable and a  
+> command-line crypto workbench. That seems to be features related to  
+> using Python, independent of which crypto library you use.)
+
+I don't use often pycrpto for full-blown applications. Instead, I make several
+small proof-of-concepts prototypes that help in setting up the final (C-based!)
+crypto module of the real application. 
+
+Cheers,
+
+Legrandin
+
+
+From dlitz at dlitz.net  Mon Apr 13 22:14:43 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Tue, 14 Apr 2009 00:14:43 -0400
+Subject: [pycrypto] Library design philosophy
+In-Reply-To: <20090413125442.GB21388@shannon>
+References: <20090412143621.GA19936@shannon> <49E255BB.2010200@kiilerich.com>
+	<20090413125442.GB21388@shannon>
+Message-ID: <20090414041443.GA29383@rivest.dlitz.net>
+
+On Mon, Apr 13, 2009 at 02:54:42PM +0200, Legrandin wrote:
+>> Well ... you can have your opinion if I (a random user) can have mine ;-)
+>
+>I was just throwing my stone into the water... :-)
+
+It's good to see this mailing list buzzing. :-)
+
+>> Some advantages of pycrypto are that it is small, has a simple pythonic  
+>> API, and don't have any external dependencies. It is not a incomplete  
+>> wrapper of a huge and complex API (such as the openssl API).
+>
+>Agreed, even though it is not clear to me whether you refer to any
+>existing wrapper. M2crypto seems pretty good for instance.
+
+M2crypto's API is neither simple nor Pythonic, and it depends on OpenSSL.  
+OpenSSL's license is, if I remember correctly, incompatible with the GPL 
+thanks to its advertising clause.
+
+>> Pure python implementations _could_ be added, but they would probably  
+>> not really be usable. Users getting this slow fallback would probably be  
+>> annoyed or complain about the performance instead of fixing the problem  
+>> by installing the right compiled version.
+>
+>I saw several times remarks to urge "normal" users not to use pycryto directly
+>(e.g. RSA schoolbook encryption), but to rely on savier, higher-level code.
+>From that I infer that pycrypto targets "advanced" users, the kind that already
+>knows how to deal with performance trade-offs, and do not need to be patronized.
+
+People who build and install PyCrypto (packagers, vendors, Gentoo users...) 
+do not necessarily understand cryptography.
+
+>Note that we should also define what "too slow" means, 2x? 20x? 50x? What 
+>would be an acceptable slow-down, provided that we know that by the time
+>performance has become a problem, the *advanced* user would have already
+>switched to an optimized library/wrapper?
+
+"Too slow" means slow enough to seriously impact software that uses 
+PyCrypto to do *bulk* encryption/hashing, such as:
+
+     - Paramiko (SSH/SFTP implementation) - http://www.lag.net/paramiko/
+     - Twisted Conch (SSH/SFTP implementation) -
+         http://twistedmatrix.com/trac/wiki/TwistedConch
+     - BitTornado - http://www.bittornado.com/
+     - DebTorrent - http://debtorrent.alioth.debian.org/
+     - bzr (via Paramiko) - http://bazaar-vcs.org/
+     - Launchpad.net (via bzr) - http://launchpad.net/
+     - sshproxy (via Paramiko) - http://sshproxy-project.org/
+     - releaseforge (via Paramiko) - http://releaseforge.sourceforge.net/
+     - Zope3 (via Twisted Conch) - http://www.zope.org/
+     - gecrypt - http://www.dlitz.net/software/gecrypt/
+     - PySFTPd (via Paramiko) - http://www.dlitz.net/software/pysftpd/
+     - python-pbkdf2 - http://www.dlitz.net/software/python-pbkdf2/
+     </shameless-plugs>
+
+"Too slow" also means slow enough to cause users to choose weaker 
+algorithms or security parameters.  For example, if users routinely choose
+1024-bit RSA keys (or SHA1/MD5 hashes) over strong alternatives for 
+performance reasons, then the library they're using is too slow.
+
+>> (Note: I don't understand your comments about being scriptable and a  
+>> command-line crypto workbench. That seems to be features related to  
+>> using Python, independent of which crypto library you use.)
+>
+>I don't use often pycrpto for full-blown applications. Instead, I make several
+>small proof-of-concepts prototypes that help in setting up the final (C-based!)
+>crypto module of the real application. 
+
+PyCrypto still has lots of room for improvement, but people can and do 
+already use it in real applications.  I would love to reduce the amount of 
+C code in PyCrypto (especially where it's ugly and/or 
+ambiguously-licensed), but I don't see the build-dependency on a C compiler 
+going away any time soon.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From jamesd at echeque.com  Tue Apr 14 21:47:16 2009
+From: jamesd at echeque.com (James A. Donald)
+Date: Wed, 15 Apr 2009 13:47:16 +1000
+Subject: [pycrypto] Library design philosophy
+In-Reply-To: <20090414041443.GA29383@rivest.dlitz.net>
+References: <20090412143621.GA19936@shannon>
+	<49E255BB.2010200@kiilerich.com>	<20090413125442.GB21388@shannon>
+	<20090414041443.GA29383@rivest.dlitz.net>
+Message-ID: <49E558C4.9050602@echeque.com>
+
+Dwayne C. Litzenberger wrote:
+ > M2crypto's API is neither simple nor Pythonic,
+
+What makes PyCryto pythonic, and M2crytpo unpythonic,
+apart from the fact that M2Crypto wraps a very large
+random aggregation of stuff that was concocted over many
+years by overly large and excessively official
+committees?
+
+From mads at kiilerich.com  Wed Apr 15 17:01:32 2009
+From: mads at kiilerich.com (Mads Kiilerich)
+Date: Thu, 16 Apr 2009 01:01:32 +0200
+Subject: [pycrypto] Library design philosophy
+In-Reply-To: <49E558C4.9050602@echeque.com>
+References: <20090412143621.GA19936@shannon>	<49E255BB.2010200@kiilerich.com>	<20090413125442.GB21388@shannon>	<20090414041443.GA29383@rivest.dlitz.net>
+	<49E558C4.9050602@echeque.com>
+Message-ID: <49E6674C.9010304@kiilerich.com>
+
+James A. Donald wrote, On 04/15/2009 05:47 AM:
+> Dwayne C. Litzenberger wrote:
+>   >  M2crypto's API is neither simple nor Pythonic,
+>
+> What makes PyCryto pythonic, and M2crytpo unpythonic,
+> apart from the fact that M2Crypto wraps a very large
+> random aggregation of stuff that was concocted over many
+> years by overly large and excessively official
+> committees?
+>    
+
+You could say that if it has been designed with python in mind then it 
+is pythonic. That doesn't necessarily make it any better than the 
+opposite, even though we must expect a bit python fanboyism here on a 
+python list ;-)
+
+The "apart" you mention could be a good reason for calling m2crypto 
+"unpythonic". For a wrapper of a library one of the goals should be to 
+provide an api as close to the original as possible so that existing 
+examples and documentation can be used, so being called "unpythonic" 
+isnt' necessarily a bad thing.
+
+Looking at it again m2crypto isn't as bad as I remember it, and I don't 
+know it well enough to give any examples of where it is bad.
+
+Pycrypto do have the freedom to provide the best possible API and 
+(AFAIK) a goal of being as simple as possible and as much in the python 
+tradition as possible.
+
+Which one is "best" is probably mostly a matter of requirements and 
+preferences.
+
+/Mads
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 3435 bytes
+Desc: S/MIME Cryptographic Signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20090416/c5777667/attachment.bin 
+
+From exarkun at twistedmatrix.com  Wed Apr 22 11:23:35 2009
+From: exarkun at twistedmatrix.com (Jean-Paul Calderone)
+Date: Wed, 22 Apr 2009 13:23:35 -0400
+Subject: [pycrypto] DES/DES3/XOR/etc removal
+In-Reply-To: 0
+Message-ID: <20090422172335.24697.1478264072.divmod.quotient.10540@henry.divmod.com>
+
+Hello,
+
+Someone pointed out that XOR and several other ciphers [1] have been
+removed from PyCrypto.  This has the consequence that Twisted Conch,
+and SSH client and server implementation which depends on PyCrypto,
+no longer works with the latest development version of PyCrypto, and
+I assume that when the next release of PyCrypto is made, Conch also
+won't work with that.
+
+I'm curious how important backwards compatibility is deemed with the
+new PyCrypto development going on.  A change like the one referenced
+above is going to break users of PyCrypto (and that seems like it is
+really obvious, to me - as opposed to a change which only accidentally
+breaks applications).  The added maintenance burden this causes makes
+PyCrypto less attractive (one nice thing about PyCrypto having been
+unmaintained for a long time is that Conch's use of it stayed as
+correct (or incorrect) as it was when it was written).  Basically, the
+question is whether I should expect more PyCrypto changes like this
+as development proceeds, or whether I can make the argument that backwards
+compatibility is a *good* thing compelling.
+
+Of course it's one thing to say "more backwards compatibility please".
+Actually deciding how that can be accomplished while allowing development
+to proceed in a useful direction is another.  However, I'm intentionally
+omitting details of that discussion from this message to keep things
+simple.  I'm convinced that some degree of backwards compatibility is
+always possible, regardless of the changes desired, so the details of how
+it works aren't as important as deciding whether backwards compatibility
+will be maintained.
+
+So, what do you say?  Can we decide that backwards compatibility is a good
+thing?
+
+Jean-Paul
+
+[1] - http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git;a=commit;h=5b5b496c0f81f3595d0aebb8da5196492abae429
+
+From tzury.by at reguluslabs.com  Wed Apr 22 11:55:47 2009
+From: tzury.by at reguluslabs.com (Tzury Bar Yochay)
+Date: Wed, 22 Apr 2009 20:55:47 +0300
+Subject: [pycrypto] DES/DES3/XOR/etc removal
+In-Reply-To: <20090422172335.24697.1478264072.divmod.quotient.10540@henry.divmod.com>
+References: <20090422172335.24697.1478264072.divmod.quotient.10540@henry.divmod.com>
+Message-ID: <10128ef10904221055x7f7bff03xf0a610b666f591d2@mail.gmail.com>
+
+please keep the DES3 and XOR.
+we use them and need them in our ongoing projects
+
+On Wed, Apr 22, 2009 at 8:23 PM, Jean-Paul Calderone <
+exarkun at twistedmatrix.com> wrote:
+
+> Hello,
+>
+> Someone pointed out that XOR and several other ciphers [1] have been
+> removed from PyCrypto.  This has the consequence that Twisted Conch,
+> and SSH client and server implementation which depends on PyCrypto,
+> no longer works with the latest development version of PyCrypto, and
+> I assume that when the next release of PyCrypto is made, Conch also
+> won't work with that.
+>
+> I'm curious how important backwards compatibility is deemed with the
+> new PyCrypto development going on.  A change like the one referenced
+> above is going to break users of PyCrypto (and that seems like it is
+> really obvious, to me - as opposed to a change which only accidentally
+> breaks applications).  The added maintenance burden this causes makes
+> PyCrypto less attractive (one nice thing about PyCrypto having been
+> unmaintained for a long time is that Conch's use of it stayed as
+> correct (or incorrect) as it was when it was written).  Basically, the
+> question is whether I should expect more PyCrypto changes like this
+> as development proceeds, or whether I can make the argument that backwards
+> compatibility is a *good* thing compelling.
+>
+> Of course it's one thing to say "more backwards compatibility please".
+> Actually deciding how that can be accomplished while allowing development
+> to proceed in a useful direction is another.  However, I'm intentionally
+> omitting details of that discussion from this message to keep things
+> simple.  I'm convinced that some degree of backwards compatibility is
+> always possible, regardless of the changes desired, so the details of how
+> it works aren't as important as deciding whether backwards compatibility
+> will be maintained.
+>
+> So, what do you say?  Can we decide that backwards compatibility is a good
+> thing?
+>
+> Jean-Paul
+>
+> [1] -
+> http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git;a=commit;h=5b5b496c0f81f3595d0aebb8da5196492abae429
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090422/2e0a1966/attachment.htm 
+
+From reikon at reikon.us  Wed Apr 22 15:05:20 2009
+From: reikon at reikon.us (Thomas Dixon)
+Date: Wed, 22 Apr 2009 17:05:20 -0400
+Subject: [pycrypto] DES/DES3/XOR/etc removal
+In-Reply-To: <10128ef10904221055x7f7bff03xf0a610b666f591d2@mail.gmail.com>
+References: <20090422172335.24697.1478264072.divmod.quotient.10540@henry.divmod.com>
+	<10128ef10904221055x7f7bff03xf0a610b666f591d2@mail.gmail.com>
+Message-ID: <49EF8690.8010301@reikon.us>
+
+Tzury Bar Yochay wrote:
+> please keep the DES3 and XOR.
+> we use them and need them in our ongoing projects
+>
+> On Wed, Apr 22, 2009 at 8:23 PM, Jean-Paul Calderone
+> <exarkun at twistedmatrix.com <mailto:exarkun at twistedmatrix.com>> wrote:
+>
+>     Hello,
+>
+>     Someone pointed out that XOR and several other ciphers [1] have been
+>     removed from PyCrypto.  This has the consequence that Twisted Conch,
+>     and SSH client and server implementation which depends on PyCrypto,
+>     no longer works with the latest development version of PyCrypto, and
+>     I assume that when the next release of PyCrypto is made, Conch also
+>     won't work with that.
+>
+>     I'm curious how important backwards compatibility is deemed with the
+>     new PyCrypto development going on.  A change like the one referenced
+>     above is going to break users of PyCrypto (and that seems like it is
+>     really obvious, to me - as opposed to a change which only accidentally
+>     breaks applications).  The added maintenance burden this causes makes
+>     PyCrypto less attractive (one nice thing about PyCrypto having been
+>     unmaintained for a long time is that Conch's use of it stayed as
+>     correct (or incorrect) as it was when it was written).  Basically, the
+>     question is whether I should expect more PyCrypto changes like this
+>     as development proceeds, or whether I can make the argument that
+>     backwards
+>     compatibility is a *good* thing compelling.
+>
+>     Of course it's one thing to say "more backwards compatibility please".
+>     Actually deciding how that can be accomplished while allowing
+>     development
+>     to proceed in a useful direction is another.  However, I'm
+>     intentionally
+>     omitting details of that discussion from this message to keep things
+>     simple.  I'm convinced that some degree of backwards compatibility is
+>     always possible, regardless of the changes desired, so the details
+>     of how
+>     it works aren't as important as deciding whether backwards
+>     compatibility
+>     will be maintained.
+>
+>     So, what do you say?  Can we decide that backwards compatibility
+>     is a good
+>     thing?
+>
+>     Jean-Paul
+>
+>     [1] -
+>     http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git;a=commit;h=5b5b496c0f81f3595d0aebb8da5196492abae429
+>     _______________________________________________
+>     pycrypto mailing list
+>     pycrypto at lists.dlitz.net <mailto:pycrypto at lists.dlitz.net>
+>     http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>   
+Personally, if Dwayne has decided to remove Blowfish, DES, 3DES, RC5,
+IDEA, and XOR, then I agree with that decision completely. From a legal
+and security standpoint, it makes perfect sense. There's also nothing to
+say that Dwayne won't add different implementations of some of these
+algorithms back into PyCrypto's offerings at a later date. Remember:
+Those who will primarily suffer from a software developer's laziness are
+their users.
+
+Thom
+
+From exarkun at twistedmatrix.com  Wed Apr 22 15:22:00 2009
+From: exarkun at twistedmatrix.com (Jean-Paul Calderone)
+Date: Wed, 22 Apr 2009 17:22:00 -0400
+Subject: [pycrypto] DES/DES3/XOR/etc removal
+In-Reply-To: <49EF8690.8010301@reikon.us>
+Message-ID: <20090422212200.24697.1644424365.divmod.quotient.10615@henry.divmod.com>
+
+On Wed, 22 Apr 2009 17:05:20 -0400, Thomas Dixon <reikon at reikon.us> wrote:
+>Tzury Bar Yochay wrote:
+>> please keep the DES3 and XOR.
+>> we use them and need them in our ongoing projects
+>>
+>> On Wed, Apr 22, 2009 at 8:23 PM, Jean-Paul Calderone
+>> <exarkun at twistedmatrix.com <mailto:exarkun at twistedmatrix.com>> wrote:
+>>
+>>     Hello,
+>>
+>>     Someone pointed out that XOR and several other ciphers [1] have been
+>>     removed from PyCrypto.  This has the consequence that Twisted Conch,
+>>     and SSH client and server implementation which depends on PyCrypto,
+>>     no longer works with the latest development version of PyCrypto, and
+>>     I assume that when the next release of PyCrypto is made, Conch also
+>>     won't work with that.
+>>
+>>     I'm curious how important backwards compatibility is deemed with the
+>>     new PyCrypto development going on.  A change like the one referenced
+>>     above is going to break users of PyCrypto (and that seems like it is
+>>     really obvious, to me - as opposed to a change which only accidentally
+>>     breaks applications).  The added maintenance burden this causes makes
+>>     PyCrypto less attractive (one nice thing about PyCrypto having been
+>>     unmaintained for a long time is that Conch's use of it stayed as
+>>     correct (or incorrect) as it was when it was written).  Basically, the
+>>     question is whether I should expect more PyCrypto changes like this
+>>     as development proceeds, or whether I can make the argument that
+>>     backwards
+>>     compatibility is a *good* thing compelling.
+>>
+>>     Of course it's one thing to say "more backwards compatibility please".
+>>     Actually deciding how that can be accomplished while allowing
+>>     development
+>>     to proceed in a useful direction is another.  However, I'm
+>>     intentionally
+>>     omitting details of that discussion from this message to keep things
+>>     simple.  I'm convinced that some degree of backwards compatibility is
+>>     always possible, regardless of the changes desired, so the details
+>>     of how
+>>     it works aren't as important as deciding whether backwards
+>>     compatibility
+>>     will be maintained.
+>>
+>>     So, what do you say?  Can we decide that backwards compatibility
+>>     is a good
+>>     thing?
+>>
+>>     Jean-Paul
+>>
+>>     [1] -
+>>     http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git;a=commit;h=5b5b496c0f81f3595d0aebb8da5196492abae429
+>>     _______________________________________________
+>>     pycrypto mailing list
+>>     pycrypto at lists.dlitz.net <mailto:pycrypto at lists.dlitz.net>
+>>     http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>>
+>> ------------------------------------------------------------------------
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>Personally, if Dwayne has decided to remove Blowfish, DES, 3DES, RC5,
+>IDEA, and XOR, then I agree with that decision completely. From a legal
+>and security standpoint, it makes perfect sense. There's also nothing to
+>say that Dwayne won't add different implementations of some of these
+>algorithms back into PyCrypto's offerings at a later date.
+
+Great.  If that's the plan, then my complaint is moot.  My concern is
+that the next release of PyCrypto won't have these APIs.
+
+I understand that there are legal issues, but they're not new - PyCrypto
+has had whatever they are for almost a decade - maybe *more* than a decade,
+I dunno.  I'm all for resolving them, but I don't think the resolution needs
+to be immediate, given that it is going to break things.  Go ahead and
+deprecate the APIs with implementations that are not licensed compatibly
+with the rest of PyCrypto, and even remove them after having deprecated
+them for a while.  But don't just delete them without warning and surprise
+all the application developers relying on them.  Again, if the plan is to
+restore these APIs with new implementations, great, I'll stop complaining.
+
+>Remember:
+>Those who will primarily suffer from a software developer's laziness are
+>their users.
+
+I don't know what you mean by this.
+
+Jean-Paul
+
+From reikon at reikon.us  Wed Apr 22 15:26:31 2009
+From: reikon at reikon.us (Thomas Dixon)
+Date: Wed, 22 Apr 2009 17:26:31 -0400
+Subject: [pycrypto] DES/DES3/XOR/etc removal
+In-Reply-To: <20090422212200.24697.1644424365.divmod.quotient.10615@henry.divmod.com>
+References: <20090422212200.24697.1644424365.divmod.quotient.10615@henry.divmod.com>
+Message-ID: <49EF8B87.6090608@reikon.us>
+
+Jean-Paul Calderone wrote:
+> On Wed, 22 Apr 2009 17:05:20 -0400, Thomas Dixon <reikon at reikon.us> wrote:
+>   
+>> Tzury Bar Yochay wrote:
+>>     
+>>> please keep the DES3 and XOR.
+>>> we use them and need them in our ongoing projects
+>>>
+>>> On Wed, Apr 22, 2009 at 8:23 PM, Jean-Paul Calderone
+>>> <exarkun at twistedmatrix.com <mailto:exarkun at twistedmatrix.com>> wrote:
+>>>
+>>>     Hello,
+>>>
+>>>     Someone pointed out that XOR and several other ciphers [1] have been
+>>>     removed from PyCrypto.  This has the consequence that Twisted Conch,
+>>>     and SSH client and server implementation which depends on PyCrypto,
+>>>     no longer works with the latest development version of PyCrypto, and
+>>>     I assume that when the next release of PyCrypto is made, Conch also
+>>>     won't work with that.
+>>>
+>>>     I'm curious how important backwards compatibility is deemed with the
+>>>     new PyCrypto development going on.  A change like the one referenced
+>>>     above is going to break users of PyCrypto (and that seems like it is
+>>>     really obvious, to me - as opposed to a change which only accidentally
+>>>     breaks applications).  The added maintenance burden this causes makes
+>>>     PyCrypto less attractive (one nice thing about PyCrypto having been
+>>>     unmaintained for a long time is that Conch's use of it stayed as
+>>>     correct (or incorrect) as it was when it was written).  Basically, the
+>>>     question is whether I should expect more PyCrypto changes like this
+>>>     as development proceeds, or whether I can make the argument that
+>>>     backwards
+>>>     compatibility is a *good* thing compelling.
+>>>
+>>>     Of course it's one thing to say "more backwards compatibility please".
+>>>     Actually deciding how that can be accomplished while allowing
+>>>     development
+>>>     to proceed in a useful direction is another.  However, I'm
+>>>     intentionally
+>>>     omitting details of that discussion from this message to keep things
+>>>     simple.  I'm convinced that some degree of backwards compatibility is
+>>>     always possible, regardless of the changes desired, so the details
+>>>     of how
+>>>     it works aren't as important as deciding whether backwards
+>>>     compatibility
+>>>     will be maintained.
+>>>
+>>>     So, what do you say?  Can we decide that backwards compatibility
+>>>     is a good
+>>>     thing?
+>>>
+>>>     Jean-Paul
+>>>
+>>>     [1] -
+>>>     http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git;a=commit;h=5b5b496c0f81f3595d0aebb8da5196492abae429
+>>>     _______________________________________________
+>>>     pycrypto mailing list
+>>>     pycrypto at lists.dlitz.net <mailto:pycrypto at lists.dlitz.net>
+>>>     http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>>
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> _______________________________________________
+>>> pycrypto mailing list
+>>> pycrypto at lists.dlitz.net
+>>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>>
+>>>       
+>> Personally, if Dwayne has decided to remove Blowfish, DES, 3DES, RC5,
+>> IDEA, and XOR, then I agree with that decision completely. From a legal
+>> and security standpoint, it makes perfect sense. There's also nothing to
+>> say that Dwayne won't add different implementations of some of these
+>> algorithms back into PyCrypto's offerings at a later date.
+>>     
+>
+> Great.  If that's the plan, then my complaint is moot.  My concern is
+> that the next release of PyCrypto won't have these APIs.
+>
+> I understand that there are legal issues, but they're not new - PyCrypto
+> has had whatever they are for almost a decade - maybe *more* than a decade,
+> I dunno.  I'm all for resolving them, but I don't think the resolution needs
+> to be immediate, given that it is going to break things.  Go ahead and
+> deprecate the APIs with implementations that are not licensed compatibly
+> with the rest of PyCrypto, and even remove them after having deprecated
+> them for a while.  But don't just delete them without warning and surprise
+> all the application developers relying on them.  Again, if the plan is to
+> restore these APIs with new implementations, great, I'll stop complaining.
+>
+>   
+>> Remember:
+>> Those who will primarily suffer from a software developer's laziness are
+>> their users.
+>>     
+>
+> I don't know what you mean by this.
+>
+> Jean-Paul
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>   
+I don't see how he's deleting anything without warning. You *are*
+referring to a *development* version, are you not? How do you know he
+doesn't plan to replace some of the implementations he removed with
+different implementations prior to the next release?
+
+Thom
+
+From exarkun at twistedmatrix.com  Wed Apr 22 15:28:40 2009
+From: exarkun at twistedmatrix.com (Jean-Paul Calderone)
+Date: Wed, 22 Apr 2009 17:28:40 -0400
+Subject: [pycrypto] DES/DES3/XOR/etc removal
+In-Reply-To: <49EF8B87.6090608@reikon.us>
+Message-ID: <20090422212840.24697.942082347.divmod.quotient.10620@henry.divmod.com>
+
+On Wed, 22 Apr 2009 17:26:31 -0400, Thomas Dixon <reikon at reikon.us> wrote:
+>Jean-Paul Calderone wrote:
+> [snip]
+>>
+>> Great.  If that's the plan, then my complaint is moot.  My concern is
+>> that the next release of PyCrypto won't have these APIs.
+>>
+> [snip]
+>>
+>I don't see how he's deleting anything without warning. You *are*
+>referring to a *development* version, are you not? How do you know he
+>doesn't plan to replace some of the implementations he removed with
+>different implementations prior to the next release?
+
+I don't know.  I'm asking.  Is that the plan?
+
+Jean-Paul
+
+From jamesd at echeque.com  Thu Apr 23 01:52:51 2009
+From: jamesd at echeque.com (James A. Donald)
+Date: Thu, 23 Apr 2009 17:52:51 +1000
+Subject: [pycrypto] DES/DES3/XOR/etc removal
+In-Reply-To: <10128ef10904221055x7f7bff03xf0a610b666f591d2@mail.gmail.com>
+References: <20090422172335.24697.1478264072.divmod.quotient.10540@henry.divmod.com>
+	<10128ef10904221055x7f7bff03xf0a610b666f591d2@mail.gmail.com>
+Message-ID: <49F01E53.1000001@echeque.com>
+
+You should never break backwards compatibility - observe that most DOS 
+programs still run.
+
+No matter how bad the old version, if one needs to introduce 
+compatibility breaking changes, you need a compatibility mode and an 
+implicit or explicit protocol negotiation phase.
+
+From dlitz at dlitz.net  Sat Apr 25 10:13:49 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sat, 25 Apr 2009 12:13:49 -0400
+Subject: [pycrypto] DES/DES3/XOR/etc removal
+In-Reply-To: <20090422172335.24697.1478264072.divmod.quotient.10540@henry.divmod.com>
+References: <20090422172335.24697.1478264072.divmod.quotient.10540@henry.divmod.com>
+Message-ID: <20090425161349.GA14006@rivest.dlitz.net>
+
+On Wed, Apr 22, 2009 at 01:23:35PM -0400, Jean-Paul Calderone wrote:
+>So, what do you say?  Can we decide that backwards compatibility is a good
+>thing?
+
+Sure.
+
+Here's my vision going forward:
+
+1. Keep the Crypto.Cipher and Crypto.Hash APIs.  These are easily the most
+   popular (and most important) parts of PyCrypto, and they work well.
+
+2. Drop patent-encumbered algorithms.  This means RC5 and IDEA.
+
+3. Clean up copyright/licensing ambiguities.  This is why the previous DES3
+   module was removed: From what I can tell, it was written by Eric Young
+   and it's probably from libdes, which has the GPL-incompatible BSD
+   advertising clause, and is apparently stuck with it:
+
+        "In this non-signed mail he basically says that he does not care
+        about this advertising clause anymore as he now works on other
+        projects, but is, due to his contract with RSA, unable to release a
+        new version with a changed license."
+           http://www.mail-archive.com/debian-legal at lists.debian.org/msg13093.html
+
+   If there are compatibility issues with the new DES/DES3 code, please
+   report them as bugs.
+
+4. Remove old cruft that nobody uses.  I do *not* plan to drop, MD5, SHA1,
+   or DES/DES3, since they are a mandatory part of many protocols, but I'm
+   considering dropping:
+     - ARC2
+     - MD2
+     - Chaffing
+     - AllOrNothing
+     - qNEW
+
+5. Improve the trustworthiness of the implementation.  Crypto.SelfTest is a
+   big part of that.  Cleaning up the existing C code and using stdint.h
+   (uint32_t et al.) is another.  In the long term, I would also like to
+   reduce the amount of hand-coded C, but only if the alternative is less
+   likely to have bugs than hand-coded C.
+
+6. Eventually, replace the asymmetric cipher API (PublicKey) with something
+   that doesn't try so hard to be a 'grand unified API'.  RSA is
+   conceptually very different from DSA, and having it return a tuple just
+   because DSA needs to is confusing.
+
+7. Deprecate, then drop Crypto.Util.randpool (replaced with Crypto.Random).
+   A lot of people misunderstood how RandomPool was supposed to work, and
+   wrote code that was insecure (or secure only due to sheer luck) as a
+   result.  See:
+    http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html
+    http://lists.dlitz.net/pipermail/pycrypto/2008q3/000020.html
+
+   I'm open to suggestions about the exact process to use here, as long as
+   it results in the old RandomPool implementation going away in the end.
+
+8. Fix and/or replace other confusing APIs.  For example, in
+   Crypto.Util.number, isPrime isn't actually cryptographically strong
+   (unlike what you might expect from a crypto library), and
+   getRandomNumber's behaviour has confused at least one person[1].  Both
+   have their purposes, but are confusingly named.
+
+9. Fix implementation bugs and build issues.
+
+11. Maintain compatibility with Python 2.x, versions 2.1 and later for the
+    next release, and version 2.2 and later for subsequent releases.  I am
+    currently testing against Python 2.1, 2.2, 2.3, 2.4, 2.5, and 2.6.
+
+12. Support Python 3.
+
+13. Avoid US-origin code, to make things simpler for myself and other
+    Canadian distributors.  (Yay crypto export controls!)
+
+14. Add full support for ASN.1, PKCS#12, and all variations of X.509.[3]
+
+15. Support mandatory key escrow.[4]
+
+To summarize, I plan to maintain backwards compatibility where it makes
+sense, but I also want to fix/remove APIs that violate user expectations,
+and I want to remove cruft that nobody uses.  It's not easy to determine
+what "nobody uses", so I tend to first search Google Code Search, ask this
+mailing list, or just drop the module from the git repository and see if
+anyone complains.  If you thought DES/DES3 support was going away, then
+complaining here was exactly the right thing to do.
+
+I'll address each of the removed modules:
+
+     - Blowfish: Copyright issues. Replaced with my own implementation.
+
+     - DES/DES3: Copyright issues. Replaced with the implementation from
+       LibTomCrypt, plus a wrapper to provide the PyCrypto interface.
+
+     - RIPEMD: Copyright issues. Replaced with my own implementation.
+
+     - IDEA/RC5: Gone due to patent encumbrances (and maybe also copyright
+       issues).  Debian's PyCrypto packages have omitted the RC5 and IDEA
+       for a long time, and it hasn't been a big problem as far as I can
+       tell.  In any case, I don't have any desire to maintain "free"
+       software that people aren't actually free to use and/or distribute
+       due to patent encumbrances.
+
+As for the XOR module, I removed it for the following reasons:
+
+     - It's insecure as a stream cipher, obviously.
+
+     - The old XOR module would silently truncate its "key" to 32 bytes,
+       which violates expectations in a bad way for people who want to use
+       it to implement a one-time pad, or a PRNG, or even HMAC-SHA512.
+
+     - I already wrote a replacement strxor module that does fast XORing of
+       strings (though with a different API).
+
+     - I thought nobody was making significant use of it.  This might be
+       mistaken.
+
+How does Twisted Conch use the XOR module?  Would you prefer to use the new
+strxor module instead?  I don't want to resurrect the old XOR.c code, but I
+wouldn't be opposed to a wrapper around strxor that provides the same
+interface, if someone wanted to write one.[2]
+
+I hope that clears things up.
+
+Cheers!
+
+--
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+Footnotes:
+
+[1] I had someone send me an email saying that he had done statistical
+tests and found that PyCrypto's random number generator was biased.  I
+initially thought he was referring to Crypto.Random, but it turned out that
+he was using getRandomNumber(), which always sets the most-significant bit
+to 1.
+
+[2] Provided, of course, that the code looks good and the developer is
+willing to certify that it meets the "PyCrypto Code Submission Requirements
+- Rev. C" <http://www.pycrypto.org/submission-requirements/>
+
+[3] Ha! Just kidding!
+
+[4] Not bloody likely.
+
+
+From mads at kiilerich.com  Sat May  2 07:15:42 2009
+From: mads at kiilerich.com (Mads Kiilerich)
+Date: Sat, 02 May 2009 15:15:42 +0200
+Subject: [pycrypto] FYI: PyCrypto on Google App Engine
+Message-ID: <49FC477E.8060804@kiilerich.com>
+
+http://code.google.com/appengine/docs/python/tools/libraries.html#PyCrypto
+
+App Engine includes a custom version of the Python Cryptography Toolkit 
+<http://www.amk.ca/python/code/crypto>, also known as PyCrypto. The 
+version included with App Engine is based on pycrypto 2.0.1. This is not 
+the latest version <http://pycrypto.org>, but should be largely 
+compatible with more recent versions.
+
+For reasons both technical and legal, the App Engine version of PyCrypto 
+has the following differences from the original PyCrypto 2.0.1:
+
+    *
+
+      The RC5 and IDEA ciphers have been removed.
+
+    *
+
+      The MODE_PGP encryption mode has been removed.
+
+    *
+
+      All public key cryptography routines are implemented in pure
+      Python code. They do not use any native acceleration (C code).
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 3435 bytes
+Desc: S/MIME Cryptographic Signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20090502/2c14e40d/attachment.bin 
+
+From dlitz at dlitz.net  Sun May  3 10:49:54 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 3 May 2009 12:49:54 -0400
+Subject: [pycrypto] FYI: PyCrypto on Google App Engine
+In-Reply-To: <49FC477E.8060804@kiilerich.com>
+References: <49FC477E.8060804@kiilerich.com>
+Message-ID: <20090503164954.GA17760@rivest.dlitz.net>
+
+On Sat, May 02, 2009 at 03:15:42PM +0200, Mads Kiilerich wrote:
+> http://code.google.com/appengine/docs/python/tools/libraries.html#PyCrypto
+>
+> App Engine includes a custom version of the Python Cryptography Toolkit 
+> <http://www.amk.ca/python/code/crypto>, also known as PyCrypto. The version 
+> included with App Engine is based on pycrypto 2.0.1. This is not the latest 
+> version <http://pycrypto.org>, but should be largely compatible with more 
+> recent versions.
+
+Neat.  Thanks for pointing this out.
+
+> For reasons both technical and legal, the App Engine version of PyCrypto 
+> has the following differences from the original PyCrypto 2.0.1:
+>
+>    * The RC5 and IDEA ciphers have been removed.
+
+Makes sense.  RC5 and IDEA are patent-encumbered.
+
+>    * The MODE_PGP encryption mode has been removed.
+
+Hmm.  Does anybody know why MODE_PGP would have been removed?
+
+>    * All public key cryptography routines are implemented in pure
+>      Python code. They do not use any native acceleration (C code).
+
+In other words, they built PyCrypto without the optional support for libgmp 
+(_fastmath.c).
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+
+From samphippen at googlemail.com  Sun May  3 12:33:54 2009
+From: samphippen at googlemail.com (Sam Phippen)
+Date: Sun, 3 May 2009 19:33:54 +0100
+Subject: [pycrypto] FYI: PyCrypto on Google App Engine
+In-Reply-To: <20090503164954.GA17760@rivest.dlitz.net>
+References: <49FC477E.8060804@kiilerich.com>
+	<20090503164954.GA17760@rivest.dlitz.net>
+Message-ID: <b6bc4a080905031133x3e236d23uebdbf083ef66fc1f@mail.gmail.com>
+
+2009/5/3 Dwayne C. Litzenberger <dlitz at dlitz.net>
+
+> On Sat, May 02, 2009 at 03:15:42PM +0200, Mads Kiilerich wrote:
+> >
+> http://code.google.com/appengine/docs/python/tools/libraries.html#PyCrypto
+> >
+> > App Engine includes a custom version of the Python Cryptography Toolkit
+> > <http://www.amk.ca/python/code/crypto>, also known as PyCrypto. The
+> version
+> > included with App Engine is based on pycrypto 2.0.1. This is not the
+> latest
+> > version <http://pycrypto.org>, but should be largely compatible with
+> more
+> > recent versions.
+>
+> Neat.  Thanks for pointing this out.
+>
+> > For reasons both technical and legal, the App Engine version of PyCrypto
+> > has the following differences from the original PyCrypto 2.0.1:
+> >
+> >    * The RC5 and IDEA ciphers have been removed.
+>
+> Makes sense.  RC5 and IDEA are patent-encumbered.
+>
+> >    * The MODE_PGP encryption mode has been removed.
+>
+> Hmm.  Does anybody know why MODE_PGP would have been removed?
+
+
+PGP is a registered company, there may be some trademark/copyright issues
+there.
+
+
+>
+>
+> >    * All public key cryptography routines are implemented in pure
+> >      Python code. They do not use any native acceleration (C code).
+>
+> In other words, they built PyCrypto without the optional support for libgmp
+> (_fastmath.c).
+>
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+>  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Sam Phippen
+
+Please avoid sending me Word or PowerPoint attachments.
+See http://www.gnu.org/philosophy/no-word-attachments.html
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090503/8e7d0773/attachment.htm 
+
+From exarkun at divmod.com  Sun May  3 11:01:48 2009
+From: exarkun at divmod.com (Jean-Paul Calderone)
+Date: Sun, 3 May 2009 13:01:48 -0400
+Subject: [pycrypto] DES/DES3/XOR/etc removal
+In-Reply-To: 0
+Message-ID: <20090504155044.21531.625050512.divmod.quotient.217@henry.divmod.com>
+
+On Sat, 25 Apr 2009 12:13:49 -0400, "Dwayne C. Litzenberger" <dlitz at dlitz.net> wrote:
+>On Wed, Apr 22, 2009 at 01:23:35PM -0400, Jean-Paul Calderone wrote:
+>>So, what do you say?  Can we decide that backwards compatibility is a good
+>>thing?
+>
+>Sure.
+
+Hey Dwayne,
+
+First, thanks for the detailed response. :)
+
+>
+>Here's my vision going forward:
+>
+>1. Keep the Crypto.Cipher and Crypto.Hash APIs.  These are easily the most
+>   popular (and most important) parts of PyCrypto, and they work well.
+>
+>2. Drop patent-encumbered algorithms.  This means RC5 and IDEA.
+>
+>3. Clean up copyright/licensing ambiguities.  This is why the previous DES3
+>   module was removed: From what I can tell, it was written by Eric Young
+>   and it's probably from libdes, which has the GPL-incompatible BSD
+>   advertising clause, and is apparently stuck with it:
+>
+>        "In this non-signed mail he basically says that he does not care
+>        about this advertising clause anymore as he now works on other
+>        projects, but is, due to his contract with RSA, unable to release a
+>        new version with a changed license."
+>           http://www.mail-archive.com/debian-legal at lists.debian.org/msg13093.html
+>
+>   If there are compatibility issues with the new DES/DES3 code, please
+>   report them as bugs.
+
+Sure thing. :)  I'm not personally tracking the latest development version
+of PyCrypto (that is, I don't run my test suites against it).  Every once
+in a while someone pops up who is tracking it, though, and they ask me why
+Twisted isn't working.  I'll continue to encourage these people to file
+bugs in the right place.
+
+>4. Remove old cruft that nobody uses.  I do *not* plan to drop, MD5, SHA1,
+>   or DES/DES3, since they are a mandatory part of many protocols, but I'm
+>   considering dropping:
+>     - ARC2
+>     - MD2
+>     - Chaffing
+>     - AllOrNothing
+>     - qNEW
+>
+>5. Improve the trustworthiness of the implementation.  Crypto.SelfTest is a
+>   big part of that.  Cleaning up the existing C code and using stdint.h
+>   (uint32_t et al.) is another.  In the long term, I would also like to
+>   reduce the amount of hand-coded C, but only if the alternative is less
+>   likely to have bugs than hand-coded C.
+>
+>6. Eventually, replace the asymmetric cipher API (PublicKey) with something
+>   that doesn't try so hard to be a 'grand unified API'.  RSA is
+>   conceptually very different from DSA, and having it return a tuple just
+>   because DSA needs to is confusing.
+>
+>7. Deprecate, then drop Crypto.Util.randpool (replaced with Crypto.Random).
+>   A lot of people misunderstood how RandomPool was supposed to work, and
+>   wrote code that was insecure (or secure only due to sheer luck) as a
+>   result.  See:
+>    http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html
+>    http://lists.dlitz.net/pipermail/pycrypto/2008q3/000020.html
+>
+>   I'm open to suggestions about the exact process to use here, as long as
+>   it results in the old RandomPool implementation going away in the end.
+
+Twisted's process is almost described here:
+
+  http://twistedmatrix.com/trac/wiki/CompatibilityPolicy#TheFirstOnesAlwaysFree
+
+The policy is still sort of a work in progress (we skip a couple of the steps
+mentioned there for current development, generally).  I don't have much to
+suggest beyond the somewhat obvious introduce-deprecation-warning-in-one-
+release-and-then-remove-the-functionality-in-a-later-release procedure.  But
+I would recommend documented whatever you decide on so that people know what
+to expect.
+
+>8. Fix and/or replace other confusing APIs.  For example, in
+>   Crypto.Util.number, isPrime isn't actually cryptographically strong
+>   (unlike what you might expect from a crypto library), and
+>   getRandomNumber's behaviour has confused at least one person[1].  Both
+>   have their purposes, but are confusingly named.
+>
+>9. Fix implementation bugs and build issues.
+>
+>11. Maintain compatibility with Python 2.x, versions 2.1 and later for the
+>    next release, and version 2.2 and later for subsequent releases.  I am
+>    currently testing against Python 2.1, 2.2, 2.3, 2.4, 2.5, and 2.6.
+>
+>12. Support Python 3.
+>
+>13. Avoid US-origin code, to make things simpler for myself and other
+>    Canadian distributors.  (Yay crypto export controls!)
+>
+>14. Add full support for ASN.1, PKCS#12, and all variations of X.509.[3]
+>
+>15. Support mandatory key escrow.[4]
+>
+
+Ha ha. :)
+
+>To summarize, I plan to maintain backwards compatibility where it makes
+>sense, but I also want to fix/remove APIs that violate user expectations,
+>and I want to remove cruft that nobody uses.  It's not easy to determine
+>what "nobody uses", so I tend to first search Google Code Search, ask this
+>mailing list, or just drop the module from the git repository and see if
+>anyone complains.  If you thought DES/DES3 support was going away, then
+>complaining here was exactly the right thing to do.
+>
+>I'll address each of the removed modules:
+>
+>     - Blowfish: Copyright issues. Replaced with my own implementation.
+>
+>     - DES/DES3: Copyright issues. Replaced with the implementation from
+>       LibTomCrypt, plus a wrapper to provide the PyCrypto interface.
+>
+>     - RIPEMD: Copyright issues. Replaced with my own implementation.
+>
+>     - IDEA/RC5: Gone due to patent encumbrances (and maybe also copyright
+>       issues).  Debian's PyCrypto packages have omitted the RC5 and IDEA
+>       for a long time, and it hasn't been a big problem as far as I can
+>       tell.  In any case, I don't have any desire to maintain "free"
+>       software that people aren't actually free to use and/or distribute
+>       due to patent encumbrances.
+>
+>As for the XOR module, I removed it for the following reasons:
+
+I'll try to make a case for you to retain it, at least through a minimal
+deprecation period.
+
+>     - It's insecure as a stream cipher, obviously.
+
+When used by itself, yes.  The definition of HMAC includes use of XOR,
+though, and HMAC is required by certain schemes which aren't yet known
+to be insecure overall.  This is why Conch depends on it - to fill in
+an HMAC field required in SSH messages.
+
+>     - The old XOR module would silently truncate its "key" to 32 bytes,
+>       which violates expectations in a bad way for people who want to use
+>       it to implement a one-time pad, or a PRNG, or even HMAC-SHA512.
+
+That's definitely a bad thing.  Probably we never noticed because we don't
+do anything longer than 32 bytes (as far as I can tell).  But since we don't
+do that, it works fine for us, even thought it may be broken in the general
+case.
+
+>     - I already wrote a replacement strxor module that does fast XORing of
+>       strings (though with a different API).
+
+Cool.
+
+>     - I thought nobody was making significant use of it.  This might be
+>       mistaken.
+>
+>How does Twisted Conch use the XOR module?  Would you prefer to use the new
+>strxor module instead?  I don't want to resurrect the old XOR.c code, but I
+>wouldn't be opposed to a wrapper around strxor that provides the same
+>interface, if someone wanted to write one.[2]
+
+A wrapper around strxor that provides the old interface would be fine for
+Conch.  It could even be deprecated, if you don't want to maintain two
+XOR APIs.
+
+It seems I am not qualified to contribute to PyCrypto, though, so I can't
+offer an implementation of this.
+
+>I hope that clears things up.
+
+Definitely so.  Thanks again.
+
+Jean-Paul
+
+From christos.jonathan.hayward at gmail.com  Mon May  4 12:58:09 2009
+From: christos.jonathan.hayward at gmail.com (Jonathan Hayward)
+Date: Mon, 4 May 2009 13:58:09 -0500
+Subject: [pycrypto] Encryption library
+Message-ID: <fdc31b650905041158k157e72b4p1500d5f99ff51c76@mail.gmail.com>
+
+I am looking to set up a hardened box that will be able to store
+information, but after we ask it to generate fresh keys and credentials, the
+box alone can access the plaintext of stored information but we won't know
+of any way we could access the plaintext information without either breaking
+the (hardened) OS or breaking strong encryption.
+
+I am looking for basic asymmetric encryption available in Python; I'd
+imagine that would mean something like GPG or PGP, were such available in
+Python.
+
+As far as the encryption side,
+http://docs.python.org/library/crypto.htmloffers message digests only
+and says to see
+http://www.amk.ca/python/code/crypto.html for a fuller suite.
+http://www.amk.ca/python/code/crypto.html says that it is not being
+maintained and to check http://www.dlitz.net/software/pycrypto/ for current
+development, but the new page in turn says that it's still working towards a
+release and people can download the dated/buggy library from
+http://www.amk.ca/python/code/crypto.html ; I assume that means that for
+production purposes I should be looking at
+http://www.amk.ca/files/python/crypto/pycrypto-2.0.1.tar.gz .
+
+I'd welcome suggestions on libraries/algorighms I should be using for
+asymmetric encryption to be able to say "We made this box as secure as we
+can and now we don't know how to access the sensitive plaintext that it is
+securing and using to secure requests."
+
+TIA,
+-- 
+Jonathan Hayward, christos.jonathan.hayward at gmail.com
+An Orthodox Christian author: theology, literature, et cetera.
+My award-winning collection is available for free reading online:
+I invite you to visit my website at http://JonathansCorner.com/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090504/a7526ef3/attachment.htm 
+
+From gooksankoo at hoiptorrow.mailexpire.com  Mon May  4 15:14:33 2009
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Mon, 4 May 2009 23:14:33 +0200
+Subject: [pycrypto] Encryption library
+In-Reply-To: <fdc31b650905041158k157e72b4p1500d5f99ff51c76@mail.gmail.com>
+References: <fdc31b650905041158k157e72b4p1500d5f99ff51c76@mail.gmail.com>
+Message-ID: <20090504211433.GA32226@shannon>
+
+>    I'd welcome suggestions on libraries/algorighms I should be using for
+>    asymmetric encryption to be able to say "We made this box as secure as we
+>    can and now we don't know how to access the sensitive plaintext that it is
+>    securing and using to secure requests."
+
+For that you need a smartcard or an HSM (Hardware Security Module)
+in general, unless you want to put your computer in a safe, lock it, and
+randomize the combination. The actual algorithm or library you use are
+a secondary problem.
+
+See also http://en.wikipedia.org/wiki/PKCS11.
+
+
+From honstain at gmail.com  Wed May 27 22:50:07 2009
+From: honstain at gmail.com (Anthony Honstain)
+Date: Wed, 27 May 2009 21:50:07 -0700
+Subject: [pycrypto] _RSA.py and generate_py
+Message-ID: <b2a653cf0905272150p302de21esccb9950b249e372f@mail.gmail.com>
+
+In the generate_py function of lib/Crypto/PublicKey/_RSA.py , it would
+appear to be possible that the the primes p and q can be generated such that
+the GCD( 65537, (p-1)(q-1)) != 1 which would result in a unusable key. If
+anyone can clarify this it would be greatly appreciated.
+
+Thanks,
+Anthony Honstain
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090527/637626e0/attachment.htm 
+

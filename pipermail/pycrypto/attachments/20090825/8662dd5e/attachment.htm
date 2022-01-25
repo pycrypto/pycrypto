@@ -1,0 +1,8 @@
+<tt>
+I&nbsp;checked&nbsp;GIT,&nbsp;installed&nbsp;the&nbsp;latest&nbsp;Version.&lt;br&gt;use&nbsp;the&nbsp;Crypto.random.new().read&nbsp;function&lt;br&gt;I&nbsp;HOPE&nbsp;this&nbsp;is&nbsp;a&nbsp;goog&nbsp;idea&nbsp;^^&lt;br&gt;&lt;br&gt;#-----------------------------------------------------------------------&lt;br&gt;print&nbsp;&amp;quot;\n=====RSA&nbsp;368&nbsp;Demo=====&amp;quot;&lt;br&gt;<br>
+from&nbsp;Crypto.PublicKey&nbsp;import&nbsp;RSA&lt;br&gt;from&nbsp;Crypto&nbsp;import&nbsp;Random&lt;br&gt;rpool&nbsp;=&nbsp;Random.new()&lt;br&gt;&lt;br&gt;privatekeyCMS&nbsp;=&nbsp;RSA.generate(368,&nbsp;rpool.read)&lt;br&gt;&lt;br&gt;privatekeyClient&nbsp;=&nbsp;RSA.generate(368,&nbsp;rpool.read)&lt;br&gt;publickeyCMS&nbsp;=&nbsp;privatekeyCMS.publickey()&lt;br&gt;<br>
+publickeyClient&nbsp;=&nbsp;privatekeyClient.publickey()&lt;br&gt;&lt;br&gt;signed_PWD&nbsp;=&nbsp;privatekeyCMS.sign(PWD,&amp;quot;&amp;quot;)&lt;br&gt;enc_PWD&nbsp;=&nbsp;publickeyClient.encrypt(PWD,&nbsp;&amp;quot;&amp;quot;)&lt;br&gt;&lt;br&gt;&lt;br&gt;#-----------------------------------------------------------------------&lt;br&gt;<br>
+another&nbsp;question&nbsp;about&nbsp;os.fork:&lt;br&gt;there&nbsp;is&nbsp;some&nbsp;functions&nbsp;to&nbsp;summon&nbsp;a&nbsp;child&nbsp;process:&lt;br&gt;like&nbsp;popen[1-4]&lt;br&gt;or&nbsp;some&nbsp;threading&nbsp;class:&lt;br&gt;I&nbsp;don&amp;#39;t&nbsp;use&nbsp;os.fork.&lt;br&gt;should&nbsp;I&nbsp;use&nbsp;Random.atfork()&nbsp;for&nbsp;every&nbsp;sub&nbsp;process?&lt;br&gt;&lt;br&gt;<br>
+&lt;br&gt;&lt;br&gt;&lt;br&gt; &lt;br&gt;<br>
+
+</tt>

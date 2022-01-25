@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Docs/code mis-match - not specifying IV fails
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Docs/code%20mis-match%20-%20not%20specifying%20IV%20fails&In-Reply-To=%3CCABRBVqR9XorktfarOshnzVPB5CMCzjG2%2BonYvYbtHNt7%3Dp3MuQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000751.html">
+   <LINK REL="Next"  HREF="000753.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Docs/code mis-match - not specifying IV fails</H1>
+    <B>Charley Nibley</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Docs/code%20mis-match%20-%20not%20specifying%20IV%20fails&In-Reply-To=%3CCABRBVqR9XorktfarOshnzVPB5CMCzjG2%2BonYvYbtHNt7%3Dp3MuQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Docs/code mis-match - not specifying IV fails">cnibley at gmail.com
+       </A><BR>
+    <I>Tue Jan  7 16:59:10 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000751.html">[pycrypto] Docs/code mis-match - not specifying IV fails
+</A></li>
+        <LI>Next message: <A HREF="000753.html">[pycrypto] Docs/code mis-match - not specifying IV fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#752">[ date ]</a>
+              <a href="thread.html#752">[ thread ]</a>
+              <a href="subject.html#752">[ subject ]</a>
+              <a href="author.html#752">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Hugh,
+
+This behavior you are seeing is expected.  It changed with a fix to prevent
+an empty string IV passed to the function. IV is always mandatory even if
+at some point in a previous build it was being passed as all zeros.  I
+believe the doc just needs updating.
+
+See line 173:
+<A HREF="https://github.com/dlitz/pycrypto/commit/411f60f58cea79f7e93476ba0c069b80a2a4c1a0">https://github.com/dlitz/pycrypto/commit/411f60f58cea79f7e93476ba0c069b80a2a4c1a0</A>
+
+And see the comments here: <A HREF="https://bugs.launchpad.net/pycrypto/+bug/997464">https://bugs.launchpad.net/pycrypto/+bug/997464</A>
+
+Charley Nibley
+
+
+On Tue, Jan 7, 2014 at 9:43 AM, Hugh Macdonald
+&lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">hugh.macdonald at nvizible.com</A>&gt;wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> I've just been trying to figure out why some code of mine broke after an
+</I>&gt;<i> update from 2.0.1 to 2.6.1, and found that I hadn't been passing an IV into
+</I>&gt;<i> AES.new() (using MODE_CFB).
+</I>&gt;<i>
+</I>&gt;<i> Previously, it was happy with this, and, according to the docs here (
+</I>&gt;<i> <A HREF="https://www.dlitz.net/software/pycrypto/api/current/">https://www.dlitz.net/software/pycrypto/api/current/</A>), &quot;It is optional
+</I>&gt;<i> and when not present it will be given a default value of all zeroes.&quot;
+</I>&gt;<i>
+</I>&gt;<i> Looking at the code that throws the exception (
+</I>&gt;<i> <A HREF="https://github.com/dlitz/pycrypto/blob/master/src/block_template.c,">https://github.com/dlitz/pycrypto/blob/master/src/block_template.c,</A> line
+</I>&gt;<i> 163), it doesn't allow for doing what the docs suggest it will.
+</I>&gt;<i>
+</I>&gt;<i> I'm not sure whether I've either misunderstood something or which of the
+</I>&gt;<i> two is wrong, but I thought I'd at least flag it for discussion...
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hugh
+</I>&gt;<i>
+</I>&gt;<i> D I S C L A I M E R : This email and any files transmitted with it are
+</I>&gt;<i> intended solely for the intended addressee, and may contain confidential
+</I>&gt;<i> information or material protected by law, copyright or other legislation.
+</I>&gt;<i> If you have received this message in error, please return it to the sender
+</I>&gt;<i> or notify the sender by calling +44 (0)20 3167 3860, and immediately and
+</I>&gt;<i> permanently delete it. You should not copy it or use it for any purpose,
+</I>&gt;<i> nor disclose its contents to any other person. Only the intended recipient
+</I>&gt;<i> may place any reliance upon it. Nvizible Limited accepts no responsibility
+</I>&gt;<i> or liability for emails sent by its employees or personnel which are not
+</I>&gt;<i> sent in the course of its business or that of its clients.
+</I>&gt;<i>
+</I>&gt;<i> Nvizible Limited, 8/9 Carlisle Street, London W1D 3BP .  Registered in
+</I>&gt;<i> England &amp; Wales with Company Number: 6900121
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20140107/1bd828fb/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20140107/1bd828fb/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000751.html">[pycrypto] Docs/code mis-match - not specifying IV fails
+</A></li>
+	<LI>Next message: <A HREF="000753.html">[pycrypto] Docs/code mis-match - not specifying IV fails
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#752">[ date ]</a>
+              <a href="thread.html#752">[ thread ]</a>
+              <a href="subject.html#752">[ subject ]</a>
+              <a href="author.html#752">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

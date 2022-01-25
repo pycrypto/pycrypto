@@ -1,0 +1,12 @@
+<tt>
+&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;&lt;div&nbsp;class=&quot;im&quot;&gt;<br>
+&gt;&nbsp;Up&nbsp;to&nbsp;pycrypto&nbsp;2.5,&nbsp;when&nbsp;no&nbsp;iv&nbsp;was&nbsp;provided&nbsp;to&nbsp;new()&nbsp;a&nbsp;string&nbsp;of&nbsp;zeroes&nbsp;was&lt;br&gt;<br>
+&gt;&nbsp;automatically&nbsp;used.&lt;br&gt;<br>
+&gt;&nbsp;Depending&nbsp;on&nbsp;your&nbsp;application,&nbsp;that&nbsp;may&nbsp;or&nbsp;may&nbsp;not&nbsp;be&nbsp;a&nbsp;problem.&nbsp;It&nbsp;is&nbsp;wiser&lt;br&gt;<br>
+&gt;&nbsp;to&nbsp;always&nbsp;make&nbsp;iv&nbsp;explicit.&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;Which&nbsp;explains&nbsp;why&nbsp;my&nbsp;&#39;old&#39;&nbsp;code&nbsp;failed.&nbsp;Thanks.&lt;br&gt;<br>
+Needing&nbsp;both&nbsp;key&nbsp;and&nbsp;iv...&nbsp;It&nbsp;sounds&nbsp;like&nbsp;asking&nbsp;for&nbsp;two&nbsp;keys&nbsp;to&nbsp;unlock&nbsp;a&nbsp;box?&lt;br&gt;<br>
+Is&nbsp;that&nbsp;the&nbsp;idea?&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;Well,&nbsp;an&nbsp;important&nbsp;difference&nbsp;is&nbsp;that&nbsp;the&nbsp;IV&nbsp;is&nbsp;not&nbsp;a&nbsp;secret,&nbsp;so&nbsp;it&#39;s&nbsp;not&nbsp;really&nbsp;a&nbsp;key,&lt;br&gt;just&nbsp;a&nbsp;way&nbsp;to&nbsp;randomize&nbsp;the&nbsp;key&nbsp;stream.&nbsp;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;<br>
+
+</tt>

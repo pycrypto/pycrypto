@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] AES.Mode_PGP
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20AES.Mode_PGP&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000418.html">
+   <LINK REL="Next"  HREF="000419.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] AES.Mode_PGP</H1>
+    <B>David Arena</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20AES.Mode_PGP&In-Reply-To="
+       TITLE="[pycrypto] AES.Mode_PGP">arenstar at gmail.com
+       </A><BR>
+    <I>Mon Feb 14 13:48:03 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000418.html">[pycrypto] PKCS#1 v1.5 and PSS
+</A></li>
+        <LI>Next message: <A HREF="000419.html">[pycrypto] SHA-2 tweaks, public comment sought
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#434">[ date ]</a>
+              <a href="thread.html#434">[ thread ]</a>
+              <a href="subject.html#434">[ subject ]</a>
+              <a href="author.html#434">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello All..
+
+basically im either stupid or guessing something is wrong with the Mode_PGP of the Cipher AES class..
+
+Let me explain..
+
+I assumed that the class would follow the rfc 2440 ( OpenPGP Message Format)
+Basically, in my laymans terms..
+
+On encryption...
+The IV is a random generated number, added  as the first block of the ciphertext and used in CBC mode for the other blocks...
+
+On Decryption..
+The IV added is zero's, The CBC continues finding the IV in the first block, which results in the following blocks to be deciphered correctly.. However  when returning the plaintext it drops the first block of the plaintext  garbage..
+resulting in a correct message..
+
+Im not sure if Pycrypto does this??? I tried and failed.. and i thought i should ask questions..
+
+here is my basic code..
+
+ def AESencode(secretkey,message,vi):
+                cipher = AES.new(secretkey,AES.MODE_PGP,vi)
+                return cipher.encrypt(base64.b64encode(message))
+
+ def AESdecode(secretkey,message):
+                cipher = AES.new(secretkey,AES.MODE_PGP)
+                return cipher.decrypt(base64.b64decode(message))
+
+
+Any suggestions on where to go????
+
+Regards
+David
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000418.html">[pycrypto] PKCS#1 v1.5 and PSS
+</A></li>
+	<LI>Next message: <A HREF="000419.html">[pycrypto] SHA-2 tweaks, public comment sought
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#434">[ date ]</a>
+              <a href="thread.html#434">[ thread ]</a>
+              <a href="subject.html#434">[ subject ]</a>
+              <a href="author.html#434">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

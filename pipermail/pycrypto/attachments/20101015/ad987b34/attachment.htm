@@ -1,0 +1,78 @@
+<tt>
+&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;Hi,&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I&nbsp;just&nbsp;tried&nbsp;to&nbsp;build&nbsp;pycrypto&nbsp;for&nbsp;python-2.6.6&nbsp;(x64)&nbsp;on&nbsp;Windows&nbsp;7,&nbsp;for&nbsp;found&nbsp;that&nbsp;it&nbsp;can&amp;#39;t&nbsp;build&nbsp;_fastmath&nbsp;because&nbsp;there&nbsp;is&nbsp;no&nbsp;GMP&nbsp;on&nbsp;Windows.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I&nbsp;google&nbsp;for&nbsp;a&nbsp;while&nbsp;and&nbsp;found&nbsp;MPIR&nbsp;(&lt;a&nbsp;href=&quot;http://www.mpir.org/&quot;&nbsp;target=&quot;_blank&quot;&gt;http://www.mpir.org/&lt;/a&gt;).&nbsp;There&nbsp;is&nbsp;a&nbsp;script&nbsp;&amp;#39;to_gmp.bat&amp;#39;&nbsp;in&nbsp;the&nbsp;MPIR&nbsp;build&nbsp;folder&nbsp;that&nbsp;rename&nbsp;mpir.lib,&nbsp;mpir.dll,&nbsp;and&nbsp;the&nbsp;relevant&nbsp;header&nbsp;files&nbsp;to&nbsp;gmp.&lt;/div&gt;<br>
+<br>
+<br>
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;After&nbsp;trying&nbsp;for&nbsp;4&nbsp;hours,&nbsp;I&nbsp;got&nbsp;a&nbsp;solution.&nbsp;(it&nbsp;may&nbsp;not&nbsp;accurate&nbsp;right,&nbsp;but&nbsp;it&nbsp;just&nbsp;works.)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;First,&nbsp;I&nbsp;build&nbsp;MPIR&nbsp;as&nbsp;Release|x86&nbsp;for&nbsp;both&nbsp;lib&nbsp;and&nbsp;dll:&lt;/div&gt;&lt;div&gt;&lt;ul&gt;&lt;li&gt;open&nbsp;&amp;quot;Visual&nbsp;Studio&nbsp;2008&nbsp;x64&nbsp;Win64&nbsp;Command&nbsp;Prompt&amp;quot;&lt;/li&gt;<br>
+<br>
+<br>
+&lt;li&gt;cd&nbsp;mpir-2.1.3\build.vc9&nbsp;&lt;font&nbsp;color=&quot;#009900&quot;&gt;#&nbsp;Change&nbsp;to&nbsp;the&nbsp;path&nbsp;that&nbsp;you&nbsp;extract&nbsp;MPIR.&lt;/font&gt;&lt;/li&gt;&lt;li&gt;msbuild&nbsp;mpir.sln&nbsp;/p:Configuration=Release&nbsp;/p:Platform=x64&nbsp;/t:lib_mpir_nehalem&nbsp; &lt;font&nbsp;color=&quot;#009900&quot;&gt;#&nbsp;&amp;lt;--&nbsp;my&nbsp;cpu,&nbsp;you&nbsp;can&nbsp;try&nbsp;others.&lt;/font&gt;&lt;/li&gt;<br>
+<br>
+<br>
+&lt;li&gt;msbuild&nbsp;mpir.sln&nbsp;/p:Configuration=Release&nbsp;/p:Platform=x64&nbsp;/t:dll_mpir_nehalem&lt;/li&gt;&lt;li&gt;to_gmp.bat&nbsp;&lt;font&nbsp;color=&quot;#009900&quot;&gt;#&nbsp;Convert&nbsp;libraries&nbsp;and&nbsp;headers&nbsp;to&nbsp;GMP.&lt;/font&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;Then,&nbsp;copy&nbsp;*.h&nbsp;except&nbsp;config.h&nbsp;from&nbsp;&lt;b&gt;&lt;font&nbsp;color=&quot;#FF0000&quot;&gt;DLL&nbsp;&lt;/font&gt;&lt;/b&gt;output&nbsp;to&nbsp;your&nbsp;python\PC&lt;/div&gt;<br>
+<br>
+<br>
+&lt;/div&gt;&lt;div&gt;&lt;ul&gt;&lt;li&gt;cd mpir-2.1.3\build.vc9\dll\x64\Release&lt;/li&gt;&lt;li&gt;mkdir&nbsp;C:\Python26\PC&lt;/li&gt;&lt;li&gt;copy&nbsp;gmp*.h&nbsp;C:\Python26\PC&lt;/li&gt;&lt;li&gt;copy&nbsp;mpir*.h&nbsp;C:\Python26\PC&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;And&nbsp;copy&nbsp;gmp.lib&nbsp;from&nbsp;&lt;b&gt;&lt;font&nbsp;color=&quot;#FF0000&quot;&gt;LIB&nbsp;&lt;/font&gt;&lt;/b&gt;output&nbsp;to&nbsp;your&nbsp;python\PCbuild\amd64&nbsp;&lt;font&nbsp;color=&quot;#FF0000&quot;&gt;#&nbsp;&lt;i&gt;&lt;b&gt;Sound&nbsp;weird?&lt;/b&gt;&lt;/i&gt;&nbsp;But&nbsp;trust&nbsp;me,&nbsp;I&nbsp;already&nbsp;try&nbsp;other&nbsp;ways&nbsp;and&nbsp;they&nbsp;were&nbsp;failed.&lt;/font&gt;&lt;/div&gt;<br>
+<br>
+<br>
+&lt;/div&gt;&lt;div&gt;&lt;ul&gt;&lt;li&gt;mkdir&nbsp;C:\Python26\PCbuild&lt;/li&gt;&lt;li&gt;mkdir&nbsp;C:\Python26\PCbuild\amd64&lt;/li&gt;&lt;li&gt;cd mpir-2.1.3\build.vc9\lib\x64\Release&lt;/li&gt;&lt;li&gt;copy&nbsp;gmp.lib C:\Python26\PCbuild\amd64&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;Now,&nbsp;in&nbsp;the&nbsp;extracted&nbsp;pycrypto&nbsp;folder,&nbsp;I&nbsp;copy&nbsp;src\_fastmath.c&nbsp;to&nbsp;src\_fastmath.cpp&nbsp;and&nbsp;do&nbsp;some&nbsp;changes&nbsp;on&nbsp;_fastmath.cpp&nbsp;to&nbsp;make&nbsp;it&nbsp;C++&nbsp;friendly.&lt;/div&gt;<br>
+<br>
+<br>
+&lt;/div&gt;&lt;div&gt;Well,&nbsp;the&nbsp;patch&nbsp;is&nbsp;quite&nbsp;large&nbsp;because&nbsp;I&nbsp;move&nbsp;the&nbsp;whole&nbsp;sieve_base&nbsp;to&nbsp;the&nbsp;very&nbsp;top&nbsp;of&nbsp;the&nbsp;file.&nbsp;So&nbsp;you&nbsp;better&nbsp;see&nbsp;the&nbsp;patch&nbsp;file&nbsp;that&nbsp;I&amp;#39;m&nbsp;attached&nbsp;to&nbsp;this&nbsp;mail.&lt;/div&gt;&lt;div&gt;I&nbsp;also&nbsp;change&nbsp;the&nbsp;setup.py&nbsp;to&nbsp;build&nbsp;the&nbsp;_fastmath.cpp&nbsp;instead&nbsp;of&nbsp;_fastmath.c.&lt;/div&gt;<br>
+<br>
+<br>
+&lt;div&gt;Finally,&nbsp;build&nbsp;the&nbsp;pycrypto&nbsp;and&nbsp;install&nbsp;it.&lt;/div&gt;&lt;div&gt;&lt;ul&gt;&lt;li&gt;python&nbsp;setup.py&nbsp;build&lt;/li&gt;&lt;li&gt;python&nbsp;setup.py&nbsp;install&nbsp;--optimize=1&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;If&nbsp;you&nbsp;look&nbsp;in&nbsp;the C:\Python26\Lib\site-packages\Crypto\PublicKey,&nbsp;you&nbsp;will&nbsp;found&nbsp;_fastmath.pyd.&lt;/div&gt;<br>
+<br>
+<br>
+&lt;/div&gt;&lt;div&gt;Now,&nbsp;the&nbsp;most&nbsp;excited&nbsp;part!&nbsp;Let&amp;#39;s&nbsp;benchmark&nbsp;it.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Without&nbsp;_fastmath&nbsp;(you&nbsp;can&nbsp;try&nbsp;it&nbsp;by&nbsp;rename&nbsp;_fastmath.pyd&nbsp;to&nbsp;something&nbsp;such&nbsp;as&nbsp;_fastmath.xxx):&lt;/div&gt;&lt;blockquote&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;40px;border:none;padding:0px&quot;&gt;<br>
+<br>
+<br>
+&lt;div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;In&nbsp;[1]:&nbsp;from&nbsp;datetime&nbsp;import&nbsp;datetime&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;In&nbsp;[2]:&nbsp;from&nbsp;Crypto.PublicKey&nbsp;import&nbsp;pubkey&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;In&nbsp;[3]:&nbsp;def&nbsp;tdiff(n):&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;  &nbsp;...:&nbsp; &nbsp; &nbsp;before&nbsp;=&nbsp;datetime.now()&lt;/font&gt;&lt;/div&gt;<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;  &nbsp;...:&nbsp; &nbsp; &nbsp;pubkey.getStrongPrime(n)&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;  &nbsp;...:&nbsp; &nbsp; &nbsp;print&nbsp;datetime.now()-before&lt;/font&gt;&lt;/div&gt;<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;  &nbsp;...:&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;In&nbsp;[4]:&nbsp;tdiff(512)&lt;/font&gt;&lt;/div&gt;<br>
+<br>
+<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;0:00:00.348000&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;In&nbsp;[5]:&nbsp;tdiff(1024)&lt;/font&gt;&lt;/div&gt;<br>
+<br>
+<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;0:00:00.565000&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;In&nbsp;[6]:&nbsp;tdiff(2048)&lt;/font&gt;&lt;/div&gt;<br>
+<br>
+<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;0:00:03.308000&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;In&nbsp;[7]:&nbsp;tdiff(4096)&lt;/font&gt;&lt;/div&gt;<br>
+<br>
+<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;0:01:39.202000&nbsp;#&nbsp;==&nbsp;(1*60)+39.202&nbsp;==&nbsp;99.202&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;<br>
+&lt;/blockquote&gt;&lt;font&nbsp;face=&quot;arial,&nbsp;helvetica,&nbsp;sans-serif&quot;&gt;With&nbsp;_fastmath:&lt;/font&gt;&lt;blockquote&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;40px;border:none;padding:0px&quot;&gt;&lt;div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;<br>
+&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;In&nbsp;[1]:&nbsp;from&nbsp;datetime&nbsp;import&nbsp;datetime&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;In&nbsp;[2]:&nbsp;from&nbsp;Crypto.PublicKey&nbsp;import&nbsp;pubkey&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;In&nbsp;[3]:&nbsp;def&nbsp;tdiff(n):&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;  &nbsp;...:&nbsp; &nbsp; &nbsp;before&nbsp;=&nbsp;datetime.now()&lt;/font&gt;&lt;/div&gt;<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;  &nbsp;...:&nbsp; &nbsp; &nbsp;pubkey.getStrongPrime(n)&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;  &nbsp;...:&nbsp; &nbsp; &nbsp;print&nbsp;datetime.now()-before&lt;/font&gt;&lt;/div&gt;<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;  &nbsp;...:&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;In&nbsp;[4]:&nbsp;tdiff(512)&lt;/font&gt;&lt;/div&gt;<br>
+<br>
+<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;0:00:00.123000&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;In&nbsp;[5]:&nbsp;tdiff(1024)&lt;/font&gt;&lt;/div&gt;<br>
+<br>
+<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;0:00:00.333000&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;In&nbsp;[6]:&nbsp;tdiff(2048)&lt;/font&gt;&lt;/div&gt;<br>
+<br>
+<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;0:00:00.675000&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;In&nbsp;[7]:&nbsp;tdiff(4096)&lt;/font&gt;&lt;/div&gt;<br>
+<br>
+<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;0:00:06.446000&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;font&nbsp;face=&quot;arial,&nbsp;helvetica,&nbsp;sans-serif&quot;&gt;So,&nbsp;the&nbsp;conclusion:&lt;/font&gt;&lt;blockquote&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;40px;border:none;padding:0px&quot;&gt;<br>
+<br>
+<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;n&nbsp; &nbsp; &nbsp; &nbsp;without&nbsp; &nbsp; &nbsp; with&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;faster&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;  &nbsp; &nbsp; &nbsp; _fastmath&nbsp; &nbsp; _fastmath&lt;/font&gt;&lt;/div&gt;<br>
+&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;512&nbsp; &nbsp; &nbsp;0&lt;/font&gt;&lt;span&nbsp;style=&quot;font-family:&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;0.348&nbsp; &nbsp; &nbsp; &nbsp;00.123&nbsp; &nbsp; &nbsp; &nbsp; 182.93%&lt;/span&gt;&lt;/div&gt;<br>
+<br>
+<br>
+&lt;div&gt;&lt;span&nbsp;style=&quot;font-family:&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;1024&nbsp; &nbsp; 00.565&nbsp; &nbsp; &nbsp; &nbsp;00.333&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;69.67%&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span&nbsp;style=&quot;font-family:&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;2048&nbsp; &nbsp; 03.308&nbsp; &nbsp; &nbsp; &nbsp;00.675&nbsp; &nbsp; &nbsp; &nbsp; 390.07%&lt;/span&gt;&lt;/div&gt;<br>
+<br>
+<br>
+&lt;div&gt;&lt;span&nbsp;style=&quot;font-family:&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;4096&nbsp; &nbsp; 99.202&nbsp; &nbsp; &nbsp; &nbsp;06.446&nbsp; &nbsp; &nbsp; &nbsp;1438.97%&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span&nbsp;style=&quot;font-family:&amp;#39;courier&nbsp;new&amp;#39;,&nbsp;monospace&quot;&gt;&lt;br&gt;<br>
+&lt;/span&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;font&nbsp;face=&quot;arial,&nbsp;helvetica,&nbsp;sans-serif&quot;&gt;So,&nbsp;I&nbsp;think&nbsp;it&amp;#39;s&nbsp;really&nbsp;worth&nbsp;to&nbsp;do&nbsp;(if&nbsp;you&amp;#39;re&nbsp;stuck&nbsp;on&nbsp;Windows&nbsp;Platform).&lt;/font&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;arial,&nbsp;helvetica,&nbsp;sans-serif&quot;&gt;&lt;br&gt;<br>
+&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;arial,&nbsp;helvetica,&nbsp;sans-serif&quot;&gt;Regards,&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&nbsp;face=&quot;arial,&nbsp;helvetica,&nbsp;sans-serif&quot;&gt;Chaiwat.S&lt;/font&gt;&lt;/div&gt;<br>
+&lt;/div&gt;&lt;br&gt;<br>
+
+</tt>

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Troubles when porting from m2crypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Troubles%20when%20porting%20from%20m2crypto&In-Reply-To=%3C1330440013.30978.3.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000556.html">
+   <LINK REL="Next"  HREF="000562.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Troubles when porting from m2crypto</H1>
+    <B>Priit Laes</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Troubles%20when%20porting%20from%20m2crypto&In-Reply-To=%3C1330440013.30978.3.camel%40localhost.localdomain%3E"
+       TITLE="[pycrypto] Troubles when porting from m2crypto">plaes at plaes.org
+       </A><BR>
+    <I>Tue Feb 28 09:40:13 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000556.html">[pycrypto] Troubles when porting from m2crypto
+</A></li>
+        <LI>Next message: <A HREF="000562.html">[pycrypto] announcing pycryptopp	v0.6.0.1206569328141510525648634803928199668821045408958
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#557">[ date ]</a>
+              <a href="thread.html#557">[ thread ]</a>
+              <a href="subject.html#557">[ subject ]</a>
+              <a href="author.html#557">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&#220;hel kenal p&#228;eval, T, 28.02.2012 kell 01:33, kirjutas Priit Laes:
+&gt;<i> Hey!
+</I>&gt;<i> 
+</I>&gt;<i> I'm currently in process of porting my code from m2crypt to pycrypto,
+</I>&gt;<i> but I have run into an issue where pycrypto doesn't seem to be returning
+</I>&gt;<i> correct results (tested on 32-bit Gentoo, pycrypto-2.5 + Debian 64bit
+</I>&gt;<i> with consistent results):
+</I>
+PEBKAC ^_^ :)
+
+After trying with PKCS1_v1_5 signature, thing improved a lot.. \o/
+
+with open('private_key.pem', 'r') as f:
+    k = RSA.importKey(f.read())
+    h = SHA.new(MSG)
+    s = PKCS1_v1_5.new(k).sign(h)
+
+P&#228;ikest,
+Priit Laes :)
+</PRE>
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000556.html">[pycrypto] Troubles when porting from m2crypto
+</A></li>
+	<LI>Next message: <A HREF="000562.html">[pycrypto] announcing pycryptopp	v0.6.0.1206569328141510525648634803928199668821045408958
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#557">[ date ]</a>
+              <a href="thread.html#557">[ thread ]</a>
+              <a href="subject.html#557">[ subject ]</a>
+              <a href="author.html#557">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

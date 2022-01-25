@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Comments%20on%20Elgamal%2C%0A%20and%20a%20broader%20question%3A%20Whither%20pycrypto%3F&In-Reply-To=4D20F2FE.5020204%40amberfisharts.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000365.html">
+   <LINK REL="Next"  HREF="000367.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Comments%20on%20Elgamal%2C%0A%20and%20a%20broader%20question%3A%20Whither%20pycrypto%3F&In-Reply-To=4D20F2FE.5020204%40amberfisharts.com"
+       TITLE="[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?">sbehrens at gmx.li
+       </A><BR>
+    <I>Sun Jan  2 17:35:52 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000365.html">[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+        <LI>Next message: <A HREF="000367.html">[pycrypto] Comments on Elgamal,	and a broader question: Whither pycrypto?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#366">[ date ]</a>
+              <a href="thread.html#366">[ thread ]</a>
+              <a href="subject.html#366">[ subject ]</a>
+              <a href="author.html#366">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 1/2/2011 4:49 PM, Lorenz Quack wrote:
+&gt;<i>
+</I>&gt;<i> Just for the record: a &quot;safe prime&quot; is *not* the same thing as a &quot;strong prime&quot;. [...]
+</I>&gt;<i> pycrypto has a function for generating &quot;strong primes&quot; (getStrongPrime()) but not for safe primes.
+</I>Correct. Also, elgamal.py doesn't call the function for strong primes. 
+Much less safe primes, since we don't have one of those :)
+
+&gt;<i> Wow! I was not aware that there is an ongoing stdlib-crypto discussion. Thanks a lot!
+</I>Of course. Martin v. Loewis asked the participants there: Absent user 
+input, what do the experts think? And by &quot;experts&quot;,
+he explicitly referred to the pycrypto maintainers. That's you guys. I 
+think it makes a lot of sense to plug you into
+the discussion.
+
+&gt;<i> Here are my 2 cents:
+</I>&gt;<i> When I was looking for a python crypto package I chose pycrypto mainly for two reasons.
+</I>&gt;<i> 1) It had the fewest dependencies. Only the optionally (though highly recommended) libgmp.
+</I>Okay, I get that. A pycrypto-next that wraps existing libraries would 
+break that. This is something to weigh against the (very real) 
+difficulty of writing and maintaining a body of secure crypto routines.
+
+Hybrid models are possible. We could snag low-level crypto primitives as 
+source from Crypto++ and tomlib, and wrap &quot;pythonic&quot; things around those.
+
+&gt;<i> 2) The API was more pythonic than many libraries that only wrap the calls to C-functions of underlying libraries.
+</I>Absolutely, that's a great strength. I'd like to see that extended to a 
+stronger API for public key crypto, message padding and secure key 
+generation.
+
+&gt;<i> Some people say that pycrypto should not implement the crypto primitives but rather us existing libraries. While I do
+</I>&gt;<i> understand the rationale behind such a statement, I have to voice my opposition. AFAIK there are already python bindings
+</I>&gt;<i> for virtually every major crypto library [1-3]. The only issue with those libraries might be the API but I would suggest
+</I>&gt;<i> that one first tries to persuade the maintainers to adopt a more PEP 272 like API.
+</I>Okay, that's a really good point. You make the point, if I understand 
+you right, that pycrypto does not need to be what others already are, 
+and there's something to be said for having less dependencies.
+
+How, then, do we go about offering secure implementations of crypto 
+primitives, however?
+
+&gt;<i> Instead I would suggest to slim down pycrypto. Support one or two of each: block cipher, public key crypto, Hash
+</I>&gt;<i> function. Try to harden their implementation and then move to provide a good upper layer which takes care of padding,
+</I>&gt;<i> envelope encryption and so on.
+</I>I see. So, make an effort to provide the most pertinent algorithms. Do 
+not provide everything-under-the-Sun. Leave existing stuff in for 
+backwards compatibility. Then, once that is done, provide an additional 
+layer that helps people to implement it correctly - without ever 
+becoming KeyCzar. KeyCzar already exists, after all, and it depends on 
+pycrypto.
+
+&gt;<i> This way pycrypto will be a slim independent library which gets the job done. If someone really needs block cipher XYZ
+</I>&gt;<i> then kindly point them to a more exhaustive package that wraps an underlying crypto library.
+</I>I get your point.
+&gt;<i> Feel free to disagree :)
+</I>I'm just stirring the pot. It's Dwayne and you guys who make this 
+decision. I'm the new guy on the block who comes in with a certain 
+amount of fresh enthusiasm and questions the status quo.
+
+All the best
+Thorsten
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000365.html">[pycrypto] Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+	<LI>Next message: <A HREF="000367.html">[pycrypto] Comments on Elgamal,	and a broader question: Whither pycrypto?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#366">[ date ]</a>
+              <a href="thread.html#366">[ thread ]</a>
+              <a href="subject.html#366">[ subject ]</a>
+              <a href="author.html#366">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA exportKey question
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%20question&In-Reply-To=%3CCAGfyce2cktHCu-51m2NwP5C7mQbtAzOtWX3ovZSB%2BDRXBXcKXA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000672.html">
+   <LINK REL="Next"  HREF="000676.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA exportKey question</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%20question&In-Reply-To=%3CCAGfyce2cktHCu-51m2NwP5C7mQbtAzOtWX3ovZSB%2BDRXBXcKXA%40mail.gmail.com%3E"
+       TITLE="[pycrypto] RSA exportKey question">helderijs at gmail.com
+       </A><BR>
+    <I>Fri Jul  5 03:10:09 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000672.html">[pycrypto] RSA exportKey question
+</A></li>
+        <LI>Next message: <A HREF="000676.html">[pycrypto] RSA exportKey question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#675">[ date ]</a>
+              <a href="thread.html#675">[ thread ]</a>
+              <a href="subject.html#675">[ subject ]</a>
+              <a href="author.html#675">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Paul,
+
+In the back of my mind, I was referring to practical purposes *in the
+context of key wrapping*.
+For key wrapping, you deal with very small payloads and the key is
+salted: speed and birthdays paradox are not real concerns,
+and the security marging 3DES (with 112 bits of ) is large enough.
+I am suggesting to stick to &quot;PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC&quot; as
+default PKCS#8 wrapping algorithm for export
+because there are more chances the receiver (e.g. some
+actually-not-so-old openssl versions) will be able to unwrap it.
+If I had to pick a more future proof value (regardless of
+compatibility) I would agree that AES is better, but only in
+combination with scrypt as KDF.
+
+2013/7/4  &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">Paul_Koning at dell.com</A>&gt;:
+&gt;<i>
+</I>&gt;<i> On Jul 3, 2013, at 5:26 PM, Legrandin wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> I find 3DES is as good as AES for most practical purposes.
+</I>&gt;<i>
+</I>&gt;<i> I'm curious what your metrics are for that conclusion.
+</I>&gt;<i>
+</I>&gt;<i> By way of comparison, the new draft for the RFC covering storage protocol security (successor to RFC 3723) switches from 3DES to AES for clearly stated reasons, one of which is the fact that 64 bit blocks and large quantities of data don't go well together.  If you're dealing with small quantities of data, 3DES might still be good enough, but I still don't see an obvious reason to stick with a rather ancient cipher when a well-vetted replacement is available.
+</I>&gt;<i>
+</I>&gt;<i>         paul
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000672.html">[pycrypto] RSA exportKey question
+</A></li>
+	<LI>Next message: <A HREF="000676.html">[pycrypto] RSA exportKey question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#675">[ date ]</a>
+              <a href="thread.html#675">[ thread ]</a>
+              <a href="subject.html#675">[ subject ]</a>
+              <a href="author.html#675">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] FW: python crypto with python 3.0 or 3.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20FW%3A%20python%20crypto%20with%20python%203.0%20or%203.1&In-Reply-To=4B8C2596.7040809%40gmx.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000188.html">
+   <LINK REL="Next"  HREF="000190.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] FW: python crypto with python 3.0 or 3.1</H1>
+    <B>Grail Dane</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20FW%3A%20python%20crypto%20with%20python%203.0%20or%203.1&In-Reply-To=4B8C2596.7040809%40gmx.net"
+       TITLE="[pycrypto] FW: python crypto with python 3.0 or 3.1">grail69 at hotmail.com
+       </A><BR>
+    <I>Tue Mar  2 03:28:40 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000188.html">[pycrypto] FW: python crypto with python 3.0 or 3.1
+</A></li>
+        <LI>Next message: <A HREF="000190.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#189">[ date ]</a>
+              <a href="thread.html#189">[ thread ]</a>
+              <a href="subject.html#189">[ subject ]</a>
+              <a href="author.html#189">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi Christoph
+
+I did a quick search and found this:
+
+<A HREF="http://gnuwin32.sourceforge.net/packages/diffutils.htm">http://gnuwin32.sourceforge.net/packages/diffutils.htm</A>
+
+diff is what is used to create the patch file. You then simply need to run patch to execute it on the necessary files.
+
+Hope that helps.
+
+If you still need help on fixing the issues let me know and I will see what I can do :)
+
+Grail
+
+Date: Mon, 1 Mar 2010 21:37:42 +0100
+From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">christoph.tapler at gmx.net</A>
+To: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+Subject: Re: [pycrypto] FW: python crypto with python 3.0 or 3.1
+
+
+
+
+
+
+  
+
+
+Hi Grail!
+
+
+
+I think in you need to return the pointer from the newly created
+module. Currently the return value seems to be a dangling pointer.
+
+A &quot;return m&quot; at the end of the generic init function in
+block_template.c may help.
+
+
+
+Btw, in Windows, there are still a few issues which prevent successful
+compilation. 
+
+Should I generate a patch? If yes, could you probably give me a hint
+how to generate this patch?
+
+
+
+Btw, there seems to be a test suite included (python setup.py test).
+However, at that stage it is not too much of 
+
+help, because the test suite itself needs to be adapted as well. In
+Python 2 the test suite works perfectly fine.
+
+
+
+Cheers,
+
+Christoph
+
+
+
+On 01.03.2010 01:02, Grail Dane wrote:
+
+  Hello
+Christoph
+  
+
+  
+  I have made more head way since that one (and made a lot more
+changes).
+  I found that the module creation required a few more steps and I
+have come up 
+  with two solutions (in attached patches):
+  
+
+  
+  1. First patch follows most of the online info I could find
+related to PyModuleDef and the related PyTypeObject.
+     This required that all tp_getattr functions be removed and
+set to 0 (zero) in the PyTypeObject definition.
+  
+
+  
+  2. The second patch retained the already created tp_getattr
+functions.
+  
+
+  
+  With either applied I am able to compile but when running a test
+program with the following lines only:
+  
+
+  
+  #!/usr/bin/env python
+  
+
+  
+  from Crypto.Cipher import AES
+  import base64
+  import os
+  
+
+  
+  
+
+  
+  When run I receive the following error:
+  
+
+  
+  Traceback (most recent call last):
+    File &quot;./cypher.py&quot;, line 3, in &lt;module&gt;
+      from Crypto.Cipher import AES
+  SystemError: NULL result without error in PyObject_Call
+  
+
+  
+  So apply patches (and make necessary changes for Windows) and we
+will see if I can help further :)
+  
+
+  
+  Cheers Grail
+
+  
+
+  
+  Get straight to the Point Find a great
+deal on your next car. 
+
+   Browse profiles for free! View
+photos of singles in your area.
+  
+_______________________________________________
+pycrypto mailing list
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+  
+
+
+ 		 	   		  
+_________________________________________________________________
+Looking for a new home? With all the latest places, searching has never been easier.
+<A HREF="http://clk.atdmt.com/NMN/go/157631292/direct/01/">http://clk.atdmt.com/NMN/go/157631292/direct/01/</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100302/6f5ea7a8/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100302/6f5ea7a8/attachment.htm</A> 
+</PRE>
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000188.html">[pycrypto] FW: python crypto with python 3.0 or 3.1
+</A></li>
+	<LI>Next message: <A HREF="000190.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#189">[ date ]</a>
+              <a href="thread.html#189">[ thread ]</a>
+              <a href="subject.html#189">[ subject ]</a>
+              <a href="author.html#189">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

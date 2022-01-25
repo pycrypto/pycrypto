@@ -1,0 +1,111 @@
+From dave.pawson at gmail.com  Thu Jul  9 01:25:17 2015
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Thu, 9 Jul 2015 09:25:17 +0100
+Subject: [pycrypto] pycrypto Digest, Vol 75, Issue 2
+In-Reply-To: <CADPfvJvtiJY4m8m0HaMtkfXApCRgfjxgNLRzUj=A_Y8n8Ku3_A@mail.gmail.com>
+References: <mailman.1.1434394801.15717.pycrypto@lists.dlitz.net>
+ <CADPfvJvtiJY4m8m0HaMtkfXApCRgfjxgNLRzUj=A_Y8n8Ku3_A@mail.gmail.com>
+Message-ID: <CAEncD4fauY0KLvF9hqH0ZHgeA9JEsuPeDkCNsCcoB503UmQ4CA@mail.gmail.com>
+
+Windows 64 bit, Visual studio installed.
+Followed Max instructions.
+Build error on installing pycrypto
+
+.....
+
+   copying lib\Crypto\Signature\PKCS1_v1_5.py ->
+build\lib.win32-3.4\Crypto\Signature
+   copying lib\Crypto\Signature\__init__.py ->
+build\lib.win32-3.4\Crypto\Signature
+   Skipping implicit fixer: buffer
+   Skipping implicit fixer: idioms
+   Skipping implicit fixer: set_literal
+   Skipping implicit fixer: ws_comma
+   running build_ext
+   building 'Crypto.Random.OSRNG.winrandom' extension
+   warning: GMP or MPIR library not found; Not building
+Crypto.PublicKey._fastmath.
+   error: \java\jre7\bin";\sgml\bin;\python34\scripts;C:\apps\gpg\pub;C:\Program
+Files (x86)\Skype\Phone\;C:\Progr
+es (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program
+Files\Microsoft SQL Server\110\Tools\Binn\;C:\Pr
+Files (x86)\Microsoft SDKs\TypeScript\1.0\;C:\Program Files\Microsoft
+SQL Server\120\Tools\Binn\" was unexpected a
+ time.
+
+
+   ----------------------------------------
+
+   Command "C:\Python34\python.exe -c "import setuptools,
+tokenize;__file__='C:\\Users\\dpawson\\AppData\\Local\\Temp\\pip-
+   build-j_c5vchi\\pycrypto\\setup.py';exec(compile(getattr(tokenize,
+'open', open)(__file__).read().replace('\r\n', '\n'),
+    __file__, 'exec'))" install --record
+C:\Users\dpawson\AppData\Local\Temp\pip-upj7zjho-record\install-record.txt
+--singl
+   e-version-externally-managed --compile" failed with error code 1 in
+C:\Users\dpawson\AppData\Local\Temp\pip-build-j_c5vc
+   hi\pycrypto
+
+Any suggestions what's going wrong please?
+
+Dave
+
+On 28 June 2015 at 22:58, Max Polk <maxpolk at gmail.com> wrote:
+> From: Dave Pawson <dave.pawson at gmail.com>
+>>
+>> Thanks Max.
+>> simple question, which of the n variants of Vis Studio should we install
+>> please?
+>
+> Successfully tested this just now using pip to install pycrypto in Python 2
+> and 3.
+>
+> Install Microsoft Visual Studio Community 2013.
+>
+> :: Run the batch file to set things
+> C:\whatever\VisualStudio\Common7\Tools\vsvars32.bat
+>
+> :: Python 2 expects Microsoft Visual C++ 9.0
+> set VS90COMNTOOLS=%VS120COMNTOOLS%
+> C:\whatever\Python2\Scripts\pip2 install pycrypto
+>
+> :: Python 3 expects Microsoft Visual C++ 10.0
+> set VS100COMNTOOLS=%VS120COMNTOOLS%
+> C:\whatever\Python3\Scripts\pip3 install pycrypto
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dlitz at dlitz.net  Mon Jul 13 19:36:48 2015
+From: dlitz at dlitz.net (Dwayne Litzenberger)
+Date: Mon, 13 Jul 2015 19:36:48 -0700
+Subject: [pycrypto] python 3, crypto installation issue?
+In-Reply-To: <CAEncD4e=2q58XW7GQAnXwbhZeVeQnk=kbGvdzTMNN010JPfd3w@mail.gmail.com>
+References: <CAEncD4e=2q58XW7GQAnXwbhZeVeQnk=kbGvdzTMNN010JPfd3w@mail.gmail.com>
+Message-ID: <20150714023648.GA13138@syra.guest.yvr1.mozilla.com>
+
+On Fri, May 08, 2015 at 12:23:03PM +0100, Dave Pawson wrote:
+>Linux, as root.
+>$ pip3 install Crypto
+
+Crypto[1] is not pycrypto[2]:
+
+[1] https://pypi.python.org/pypi/crypto
+[2] https://pypi.python.org/pypi/pycrypto
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+ OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+

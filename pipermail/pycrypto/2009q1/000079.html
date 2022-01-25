@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Crypto.PublicKey.RSA and number.py
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Crypto.PublicKey.RSA%20and%20number.py&In-Reply-To=b2a653cf0903112247v43f39530ya5c995f2e591e9a7%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000078.html">
+   <LINK REL="Next"  HREF="000080.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Crypto.PublicKey.RSA and number.py</H1>
+    <B>Mads Kiilerich</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Crypto.PublicKey.RSA%20and%20number.py&In-Reply-To=b2a653cf0903112247v43f39530ya5c995f2e591e9a7%40mail.gmail.com"
+       TITLE="[pycrypto] Crypto.PublicKey.RSA and number.py">mads at kiilerich.com
+       </A><BR>
+    <I>Thu Mar 12 20:33:59 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000078.html">[pycrypto] Crypto.PublicKey.RSA and number.py
+</A></li>
+        <LI>Next message: <A HREF="000080.html">[pycrypto] reusing private key for sign or decryption
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#79">[ date ]</a>
+              <a href="thread.html#79">[ thread ]</a>
+              <a href="subject.html#79">[ subject ]</a>
+              <a href="author.html#79">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Anthony Honstain wrote, On 03/12/2009 06:47 AM:
+&gt;<i> I am working towards using the Crypto.PublicKey.RSA encryption and
+</I>&gt;<i> eventually padding like PKCS#1. I have observed that the leading
+</I>&gt;<i> '\000' are removed. Is this the desired behavior of bytes_to_long and
+</I>&gt;<i> long_to_bytes? Or is this not an issue once a good padding scheme is
+</I>&gt;<i> implemented?
+</I>&gt;<i>   
+</I>
+Yes, kind of.
+
+RSA basically uses big numbers. The numbers are often encoded as byte 
+strings, and any (not too long) string can be interpreted as a number. 
+But just like in decimal numbers the leading zeroes doesn't matter; you 
+can't see from the value how many leading zeroes it was written with, 
+and an arbitrary number of leading zeroes can be added without changing 
+the value.
+
+Yes, a good padding scheme will &quot;fix&quot; that; not so much in order to 
+preserve a string length, but more in order to ensure that the number is 
+big enough to preserve the assumed computational complexity of RSA.
+
+/Mads
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/x-pkcs7-signature
+Size: 3435 bytes
+Desc: S/MIME Cryptographic Signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20090313/a0d0891b/attachment.bin">http://lists.dlitz.net/pipermail/pycrypto/attachments/20090313/a0d0891b/attachment.bin</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000078.html">[pycrypto] Crypto.PublicKey.RSA and number.py
+</A></li>
+	<LI>Next message: <A HREF="000080.html">[pycrypto] reusing private key for sign or decryption
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#79">[ date ]</a>
+              <a href="thread.html#79">[ thread ]</a>
+              <a href="subject.html#79">[ subject ]</a>
+              <a href="author.html#79">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

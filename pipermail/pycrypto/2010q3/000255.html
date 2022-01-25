@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ANNOUNCING Tahoe, the Least-Authority File System, v1.7.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ANNOUNCING%20Tahoe%2C%20the%20Least-Authority%20File%20System%2C%20v1.7.1&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000254.html">
+   <LINK REL="Next"  HREF="000256.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ANNOUNCING Tahoe, the Least-Authority File System, v1.7.1</H1>
+    <B>Zooko O'Whielacronx</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ANNOUNCING%20Tahoe%2C%20the%20Least-Authority%20File%20System%2C%20v1.7.1&In-Reply-To="
+       TITLE="[pycrypto] ANNOUNCING Tahoe, the Least-Authority File System, v1.7.1">zooko at zooko.com
+       </A><BR>
+    <I>Mon Jul 19 10:20:31 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000254.html">[pycrypto] installing pycrypto on OS X 10.6
+</A></li>
+        <LI>Next message: <A HREF="000256.html">[pycrypto] AES CFB with 128 bit feedback size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#255">[ date ]</a>
+              <a href="thread.html#255">[ thread ]</a>
+              <a href="subject.html#255">[ subject ]</a>
+              <a href="author.html#255">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>ANNOUNCING Tahoe, the Least-Authority File System, v1.7.1
+
+The Tahoe-LAFS team is pleased to announce the immediate
+availability of version 1.7.1 of Tahoe-LAFS, an extremely
+reliable distributed storage system.
+
+Tahoe-LAFS is the first distributed storage system which
+offers &quot;provider-independent security&quot;&#8212;meaning that not even
+the operators of your storage servers can read or alter your
+data without your consent. Here is the one-page explanation of
+its unique security and fault-tolerance properties:
+
+<A HREF="http://tahoe-lafs.org/source/tahoe/trunk/docs/about.html">http://tahoe-lafs.org/source/tahoe/trunk/docs/about.html</A>
+
+Tahoe-LAFS v1.7.1 is the successor to v1.7.0, which was
+released June 18, 2010 [1].
+
+v1.7.1 is a stable minor release which adds several bugfixes
+and improvements in security, forward-compatibility,
+packaging, usability, and portability. See the NEWS file [2]
+for details.
+
+
+WHAT IS IT GOOD FOR?
+
+With Tahoe-LAFS, you distribute your filesystem across
+multiple servers, and even if some of the servers are
+compromised by by an attacker, the entire filesystem continues
+to work correctly, and continues to preserve your privacy and
+security. You can easily share specific files and directories
+with other people.
+
+In addition to the core storage system itself, volunteers have
+built other projects on top of Tahoe-LAFS and have integrated
+Tahoe-LAFS with existing systems.
+
+These include frontends for Windows, Macintosh, JavaScript,
+iPhone, and Android, and plugins for Hadoop, bzr, mercurial,
+duplicity, TiddlyWiki, and more. See the Related Projects page
+on the wiki [3].
+
+We believe that strong cryptography, Free and Open Source
+Software, erasure coding, and principled engineering practices
+make Tahoe-LAFS safer than RAID, removable drive, tape,
+on-line backup or &quot;cloud storage&quot; systems.
+
+This software is developed under test-driven development, and
+there are no known bugs or security flaws which would
+compromise confidentiality or data integrity under recommended
+use. (For all currently known issues please see the
+known_issues.txt file [4].)
+
+
+COMPATIBILITY
+
+This release is fully compatible with the version 1 series of
+Tahoe-LAFS. Clients from this release can write files and
+directories in the format used by clients of all versions back
+to v1.0 (which was released March 25, 2008). Clients from this
+release can read files and directories produced by clients of
+all versions since v1.0. Servers from this release can serve
+clients of all versions back to v1.0 and clients from this
+release can use servers of all versions back to v1.0.
+
+This is the tenth release in the version 1 series. This series
+of Tahoe-LAFS will be actively supported and maintained for
+the forseeable future, and future versions of Tahoe-LAFS will
+retain the ability to read and write files compatible with
+this series.
+
+
+LICENCE
+
+You may use this package under the GNU General Public License,
+version 2 or, at your option, any later version. See the file
+&quot;COPYING.GPL&quot; [5] for the terms of the GNU General Public
+License, version 2.
+
+You may use this package under the Transitive Grace Period
+Public Licence, version 1 or, at your option, any later
+version. (The Transitive Grace Period Public Licence has
+requirements similar to the GPL except that it allows you to
+delay for up to twelve months after you redistribute a derived
+work before releasing the source code of your derived work.)
+See the file &quot;COPYING.TGPPL.html&quot; [6] for the terms of the
+Transitive Grace Period Public Licence, version 1.
+
+(You may choose to use this package under the terms of either
+licence, at your option.)
+
+
+INSTALLATION
+
+Tahoe-LAFS works on Linux, Mac OS X, Windows, Cygwin, Solaris,
+*BSD, and probably most other systems. Start with
+&quot;docs/quickstart.html&quot; [7].
+
+
+HACKING AND COMMUNITY
+
+Please join us on the mailing list [8]. Patches are gratefully
+accepted -- the RoadMap page [9] shows the next improvements
+that we plan to make and CREDITS [10] lists the names of people
+who've contributed to the project. The Dev page [11] contains
+resources for hackers.
+
+
+SPONSORSHIP
+
+Tahoe-LAFS was originally developed by Allmydata, Inc., a
+provider of commercial backup services. After discontinuing
+funding of Tahoe-LAFS R&amp;D in early 2009, they have continued
+to provide servers, bandwidth, small personal gifts as tokens
+of appreciation, and bug reports. Thank you to Allmydata,
+Inc. for their generous and public-spirited support.
+
+Google, Inc. is sponsoring Tahoe-LAFS development as part of
+the Google Summer of Code 2010. Google suggested that we
+should apply for the Summer of Code program, and when we did
+they generously awarded four sponsorships to students from
+around the world to hack on Tahoe-LAFS this summer. Thank you
+to Google, Inc. for their generous and public-spirited
+support.
+
+
+HACK TAHOE-LAFS!
+
+If you can find a security flaw in Tahoe-LAFS which is serious
+enough that feel compelled to warn our users and issue a fix,
+then we will award you with a customized t-shirts with your
+exploit printed on it and add you to the &quot;Hack Tahoe-LAFS Hall
+Of Fame&quot; [12].
+
+
+ACKNOWLEDGEMENTS
+
+This is the fifth release of Tahoe-LAFS to be created solely
+as a labor of love by volunteers. Thank you very much to the
+team of &quot;hackers in the public interest&quot; who make Tahoe-LAFS
+possible.
+
+David-Sarah Hopwood and Zooko Wilcox-O'Hearn
+on behalf of the Tahoe-LAFS team
+
+July 18, 2010
+Rainhill, Merseyside, UK and Boulder, Colorado, USA
+
+
+[1] <A HREF="http://tahoe-lafs.org/trac/tahoe/browser/relnotes.txt?rev=4514">http://tahoe-lafs.org/trac/tahoe/browser/relnotes.txt?rev=4514</A>
+[2] <A HREF="http://tahoe-lafs.org/trac/tahoe/browser/NEWS?rev=4577">http://tahoe-lafs.org/trac/tahoe/browser/NEWS?rev=4577</A>
+[3] <A HREF="http://tahoe-lafs.org/trac/tahoe/wiki/RelatedProjects">http://tahoe-lafs.org/trac/tahoe/wiki/RelatedProjects</A>
+[4] <A HREF="http://tahoe-lafs.org/trac/tahoe/browser/docs/known_issues.txt">http://tahoe-lafs.org/trac/tahoe/browser/docs/known_issues.txt</A>
+[5] <A HREF="http://tahoe-lafs.org/trac/tahoe/browser/COPYING.GPL">http://tahoe-lafs.org/trac/tahoe/browser/COPYING.GPL</A>
+[6] <A HREF="http://tahoe-lafs.org/source/tahoe/trunk/COPYING.TGPPL.html">http://tahoe-lafs.org/source/tahoe/trunk/COPYING.TGPPL.html</A>
+[7] <A HREF="http://tahoe-lafs.org/source/tahoe/trunk/docs/quickstart.html">http://tahoe-lafs.org/source/tahoe/trunk/docs/quickstart.html</A>
+[8] <A HREF="http://tahoe-lafs.org/cgi-bin/mailman/listinfo/tahoe-dev">http://tahoe-lafs.org/cgi-bin/mailman/listinfo/tahoe-dev</A>
+[9] <A HREF="http://tahoe-lafs.org/trac/tahoe/roadmap">http://tahoe-lafs.org/trac/tahoe/roadmap</A>
+[10] <A HREF="http://tahoe-lafs.org/trac/tahoe/browser/CREDITS?rev=4567">http://tahoe-lafs.org/trac/tahoe/browser/CREDITS?rev=4567</A>
+[11] <A HREF="http://tahoe-lafs.org/trac/tahoe/wiki/Dev">http://tahoe-lafs.org/trac/tahoe/wiki/Dev</A>
+[12] <A HREF="http://tahoe-lafs.org/hacktahoelafs/">http://tahoe-lafs.org/hacktahoelafs/</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000254.html">[pycrypto] installing pycrypto on OS X 10.6
+</A></li>
+	<LI>Next message: <A HREF="000256.html">[pycrypto] AES CFB with 128 bit feedback size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#255">[ date ]</a>
+              <a href="thread.html#255">[ thread ]</a>
+              <a href="subject.html#255">[ subject ]</a>
+              <a href="author.html#255">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

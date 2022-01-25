@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Security Notes</TITLE>
+<META NAME="description" CONTENT="Security Notes">
+<META NAME="keywords" CONTENT="pycrypt">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="pycrypt.css">
+
+<LINK REL="next" HREF="node7.html">
+<LINK REL="previous" HREF="node5.html">
+<LINK REL="up" HREF="node5.html">
+<LINK REL="next" HREF="node7.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html130"
+  HREF="node7.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html126"
+  HREF="node5.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html120"
+  HREF="node5.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html128"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html131"
+  HREF="node7.html">Credits</A>
+<B> Up:</B> <A NAME="tex2html127"
+  HREF="node5.html">Crypto.Hash: Hash Functions</A>
+<B> Previous:</B> <A NAME="tex2html121"
+  HREF="node5.html">Crypto.Hash: Hash Functions</A>
+ &nbsp; <B>  <A NAME="tex2html129"
+  HREF="node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00031000000000000000">
+Security Notes</A>
+</H2>
+
+<P>
+Hashing algorithms are broken by developing an algorithm to compute a
+string that produces a given hash value, or to find two messages that
+produce the same hash value. Consider an example where Alice and Bob
+are using digital signatures to sign a contract.  Alice computes the
+hash value of the text of the contract and signs the hash value with
+her private key.  Bob could then compute a different contract that has
+the same hash value, and it would appear that Alice signed that bogus
+contract; she'd have no way to prove otherwise.  Finding such a
+message by brute force takes pow(2, b-1) operations, where the
+hash function produces <SPAN  CLASS="textit">b</SPAN>-bit hashes.
+
+<P>
+If Bob can only find two messages with the same hash value but can't
+choose the resulting hash value, he can look for two messages with
+different meanings, such as "I will mow Bob's lawn for <!-- MATH
+ $10" and "I owe
+Bob$
+ -->
+<SPAN CLASS="MATH">7#7</SPAN>1,000,000", and ask Alice to sign the first, innocuous contract.
+This attack is easier for Bob, since finding two such messages by brute
+force will take pow(2, b/2) operations on average.  However,
+Alice can protect herself by changing the protocol; she can simply
+append a random string to the contract before hashing and signing it;
+the random string can then be kept with the signature.
+
+<P>
+None of the algorithms implemented here have been completely broken.
+There are no attacks on MD2, but it's rather slow at 1250 K/sec.  MD4
+is faster at 44,500 K/sec but there have been some partial attacks on
+it.  MD4 makes three iterations of a basic mixing operation; two of
+the three rounds have been cryptanalyzed, but the attack can't be
+extended to the full algorithm.  MD5 is a strengthened version of MD4
+with four rounds; an attack against one round has been found XXX
+update this.  MD5 is still believed secure at the moment, but people
+are gravitating toward using SHA1 in new software because there are no
+known attacks against SHA1.  The MD5 implementation is moderately
+well-optimized and thus faster on x86 processors, running at 35,500
+K/sec.  MD5 may even be faster than MD4, depending on the processor
+and compiler you use.
+
+<P>
+All the MDn algorithms produce 128-bit hashes; SHA1 produces a
+larger 160-bit hash, and there are no known attacks against it.  The
+first version of SHA had a weakness which was later corrected; the
+code used here implements the second, corrected, version.  It operates
+at 21,000 K/sec.  SHA256 is about as half as fast as SHA1.  RIPEMD has
+a 160-bit output, the same output size as SHA1, and operates at 17,600
+K/sec.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html130"
+  HREF="node7.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html126"
+  HREF="node5.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html120"
+  HREF="node5.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html128"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html131"
+  HREF="node7.html">Credits</A>
+<B> Up:</B> <A NAME="tex2html127"
+  HREF="node5.html">Crypto.Hash: Hash Functions</A>
+<B> Previous:</B> <A NAME="tex2html121"
+  HREF="node5.html">Crypto.Hash: Hash Functions</A>
+ &nbsp; <B>  <A NAME="tex2html129"
+  HREF="node1.html">Contents</A></B> </DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

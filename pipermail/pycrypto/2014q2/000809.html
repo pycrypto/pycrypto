@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Is PyCrypto dead?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Is%20PyCrypto%20dead%3F&In-Reply-To=%3C20140512160347.GA11104%40rivest.dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000803.html">
+   <LINK REL="Next"  HREF="000810.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Is PyCrypto dead?</H1>
+    <B>Dwayne Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Is%20PyCrypto%20dead%3F&In-Reply-To=%3C20140512160347.GA11104%40rivest.dlitz.net%3E"
+       TITLE="[pycrypto] Is PyCrypto dead?">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon May 12 09:03:48 PDT 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000803.html">[pycrypto] Is PyCrypto dead?
+</A></li>
+        <LI>Next message: <A HREF="000810.html">[pycrypto] Is PyCrypto dead?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#809">[ date ]</a>
+              <a href="thread.html#809">[ thread ]</a>
+              <a href="subject.html#809">[ subject ]</a>
+              <a href="author.html#809">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>It's not dead.  Due to some personal issues, I just have very little 
+time to work on the project right now, and unfortunately I haven't been 
+able to find someone I trust to hand off maintenance to.  It seems that 
+most contributors either want to add their pet algorithms[1] (increasing 
+maintenance overhead)]---or they introduce potentially serious 
+vulnerabilities[2][3], bizarre[4] or inconsistent[5] APIs, performance 
+issues, etc.
+
+That's fine; Crypto is hard, but it means progress is slow, because I 
+have to go over everything with a fine-toothed comb, and it's hard to 
+find the time do it, and I'm reluctant to merge code that might make 
+things worse for existing end-users, even if this makes some developers 
+unhappy.
+
+If a fork is necessary, Sebastian Ramacher is probably the person I 
+trust the most---at the moment---to maintain it.  His patches have been 
+consistently good, albeit small, and he's the Debian package maintainer, 
+so a lot of people are already implicitly relying on him anyway.
+
+I'm hoping to spend more time on the project soon, but my availability 
+is hard to predict in advance.  Hopefully, things will be better in the 
+next 6-12 months, but I can't promise anything.
+
+In the meantime, there are a few things that might help in the short 
+term:
+
+- Having some process for triage &amp; code review, so that the community 
+   can vet and patches, and also ensure that the master branch remains in 
+   a releasable state.  Right now, I have an unordered set of pull 
+   requests to deal with.  It would be great if this became a queue that 
+   was prioritized according to quality and the current release goals.
+
+- CI infrastructure.  It would be really helpful if all pull requests 
+   were automatically tested against.  Like [6], but actually covering 
+   all currently supported configurations.
+
+- Moving bug tracking to GitHub (from Launchpad).  Using both tools has 
+   been pretty cumbersome, but I've been reluctant to disrupt things.  
+   Any objections to this?
+
+- If anyone is in/near San Francisco and wants to help with this, it 
+   might help if we introduced ourselves in person.
+
+Does anyone want to champion this?
+
+Regards,
+- Dwayne
+
+[1] <A HREF="https://github.com/dlitz/pycrypto/pull/76">https://github.com/dlitz/pycrypto/pull/76</A>
+[2] <A HREF="https://github.com/dlitz/pycrypto/pull/50">https://github.com/dlitz/pycrypto/pull/50</A>
+[3] <A HREF="https://bugs.launchpad.net/pycrypto/+bug/1176482">https://bugs.launchpad.net/pycrypto/+bug/1176482</A>
+[4] <A HREF="https://github.com/dlitz/pycrypto/blob/f9a0fc77e1c8847c1a17503e5a1b86a409b8cb2d/lib/Crypto/PublicKey/RSA.py#L318">https://github.com/dlitz/pycrypto/blob/f9a0fc77e1c8847c1a17503e5a1b86a409b8cb2d/lib/Crypto/PublicKey/RSA.py#L318</A>
+[5] <A HREF="https://bugs.launchpad.net/pycrypto/+bug/1132550">https://bugs.launchpad.net/pycrypto/+bug/1132550</A>
+[6] <A HREF="https://github.com/dlitz/pycrypto/pull/60">https://github.com/dlitz/pycrypto/pull/60</A>
+
+On Mon, Apr 21, 2014 at 09:44:16PM +0200, Legrandin wrote:
+&gt;<i>Is PyCrypto dead?
+</I>&gt;<i>
+</I>&gt;<i>If one had to judge from the speed security flaws are recognized,
+</I>&gt;<i>fixed and disclosed [1], then no, pycrypto is definitely not dead.
+</I>&gt;<i>Other, more active FOSS library should take notes in fact.
+</I>&gt;<i>
+</I>&gt;<i>However, when it comes to adding new features (as in, catching up with the
+</I>&gt;<i>needs of a normal security application in 2014) and refactoring the
+</I>&gt;<i>existing ones, pycrypto is deep frozen. Bug reports keep piling up and it
+</I>&gt;<i>can easily take a couple of years for a pull request to finally end up in a
+</I>&gt;<i>release.
+</I>&gt;<i>
+</I>&gt;<i>Every now and then, I can read on the ML proposals and intentions for
+</I>&gt;<i>major (and IMO, not entirely needed) overhauls, but they never seem to
+</I>&gt;<i>translate into anything solid. Worse than that, their completion is set as
+</I>&gt;<i>the
+</I>&gt;<i>precondition for acceptance of any new feature, which further exacerbates
+</I>&gt;<i>the problem.
+</I>&gt;<i>
+</I>&gt;<i>What can be done to improve on that?
+</I>&gt;<i>Would setting up a tip jar help?
+</I>&gt;<i>Would a fork of the library be seen as hostile?
+</I>&gt;<i>
+</I>&gt;<i>Finally, I am aware of the existence of the cryptography project [1].
+</I>&gt;<i>It does *not* cover my needs and I do *not* agree with some of the
+</I>&gt;<i>principles and motivations behind that design, though its dev and test
+</I>&gt;<i> processes are clearly sound.
+</I>&gt;<i>
+</I>&gt;<i>[1] <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2013q4/000702.html">http://lists.dlitz.net/pipermail/pycrypto/2013q4/000702.html</A>
+</I>&gt;<i>[2] <A HREF="https://cryptography.io">https://cryptography.io</A>
+</I>
+&gt;<i>_______________________________________________
+</I>&gt;<i>pycrypto mailing list
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000803.html">[pycrypto] Is PyCrypto dead?
+</A></li>
+	<LI>Next message: <A HREF="000810.html">[pycrypto] Is PyCrypto dead?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#809">[ date ]</a>
+              <a href="thread.html#809">[ thread ]</a>
+              <a href="subject.html#809">[ subject ]</a>
+              <a href="author.html#809">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

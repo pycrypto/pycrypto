@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA exportKey question
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%20question&In-Reply-To=%3CCAGfyce1%2BZQh4c_G0EQ96Ko5LfkDJuU28_S24RThVKV5O_m5L6w%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000673.html">
+   <LINK REL="Next"  HREF="000678.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA exportKey question</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%20question&In-Reply-To=%3CCAGfyce1%2BZQh4c_G0EQ96Ko5LfkDJuU28_S24RThVKV5O_m5L6w%40mail.gmail.com%3E"
+       TITLE="[pycrypto] RSA exportKey question">helderijs at gmail.com
+       </A><BR>
+    <I>Fri Jul  5 02:52:32 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000673.html">[pycrypto] RSA exportKey question
+</A></li>
+        <LI>Next message: <A HREF="000678.html">[pycrypto] RSA exportKey question with bcrypt?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#674">[ date ]</a>
+              <a href="thread.html#674">[ thread ]</a>
+              <a href="subject.html#674">[ subject ]</a>
+              <a href="author.html#674">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Kurt , thanks a lot for providing feedback. It is much appreciated.
+
+* I guess you refer to camel-casing used for several variables, which
+was due to my preference to stick to ASN.1 naming.
+  I can work on that and make sure flake8 does not complain that much.
+
+* Right. Code evolved at different points in time, and indeed it is
+now hard to follow the path of the 'parameter' value. I will try to
+fix that.
+
+* I used strings like 'PBKDF2WithHMAC-SHA1AndAES128-CBC' because that
+is the style used in JCA and BouncyCastle and a lot of people are
+familiar with it.
+  I am not very clear what the benefit enums might bring? One option I
+considered was the ability to provide 3 independent parameters
+  instead of one (since protection mainly depends on type of KDF, PRF,
+and symmetric cipher) but at the end I guess most
+  uses case are about the desire to protect the private key using a
+password in a strong way, and the ability to tweak the various
+parameters
+  is not that relevant. Plus, exportKey() parameter list becomes to long.
+
+* I am really ashamed to admit that I actually have 9 pull requests
+open, not 2 so I am totally giving headaches to the maintainer. :-)
+  It is of course only up to him to decide which features should go
+in; given that he has not much time these days, it is likely that only
+  few features and bugfixes may go into any next release.
+  The release merge window seems to roughly be once per year and I
+find it is natural to have so many outstanding pull requests by now.
+  To my defense, I can only say that the all pull requests cover one
+feature only and that I try to keep them as independent as possible.
+  Most of them apply cleanly to master (e.g. HKDF, CCM, PKCS#8, bug fixes, etc).
+  In some cases though, they do depend on an existing pull request (as
+in the case of DSA import/export depending on PKCS8 be applied first),
+  because keeping them separated is honestly too much work for me
+*and* they are indeed extensions of other extensions.
+
+&gt;<i> Hi, I was looking at the pycrypto pull request
+</I>&gt;<i> <A HREF="https://github.com/dlitz/pycrypto/pull/32.">https://github.com/dlitz/pycrypto/pull/32.</A>  Just a few comments...
+</I>&gt;<i>
+</I>&gt;<i> * For readability can you pep8 format the code?
+</I>&gt;<i> * RSA, for import/export the protection parameter maybe rename to algo or
+</I>&gt;<i> wrap algo?  It evolves from: 'protection' to 'wrap_algo' to 'mode' as it
+</I>&gt;<i> goes down the call stack.
+</I>&gt;<i> * Also maybe make this parameter an enum/value?  Since the long string can
+</I>&gt;<i> be error prone, low level code would need to change anyway if it were either
+</I>&gt;<i> string or int if we support more modes.
+</I>&gt;<i> * And last but not least... I'm new to this email list and not sure how
+</I>&gt;<i> often pull requests are accepted but maybe you could reduce the amount of
+</I>&gt;<i> features going in?  I know you have another one, 51, after this...
+</I>&gt;<i> Maintainer may reluctant to do massive changes all at once?
+</I>&gt;<i>
+</I>&gt;<i> Anyway just ideas...
+</I>&gt;<i> Thanks for your time,
+</I>&gt;<i> Sincerely,
+</I>&gt;<i> Kurt
+</I>&gt;<i>
+</I></PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000673.html">[pycrypto] RSA exportKey question
+</A></li>
+	<LI>Next message: <A HREF="000678.html">[pycrypto] RSA exportKey question with bcrypt?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#674">[ date ]</a>
+              <a href="thread.html#674">[ thread ]</a>
+              <a href="subject.html#674">[ subject ]</a>
+              <a href="author.html#674">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

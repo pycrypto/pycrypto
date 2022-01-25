@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Bug in Crypto.PublicKey.RSA?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To=48C4BCC1.1060709%40broadley.org">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000010.html">
+   <LINK REL="Next"  HREF="000012.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Bug in Crypto.PublicKey.RSA?</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Bug%20in%20Crypto.PublicKey.RSA%3F&In-Reply-To=48C4BCC1.1060709%40broadley.org"
+       TITLE="[pycrypto] Bug in Crypto.PublicKey.RSA?">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Sep  8 08:42:01 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000010.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+        <LI>Next message: <A HREF="000012.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#11">[ date ]</a>
+              <a href="thread.html#11">[ thread ]</a>
+              <a href="subject.html#11">[ subject ]</a>
+              <a href="author.html#11">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sun, Sep 07, 2008 at 10:48:49PM -0700, Bill Broadley wrote:
+&gt;<i>Shouldn't RSA.generate(keysize, rpool.get_bytes) generate a key that is
+</I>&gt;<i>keysize bits and that can encrypt that many bits?
+</I>
+No.  RSA with an N-bit modulus can only guarantee encryption of up to N-1 
+bits.
+
+When you generate an RSA key, you get three values:
+
+     - n: the modulus (when you talk about a 368-bit key, you are actually 
+       talking about a 368-bit modulus)
+
+     - e: the public exponent (PyCrypto defaults to 65537)
+
+     - d: the private exponent
+
+The public key is the pair (n, e), and the private key is the pair (n, d).  
+To encrypt, you perform the following operation:
+
+     C = M**e (mod n)
+       = M**e % n        # Python notation
+       = pow(M, e, n)    # Fast Python notation
+
+To decrypt, you perform the following operation:
+
+     M = C**d (mod n)
+       = C**d % n        # Python notation
+       = pow(C, d, n)    # Fast Python notation
+
+Notice how in the decryption, we do a &quot;% n&quot; operation.  This means that 
+whatever the value we decrypt, we will only ever get a value between 0 and 
+n-1.  Thus, PyCrypto only lets you encrypt a value between 0 and n-1.
+
+This program should demonstrate:
+
+# ==== BEGIN ====
+&gt;&gt;&gt;<i> from Crypto.PublicKey import RSA
+</I>&gt;&gt;&gt;<i> from binascii import a2b_hex, b2a_hex
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> # Generate a random RSA key (see my note below about RandomPool)
+</I>&gt;&gt;&gt;<i> rsaobj = RSA.generate(368, open(&quot;/dev/urandom&quot;, &quot;rb&quot;).read)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> # Generate two messages
+</I>&gt;&gt;&gt;<i> M0 = a2b_hex(&quot;%02X&quot; % rsaobj.key.n)      # M0 = n
+</I>&gt;&gt;&gt;<i> M1 = a2b_hex(&quot;%02X&quot; % (rsaobj.key.n-1))  # M1 = n-1
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> # Try to encrypt n
+</I>&gt;&gt;&gt;<i> rsaobj.encrypt(M0, 0)
+</I>Traceback (most recent call last):
+   File &quot;&lt;stdin&gt;&quot;, line 2, in ?
+   File &quot;/usr/lib/python2.4/site-packages/Crypto/PublicKey/pubkey.py&quot;, line 50, in encrypt
+     ciphertext=self._encrypt(plaintext, K)
+   File &quot;/usr/lib/python2.4/site-packages/Crypto/PublicKey/RSA.py&quot;, line 181, in _encrypt
+     return (self.key._encrypt(plain),)
+_fastmath.error: Plaintext too large
+&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> # Try to encrypt n-1
+</I>&gt;&gt;&gt;<i> rsaobj.encrypt(M1, 0)
+</I>('\x82\x9cp4\x0c@\xcd\t\x1f\x10\xed\x06Z*\x00^\xcf\xf1\xb2\xc0h\'%M+\x92\x91\xf8\xc3TD\xf5\xd4\xa3\r\xf7\x11\xa2\xf9\xec\x01&quot;\x05\xd3\x89@',)
+&gt;&gt;&gt;<i> # Success
+</I>&gt;&gt;&gt;<i>
+</I># ==== END ====
+
+&gt;<i>Then used this piece of code:
+</I>&gt;<i>
+</I>&gt;<i>from Crypto.PublicKey import RSA
+</I>&gt;<i>from Crypto.Util.randpool import RandomPool
+</I>&gt;<i>
+</I>&gt;<i>rpool = RandomPool()
+</I>&gt;<i>keysize=368
+</I>&gt;<i>privkeyA = RSA.generate(keysize, rpool.get_bytes)
+</I>
+As an aside, don't use RandomPool to generate random numbers.  It doesn't 
+do what you think it does.  See this thread:
+
+     <A HREF="http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html">http://lists.dlitz.net/pipermail/pycrypto/2008q3/000000.html</A>
+
+The next release of PyCrypto will provide an API that does what you want.  
+Until then, I would do something like this (Python 2.5 only):
+
+     import os
+     privkeyA = RSA.generate(keysize, os.urandom)
+
+Or this:
+
+     privkeyA = RSA.generate(keysize, open(&quot;/dev/urandom&quot;, &quot;rb&quot;).read)
+
+Cheers,
+ - Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20080908/e906c0ce/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20080908/e906c0ce/attachment.pgp</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000010.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+	<LI>Next message: <A HREF="000012.html">[pycrypto] Bug in Crypto.PublicKey.RSA?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#11">[ date ]</a>
+              <a href="thread.html#11">[ thread ]</a>
+              <a href="subject.html#11">[ subject ]</a>
+              <a href="author.html#11">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

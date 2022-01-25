@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Public key algos usage
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20key%20algos%20usage&In-Reply-To=bc7b5ef50911160607l37f73f6bsae0a000cdca6ead3%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000160.html">
+   <LINK REL="Next"  HREF="000162.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Public key algos usage</H1>
+    <B>Lorenz Quack</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20key%20algos%20usage&In-Reply-To=bc7b5ef50911160607l37f73f6bsae0a000cdca6ead3%40mail.gmail.com"
+       TITLE="[pycrypto] Public key algos usage">don at amberfisharts.com
+       </A><BR>
+    <I>Mon Nov 16 11:26:06 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000160.html">[pycrypto] Public key algos usage
+</A></li>
+        <LI>Next message: <A HREF="000162.html">[pycrypto] Public key algos usage
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#161">[ date ]</a>
+              <a href="thread.html#161">[ thread ]</a>
+              <a href="subject.html#161">[ subject ]</a>
+              <a href="author.html#161">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Stefano,
+
+As far as I know the API remains the same whether the key is a private/public key pair
+or only the public key. So this should work (However, I didn't test this code):
+
+ &gt;&gt;&gt; message = &quot;this is a secret&quot;
+ &gt;&gt;&gt; pub_key = key_pair.publickey()
+ &gt;&gt;&gt; cipher_text = pub_key.encrypt(message, &quot;&quot;)
+
+I also think that the API-Reference [1] is fairly accurate.
+
+I hope that helps. If not, maybe you show some code how you try to use it.
+
+yours
+//Lorenz
+
+[1] <A HREF="http://www.dlitz.net/software/pycrypto/apidoc/">http://www.dlitz.net/software/pycrypto/apidoc/</A>
+
+
+Kiwi wrote:
+&gt;<i> I cannot find documentation on using PyCrypto's public keys algorithms.
+</I>&gt;<i> The main problem is that while I can easily create a private/public
+</I>&gt;<i> keypair and use it, I don't understand how to create an object given
+</I>&gt;<i> only a public key (encryption/verify only).
+</I>&gt;<i> The only documentation says to &quot;look at the source code&quot;.
+</I>&gt;<i> What is the best thing to do at this time?
+</I>&gt;<i> Wait for a definitive API? Use a development version? Use the old
+</I>&gt;<i> undocumented API?
+</I>&gt;<i> Is there a code snipplet somewhere on using RSA or ElGamal with the current API?
+</I>&gt;<i> By the way I already use PyCrypto symmetric encryption in the
+</I>&gt;<i> application I'm writing and it works well and fast.
+</I>&gt;<i> 
+</I>&gt;<i> Thank you for your time,
+</I>&gt;<i> Stefano Cavallari
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000160.html">[pycrypto] Public key algos usage
+</A></li>
+	<LI>Next message: <A HREF="000162.html">[pycrypto] Public key algos usage
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#161">[ date ]</a>
+              <a href="thread.html#161">[ thread ]</a>
+              <a href="subject.html#161">[ subject ]</a>
+              <a href="author.html#161">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

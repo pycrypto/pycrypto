@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] AES decrypting issues
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20AES%20decrypting%20issues&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000132.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] AES decrypting issues</H1>
+    <B>Mike Driscoll</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20AES%20decrypting%20issues&In-Reply-To="
+       TITLE="[pycrypto] AES decrypting issues">mdriscoll at co.marshall.ia.us
+       </A><BR>
+    <I>Wed Oct  7 10:06:46 CST 2009</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000132.html">[pycrypto] AES decrypting issues
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#131">[ date ]</a>
+              <a href="thread.html#131">[ thread ]</a>
+              <a href="subject.html#131">[ subject ]</a>
+              <a href="author.html#131">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I am working on a project where I need to decrypt some data that has
+been encrypted with AES. Our webmaster gave me a PHP example that he 
+uses, but I'm supposed to use Python. Here's the PHP code:
+
+$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key,
+$data,MCRYPT_MODE_ECB, $iv),&quot;\0&quot;);
+
+I've been told on c.l.py that the iv in this case should be 16 bytes.
+
+I tried following the example on this blog by modifying it as needed:
+
+<A HREF="http://www.codekoala.com/blog/2009/aes-encryption-python-using-pycrypto/">http://www.codekoala.com/blog/2009/aes-encryption-python-using-pycrypto/</A>
+
+But no matter which base64 decode method I use, I get some kind of 
+error: b32decode, b64decode and decodestring all return a padding error 
+whereas b16decode claims that I don't have only 16-bit characters in my 
+data string.
+
+I've never done this before, so I'm not sure where I'm going wrong. Any 
+advice would be appreciated. I'm on Windows XP with Python 2.5.
+
+Thanks,
+
+Mike
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000132.html">[pycrypto] AES decrypting issues
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#131">[ date ]</a>
+              <a href="thread.html#131">[ thread ]</a>
+              <a href="subject.html#131">[ subject ]</a>
+              <a href="author.html#131">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

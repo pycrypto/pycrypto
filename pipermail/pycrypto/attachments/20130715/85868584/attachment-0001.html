@@ -1,0 +1,168 @@
+<tt>
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;Understood,&nbsp;but&nbsp;the&nbsp;format&nbsp;of&nbsp;the&nbsp;export&nbsp;changes&nbsp;when&nbsp;we&nbsp;add&nbsp;&#39;protection&#39;&nbsp;parameter.&lt;div&gt;Can&nbsp;we&nbsp;keep&nbsp;same&nbsp;format&nbsp;and&nbsp;have&nbsp;different&nbsp;headers,&nbsp;ex:&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&gt;&nbsp;Proc-Type:&nbsp;4,ENCRYPTED&lt;br&gt;<br>
+&gt;&nbsp;DEK-Info:&nbsp;AES-256-CBC,16D792053CB9E5981B06E020900F86EA&lt;br&gt;&lt;br&gt;Because&nbsp;I&nbsp;notice&nbsp;we&nbsp;wrap&nbsp;the&nbsp;unencrypted&nbsp;PEM&nbsp;into&nbsp;a&nbsp;PBES2&nbsp;which&nbsp;is&nbsp;encrypted&nbsp;there.&nbsp; &lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Also&nbsp;maybe&nbsp;more&nbsp;importantly&nbsp;would&nbsp;be&nbsp;the&nbsp;extra&nbsp;parameters&nbsp;for&nbsp;salt&nbsp;size&nbsp;and&nbsp;iteration&nbsp;count?&lt;/div&gt;<br>
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;An&nbsp;afterthought,&nbsp;maybe&nbsp;it&#39;s&nbsp;time&nbsp;exportKey(),&nbsp;importKey()&nbsp;stay&nbsp;the&nbsp;same&nbsp;as&nbsp;2.6&nbsp;and&nbsp;have&nbsp;new&nbsp;functions&nbsp;that&nbsp;allow&nbsp;these&nbsp;extra&nbsp;combinations?&nbsp; &lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Thanks,&lt;/div&gt;&lt;div&gt;Kurt&lt;/div&gt;&lt;div&gt;<br>
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Mon,&nbsp;Jul&nbsp;15,&nbsp;2013&nbsp;at&nbsp;2:26&nbsp;AM,&nbsp;Legrandin&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&lt;&lt;a&nbsp;href=&quot;mailto:helderijs@gmail.com&quot;&nbsp;target=&quot;_blank&quot;&gt;helderijs@gmail.com&lt;/a&gt;&gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;<br>
+Hi&nbsp;Kurt,&lt;br&gt;<br>
+&lt;br&gt;<br>
+In&nbsp;the&nbsp;PyCrypto&nbsp;2.6&nbsp;release,&nbsp;rsa.exportKey(passphrase=&#39;boo&#39;)&nbsp;generates&lt;br&gt;<br>
+a&nbsp;TDES-encrypted&nbsp;private&nbsp;key,&nbsp;with&nbsp;encryption&nbsp;being&nbsp;done&nbsp;at&nbsp;the&nbsp;PEM&lt;br&gt;<br>
+level.&lt;br&gt;<br>
+&lt;br&gt;<br>
+I&nbsp;don&#39;t&nbsp;think&nbsp;that&nbsp;behavior&nbsp;should&nbsp;change&nbsp;(e.g.&nbsp;we&nbsp;should&nbsp;not&nbsp;silently&lt;br&gt;<br>
+switch&nbsp;to&nbsp;AES&nbsp;or&nbsp;even&nbsp;to&nbsp;the&nbsp;more&nbsp;robust&nbsp;PKCS#8-level&nbsp;encryption).&lt;br&gt;<br>
+&lt;br&gt;<br>
+2013/7/15&nbsp;Kurt&nbsp;Vogel&nbsp;&lt;&lt;a&nbsp;href=&quot;mailto:kvogel@mdcom.com&quot;&gt;kvogel@mdcom.com&lt;/a&gt;&gt;:&lt;br&gt;<br>
+&gt;&nbsp;And&nbsp;finally&nbsp;a&nbsp;comment/question/complaint&nbsp;:(&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;If&nbsp;I&nbsp;use&nbsp;protection&nbsp;like&nbsp;this&nbsp;for&nbsp;ex:&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;export&nbsp;=&nbsp;rsa.exportKey(passphrase=&#39;boo&#39;,&nbsp;pkcs=8,&lt;br&gt;<br>
+&gt;&nbsp;protection=&#39;PBKDF2WithHMAC-SHA1AndAES256-CBC&#39;)&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;The&nbsp;exported&nbsp;key&nbsp;looks&nbsp;like&nbsp;this:&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;-----BEGIN&nbsp;ENCRYPTED&nbsp;PRIVATE&nbsp;KEY-----&lt;br&gt;<br>
+&gt;&nbsp;MIIFHzBJBgkqhkiG9w0BBQ0wPDAbBgkqhkiG9w0BBQwwDgQIHI1C+JhO35cCAgPo&lt;br&gt;<br>
+&gt;&nbsp;MB0GCWCGSAFlAwQBKgQQ2FsezYUEaQLPHxk0z6+R4gSCBNDV++BsvKxxpo6uhUYw&lt;br&gt;<br>
+&gt;&nbsp;...&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;With&nbsp;export&nbsp;=&nbsp;rsa.exportKey(passphrase=&#39;boo&#39;):&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;-----BEGIN&nbsp;RSA&nbsp;PRIVATE&nbsp;KEY-----&lt;br&gt;<br>
+&gt;&nbsp;Proc-Type:&nbsp;4,ENCRYPTED&lt;br&gt;<br>
+&gt;&nbsp;DEK-Info:&nbsp;DES-EDE3-CBC,CE7B6EC598ED0D10&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;lPMvbYUypG+O4P/LilzGVQqP+6PMbnnLMP6eosyubcBqLtQxvMlvRRqgRu5CDApA&lt;br&gt;<br>
+&gt;&nbsp;...&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;The&nbsp;logic&nbsp;in&nbsp;exportKey()&nbsp;looks&nbsp;a&nbsp;bit&nbsp;convoluted,&nbsp;is&nbsp;this&nbsp;for&nbsp;some&nbsp;backward&lt;br&gt;<br>
+&gt;&nbsp;compatibility&nbsp;issue?&nbsp; I&nbsp;would&nbsp;expect&nbsp;to&nbsp;see&nbsp;something&nbsp;like&nbsp;this,&nbsp;what&lt;br&gt;<br>
+&gt;&nbsp;ssh-key&nbsp;does:&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;-----BEGIN&nbsp;RSA&nbsp;PRIVATE&nbsp;KEY-----&lt;br&gt;<br>
+&gt;&nbsp;Proc-Type:&nbsp;4,ENCRYPTED&lt;br&gt;<br>
+&gt;&nbsp;DEK-Info:&nbsp;AES-256-CBC,16D792053CB9E5981B06E020900F86EA&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;oL8O6n5v1S3cgGJIwrzrAq5TQIb7OeolGJpHXiyTUj1iStulgS5vAjkht0cgq53p&lt;br&gt;<br>
+&gt;&nbsp;...&lt;br&gt;<br>
+&gt;&nbsp;..&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;Thanks,&lt;br&gt;<br>
+&gt;&nbsp;Kurt&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;On&nbsp;Sun,&nbsp;Jul&nbsp;14,&nbsp;2013&nbsp;at&nbsp;11:40&nbsp;PM,&nbsp;Kurt&nbsp;Vogel&nbsp;&lt;&lt;a&nbsp;href=&quot;mailto:kvogel@mdcom.com&quot;&gt;kvogel@mdcom.com&lt;/a&gt;&gt;&nbsp;wrote:&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;While&nbsp;I&#39;m&nbsp;on&nbsp;the&nbsp;subject&nbsp;and&nbsp;appears&nbsp;Dwayne&nbsp;is&nbsp;merging&nbsp;in&nbsp;pull&nbsp;requests&nbsp;:)&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;For&nbsp;RSA&nbsp;exportKey()&nbsp;think&nbsp;we&nbsp;could&nbsp;have&nbsp;**kwargs&nbsp;for&nbsp;extra&nbsp;prot_params&lt;br&gt;<br>
+&gt;&gt;&nbsp;passed&nbsp;to&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;PKCS8.wrap()&nbsp;like&nbsp;iteration_count&nbsp;and&nbsp;salt&nbsp;size?&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;On&nbsp;Sun,&nbsp;Jul&nbsp;14,&nbsp;2013&nbsp;at&nbsp;9:34&nbsp;PM,&nbsp;Kurt&nbsp;Vogel&nbsp;&lt;&lt;a&nbsp;href=&quot;mailto:kvogel@mdcom.com&quot;&gt;kvogel@mdcom.com&lt;/a&gt;&gt;&nbsp;wrote:&lt;br&gt;<br>
+&gt;&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;Hi,&lt;br&gt;<br>
+&gt;&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;Do&nbsp;you&nbsp;guys&nbsp;know&nbsp;roughly&nbsp;when&nbsp;this&nbsp;will&nbsp;go&nbsp;in?&lt;br&gt;<br>
+&gt;&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;Also&nbsp;with&nbsp;import/export&nbsp;RSA&nbsp;keys&nbsp;can&nbsp;we&nbsp;support&nbsp;bcrypt?&lt;br&gt;<br>
+&gt;&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;Does&nbsp;JCA&nbsp;and&nbsp;BouncyCastle&nbsp;use&nbsp;bcrypt,&nbsp;eg:&lt;br&gt;<br>
+&gt;&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&#39;BcryptWithHMAC-SHA1AndAES256-CBC&#39;&lt;br&gt;<br>
+&gt;&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;Thanks,&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;Kurt&lt;br&gt;<br>
+&gt;&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;On&nbsp;Fri,&nbsp;Jul&nbsp;5,&nbsp;2013&nbsp;at&nbsp;2:52&nbsp;AM,&nbsp;Legrandin&nbsp;&lt;&lt;a&nbsp;href=&quot;mailto:helderijs@gmail.com&quot;&gt;helderijs@gmail.com&lt;/a&gt;&gt;&nbsp;wrote:&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;Hi&nbsp;Kurt&nbsp;,&nbsp;thanks&nbsp;a&nbsp;lot&nbsp;for&nbsp;providing&nbsp;feedback.&nbsp;It&nbsp;is&nbsp;much&nbsp;appreciated.&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;*&nbsp;I&nbsp;guess&nbsp;you&nbsp;refer&nbsp;to&nbsp;camel-casing&nbsp;used&nbsp;for&nbsp;several&nbsp;variables,&nbsp;which&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;was&nbsp;due&nbsp;to&nbsp;my&nbsp;preference&nbsp;to&nbsp;stick&nbsp;to&nbsp;ASN.1&nbsp;naming.&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp; &nbsp;I&nbsp;can&nbsp;work&nbsp;on&nbsp;that&nbsp;and&nbsp;make&nbsp;sure&nbsp;flake8&nbsp;does&nbsp;not&nbsp;complain&nbsp;that&nbsp;much.&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;*&nbsp;Right.&nbsp;Code&nbsp;evolved&nbsp;at&nbsp;different&nbsp;points&nbsp;in&nbsp;time,&nbsp;and&nbsp;indeed&nbsp;it&nbsp;is&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;now&nbsp;hard&nbsp;to&nbsp;follow&nbsp;the&nbsp;path&nbsp;of&nbsp;the&nbsp;&#39;parameter&#39;&nbsp;value.&nbsp;I&nbsp;will&nbsp;try&nbsp;to&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;fix&nbsp;that.&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;*&nbsp;I&nbsp;used&nbsp;strings&nbsp;like&nbsp;&#39;PBKDF2WithHMAC-SHA1AndAES128-CBC&#39;&nbsp;because&nbsp;that&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;is&nbsp;the&nbsp;style&nbsp;used&nbsp;in&nbsp;JCA&nbsp;and&nbsp;BouncyCastle&nbsp;and&nbsp;a&nbsp;lot&nbsp;of&nbsp;people&nbsp;are&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;familiar&nbsp;with&nbsp;it.&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp; &nbsp;I&nbsp;am&nbsp;not&nbsp;very&nbsp;clear&nbsp;what&nbsp;the&nbsp;benefit&nbsp;enums&nbsp;might&nbsp;bring?&nbsp;One&nbsp;option&nbsp;I&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;considered&nbsp;was&nbsp;the&nbsp;ability&nbsp;to&nbsp;provide&nbsp;3&nbsp;independent&nbsp;parameters&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp; &nbsp;instead&nbsp;of&nbsp;one&nbsp;(since&nbsp;protection&nbsp;mainly&nbsp;depends&nbsp;on&nbsp;type&nbsp;of&nbsp;KDF,&nbsp;PRF,&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;and&nbsp;symmetric&nbsp;cipher)&nbsp;but&nbsp;at&nbsp;the&nbsp;end&nbsp;I&nbsp;guess&nbsp;most&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp; &nbsp;uses&nbsp;case&nbsp;are&nbsp;about&nbsp;the&nbsp;desire&nbsp;to&nbsp;protect&nbsp;the&nbsp;private&nbsp;key&nbsp;using&nbsp;a&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;password&nbsp;in&nbsp;a&nbsp;strong&nbsp;way,&nbsp;and&nbsp;the&nbsp;ability&nbsp;to&nbsp;tweak&nbsp;the&nbsp;various&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;parameters&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp; &nbsp;is&nbsp;not&nbsp;that&nbsp;relevant.&nbsp;Plus,&nbsp;exportKey()&nbsp;parameter&nbsp;list&nbsp;becomes&nbsp;to&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;long.&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;*&nbsp;I&nbsp;am&nbsp;really&nbsp;ashamed&nbsp;to&nbsp;admit&nbsp;that&nbsp;I&nbsp;actually&nbsp;have&nbsp;9&nbsp;pull&nbsp;requests&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;open,&nbsp;not&nbsp;2&nbsp;so&nbsp;I&nbsp;am&nbsp;totally&nbsp;giving&nbsp;headaches&nbsp;to&nbsp;the&nbsp;maintainer.&nbsp;:-)&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp; &nbsp;It&nbsp;is&nbsp;of&nbsp;course&nbsp;only&nbsp;up&nbsp;to&nbsp;him&nbsp;to&nbsp;decide&nbsp;which&nbsp;features&nbsp;should&nbsp;go&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;in;&nbsp;given&nbsp;that&nbsp;he&nbsp;has&nbsp;not&nbsp;much&nbsp;time&nbsp;these&nbsp;days,&nbsp;it&nbsp;is&nbsp;likely&nbsp;that&nbsp;only&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp; &nbsp;few&nbsp;features&nbsp;and&nbsp;bugfixes&nbsp;may&nbsp;go&nbsp;into&nbsp;any&nbsp;next&nbsp;release.&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp; &nbsp;The&nbsp;release&nbsp;merge&nbsp;window&nbsp;seems&nbsp;to&nbsp;roughly&nbsp;be&nbsp;once&nbsp;per&nbsp;year&nbsp;and&nbsp;I&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;find&nbsp;it&nbsp;is&nbsp;natural&nbsp;to&nbsp;have&nbsp;so&nbsp;many&nbsp;outstanding&nbsp;pull&nbsp;requests&nbsp;by&nbsp;now.&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp; &nbsp;To&nbsp;my&nbsp;defense,&nbsp;I&nbsp;can&nbsp;only&nbsp;say&nbsp;that&nbsp;the&nbsp;all&nbsp;pull&nbsp;requests&nbsp;cover&nbsp;one&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;feature&nbsp;only&nbsp;and&nbsp;that&nbsp;I&nbsp;try&nbsp;to&nbsp;keep&nbsp;them&nbsp;as&nbsp;independent&nbsp;as&nbsp;possible.&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp; &nbsp;Most&nbsp;of&nbsp;them&nbsp;apply&nbsp;cleanly&nbsp;to&nbsp;master&nbsp;(e.g.&nbsp;HKDF,&nbsp;CCM,&nbsp;PKCS#8,&nbsp;bug&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;fixes,&nbsp;etc).&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp; &nbsp;In&nbsp;some&nbsp;cases&nbsp;though,&nbsp;they&nbsp;do&nbsp;depend&nbsp;on&nbsp;an&nbsp;existing&nbsp;pull&nbsp;request&nbsp;(as&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;in&nbsp;the&nbsp;case&nbsp;of&nbsp;DSA&nbsp;import/export&nbsp;depending&nbsp;on&nbsp;PKCS8&nbsp;be&nbsp;applied&nbsp;first),&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp; &nbsp;because&nbsp;keeping&nbsp;them&nbsp;separated&nbsp;is&nbsp;honestly&nbsp;too&nbsp;much&nbsp;work&nbsp;for&nbsp;me&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;*and*&nbsp;they&nbsp;are&nbsp;indeed&nbsp;extensions&nbsp;of&nbsp;other&nbsp;extensions.&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;Hi,&nbsp;I&nbsp;was&nbsp;looking&nbsp;at&nbsp;the&nbsp;pycrypto&nbsp;pull&nbsp;request&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;&lt;a&nbsp;href=&quot;https://github.com/dlitz/pycrypto/pull/32&quot;&nbsp;target=&quot;_blank&quot;&gt;https://github.com/dlitz/pycrypto/pull/32&lt;/a&gt;.&nbsp; Just&nbsp;a&nbsp;few&nbsp;comments...&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;*&nbsp;For&nbsp;readability&nbsp;can&nbsp;you&nbsp;pep8&nbsp;format&nbsp;the&nbsp;code?&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;*&nbsp;RSA,&nbsp;for&nbsp;import/export&nbsp;the&nbsp;protection&nbsp;parameter&nbsp;maybe&nbsp;rename&nbsp;to&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;algo&nbsp;or&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;wrap&nbsp;algo?&nbsp; It&nbsp;evolves&nbsp;from:&nbsp;&#39;protection&#39;&nbsp;to&nbsp;&#39;wrap_algo&#39;&nbsp;to&nbsp;&#39;mode&#39;&nbsp;as&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;it&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;goes&nbsp;down&nbsp;the&nbsp;call&nbsp;stack.&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;*&nbsp;Also&nbsp;maybe&nbsp;make&nbsp;this&nbsp;parameter&nbsp;an&nbsp;enum/value?&nbsp; Since&nbsp;the&nbsp;long&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;string&nbsp;can&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;be&nbsp;error&nbsp;prone,&nbsp;low&nbsp;level&nbsp;code&nbsp;would&nbsp;need&nbsp;to&nbsp;change&nbsp;anyway&nbsp;if&nbsp;it&nbsp;were&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;either&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;string&nbsp;or&nbsp;int&nbsp;if&nbsp;we&nbsp;support&nbsp;more&nbsp;modes.&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;*&nbsp;And&nbsp;last&nbsp;but&nbsp;not&nbsp;least...&nbsp;I&#39;m&nbsp;new&nbsp;to&nbsp;this&nbsp;email&nbsp;list&nbsp;and&nbsp;not&nbsp;sure&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;how&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;often&nbsp;pull&nbsp;requests&nbsp;are&nbsp;accepted&nbsp;but&nbsp;maybe&nbsp;you&nbsp;could&nbsp;reduce&nbsp;the&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;amount&nbsp;of&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;features&nbsp;going&nbsp;in?&nbsp; I&nbsp;know&nbsp;you&nbsp;have&nbsp;another&nbsp;one,&nbsp;51,&nbsp;after&nbsp;this...&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;Maintainer&nbsp;may&nbsp;reluctant&nbsp;to&nbsp;do&nbsp;massive&nbsp;changes&nbsp;all&nbsp;at&nbsp;once?&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;Anyway&nbsp;just&nbsp;ideas...&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;Thanks&nbsp;for&nbsp;your&nbsp;time,&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;Sincerely,&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&nbsp;Kurt&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;_______________________________________________&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;&gt;&nbsp;&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&gt;&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;_______________________________________________&lt;br&gt;<br>
+&gt;&nbsp;pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&gt;&nbsp;&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&gt;&nbsp;&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;<br>
+
+</tt>

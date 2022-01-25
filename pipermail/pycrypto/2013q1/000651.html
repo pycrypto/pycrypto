@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Pickling AES cipher objects - any reasons not to support this?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Pickling%20AES%20cipher%20objects%20-%20any%20reasons%20not%20to%0A%20support%20this%3F&In-Reply-To=%3C5106B73A.9070603%40dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000645.html">
+   <LINK REL="Next"  HREF="000649.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Pickling AES cipher objects - any reasons not to support this?</H1>
+    <B>Dwayne Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Pickling%20AES%20cipher%20objects%20-%20any%20reasons%20not%20to%0A%20support%20this%3F&In-Reply-To=%3C5106B73A.9070603%40dlitz.net%3E"
+       TITLE="[pycrypto] Pickling AES cipher objects - any reasons not to support this?">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Jan 28 09:36:58 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000645.html">[pycrypto] Pickling AES cipher objects - any reasons not to support this?
+</A></li>
+        <LI>Next message: <A HREF="000649.html">[pycrypto] Remove DSA because 1024bit is not safe
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#651">[ date ]</a>
+              <a href="thread.html#651">[ thread ]</a>
+              <a href="subject.html#651">[ subject ]</a>
+              <a href="author.html#651">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 01/14/2013 10:14 AM, Legrandin wrote:
+&gt;<i> Pickling a cipher and reusing later for a totally different encryption 
+</I>&gt;<i> will lead to IV/nonce reuse, which is definitely bad, especially for 
+</I>&gt;<i> stream cipher-like modes.
+</I>That's a good point, and reason enough not to support it.  We do support 
+pickling *key* objects, although IMHO pickling should never be used anyway.
+
+- Dwayne
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000645.html">[pycrypto] Pickling AES cipher objects - any reasons not to support this?
+</A></li>
+	<LI>Next message: <A HREF="000649.html">[pycrypto] Remove DSA because 1024bit is not safe
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#651">[ date ]</a>
+              <a href="thread.html#651">[ thread ]</a>
+              <a href="subject.html#651">[ subject ]</a>
+              <a href="author.html#651">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

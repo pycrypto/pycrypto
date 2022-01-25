@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Why does PyCrypto not produce the same ciphertext as OpenSSL in this example (AES-128 ECB)
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Why%20does%20PyCrypto%20not%20produce%20the%20same%20ciphertext%20as%0A%20OpenSSL%20in%20this%20example%20%28AES-128%20ECB%29&In-Reply-To=%3CCAMJE-1tjJsFiYW_cK%2B-pSD31P0T3w-74EX_srkW8gCt-2yUpEQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000831.html">
+   <LINK REL="Next"  HREF="000833.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Why does PyCrypto not produce the same ciphertext as OpenSSL in this example (AES-128 ECB)</H1>
+    <B>James McMurray</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Why%20does%20PyCrypto%20not%20produce%20the%20same%20ciphertext%20as%0A%20OpenSSL%20in%20this%20example%20%28AES-128%20ECB%29&In-Reply-To=%3CCAMJE-1tjJsFiYW_cK%2B-pSD31P0T3w-74EX_srkW8gCt-2yUpEQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Why does PyCrypto not produce the same ciphertext as OpenSSL in this example (AES-128 ECB)">jamesmcm03 at gmail.com
+       </A><BR>
+    <I>Sat Feb 21 07:08:25 PST 2015</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000831.html">[pycrypto] chmod error
+</A></li>
+        <LI>Next message: <A HREF="000833.html">[pycrypto] Why does PyCrypto not produce the same ciphertext as OpenSSL in this example (AES-128 ECB)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#832">[ date ]</a>
+              <a href="thread.html#832">[ thread ]</a>
+              <a href="subject.html#832">[ subject ]</a>
+              <a href="author.html#832">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+If I run the following, for openSSL:
+
+echo -n &quot;0123456789abcdef0123456789abcdef&quot; | openssl aes-128-ecb
+-nosalt -nopad | xxd
+
+and enter the key &quot;YELLOW SUBMARINE&quot;, I get the following ciphertext:
+
+a2a5 8316 129f c596 8341 c78a 0c36 5d20
+a2a5 8316 129f c596 8341 c78a 0c36 5d20
+
+Yet in PyCrypto, the following code:
+
+from Crypto.Cipher import AES
+key = b'YELLOW SUBMARINE'
+cipher = AES.new(key, AES.MODE_ECB, &quot;&quot;)
+msg =  cipher.encrypt(b'0123456789abcdef0123456789abcdef')
+
+Outputs:
+
+20 1e 80 2f 7b 6a ce 6f 6c d0 a7 43 ba 78 ae ad
+20 1e 80 2f 7b 6a ce 6f 6c d0 a7 43 ba 78 ae ad
+
+(line breaks added for clarity)
+
+What is the cause of this discrepancy? Both are 128-bit AES in ECB
+mode. PyCrypto doesn't appear to be salting, and padding should be
+unnecessary in any case with this plaintext.
+
+Thanks,
+James McMurray
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000831.html">[pycrypto] chmod error
+</A></li>
+	<LI>Next message: <A HREF="000833.html">[pycrypto] Why does PyCrypto not produce the same ciphertext as OpenSSL in this example (AES-128 ECB)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#832">[ date ]</a>
+              <a href="thread.html#832">[ thread ]</a>
+              <a href="subject.html#832">[ subject ]</a>
+              <a href="author.html#832">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

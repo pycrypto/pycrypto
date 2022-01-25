@@ -1,0 +1,435 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] pycryptodome
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20pycryptodome&In-Reply-To=%3CCAEncD4dF_MUGu%2BRoJ8bKc%2BJQ4_FkicsFCA%2B0rt0a%2BaQAT%2Bw-XQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <LINK REL="Previous"  HREF="000891.html">
+   <LINK REL="Next"  HREF="000893.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] pycryptodome</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20pycryptodome&In-Reply-To=%3CCAEncD4dF_MUGu%2BRoJ8bKc%2BJQ4_FkicsFCA%2B0rt0a%2BaQAT%2Bw-XQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] pycryptodome">dave.pawson at gmail.com
+       </A><BR>
+    <I>Sun Dec 11 10:56:27 UTC 2016</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000891.html">[pycrypto] pycryptodome
+</A></li>
+        <LI>Next message: <A HREF="000893.html">[pycrypto] pycryptodome
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#892">[ date ]</a>
+              <a href="thread.html#892">[ thread ]</a>
+              <a href="subject.html#892">[ subject ]</a>
+              <a href="author.html#892">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 8 December 2016 at 20:29, Martin Falatic &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">martin at falatic.com</A>&gt; wrote:
+&gt;<i> This is beyond the scope of pycrypto for the moment - you have system
+</I>&gt;<i> problems because you've upgraded pip yourself.
+</I>
+Python rather than Operating system, yes I might agree.
+Though why the tool used makes a problem I'm less sure?
+
+
+&gt;<i>
+</I>&gt;<i> This looks familiar because I did the same exact thing myself in the
+</I>&gt;<i> process of testing this (and it didn't go smoothly - same problem you're
+</I>&gt;<i> having - so I rolled that back to get pip2 and pip3 working properly).
+</I>&gt;<i> Let's get you back on track.
+</I>
+
+So to get the desired output, which versions of pip are required?
+
+One difficulty I'm seeing is that I am quite unable to determine which version
+of Crypto I have? Surely it's not asking too much to identify at least those
+versions for which you have some control? Either by name, version,
+docstring or some such?
+
+
+&gt;<i>
+</I>&gt;<i> # At this point let's get back to the system default pips and go from
+</I>&gt;<i> there. IF you upgraded the system pip to 9.0.1 as it appears, here's how
+</I>&gt;<i> to fix them:
+</I>
+Which (versions) do you define as system defaults please?
+Default for Python 2.7 and 3.5?
+
+&gt;<i>
+</I>&gt;<i> sudo dnf reinstall python-pip python3-pip
+</I>&gt;<i>
+</I>&gt;<i> # Now, with that done, run these:
+</I>&gt;<i> sudo pip3.5 uninstall pycrypto
+</I>&gt;<i> sudo pip2.7 uninstall pycrypto
+</I>
+Reinstalling:
+ python-pip    noarch    8.1.2-2.fc25       fedora    1.7 M
+
+Reinstalling:
+ python3-pip    noarch    8.1.2-2.fc25      fedora    1.7 M
+
+
+&gt;<i>
+</I>&gt;<i> # Once that's done, list them as per my earlier email:
+</I>&gt;<i> pip3.5 list | grep pycrypt
+</I>&gt;<i> pip2.7 list | grep pycrypt
+</I>
+# pip2.7 list | grep pycrypt
+pycryptodomex (3.4.3)
+
+# pip3.5 list | grep pycrypt
+(no output)
+
+&gt;<i>
+</I>&gt;<i> Shouldn't see `pycrypto` there now. If you do... you installed it some
+</I>&gt;<i> other way (perhaps as a dnf package?) Uninstall it via the same mechanism
+</I>&gt;<i> you installed it and try again.
+</I>
+# locate Crypto shows
+/usr/lib64/python3.5/site-packages/Crypto
+
+and
+
+/usr/lib64/python2.7/site-packages/Crypto
+/usr/lib64/python2.7/site-packages/Cryptodome
+
+
+which would seem to be a mix.
+In the /usr/lib/python3.5/site-packages I have Crypto within which
+__init__.py I see
+# Written in 2008 by Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+
+So it is possibly pycrypto original.
+Renamed this dir and my code fails, so this is where it's coming from.
+
+pip3.5 install pycryptodomex
+(my code still fails)
+
+pip3.5 install pycryptodome
+and my code runs.
+
+Unless I get further problems, I'm quite prepared to leave it at that.
+Seems I'm running pycryptodome (how to tell!) which is working.
+
+Are you recommending staying with pip2.7 (8.1.2) and
+pip3.5 (8.1.2) ?
+
+Again, thanks for the help Marty.
+
+regards
+
+
+
+
+&gt;<i>
+</I>&gt;<i> Now go through the steps in my previous email to install pycryptodome and
+</I>&gt;<i> pycryptodomex for the purpose of this test, and report the results.
+</I>&gt;<i>
+</I>&gt;<i>  - Marty
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Thu, December 8, 2016 08:51, Dave Pawson wrote:
+</I>&gt;&gt;<i> Subtle. Seems access to pip 3 is via
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> # python3 -m pip list | grep crypto
+</I>&gt;&gt;<i> DEPRECATION: The default format will switch to columns in the future.
+</I>&gt;&gt;<i> You can use --format=(legacy|columns) (or define a
+</I>&gt;&gt;<i> format=(legacy|columns) in your pip.conf under the [list] section) to
+</I>&gt;&gt;<i> disable this warning. pycrypto (2.6.1)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> So 3 seems to have pycrypto 2.6.1... maybe.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> regards
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 8 December 2016 at 16:47, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On 8 December 2016 at 12:46, Martin Falatic &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">martin at falatic.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> When you run `pip2.7 list` (pretty sure that's what you need for
+</I>&gt;&gt;&gt;&gt;<i> python2, or `pip list` may be the defacto python2 pip on Fedora) and
+</I>&gt;&gt;&gt;&gt;<i> `pip3.5 list`
+</I>&gt;&gt;&gt;&gt;<i> (for python3), what are you seeing in the area of &quot;pycrypto*&quot; for each
+</I>&gt;&gt;&gt;&gt;<i> of these? I'm hopeful that once you have the proper libs installed for
+</I>&gt;&gt;&gt;&gt;<i>  python3 via pip3.5 things should work better.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> pip2 list | grep crypt pycryptodomex (3.4.3)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> No such thing as pip3.x
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> dnf install python3-pip Last metadata expiration check: 0:00:48 ago on
+</I>&gt;&gt;&gt;<i> Thu Dec  8 16:40:04 2016.
+</I>&gt;&gt;&gt;<i> Package python3-pip-8.1.2-2.fc25.noarch is already installed, skipping.
+</I>&gt;&gt;&gt;<i> Dependencies resolved.
+</I>&gt;&gt;&gt;<i> Nothing to do.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> dnf info python3-pip Last metadata expiration check: 0:03:38 ago on Thu
+</I>&gt;&gt;&gt;<i> Dec  8 16:40:04 2016.
+</I>&gt;&gt;&gt;<i> Installed Packages
+</I>&gt;&gt;&gt;<i> Name        : python3-pip
+</I>&gt;&gt;&gt;<i> Arch        : noarch
+</I>&gt;&gt;&gt;<i> Epoch       : 0
+</I>&gt;&gt;&gt;<i> Version     : 8.1.2
+</I>&gt;&gt;&gt;<i> Release     : 2.fc25
+</I>&gt;&gt;&gt;<i> Size        : 8.6 M
+</I>&gt;&gt;&gt;<i> Repo        : @System
+</I>&gt;&gt;&gt;<i> From repo   : fedora
+</I>&gt;&gt;&gt;<i> Summary     : A tool for installing and managing Python3 packages
+</I>&gt;&gt;&gt;<i> URL         : <A HREF="http://www.pip-installer.org">http://www.pip-installer.org</A>
+</I>&gt;&gt;&gt;<i> License     : MIT
+</I>&gt;&gt;&gt;<i> Description : Pip is a replacement for `easy_install
+</I>&gt;&gt;&gt;<i> : &lt;<A HREF="http://peak.telecommunity.com/DevCenter/EasyInstall">http://peak.telecommunity.com/DevCenter/EasyInstall</A>&gt;`_.
+</I>&gt;&gt;&gt;<i> It uses mostly the
+</I>&gt;&gt;&gt;<i> : same techniques for finding packages, so packages that were made
+</I>&gt;&gt;&gt;<i> : easy_installable should be pip-installable as well.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Looks like python3-pip is pip?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Yet
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> # pip -V
+</I>&gt;&gt;&gt;<i> pip 9.0.1 from /usr/lib/python2.7/site-packages (python 2.7)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> So (possibly?) there is a pip looking at python3.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Normally you'd use the pip variant for python3 (e.g., pip3.5) to
+</I>&gt;&gt;&gt;&gt;<i> install packages for python3. Can you give that a look and retry?
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Note that I'm not an expert on pycryptodome - my understanding is
+</I>&gt;&gt;&gt;&gt;<i> that pycryptodome can be used instead of pycrypto, and it seems to
+</I>&gt;&gt;&gt;&gt;<i> work fine on Windows (and I don't have reason to think it'd be any
+</I>&gt;&gt;&gt;&gt;<i> different on Linux). I have no experience with pycryptodomex
+</I>&gt;&gt;&gt;&gt;<i> currently. I have pycryptodome installed on python 2.7 and 3.5 on my
+</I>&gt;&gt;&gt;&gt;<i> Windows box (and pycrypto NOT
+</I>&gt;&gt;&gt;&gt;<i> installed on either) and the test you described ran fine for both.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> That said, if this continues, what version of Fedora are you running?
+</I>&gt;&gt;&gt;&gt;<i> I
+</I>&gt;&gt;&gt;&gt;<i> can stand up a VM and see for myself.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Latest - Fedora 25.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Is there a separate mailing list for pycryptodome?
+</I>&gt;&gt;&gt;<i> Perhaps I should ask there?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Tks. Dave
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> - M
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Thu, December 8, 2016 01:44, Dave Pawson wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Additional information.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> pip install pycryptodomex Requirement already satisfied:
+</I>&gt;&gt;&gt;&gt;&gt;<i> pycryptodomex in /usr/lib64/python2.7/site-packages
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Yet...
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> File
+</I>&gt;&gt;&gt;&gt;&gt;<i> &quot;/usr/lib64/python3.5/site-packages/Crypto/Cipher/blockalgo.py&quot;,
+</I>&gt;&gt;&gt;&gt;&gt;<i> line 141, in __init__ self._cipher = factory.new(key, *args,
+</I>&gt;&gt;&gt;&gt;&gt;<i> **kwargs)
+</I>&gt;&gt;&gt;&gt;&gt;<i> ValueError: IV must be 16 bytes long
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> So (since I'm using python3) it's picking up the Crypto library
+</I>&gt;&gt;&gt;&gt;&gt;<i> from python 3.5 and pip is installing it in python 2.7
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://pycryptodome.readthedocs.io/en/latest/src/installation.html">https://pycryptodome.readthedocs.io/en/latest/src/installation.html</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i> #windo
+</I>&gt;&gt;&gt;&gt;&gt;<i> ws-from-sources-python-3-5-and-newer
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> (aside. Yum no longer used in Fedora, just replace with dnf)
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> python3 -m Cryptodome.Selftest /usr/bin/python3: Error while
+</I>&gt;&gt;&gt;&gt;&gt;<i> finding spec for 'Cryptodome.Selftest' (ImportError: No module named
+</I>&gt;&gt;&gt;&gt;&gt;<i> 'Cryptodome')
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> regards Dave
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> On 8 December 2016 at 09:20, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt;
+</I>&gt;&gt;&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://pycryptodome.readthedocs.io/en/latest/src/installation.ht">https://pycryptodome.readthedocs.io/en/latest/src/installation.ht</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> ml
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> python3 -m Cryptodome.SelfTest /usr/bin/python3: Error while
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> finding spec for 'Cryptodome.SelfTest' (ImportError: No module
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> named 'Cryptodome')
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://pycryptodome.readthedocs.io/en/latest/src/examples.html">https://pycryptodome.readthedocs.io/en/latest/src/examples.html</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> example
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> python3 exp1.py Traceback (most recent call last): File &quot;exp1.py&quot;,
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> line 12, in &lt;module&gt; cipher = AES.new(key, AES.MODE_EAX)
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> AttributeError: module
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> 'Crypto.Cipher.AES' has no attribute 'MODE_EAX'
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> which seems to be true
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> dir(AES) ['AESCipher', 'MODE_CBC', 'MODE_CFB', 'MODE_CTR',
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> 'MODE_ECB',
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> 'MODE_OFB', 'MODE_OPENPGP', 'MODE_PGP', '_AES', '__builtins__',
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> '__cached__', '__doc__', '__file__', '__loader__', '__name__',
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> '__package__', '__revision__', '__spec__', 'block_size',
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> 'blockalgo',
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> 'key_size', 'new']
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Bugs in docs? Library?
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Suggestions please.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> regards
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Dave Pawson
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Docbook FAQ.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;&gt;&gt;<i> Dave Pawson
+</I>&gt;&gt;&gt;&gt;&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;&gt;&gt;&gt;&gt;<i> Docbook FAQ.
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;&gt;<i> pycrypto mailing list <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> pycrypto mailing list <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;<i> Dave Pawson
+</I>&gt;&gt;&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;&gt;&gt;<i> Docbook FAQ.
+</I>&gt;&gt;&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Dave Pawson
+</I>&gt;&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;&gt;<i> Docbook FAQ.
+</I>&gt;&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000891.html">[pycrypto] pycryptodome
+</A></li>
+	<LI>Next message: <A HREF="000893.html">[pycrypto] pycryptodome
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#892">[ date ]</a>
+              <a href="thread.html#892">[ thread ]</a>
+              <a href="subject.html#892">[ subject ]</a>
+              <a href="author.html#892">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

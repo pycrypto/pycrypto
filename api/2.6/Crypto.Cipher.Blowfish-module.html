@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Crypto.Cipher.Blowfish</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="Crypto-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a href="http://www.pycrypto.org/">PyCrypto.org</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="Crypto-module.html">Package&nbsp;Crypto</a> ::
+        <a href="Crypto.Cipher-module.html">Package&nbsp;Cipher</a> ::
+        Module&nbsp;Blowfish
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="Crypto.Cipher.Blowfish-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module Blowfish</h1><p class="nomargin-top"></p>
+<p>Blowfish symmetric cipher</p>
+<p><a class="rst-reference external" href="http://www.schneier.com/blowfish.html" target="_top">Blowfish</a> is a symmetric block cipher designed by Bruce Schneier.</p>
+<p>It has a fixed data block size of 8 bytes and its keys can vary in length
+from 32 to 448 bits (4 to 56 bytes).</p>
+<p>Blowfish is deemed secure and it is fast. However, its keys should be chosen
+to be big enough to withstand a brute force attack (e.g. at least 16 bytes).</p>
+<p>As an example, encryption can be done as follows:</p>
+<blockquote>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span><span class="py-keyword">from</span> Crypto.Cipher <span class="py-keyword">import</span> Blowfish
+<span class="py-prompt">&gt;&gt;&gt; </span><span class="py-keyword">from</span> Crypto <span class="py-keyword">import</span> Random
+<span class="py-prompt">&gt;&gt;&gt; </span><span class="py-keyword">from</span> struct <span class="py-keyword">import</span> pack
+<span class="py-prompt">&gt;&gt;&gt;</span>
+<span class="py-prompt">&gt;&gt;&gt; </span>bs = Blowfish.block_size
+<span class="py-prompt">&gt;&gt;&gt; </span>key = b<span class="py-string">'An arbitrarily long key'</span>
+<span class="py-prompt">&gt;&gt;&gt; </span>iv = Random.new().read(bs)
+<span class="py-prompt">&gt;&gt;&gt; </span>cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
+<span class="py-prompt">&gt;&gt;&gt; </span>plaintext = b<span class="py-string">'docendo discimus '</span>
+<span class="py-prompt">&gt;&gt;&gt; </span>plen = bs - divmod(len(plaintext),bs)[1]
+<span class="py-prompt">&gt;&gt;&gt; </span>padding = [plen]*plen
+<span class="py-prompt">&gt;&gt;&gt; </span>padding = pack(<span class="py-string">'b'</span>*plen, *padding)
+<span class="py-prompt">&gt;&gt;&gt; </span>msg = iv + cipher.encrypt(plaintext + padding)</pre>
+</blockquote>
+
+<!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Classes</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="Crypto.Cipher.Blowfish.BlowfishCipher-class.html" class="summary-name">BlowfishCipher</a><br />
+      Blowfish cipher object
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Functions</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="Crypto.Cipher.Blowfish-module.html#new" class="summary-sig-name">new</a>(<span class="summary-sig-arg">key</span>,
+        <span class="summary-sig-arg">*args</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      Create a new Blowfish cipher</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="MODE_ECB"></a><span class="summary-name">MODE_ECB</span> = <code title="1">1</code><br />
+      Electronic Code Book (ECB). See <a href="Crypto.Cipher.blockalgo-module.html#MODE_ECB" class="link">blockalgo.MODE_ECB</a>.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="MODE_CBC"></a><span class="summary-name">MODE_CBC</span> = <code title="2">2</code><br />
+      Cipher-Block Chaining (CBC). See <a href="Crypto.Cipher.blockalgo-module.html#MODE_CBC" class="link">blockalgo.MODE_CBC</a>.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="MODE_CFB"></a><span class="summary-name">MODE_CFB</span> = <code title="3">3</code><br />
+      Cipher FeedBack (CFB). See <a href="Crypto.Cipher.blockalgo-module.html#MODE_CFB" class="link">blockalgo.MODE_CFB</a>.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="MODE_PGP"></a><span class="summary-name">MODE_PGP</span> = <code title="4">4</code><br />
+      This mode should not be used.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="MODE_OFB"></a><span class="summary-name">MODE_OFB</span> = <code title="5">5</code><br />
+      Output FeedBack (OFB). See <a href="Crypto.Cipher.blockalgo-module.html#MODE_OFB" class="link">blockalgo.MODE_OFB</a>.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="MODE_CTR"></a><span class="summary-name">MODE_CTR</span> = <code title="6">6</code><br />
+      CounTer Mode (CTR). See <a href="Crypto.Cipher.blockalgo-module.html#MODE_CTR" class="link">blockalgo.MODE_CTR</a>.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="MODE_OPENPGP"></a><span class="summary-name">MODE_OPENPGP</span> = <code title="7">7</code><br />
+      OpenPGP Mode. See <a href="Crypto.Cipher.blockalgo-module.html#MODE_OPENPGP" class="link">blockalgo.MODE_OPENPGP</a>.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="block_size"></a><span class="summary-name">block_size</span> = <code title="8">8</code><br />
+      Size of a data block (in bytes)
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="key_size"></a><span class="summary-name">key_size</span> = <code title="xrange(4, 57)">xrange(4, 57)</code><br />
+      Size of a key (in bytes)
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Function Details</span></td>
+</tr>
+</table>
+<a name="new"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">new</span>(<span class="sig-arg">key</span>,
+        <span class="sig-arg">*args</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  Create a new Blowfish cipher
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>key</code></strong> (byte string) - The secret key to use in the symmetric cipher.
+Its length can vary from 4 to 56 bytes.</li>
+        <li><strong class="pname"><code>mode</code></strong> (a <em>MODE_*</em> constant) - The chaining mode to use for encryption or decryption.
+Default is <a href="Crypto.Cipher.Blowfish-module.html#MODE_ECB" class="link">MODE_ECB</a>.</li>
+        <li><p><strong class="pname"><code>IV</code></strong> (byte string) - The initialization vector to use for encryption or decryption.</p>
+<p>It is ignored for <a href="Crypto.Cipher.Blowfish-module.html#MODE_ECB" class="link">MODE_ECB</a> and <a href="Crypto.Cipher.Blowfish-module.html#MODE_CTR" class="link">MODE_CTR</a>.</p>
+<p>For <a href="Crypto.Cipher.Blowfish-module.html#MODE_OPENPGP" class="link">MODE_OPENPGP</a>, IV must be <a href="Crypto.Cipher.Blowfish-module.html#block_size" class="link">block_size</a> bytes long for encryption
+and <a href="Crypto.Cipher.Blowfish-module.html#block_size" class="link">block_size</a> +2 bytes for decryption (in the latter case, it is
+actually the <em>encrypted</em> IV which was prefixed to the ciphertext).
+It is mandatory.</p>
+<p>For all other modes, it must be <a href="Crypto.Cipher.Blowfish-module.html#block_size" class="link">block_size</a> bytes longs. It is optional and
+when not present it will be given a default value of all zeroes.</p></li>
+        <li><strong class="pname"><code>counter</code></strong> (callable) - (<em>Only</em> <a href="Crypto.Cipher.Blowfish-module.html#MODE_CTR" class="link">MODE_CTR</a>). A stateful function that returns the next
+<em>counter block</em>, which is a byte string of <a href="Crypto.Cipher.Blowfish-module.html#block_size" class="link">block_size</a> bytes.
+For better performance, use <a href="Crypto.Util.Counter-module.html" class="link" onclick="show_private();">Crypto.Util.Counter</a>.</li>
+        <li><strong class="pname"><code>segment_size</code></strong> (integer) - (<em>Only</em> <a href="Crypto.Cipher.Blowfish-module.html#MODE_CFB" class="link">MODE_CFB</a>).The number of bits the plaintext and ciphertext
+are segmented in.
+It must be a multiple of 8. If 0 or not specified, it will be assumed to be 8.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>a <a href="Crypto.Cipher.Blowfish.BlowfishCipher-class.html" class="link">BlowfishCipher</a> object</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="Crypto-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a href="http://www.pycrypto.org/">PyCrypto.org</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu May 24 09:02:36 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

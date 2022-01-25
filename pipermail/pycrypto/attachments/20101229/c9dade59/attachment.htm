@@ -1,0 +1,34 @@
+<tt>
+&lt;div&gt;Hi Thorsten,&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Thanks&nbsp;for&nbsp;the&nbsp;response.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;It&nbsp;wasn&amp;#39;t&nbsp;for&nbsp;Home&nbsp;Work&nbsp;:-)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I&nbsp;went&nbsp;through&nbsp;some&nbsp;examples&nbsp;and&nbsp;I&nbsp;understand&nbsp;that&nbsp;to&nbsp;achieve&nbsp;my&nbsp;goal&nbsp;i&nbsp;have&nbsp;to&nbsp;do&nbsp;two&nbsp;things.&lt;/div&gt;<br>
+<br>
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;1.&nbsp;Compute&nbsp;the&nbsp;Hash&nbsp;Value&nbsp;of&nbsp;my&nbsp;Data.&lt;/div&gt;&lt;div&gt;2.&nbsp;Sign&nbsp;the&nbsp;computed&nbsp;Hash&nbsp;Value&nbsp;with&nbsp;my&nbsp;Private&nbsp;Key.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;To&nbsp;achieve&nbsp;1&nbsp;above,&nbsp;i&nbsp;believe&nbsp;that&nbsp;the&nbsp;following&nbsp;code&nbsp;will&nbsp;help&nbsp;me&nbsp;(assuming&nbsp;that&nbsp;data&nbsp;is&nbsp;ABC).&lt;/div&gt;<br>
+<br>
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;from&nbsp;Crypto.Hash&nbsp;import&nbsp;SHA&lt;/div&gt;&lt;div&gt;m&nbsp;=&nbsp;SHA.new()&lt;/div&gt;&lt;div&gt;m.update(&amp;#39;ABC&amp;#39;)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;What&nbsp;I&nbsp;am&nbsp;not&nbsp;sure&nbsp;is&nbsp;if&nbsp;I&nbsp;should&nbsp;use &lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;m.digest()&lt;/div&gt;&lt;div&gt;or&lt;/div&gt;<br>
+<br>
+&lt;div&gt;m.hexdigest()&nbsp;as&nbsp;the&nbsp;computed&nbsp;hash&nbsp;value.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Following&nbsp;this,&nbsp;how&nbsp;can&nbsp;i&nbsp;use&nbsp;Crypto&nbsp;again&nbsp;to&nbsp;Sign&nbsp;the&nbsp;computed&nbsp;Hash&nbsp;Value&nbsp;using&nbsp;the&nbsp;Private&nbsp;Key?&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Appreciate&nbsp;your&nbsp;help&nbsp;on&nbsp;this.&lt;/div&gt;<br>
+<br>
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Regards,&lt;/div&gt;&lt;div&gt;Anurag&lt;/div&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Wed,&nbsp;Dec&nbsp;29,&nbsp;2010&nbsp;at&nbsp;1:32&nbsp;AM,&nbsp;Thorsten&nbsp;Behrens&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&amp;lt;&lt;a&nbsp;href=&quot;mailto:sbehrens@gmx.li&quot;&gt;sbehrens@gmx.li&lt;/a&gt;&amp;gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;<br>
+<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex;&quot;&gt;&lt;div&nbsp;class=&quot;im&quot;&gt;On&nbsp;12/28/2010&nbsp;2:44&nbsp;PM,&nbsp;Anurag&nbsp;Chourasia&nbsp;wrote:&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;I&nbsp;have&nbsp;a&nbsp;Private&nbsp;key&nbsp;and&nbsp;Public&nbsp;Key&nbsp;which&nbsp;comes&nbsp;in&nbsp;an&nbsp;XML&nbsp;in&nbsp;the&lt;br&gt;<br>
+&amp;gt;&nbsp;following&nbsp;form.&lt;br&gt;<br>
+&lt;/div&gt;[..]&lt;br&gt;<br>
+&lt;div&nbsp;class=&quot;im&quot;&gt;&amp;gt;&nbsp;Could&nbsp;you&nbsp;please&nbsp;let&nbsp;me&nbsp;know&nbsp;how&nbsp;I&nbsp;could&nbsp;use&nbsp;Crypto&nbsp;to&nbsp;meet&nbsp;this&lt;br&gt;<br>
+&amp;gt;&nbsp;requirement.&nbsp;Appreciate&nbsp;if&nbsp;you&nbsp;could&nbsp;help&nbsp;me&nbsp;with&nbsp;a&nbsp;simple&nbsp;code&nbsp;snippet.&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;Is&nbsp;this&nbsp;homework?&nbsp;:)&lt;br&gt;<br>
+&lt;br&gt;<br>
+If&nbsp;so,&nbsp;I&amp;#39;d&nbsp;give&nbsp;you&nbsp;a&nbsp;hint:&nbsp;Take&nbsp;a&nbsp;good&nbsp;look&nbsp;at&nbsp;the&nbsp;test&nbsp;routines&nbsp;in&lt;br&gt;<br>
+Crypto/Selftest,&nbsp;they&nbsp;are&nbsp;examples&nbsp;of&nbsp;how&nbsp;to&nbsp;use&nbsp;the&nbsp;library.&lt;br&gt;<br>
+&lt;br&gt;<br>
+Thorsten&lt;br&gt;<br>
+&lt;br&gt;<br>
+_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;<br>
+
+</tt>

@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RIPEMD-160 self-test failure
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RIPEMD-160%20self-test%20failure&In-Reply-To=%3CCAJXyS%3DhP6aUBELQRe_-vi9dHtFgNU2vRFtpvLyJkAjYjT9uOBQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000857.html">
+   <LINK REL="Next"  HREF="000859.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RIPEMD-160 self-test failure</H1>
+    <B>Jeffery To</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RIPEMD-160%20self-test%20failure&In-Reply-To=%3CCAJXyS%3DhP6aUBELQRe_-vi9dHtFgNU2vRFtpvLyJkAjYjT9uOBQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] RIPEMD-160 self-test failure">jeffery.to at gmail.com
+       </A><BR>
+    <I>Fri Oct 30 09:27:53 PDT 2015</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000857.html">[pycrypto] RIPEMD-160 self-test failure
+</A></li>
+        <LI>Next message: <A HREF="000859.html">[pycrypto] 2.6.1 and 2.7a1 fail to install on Python 3.5/Windows. Need a new 2.7a2 tag
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#858">[ date ]</a>
+              <a href="thread.html#858">[ thread ]</a>
+              <a href="subject.html#858">[ subject ]</a>
+              <a href="author.html#858">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks for your help - endianness was the issue. The tests all pass after
+patching setup.py.
+
+Thanks again!
+Jeff
+
+On Thu, Oct 29, 2015 at 9:50 PM, Legrandin &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">helderijs at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> You most probably get PyCrypto compiled in little-endian mode but your
+</I>&gt;<i> router is big endian. There is no clean way to solve this other than
+</I>&gt;<i> manually forcing 'PCT_BIG_ENDIAN' to be 1 in setup.py.
+</I>&gt;<i>
+</I>&gt;<i> L.
+</I>&gt;<i>
+</I>&gt;<i> 2015-10-28 12:03 GMT+01:00 Jeffery To &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">jeffery.to at gmail.com</A>&gt;:
+</I>&gt;<i> &gt; Hi,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I'm trying to cross-compile PyCrypto 2.6.1 for OpenWrt (Chaos Calmer
+</I>&gt;<i> 15.05,
+</I>&gt;<i> &gt; targeting ar71xx). The library compiled without any fatal errors and I'm
+</I>&gt;<i> &gt; able to package and install on my router (TP-Link TL-MR3020).
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; To be sure it's working correctly, I transferred setup.py to my router
+</I>&gt;<i> and
+</I>&gt;<i> &gt; ran the self-test. All the tests passed except for the 9 RIPEMD-160 hash
+</I>&gt;<i> &gt; tests. The library function(s) seem to return normally, but the returned
+</I>&gt;<i> &gt; hash is incorrect, e.g.:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; FAIL: runTest (Crypto.SelfTest.Hash.common.HashSelfTest)
+</I>&gt;<i> &gt; RIPEMD #1: '' (empty string)
+</I>&gt;<i> &gt; ----------------------------------------------------------------------
+</I>&gt;<i> &gt; Traceback (most recent call last):
+</I>&gt;<i> &gt;   File &quot;/usr/lib/python2.7/site-packages/Crypto/SelfTest/Hash/common.py&quot;,
+</I>&gt;<i> &gt; line 88, in runTest
+</I>&gt;<i> &gt;     self.assertEqual(self.expected, out1)   # h = .new(); h.update(data);
+</I>&gt;<i> &gt; h.digest()
+</I>&gt;<i> &gt; AssertionError: '9c1185a5c5e9fc54612808977ee8f548b2258d31' !=
+</I>&gt;<i> &gt; '7c7c0f550ddb9e5ebf157869ea147e65cb89bb0e'
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I'm unsure how to proceed at this point; my searches on Google haven't
+</I>&gt;<i> &gt; returned any relevant results. What area/library/etc should I
+</I>&gt;<i> &gt; investigate/debug to fix this? Any help would be appreciated.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Thanks!
+</I>&gt;<i> &gt; Jeff
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; pycrypto mailing list
+</I>&gt;<i> &gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> &gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20151031/158352f0/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20151031/158352f0/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000857.html">[pycrypto] RIPEMD-160 self-test failure
+</A></li>
+	<LI>Next message: <A HREF="000859.html">[pycrypto] 2.6.1 and 2.7a1 fail to install on Python 3.5/Windows. Need a new 2.7a2 tag
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#858">[ date ]</a>
+              <a href="thread.html#858">[ thread ]</a>
+              <a href="subject.html#858">[ subject ]</a>
+              <a href="author.html#858">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

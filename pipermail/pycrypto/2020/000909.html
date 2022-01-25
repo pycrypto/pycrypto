@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] AES128 Countermode in Cryptodome vs OpenSSL/BouncyCastle/Erlang
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20AES128%20Countermode%20in%20Cryptodome%20vs%0A%20OpenSSL/BouncyCastle/Erlang&In-Reply-To=%3C7B5FB5D5-BE14-4850-8D23-EB0683B51FA8%40webweaving.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000910.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] AES128 Countermode in Cryptodome vs OpenSSL/BouncyCastle/Erlang</H1>
+    <B>Dirk-Willem van Gulik</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20AES128%20Countermode%20in%20Cryptodome%20vs%0A%20OpenSSL/BouncyCastle/Erlang&In-Reply-To=%3C7B5FB5D5-BE14-4850-8D23-EB0683B51FA8%40webweaving.org%3E"
+       TITLE="[pycrypto] AES128 Countermode in Cryptodome vs OpenSSL/BouncyCastle/Erlang">dirkx at webweaving.org
+       </A><BR>
+    <I>Tue Apr 14 20:05:53 UTC 2020</I>
+    <P><UL>
+        
+        <LI>Next message (by thread): <A HREF="000910.html">[pycrypto] AES128 Countermode in Cryptodome vs OpenSSL/BouncyCastle/Erlang
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#909">[ date ]</a>
+              <a href="thread.html#909">[ thread ]</a>
+              <a href="subject.html#909">[ subject ]</a>
+              <a href="author.html#909">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I've got a very simple bit of cryptography (part of the Covid-19 european DP3T standard for good privacy/anonymisation[1]).
+
+The key bit of code is just a AES128 used in counter mode; starting at 0.
+
+And I am having a hard time to understand why Cryptodome gives me a different answer than OpenSSL, a 'trivial' AES suite and various other languages. 
+
+I cannot get things to be interoperable.
+
+The code is shown below. The output is:
+
+python/Cryptodome			erlang, java, openssl, tiny-AES, ruby-2.6.3p62
+3b8ce20e3f4601b69aa203ba54873ce0	66e94bd4ef8a2c3b884cfa59ca342b2e
+11587022bd9ee188eb39f367e84bf520	58e2fccefa7e3061367f1d57a4e7455a
+21ea107085daaf10646369d06e1671af	0388dace60b6a392f328c2b971b2fe78
+0a8408cef8f06c19f6a482a0c10f2151	f795aaab494b5923f7fd89ff948bc1e0
+
+Does that ring a bell with anyone ? 
+
+Is there something special with Cryptodome AES ? Some key rounds ? Or am I misreading how the AES call in python works versus  AES_init_ctx_iv().
+
+Any and all help much appreciated !
+
+With kind regards,
+
+
+Dw.
+
+1: <A HREF="https://github.com/DP-3T/documents">https://github.com/DP-3T/documents</A>
+
+
+PYHTON CODE
+
+#!/usr/bin/env python3
+
+from Cryptodome.Util import Counter
+from Cryptodome.Cipher import AES
+
+key = b&quot;0&quot; * 32
+
+prg = AES.new(key, AES.MODE_CTR, counter = Counter.new(128, initial_value=0))
+
+plaintext = b&quot;\0&quot; * 16 * 4
+
+cipher = prg.encrypt(plaintext)
+
+for i in range(4):
+   print(&quot;{}&quot;.format(cipher[ i * 16: i * 16 + 16 ].hex()))
+
+
+
+C code (openssl, tiny-AES)
+
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;strings.h&gt;
+
+#include &lt;openssl/sha.h&gt;
+#include &lt;openssl/err.h&gt;
+#include &lt;openssl/rand.h&gt;
+#include &lt;openssl/hmac.h&gt;
+#include &lt;openssl/crypto.h&gt;
+
+#include &lt;assert.h&gt;
+#include &lt;strings.h&gt;
+#include &lt;stdlib.h&gt;
+
+// <A HREF="https://github.com/kokke/tiny-AES-c.git">https://github.com/kokke/tiny-AES-c.git</A> - AES128 is de default
+#include &quot;tiny-AES-c/aes.h&quot;
+#else
+#include &lt;openssl/evp.h&gt;
+#endif
+
+    
+int main(int argc, const char * argv[]) {
+
+    unsigned char key[16]; 
+    unsigned char inoutbuf[16*4]; 
+    unsigned char iv[16];
+
+    bzero(key,16);
+    bzero(inoutbuf, 16*4);
+    bzero(iv,16);
+
+#ifdef TINY
+    struct AES_ctx ctx;
+    AES_init_ctx_iv(&amp;ctx, key, iv);
+
+    AES_CTR_xcrypt_buffer(&amp;ctx, inoutbuf, 16*4);
+
+    for(int i = 0; i &lt; 4; i++) {
+        for(int j = 0; j &lt; 16; j++) 
+		printf(&quot;%02x&quot;, inoutbuf[ i*16+j ]);
+        printf(&quot;\n&quot;);
+    };
+#else    
+    unsigned char * out = malloc(16*4);
+    assert(out);
+
+    const EVP_CIPHER * cipher = EVP_aes_128_ctr();
+    assert(EVP_CIPHER_key_length(cipher) == 128/8);
+    assert(EVP_CIPHER_iv_length(cipher) == 128/8);
+    
+    EVP_CIPHER_CTX * ctx;
+    assert(ctx = EVP_CIPHER_CTX_new());
+    EVP_CIPHER_CTX_init(ctx);
+    
+    assert(1 == EVP_EncryptInit(ctx, cipher, key, iv));
+    EVP_CIPHER_CTX_set_padding(ctx, 0);
+
+    int len = 0, len2 = 0;
+        
+    assert(1 == EVP_EncryptUpdate(ctx, out, &amp;len, inoutbuf, 16*4));
+    assert(len == 16*4);
+    assert(1 == EVP_EncryptFinal(ctx, out + len, &amp;len2));
+    assert(len + len2 == 16*4);
+
+    for(int i = 0; i &lt; 4; i++) {
+        for(int j = 0; j &lt; 16; j++) 
+		printf(&quot;%02x&quot;, out[ i*16+j ]);
+        printf(&quot;\n&quot;);
+    }
+    
+
+    EVP_CIPHER_CTX_cleanup(ctx);
+    EVP_CIPHER_CTX_free(ctx);
+#endif
+ 
+    return 0;
+}
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message (by thread): <A HREF="000910.html">[pycrypto] AES128 Countermode in Cryptodome vs OpenSSL/BouncyCastle/Erlang
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#909">[ date ]</a>
+              <a href="thread.html#909">[ thread ]</a>
+              <a href="subject.html#909">[ subject ]</a>
+              <a href="author.html#909">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Bug in PyCrypto 2.6.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Bug%20in%20PyCrypto%202.6.1&In-Reply-To=%3C547C87D7.1090905%40amberfisharts.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000822.html">
+   <LINK REL="Next"  HREF="000824.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Bug in PyCrypto 2.6.1</H1>
+    <B>Lorenz Quack</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Bug%20in%20PyCrypto%202.6.1&In-Reply-To=%3C547C87D7.1090905%40amberfisharts.com%3E"
+       TITLE="[pycrypto] Bug in PyCrypto 2.6.1">don at amberfisharts.com
+       </A><BR>
+    <I>Mon Dec  1 07:23:03 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000822.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+        <LI>Next message: <A HREF="000824.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#823">[ date ]</a>
+              <a href="thread.html#823">[ thread ]</a>
+              <a href="subject.html#823">[ subject ]</a>
+              <a href="author.html#823">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Luis,
+
+Thanks for reporting!
+I agree that this seems like strange/wrong behaviour.
+Especially when realise that the docs seem to contradict the behaviour.
+_RSA.RSAobj.size.__doc__ says: Return the maximum number of bits that can be handled by this key.
+But this works fine:
+ &gt;&gt;&gt; key.encrypt(1&lt;&lt;key.size(), &quot;&quot;)
+Note that 1 &lt;&lt; x has x+1 bits so that the above key happily encrypts key.size()+1 bits.
+
+The only thing holding me back from strait out calling it a bug is that
+  1) this is very old code dating back to 2003.
+  and 2) the -1 is actively coded there but with out explanation
+
+As a pointer to others the relevant places are:
+/lib/Crypto/PublicKey/_RSA.py:80
+/src/_fastmath.c:949
+
+If it is decided that this is a bug and should be fixed one should also look at other keys, e.g. DSA which seems to do 
+the same -1 calculation.
+
+Cheers,
+Lorenz
+
+
+
+On 01/12/14 07:35, Luis Gonz&#225;lez Fern&#225;ndez wrote:
+&gt;<i> Hello All:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I found a strange bug in size() function that return a wrong key size after creating or importing an RSA key. The return
+</I>&gt;<i> value for the size funciont seems to be keysize-1.
+</I>&gt;<i>
+</I>&gt;<i> Here a demo of the bug:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">luisgf at NCC1701B</A>:~$ python3
+</I>&gt;<i> Python 3.4.0 (default, Apr 11 2014, 13:05:11)
+</I>&gt;<i> [GCC 4.8.2] on linux
+</I>&gt;<i> Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+</I>&gt;<i>  &gt;&gt;&gt; from Crypto.PublicKey import RSA
+</I>&gt;<i>  &gt;&gt;&gt; key = RSA.generate(2048)
+</I>&gt;<i>  &gt;&gt;&gt; key.size()
+</I>&gt;<i> 2047
+</I>&gt;<i>  &gt;&gt;&gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Regards.
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Luis Gonz&#225;lez Fern&#225;ndez
+</I>&gt;<i> <A HREF="https://www.luisgf.es">https://www.luisgf.es</A>
+</I>&gt;<i> PGP ID: C918B80F (DD6F BFC1 FC14 4C81 34F8 EA1E 6BCB C27F C918 B80F)
+</I>&gt;<i> Twitter: @luisgf_2001 / Jabber:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">luisgf at mijabber.es</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000822.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+	<LI>Next message: <A HREF="000824.html">[pycrypto] Bug in PyCrypto 2.6.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#823">[ date ]</a>
+              <a href="thread.html#823">[ thread ]</a>
+              <a href="subject.html#823">[ subject ]</a>
+              <a href="author.html#823">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,229 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] the sad state of pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=BAY105-DS6DE1AA2CEEFC3406A72CAAA180%40phx.gbl">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000038.html">
+   <LINK REL="Next"  HREF="000040.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] the sad state of pycrypto</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=BAY105-DS6DE1AA2CEEFC3406A72CAAA180%40phx.gbl"
+       TITLE="[pycrypto] the sad state of pycrypto">dlitz at dlitz.net
+       </A><BR>
+    <I>Sun Nov  9 09:34:10 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000038.html">[pycrypto] the sad state of pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000040.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#39">[ date ]</a>
+              <a href="thread.html#39">[ thread ]</a>
+              <a href="subject.html#39">[ subject ]</a>
+              <a href="author.html#39">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Nov 08, 2008 at 04:18:51PM -0430, Stefan Spoettl wrote:
+&gt;<i>Dear Python Cryptographers,
+</I>&gt;<i>
+</I>&gt;<i>this is an urgent call for help and the an attempt to convince all 
+</I>&gt;<i>participants of the imperative to reconstruct pycrypto from the get-go.
+</I>
+I agree that PyCrypto needs an overhaul, but I do not consider it &quot;urgent&quot;, 
+and rushing would be counter-productive.
+
+&gt;<i>To start with the good points of Kuchling's library:
+</I>&gt;<i>
+</I>&gt;<i>With respect to the files block_template.c, hash_template.c and 
+</I>&gt;<i>stream_template.c one has to state that the Kuchling library has solid 
+</I>&gt;<i>fundation. In my eyes the C code is of high quality. Well structured, 
+</I>&gt;<i>readable and reusable. Kuchling was avoding C header files, which reduces 
+</I>&gt;<i>the amount of files significantly and is very good to keep the overview.
+</I>&gt;<i>
+</I>&gt;<i>Furtheron the possibility to add new (not contained) algorithms is 
+</I>&gt;<i>impressive, even if I guess that it's not a such trivial job to add one 
+</I>&gt;<i>like this is stated in the documentation.
+</I>
+Yeah, it's a nice architecture.  Unfortunately, it also requires that 
+algorithms be hand-written in (error-prone) C, so I want to keep the amount 
+of C code in PyCrypto to a minimum.
+
+Cryptography is a waste of time if an attacker can make your program run 
+arbitrary code, thanks to a buffer overflow or other subtle bug.  I am 
+hesitant to add new algorithms to PyCrypto until they can be developed in a 
+more trustworthy fashion.
+
+(I'm toying with the idea of a restricted subset of C that requires all 
+arrays to be of size 2**n, and requires the appropriate bit-wise AND 
+whenever indexing the array.  However, an implementation is a long way off.  
+I'm also interested in languages like D and BitC, but I'm not sure about 
+the maturity of their compilers.  I could use help here.)
+
+My thoughts mirror the ideas presented in D. J. Bernstein's paper, &quot;Some 
+thoughts on security after ten years of qmail 1.0&quot; 
+&lt;<A HREF="http://cr.yp.to/qmail/qmailsec-20071101.pdf">http://cr.yp.to/qmail/qmailsec-20071101.pdf</A>&gt;.  I encourage everyone here 
+to read it, if you have not already.
+
+&gt;<i>The weak side of Kuchling's library is resulting mainly from the choice of offered algorithms:
+</I>&gt;<i>  1.. Hash algorithm
+</I>&gt;<i>  Meantimes the main part of the offered hash algorithms is classified as 
+</I>&gt;<i>  &quot;weak&quot; or &quot;wounded&quot; by the cryptographic community (see 
+</I>&gt;<i>  <A HREF="http://www.cryptolounge.org/wiki/Category:Algorithm&lt;about:blank">http://www.cryptolounge.org/wiki/Category:Algorithm&lt;about:blank</A>&gt;).
+</I>
+Which algorithms are you referring to?  Just MD2?  I'm willing to drop MD2   
+if there are no objections.  I'm not going to be removing MD5 or SHA-1 any 
+time soon; They're just wrappers around the Python standard library anyway.  
+
+&gt;<i> With respect to the recommendations of the NIST and others I propose to 
+</I>&gt;<i> offer the following algorithm additionally and directly over the 
+</I>&gt;<i> distributed library interface: SHA-224, SHA-256 (C file is allready 
+</I>&gt;<i> included), SHA-384, SHA-512, RIPEMD-128, RIPEMD-160, RIPEMD-256, 
+</I>&gt;<i> RIPEMD-320, Tiger and WHIRLPOOL.
+</I>
+My understanding is that SHA-224 and SHA-384 are encumbered by software 
+patents and provide no performance advantages over SHA-256 and SHA-512, 
+respectively.
+
+PyCrypto already has RIPEMD-160.  PyCrypto does not have RIPEMD-128, but 
+it's a hash function with a 128-bit output, which means it only provides 
+2**64 security against a birthday attack.  In other words, it's obsolete.
+
+RIPEMD-256 and RIPEMD-320 provide no better security than RIPEMD-160*.  
+Therefore, they are redundant, and can only serve to mislead users into 
+thinking that they provide additional security.
+
+     (* See <A HREF="http://homes.esat.kuleuven.be/~bosselae/ripemd160.html">http://homes.esat.kuleuven.be/~bosselae/ripemd160.html</A>)
+
+&gt;<i> In my eyes this abundance of offered hash algorithms is necessary since 
+</I>&gt;<i> hash algorithms are attacked frequently.
+</I>
+Out of the options on your list, only SHA-512, Tiger and WHIRLPOOL interest 
+me.  I would consider them for inclusion at some later date, but see my 
+concerns above regarding adding lots of new C code.
+
+&gt;<i>  2.. Block ciphers
+</I>&gt;<i>  Well the choice of block ciphers looks like the US style of life: The 
+</I>&gt;<i>  winner takes it all! A serious cryptographic library has to offer all 
+</I>&gt;<i>  five AES finalists (Mars, RC6, Rijndael, Serpent and Twofish). There is 
+</I>&gt;<i>  no doubt, that each finalist is a great cipher. This five ciphers are 
+</I>&gt;<i>  the best block ciphers, which the public cryptographic community is 
+</I>&gt;<i>  offering to the world.
+</I>
+Again, a &quot;serious cryprographic library&quot; has to avoid implementation bugs 
+above all else.  Otherwise, it is just wasting CPU cycles and giving people 
+a false sense of security.
+
+&gt;<i>  3.. Stream ciphers
+</I>&gt;<i>  The choice of offered stream ciphers appears to me like a bad joke. ARC4 
+</I>&gt;<i>  is classified as &quot;weak&quot; by the cryptographic community and this 
+</I>&gt;<i>  incredible offer of XOR - don't know what to say for this (one could 
+</I>&gt;<i>  read in the bible [Schneier, Applied Cryptography, second edition] on 
+</I>&gt;<i>  page 198 how it break it; well, Kuchling has red the bible, but never 
+</I>&gt;<i>  the less he is offering this XOR). In fact at this time pycrypt is not 
+</I>&gt;<i>  offering any stream cipher that could be used seriously. What a mess!
+</I>
+I will drop the XOR module.  It should be unnecessary now that we have 
+Crypto.Util.strxor for speeding up things like HMAC.
+
+&gt;<i>  I propose the direct offering of the following stream ciphers (mainly 
+</I>&gt;<i>  candidates of the eSTREAM project 
+</I>&gt;<i>  <A HREF="http://www.ecrypt.eu.org/stream/&lt;about:blank">http://www.ecrypt.eu.org/stream/&lt;about:blank</A>&gt;): HC-128, HC-256, Panama 
+</I>&gt;<i>  (could be used as hash algorithm but as hash algorithm and only as hash 
+</I>&gt;<i>  algorithm it is classified as &quot;wounded&quot;), Rabbit (if you want to strike 
+</I>&gt;<i>  algorithms form my list, then this one frist, because it's patented and 
+</I>&gt;<i>  so only nocommerical use is free), Salsa20, SOSEMANUK and Phelix (this 
+</I>&gt;<i>  one is made by Schneier &amp; co., on the eSTREAM project was published an 
+</I>&gt;<i>  attack against Phelix and in result it was classified as &quot;wounded&quot;, but 
+</I>&gt;<i>  the attack is only working if one uses the &quot;nonce == number used once&quot; 
+</I>&gt;<i>  (parameter to realize the integrated MAC) more then once. So I think 
+</I>&gt;<i>  that Phelix is appraised unfair).
+</I>
+What's the rush to add new stream ciphers?  Stream ciphers are still 
+largely experimental, and using a block cipher in CTR mode works well 
+enough in cases where you need arbitrary-length ciphertexts.
+
+Also, patent-encumbered algorithms are a non-starter.  Accordingly, I will 
+be removing IDEA and RC5 before the next release.
+
+&gt;<i>  4.. Random generator
+</I>&gt;<i>  Sorry Dwanye, I disagree with you. A cryptographic library has to offer 
+</I>&gt;<i>  a cryptographic secure random generator. Without that the library is not 
+</I>&gt;<i>  useful at all
+</I>
+Please avoid the hyperbole.  PyCrypto is quite useful, even if it does not 
+provide its own RNG, especially since Python itself provides os.urandom() 
+since version 2.5.  Having said that, PyCrypto already has a CSPRNG.  See 
+my other email.
+
+&gt;<i>  5.. Asymmetric algorithms
+</I>&gt;<i>  Like stated in Dwanye's wishlist Diffie-Hellman support would be nice.
+</I>
+Have you noticed that the RSA module does not do any padding, and the DSA 
+module does not do the necessary hashing?
+
+PyCrypto still has many &quot;gotchas&quot; like that.  My current priority is to 
+take steps to reduce implementation bugs in PyCrypto and in code that uses 
+PyCrypto.  Adding many new algorithms right now will not further that goal.
+
+&gt;<i>To fill the wide algorithmic gap of pycrypt I propose a look at Crypto++ 
+</I>&gt;<i>Library of Wei Dai (<A HREF="http://www.cryptopp.com">http://www.cryptopp.com</A>). Crypto++ is licensed like 
+</I>&gt;<i>pycrypt and recommanded by the NIST. In this C++ library could be found 
+</I>&gt;<i>all to fill the gap. But this library has a damned ugly structur and 
+</I>&gt;<i>contains more than 333 file. So it will be a lot of work to extract the 
+</I>&gt;<i>useful things.
+</I>
+At this point, I care far more about implementation quality than about the 
+number of available algorithms.  If you think you need lots of new 
+algorithms in your project, then nothing prevents you from using both 
+PyCrypto and Zooko's pycryptopp project:
+
+     <A HREF="http://allmydata.org/trac/pycryptopp">http://allmydata.org/trac/pycryptopp</A>
+
+I see no reason to duplicate Zooko's work.
+
+I want to make PyCrypto into a good, reliable, usable crypto library, and I 
+need lots of criticism and feedback to make that happen.  Thanks for your 
+input.  :-)
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/ef808002/attachment-0001.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20081109/ef808002/attachment-0001.pgp</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000038.html">[pycrypto] the sad state of pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000040.html">[pycrypto] the sad state of pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#39">[ date ]</a>
+              <a href="thread.html#39">[ thread ]</a>
+              <a href="subject.html#39">[ subject ]</a>
+              <a href="author.html#39">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

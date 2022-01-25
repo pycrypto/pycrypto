@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] how to add run path libs when compiling ?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20how%20to%20add%20run%20path%20libs%20when%20compiling%20%3F&In-Reply-To=%3C20120526155350.GA23496%40rivest.dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000590.html">
+   <LINK REL="Next"  HREF="000592.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] how to add run path libs when compiling ?</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20how%20to%20add%20run%20path%20libs%20when%20compiling%20%3F&In-Reply-To=%3C20120526155350.GA23496%40rivest.dlitz.net%3E"
+       TITLE="[pycrypto] how to add run path libs when compiling ?">dlitz at dlitz.net
+       </A><BR>
+    <I>Sat May 26 11:53:50 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000590.html">[pycrypto] how to add run path libs when compiling ?
+</A></li>
+        <LI>Next message: <A HREF="000592.html">[pycrypto] PyCrypto's output doesn't match OpenSSL's result
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#591">[ date ]</a>
+              <a href="thread.html#591">[ thread ]</a>
+              <a href="subject.html#591">[ subject ]</a>
+              <a href="author.html#591">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Fri, May 25, 2012 at 05:55:23PM +0200, Daniel Flinkmann wrote:
+&gt;<i>I am new to pycrypto and struggling to build the current version.
+</I>&gt;<i>I have to add some runtime libraries to the binaries, but I am a bit unsure
+</I>&gt;<i>how to achieve that with the build.py in pycrypto.
+</I>&gt;<i>
+</I>&gt;<i>In general I can use something like &quot;LDFLAGS= -R/opt/custom_dir/libs &quot;, so that
+</I>&gt;<i>all .so files do search for required libs in /opt/custom_dir/libs .
+</I>
+distutils apparenly does respect LDFLAGS, although it treats gcc as the 
+linker (rather than ld), so you need to provide gcc-style options.
+
+This should work for you:
+
+     LDFLAGS=-Wl,-R/opt/custom_dir/libs python setup.py build
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000590.html">[pycrypto] how to add run path libs when compiling ?
+</A></li>
+	<LI>Next message: <A HREF="000592.html">[pycrypto] PyCrypto's output doesn't match OpenSSL's result
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#591">[ date ]</a>
+              <a href="thread.html#591">[ thread ]</a>
+              <a href="subject.html#591">[ subject ]</a>
+              <a href="author.html#591">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

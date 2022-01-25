@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] windows + linux line endings issue
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20windows%20%2B%20linux%20line%20endings%20issue&In-Reply-To=%3C52DFA51D.10203%40rambler.ru%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000755.html">
+   <LINK REL="Next"  HREF="000757.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] windows + linux line endings issue</H1>
+    <B>Nicco Kunzmann</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20windows%20%2B%20linux%20line%20endings%20issue&In-Reply-To=%3C52DFA51D.10203%40rambler.ru%3E"
+       TITLE="[pycrypto] windows + linux line endings issue">niccokunzmann at rambler.ru
+       </A><BR>
+    <I>Wed Jan 22 03:01:49 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000755.html">[pycrypto] windows + linux line endings issue
+</A></li>
+        <LI>Next message: <A HREF="000757.html">[pycrypto] windows + linux line endings issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#756">[ date ]</a>
+              <a href="thread.html#756">[ thread ]</a>
+              <a href="subject.html#756">[ subject ]</a>
+              <a href="author.html#756">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I do not know your code but could you check that you save (open(..,
+'w*b*')) and load the file (open(..., 'r*b*')) in the binary mode
+instead of text  mode without 'b'?
+
+Greetings!
+
+Am 22.01.2014 11:30, schrieb Dave Pawson:
+&gt;<i> I want to share an encrypted file across Windows / Linux (say by
+</I>&gt;<i> saving the file to Dropbox).
+</I>&gt;<i>
+</I>&gt;<i> When I encrypt using Linux and decrypt using Windows, the
+</I>&gt;<i> line ending differences screw up the decryption.
+</I>&gt;<i>
+</I>&gt;<i> I think it's a Python issue, but I'm unsure. Has anyone addressed
+</I>&gt;<i> this please?
+</I>&gt;<i>
+</I>&gt;<i> TiA
+</I>&gt;<i>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20140122/46b8efd2/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20140122/46b8efd2/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000755.html">[pycrypto] windows + linux line endings issue
+</A></li>
+	<LI>Next message: <A HREF="000757.html">[pycrypto] windows + linux line endings issue
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#756">[ date ]</a>
+              <a href="thread.html#756">[ thread ]</a>
+              <a href="subject.html#756">[ subject ]</a>
+              <a href="author.html#756">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

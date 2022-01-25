@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Once again: Python3 with PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=f1a74599-24ed-4ad1-b732-762e6568502b%40email.android.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000352.html">
+   <LINK REL="Next"  HREF="000313.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Once again: Python3 with PyCrypto</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=f1a74599-24ed-4ad1-b732-762e6568502b%40email.android.com"
+       TITLE="[pycrypto] Once again: Python3 with PyCrypto">sbehrens at gmx.li
+       </A><BR>
+    <I>Thu Dec 23 19:20:28 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000352.html">[pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+</A></li>
+        <LI>Next message: <A HREF="000313.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#308">[ date ]</a>
+              <a href="thread.html#308">[ thread ]</a>
+              <a href="subject.html#308">[ subject ]</a>
+              <a href="author.html#308">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dwayne,
+
+I've looked into this some more. There are two basic approaches:
+
+a) Create .py code that will work in Python 2.x and 3.x. Code will 
+become uglier; for example try except blocks have to be used for 
+imports. One can catch a glimpse here: 
+<A HREF="http://pydev.blogspot.com/2008/11/making-code-work-in-python-2-and-3.html">http://pydev.blogspot.com/2008/11/making-code-work-in-python-2-and-3.html</A>
+
+b) Leave .py code to be written for Python 2.x, with some cleanup 
+applied to redo constructs that cannot be converted by 2to3. When ready 
+to release, run 2to3 on the source tree, and release two versions: One 
+for Python 2.x, one for Python 3.x.
+
+b) is how the authors of Python intend things to be, and is likely the 
+cleanest way of operation. I don't relish the idea of following a) and 
+butchering the 2.x code so it will run in both 2.x and 3.x without change.
+
+The C code will require some #defines and some #ifdefs in places, to 
+deal with int/long, the fact that bytes are a type now and shouldn't be 
+strings (can be done with defines), and the module initialization code.
+
+Are you comfortable with b)? Objections? Reservations?
+
+If you are good to give it a go, I'd need to know from you how you like 
+to handle branches in git. I'd assume that this work should be carried 
+out in a separate branch, not the trunk. This is going to touch a lot of 
+files.
+
+Yours
+Thorsten
+
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000352.html">[pycrypto] Python 3.x vs. Python 2.1 - prep the axe
+</A></li>
+	<LI>Next message: <A HREF="000313.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#308">[ date ]</a>
+              <a href="thread.html#308">[ thread ]</a>
+              <a href="subject.html#308">[ subject ]</a>
+              <a href="author.html#308">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA exportKey question
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%20question&In-Reply-To=%3CCAGfyce32x_0OJNye1f0GFoHSbA1P_KfM%3D%3DbSqSv0D4GW1edDOw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000671.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA exportKey question</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20exportKey%20question&In-Reply-To=%3CCAGfyce32x_0OJNye1f0GFoHSbA1P_KfM%3D%3DbSqSv0D4GW1edDOw%40mail.gmail.com%3E"
+       TITLE="[pycrypto] RSA exportKey question">helderijs at gmail.com
+       </A><BR>
+    <I>Wed Jul  3 14:26:05 PDT 2013</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000671.html">[pycrypto] RSA exportKey question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#670">[ date ]</a>
+              <a href="thread.html#670">[ thread ]</a>
+              <a href="subject.html#670">[ subject ]</a>
+              <a href="author.html#670">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I find 3DES is as good as AES for most practical purposes.
+The main limitation I see is that the current RSA.exportKey() uses
+PEM-level encryption and the MD5-based EVP_BytesToKey function for key
+derivation. Nowadays that is *really* weak.
+
+I opened a pull request [1] with a proposal for adding PKCS#8, since
+it is widely used and it makes it easier to have pluggable algorithms
+(the default combination being PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC but
+PBKDF2WithHMAC-SHA1AndAES128-CBC is available too). It took a few
+iterations, but I am pretty happy with it.
+On top of that I have also just added exportKey/importKey to DSA [2].
+
+Feedback is welcome.
+
+[1] <A HREF="https://github.com/dlitz/pycrypto/pull/32">https://github.com/dlitz/pycrypto/pull/32</A>
+[2] <A HREF="https://github.com/dlitz/pycrypto/pull/51">https://github.com/dlitz/pycrypto/pull/51</A>
+
+2013/6/28 Kurt Vogel &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">kvogel at mdcom.com</A>&gt;:
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> Wondering if it would be worthwhile to add more encryption options to rsa
+</I>&gt;<i> exportKey() function rather than just DES3?  As the default for ssh-keygen
+</I>&gt;<i> -t rsa export is 128-bit AES.  And maybe allow plug-able hash algorithms
+</I>&gt;<i> such as PBKDF2, Bcrypt, etc.?
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Kurt
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000671.html">[pycrypto] RSA exportKey question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#670">[ date ]</a>
+              <a href="thread.html#670">[ thread ]</a>
+              <a href="subject.html#670">[ subject ]</a>
+              <a href="author.html#670">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

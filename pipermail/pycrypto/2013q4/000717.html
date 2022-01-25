@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Need your input: Major modernization;	dropping legacy Python support?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Need%20your%20input%3A%20Major%20modernization%3B%0A%09dropping%20legacy%20Python%20support%3F&In-Reply-To=%3C20131030060924.GC5005%40rivest.dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000713.html">
+   <LINK REL="Next"  HREF="000718.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Need your input: Major modernization;	dropping legacy Python support?</H1>
+    <B>Dwayne Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Need%20your%20input%3A%20Major%20modernization%3B%0A%09dropping%20legacy%20Python%20support%3F&In-Reply-To=%3C20131030060924.GC5005%40rivest.dlitz.net%3E"
+       TITLE="[pycrypto] Need your input: Major modernization;	dropping legacy Python support?">dlitz at dlitz.net
+       </A><BR>
+    <I>Tue Oct 29 23:09:24 PDT 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000713.html">[pycrypto] Crypto.Random crashes due to unaligned access
+</A></li>
+        <LI>Next message: <A HREF="000718.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#717">[ date ]</a>
+              <a href="thread.html#717">[ thread ]</a>
+              <a href="subject.html#717">[ subject ]</a>
+              <a href="author.html#717">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi folks,
+
+I'm thinking about making some fairly drastic changes to PyCrypto 
+(compared to what's happened historically) and I'd like to know how 
+these would impact people:
+
+1. How many of you would really care if PyCrypto 2.6 was that last 
+    version to support legacy versions of Python?  By &quot;legacy&quot;, I mean 
+    all versions of Python that are NOT one of these:
+
+     - Python 2.6.x
+     - Python 2.7.x
+     - Python 3.3 and above.
+
+    I'd continue to make bugfix releases of PyCrypto 2.6.x, but add no 
+    more substantial new features.
+
+2. I'm thinking of pulling in additional dependencies (e.g. cffi), 
+    requiring setuptools, and basically joining what the rest of the 
+    Python community is doing in 2013.
+
+3. What if src/*.c were removed, and any relevant C code moved into an 
+    independent library, which could be loaded using cffi?  (This is 
+    basically what we need to do to support PyPy properly.)
+
+4. What if Crypto.* became a wrapper around some other crypto library?
+
+5. The Apache License 2.0.  What if PyCrypto were licensed under it, or 
+    included dependencies that are licensed under it?
+
+6. What if src/*.c was mostly replaced with mostly just went away.
+
+Don't panic.  These aren't concrete plans yet, but I'd like to know how 
+this might affect various downstream PyCrypto stakeholders, and problems 
+I might expect to encounter if I went in any of these directions.
+
+Of particular concern is FOSS distributors packaging PyCrypto (e.g.  
+Linux distros, *BSD ports trees, MacPorts/HomeBrew, etc.), and anything 
+else that might impact a large number of downstream end-users.
+
+I've been maintaining backward compatibility in order to protect 
+end-users from bugs introduced in downstream forks of PyCrypto, but 
+that's made it hard to generate interest in working on PyCrypto.  From 
+what I can tell, there are currently several Python crypto libraries, 
+and none of them are particularly great (including PyCrypto).
+
+I'm beginning to wonder how the risk of downstream forks compares to the 
+risks that users face when developers still don't have a highly-visible, 
+easy-to-use Python crypto API.  It might be better to merge PyCrypto 
+with one or more other Python crypto libraries...
+
+Anyway, I'd love to hear what people have to say on this topic.
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000713.html">[pycrypto] Crypto.Random crashes due to unaligned access
+</A></li>
+	<LI>Next message: <A HREF="000718.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#717">[ date ]</a>
+              <a href="thread.html#717">[ thread ]</a>
+              <a href="subject.html#717">[ subject ]</a>
+              <a href="author.html#717">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

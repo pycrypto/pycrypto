@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] SHA-224, SHA-384 and SHA-512 Implementations
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20SHA-224%2C%20SHA-384%20and%20SHA-512%20Implementations&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000246.html">
+   <LINK REL="Next"  HREF="000248.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] SHA-224, SHA-384 and SHA-512 Implementations</H1>
+    <B>Lorenz Quack</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20SHA-224%2C%20SHA-384%20and%20SHA-512%20Implementations&In-Reply-To="
+       TITLE="[pycrypto] SHA-224, SHA-384 and SHA-512 Implementations">don at amberfisharts.com
+       </A><BR>
+    <I>Thu May 20 07:03:14 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000246.html">[pycrypto] _fastmath None !!
+</A></li>
+        <LI>Next message: <A HREF="000248.html">[pycrypto] Help parsing OpenPGP packets and pubkey &quot;normalization&quot;
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#247">[ date ]</a>
+              <a href="thread.html#247">[ thread ]</a>
+              <a href="subject.html#247">[ subject ]</a>
+              <a href="author.html#247">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I just posted a patch series implementing the missing SHA-2 family Hashes.
+Namely: SHA-224, SHA-384 and SHA-512
+If anyone is interested please try them out and let me know if there are any problems.
+I also included test cases in lib/Crypto/SelfTest/Hash
+
+The patches can be found here: <A HREF="https://bugs.launchpad.net/pycrypto/+bug/544792">https://bugs.launchpad.net/pycrypto/+bug/544792</A>
+
+The main caveat is the way I check for fixed size data types like uint32_t and uint64_t
+in src/hash_SHA2.h.
+If anybody knows a good way to do this please let me know.
+
+Sincerely yours,
+//Lorenz
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000246.html">[pycrypto] _fastmath None !!
+</A></li>
+	<LI>Next message: <A HREF="000248.html">[pycrypto] Help parsing OpenPGP packets and pubkey &quot;normalization&quot;
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#247">[ date ]</a>
+              <a href="thread.html#247">[ thread ]</a>
+              <a href="subject.html#247">[ subject ]</a>
+              <a href="author.html#247">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

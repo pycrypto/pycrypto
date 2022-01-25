@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA signature pycrypto openssl interoperability
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20RSA%20signature%20pycrypto%20openssl%20interoperability&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000451.html">
+   <LINK REL="Next"  HREF="000453.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA signature pycrypto openssl interoperability</H1>
+    <B>Andrew Cho</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20RSA%20signature%20pycrypto%20openssl%20interoperability&In-Reply-To="
+       TITLE="[pycrypto] RSA signature pycrypto openssl interoperability">bytestorm at gmail.com
+       </A><BR>
+    <I>Sun Aug 21 09:35:27 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000451.html">[pycrypto] extract RSA public from X509 certificate file
+</A></li>
+        <LI>Next message: <A HREF="000453.html">[pycrypto] checksum problem.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#452">[ date ]</a>
+              <a href="thread.html#452">[ thread ]</a>
+              <a href="subject.html#452">[ subject ]</a>
+              <a href="author.html#452">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi, I'm trying to generate signatures in a way openssl can verify using
+pycrypto, but when I decode it with openssl, it doesn't produce usable
+results. This has been my workflow so far:
+
+------------------------------------
+
+openssl genrsa -out privkey.pem 2048
+openssl rsa -pubout -in privkey.pem -out pubkey.pem
+
+echo &quot;message text&quot; &gt; data
+
+python &lt;&lt;!
+#!/usr/bin/env python
+
+from Crypto.PublicKey import RSA
+import Crypto.Random
+from Crypto.Util import number
+import sys,ctypes
+
+def make_OPENSSL_PKCS1_padding(k,msglen):
+    if msglen &gt; k - 11:
+        return None
+    PS = '\xff'* (k-msglen-3)
+    E = ''.join((chr(0x00), chr(0x01), PS, chr(0x00)))
+
+    return E
+
+prk = RSA.importKey(file('privkey.pem').read())
+
+data = file('data').read()
+E = make_OPENSSL_PKCS1_padding((prk.size()+1)/8,len(data))
+EM = ''.join((E,data))
+
+sigout = prk.sign(EM,'')
+
+f = open('signature','wb')
+f.write(number.long_to_bytes(sigout[0]))
+f.close()
+!
+
+openssl rsautl -verify -raw -pubin -inkey pubkey.pem -in signature -out
+de_signature
+
+cat de_signature
+
+------------------
+
+I expect to see a whole bunch of 0xFFs followed by &quot;message text&quot; when I cat
+de_signature, but that's not what I get at all. Any idea what I might be
+doing wrong here?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20110821/dc133a09/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20110821/dc133a09/attachment.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000451.html">[pycrypto] extract RSA public from X509 certificate file
+</A></li>
+	<LI>Next message: <A HREF="000453.html">[pycrypto] checksum problem.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#452">[ date ]</a>
+              <a href="thread.html#452">[ thread ]</a>
+              <a href="subject.html#452">[ subject ]</a>
+              <a href="author.html#452">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

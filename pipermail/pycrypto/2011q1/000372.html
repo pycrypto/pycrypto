@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] pycryptopp alternative
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20pycryptopp%20alternative&In-Reply-To=AANLkTimt8B%2Br-oYJMa%3DaWKTg1_M%3DLcs-13%2B_aPb4FMum%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000368.html">
+   <LINK REL="Next"  HREF="000369.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] pycryptopp alternative</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20pycryptopp%20alternative&In-Reply-To=AANLkTimt8B%2Br-oYJMa%3DaWKTg1_M%3DLcs-13%2B_aPb4FMum%40mail.gmail.com"
+       TITLE="[pycrypto] pycryptopp alternative">sbehrens at gmx.li
+       </A><BR>
+    <I>Mon Jan  3 12:16:42 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000368.html">[pycrypto] pycryptopp alternative Re:  Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+        <LI>Next message: <A HREF="000369.html">[pycrypto] how to handle known security holes Re: Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#372">[ date ]</a>
+              <a href="thread.html#372">[ thread ]</a>
+              <a href="subject.html#372">[ subject ]</a>
+              <a href="author.html#372">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I am glad to see alternatives, that's excellent!
+
+Personally, I'd really like to see more efforts to have &quot;pythonic&quot; API 
+interfaces, though. Use PEP 272 for cipher API and PEP 247 for hash APIs.
+
+Sure, PEP 272 is in essence nothing but an attempt to standardize 
+pycrypto's interface. Is there room to improve upon that API? Possibly 
+so. Not just for block ciphers, mind you, but for the parts that do not 
+have PEPs right now: public key interface, message padding, there are 
+more that need some love. That's why the Python maintainers have an open 
+issue to try and standardize a &quot;Pythonic&quot; crypto API.
+
+And maybe the answer to that is: pycrypto is already keen on 
+&quot;standardized, Pythonic, be-PEP'd&quot; APIs, let that project run with it, 
+and other projects can focus on providing a more direct one-to-one 
+wrapper to underlying implementations.
+
+Thorsten
+
+On 1/3/2011 10:09 AM, Zooko O'Whielacronx wrote:
+&gt;<i> pycryptopp is a good alternative if you can do without algorithms that
+</I>&gt;<i> it doesn't support. It supports only a few at the moment -- AES,
+</I>&gt;<i> RSA-PSS-SHA256 signatures (but not encryption), SHA-256. We'll slowly
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000368.html">[pycrypto] pycryptopp alternative Re:  Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+	<LI>Next message: <A HREF="000369.html">[pycrypto] how to handle known security holes Re: Comments on Elgamal, and a broader question: Whither pycrypto?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#372">[ date ]</a>
+              <a href="thread.html#372">[ thread ]</a>
+              <a href="subject.html#372">[ subject ]</a>
+              <a href="author.html#372">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

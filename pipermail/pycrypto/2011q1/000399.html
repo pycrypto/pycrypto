@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Base64%20encoded%20output%20differs%20from%20pycrypto%20and%0A%20as3crypto%20libraries.&In-Reply-To=AANLkTi%3DF-ZG0z_fgcesrBNo9Hf7hR37qWyf%2BtJs9AAo3%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000398.html">
+   <LINK REL="Next"  HREF="000402.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Base64%20encoded%20output%20differs%20from%20pycrypto%20and%0A%20as3crypto%20libraries.&In-Reply-To=AANLkTi%3DF-ZG0z_fgcesrBNo9Hf7hR37qWyf%2BtJs9AAo3%40mail.gmail.com"
+       TITLE="[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.">sbehrens at gmx.li
+       </A><BR>
+    <I>Wed Jan 12 14:04:00 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000398.html">[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+</A></li>
+        <LI>Next message: <A HREF="000402.html">[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#399">[ date ]</a>
+              <a href="thread.html#399">[ thread ]</a>
+              <a href="subject.html#399">[ subject ]</a>
+              <a href="author.html#399">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Joshua,
+
+&quot;I82NQEkSHhE=&quot; is the result I get. I've tested with Python 3.1, hence 
+the b'' for the result string.
+
+We use public test vectors to make sure our Blowfish encrypts correctly. 
+Test vectors are from <A HREF="http://www.schneier.com/code/vectors.txt.">http://www.schneier.com/code/vectors.txt.</A> We use 
+ECB mode with the test vectors. It is entirely possible that we have an 
+issue with CBC mode, I'll not rule it out right away.
+
+Do you have a reference implementation handy that you can use to encrypt 
+this and see what the results are?
+
+ &gt;&gt;&gt; from Crypto.Cipher import Blowfish
+ &gt;&gt;&gt; B = Blowfish.new( 'Thisisthekey', Blowfish.MODE_CBC, '30313233' )
+ &gt;&gt;&gt; S = 'testtest'
+ &gt;&gt;&gt; X = B.encrypt( S )
+ &gt;&gt;&gt; import base64
+ &gt;&gt;&gt; Y = base64.b64encode( X )
+ &gt;&gt;&gt; print (Y)
+b'I82NQEkSHhE='
+ &gt;&gt;&gt; import binascii
+ &gt;&gt;&gt; Y = binascii.b2a_base64(X)
+ &gt;&gt;&gt; print (Y)
+b'I82NQEkSHhE=\n'
+
+
+Thorsten
+
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000398.html">[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+</A></li>
+	<LI>Next message: <A HREF="000402.html">[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#399">[ date ]</a>
+              <a href="thread.html#399">[ thread ]</a>
+              <a href="subject.html#399">[ subject ]</a>
+              <a href="author.html#399">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

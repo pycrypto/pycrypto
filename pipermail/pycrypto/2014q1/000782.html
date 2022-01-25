@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Need your input: Major modernization; dropping legacy Python support?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Need%20your%20input%3A%20Major%20modernization%3B%0A%20dropping%20legacy%20Python%20support%3F&In-Reply-To=%3C20140222205050.GC7112%40ramacher.at%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000771.html">
+   <LINK REL="Next"  HREF="000773.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Need your input: Major modernization; dropping legacy Python support?</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Need%20your%20input%3A%20Major%20modernization%3B%0A%20dropping%20legacy%20Python%20support%3F&In-Reply-To=%3C20140222205050.GC7112%40ramacher.at%3E"
+       TITLE="[pycrypto] Need your input: Major modernization; dropping legacy Python support?">sebastian+lists at ramacher.at
+       </A><BR>
+    <I>Sat Feb 22 12:50:50 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000771.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+        <LI>Next message: <A HREF="000773.html">[pycrypto] Public Key (X.509) in Modulus/Exponent Format
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#782">[ date ]</a>
+              <a href="thread.html#782">[ thread ]</a>
+              <a href="subject.html#782">[ subject ]</a>
+              <a href="author.html#782">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 2014-02-06 09:51:39, Dwayne Litzenberger wrote:
+&gt;<i> On Wed, Oct 30, 2013 at 06:24:48PM +0100, Sebastian Ramacher wrote:
+</I>&gt;<i> &gt;&gt;2. I'm thinking of pulling in additional dependencies (e.g. cffi),
+</I>&gt;<i> &gt;&gt;requiring setuptools, and basically joining what the rest of the
+</I>&gt;<i> &gt;&gt;Python community is doing in 2013.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;3. What if src/*.c were removed, and any relevant C code moved into
+</I>&gt;<i> &gt;&gt;an    independent library, which could be loaded using cffi?  (This
+</I>&gt;<i> &gt;&gt;is    basically what we need to do to support PyPy properly.)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;I wouldn't mind if the C code is moved into a library, however cffi
+</I>&gt;<i> &gt;doesn't seem to be ready to be used in binary distributions without
+</I>&gt;<i> &gt;resorting to hacks ([1] for the upstream bug, [2] for a very short
+</I>&gt;<i> &gt;thread on debian-python). I'm told that this will be fixed in cffi at
+</I>&gt;<i> &gt;some point.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;I've always had a good experience with Cython. What do you thinkg about
+</I>&gt;<i> &gt;that?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;Anyway, as long as we are not starting to use ctypes, I'll be fine.
+</I>&gt;<i> &gt;Depending on the timeframe of this change, I'd prefer PyCrypto to use
+</I>&gt;<i> &gt;someting that does not require hacks in binary distributions. If cffi is
+</I>&gt;<i> &gt;fixed until the change happens, I won't complain.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;[1] <A HREF="https://bitbucket.org/cffi/cffi/issue/109/enable-sane-packaging-for-cffi">https://bitbucket.org/cffi/cffi/issue/109/enable-sane-packaging-for-cffi</A>
+</I>&gt;<i> &gt;[2] <A HREF="https://lists.debian.org/debian-python/2013/10/msg00070.html">https://lists.debian.org/debian-python/2013/10/msg00070.html</A>
+</I>&gt;<i> 
+</I>&gt;<i> ctypes is definitely not on the list.
+</I>&gt;<i> 
+</I>&gt;<i> From what I understand, CFFI will only try to build binaries if
+</I>&gt;<i> they're not already found.  I think as long as packages that use
+</I>&gt;<i> CFFI include the appropriate rules in their `setup.py build_ext`
+</I>&gt;<i> process, it shouldn't be a problem.  (I'd certainly work with you to
+</I>&gt;<i> make sure the packaging isn't a nightmare.)
+</I>
+cffi 0.8 has been released in the meantime. I hope the issues have been
+fixed, but I haven't had the time to check out the new version.
+
+&gt;<i> &gt;&gt;4. What if Crypto.* became a wrapper around some other crypto library?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;This depends on the crypto library you're thinking of. If it's openssl,
+</I>&gt;<i> &gt;then all the GPL licensed reverse dependencies might have a problem (at
+</I>&gt;<i> &gt;least in Debian).
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt;5. The Apache License 2.0.  What if PyCrypto were licensed under it,
+</I>&gt;<i> &gt;&gt;or    included dependencies that are licensed under it?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;With my Debian maintainer hat on, this would be a problem for me. We
+</I>&gt;<i> &gt;still ship software that is GPL 2 only that depends on PyCrypto.
+</I>&gt;<i> &gt;However, GPL 2 and the Apache License 2.0 are incompatible.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;Examples of these packages include revelation and pymsnt (I stopped
+</I>&gt;<i> &gt;searching for GPL 2 only reverse dependencies after I've found two).
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;Of course, if the license changes or python-crypto starts depending on
+</I>&gt;<i> &gt;something licensed under Apache 2.0 this needs to be checked on a case by
+</I>&gt;<i> &gt;case basis, but I'd rather avoid it if there is no really good reason to
+</I>&gt;<i> &gt;do so.
+</I>&gt;<i> 
+</I>&gt;<i> Ugh, GPL 2 only.  I wish people would at least do &quot;or any later
+</I>&gt;<i> version&quot;.
+</I>&gt;<i> 
+</I>&gt;<i> I'm thinking of merging with the folks at <A HREF="https://cryptography.io/,">https://cryptography.io/,</A>
+</I>&gt;<i> which is covered by an Apache 2.0 license.
+</I>
+What is the merge going to look like?
+
+&gt;<i> How bad is the situation with GPL2-only packages?
+</I>
+I'll check the reverse dependencies in a couple of days.
+
+Regards
+-- 
+Sebastian Ramacher
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 819 bytes
+Desc: Digital signature
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20140222/0da79cc2/attachment.sig">http://lists.dlitz.net/pipermail/pycrypto/attachments/20140222/0da79cc2/attachment.sig</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000771.html">[pycrypto] Need your input: Major modernization; dropping legacy Python support?
+</A></li>
+	<LI>Next message: <A HREF="000773.html">[pycrypto] Public Key (X.509) in Modulus/Exponent Format
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#782">[ date ]</a>
+              <a href="thread.html#782">[ thread ]</a>
+              <a href="subject.html#782">[ subject ]</a>
+              <a href="author.html#782">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

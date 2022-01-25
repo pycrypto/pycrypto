@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Pycrypto working with python 3.0 or 3.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20working%20with%20python%203.0%20or%203.1&In-Reply-To=4B9CFCBE.4020804%40gmx.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000209.html">
+   <LINK REL="Next"  HREF="000197.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Pycrypto working with python 3.0 or 3.1</H1>
+    <B>Grail Dane</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20working%20with%20python%203.0%20or%203.1&In-Reply-To=4B9CFCBE.4020804%40gmx.net"
+       TITLE="[pycrypto] Pycrypto working with python 3.0 or 3.1">grail69 at hotmail.com
+       </A><BR>
+    <I>Tue Mar 16 23:18:12 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000209.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+        <LI>Next message: <A HREF="000197.html">[pycrypto] port for IronPython
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#206">[ date ]</a>
+              <a href="thread.html#206">[ thread ]</a>
+              <a href="subject.html#206">[ subject ]</a>
+              <a href="author.html#206">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Ok ... so had a look at this and the only change to make is in the __init__.py under level1
+change: import level2
+to: from . import level2
+All works good ;)
+
+&gt;<i> Date: Sun, 14 Mar 2010 16:11:58 +0100
+</I>&gt;<i> From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">christoph.tapler at gmx.net</A>
+</I>&gt;<i> To: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+</I>&gt;<i> 
+</I>&gt;<i> Hi Grail,
+</I>&gt;<i> 
+</I>&gt;<i> I have tried to fix the test suite, but I came across a problem,
+</I>&gt;<i> which seems to be specific to Python 3. It seems to me that Python 3 
+</I>&gt;<i> behaves differently in terms of hierarchical imports.
+</I>&gt;<i> 
+</I>&gt;<i> To demonstrate this difference, I have attached a small example (just 
+</I>&gt;<i> start level_test.py in Python 2 / 3). If you execute this example in 
+</I>&gt;<i> Python 2, everything works fine. However, in Python 3, the second 
+</I>&gt;<i> (nested) import fails. I don't understand why.
+</I>&gt;<i> 
+</I>&gt;<i> Do you (or anybody else of course ;-) ) have an idea how this issue 
+</I>&gt;<i> could be resolved? Btw, this pattern appears several times in the test 
+</I>&gt;<i> suite.
+</I>&gt;<i> 
+</I>&gt;<i> Kind Regards,
+</I>&gt;<i> Christoph
+</I>&gt;<i> 
+</I>
+ 		 	   		  
+_________________________________________________________________
+Browse profiles for FREE! Meet local singles online.
+<A HREF="http://clk.atdmt.com/NMN/go/150855801/direct/01/">http://clk.atdmt.com/NMN/go/150855801/direct/01/</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100317/e858551a/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100317/e858551a/attachment.htm</A> 
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000209.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+	<LI>Next message: <A HREF="000197.html">[pycrypto] port for IronPython
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#206">[ date ]</a>
+              <a href="thread.html#206">[ thread ]</a>
+              <a href="subject.html#206">[ subject ]</a>
+              <a href="author.html#206">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

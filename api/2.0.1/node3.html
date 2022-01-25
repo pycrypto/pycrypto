@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Design Goals</TITLE>
+<META NAME="description" CONTENT="Design Goals">
+<META NAME="keywords" CONTENT="pycrypt">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="pycrypt.css">
+
+<LINK REL="next" HREF="node4.html">
+<LINK REL="previous" HREF="node2.html">
+<LINK REL="up" HREF="node2.html">
+<LINK REL="next" HREF="node4.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html94"
+  HREF="node4.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html90"
+  HREF="node2.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html84"
+  HREF="node2.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html92"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html95"
+  HREF="node4.html">Acknowledgements</A>
+<B> Up:</B> <A NAME="tex2html91"
+  HREF="node2.html">Introduction</A>
+<B> Previous:</B> <A NAME="tex2html85"
+  HREF="node2.html">Introduction</A>
+ &nbsp; <B>  <A NAME="tex2html93"
+  HREF="node1.html">Contents</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00021000000000000000">
+Design Goals</A>
+</H2>
+The Python cryptography toolkit is intended to provide a reliable and
+stable base for writing Python programs that require cryptographic
+functions.
+
+<P>
+A central goal of the author's has been to provide a simple,
+consistent interface for similar classes of algorithms.  For example,
+all block cipher objects have the same methods and return values, and
+support the same feedback modes.  Hash functions have a different
+interface, but it too is consistent over all the hash functions
+available.  Some of these interfaces have been codified as Python
+Enhancement Proposal documents, as 247, ``API for Cryptographic
+Hash Functions'', and 272, ``API for Block Encryption
+Algorithms''.  
+
+<P>
+This is intended to make it easy to replace old algorithms with newer,
+more secure ones.  If you're given a bit of portably-written Python
+code that uses the DES encryption algorithm, you should be able to use
+AES instead by simply changing from Crypto.Cipher import DES to
+from Crypto.Cipher import AES, and changing all references to
+DES.new() to AES.new().  It's also fairly simple to
+write your own modules that mimic this interface, thus letting you use
+combinations or permutations of algorithms.
+
+<P>
+Some modules are implemented in C for performance; others are written
+in Python for ease of modification.  Generally, low-level functions
+like ciphers and hash functions are written in C, while less
+speed-critical functions have been written in Python.  This division
+may change in future releases.  When speeds are quoted in this
+document, they were measured on a 500 MHz Pentium II running Linux.
+The exact speeds will obviously vary with different machines,
+different compilers, and the phase of the moon, but they provide a
+crude basis for comparison.  Currently the cryptographic
+implementations are acceptably fast, but not spectacularly good.  I
+welcome any suggestions or patches for faster code.
+
+<P>
+I have placed the code under no restrictions; you can redistribute the
+code freely or commercially, in its original form or with any
+modifications you make, subject to whatever local laws may apply in your
+jurisdiction.  Note that you still have to come to some agreement with
+the holders of any patented algorithms you're using.  If you're
+intensively using these modules, please tell me about it; there's little
+incentive for me to work on this package if I don't know of anyone using
+it.
+
+<P>
+I also make no guarantees as to the usefulness, correctness, or legality
+of these modules, nor does their inclusion constitute an endorsement of
+their effectiveness.  Many cryptographic algorithms are patented;
+inclusion in this package does not necessarily mean you are allowed to
+incorporate them in a product and sell it.  Some of these algorithms may
+have been cryptanalyzed, and may no longer be secure.  While I will
+include commentary on the relative security of the algorithms in the
+sections entitled "Security Notes", there may be more recent analyses
+I'm not aware of.  (Or maybe I'm just clueless.)  If you're implementing
+an important system, don't just grab things out of a toolbox and put
+them together; do some research first.  On the other hand, if you're
+just interested in keeping your co-workers or your relatives out of your
+files, any of the components here could be used.
+
+<P>
+This document is very much a work in progress.  If you have any
+questions, comments, complaints, or suggestions, please send them to me.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html94"
+  HREF="node4.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html90"
+  HREF="node2.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html84"
+  HREF="node2.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html92"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html95"
+  HREF="node4.html">Acknowledgements</A>
+<B> Up:</B> <A NAME="tex2html91"
+  HREF="node2.html">Introduction</A>
+<B> Previous:</B> <A NAME="tex2html85"
+  HREF="node2.html">Introduction</A>
+ &nbsp; <B>  <A NAME="tex2html93"
+  HREF="node1.html">Contents</A></B> </DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

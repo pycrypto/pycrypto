@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Confused about some code in PubKey/RSA/_slowmath.py
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Confused%20about%20some%20code%20in%20PubKey/RSA/_slowmath.py&In-Reply-To=%3C014FF57C-5925-48A9-A611-23CDB11AD4AC%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000635.html">
+   <LINK REL="Next"  HREF="000648.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Confused about some code in PubKey/RSA/_slowmath.py</H1>
+    <B>Shoufu Luo</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Confused%20about%20some%20code%20in%20PubKey/RSA/_slowmath.py&In-Reply-To=%3C014FF57C-5925-48A9-A611-23CDB11AD4AC%40gmail.com%3E"
+       TITLE="[pycrypto] Confused about some code in PubKey/RSA/_slowmath.py">luoshoufu at gmail.com
+       </A><BR>
+    <I>Tue Nov  6 17:24:42 PST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000635.html">[pycrypto] Confused about some code in PubKey/RSA/_slowmath.py
+</A></li>
+        <LI>Next message: <A HREF="000648.html">[pycrypto] jython and pycrpto installation on windows
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#636">[ date ]</a>
+              <a href="thread.html#636">[ thread ]</a>
+              <a href="subject.html#636">[ subject ]</a>
+              <a href="author.html#636">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Lorenz,
+
+Thank you so much for explanation. Now, I think I understand the code. 
+
+The private key is only for decryption and sign, and public key is for encryption and verify. The _sign procedure calls the decryption (which I though should be encryption function), because decrypt and encrypt are the same operation from mathematical standpoint. Yes, that is the confusing part, but diligent! Now, I'm clear.Thank you!
+
+And thank you for advice, I use private key for signature in the standard way not for encryption. My problem was solved. Thanks again.
+
+
+Yours sincerely,
+Shoufu 
+
+On Nov 6, 2012, at 2:59 PM, Lorenz Quack wrote:
+
+Hi Shoufu,
+
+first things first:
+A) Cryptography is *very* hard to get right even if use a crypto library. So if
+you ask these questions out of curiosity or educational purposes that is fine but
+please don't use your own crypto in production code where you really need security!
+
+B) I'm myself not a cryptography expert so take my answers with a grain of salt.
+
+First some general explanations that might be helpful.
+For answers to your actual questions scroll down to the &quot;---&quot; mark.
+
+From a mathematical standpoint encryption and decryption are the same operation.
+Namely raise a number (this is either your plain text &quot;m&quot; or your cipher text &quot;c&quot;)
+to an exponent modulo a large number (usually called &quot;n&quot;). The only difference is
+what you take as the exponent. So in RSA you have two different exponents a private
+one (let us call it &quot;d&quot;) and a public one (let us call it &quot;e&quot;). combined with &quot;n&quot;
+these are in essence your private and public key. So now we have one mathematical
+operation but four variables (&quot;m&quot;, &quot;c&quot;, &quot;d&quot;, and &quot;e&quot;) giving you these combinations:
+
+1) m**e mod n    --&gt; encryption
+2) m**d mod n    --&gt; sign
+3) c**e mod n    --&gt; verify
+4) c**d mod n    --&gt; decryption
+
+---
+
+so to answer your first question:
+&quot;encrypting&quot; using your private key is called signing. Think of it this way. if you
+&quot;encrypt&quot; with your private key everybody would be able to decrypt it because what
+could be done with your public key which is ... well *public*
+
+as for the second question:
+this question seems to stem from the same misconception as the first one.
+encryption happens with the *public* key and decryption with the *private* key.
+Everybody (i.e. the public) is allowed to send you encrypted messages but only you
+should be able to decrypt them in private!
+
+I hope that answers your questions.
+
+Sincerely yours,
+Lorenz
+
+
+
+On 11/05/2012 06:26 AM, Shoufu Luo wrote:
+&gt;<i> Hi all,
+</I>&gt;<i> 
+</I>&gt;<i> I'm trying to encrypt a message with my private key and release the encrypted to
+</I>&gt;<i> others who will use my public key to decrypt. But, I failed.
+</I>&gt;<i> 
+</I>&gt;<i> I was confused by the follwing code from PubKey/RSA/_slowmath.py of pyCrypto-2.6.
+</I>&gt;<i> If anyone can give any clues to answer the following questions, I will appreciate.
+</I>&gt;<i> 
+</I>&gt;<i> 1. Theoretically, if I encrypt date using private key, I can decrypt the encrypted
+</I>&gt;<i> data using public key, and vice versa. Why the key must be a private key in
+</I>&gt;<i> decryption function, line 51-52? Can't I use private key to decrypt?
+</I>&gt;<i> 
+</I>&gt;<i> 2. _sign() should be the signature process using private key to encrypt a piece of
+</I>&gt;<i> data, why it is trying to decrypt at line 70, and it should be decryption in
+</I>&gt;<i> '_verify', but why it is _encrypt()?
+</I>&gt;<i> 
+</I>&gt;<i>  49     def _decrypt(self, c):
+</I>&gt;<i>  50         # compute c**d (mod n)
+</I>&gt;<i>  51         if not self.has_private():
+</I>&gt;<i>  52             raise TypeError(&quot;No private key&quot;)
+</I>&gt;<i>  53         if (hasattr(self,'p') and hasattr(self,'q') and hasattr(self,'u')):
+</I>&gt;<i>  54             m1 = pow(c, self.d % (self.p-1), self.p)
+</I>&gt;<i>  55             m2 = pow(c, self.d % (self.q-1), self.q)
+</I>&gt;<i>  56             h = m2 - m1
+</I>&gt;<i>  57             if (h&lt;0):
+</I>&gt;<i>  58                 h = h + self.q
+</I>&gt;<i>  59             h = h*self.u % self.q
+</I>&gt;<i>  60             return h*self.p+m1
+</I>&gt;<i>  61         return pow(c, self.d, self.n)
+</I>&gt;<i>  62
+</I>&gt;<i>  63     def _encrypt(self, m):
+</I>&gt;<i>  64         # compute m**d (mod n)
+</I>&gt;<i>  65         return pow(m, self.e, self.n)
+</I>&gt;<i>  66
+</I>&gt;<i>  67     def _sign(self, m):   # alias for _decrypt
+</I>&gt;<i>  68         if not self.has_private():
+</I>&gt;<i>  69             raise TypeError(&quot;No private key&quot;)
+</I>&gt;<i>  70         return self._decrypt(m)
+</I>&gt;<i>  71
+</I>&gt;<i>  72     def _verify(self, m, sig):
+</I>&gt;<i>  73         return self._encrypt(sig) == m
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Shoufu
+</I>&gt;<i> 
+</I>
+_______________________________________________
+pycrypto mailing list
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000635.html">[pycrypto] Confused about some code in PubKey/RSA/_slowmath.py
+</A></li>
+	<LI>Next message: <A HREF="000648.html">[pycrypto] jython and pycrpto installation on windows
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#636">[ date ]</a>
+              <a href="thread.html#636">[ thread ]</a>
+              <a href="subject.html#636">[ subject ]</a>
+              <a href="author.html#636">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

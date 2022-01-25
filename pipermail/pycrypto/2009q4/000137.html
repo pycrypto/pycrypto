@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ANN: PyCrypto 2.1.0 alpha 2 released and Bug #408660
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ANN%3A%20PyCrypto%202.1.0%20alpha%202%20released%20and%20Bug%20%23408660&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000136.html">
+   <LINK REL="Next"  HREF="000138.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ANN: PyCrypto 2.1.0 alpha 2 released and Bug #408660</H1>
+    <B>don at amberfisharts.com</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ANN%3A%20PyCrypto%202.1.0%20alpha%202%20released%20and%20Bug%20%23408660&In-Reply-To="
+       TITLE="[pycrypto] ANN: PyCrypto 2.1.0 alpha 2 released and Bug #408660">don at amberfisharts.com
+       </A><BR>
+    <I>Tue Oct 20 05:03:23 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000136.html">[pycrypto] ANN: PyCrypto 2.1.0 alpha 2 released
+</A></li>
+        <LI>Next message: <A HREF="000138.html">[pycrypto] getStrongPrime() implementation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#137">[ date ]</a>
+              <a href="thread.html#137">[ thread ]</a>
+              <a href="subject.html#137">[ subject ]</a>
+              <a href="author.html#137">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi Dwayne,
+
+thanks for the work you put into pycrypto. I appreciate it.
+You asked for some feedback. So here it goes:
+ * I don't use to many features. Just RSA (sign, verify, en-/decrypt) 
+   and AES (en-/decrypt in CBC mode)
+ * Those features seem to work.
+ * No build problems
+ * My system is a Intel Core2 Duo with Gentoo (~amd64) installed
+ * If anything I would ask for better documentation.
+Not much else I can say right now.
+
+You also asked for help with bug #408660 [1]. Well, I read through the paper 
+you recommended there [2] but I don't get a crucial point.
+I have to admit that I am no cryptographer by any meens. But still here goes 
+my question.
+The criterion that the bug says is missing from the current implementation 
+is &#167;1 (1): 
+&quot;If e, the public exponent is odd, then e shall be relatively prime 
+to p-1 and q-1.&quot;
+Then the critical part in the paper is in &#167;2.3 the last sentence.
+&quot;One also sieves the public exponent e at this time, so that candidates p 
+with e|p-1 are also removed.&quot;
+Does this mean that by sieving out multiples of e one eliminates candidates p 
+with e|p-1? I don't see how this is possible so either
+   a) that's not what the auther is saying,
+   b) the auther is mistaken
+or c) I don't get it.
+I would think that one would have to remove all candidates p with p mod e = 1
+Because p mod e = 1 means p = x*e + 1 and then p-1 = x*e so e|p-1, right?
+What do you (or anybody else) think?
+
+Beside this crucial question (which after all was all the initial bug report 
+was about) I have gone ahead and implemented a C-function getStrongPrime() 
+which implements the method described in that paper [2].
+I will clean up the code later today and send it in for review.
+
+
+sincerely yours,
+Lorenz
+
+
+[1] <A HREF="https://bugs.launchpad.net/pycrypto/+bug/408660">https://bugs.launchpad.net/pycrypto/+bug/408660</A>
+[2] <A HREF="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.17.2713&amp;rep=rep1&amp;type=pdf">http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.17.2713&amp;rep=rep1&amp;type=pdf</A>
+
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000136.html">[pycrypto] ANN: PyCrypto 2.1.0 alpha 2 released
+</A></li>
+	<LI>Next message: <A HREF="000138.html">[pycrypto] getStrongPrime() implementation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#137">[ date ]</a>
+              <a href="thread.html#137">[ thread ]</a>
+              <a href="subject.html#137">[ subject ]</a>
+              <a href="author.html#137">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

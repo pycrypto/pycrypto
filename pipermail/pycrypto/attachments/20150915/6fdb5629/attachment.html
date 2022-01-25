@@ -1,0 +1,15 @@
+<tt>
+&lt;div&nbsp;dir=&quot;ltr&quot;&gt;&lt;div&nbsp;style=&quot;margin-left:40px&quot;&gt;&lt;div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hi&nbsp;all,&lt;br&gt;&lt;br&gt;&lt;/div&gt;I&nbsp;have&nbsp;found&nbsp;a&nbsp;mistake&nbsp;in&nbsp;the&nbsp;api&nbsp;documentation,&nbsp;but&nbsp;as&nbsp;I&nbsp;am&nbsp;new&nbsp;to&nbsp;the&nbsp;list&nbsp;I&nbsp;don&#39;t&nbsp;know&nbsp;if&nbsp;this&nbsp;has&nbsp;been&nbsp;noticed&nbsp;yet.&lt;br&gt;&lt;br&gt;&lt;/div&gt;&lt;div&nbsp;style=&quot;margin-left:40px&quot;&gt;The&nbsp;error&nbsp;resides&nbsp;in&nbsp;&quot;&lt;/div&gt;&lt;div&nbsp;style=&quot;margin-left:40px&quot;&gt;&lt;div&gt;&lt;a&nbsp;href=&quot;https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA-module.html&quot;&gt;https://www.dlitz.net/software/pycrypto/api/current/Crypto.PublicKey.RSA-module.html&lt;/a&gt;&quot;&nbsp;at&nbsp;the&nbsp;following&nbsp;code&nbsp;(at&nbsp;the&nbsp;beginning&nbsp;of&nbsp;the&nbsp;web&nbsp;page):&lt;br&gt;&lt;pre&nbsp;class=&quot;&quot;&gt;&lt;span&nbsp;class=&quot;&quot;&gt;&gt;&gt;&gt;&nbsp;&lt;/span&gt;&lt;span&nbsp;class=&quot;&quot;&gt;from&lt;/span&gt;&nbsp;Crypto.PublicKey&nbsp;&lt;span&nbsp;class=&quot;&quot;&gt;import&lt;/span&gt;&nbsp;RSA<br>
+&lt;span&nbsp;class=&quot;&quot;&gt;&gt;&gt;&gt;&lt;/span&gt;<br>
+&lt;span&nbsp;class=&quot;&quot;&gt;&gt;&gt;&gt;&nbsp;&lt;/span&gt;key&nbsp;=&nbsp;RSA.generate(2048)<br>
+&lt;span&nbsp;class=&quot;&quot;&gt;&gt;&gt;&gt;&nbsp;&lt;/span&gt;f&nbsp;=&nbsp;open(&lt;span&nbsp;class=&quot;&quot;&gt;&#39;mykey.pem&#39;&lt;/span&gt;,&lt;span&nbsp;class=&quot;&quot;&gt;&#39;w&#39;&lt;/span&gt;)<br>
+&lt;span&nbsp;class=&quot;&quot;&gt;&gt;&gt;&gt;&nbsp;&lt;/span&gt;f.write(&lt;b&gt;RSA.exportKey&lt;/b&gt;(&lt;span&nbsp;class=&quot;&quot;&gt;&#39;PEM&#39;&lt;/span&gt;))<br>
+&lt;span&nbsp;class=&quot;&quot;&gt;&gt;&gt;&gt;&nbsp;&lt;/span&gt;f.close()<br>
+&lt;span&nbsp;class=&quot;&quot;&gt;...&lt;/span&gt;<br>
+&lt;span&nbsp;class=&quot;&quot;&gt;&gt;&gt;&gt;&nbsp;&lt;/span&gt;f&nbsp;=&nbsp;open(&lt;span&nbsp;class=&quot;&quot;&gt;&#39;mykey.pem&#39;&lt;/span&gt;,&lt;span&nbsp;class=&quot;&quot;&gt;&#39;r&#39;&lt;/span&gt;)<br>
+&lt;span&nbsp;class=&quot;&quot;&gt;&gt;&gt;&gt;&nbsp;&lt;/span&gt;key&nbsp;=&nbsp;RSA.importKey(f.read())&lt;/pre&gt;The&nbsp;write&nbsp;functions&nbsp;uses&nbsp;&quot;RSA.exportKey&quot;&nbsp;where&nbsp;it&nbsp;should&nbsp;be&nbsp;&quot;&lt;b&gt;key&lt;/b&gt;.exportKey&quot;.&nbsp;&lt;br&gt;&lt;br&gt;If&nbsp;this&nbsp;is&nbsp;not&nbsp;the&nbsp;right&nbsp;place&nbsp;to&nbsp;post&nbsp;this&nbsp;issue,&nbsp;please&nbsp;redirect&nbsp;this&nbsp;message&nbsp;to&nbsp;the&nbsp;one&nbsp;who&nbsp;should&nbsp;care&nbsp;about&nbsp;it,&nbsp;or&nbsp;tell&nbsp;me&nbsp;who&nbsp;is&nbsp;and&nbsp;I&nbsp;will&nbsp;contact&nbsp;with&nbsp;him/her.&lt;br&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Best&nbsp;regards.&lt;br&gt;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;<br>
+
+</tt>

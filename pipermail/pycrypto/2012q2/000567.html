@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20/%20OAEP%20-%20ValueError%3A%20Plaintext%20is%20too%20long.&In-Reply-To=%3CCAF%2B3j-smda0r_uFKA8Gy7PL79V%3DtA8M_DTXWetAg97k-6BnxJw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000566.html">
+   <LINK REL="Next"  HREF="000568.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.</H1>
+    <B>Antonio Teixeira</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RSA%20/%20OAEP%20-%20ValueError%3A%20Plaintext%20is%20too%20long.&In-Reply-To=%3CCAF%2B3j-smda0r_uFKA8Gy7PL79V%3DtA8M_DTXWetAg97k-6BnxJw%40mail.gmail.com%3E"
+       TITLE="[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.">eagle.antonio at gmail.com
+       </A><BR>
+    <I>Wed Apr 11 05:25:05 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000566.html">[pycrypto] ImportError: cannot import name _counter
+</A></li>
+        <LI>Next message: <A HREF="000568.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#567">[ date ]</a>
+              <a href="thread.html#567">[ thread ]</a>
+              <a href="subject.html#567">[ subject ]</a>
+              <a href="author.html#567">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Good Morning.
+
+I'm in a no way a crypto expert just trying to encrypt some traffic inside
+our cluster between machines :) so be nice :D
+
+Anyway , I currently have the following code :
+
+self.publicKey = RSA.importKey(str(b64decode(publicKey)))
+encryptCipher = PKCS1_OAEP.new(self.publicKey)
+Data = encryptCipher.encrypt(Data)
+
+This Raises The Exception ValueError: Plaintext is too long.
+
+This is An Example Payload
+{&quot;ACTION&quot;: &quot;CLASSIFIED&quot;, &quot;TASK&quot;: &quot;HELLO&quot;, &quot;PAYLOAD&quot;: &quot;{\&quot;TIME\&quot;: 10}&quot;,
+&quot;TASK_ID&quot;: &quot;c38aac1a-03ea-492d-9c03-27d9ea29eb0d&quot;}
+
+So after a small search i found out that if i increase the RSA Modulus i'm
+able to encrypt larger number of bits ( makes sense )  but this feels dirty.
+
+What do your guys recommend ?
+
+Breaking the data in chunks and encrypting part by part joining it all in a
+buffer and send it down the socket all in one with the other server
+decrypting part by part and merging the data again ?
+
+P.S - I dont mind fishing by myself just trying to understand the best &quot;way
+/ more correct way &quot; to do it :)
+
+Regards
+Antonio Teixeira
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20120411/a7793764/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20120411/a7793764/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000566.html">[pycrypto] ImportError: cannot import name _counter
+</A></li>
+	<LI>Next message: <A HREF="000568.html">[pycrypto] RSA / OAEP - ValueError: Plaintext is too long.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#567">[ date ]</a>
+              <a href="thread.html#567">[ thread ]</a>
+              <a href="subject.html#567">[ subject ]</a>
+              <a href="author.html#567">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

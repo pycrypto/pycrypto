@@ -1,0 +1,88 @@
+<tt>
+Lorenz,&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Well,&nbsp;I&amp;#39;ve&nbsp;experimented&nbsp;with&nbsp;ByteArray.writeUTFBytes(&nbsp;&amp;#39;testtest&amp;#39;&nbsp;)&nbsp;to&nbsp;avoid&nbsp;the&nbsp;Hex&nbsp;utility&nbsp;library&nbsp;and&nbsp;it&amp;#39;s&nbsp;given&nbsp;me&nbsp;the&nbsp;same&nbsp;results.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I&nbsp;don&amp;#39;t&nbsp;think&nbsp;that&nbsp;is&nbsp;the&nbsp;issue,&nbsp;if&nbsp;you&nbsp;have&nbsp;pycrypto&nbsp;installed&nbsp;would&nbsp;you&nbsp;be&nbsp;able&nbsp;to&nbsp;run&nbsp;the&nbsp;code&nbsp;to&nbsp;encrypt&nbsp;and&nbsp;base64&nbsp;the&nbsp;string?&nbsp;You&nbsp;could&nbsp;copy&nbsp;and&nbsp;paste&nbsp;it&nbsp;verbatim&nbsp;into&nbsp;idle,&nbsp;wouldn&amp;#39;t&nbsp;be&nbsp;much&nbsp;work&nbsp;at&nbsp;all&nbsp;and&nbsp;it&nbsp;would&nbsp;really&nbsp;help&nbsp;me&nbsp;out&nbsp;if&nbsp;I&nbsp;knew&nbsp;what&nbsp;the&nbsp;expected&nbsp;output&nbsp;of&nbsp;the&nbsp;python&nbsp;library&nbsp;should&nbsp;be.&lt;/div&gt;<br>
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Thanks&lt;/div&gt;&lt;div&gt;Joshua&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Wed,&nbsp;Jan&nbsp;12,&nbsp;2011&nbsp;at&nbsp;11:45&nbsp;AM,&nbsp;Lorenz&nbsp;Quack&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&amp;lt;&lt;a&nbsp;href=&quot;mailto:don@amberfisharts.com&quot;&gt;don@amberfisharts.com&lt;/a&gt;&amp;gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex;&quot;&gt;Hey&nbsp;Joshua,&lt;br&gt;<br>
+&lt;br&gt;<br>
+I&nbsp;haven&amp;#39;t&nbsp;used&nbsp;as3crypto&nbsp;(or&nbsp;any&nbsp;as3&nbsp;for&nbsp;that&nbsp;matter)&nbsp;nor&nbsp;the&nbsp;pycrypto.blowfish.&nbsp;So&nbsp;basicly&nbsp;I&amp;#39;m&nbsp;just&nbsp;wildly&nbsp;guessing&lt;br&gt;<br>
+here.&nbsp;I&nbsp;was&nbsp;wondering&nbsp;if&nbsp;you&nbsp;made&nbsp;sure&nbsp;that&nbsp;this&nbsp;&amp;quot;Hex&amp;quot;&nbsp;thing&nbsp;in&nbsp;your&nbsp;as3&nbsp;code&nbsp;isn&amp;#39;t&nbsp;messing&nbsp;up&nbsp;things?&lt;br&gt;<br>
+because&nbsp;in&nbsp;you&nbsp;base64&nbsp;test&nbsp;you&nbsp;don&amp;#39;t&nbsp;use&nbsp;that.&lt;br&gt;<br>
+&lt;br&gt;<br>
+cheers,&lt;br&gt;<br>
+//Lorenz&lt;br&gt;<br>
+&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&nbsp;class=&quot;h5&quot;&gt;&lt;br&gt;<br>
+&lt;br&gt;<br>
+On&nbsp;01/12/2011&nbsp;08:07&nbsp;PM,&nbsp;Joshua&nbsp;Strauss&nbsp;wrote:&lt;br&gt;<br>
+&amp;gt;&nbsp;I&amp;#39;m&nbsp;trying&nbsp;to&nbsp;use&nbsp;symmetric&nbsp;encryption&nbsp;to&nbsp;pass&nbsp;data&nbsp;from&nbsp;actionscript&nbsp;3&nbsp;(client)&nbsp;to&nbsp;python&nbsp;(server).&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;The&nbsp;libraries&nbsp;I&amp;#39;m&nbsp;using&nbsp;are&nbsp;as3crypto&nbsp;and&nbsp;pycrypto.&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;I&amp;#39;m&nbsp;not&nbsp;sure&nbsp;if&nbsp;I&amp;#39;m&nbsp;using&nbsp;these&nbsp;libraries&nbsp;correctly,&nbsp;here&amp;#39;s&nbsp;the&nbsp;action&nbsp;script&nbsp;3&nbsp;code.&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;private&nbsp;function&nbsp;testOnInit():void&nbsp;{&lt;br&gt;<br>
+&amp;gt;&nbsp;var&nbsp;t_toEnc:String&nbsp;=&nbsp;&amp;#39;testtest&amp;#39;;&lt;br&gt;<br>
+&amp;gt;&nbsp;var&nbsp;t_byAry:ByteArray&nbsp;=&nbsp;Hex.toArray(&nbsp;Hex.fromString(&nbsp;t_toEnc&nbsp;)&nbsp;);&lt;br&gt;<br>
+&amp;gt;&nbsp;var&nbsp;t_key:ByteArray&nbsp;=&nbsp;Hex.toArray(&nbsp;Hex.fromString(&nbsp;&amp;#39;Thisisthekey&amp;#39;&nbsp;)&nbsp;);&lt;br&gt;<br>
+&amp;gt;&nbsp;var&nbsp;t_cbc:CBCMode&nbsp;=&nbsp;new&nbsp;CBCMode(&nbsp;new&nbsp;BlowFishKey(&nbsp;t_key&nbsp;),&nbsp;new&nbsp;NullPad&nbsp;);&lt;br&gt;<br>
+&amp;gt;&nbsp;var&nbsp;t_enc:String;&lt;br&gt;<br>
+&amp;gt;&nbsp;t_cbc.IV&nbsp;=&nbsp;Hex.toArray(&nbsp;&amp;#39;30313233&amp;#39;&nbsp;);&lt;br&gt;<br>
+&amp;gt;&nbsp;t_cbc.encrypt(&nbsp;t_byAry&nbsp;);&lt;br&gt;<br>
+&amp;gt;&nbsp;t_enc&nbsp;=&nbsp;Base64.encodeByteArray(&nbsp;t_byAry&nbsp;);&lt;br&gt;<br>
+&amp;gt;&nbsp;dbg(&nbsp;&amp;#39;b64&nbsp;encrypted&nbsp;string&nbsp;&amp;#39;&nbsp;+&nbsp;t_enc&nbsp;);&nbsp;//this&nbsp;is&nbsp;just&nbsp;a&nbsp;debugging&nbsp;function&nbsp;we&nbsp;use&nbsp;in&nbsp;our&nbsp;code.&lt;br&gt;<br>
+&amp;gt;&nbsp;}&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;This&nbsp;is&nbsp;the&nbsp;base64&nbsp;encoded&nbsp;output&nbsp;of&nbsp;the&nbsp;function&nbsp;above.&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;xvVqLzV5TU4=&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;Now,&nbsp;using&nbsp;the&nbsp;same&nbsp;key,&nbsp;initialization&nbsp;vector,&nbsp;and&nbsp;algorithm&nbsp;from&nbsp;the&nbsp;pycrypto&nbsp;library&nbsp;gives&nbsp;me&nbsp;different&nbsp;output.&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;Here&amp;#39;s&nbsp;the&nbsp;python&nbsp;code.&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp; &amp;gt;&amp;gt;&amp;gt;&nbsp;from&nbsp;Crypto.Cipher&nbsp;import&nbsp;Blowfish&lt;br&gt;<br>
+&amp;gt;&nbsp; &amp;gt;&amp;gt;&amp;gt;&nbsp;B&nbsp;=&nbsp;Blowfish.new(&nbsp;&amp;#39;Thisisthekey&amp;#39;,&nbsp;Blowfish.MODE_CBC,&nbsp;&amp;#39;30313233&amp;#39;&nbsp;)&lt;br&gt;<br>
+&amp;gt;&nbsp; &amp;gt;&amp;gt;&amp;gt;&nbsp;S&nbsp;=&nbsp;&amp;#39;testtest&amp;#39;&lt;br&gt;<br>
+&amp;gt;&nbsp; &amp;gt;&amp;gt;&amp;gt;&nbsp;X&nbsp;=&nbsp;B.encrypt(&nbsp;S&nbsp;)&lt;br&gt;<br>
+&amp;gt;&nbsp; &amp;gt;&amp;gt;&amp;gt;&nbsp;import&nbsp;base64&lt;br&gt;<br>
+&amp;gt;&nbsp; &amp;gt;&amp;gt;&amp;gt;&nbsp;Y&nbsp;=&nbsp;base64.b64encode(&nbsp;X&nbsp;)&lt;br&gt;<br>
+&amp;gt;&nbsp; &amp;gt;&amp;gt;&amp;gt;&nbsp;print&nbsp;Y&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;I82NQEkSHhE=&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;I&amp;#39;m&nbsp;pretty&nbsp;sure&nbsp;that&nbsp;I&amp;#39;m&nbsp;doing&nbsp;something&nbsp;wrong&nbsp;with&nbsp;the&nbsp;encryption&nbsp;process&nbsp;because&nbsp;I&nbsp;can&nbsp;base64&nbsp;encode&nbsp;&amp;#39;testtest&amp;#39;&nbsp;on&lt;br&gt;<br>
+&amp;gt;&nbsp;both&nbsp;libraries&nbsp;and&nbsp;receive&nbsp;the&nbsp;same&nbsp;output.&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;Here&amp;#39;s&nbsp;as3&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;var&nbsp;b:ByteArray&nbsp;=&nbsp;new&nbsp;ByteArray();&lt;br&gt;<br>
+&amp;gt;&nbsp;b.writeUTFBytes(&nbsp;&amp;#39;testtest&amp;#39;&nbsp;);&lt;br&gt;<br>
+&amp;gt;&nbsp;dbg(&nbsp;Base64.encodeByteArray(&nbsp;b&nbsp;)&nbsp;);&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;Yields...&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;dGVzdHRlc3Q=&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;Here&amp;#39;s&nbsp;the&nbsp;python&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp; &amp;gt;&amp;gt;&amp;gt;&nbsp;T&nbsp;=&nbsp;&amp;#39;testtest&amp;#39;&lt;br&gt;<br>
+&amp;gt;&nbsp; &amp;gt;&amp;gt;&amp;gt;&nbsp;print&nbsp;base64.b64encode(&nbsp;T&nbsp;)&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;Yields…&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;dGVzdHRlc3Q=&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;Could&nbsp;someone&nbsp;please&nbsp;encrypt&nbsp;and&nbsp;base64encode&nbsp;the&nbsp;same&nbsp;string&nbsp;with&nbsp;the&nbsp;same&nbsp;IV&nbsp;in&nbsp;either&nbsp;python&nbsp;or&nbsp;actionscript,&nbsp;so&nbsp;I&lt;br&gt;<br>
+&amp;gt;&nbsp;know&nbsp;which&nbsp;library&nbsp;is&nbsp;actually&nbsp;producing&nbsp;the&nbsp;correct&nbsp;output?&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;Any&nbsp;assistance&nbsp;with&nbsp;this&nbsp;problem&nbsp;would&nbsp;be&nbsp;greatly&nbsp;appreciated,&nbsp;I&amp;#39;m&nbsp;stuck&nbsp;and&nbsp;don&amp;#39;t&nbsp;know&nbsp;how&nbsp;to&nbsp;proceed&nbsp;from&nbsp;here.&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;Thank&nbsp;you&lt;br&gt;<br>
+&amp;gt;&nbsp;Joshua&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;&lt;/div&gt;_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;<br>
+
+</tt>

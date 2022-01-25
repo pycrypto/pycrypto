@@ -1,0 +1,31 @@
+>From 5055e862ad95f01991da0815758bcad3019505f6 Mon Sep 17 00:00:00 2001
+From: Sebastian Ramacher <s.ramacher@gmx.at>
+Date: Wed, 16 Nov 2011 17:16:21 +0100
+Subject: [PATCH] Fix building issue if built without optimization.
+
+If gcc decides not to inline the call to size _fastmath can not be used since
+the definition of size only creates an inline definition. Thus no a symbol named
+size does not exist in the _fastmath extension and it fails to be loaded due to
+an unresolved reference. See [1] for details.
+
+[1] http://gcc.gnu.org/bugzilla/show_bug.cgi?id=49653
+---
+ src/_fastmath.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/_fastmath.c b/src/_fastmath.c
+index eff3e29..5882f3d 100644
+--- a/src/_fastmath.c
++++ b/src/_fastmath.c
+@@ -998,7 +998,7 @@ cleanup:
+ 
+ 
+ 
+-INLINE size_t size (mpz_t n)
++static INLINE size_t size (mpz_t n)
+ {
+ 	return mpz_sizeinbase (n, 2);
+ }
+-- 
+1.7.7.2
+

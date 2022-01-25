@@ -1,0 +1,46 @@
+<tt>
+&lt;div&nbsp;dir=&quot;ltr&quot;&gt;please&nbsp;keep&nbsp;the&nbsp;DES3&nbsp;and&nbsp;XOR.&lt;br&gt;we&nbsp;use&nbsp;them&nbsp;and&nbsp;need&nbsp;them&nbsp;in&nbsp;our&nbsp;ongoing&nbsp;projects&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Wed,&nbsp;Apr&nbsp;22,&nbsp;2009&nbsp;at&nbsp;8:23&nbsp;PM,&nbsp;Jean-Paul&nbsp;Calderone&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&amp;lt;&lt;a&nbsp;href=&quot;mailto:exarkun@twistedmatrix.com&quot;&gt;exarkun@twistedmatrix.com&lt;/a&gt;&amp;gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;border-left:&nbsp;1px&nbsp;solid&nbsp;rgb(204,&nbsp;204,&nbsp;204);&nbsp;margin:&nbsp;0pt&nbsp;0pt&nbsp;0pt&nbsp;0.8ex;&nbsp;padding-left:&nbsp;1ex;&quot;&gt;Hello,&lt;br&gt;<br>
+&lt;br&gt;<br>
+Someone&nbsp;pointed&nbsp;out&nbsp;that&nbsp;XOR&nbsp;and&nbsp;several&nbsp;other&nbsp;ciphers&nbsp;[1]&nbsp;have&nbsp;been&lt;br&gt;<br>
+removed&nbsp;from&nbsp;PyCrypto.&nbsp; This&nbsp;has&nbsp;the&nbsp;consequence&nbsp;that&nbsp;Twisted&nbsp;Conch,&lt;br&gt;<br>
+and&nbsp;SSH&nbsp;client&nbsp;and&nbsp;server&nbsp;implementation&nbsp;which&nbsp;depends&nbsp;on&nbsp;PyCrypto,&lt;br&gt;<br>
+no&nbsp;longer&nbsp;works&nbsp;with&nbsp;the&nbsp;latest&nbsp;development&nbsp;version&nbsp;of&nbsp;PyCrypto,&nbsp;and&lt;br&gt;<br>
+I&nbsp;assume&nbsp;that&nbsp;when&nbsp;the&nbsp;next&nbsp;release&nbsp;of&nbsp;PyCrypto&nbsp;is&nbsp;made,&nbsp;Conch&nbsp;also&lt;br&gt;<br>
+won&amp;#39;t&nbsp;work&nbsp;with&nbsp;that.&lt;br&gt;<br>
+&lt;br&gt;<br>
+I&amp;#39;m&nbsp;curious&nbsp;how&nbsp;important&nbsp;backwards&nbsp;compatibility&nbsp;is&nbsp;deemed&nbsp;with&nbsp;the&lt;br&gt;<br>
+new&nbsp;PyCrypto&nbsp;development&nbsp;going&nbsp;on.&nbsp; A&nbsp;change&nbsp;like&nbsp;the&nbsp;one&nbsp;referenced&lt;br&gt;<br>
+above&nbsp;is&nbsp;going&nbsp;to&nbsp;break&nbsp;users&nbsp;of&nbsp;PyCrypto&nbsp;(and&nbsp;that&nbsp;seems&nbsp;like&nbsp;it&nbsp;is&lt;br&gt;<br>
+really&nbsp;obvious,&nbsp;to&nbsp;me&nbsp;-&nbsp;as&nbsp;opposed&nbsp;to&nbsp;a&nbsp;change&nbsp;which&nbsp;only&nbsp;accidentally&lt;br&gt;<br>
+breaks&nbsp;applications).&nbsp; The&nbsp;added&nbsp;maintenance&nbsp;burden&nbsp;this&nbsp;causes&nbsp;makes&lt;br&gt;<br>
+PyCrypto&nbsp;less&nbsp;attractive&nbsp;(one&nbsp;nice&nbsp;thing&nbsp;about&nbsp;PyCrypto&nbsp;having&nbsp;been&lt;br&gt;<br>
+unmaintained&nbsp;for&nbsp;a&nbsp;long&nbsp;time&nbsp;is&nbsp;that&nbsp;Conch&amp;#39;s&nbsp;use&nbsp;of&nbsp;it&nbsp;stayed&nbsp;as&lt;br&gt;<br>
+correct&nbsp;(or&nbsp;incorrect)&nbsp;as&nbsp;it&nbsp;was&nbsp;when&nbsp;it&nbsp;was&nbsp;written).&nbsp; Basically,&nbsp;the&lt;br&gt;<br>
+question&nbsp;is&nbsp;whether&nbsp;I&nbsp;should&nbsp;expect&nbsp;more&nbsp;PyCrypto&nbsp;changes&nbsp;like&nbsp;this&lt;br&gt;<br>
+as&nbsp;development&nbsp;proceeds,&nbsp;or&nbsp;whether&nbsp;I&nbsp;can&nbsp;make&nbsp;the&nbsp;argument&nbsp;that&nbsp;backwards&lt;br&gt;<br>
+compatibility&nbsp;is&nbsp;a&nbsp;*good*&nbsp;thing&nbsp;compelling.&lt;br&gt;<br>
+&lt;br&gt;<br>
+Of&nbsp;course&nbsp;it&amp;#39;s&nbsp;one&nbsp;thing&nbsp;to&nbsp;say&nbsp;&amp;quot;more&nbsp;backwards&nbsp;compatibility&nbsp;please&amp;quot;.&lt;br&gt;<br>
+Actually&nbsp;deciding&nbsp;how&nbsp;that&nbsp;can&nbsp;be&nbsp;accomplished&nbsp;while&nbsp;allowing&nbsp;development&lt;br&gt;<br>
+to&nbsp;proceed&nbsp;in&nbsp;a&nbsp;useful&nbsp;direction&nbsp;is&nbsp;another.&nbsp; However,&nbsp;I&amp;#39;m&nbsp;intentionally&lt;br&gt;<br>
+omitting&nbsp;details&nbsp;of&nbsp;that&nbsp;discussion&nbsp;from&nbsp;this&nbsp;message&nbsp;to&nbsp;keep&nbsp;things&lt;br&gt;<br>
+simple.&nbsp; I&amp;#39;m&nbsp;convinced&nbsp;that&nbsp;some&nbsp;degree&nbsp;of&nbsp;backwards&nbsp;compatibility&nbsp;is&lt;br&gt;<br>
+always&nbsp;possible,&nbsp;regardless&nbsp;of&nbsp;the&nbsp;changes&nbsp;desired,&nbsp;so&nbsp;the&nbsp;details&nbsp;of&nbsp;how&lt;br&gt;<br>
+it&nbsp;works&nbsp;aren&amp;#39;t&nbsp;as&nbsp;important&nbsp;as&nbsp;deciding&nbsp;whether&nbsp;backwards&nbsp;compatibility&lt;br&gt;<br>
+will&nbsp;be&nbsp;maintained.&lt;br&gt;<br>
+&lt;br&gt;<br>
+So,&nbsp;what&nbsp;do&nbsp;you&nbsp;say?&nbsp; Can&nbsp;we&nbsp;decide&nbsp;that&nbsp;backwards&nbsp;compatibility&nbsp;is&nbsp;a&nbsp;good&lt;br&gt;<br>
+thing?&lt;br&gt;<br>
+&lt;br&gt;<br>
+Jean-Paul&lt;br&gt;<br>
+&lt;br&gt;<br>
+[1]&nbsp;-&nbsp;&lt;a&nbsp;href=&quot;http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git;a=commit;h=5b5b496c0f81f3595d0aebb8da5196492abae429&quot;&nbsp;target=&quot;_blank&quot;&gt;http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git;a=commit;h=5b5b496c0f81f3595d0aebb8da5196492abae429&lt;/a&gt;&lt;br&gt;<br>
+<br>
+_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;<br>
+
+</tt>

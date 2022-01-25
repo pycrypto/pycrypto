@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] What to do about RandomPool
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20What%20to%20do%20about%20RandomPool&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000001.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] What to do about RandomPool</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20What%20to%20do%20about%20RandomPool&In-Reply-To="
+       TITLE="[pycrypto] What to do about RandomPool">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Jul 21 18:25:26 CST 2008</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000001.html">[pycrypto] What to do about RandomPool
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#0">[ date ]</a>
+              <a href="thread.html#0">[ thread ]</a>
+              <a href="subject.html#0">[ subject ]</a>
+              <a href="author.html#0">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>[Reposted from <A HREF="https://bugs.launchpad.net/pycrypto/+bug/249765]">https://bugs.launchpad.net/pycrypto/+bug/249765]</A>
+
+RandomPool really really needs to die, at least in its current form. It's 
+not thread-safe, it's not fork-safe, and if it can't get entropy from the 
+OS, it silently produces predictable output. What's worse is that everyone 
+assumes that it's a portable substitute for reading from /dev/urandom on 
+Linux, but it's actually way too fragile to be safely used that way.
+
+When I fixed Paramiko's usage of RandomPool back in January, Robey Pointer 
+broke it again, so I ended up fixing it *twice* in one program.[1] Judging 
+from the rest of the Paramiko code base, I certainly do NOT think Robey is 
+a careless or stupid programmer; Random number generators are just hard to 
+get right and RandomPool encourages people to get it wrong. I have yet to 
+see any code that *explicitly* uses RandomPool correctly. Most of the code 
+I've seen that avoids RandomPool-related security holes seems to do so 
+accidentally---as long as it's not running on Windows and /dev/urandom 
+exists.
+
+I'm not sure that PyCrypto is the right place to implement a good RNG, 
+anyway. Even if we make RandomPool thread-safe and make sure it initializes 
+with enough entropy, it all becomes pointless as soon as somebody calls 
+os.fork(), which duplicates the entire state pool. As far as I know, 
+there's no easy way (and certainly no portable way) to prevent that. Also, 
+absent an OS random number generator, arbitrary programs usually have 
+little to no access to entropy. What makes matters worse is that, unless 
+the RNG gets to run in its own process/thread (RandomPool does not) it 
+relies totally on the user to supply the pool with new entropy at frequent 
+intervals. That almost never happens.
+
+Would there be any objection to replacing RandomPool with a simple wrapper 
+around os.urandom? A quick benchmark shows that reading from /dev/urandom 
+on Linux is about 10-50x faster than using RandomPool.
+
+[1] See
+     <A HREF="http://www.lag.net/pipermail/paramiko/2008-January/000599.html">http://www.lag.net/pipermail/paramiko/2008-January/000599.html</A>
+         and
+     <A HREF="http://www.lag.net/pipermail/paramiko/2008-April/000678.html">http://www.lag.net/pipermail/paramiko/2008-April/000678.html</A>
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20080721/deb9ebb1/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20080721/deb9ebb1/attachment.pgp</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000001.html">[pycrypto] What to do about RandomPool
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#0">[ date ]</a>
+              <a href="thread.html#0">[ thread ]</a>
+              <a href="subject.html#0">[ subject ]</a>
+              <a href="author.html#0">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

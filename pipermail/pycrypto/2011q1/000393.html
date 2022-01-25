@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Initial review of Thorsten's Py3k changes
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Initial%20review%20of%20Thorsten%27s%20Py3k%20changes&In-Reply-To=20110110044938.GA12449%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000392.html">
+   <LINK REL="Next"  HREF="000413.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Initial review of Thorsten's Py3k changes</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Initial%20review%20of%20Thorsten%27s%20Py3k%20changes&In-Reply-To=20110110044938.GA12449%40rivest.dlitz.net"
+       TITLE="[pycrypto] Initial review of Thorsten's Py3k changes">sbehrens at gmx.li
+       </A><BR>
+    <I>Mon Jan 10 09:18:54 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000392.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+        <LI>Next message: <A HREF="000413.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#393">[ date ]</a>
+              <a href="thread.html#393">[ thread ]</a>
+              <a href="subject.html#393">[ subject ]</a>
+              <a href="author.html#393">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks for looking over my commits.
+
+I have been trying to rebase and am getting nowhere fast. There are a 
+lot of merge conflicts, and I end up with something that may or may not 
+actually be the current state of the repository.
+
+&gt;<i> Therefore, I have a few recommendations:
+</I>&gt;<i>
+</I>&gt;<i> - Don't change the test vector data if you don't need to.  Changing
+</I>&gt;<i>     hundreds of strings like 'd6a141a7ec3c38dfbd61' to strings like
+</I>&gt;<i>     b('d6a141a7ec3c36dfbd61') is unnecessary (since they need to be
+</I>&gt;<i>     hex-decoded somewhere anyway), and it makes it difficult to tell by
+</I>&gt;<i>     inspection that the test vectors weren't modified.  (How many of you
+</I>&gt;<i>     noticed that I changed the 8 to a 6 in that example?)
+</I>This was done for a reason. The tests were failing because b'something' 
+does not equal 'something', and
+because several functions expected bytes, but got str.
+
+As far as I could make out, this was the best way forward. The 
+alternative may have been to write things like
+
+assertEqual(b(x),y) and adding b() to various function calls throughout 
+the test suite.
+
+instead of leaving the asserts and function calls (largely) the way they 
+were.
+
+Adding b() to asserts and function calls struck me as rather opaque. I 
+thought it more consistent to change the way the test vectors are 
+presented instead.
+
+I get that this makes review hard. I didn't think of that aspect at the 
+time.
+
+I'm not sure what the best way forward is for this part of the changes. 
+I still think it's cleaner to change the literals than the way asserts 
+and functions are called. b(s) in Py3k returns s.encode(&quot;latin-1&quot;). 
+Compare and contrast these two:
+
+input = b'abcdef00'
+expected = b'abcdef00'
+
+x = somefunction(input)
+assertEqual(x,expected)
+
+to
+
+input = 'abcdef00'
+expected = 'cdefab00'
+
+x = somefunction(input.encode(&quot;latin-1&quot;))
+assertEqual(x,expected.encode(&quot;latin-1&quot;))
+
+If you were to write native Py3k code, you'd choose the former over the 
+latter. I tried to get as close to that as I could. I don't quite have 
+b'something', since I can't do that and remain compatible with Python 
+2.x. But the spirit of it is intact: I am changing the way the literal 
+is presented, instead of working with a string literal and changing it 
+to bytes whenever I use it.
+
+
+&gt;<i> - Run your tests with python -tt to ensure consistent use of whitespace.  I
+</I>&gt;<i>     haven't been doing this, so the current master doesn't work, but that was
+</I>&gt;<i>     a mistake and I will be doing it from now on.
+</I>&gt;<i>
+</I>Okay.
+
+&gt;<i>       - The commands &quot;git rebase -i&quot;, &quot;git cherry-pick -n&quot;, &quot;git reset&quot;, and
+</I>&gt;<i>         &quot;git add -p&quot; are your friends.
+</I>I think I need some git schooling. I am not getting anywhere fast :/.
+
+&gt;<i> - References to things like RC5 or IDEA, which have been removed from
+</I>&gt;<i>     PyCrypto, can be removed.
+</I>I didn't touch those since they may have been there for a reason.
+&gt;<i> - If adding additional/alternative dependencies like MPIR, include *why*
+</I>&gt;<i>     that's being done in the commit message and/or in the documentation.
+</I>Hmm, I thought I did. This was done so _fastmath.c would work on 
+Windows. GMP is actively hostile to compilation on Windows. MPIR is a 
+GMP fork that is friendly to compilation on Windows.
+
+Yours
+Thorsten
+
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000392.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+	<LI>Next message: <A HREF="000413.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#393">[ date ]</a>
+              <a href="thread.html#393">[ thread ]</a>
+              <a href="subject.html#393">[ subject ]</a>
+              <a href="author.html#393">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

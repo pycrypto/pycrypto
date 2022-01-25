@@ -1,0 +1,2074 @@
+From dlitz at dlitz.net  Sun Aug  2 12:13:18 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 2 Aug 2009 14:13:18 -0400
+Subject: [pycrypto] DES/DES3/XOR/etc removal
+In-Reply-To: <20090504155044.21531.625050512.divmod.quotient.217@henry.divmod.com>
+References: <20090504155044.21531.625050512.divmod.quotient.217@henry.divmod.com>
+Message-ID: <20090802181318.GA28589@rivest.dlitz.net>
+
+On Sun, May 03, 2009 at 01:01:48PM -0400, Jean-Paul Calderone wrote:
+>On Sat, 25 Apr 2009 12:13:49 -0400, "Dwayne C. Litzenberger" <dlitz at dlitz.net> wrote:
+>>As for the XOR module, I removed it for the following reasons:
+>
+>I'll try to make a case for you to retain it, at least through a minimal
+>deprecation period.
+
+You've convinced me.  I've resurrected the old C XOR module and fixed (and 
+added a test for) the truncate-at-32-bytes bug.
+
+Cheers,
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+
+From dlitz at dlitz.net  Mon Aug  3 19:41:50 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 3 Aug 2009 21:41:50 -0400
+Subject: [pycrypto] _RSA.py and generate_py
+In-Reply-To: <b2a653cf0905272150p302de21esccb9950b249e372f@mail.gmail.com>
+References: <b2a653cf0905272150p302de21esccb9950b249e372f@mail.gmail.com>
+Message-ID: <20090804014150.GA26759@rivest.dlitz.net>
+
+On Wed, May 27, 2009 at 09:50:07PM -0700, Anthony Honstain wrote:
+>In the generate_py function of lib/Crypto/PublicKey/_RSA.py , it would
+>appear to be possible that the the primes p and q can be generated such that
+>the GCD( 65537, (p-1)(q-1)) != 1 which would result in a unusable key. If
+>anyone can clarify this it would be greatly appreciated.
+
+I haven't looked into this claim yet, but I've filed a bug report:
+
+     https://bugs.launchpad.net/pycrypto/+bug/408660
+
+Note that we'll also have to check _fastmath.c, which might use a different 
+algorithm.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+
+From dlitz at dlitz.net  Mon Aug  3 19:56:08 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 3 Aug 2009 21:56:08 -0400
+Subject: [pycrypto] ANN: PyCrypto 2.1.0 alpha 1 released
+Message-ID: <20090804015608.GA28008@rivest.dlitz.net>
+
+PyCrypto 2.1.0alpha1 has been released.  Finally.
+
+You can get it from the git repository:
+
+   $ git clone git://git.pycrypto.org:9419/crypto/pycrypto-2.x.git
+   $ cd pycrypto-2.x
+   $ git checkout v2.0.1alpha1
+
+You can also browse the git repository on the web:
+
+   http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git;a=summary
+
+Please test it and post your experiences to the PyCrypto mailing list:
+
+   pycrypto at lists.dlitz.net
+
+and/or file bug reports on Launchpad:
+
+   https://bugs.launchpad.net/pycrypto
+
+Here is a (non-exhaustive) list of changes between 2.0.1 and 2.1.0alpha1:
+
+   * This version supports Python versions 2.1 through 2.6.
+
+   * Clarified copyright status of much of the existing code by tracking
+     down Andrew M. Kuchling, Barry A. Warsaw, Jeethu Rao, Joris Bontje,
+     Mark Moraes, Paul Swartz, Robey Pointer, and Wim Lewis and getting
+     their permission to clarify the license/public-domain status of their
+     contributions.  Many thanks to all involved!
+
+   * Replaced the test suite with a new, comprehensive package
+     (Crypto.SelfTest) that includes documentation about where its test
+     vectors came from, or how they were derived.
+
+     Use "python setup.py test" to run the tests after building.
+
+   * API changes:
+
+     - Added Crypto.version_info, which from now on will contain version
+       information in a format similar to Python's sys.version_info.
+
+     - Added a new random numbers API (Crypto.Random), and deprecated the
+       old one (Crypto.Util.randpool.RandomPool), which was misused more
+       often than not.
+
+       The new API is used by invoking Crypto.Random.new() and then just
+       reading from the file-like object that is returned.
+
+       CAVEAT: To maintain the security of the PRNG, you must call
+       Crypto.Random.atfork() in both the parent and the child processes
+       whenever you use os.fork().  Otherwise, the parent and child will
+       share copies of the same entropy pool, causing them to return the
+       same results!  This is a limitation of Python, which does not
+       provide readily-accessible hooks to os.fork().  It's also a
+       limitation caused by the failure of operating systems to provide
+       sufficiently fast, trustworthy sources of cryptographically-strong
+       random numbers.
+
+     - Crypto.PublicKey now raises ValueError/TypeError/RuntimeError
+       instead of the various custom "error" exceptions
+
+     - Removed the IDEA and RC5 modules due to software patents.  Debian
+       has been doing this for a while
+
+     - Added Crypto.Random.random, a strong version of the standard Python
+      'random' module.
+
+     - Added Crypto.Util.Counter, providing fast counter implementations
+       for use with CTR-mode ciphers.
+
+   * Bug fixes:
+
+     - Fixed padding bug in SHA256; this resulted in bad digests whenever
+       (the number of bytes hashed) mod 64 == 55.
+
+     - Fixed a 32-bit limitation on the length of messages the SHA256 module
+       could hash.
+
+     - AllOrNothing: Fixed padding bug in digest()
+
+     - Fixed a bad behaviour of the XOR cipher module: It would silently
+       truncate all keys to 32 bytes.  Now it raises ValueError when the
+       key is too long.
+
+     - DSA: Added code to enforce FIPS 186-2 requirements on the size of
+       the prime p
+
+     - Fixed the winrandom module, which had been omitted from the build
+       process, causing security problems for programs that misuse RandomPool.
+
+     - Fixed infinite loop when attempting to generate RSA keys with an
+       odd number of bits in the modulus.  (Not that you should do that.)
+
+   * Clarified the documentation for Crypto.Util.number.getRandomNumber.
+
+     Confusingly, this function does NOT return N random bits; It returns
+     a random N-bit number, i.e. a random number between 2**(N-1) and
+     (2**N)-1.
+
+     Note that getRandomNumber is for internal use only and may be
+     renamed or removed in future releases.
+
+   * Replaced RIPEMD.c with a new implementation (RIPEMD160.c) to
+     alleviate copyright concerns.
+
+   * Replaced the DES/DES3 modules with ones based on libtomcrypt-1.16 to
+     alleviate copyright concerns.
+
+   * Replaced Blowfish.c with a new implementation to alleviate copyright
+     concerns.
+
+   * Added a string-XOR implementation written in C (Crypto.Util.strxor)
+     and used it to speed up Crypto.Hash.HMAC
+
+   * Converted documentation to reStructured Text.
+
+   * Added epydoc configuration Doc/epydoc-config
+
+   * setup.py now emits a warning when building without GMP.
+
+   * Added pct-speedtest.py to the source tree for doing performance
+     testing on the new code.
+
+   * Cleaned up the code in several places.
+
+Cheers!
+  - Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From wgheath at gmail.com  Tue Aug 18 19:07:53 2009
+From: wgheath at gmail.com (William Heath)
+Date: Tue, 18 Aug 2009 18:07:53 -0700
+Subject: [pycrypto] How can I read a standard openssl private key with
+	PyCrypto and decrypt with it?
+Message-ID: <f08ddf990908181807h37eccfc9n59b84e096885b29c@mail.gmail.com>
+
+Hi All,
+
+
+I generated a private key with:
+
+
+openssl.exe req -x509 -nodes -days 365 -newkey rsa:1024 -keyout
+sdgidfedapp11.corp.intuit.net.key -out sdgidfedapp11.corp.intuit.net.crt
+
+
+I can't figure out is how to use PyCrypto.RSA.construct with it
+
+to decrypt something.  This works however:
+
+
+from M2Crypto import RSA
+
+
+priv_key = RSA.load_key('private.key', get_password)
+
+
+decrypted_key = priv_key.private_decrypt(base64.b64decode(enc_key),
+RSA.pkcs1
+
+_padding)
+
+
+I am sure there is a way to do this with PyCrypto, anyone know how to do it?
+
+
+-Tim
+
+
+P.S.
+
+
+Thanks for this awsome library, especially on google appe engine!
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090818/8fdcf767/attachment.htm 
+
+From dlitz at dlitz.net  Tue Aug 18 21:26:30 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Tue, 18 Aug 2009 23:26:30 -0400
+Subject: [pycrypto] How can I read a standard openssl private key
+	with	PyCrypto and decrypt with it?
+In-Reply-To: <f08ddf990908181807h37eccfc9n59b84e096885b29c@mail.gmail.com>
+References: <f08ddf990908181807h37eccfc9n59b84e096885b29c@mail.gmail.com>
+Message-ID: <20090819032630.GA11413@rivest.dlitz.net>
+
+On Tue, Aug 18, 2009 at 06:07:53PM -0700, William Heath wrote:
+>I generated a private key with:
+>
+>   openssl.exe req -x509 -nodes -days 365 -newkey rsa:1024 -keyout
+>sdgidfedapp11.corp.intuit.net.key -out sdgidfedapp11.corp.intuit.net.crt
+>
+>I can't figure out is how to use PyCrypto.RSA.construct with it
+>to decrypt something.
+[snip]
+>I am sure there is a way to do this with PyCrypto, anyone know how to do it?
+
+I am not aware of any simple way to do what you ask without using a 
+separate library.  PKCS#1 and X.509 are not implemented in PyCrypto, and as 
+far as I understand, you would need both to do anything useful with such a 
+key.
+
+At this time, PyCrypto's API for RSA is somewhat confusing: It only 
+implements textbook RSA, so it's not really useful for anyone except other 
+crypto library developers (e.g. Paramiko, Twisted, etc.).  You might be 
+able to use OpenSSL to generate hex values for each of the parameters, then 
+parse the results and feed them to RSA.construct yourself using something 
+like this:
+
+     openssl rsa -text -in sdgidfedapp11.corp.intuit.net.key
+
+However, since PyCrypto lacks PKCS#1 support, if you aren't careful or if 
+you don't know exactly what you are doing, you will probably expose your 
+private key to compromise.
+
+If you want to do practical public-key work with X.509 today, you might 
+want to check out other libraries like pycryptopp, Google Key Czar, and 
+M2Crypto.  Also, Paramiko (which depends on PyCrypto) might support at 
+least reading those files, since IIRC they're also used for SSH private 
+keys.
+
+Please do remember that PyCrypto's current RSA functions are insecure if 
+used directly.  I would like to introduce a simple public key API at some 
+point, but right now it doesn't exist.
+
+If you're doing any low-level work with RSA, you should at minimum, read 
+and understand this overview paper:
+
+     http://www.cs.bgu.ac.il/~beimel/Courses/crypto/Boneh.pdf
+
+Also, as a side note, 1024-bit RSA keys are a little on the short side 
+today.  I would recommend nothing less than 2048 bits:
+
+     http://www.google.com/search?q=1024-bit+RSA
+
+Hope that helps.
+
+Cheers,
+- Dwayne
+
+--
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From wgheath at gmail.com  Wed Aug 19 11:06:26 2009
+From: wgheath at gmail.com (William Heath)
+Date: Wed, 19 Aug 2009 10:06:26 -0700
+Subject: [pycrypto] How can I read a standard openssl private key with
+	PyCrypto and decrypt with it?
+In-Reply-To: <20090819032630.GA11413@rivest.dlitz.net>
+References: <f08ddf990908181807h37eccfc9n59b84e096885b29c@mail.gmail.com>
+	<20090819032630.GA11413@rivest.dlitz.net>
+Message-ID: <f08ddf990908191006k38c73d6n66d611cc184d4c0f@mail.gmail.com>
+
+I am looking for any way to do this on google app engine using any python
+library.  Do you have any ideas on that?
+-Tim
+
+On Tue, Aug 18, 2009 at 8:26 PM, Dwayne C. Litzenberger <dlitz at dlitz.net>wrote:
+
+> On Tue, Aug 18, 2009 at 06:07:53PM -0700, William Heath wrote:
+> >I generated a private key with:
+> >
+> >   openssl.exe req -x509 -nodes -days 365 -newkey rsa:1024 -keyout
+> >sdgidfedapp11.corp.intuit.net.key -out sdgidfedapp11.corp.intuit.net.crt
+> >
+> >I can't figure out is how to use PyCrypto.RSA.construct with it
+> >to decrypt something.
+> [snip]
+> >I am sure there is a way to do this with PyCrypto, anyone know how to do
+> it?
+>
+> I am not aware of any simple way to do what you ask without using a
+> separate library.  PKCS#1 and X.509 are not implemented in PyCrypto, and as
+> far as I understand, you would need both to do anything useful with such a
+> key.
+>
+> At this time, PyCrypto's API for RSA is somewhat confusing: It only
+> implements textbook RSA, so it's not really useful for anyone except other
+> crypto library developers (e.g. Paramiko, Twisted, etc.).  You might be
+> able to use OpenSSL to generate hex values for each of the parameters, then
+> parse the results and feed them to RSA.construct yourself using something
+> like this:
+>
+>     openssl rsa -text -in sdgidfedapp11.corp.intuit.net.key
+>
+> However, since PyCrypto lacks PKCS#1 support, if you aren't careful or if
+> you don't know exactly what you are doing, you will probably expose your
+> private key to compromise.
+>
+> If you want to do practical public-key work with X.509 today, you might
+> want to check out other libraries like pycryptopp, Google Key Czar, and
+> M2Crypto.  Also, Paramiko (which depends on PyCrypto) might support at
+> least reading those files, since IIRC they're also used for SSH private
+> keys.
+>
+> Please do remember that PyCrypto's current RSA functions are insecure if
+> used directly.  I would like to introduce a simple public key API at some
+> point, but right now it doesn't exist.
+>
+> If you're doing any low-level work with RSA, you should at minimum, read
+> and understand this overview paper:
+>
+>     http://www.cs.bgu.ac.il/~beimel/Courses/crypto/Boneh.pdf
+>
+> Also, as a side note, 1024-bit RSA keys are a little on the short side
+> today.  I would recommend nothing less than 2048 bits:
+>
+>     http://www.google.com/search?q=1024-bit+RSA
+>
+> Hope that helps.
+>
+> Cheers,
+> - Dwayne
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090819/e650d1b4/attachment.htm 
+
+From hpj at urpla.net  Thu Aug 20 03:11:46 2009
+From: hpj at urpla.net (Hans-Peter Jansen)
+Date: Thu, 20 Aug 2009 11:11:46 +0200
+Subject: [pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+In-Reply-To: <16d8ea90-15a6-4ef8-9895-e41436a7a8e0@e18g2000vbe.googlegroups.com>
+References: <200908192352.00242.hpj@urpla.net>
+	<16d8ea90-15a6-4ef8-9895-e41436a7a8e0@e18g2000vbe.googlegroups.com>
+Message-ID: <200908201111.47035.hpj@urpla.net>
+
+Hi S?bastien, hi Steve,
+
+first of all, thanks for the instant feedback.
+
+Am Donnerstag, 20. August 2009 schrieb S?bastien Martini:
+> Hi Hans-Peter,
+>
+> > /usr/lib/python2.6/site-packages/Crypto/Hash/SHA.py:6:
+> > DeprecationWarning: the sha module is deprecated; use the hashlib
+> > module instead
+> > ? from sha import *
+>
+> Strange, with pycrypto 2.0.1 on Ubuntu 9.04 (and with Python 2.6.1) I
+> do not have this warning. Are you sure your system use pycrypto
+> 2.0.1 ?
+
+Yes, I am:
+$ rpm -qf /usr/lib/python2.6/site-packages/Crypto/PublicKey/RSA.py
+python-crypto-2.0.1-28.115.1
+
+Let me note, that I always generate rpm packages (at least with "python 
+setup.py bdist_rpm"), rather then installing from source directly. 
+
+Probably, Ubuntu incorporates some patches from Dwaynes trunk, does it?
+I got rid of the Deprecation warning with updating to Dwaynes version, by 
+the price of a new one. See below.
+
+Please let me turn around the question: are you sure, that Ubuntus version 
+isn't a hybrid of Andrews and Dwaynes at least? May I ask you to show me 
+your patches? I show you mine ;-)
+
+openSUSE incorporated two patches to 2.0.1:
+
+This one, I ported to trunk:
+--- src/hash_template.c~	2009-08-16 23:39:34.053841534 +0200
++++ src/hash_template.c	2009-08-20 10:16:05.877840748 +0200
+@@ -111,13 +111,15 @@ ALG_hexdigest(ALGobject *self, PyObject
+ 	PyObject *value, *retval;
+ 	unsigned char *raw_digest, *hex_digest;
+ 	int i, j, size;
++	Py_ssize_t ssize;
+ 
+ 	if (!PyArg_ParseTuple(args, ""))
+ 		return NULL;
+ 
+ 	/* Get the raw (binary) digest value */
+ 	value = (PyObject *)hash_digest(&(self->st));
+-	size = PyString_Size(value);
++	ssize = PyString_Size(value);
++	size = (ssize > INT_MAX) ? INT_MAX : ssize;
+ 	raw_digest = (unsigned char *) PyString_AsString(value);
+ 
+ 	/* Create a new string */
+
+Dwayne, is this in order or just plain silly?
+
+The other is the already applied ARC2 fix to check of oversized keys.
+
+> > ............................E.
+> > ======================================================================
+> > ERROR: testRsaUnversionedSignAndVerify (signer_test.SignerTest)
+> > ----------------------------------------------------------------------
+> > Traceback (most recent call last):
+> > ? File ".../keyczar/tests/keyczar/signer_test.py", line 125, in
+> > testRsaUnversionedSignAndVerify
+> > self.__testUnversionedSignAndVerify("rsa-sign")
+> > ? File ".../keyczar/tests/keyczar/signer_test.py", line 67, in
+> > __testUnversionedSignAndVerify
+> > self.assertFalse(unversioned_signer.Verify("Wrong string", sig)) File
+> > "/usr/local/lib/python2.6/site-packages/keyczar/keyczar.py", line 404,
+> > in Verify result = key.Verify(data, sig_bytes)
+> > ? File "/usr/local/lib/python2.6/site-packages/keyczar/keys.py", line
+> > 622, in Verify return self.public_key.Verify(msg, sig)
+> > ? File "/usr/local/lib/python2.6/site-packages/keyczar/keys.py", line
+> > 787, in Verify (util.BytesToLong(sig),))
+> > ? File "/usr/lib/python2.6/site-packages/Crypto/PublicKey/pubkey.py",
+> > line 84, in verify return self._verify(M, signature)
+> > ? File "/usr/lib/python2.6/site-packages/Crypto/PublicKey/RSA.py", line
+> > 103, in _verify m2=self._encrypt(sig[0])
+> > ? File "/usr/lib/python2.6/site-packages/Crypto/PublicKey/RSA.py", line
+> > 89, in _encrypt raise error, 'Plaintext too large'
+> > error: Plaintext too large
+>
+> I think this error is related somehow to the hash computation (which
+> also could be related to the deprecation warning) because this is the
+> hash value which is signed with a private_encrypt() RSA method. I
+> might be wrong but I really think this is not currently pycrypto 2.0.1
+> that your keyczar install calls.
+
+No, it _wasn't_ related to SHA.py, since in a first test, I just updated to 
+Dwaynes current SHA.py, which tries to import hashlib.SHA first and got rid 
+of the deprecation, but this error persisted. 
+
+After updating my python-crypto package to Dwaynes trunk, the tests 
+succeeded:
+
+$ python alltests.py 
+./usr/lib/python2.6/site-packages/Crypto/Util/randpool.py:72: 
+RandomPool_DeprecationWarning: RandomPool is deprecated.  Use Random.new() 
+or Random.RandomPoolCompat instead.
+  warnings.warn("RandomPool is deprecated.  Use Random.new() or 
+Random.RandomPoolCompat instead.", RandomPool_DeprecationWarning)
+.............................
+----------------------------------------------------------------------
+Ran 30 tests in 1.010s
+
+OK
+
+I fixed it with this patch:
+
+--- util.py.orig	2009-08-20 10:40:19.248702303 +0200
++++ util.py	2009-08-20 10:57:27.765198430 +0200
+@@ -30,7 +30,12 @@ except ImportError:
+   from sha import sha as sha1
+   from Crypto.Hash.SHA256 import new as sha256
+ 
+-from Crypto.Util import randpool
++try:
++  # Import RandomPoolCompat, if available
++  from Crypto.Random import RandomPoolCompat as RandomPool
++except ImportError:
++  from Crypto.Util.randpool import RandomPool
++
+ from pyasn1.codec.der import decoder
+ from pyasn1.codec.der import encoder
+ from pyasn1.type import univ
+@@ -291,7 +296,7 @@ def TrimBytes(bytes):
+ 
+ def RandBytes(n):
+   """Return n random bytes."""
+-  return randpool.RandomPool(512).get_bytes(n)
++  return RandomPool(512).get_bytes(n)
+ 
+ def Hash(digest, *inputs):
+   """Return a SHA-1 hash over a variable number of inputs."""
+
+BTW, is there any reason to fetch 512 bytes always, and use a subset only 
+(if I read the code correctly)? What happens, if n is > 512?
+
+> > ----------------------------------------------------------------------
+> > Ran 30 tests in 3.179s
+> >
+> > FAILED (errors=1)
+> >
+> > Since I wanted to use RSA signing and encryption, I'm concerned about
+> > it.
+> >
+> > System:
+> > openSUSE 11.1, python 2.6.0, python-crypto-2.0.1, pyasn1-0.0.8a
+>
+> Cordially,
+>
+> S?bastien
+
+Thanks,
+Pete
+
+
+From steveweis at gmail.com  Thu Aug 20 14:42:12 2009
+From: steveweis at gmail.com (Steve Weis)
+Date: Thu, 20 Aug 2009 13:42:12 -0700
+Subject: [pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+In-Reply-To: <200908201111.47035.hpj@urpla.net>
+References: <200908192352.00242.hpj@urpla.net>
+	<16d8ea90-15a6-4ef8-9895-e41436a7a8e0@e18g2000vbe.googlegroups.com>
+	<200908201111.47035.hpj@urpla.net>
+Message-ID: <91103efc0908201342s13f41a75y5fcc11e1172afbd3@mail.gmail.com>
+
+Are there advantages to using Pycrypto's Randpool over
+Random.SystemRandom()?
+In another Keyczar thread, someone reported that Randpool was a performance
+bottleneck and got a big improvement by switching to SystemRandom.
+
+I don't know enough about the underlying implementations to make any
+security judgement. If anyone can comment authoritatively, please do.
+
+On Thu, Aug 20, 2009 at 2:11 AM, Hans-Peter Jansen <hpj at urpla.net> wrote:
+
+>
+> Hi S?bastien, hi Steve,
+>
+> first of all, thanks for the instant feedback.
+>
+> Am Donnerstag, 20. August 2009 schrieb S?bastien Martini:
+> > Hi Hans-Peter,
+> >
+> > > /usr/lib/python2.6/site-packages/Crypto/Hash/SHA.py:6:
+> > > DeprecationWarning: the sha module is deprecated; use the hashlib
+> > > module instead
+> > >   from sha import *
+> >
+> > Strange, with pycrypto 2.0.1 on Ubuntu 9.04 (and with Python 2.6.1) I
+> > do not have this warning. Are you sure your system use pycrypto
+> > 2.0.1 ?
+>
+> Yes, I am:
+> $ rpm -qf /usr/lib/python2.6/site-packages/Crypto/PublicKey/RSA.py
+> python-crypto-2.0.1-28.115.1
+>
+> Let me note, that I always generate rpm packages (at least with "python
+> setup.py bdist_rpm"), rather then installing from source directly.
+>
+> Probably, Ubuntu incorporates some patches from Dwaynes trunk, does it?
+> I got rid of the Deprecation warning with updating to Dwaynes version, by
+> the price of a new one. See below.
+>
+> Please let me turn around the question: are you sure, that Ubuntus version
+> isn't a hybrid of Andrews and Dwaynes at least? May I ask you to show me
+> your patches? I show you mine ;-)
+>
+> openSUSE incorporated two patches to 2.0.1:
+>
+> This one, I ported to trunk:
+> --- src/hash_template.c~        2009-08-16 23:39:34.053841534 +0200
+> +++ src/hash_template.c 2009-08-20 10:16:05.877840748 +0200
+> @@ -111,13 +111,15 @@ ALG_hexdigest(ALGobject *self, PyObject
+>        PyObject *value, *retval;
+>        unsigned char *raw_digest, *hex_digest;
+>        int i, j, size;
+> +       Py_ssize_t ssize;
+>
+>        if (!PyArg_ParseTuple(args, ""))
+>                return NULL;
+>
+>        /* Get the raw (binary) digest value */
+>        value = (PyObject *)hash_digest(&(self->st));
+> -       size = PyString_Size(value);
+> +       ssize = PyString_Size(value);
+> +       size = (ssize > INT_MAX) ? INT_MAX : ssize;
+>        raw_digest = (unsigned char *) PyString_AsString(value);
+>
+>        /* Create a new string */
+>
+> Dwayne, is this in order or just plain silly?
+>
+> The other is the already applied ARC2 fix to check of oversized keys.
+>
+> > > ............................E.
+> > > ======================================================================
+> > > ERROR: testRsaUnversionedSignAndVerify (signer_test.SignerTest)
+> > > ----------------------------------------------------------------------
+> > > Traceback (most recent call last):
+> > >   File ".../keyczar/tests/keyczar/signer_test.py", line 125, in
+> > > testRsaUnversionedSignAndVerify
+> > > self.__testUnversionedSignAndVerify("rsa-sign")
+> > >   File ".../keyczar/tests/keyczar/signer_test.py", line 67, in
+> > > __testUnversionedSignAndVerify
+> > > self.assertFalse(unversioned_signer.Verify("Wrong string", sig)) File
+> > > "/usr/local/lib/python2.6/site-packages/keyczar/keyczar.py", line 404,
+> > > in Verify result = key.Verify(data, sig_bytes)
+> > >   File "/usr/local/lib/python2.6/site-packages/keyczar/keys.py", line
+> > > 622, in Verify return self.public_key.Verify(msg, sig)
+> > >   File "/usr/local/lib/python2.6/site-packages/keyczar/keys.py", line
+> > > 787, in Verify (util.BytesToLong(sig),))
+> > >   File "/usr/lib/python2.6/site-packages/Crypto/PublicKey/pubkey.py",
+> > > line 84, in verify return self._verify(M, signature)
+> > >   File "/usr/lib/python2.6/site-packages/Crypto/PublicKey/RSA.py", line
+> > > 103, in _verify m2=self._encrypt(sig[0])
+> > >   File "/usr/lib/python2.6/site-packages/Crypto/PublicKey/RSA.py", line
+> > > 89, in _encrypt raise error, 'Plaintext too large'
+> > > error: Plaintext too large
+> >
+> > I think this error is related somehow to the hash computation (which
+> > also could be related to the deprecation warning) because this is the
+> > hash value which is signed with a private_encrypt() RSA method. I
+> > might be wrong but I really think this is not currently pycrypto 2.0.1
+> > that your keyczar install calls.
+>
+> No, it _wasn't_ related to SHA.py, since in a first test, I just updated to
+> Dwaynes current SHA.py, which tries to import hashlib.SHA first and got rid
+> of the deprecation, but this error persisted.
+>
+> After updating my python-crypto package to Dwaynes trunk, the tests
+> succeeded:
+>
+> $ python alltests.py
+> ./usr/lib/python2.6/site-packages/Crypto/Util/randpool.py:72:
+> RandomPool_DeprecationWarning: RandomPool is deprecated.  Use Random.new()
+> or Random.RandomPoolCompat instead.
+>  warnings.warn("RandomPool is deprecated.  Use Random.new() or
+> Random.RandomPoolCompat instead.", RandomPool_DeprecationWarning)
+> .............................
+> ----------------------------------------------------------------------
+> Ran 30 tests in 1.010s
+>
+> OK
+>
+> I fixed it with this patch:
+>
+> --- util.py.orig        2009-08-20 10:40:19.248702303 +0200
+> +++ util.py     2009-08-20 10:57:27.765198430 +0200
+> @@ -30,7 +30,12 @@ except ImportError:
+>   from sha import sha as sha1
+>   from Crypto.Hash.SHA256 import new as sha256
+>
+> -from Crypto.Util import randpool
+> +try:
+> +  # Import RandomPoolCompat, if available
+> +  from Crypto.Random import RandomPoolCompat as RandomPool
+> +except ImportError:
+> +  from Crypto.Util.randpool import RandomPool
+> +
+>  from pyasn1.codec.der import decoder
+>  from pyasn1.codec.der import encoder
+>  from pyasn1.type import univ
+> @@ -291,7 +296,7 @@ def TrimBytes(bytes):
+>
+>  def RandBytes(n):
+>   """Return n random bytes."""
+> -  return randpool.RandomPool(512).get_bytes(n)
+> +  return RandomPool(512).get_bytes(n)
+>
+>  def Hash(digest, *inputs):
+>   """Return a SHA-1 hash over a variable number of inputs."""
+>
+> BTW, is there any reason to fetch 512 bytes always, and use a subset only
+> (if I read the code correctly)? What happens, if n is > 512?
+>
+> > > ----------------------------------------------------------------------
+> > > Ran 30 tests in 3.179s
+> > >
+> > > FAILED (errors=1)
+> > >
+> > > Since I wanted to use RSA signing and encryption, I'm concerned about
+> > > it.
+> > >
+> > > System:
+> > > openSUSE 11.1, python 2.6.0, python-crypto-2.0.1, pyasn1-0.0.8a
+> >
+> > Cordially,
+> >
+> > S?bastien
+>
+> Thanks,
+> Pete
+>
+>
+> --~--~---------~--~----~------------~-------~--~----~
+> You received this message because you are subscribed to the Google Groups
+> "Keyczar Discuss" group.
+> To post to this group, send email to keyczar-discuss at googlegroups.com
+> To unsubscribe from this group, send email to
+> keyczar-discuss+unsubscribe at googlegroups.com<keyczar-discuss%2Bunsubscribe at googlegroups.com>
+> For more options, visit this group at
+> http://groups.google.com/group/keyczar-discuss?hl=en
+> -~----------~----~----~----~------~----~------~--~---
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090820/0e1c40fd/attachment.htm 
+
+From dlitz at dlitz.net  Thu Aug 20 19:55:43 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Thu, 20 Aug 2009 21:55:43 -0400
+Subject: [pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+In-Reply-To: <91103efc0908201342s13f41a75y5fcc11e1172afbd3@mail.gmail.com>
+References: <200908192352.00242.hpj@urpla.net>
+	<16d8ea90-15a6-4ef8-9895-e41436a7a8e0@e18g2000vbe.googlegroups.com>
+	<200908201111.47035.hpj@urpla.net>
+	<91103efc0908201342s13f41a75y5fcc11e1172afbd3@mail.gmail.com>
+Message-ID: <20090821015543.GA22301@rivest.dlitz.net>
+
+On Thu, Aug 20, 2009 at 01:42:12PM -0700, Steve Weis wrote:
+>Are there advantages to using Pycrypto's Randpool over
+>Random.SystemRandom()?
+>In another Keyczar thread, someone reported that Randpool was a performance
+>bottleneck and got a big improvement by switching to SystemRandom.
+>
+>I don't know enough about the underlying implementations to make any
+>security judgement. If anyone can comment authoritatively, please do.
+
+Quoting myself in https://bugs.launchpad.net/pycrypto/+bug/249765:
+
+     RandomPool really really needs to die, at least in its current form.
+     It's not thread-safe, it's not fork-safe, and if it can't get entropy
+     from the OS, it silently produces predictable output. What's worse is
+     that everyone assumes that it's a portable substitute for reading from
+     /dev/urandom on Linux, but it's actually way too fragile to be safely
+     used that way.
+
+It's also much slower than just reading from /dev/urandom on Linux.  I 
+don't remember how it compares on Windows.
+
+You could use random.SystemRandom(), which is basically just a wrapper 
+around reading from /dev/urandom of Windows's CryptGenRandom.  That's 
+better than using RandomPool, but there are still caveats:
+
+- Some systems are adversely affected when you read a lot of data from the 
+  operating system's PRNG.  For example, old versions of Linux (I don't 
+  remember how old, but it wasn't too long ago) starved /dev/random if you 
+  had a process continually reading from /dev/urandom.
+
+- Windows XP's (and probably earlier's) PRNG is vulnerable to a 
+  state-extension attack, because it inappropriately uses RC4:
+    http://en.wikipedia.org/w/index.php?title=CryptGenRandom&oldid=292725857#Security
+
+- I'm told that some old *nix's /dev/urandom devices are far less 
+  trustworthy than Linux's.
+
+- Even the security of Linux's /dev/urandom is debated (search lkml.org for 
+  Jean-Luc Cooke & Fortuna).
+
+Why trust them when you can trust me? (Hah!)
+
+Regarding this patch:
+
+>> --- util.py.orig        2009-08-20 10:40:19.248702303 +0200
+>> +++ util.py     2009-08-20 10:57:27.765198430 +0200
+>> @@ -30,7 +30,12 @@ except ImportError:
+>>   from sha import sha as sha1
+>>   from Crypto.Hash.SHA256 import new as sha256
+>>
+>> -from Crypto.Util import randpool
+>> +try:
+>> +  # Import RandomPoolCompat, if available
+>> +  from Crypto.Random import RandomPoolCompat as RandomPool
+>> +except ImportError:
+>> +  from Crypto.Util.randpool import RandomPool
+>> +
+>>  from pyasn1.codec.der import decoder
+>>  from pyasn1.codec.der import encoder
+>>  from pyasn1.type import univ
+>> @@ -291,7 +296,7 @@ def TrimBytes(bytes):
+>>
+>>  def RandBytes(n):
+>>   """Return n random bytes."""
+>> -  return randpool.RandomPool(512).get_bytes(n)
+>> +  return RandomPool(512).get_bytes(n)
+>>
+>>  def Hash(digest, *inputs):
+>>   """Return a SHA-1 hash over a variable number of inputs."""
+
+That will work, but it will perform better if you invoke Random.new() once, 
+then .read() from the resulting object every time you want random data.  
+
+I don't recommend using RandomPoolCompat, and after seeing it used here I 
+think I will drop it before the next release.  RandomPool is *broken*, and 
+on Windows it is a catastrophic security hole.  You should not use it even 
+to maintain backwards compatibility.
+
+Instead, use os.urandom() if Crypto.Random is not available (but you should 
+use Crypto.Random if it's available: Crypto.Random performs better than 
+os.urandom on Linux, and on Windows it provides a workaround for the 
+weaknesses in Microsoft's RC4-based CryptGenRandom implementation).
+
+You can use this code.  I hereby release it into the public domain:
+
+try:
+    from Crypto import Random
+    _rng_instance = Random.new()
+except ImportError:
+    class RandomStub:
+        def read(n):
+            return os.urandom(n)
+    _rng_instance = RandomStub()
+
+def RandBytes(n):
+    """Return n random bytes."""
+    return _rng_instance.read(n)
+
+Does that help clarify things?
+
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Thu Aug 20 20:55:05 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Thu, 20 Aug 2009 22:55:05 -0400
+Subject: [pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+In-Reply-To: <200908201111.47035.hpj@urpla.net>
+References: <200908192352.00242.hpj@urpla.net>
+	<16d8ea90-15a6-4ef8-9895-e41436a7a8e0@e18g2000vbe.googlegroups.com>
+	<200908201111.47035.hpj@urpla.net>
+Message-ID: <20090821025505.GB22301@rivest.dlitz.net>
+
+On Thu, Aug 20, 2009 at 11:11:46AM +0200, Hans-Peter Jansen wrote:
+> openSUSE incorporated two patches to 2.0.1:
+> 
+> This one, I ported to trunk:
+> --- src/hash_template.c~	2009-08-16 23:39:34.053841534 +0200
+> +++ src/hash_template.c	2009-08-20 10:16:05.877840748 +0200
+> @@ -111,13 +111,15 @@ ALG_hexdigest(ALGobject *self, PyObject
+>  	PyObject *value, *retval;
+>  	unsigned char *raw_digest, *hex_digest;
+>  	int i, j, size;
+> +	Py_ssize_t ssize;
+>  
+>  	if (!PyArg_ParseTuple(args, ""))
+>  		return NULL;
+>  
+>  	/* Get the raw (binary) digest value */
+>  	value = (PyObject *)hash_digest(&(self->st));
+> -	size = PyString_Size(value);
+> +	ssize = PyString_Size(value);
+> +	size = (ssize > INT_MAX) ? INT_MAX : ssize;
+>  	raw_digest = (unsigned char *) PyString_AsString(value);
+>  
+>  	/* Create a new string */
+> 
+> Dwayne, is this in order or just plain silly?
+
+Hmm...  What's the purpose of this patch?
+
+I'm assuming this patch is for 64-bit machines, but even with the patch 
+applied, you will still have other problems if ssize > INT_MAX (or even 
+INT_MAX/2).
+
+Here's the code (with that patch applied) in context:
+
+  	/* Get the raw (binary) digest value */
+  	value = (PyObject *)hash_digest(&(self->st));
+	ssize = PyString_Size(value);
+	size = (ssize > INT_MAX) ? INT_MAX : ssize;
+	raw_digest = (unsigned char *) PyString_AsString(value);
+
+        /* Create a new string */
+        retval = PyString_FromStringAndSize(NULL, size * 2 );
+        hex_digest = (unsigned char *) PyString_AsString(retval);
+
+        /* Make hex version of the digest */
+        for(i=j=0; i<size; i++)
+        {
+                char c;
+                c = raw_digest[i] / 16; c = (c>9) ? c+'a'-10 : c + '0';
+                hex_digest[j++] = c;
+                c = raw_digest[i] % 16; c = (c>9) ? c+'a'-10 : c + '0';
+                hex_digest[j++] = c;
+        }
+        Py_DECREF(value);
+        return retval;
+
+If ssize > INT_MAX, then the "size * 2" argument passed to 
+PyString_FromStringAndSize() will overflow, causing one of the following 
+things to happen:
+
+- If size*2 overflows to a negative number, PyString_FromStringAndSize will 
+  presumably return NULL, causing a null-pointer dereference in the 
+  subsequent code.
+
+- If size*2 overflows to a positive number, PyString_FromStringAndSize will 
+  allocate a smaller buffer than we expect, and the subsequent loop wil 
+  overflow this buffer.  Even if we fixed that, if size ended up larger 
+  than INT_MAX/2, we would *still* overflow the buffer, since j would wrap 
+  around to a negative number.
+
+None of PyCrypto's hash functions return anything close to INT_MAX bytes 
+(SHA256 outputs a whopping 32 bytes), so I wonder about the rationale 
+behind this patch.  Does it suppress some lint warning?
+
+/me runs splint against the code
+
+No, I doubt it's that.  The C code isn't even close to being lint-clean.
+
+/my adds a TODO item...
+
+Thanks,
+ - Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+ Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From hpj at urpla.net  Fri Aug 21 02:10:19 2009
+From: hpj at urpla.net (Hans-Peter Jansen)
+Date: Fri, 21 Aug 2009 10:10:19 +0200
+Subject: [pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+In-Reply-To: <20090821025505.GB22301@rivest.dlitz.net>
+References: <200908192352.00242.hpj@urpla.net>
+	<200908201111.47035.hpj@urpla.net>
+	<20090821025505.GB22301@rivest.dlitz.net>
+Message-ID: <200908211010.19854.hpj@urpla.net>
+
+Dear Jan,
+
+I found this changelog entry in SuSEs python-crypto package:
+
+* Thu Oct 19 2006 jmatejek at suse.cz
+- minor fixes for better 64bit PEP353 compatibility
+
+and below is a current discussion about this topic.
+
+Am Freitag, 21. August 2009 schrieb Dwayne C. Litzenberger:
+> On Thu, Aug 20, 2009 at 11:11:46AM +0200, Hans-Peter Jansen wrote:
+> > openSUSE incorporated two patches to 2.0.1:
+> >
+> > This one, I ported to trunk:
+> > --- src/hash_template.c~	2009-08-16 23:39:34.053841534 +0200
+> > +++ src/hash_template.c	2009-08-20 10:16:05.877840748 +0200
+> > @@ -111,13 +111,15 @@ ALG_hexdigest(ALGobject *self, PyObject
+> >  	PyObject *value, *retval;
+> >  	unsigned char *raw_digest, *hex_digest;
+> >  	int i, j, size;
+> > +	Py_ssize_t ssize;
+> >
+> >  	if (!PyArg_ParseTuple(args, ""))
+> >  		return NULL;
+> >
+> >  	/* Get the raw (binary) digest value */
+> >  	value = (PyObject *)hash_digest(&(self->st));
+> > -	size = PyString_Size(value);
+> > +	ssize = PyString_Size(value);
+> > +	size = (ssize > INT_MAX) ? INT_MAX : ssize;
+> >  	raw_digest = (unsigned char *) PyString_AsString(value);
+> >
+> >  	/* Create a new string */
+> >
+> > Dwayne, is this in order or just plain silly?
+>
+> Hmm...  What's the purpose of this patch?
+>
+> I'm assuming this patch is for 64-bit machines, but even with the patch
+> applied, you will still have other problems if ssize > INT_MAX (or even
+> INT_MAX/2).
+>
+> Here's the code (with that patch applied) in context:
+>
+>   	/* Get the raw (binary) digest value */
+>   	value = (PyObject *)hash_digest(&(self->st));
+> 	ssize = PyString_Size(value);
+> 	size = (ssize > INT_MAX) ? INT_MAX : ssize;
+> 	raw_digest = (unsigned char *) PyString_AsString(value);
+>
+>         /* Create a new string */
+>         retval = PyString_FromStringAndSize(NULL, size * 2 );
+>         hex_digest = (unsigned char *) PyString_AsString(retval);
+>
+>         /* Make hex version of the digest */
+>         for(i=j=0; i<size; i++)
+>         {
+>                 char c;
+>                 c = raw_digest[i] / 16; c = (c>9) ? c+'a'-10 : c + '0';
+>                 hex_digest[j++] = c;
+>                 c = raw_digest[i] % 16; c = (c>9) ? c+'a'-10 : c + '0';
+>                 hex_digest[j++] = c;
+>         }
+>         Py_DECREF(value);
+>         return retval;
+>
+> If ssize > INT_MAX, then the "size * 2" argument passed to
+> PyString_FromStringAndSize() will overflow, causing one of the following
+> things to happen:
+>
+> - If size*2 overflows to a negative number, PyString_FromStringAndSize
+> will presumably return NULL, causing a null-pointer dereference in the
+> subsequent code.
+>
+> - If size*2 overflows to a positive number, PyString_FromStringAndSize
+> will allocate a smaller buffer than we expect, and the subsequent loop
+> wil overflow this buffer.  Even if we fixed that, if size ended up larger
+> than INT_MAX/2, we would *still* overflow the buffer, since j would wrap
+> around to a negative number.
+>
+> None of PyCrypto's hash functions return anything close to INT_MAX bytes
+> (SHA256 outputs a whopping 32 bytes), so I wonder about the rationale
+> behind this patch.  Does it suppress some lint warning?
+
+Jan, while it's hard to believe, that a hash_digest size will ever come near 
+INT_MAX for ints (>= 32bit), it's going to overflow anyway 5 lines below.
+
+How about limiting it to a sane value (say 1024)? The biggest hash digest 
+size, I found is sha512() with 64 bytes. With 1024, we're raising the limit 
+by factor 16. If hashes are going to get bigger then that, further 
+adjustment is in order.
+
+Dwayne?
+
+> /me runs splint against the code
+>
+> No, I doubt it's that.  The C code isn't even close to being lint-clean.
+>
+> /my adds a TODO item...
+>
+> Thanks,
+>  - Dwayne
+
+Cordially,
+Pete
+
+From avogatro2007 at googlemail.com  Mon Aug 24 08:52:26 2009
+From: avogatro2007 at googlemail.com (avo ga)
+Date: Mon, 24 Aug 2009 16:52:26 +0200
+Subject: [pycrypto] example
+Message-ID: <8e329bc10908240752h59d97e42l7f11abc6883860ee@mail.gmail.com>
+
+Hi:
+
+I can't find any example for DSA or ELGAMAL(with google).
+so i wrote a simple example.
+
+http://www.jabbertor.de/wp-content/uploads/2009/08/pycryptotest.txt
+
+Could someone help to check this?
+maybe some Hint about security or perfoumance?
+The script is not commented, sry for that
+
+#!/usr/bin/env python
+from Crypto.Cipher import AES
+import os,sys,random
+#####################AES
+print "=====AES 256 Demo====="
+PWD=""
+Initial16bytes='0123456789ABCDEF'
+
+a=0
+for a in xrange(0,32):
+    b=hex(random.randint(1,16)-1)
+    PWD+=b.replace("0x","")
+print "AES-key",PWD
+crypt = AES.new(PWD,AES.MODE_CBC,Initial16bytes)
+
+plain="blabla what the hack blabla."
+restbyte = 32-len(plain)%32
+temp=""
+a=0
+for a in xrange(restbyte):
+    temp+=" "
+
+plain+=temp
+print "text: \n",plain
+c= crypt.encrypt(plain)
+print "encrypted text: "
+print c.encode("hex")
+crypt = AES.new(PWD,AES.MODE_CBC,Initial16bytes)
+print "decrypted text: \n", crypt.decrypt(c)
+#################### RSA
+print "\n=====RSA 368 Demo====="
+from Crypto.PublicKey import RSA
+from Crypto.Util.randpool import RandomPool
+rpool = RandomPool()
+
+privatekeyCMS = RSA.generate(368, rpool.get_bytes)
+privatekeyClient = RSA.generate(368, rpool.get_bytes)
+publickeyCMS = privatekeyCMS.publickey()
+publickeyClient = privatekeyClient.publickey()
+
+signed_PWD = privatekeyCMS.sign(PWD,"")
+enc_PWD = publickeyClient.encrypt(PWD, "")
+print "with publickeyClient encrypted AES-PWD:"
+print enc_PWD
+print "with privatekeyCMS signed AES-PWD:"
+print signed_PWD
+
+
+dec_PWD= privatekeyClient.decrypt(enc_PWD[0])
+print "identity check:\n",publickeyCMS.verify(dec_PWD,signed_PWD)
+print "decrypted PWD:\n",dec_PWD
+
+
+#################### ELGAMAL
+K=""
+a=0
+for a in xrange(0,16):
+    b=hex(random.randint(1,16)-1)
+    K+=b.replace("0x","")
+
+
+
+print "\n=====ELGamal 368 Demo====="
+from Crypto.PublicKey import ElGamal
+from Crypto.Util.randpool import RandomPool
+rpool = RandomPool()
+
+privatekeyCMS = ElGamal.generate(368, rpool.get_bytes)
+privatekeyClient = ElGamal.generate(368, rpool.get_bytes)
+publickeyCMS = privatekeyCMS.publickey()
+publickeyClient = privatekeyClient.publickey()
+
+
+enc_PWD = publickeyClient.encrypt(PWD, K)
+print privatekeyCMS.can_sign()
+signed_PWD = privatekeyCMS.sign(PWD,97)
+print "with publickeyClient encrypted AES-PWD:"
+print enc_PWD
+print "with privatekeyCMS signed AES-PWD:"
+print signed_PWD
+
+
+dec_PWD= privatekeyClient.decrypt(enc_PWD)
+print "identity check:\n",publickeyCMS.verify(dec_PWD,signed_PWD)
+print "decrypted PWD:\n",dec_PWD
+
+#################### DSA only sign
+K=""
+a=0
+for a in xrange(0,16):
+    b=hex(random.randint(1,16)-1)
+    K+=b.replace("0x","")
+
+print "\n=====DSA 368 Demo====="
+from Crypto.PublicKey import DSA
+rpool = RandomPool()
+
+privatekeyCMS = DSA.generate(368, rpool.get_bytes)
+publickeyCMS = privatekeyCMS.publickey()
+signed_PWD = privatekeyCMS.sign(PWD,K)
+print "identity check:\n",publickeyCMS.verify(dec_PWD,signed_PWD)
+print "decrypted PWD from ELGAMAL:\n",dec_PWD
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090824/e0fe2c33/attachment.htm 
+
+From dlitz at dlitz.net  Mon Aug 24 17:15:56 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 24 Aug 2009 19:15:56 -0400
+Subject: [pycrypto] example
+In-Reply-To: <8e329bc10908240752h59d97e42l7f11abc6883860ee@mail.gmail.com>
+References: <8e329bc10908240752h59d97e42l7f11abc6883860ee@mail.gmail.com>
+Message-ID: <20090824231556.GA30149@rivest.dlitz.net>
+
+On Mon, Aug 24, 2009 at 04:52:26PM +0200, avo ga wrote:
+>#################### RSA
+>print "\n=====RSA 368 Demo====="
+>from Crypto.PublicKey import RSA
+>from Crypto.Util.randpool import RandomPool
+>rpool = RandomPool()
+>
+>privatekeyCMS = RSA.generate(368, rpool.get_bytes)
+>privatekeyClient = RSA.generate(368, rpool.get_bytes)
+
+RandomPool is badly broken.  Don't use it.
+
+http://lists.dlitz.net/pipermail/pycrypto/2009q3/000116.html
+
+>#################### DSA only sign
+>privatekeyCMS = DSA.generate(368, rpool.get_bytes)
+>publickeyCMS = privatekeyCMS.publickey()
+>signed_PWD = privatekeyCMS.sign(PWD,K)
+>print "identity check:\n",publickeyCMS.verify(dec_PWD,signed_PWD)
+>print "decrypted PWD from ELGAMAL:\n",dec_PWD
+
+PyCrypto's public key primitives are incomplete at this point, and you 
+should not use them unless you are willing to read both PyCrypto's source 
+code and the relevant specifications.  For RSA, you need OAEP (i.e.  PKCS#1 
+v2.1) if you want security.  For DSA, there is a hash you need to compute 
+(it's not done for you automatically---see FIPS 186.  For ElGamal, I'm 
+pretty sure there's something too.
+
+That's all I'm willing to comment on a vague question about a bunch of 
+uncommented demo code.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From avogatro2007 at googlemail.com  Mon Aug 24 20:04:19 2009
+From: avogatro2007 at googlemail.com (avo ga)
+Date: Tue, 25 Aug 2009 04:04:19 +0200
+Subject: [pycrypto] example
+In-Reply-To: <20090824231556.GA30149@rivest.dlitz.net>
+References: <8e329bc10908240752h59d97e42l7f11abc6883860ee@mail.gmail.com>
+	<20090824231556.GA30149@rivest.dlitz.net>
+Message-ID: <8e329bc10908241904y61999d29l88a06fa2a03041cb@mail.gmail.com>
+
+>RandomPool is badly broken.  Don't use it.
+
+Thx for the hint.
+I will check  RandomPool and change it to some python build-in random
+function,
+if that helps.
+
+
+About DSA:
+I thought the actual pycrypto use SHA-1...
+make hash of the AES key with SHA2, and then sign the SHA2-hash. Is that
+what you mean?
+
+About RSA:
+i will check the code about OAEP.
+can't find it in the documentation. (but in wikipedia...)
+
+ELGAMAL signature requires a random number k: 2<k<p-1 with GCD(k,p-1)=1
+i used a fix prime. I will correct this.
+
+ELGAMAL ist important for me, because it has no patent /copyright.
+
+
+
+> http://lists.dlitz.net/pipermail/pycrypto/2009q3/000116.html
+>
+> >#################### DSA only sign
+> >privatekeyCMS = DSA.generate(368, rpool.get_bytes)
+> >publickeyCMS = privatekeyCMS.publickey()
+> >signed_PWD = privatekeyCMS.sign(PWD,K)
+> >print "identity check:\n",publickeyCMS.verify(dec_PWD,signed_PWD)
+> >print "decrypted PWD from ELGAMAL:\n",dec_PWD
+>
+> PyCrypto's public key primitives are incomplete at this point, and you
+> should not use them unless you are willing to read both PyCrypto's source
+> code and the relevant specifications.  For RSA, you need OAEP (i.e.  PKCS#1
+> v2.1) if you want security.  For DSA, there is a hash you need to compute
+> (it's not done for you automatically---see FIPS 186.  For ElGamal, I'm
+> pretty sure there's something too.
+>
+> That's all I'm willing to comment on a vague question about a bunch of
+> uncommented demo code.
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090825/412e85b7/attachment.htm 
+
+From samphippen at googlemail.com  Tue Aug 25 05:02:01 2009
+From: samphippen at googlemail.com (Sam Phippen)
+Date: Tue, 25 Aug 2009 12:02:01 +0100
+Subject: [pycrypto] example
+In-Reply-To: <8e329bc10908241904y61999d29l88a06fa2a03041cb@mail.gmail.com>
+References: <8e329bc10908240752h59d97e42l7f11abc6883860ee@mail.gmail.com>
+	<20090824231556.GA30149@rivest.dlitz.net>
+	<8e329bc10908241904y61999d29l88a06fa2a03041cb@mail.gmail.com>
+Message-ID: <b6bc4a080908250402g10b04de2p7bdb18be380bcff8@mail.gmail.com>
+
+2009/8/25 avo ga <avogatro2007 at googlemail.com>:
+>>RandomPool is badly broken. ?Don't use it.
+>
+> Thx for the hint.
+> I will check? RandomPool and change it to some python build-in random
+> function,
+> if that helps.
+>
+
+Don't use python's built in random number generator it's not
+cryptographically secure
+
+>
+> About DSA:
+> I thought the actual pycrypto use SHA-1...
+> make hash of the AES key with SHA2, and then sign the SHA2-hash. Is that
+> what you mean?
+>
+> About RSA:
+> i will check the code about OAEP.
+> can't find it in the documentation. (but in wikipedia...)
+>
+> ELGAMAL signature requires a random number k: 2<k<p-1 with GCD(k,p-1)=1
+> i used a fix prime. I will correct this.
+>
+> ELGAMAL ist important for me, because it has no patent /copyright.
+>
+>
+>>
+>> http://lists.dlitz.net/pipermail/pycrypto/2009q3/000116.html
+>>
+>> >#################### DSA only sign
+>> >privatekeyCMS = DSA.generate(368, rpool.get_bytes)
+>> >publickeyCMS = privatekeyCMS.publickey()
+>> >signed_PWD = privatekeyCMS.sign(PWD,K)
+>> >print "identity check:\n",publickeyCMS.verify(dec_PWD,signed_PWD)
+>> >print "decrypted PWD from ELGAMAL:\n",dec_PWD
+>>
+>> PyCrypto's public key primitives are incomplete at this point, and you
+>> should not use them unless you are willing to read both PyCrypto's source
+>> code and the relevant specifications. ?For RSA, you need OAEP (i.e.
+>> ?PKCS#1
+>> v2.1) if you want security. ?For DSA, there is a hash you need to compute
+>> (it's not done for you automatically---see FIPS 186. ?For ElGamal, I'm
+>> pretty sure there's something too.
+>>
+>> That's all I'm willing to comment on a vague question about a bunch of
+>> uncommented demo code.
+>>
+>> --
+>> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>> ?Key-signing key ? - 19E1 1FE8 B3CF F273 ED17 ?4A24 928C EC13 39C2 5CF7
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+
+
+
+-- 
+Sam Phippen
+
+Please avoid sending me Word or PowerPoint attachments.
+See http://www.gnu.org/philosophy/no-word-attachments.html
+
+From avogatro2007 at googlemail.com  Tue Aug 25 06:00:21 2009
+From: avogatro2007 at googlemail.com (avo ga)
+Date: Tue, 25 Aug 2009 14:00:21 +0200
+Subject: [pycrypto] example
+In-Reply-To: <b6bc4a080908250402g10b04de2p7bdb18be380bcff8@mail.gmail.com>
+References: <8e329bc10908240752h59d97e42l7f11abc6883860ee@mail.gmail.com>
+	<20090824231556.GA30149@rivest.dlitz.net>
+	<8e329bc10908241904y61999d29l88a06fa2a03041cb@mail.gmail.com>
+	<b6bc4a080908250402g10b04de2p7bdb18be380bcff8@mail.gmail.com>
+Message-ID: <8e329bc10908250500n7a23e145u4b065175939b58e7@mail.gmail.com>
+
+I checked GIT, installed the latest Version.
+use the Crypto.random.new().read function
+I HOPE this is a goog idea ^^
+
+#-----------------------------------------------------------------------
+print "\n=====RSA 368 Demo====="
+from Crypto.PublicKey import RSA
+from Crypto import Random
+rpool = Random.new()
+
+privatekeyCMS = RSA.generate(368, rpool.read)
+
+privatekeyClient = RSA.generate(368, rpool.read)
+publickeyCMS = privatekeyCMS.publickey()
+publickeyClient = privatekeyClient.publickey()
+
+signed_PWD = privatekeyCMS.sign(PWD,"")
+enc_PWD = publickeyClient.encrypt(PWD, "")
+
+
+#-----------------------------------------------------------------------
+another question about os.fork:
+there is some functions to summon a child process:
+like popen[1-4]
+or some threading class:
+I don't use os.fork.
+should I use Random.atfork() for every sub process?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090825/8662dd5e/attachment.htm 
+
+From avogatro2007 at googlemail.com  Tue Aug 25 16:38:03 2009
+From: avogatro2007 at googlemail.com (avo ga)
+Date: Wed, 26 Aug 2009 00:38:03 +0200
+Subject: [pycrypto] example
+In-Reply-To: <8e329bc10908250500n7a23e145u4b065175939b58e7@mail.gmail.com>
+References: <8e329bc10908240752h59d97e42l7f11abc6883860ee@mail.gmail.com>
+	<20090824231556.GA30149@rivest.dlitz.net>
+	<8e329bc10908241904y61999d29l88a06fa2a03041cb@mail.gmail.com>
+	<b6bc4a080908250402g10b04de2p7bdb18be380bcff8@mail.gmail.com>
+	<8e329bc10908250500n7a23e145u4b065175939b58e7@mail.gmail.com>
+Message-ID: <8e329bc10908251538k44b11b23x93ac031b17a225f6@mail.gmail.com>
+
+Hi:
+In this new demo
+i use randint() and  Random.new().read() from the new Crypto.random module.
+DSA use now 512 bit key at least.
+and i use  sha512 for DSA.
+DSA only verifty the sha512 hash of the original AES password.
+
+about rsa:
+Dwayne C. Litzenberger said something about OAEP for RSA.
+    this is a very critical issue, how can I use it.
+
+Well, I feel now like child in a mine field.
+So please help me check this again.
+
+
+Thank you
+-----------------------------------------------------------------------------------
+#!/usr/bin/env python
+from Crypto.Cipher import AES
+from Crypto.Util.number import GCD
+from Crypto import Random
+import os,sys
+#####################AES ####################
+print "=====AES 256 Demo====="
+# use AES to encrypt the real message
+# use the more secure Crypto.Random to generate PWD and Initialbyte/IV
+# AES key is 32 byte or 16*hex_digit
+# Initial16bytes:16 bytes or 8*hex_digit
+PWD=""
+rpool = Random.new()
+Random.atfork()
+
+PWD = rpool.read(16).encode("hex")
+Initial16bytes=rpool.read(8).encode("hex")
+
+print "AES-key:",PWD,"len:",len(PWD)
+print "Initial16bytes:",Initial16bytes
+crypt = AES.new(PWD,AES.MODE_CBC,Initial16bytes)
+
+plain="sex drugs and crypto"
+#block ciffre need string with lenth 16: add the restbyte to plain
+restbyte =(16-len(plain)%16)%16
+temp_string=""
+for a in range(restbyte):
+    temp_string+=" "
+plain+=temp_string
+#encryption
+print "\nplain text: \n",plain,"\n"
+crypt_txt= crypt.encrypt(plain)
+print "encrypted text: \n",crypt_txt.encode("hex"),"\n"
+#decryption
+crypt = AES.new(PWD,AES.MODE_CBC,Initial16bytes)
+print "decrypted text: \n", crypt.decrypt(crypt_txt)
+#################### RSA ####################
+print "\n=====RSA 368 Demo====="
+#use 1 RSA key to encrypt the AES key
+#use another RSA key to sign AES key
+from Crypto.PublicKey import RSA
+
+#start the random generator
+rpool = Random.new()
+Random.atfork()
+
+# generate both RSA keys,
+privatekeyCMS = RSA.generate(368, rpool.read)
+Random.atfork()
+privatekeyClient = RSA.generate(368, rpool.read)
+publickeyCMS = privatekeyCMS.publickey()
+publickeyClient = privatekeyClient.publickey()
+
+#sign the AES PWD with server private key
+signed_PWD = privatekeyCMS.sign(PWD,"")
+#encrypt AES PWD with client public key
+enc_PWD = publickeyClient.encrypt(PWD, "")
+print "with publickeyClient encrypted AES-PWD:"
+print enc_PWD[0].encode("hex"),"\n"
+print "with privatekeyCMS signed AES-PWD:"
+print signed_PWD[0],"\n"
+
+#decryption
+dec_PWD= privatekeyClient.decrypt(enc_PWD[0])
+#verify identity of the
+print "key verify:\n",publickeyCMS.verify(dec_PWD,signed_PWD)
+print "decrypted PWD:\n",dec_PWD
+
+
+#################### ELGAMAL ####################
+from Crypto.PublicKey import ElGamal
+print "\n=====ELGamal 368 Demo====="
+
+
+#generate 2 ELGAMAL key pair
+rpool = Random.new()
+Random.atfork()
+privatekeyCMS = ElGamal.generate(368, rpool.read)
+privatekeyClient = ElGamal.generate(368, rpool.read)
+publickeyCMS = privatekeyCMS.publickey()
+publickeyClient = privatekeyClient.publickey()
+
+#generate for each encryption session new K
+K=rpool.read(16).encode("hex")
+print "K for encrypt:",K
+#encryption
+enc_PWD = publickeyClient.encrypt(PWD, K)
+
+#generate for each sign session new k
+strong_random = Random.random.StrongRandom(randfunc=rpool.read)
+k = strong_random.randint(2,privatekeyCMS.p-2)
+temp_p=privatekeyCMS.p
+while GCD(privatekeyCMS.p-1,k)>1:
+    k = strong_random.randint(3,temp_p-2)
+print "k for sign:",k,"\n"
+#signature
+signed_PWD = privatekeyCMS.sign(PWD,k)
+
+
+print "with publickeyClient encrypted AES-PWD:"
+print enc_PWD[0].encode("hex")
+print "with privatekeyCMS signed AES-PWD:"
+print signed_PWD[0],"\n"
+
+#decryption
+
+dec_PWD= privatekeyClient.decrypt(enc_PWD)
+#verify signature
+print "verify key:\n",bool(publickeyCMS.verify(dec_PWD,signed_PWD))
+print "decrypted PWD:\n",dec_PWD
+
+#################### DSA only sign ####################
+
+
+print "\n=====DSA 512 Demo====="
+from Crypto.PublicKey import DSA
+#start the randomgenerator to generate integer
+rpool = Random.new()
+strong_random = Random.random.StrongRandom(randfunc=rpool.read)
+Random.atfork()
+
+#generate Server DSA key
+privatekeyCMS = DSA.generate(512, rpool.read)
+publickeyCMS = privatekeyCMS.publickey()
+
+# generatae sha hash, which will be signed by the private key
+import hashlib
+m = hashlib.sha512()
+m.update(PWD)
+print "sha512 hash",m.digest()
+
+#generate for each sign session new k
+k = strong_random.randint(3,privatekeyCMS.q-1)
+
+print "k for sign:",k,"\n"
+
+#sign
+signed_PWD = privatekeyCMS.sign(m.digest(),k)
+
+
+m = hashlib.sha512()
+m.update(dec_PWD)
+
+print "sha512 hash",m.digest()
+
+#verify
+print "verify key:\n",publickeyCMS.verify(m.digest(),signed_PWD)
+print "decrypted PWD from ELGAMAL:\n",dec_PWD
+
+#decrypt the real message using the AES key
+crypt = AES.new(dec_PWD,AES.MODE_CBC,Initial16bytes)
+print "decrypted text: \n", crypt.decrypt(crypt_txt)
+print "\n=====End of Demo====="
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20090826/2f120a24/attachment.htm 
+
+From xl269 at cam.ac.uk  Wed Aug 26 04:43:53 2009
+From: xl269 at cam.ac.uk (Ximin Luo)
+Date: Wed, 26 Aug 2009 11:43:53 +0100
+Subject: [pycrypto] Adding support for Tiger Hash / Tiger Tree Hash
+Message-ID: <4A9511E9.1060804@cam.ac.uk>
+
+Hi,
+
+I was just wondering if it would be possible to add support for Tiger Tree Hash
+/ Tiger Hash into pyCrypto? At the moment a bunch of us are having to bundle
+our own custom "tiger" module with the software we're developing; we have
+pyCrypto as a dependency anyway, so it would be great if it could include the
+tiger module.
+
+Mark's original code for pytiger: https://launchpad.net/pytiger/trunk
+
+My branch, which has better endianness detection:
+https://code.launchpad.net/~xl269/pytiger/main
+
+The specification of the THEX algorithm is at:
+http://www.open-content.net/specs/draft-jchapweske-thex-02.html
+
+The specification of the Tiger hash algorithm is at:
+http://www.cs.technion.ac.il/~biham/Reports/Tiger/
+
+There is also a debian package. I haven't looked at it, but you might find the
+information useful: http://packages.debian.org/sid/tthsum
+
+Thanks,
+
+Ximin
+
+
+From Paul_Koning at dell.com  Thu Aug 27 11:59:50 2009
+From: Paul_Koning at dell.com (Paul Koning)
+Date: Thu, 27 Aug 2009 13:59:50 -0400
+Subject: [pycrypto] RandomPool
+Message-ID: <19094.51606.668990.39731@pkoning-laptop.equallogic.com>
+
+Hi...
+
+My first post to this list, though I've used pycrypto for 2-3 years
+now. 
+
+I spotted the message about RandomPool, and the three replies to it
+that the mail archive showed.  (If there are others in later sections
+of the archive, I didn't see those.)
+
+Some observations.
+
+RFC 4086, "Randomness Requirements for Security" is very much worth
+studying for a discussion of this subject.
+
+Dwayne comments "Also, after looking a bit more at OS-provided random
+generators, I'm starting to think that just returning their output
+might not be such a great idea.  There just doesn't seem to be any
+reason to trust them very far."  I don't know what OS is at issue
+here; it would be good for a general statement like that to be
+accompanied by specific evidence.  For example, I spent quite a while
+looking at the Linux /dev/random code by Ted Ts'o, and my conclusion
+is just the opposite.  It looks strong and well constructed.  So could
+you spell which OS you were talking about, and why you concluded it
+should not be trusted?
+
+What is Fortuna?  What makes it good enough that an application-level
+RNG can be safely layered on top of it?
+
+    paul
+
+
+From dlitz at dlitz.net  Fri Aug 28 10:33:05 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 28 Aug 2009 12:33:05 -0400
+Subject: [pycrypto] ERROR: testRsaUnversionedSignAndVerify failed
+In-Reply-To: <20090821015543.GA22301@rivest.dlitz.net>
+References: <200908192352.00242.hpj@urpla.net>
+	<16d8ea90-15a6-4ef8-9895-e41436a7a8e0@e18g2000vbe.googlegroups.com>
+	<200908201111.47035.hpj@urpla.net>
+	<91103efc0908201342s13f41a75y5fcc11e1172afbd3@mail.gmail.com>
+	<20090821015543.GA22301@rivest.dlitz.net>
+Message-ID: <20090828163305.GA768@rivest.dlitz.net>
+
+On Thu, Aug 20, 2009 at 09:55:43PM -0400, Dwayne C. Litzenberger wrote:
+>You can use this code.  I hereby release it into the public domain:
+>
+>try:
+>    from Crypto import Random
+>    _rng_instance = Random.new()
+>except ImportError:
+>    class RandomStub:
+>        def read(n):
+>            return os.urandom(n)
+>    _rng_instance = RandomStub()
+>
+>def RandBytes(n):
+>    """Return n random bytes."""
+>    return _rng_instance.read(n)
+
+Correction: You need not create a global _rng_instance singleton, since 
+Random.new() already does this for you.  Use this code instead:
+
+     # Define the RandBytes function using one of the following
+     # random sources (in preferential order):
+     # 1. Crypto.Random
+     # 2. os.urandom
+     try:
+          from Crypto.Random import get_random_bytes as RandBytes
+     except ImportError:
+          from os import urandom as RandBytes
+
+If you want support for versions of Python prior to 2.4 on Unix, you can do 
+this:
+
+     # Define the RandBytes function using one of the following
+     # random sources (in preferential order):
+     # 1. Crypto.Random
+     # 2. os.urandom
+     # 3. /dev/urandom
+     try:
+          from Crypto.Random import get_random_bytes as RandBytes
+     except ImportError:
+          try:
+              from os import urandom as RandBytes
+          except ImportError:
+              RandBytes = open("/dev/urandom", "rb").read
+
+In any case, RandomPool should not be used at all, ever.
+
+The code above is released into the public domain (copyright abandoned).
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+   Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Sun Sep  6 11:54:42 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 6 Sep 2009 13:54:42 -0400
+Subject: [pycrypto] RandomPool
+In-Reply-To: <19094.51606.668990.39731@pkoning-laptop.equallogic.com>
+References: <19094.51606.668990.39731@pkoning-laptop.equallogic.com>
+Message-ID: <20090906175442.GA5400@rivest.dlitz.net>
+
+On Thu, Aug 27, 2009 at 01:59:50PM -0400, Paul Koning wrote:
+>Hi...
+>
+>My first post to this list, though I've used pycrypto for 2-3 years
+>now.
+
+Hello and welcome!
+
+>RFC 4086, "Randomness Requirements for Security" is very much worth
+>studying for a discussion of this subject.
+
+Agreed.  In addition, it is worth looking at the papers listed in the 
+"references" section below.
+
+>Dwayne comments "Also, after looking a bit more at OS-provided random
+>generators, I'm starting to think that just returning their output
+>might not be such a great idea.  There just doesn't seem to be any
+>reason to trust them very far."  I don't know what OS is at issue
+>here; it would be good for a general statement like that to be
+>accompanied by specific evidence.  For example, I spent quite a while
+>looking at the Linux /dev/random code by Ted Ts'o, and my conclusion
+>is just the opposite.  It looks strong and well constructed.  So could
+>you spell which OS you were talking about, and why you concluded it
+>should not be trusted?
+
+I assume you are referring to this post:
+
+     http://lists.dlitz.net/pipermail/pycrypto/2008q3/000002.html
+
+There is no single OS at issue here.  Since PyCrypto runs on more platforms 
+than just Linux, I would need to trust the OS-provided random number 
+generators on *all* of those platforms before I could feel comfortable 
+making Crypto.Random.new an alias for Crypto.Random.OSRNG.new.
+
+Here are some of the reasons why I'm not comforable with doing that:
+
+
+=== 1. MS Windows (XP and earlier) ===
+
+Practical vulnerabilities to state compromise extension attacks on a 
+platform where the likelihood of malicious code being executed at *some* 
+point in time is relatively high.
+
+See http://eprint.iacr.org/2007/419 [4].
+
+
+=== 2. MS Windows (Later than XP) ===
+
+As far as I know, the algorithm that replaced the previous Windows RNG 
+remains unpublished.  I see no reason to trust it.
+
+
+=== 3. Anything that implements Dual_EC_DRBG (from NIST SP800-90) ===
+
+See [5]:
+http://en.wikipedia.org/w/index.php?title=Dual_EC_DRBG&oldid=306143447#Controversy 
+
+I don't know if Dual_EC_DRBG is ever used as an OS-provided random number 
+generator, but if so, it could be a trivial back-door if its output is 
+provided directly to an attacker.  Mixing its output with other sources of 
+entropy (or even truncating the output, apparently) should help prevent an  
+attacker from reversing the algorithm.
+
+
+=== 4. Solaris, *BSD, proprietary *nix, Minix, HURD ===
+
+No idea, but if these excerpts from Wikipedia [6] are true, they don't help 
+earn my trust:
+
+- "In 2004, Landon Curt Noll tested the FreeBSD 5.2.1 version of 
+   /dev/random and found that it was not a cryptographically strong random 
+   number generator because its output had multiple uniformity flaws 
+   according to the Billion bit test. Similar flaws were found in the Linux 
+   2.4.21-20, Solaris 8 patch 108528-18, and Mac OS X 10.3.5 implementations 
+   of /dev/random."
+
+- "... as with FreeBSD, AIX implements its own Yarrow-based design which 
+   uses considerably fewer entropy sources than the standard /dev/random 
+   implementation and stops refilling the pool when it thinks it contains 
+   enough entropy."
+
+
+=== 5. Linux ===
+
+Linux's random.c is probably the most trustworthy of the bunch, but some 
+elements of its design and implememntation remain controversial.  Quoting 
+the comments in drivers/char/random.c:
+
+| There are three exported interfaces; the first is one designed to
+| be used from within the kernel:
+|
+|      void get_random_bytes(void *buf, int nbytes);
+|
+| This interface will return the requested number of random bytes,
+| and place it in the requested buffer.
+|
+| The two other interfaces are two character devices /dev/random and
+| /dev/urandom.  /dev/random is suitable for use when very high
+| quality randomness is desired (for example, for key generation or
+| one-time pads), as it will only return a maximum of the number of
+| bits of randomness (as estimated by the random number generator)
+| contained in the entropy pool.
+|
+| The /dev/urandom device does not have this limit, and will return
+| as many bytes as are requested.  As more and more random bytes are
+| requested without giving time for the entropy pool to recharge,
+| this will result in random numbers that are merely cryptographically
+| strong.  For many applications, however, this is acceptable.
+
+The designers of Linux's /dev/random claim that it provides 
+information-theoretic security based on entropy estimates.
+
+As noted by John Viega [2], entropy estimation is problematic:
+
+   "One significant problem is a lack of methodology for deriving reasonable 
+   estimates.
+   . . .
+   "Information theory does provide ways to measure entropy, but they are 
+   not practical, because one can only model how much entropy is in data if 
+   one has a complete understanding of how the data is produced and all 
+   possible channels an attacker may use to measure information about the 
+   data.  Considering that there are a broad range of possible threat 
+   models, and considering that machines behave deterministically yet are 
+   still incredibly complex in practice, one should expect data to tend to 
+   be predictable (the only times where significant new entropy can really 
+   added be to a system are when the machine receives external input), yet 
+   it is incredibly difficult to figure out just how predictable."
+
+However, the comments in drivers/char/random.c make it sound as if using 
+/dev/random is the preferred, but /dev/urandom can be used as a last 
+resort, since it provides "merely cryptographically strong" output.
+
+In reality, /dev/random is a red herring for two reasons:
+
+   a) It provides information-theoretic security *only* *if* the 
+   implementation does not overestimate the information available to an 
+   attacker.  As noted above, whether that's even possible is debatable.
+
+   b) Applications need the ability to get cryptographically-strong random 
+   numbers in a timely manner.  /dev/random blocks when it runs out of 
+   (estimated) entropy, so it's useless in most situations.  Worse still, 
+   since the entropy is finite, the more it gets used, the longer 
+   applications must wait to have their requests satisfied.  As a result, 
+   hardly anything uses /dev/random.
+
+Furthermore, Ted Ts'o posted a criticism that makes the accusation that 
+with Fortuna, entropy is "thoughtlessly squandered".  
+(http://lkml.indiana.edu/hypermail/linux/kernel/0409.3/0646.html)
+However, look at this (again in drivers/char/random.c):
+
+| add_input_randomness() uses the input layer interrupt timing, as well as
+| the event type information from the hardware.
+|
+| add_interrupt_randomness() uses the inter-interrupt timing as random
+| inputs to the entropy pool.  Note that not all interrupts are good
+| sources of randomness!  For example, the timer interrupts is not a
+| good choice, because the periodicity of the interrupts is too
+| regular, and hence predictable to an attacker.  Disk interrupts are
+| a better measure, since the timing of the disk interrupts are more
+| unpredictable.
+
+The recommendation is to avoid sources of randomness that *might* be 
+predictable to an attacker.  But disk interrupts might be predictable if 
+you're using solid-state drives, and input-layer interrupts might be 
+predictable if you're using a wireless keyboard and mouse.  Apparently, a 
+conservative user should patch his kernel to remove all of these sources of 
+entropy!
+
+Linux's RNG also wastes entropy, simply by disregarding it.  With Fortuna, 
+you can use all of these sources of randomness, and it won't matter as long 
+as *any* of them remains unpredictable to an attacker.
+
+Further:
+
+| All of these routines try to estimate how many bits of randomness a
+| particular randomness source.  They do this by keeping track of the
+| first and second order deltas of the event timings.
+
+I would love to see an analysis of how much information could be leaked via 
+the world-readable /proc/sys/kernel/random/entropy_avail file, and whether 
+that information could be used in an attack (either a real attack, or an 
+attack by a computationally unbounded attacker.)
+
+To summarize, while I think Linux's RNG is probably the best OS-provided 
+RNG I've seen, there are still several things that make me raise my 
+eyebrows:
+
+- The claims about "information-theoretic security", which are both 
+   questionable (since they might not even be possible) and irrelevant 
+   (since /dev/random is mostly unusable anyway).
+
+- The apparent preference of /dev/random over /dev/urandom, even though the 
+   former is nearly unusable in real-world applications.
+
+- Ted Ts'o claims that Fortuna wastes entropy, while ignoring the entropy 
+   in thousands of timer interrupts that Linux has to ignore due to the 
+   design of his RNG.
+
+- The world-readable /proc/sys/kernel/random/entropy_avail file, which is 
+   apparently derived from the input into the entropy pool.
+
+===========
+
+On Thu, Aug 27, 2009 at 01:59:50PM -0400, Paul Koning wrote:
+>What is Fortuna?  What makes it good enough that an application-level
+>RNG can be safely layered on top of it?
+
+http://en.wikipedia.org/wiki/Fortuna_(PRNG)
+
+Fortuna was designed by Niels Ferguson and Bruce Schneier, and is described 
+in their book, /Practical Cryptography/ [7].
+
+Fortuna consists of two parts: a series of 32 SHA256-based entropy pools 
+(collectively called the "accumulator") and a PRNG (the "generator") that 
+basically just runs AES in counter mode.  The generator is periodically 
+re-seeded from the accumulator.
+
+Fortuna is designed to resist state compromise extension attacks without 
+any need to estimate entropy, and it works well in situations where you 
+have several sources of randomness that may or may not be known or 
+controlled by an attacker.
+
+PyCrypto's Crypto.Random implementation currently seeds Fortuna from three 
+sources: the OS-provided RNG (abstracted by Crypto.Random.OSRNG), 
+time.time(), and time.clock().  One of the latter two is usually a 
+high-resolution timer, depending on the platform you're on.
+
+I hope that helps to clear things up.
+
+Cheers,
+  - Dwayne
+
+
+References:
+
+[1] "Cryptanalytic Attacks on Pseudorandom Number Generators" (1998) by 
+John Kelsey, Bruce Schneier, David Wagner, and Chris Hall.  
+http://www.schneier.com/paper-prngs.html
+
+[2] "Practical Random Number Generation in Software" (2003) by John Viega 
+http://www.acsac.org/2003/abstracts/79.html
+
+[3] "Analysis of the Linux Random Number Generator" (2006) by Zvi 
+Gutterman, Benny Pinkas, and Tzachy Reinman.
+http://www.pinkas.net/PAPERS/gpr06.pdf
+
+[4] "Cryptanalysis of the Random Number Generator of the Windows Operating 
+System" (Nov 2007) by Leo Dorrendorf, Zvi Gutterman, and Benny Pinkas 
+http://eprint.iacr.org/2007/419
+
+[5] "Dual_EC_DRBG - Controversy" on Wikipedia
+http://en.wikipedia.org/w/index.php?title=Dual_EC_DRBG&oldid=306143447#Controversy
+
+[6] "/dev/random" on Wikipedia
+http://en.wikipedia.org/w/index.php?title=/dev/random&oldid=300118729
+
+[7] /Practical Cryptography/ (2003) by Niels Ferguson and Bruce Schneier.  
+ISBN 0-471-22357-3.  http://www.schneier.com/book-practical.html
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From pzavadsky at gmail.com  Mon Sep  7 12:01:01 2009
+From: pzavadsky at gmail.com (Peter Zavadsky)
+Date: Mon, 7 Sep 2009 20:01:01 +0200
+Subject: [pycrypto] Elliptic curve cryptography and group signature
+Message-ID: <eddb24f00909071101m20eb044aw9df6e5e895fe35cf@mail.gmail.com>
+
+Hi everyone!
+
+I'm new here and this is my first post...
+
+I'd like to ask:
+
+Is there any implementation of elliptic curve cryptography in
+development or planned? I'm interested in (implementation of) group
+signature by means of bilinear maps(such as Weil or Tate pairing).
+
+There is also PyECC module, but I thought about to include some ecc
+stuff to PyCrypto, what do you think? Is someone also interested in
+this area and can help with this?
+
+--peter--
+
+From don at amberfisharts.com  Tue Sep 29 17:13:52 2009
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Wed, 30 Sep 2009 01:13:52 +0200
+Subject: [pycrypto] Release the GIL
+Message-ID: <68d1a7093d5ccfe7e41a2a752e7925a8@localhost>
+
+
+Hi,
+
+I noticed that generating RSA keys takes quite some time (~10s on my Netbook) so I
+wanted to load it of into a separate thread. This didn't help at all.
+
+After investigating I found that releasing the GIL in isPrime() in _fastmath.c using the Py_BEGIN/END_ALLOW_THREADS macros solved my problem.
+
+So I'm wondering is there a reason NOT to release the GIL that I am not aware of?
+If not could this be included in the upcoming 2.1 release?
+
+Maybe there are some other long running C-level calls where releasing the GIL would make sense but so far I only had problems with isPrime (mpz_probab_prime_p).
+
+
+sincerely yours
+//Lorenz
+
+
+

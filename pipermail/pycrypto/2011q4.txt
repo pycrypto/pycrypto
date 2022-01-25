@@ -1,0 +1,3360 @@
+From dlitz at dlitz.net  Mon Oct 10 22:07:38 2011
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Tue, 11 Oct 2011 00:07:38 -0400
+Subject: [pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+In-Reply-To: <CAGfyce0z8ZXZ7BiN1c_mAYOBTcQJNAzEAxA=pzPoNi-QC8-qew@mail.gmail.com>
+References: <4E7DD571.2030204@ramacher.at>
+	<CAGfyce1rD9TmQSzt7vfhZvsBQpko_jy3UJ33SN6pDfkHiYbYSw@mail.gmail.com>
+	<4E80F3FE.8000103@ramacher.at>
+	<CAGfyce0z8ZXZ7BiN1c_mAYOBTcQJNAzEAxA=pzPoNi-QC8-qew@mail.gmail.com>
+Message-ID: <20111011040738.GA30325@rivest.dlitz.net>
+
+On Sat, Sep 24, 2011 at 03:04:49PM +0200, Sebastian Ramacher wrote:
+>Hi,
+>
+>Debian and Ubuntu recently started to implement Multiarch [1]. Because of this, 
+>libgmp.so has been moved from /usr/lib/ to /usr/lib/<host-triplet>/ and setup.py 
+>cannot find it anymore.
+[snip]
+>
+>[1] https://wiki.ubuntu.com/MultiarchSpec
+
+Oh, neat!  I'm still running Ubuntu 11.04 (natty) and Debian squeeze, so I 
+never noticed.
+
+On Tue, Sep 27, 2011 at 07:02:44PM +0200, Legrandin wrote:
+>+def libgmp_exists():
+>+    '''Verify that the compiler and the linker can reach libgmp'''
+>+
+>+    fname = tempfile.mktemp(".c")
+>+    oname = tempfile.mktemp(".out")
+>+    f = open(fname, 'w')
+>+    f.write("""
+>+    #include <gmp.h>
+>+
+>+    int main(void)
+>+    {
+>+        mpz_init((void*)0);
+>+        return 0;
+>+    }
+>+    """)
+>+    f.close()
+
+Ok, this looks a lot like something an autoconf would do.  Rather than 
+writing our own custom version of autoconf in setup.py, I've just added a 
+configure script.  Can you try it out?
+
+     https://github.com/dlitz/pycrypto.git
+
+It works for me on Debian wheezy amd64 with libgmp-dev installed.
+
+Note that it should also work with python3 now.
+
+If it's good, I'll make a release this week.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From sebastian+lists at ramacher.at  Tue Oct 11 07:39:41 2011
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Tue, 11 Oct 2011 15:39:41 +0200
+Subject: [pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+In-Reply-To: <20111011040738.GA30325@rivest.dlitz.net>
+References: <4E7DD571.2030204@ramacher.at>	<CAGfyce1rD9TmQSzt7vfhZvsBQpko_jy3UJ33SN6pDfkHiYbYSw@mail.gmail.com>	<4E80F3FE.8000103@ramacher.at>	<CAGfyce0z8ZXZ7BiN1c_mAYOBTcQJNAzEAxA=pzPoNi-QC8-qew@mail.gmail.com>
+	<20111011040738.GA30325@rivest.dlitz.net>
+Message-ID: <4E94471D.6030601@ramacher.at>
+
+On 10/11/2011 06:07 AM, Dwayne C. Litzenberger wrote:
+> Ok, this looks a lot like something an autoconf would do.  Rather than 
+> writing our own custom version of autoconf in setup.py, I've just added a 
+> configure script.  Can you try it out?
+> 
+>      https://github.com/dlitz/pycrypto.git
+> 
+> It works for me on Debian wheezy amd64 with libgmp-dev installed.
+
+I tested it on a bunch of different systems (including systems with and without
+Multiarch) and GMP has been detected correctly all the time.
+
+In configure.ac:5: shouldn't FULL-PACKAGE-NAME, VERSION and BUG-REPORT-ADDRESS
+be replaced with the actual values?
+
+Regards
+
+From dmacinskas at geobridge.net  Wed Oct 19 08:46:33 2011
+From: dmacinskas at geobridge.net (Dean Macinskas)
+Date: Wed, 19 Oct 2011 10:46:33 -0400
+Subject: [pycrypto] Install failure
+Message-ID: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3C@exch-mail.bridge.net>
+
+
+Platform: W7pro, 64-bit
+
+I downloaded the latest version (2.3) and ran "python setup.py install".  Here's what I see:
+
+C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3>python setup.py install
+running install
+running build
+running build_py
+running build_ext
+warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+building 'Crypto.Random.OSRNG.winrandom' extension
+error: Unable to find vcvarsall.bat
+
+C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3>
+
+This appears to defeat the install, because subsequently importing Crypto.Cipher produces a "module not found" error.
+
+Any advice?
+
+Thanks,
+dpm
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111019/dd2e72d9/attachment.htm 
+
+From andyhhp at gmail.com  Wed Oct 19 08:52:28 2011
+From: andyhhp at gmail.com (Andrew Cooper)
+Date: Wed, 19 Oct 2011 15:52:28 +0100
+Subject: [pycrypto] Install failure
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3C@exch-mail.bridge.net>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3C@exch-mail.bridge.net>
+Message-ID: <4E9EE42C.5050302@gmail.com>
+
+On 19/10/2011 15:46, Dean Macinskas wrote:
+>
+>  
+>
+> Platform: W7pro, 64-bit
+>
+>  
+>
+> I downloaded the latest version (2.3) and ran "python setup.py
+> install".  Here's what I see:
+>
+>  
+>
+> C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3>python
+> setup.py install
+>
+> running install
+>
+> running build
+>
+> running build_py
+>
+> running build_ext
+>
+> warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+>
+> building 'Crypto.Random.OSRNG.winrandom' extension
+>
+> error: Unable to find vcvarsall.bat
+>
+>  
+>
+> C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3>
+>
+>  
+>
+> This appears to defeat the install, because subsequently importing
+> Crypto.Cipher produces a "module not found" error.
+>
+>  
+>
+> Any advice?
+>
+
+Do you have MSCV/MSVS installed?  You need a C compiler for "python
+setup.py install" to work.
+
+~Andrew
+
+>  
+>
+> Thanks,
+>
+> dpm
+>
+>  
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111019/6ee56825/attachment.htm 
+
+From dmacinskas at geobridge.net  Wed Oct 19 08:58:15 2011
+From: dmacinskas at geobridge.net (Dean Macinskas)
+Date: Wed, 19 Oct 2011 10:58:15 -0400
+Subject: [pycrypto] Install failure
+In-Reply-To: <4E9EE42C.5050302@gmail.com>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3C@exch-mail.bridge.net>
+	<4E9EE42C.5050302@gmail.com>
+Message-ID: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3E@exch-mail.bridge.net>
+
+
+
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Andrew Cooper
+Sent: Wednesday, October 19, 2011 10:52 AM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] Install failure
+
+On 19/10/2011 15:46, Dean Macinskas wrote:
+
+Platform: W7pro, 64-bit
+
+I downloaded the latest version (2.3) and ran "python setup.py install".  Here's what I see:
+
+C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3>python setup.py install
+running install
+running build
+running build_py
+running build_ext
+warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+building 'Crypto.Random.OSRNG.winrandom' extension
+error: Unable to find vcvarsall.bat
+
+C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3>
+
+This appears to defeat the install, because subsequently importing Crypto.Cipher produces a "module not found" error.
+
+Any advice?
+
+Do you have MSCV/MSVS installed?  You need a C compiler for "python setup.py install" to work.
+
+~Andrew
+
+No, but I have Python installed on another system, also without MSCV/MSVS installed, and I've imported lots of packages without error.  Is PyCrypto a special case in this regard?
+
+Thanks,
+dpm
+
+
+
+
+
+_______________________________________________
+
+pycrypto mailing list
+
+pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111019/950d81f4/attachment.htm 
+
+From andyhhp at gmail.com  Wed Oct 19 09:04:33 2011
+From: andyhhp at gmail.com (Andrew Cooper)
+Date: Wed, 19 Oct 2011 16:04:33 +0100
+Subject: [pycrypto] Install failure
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3E@exch-mail.bridge.net>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3C@exch-mail.bridge.net>
+	<4E9EE42C.5050302@gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3E@exch-mail.bridge.net>
+Message-ID: <4E9EE701.8050901@gmail.com>
+
+On 19/10/2011 15:58, Dean Macinskas wrote:
+>
+>  
+>
+>  
+>
+> *From:*pycrypto-bounces at lists.dlitz.net
+> [mailto:pycrypto-bounces at lists.dlitz.net] *On Behalf Of *Andrew Cooper
+> *Sent:* Wednesday, October 19, 2011 10:52 AM
+> *To:* PyCrypto discussion list
+> *Subject:* Re: [pycrypto] Install failure
+>
+>  
+>
+> On 19/10/2011 15:46, Dean Macinskas wrote:
+>
+>  
+>
+> Platform: W7pro, 64-bit
+>
+>  
+>
+> I downloaded the latest version (2.3) and ran "python setup.py
+> install".  Here's what I see:
+>
+>  
+>
+> C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3>python
+> setup.py install
+>
+> running install
+>
+> running build
+>
+> running build_py
+>
+> running build_ext
+>
+> warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+>
+> building 'Crypto.Random.OSRNG.winrandom' extension
+>
+> error: Unable to find vcvarsall.bat
+>
+>  
+>
+> C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3>
+>
+>  
+>
+> This appears to defeat the install, because subsequently importing
+> Crypto.Cipher produces a "module not found" error.
+>
+>  
+>
+> Any advice?
+>
+>
+> Do you have MSCV/MSVS installed?  You need a C compiler for "python
+> setup.py install" to work.
+>
+> ~Andrew
+>
+> No, but I have Python installed on another system, also without
+> MSCV/MSVS installed, and I've imported lots of packages without
+> error.  Is PyCrypto a special case in this regard?
+>
+
+Not overly special - it is certainly not the only python extension
+written mainly in C.  The majority of extensions however are just python
+themselves, so don't require a C compiler.
+
+~Andrew
+
+>  
+>
+> Thanks,
+>
+> dpm
+>
+>  
+>
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net <mailto:pycrypto at lists.dlitz.net>
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111019/3229aca6/attachment-0001.htm 
+
+From dmacinskas at geobridge.net  Wed Oct 19 09:13:05 2011
+From: dmacinskas at geobridge.net (Dean Macinskas)
+Date: Wed, 19 Oct 2011 11:13:05 -0400
+Subject: [pycrypto] Install failure
+In-Reply-To: <4E9EE701.8050901@gmail.com>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3C@exch-mail.bridge.net>
+	<4E9EE42C.5050302@gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3E@exch-mail.bridge.net>
+	<4E9EE701.8050901@gmail.com>
+Message-ID: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC43@exch-mail.bridge.net>
+
+
+
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Andrew Cooper
+Sent: Wednesday, October 19, 2011 11:05 AM
+To: pycrypto at lists.dlitz.net
+Subject: Re: [pycrypto] Install failure
+
+On 19/10/2011 15:58, Dean Macinskas wrote:
+
+
+From: pycrypto-bounces at lists.dlitz.net<mailto:pycrypto-bounces at lists.dlitz.net> [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Andrew Cooper
+Sent: Wednesday, October 19, 2011 10:52 AM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] Install failure
+
+On 19/10/2011 15:46, Dean Macinskas wrote:
+
+Platform: W7pro, 64-bit
+
+I downloaded the latest version (2.3) and ran "python setup.py install".  Here's what I see:
+
+C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3>python setup.py install
+running install
+running build
+running build_py
+running build_ext
+warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+building 'Crypto.Random.OSRNG.winrandom' extension
+error: Unable to find vcvarsall.bat
+
+C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3>
+
+This appears to defeat the install, because subsequently importing Crypto.Cipher produces a "module not found" error.
+
+Any advice?
+
+Do you have MSCV/MSVS installed?  You need a C compiler for "python setup.py install" to work.
+
+~Andrew
+
+No, but I have Python installed on another system, also without MSCV/MSVS installed, and I've imported lots of packages without error.  Is PyCrypto a special case in this regard?
+
+Not overly special - it is certainly not the only python extension written mainly in C.  The majority of extensions however are just python themselves, so don't require a C compiler.
+
+~Andrew
+
+Besides, I'd expect that the install module would have the C stuff already compiled, no?
+
+Perhaps I don't have the C runtime installed.  Is there a specific one required?  I'm using Python 2.7.2.
+
+Thanks,
+dpm
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111019/66c94481/attachment.htm 
+
+From mdriscoll at co.marshall.ia.us  Wed Oct 19 09:16:16 2011
+From: mdriscoll at co.marshall.ia.us (Mike Driscoll)
+Date: Wed, 19 Oct 2011 10:16:16 -0500
+Subject: [pycrypto] Install failure
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC43@exch-mail.bridge.net>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3C@exch-mail.bridge.net>	<4E9EE42C.5050302@gmail.com>	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3E@exch-mail.bridge.net>	<4E9EE701.8050901@gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC43@exch-mail.bridge.net>
+Message-ID: <4E9EE9C0.4010302@co.marshall.ia.us>
+
+On 10/19/2011 10:13 AM, Dean Macinskas wrote:
+>
+> *From:*pycrypto-bounces at lists.dlitz.net 
+> [mailto:pycrypto-bounces at lists.dlitz.net] *On Behalf Of *Andrew Cooper
+> *Sent:* Wednesday, October 19, 2011 11:05 AM
+> *To:* pycrypto at lists.dlitz.net
+> *Subject:* Re: [pycrypto] Install failure
+>
+> On 19/10/2011 15:58, Dean Macinskas wrote:
+>
+> *From:*pycrypto-bounces at lists.dlitz.net 
+> <mailto:pycrypto-bounces at lists.dlitz.net> 
+> [mailto:pycrypto-bounces at lists.dlitz.net] *On Behalf Of *Andrew Cooper
+> *Sent:* Wednesday, October 19, 2011 10:52 AM
+> *To:* PyCrypto discussion list
+> *Subject:* Re: [pycrypto] Install failure
+>
+> On 19/10/2011 15:46, Dean Macinskas wrote:
+>
+> Platform: W7pro, 64-bit
+>
+> I downloaded the latest version (2.3) and ran "python setup.py 
+> install".  Here's what I see:
+>
+> C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3>python 
+> setup.py install
+>
+> running install
+>
+> running build
+>
+> running build_py
+>
+> running build_ext
+>
+> warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+>
+> building 'Crypto.Random.OSRNG.winrandom' extension
+>
+> error: Unable to find vcvarsall.bat
+>
+> C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3>
+>
+> This appears to defeat the install, because subsequently importing 
+> Crypto.Cipher produces a "module not found" error.
+>
+> Any advice?
+>
+>
+> Do you have MSCV/MSVS installed?  You need a C compiler for "python 
+> setup.py install" to work.
+>
+> ~Andrew
+>
+> No, but I have Python installed on another system, also without 
+> MSCV/MSVS installed, and I've imported lots of packages without 
+> error.  Is PyCrypto a special case in this regard?
+>
+>
+> Not overly special - it is certainly not the only python extension 
+> written mainly in C.  The majority of extensions however are just 
+> python themselves, so don't require a C compiler.
+>
+> ~Andrew
+>
+> Besides, I'd expect that the install module would have the C stuff 
+> already compiled, no?
+>
+> Perhaps I don't have the C runtime installed.  Is there a specific one 
+> required?  I'm using Python 2.7.2.
+>
+> Thanks,
+>
+> dpm
+>
+>
+
+Personally, I just use Michael Foord's PyCrypto Windows builds: 
+http://www.voidspace.org.uk/python/modules.shtml#pycrypto
+
+Then I don't need a compiler.
+
+- Mike
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111019/3d3266f7/attachment.htm 
+
+From andyhhp at gmail.com  Wed Oct 19 09:31:19 2011
+From: andyhhp at gmail.com (Andrew Cooper)
+Date: Wed, 19 Oct 2011 16:31:19 +0100
+Subject: [pycrypto] Install failure
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC43@exch-mail.bridge.net>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3C@exch-mail.bridge.net>
+	<4E9EE42C.5050302@gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3E@exch-mail.bridge.net>
+	<4E9EE701.8050901@gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC43@exch-mail.bridge.net>
+Message-ID: <4E9EED47.2070409@gmail.com>
+
+On 19/10/2011 16:13, Dean Macinskas wrote:
+>
+>  
+>
+>  
+>
+> *From:*pycrypto-bounces at lists.dlitz.net
+> [mailto:pycrypto-bounces at lists.dlitz.net] *On Behalf Of *Andrew Cooper
+> *Sent:* Wednesday, October 19, 2011 11:05 AM
+> *To:* pycrypto at lists.dlitz.net
+> *Subject:* Re: [pycrypto] Install failure
+>
+>  
+>
+> On 19/10/2011 15:58, Dean Macinskas wrote:
+>
+>  
+>
+>  
+>
+> *From:*pycrypto-bounces at lists.dlitz.net
+> <mailto:pycrypto-bounces at lists.dlitz.net>
+> [mailto:pycrypto-bounces at lists.dlitz.net] *On Behalf Of *Andrew Cooper
+> *Sent:* Wednesday, October 19, 2011 10:52 AM
+> *To:* PyCrypto discussion list
+> *Subject:* Re: [pycrypto] Install failure
+>
+>  
+>
+> On 19/10/2011 15:46, Dean Macinskas wrote:
+>
+>  
+>
+> Platform: W7pro, 64-bit
+>
+>  
+>
+> I downloaded the latest version (2.3) and ran "python setup.py
+> install".  Here's what I see:
+>
+>  
+>
+> C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3>python
+> setup.py install
+>
+> running install
+>
+> running build
+>
+> running build_py
+>
+> running build_ext
+>
+> warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+>
+> building 'Crypto.Random.OSRNG.winrandom' extension
+>
+> error: Unable to find vcvarsall.bat
+>
+>  
+>
+> C:\Users\dmacinskas\AppData\Local\Temp\pycrypto\pycrypto-2.3>
+>
+>  
+>
+> This appears to defeat the install, because subsequently importing
+> Crypto.Cipher produces a "module not found" error.
+>
+>  
+>
+> Any advice?
+>
+>
+> Do you have MSCV/MSVS installed?  You need a C compiler for "python
+> setup.py install" to work.
+>
+> ~Andrew
+>
+> No, but I have Python installed on another system, also without
+> MSCV/MSVS installed, and I've imported lots of packages without
+> error.  Is PyCrypto a special case in this regard?
+>
+>
+> Not overly special - it is certainly not the only python extension
+> written mainly in C.  The majority of extensions however are just
+> python themselves, so don't require a C compiler.
+>
+> ~Andrew
+>
+> Besides, I'd expect that the install module would have the C stuff
+> already compiled, no?
+>
+
+Why do you expect that? It is the source tarball.
+
+~Andrew
+
+>  
+>
+> Perhaps I don't have the C runtime installed.  Is there a specific one
+> required?  I'm using Python 2.7.2.
+>
+>  
+>
+> Thanks,
+>
+> dpm
+>
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111019/710e7b2f/attachment-0001.htm 
+
+From sbehrens at gmx.li  Wed Oct 19 11:08:28 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 19 Oct 2011 13:08:28 -0400
+Subject: [pycrypto] Install failure
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3C@exch-mail.bridge.net>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3C@exch-mail.bridge.net>
+Message-ID: <4E9F040C.6050303@gmx.li>
+
+On 10/19/2011 10:46 AM, Dean Macinskas wrote:
+>
+> Platform: W7pro, 64-bit
+>
+
+Instructions on how to do this:
+
+https://yorickdowne.wordpress.com/2010/12/22/compiling-pycrypto-on-win7-64/
+
+
+From dmacinskas at geobridge.net  Wed Oct 19 12:17:09 2011
+From: dmacinskas at geobridge.net (Dean Macinskas)
+Date: Wed, 19 Oct 2011 14:17:09 -0400
+Subject: [pycrypto] No SHA1?
+In-Reply-To: <4E9EE9C0.4010302@co.marshall.ia.us>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3C@exch-mail.bridge.net>
+	<4E9EE42C.5050302@gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3E@exch-mail.bridge.net>
+	<4E9EE701.8050901@gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC43@exch-mail.bridge.net>
+	<4E9EE9C0.4010302@co.marshall.ia.us>
+Message-ID: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC5D@exch-mail.bridge.net>
+
+
+Personally, I just use Michael Foord's PyCrypto Windows builds: http://www.voidspace.org.uk/python/modules.shtml#pycrypto
+
+Then I don't need a compiler.
+
+- Mike
+
+I think my problem was trying to run on a 64-bit platform.  Moving to 32-bit XP seems to fix it.  And the Windows build referenced above did the trick.
+
+The documentation says that SHA1 is supported, but I see:
+
+from Crypto.Hash import *
+
+Traceback (most recent call last):
+  File "C:\Documents and Settings\dpm\My Documents\KB\TR31\tr31.py", line 20, in <module>
+    ho = SHA1.new()
+NameError: name 'SHA1' is not defined
+
+Was it removed?
+
+Thanks,
+dpm
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111019/d80862bb/attachment.htm 
+
+From gmele at debitcardnetwork.com  Wed Oct 19 16:52:20 2011
+From: gmele at debitcardnetwork.com (Gmele)
+Date: Wed, 19 Oct 2011 15:52:20 -0700
+Subject: [pycrypto] Install failure on FreeBSD 8.2
+Message-ID: <5b50b036240b1e97fd5912d61ac83673@debitcardnetwork.com>
+
+
+Hi,
+?
+I'm trying to install the latest on my FreeBSD 8.2, Python 3.2 server.
+?
+There seem to be contradictions about whether stdint.h exists.? 
+It is?located in?/usr/include/src/ with a link from /usr/include/
+?
+#ll /usr/include/
+lrwxr-xr-x? 1 root? wheel? 12 Jul 18? 2010 /usr/include/stdint.h -> sys/stdint.h
+?
+Here are some relevant pieces of the "python3.2 setup.py install" results
+------------------------------
+running build_configure
+...
+checking for stdint.h... yes
+...
+checking for stdint.h... (cached) yes
+...
+checking for int16_t... yes
+checking for int32_t... yes
+checking for int64_t... yes
+checking for int8_t... yes
+checking for size_t... yes
+checking for uint16_t... yes
+checking for uint32_t... yes
+checking for uint64_t... yes
+checking for uint8_t... yes
+...
+cc -pipe -D__wchar_t=wchar_t -fno-strict-aliasing -pipe -D__wchar_t=wchar_t -fno-strict-aliasing -fPIC -std=c99 -O3 -fomit-frame-pointer -DPCT_LITTLE_ENDIAN=1 -Isrc/ -I/usr/include/sys/ -I/usr/local/include/python3.2mu -c src/RIPEMD160.c -o build/temp.freebsd-8.2-RELEASE-i386-3.2/src/RIPEMD160.o
+src/RIPEMD160.c:52:3: error: #error "stdint.h not found"
+------------------------------
+I added '/usr/include/sys/' to the include_dirs in? Extension("Crypto.Hash.RIPEMD160",
+It didn't help.
+
+src/config.h contains 
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+Any ideas about what is happening?
+?
+Gary
+
+
+
+From sbehrens at gmx.li  Wed Oct 19 17:41:09 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Wed, 19 Oct 2011 19:41:09 -0400
+Subject: [pycrypto] No SHA1?
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC5D@exch-mail.bridge.net>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3C@exch-mail.bridge.net>
+	<4E9EE42C.5050302@gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3E@exch-mail.bridge.net>
+	<4E9EE701.8050901@gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC43@exch-mail.bridge.net>
+	<4E9EE9C0.4010302@co.marshall.ia.us>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC5D@exch-mail.bridge.net>
+Message-ID: <4E9F6015.7090603@gmx.li>
+
+It's Crypto.Hash.SHA , no "1" - the "1"s implied? :)
+
+Thorsten
+
+
+From Paul_Koning at Dell.com  Wed Oct 19 19:11:25 2011
+From: Paul_Koning at Dell.com (Paul_Koning at Dell.com)
+Date: Wed, 19 Oct 2011 20:11:25 -0500
+Subject: [pycrypto] No SHA1?
+In-Reply-To: <4E9F6015.7090603@gmx.li>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3C@exch-mail.bridge.net>
+	<4E9EE42C.5050302@gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3E@exch-mail.bridge.net>
+	<4E9EE701.8050901@gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC43@exch-mail.bridge.net>
+	<4E9EE9C0.4010302@co.marshall.ia.us>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC5D@exch-mail.bridge.net>
+	<4E9F6015.7090603@gmx.li>
+Message-ID: <09787EF419216C41A903FD14EE5506DD030CD659B3@AUSX7MCPC103.AMER.DELL.COM>
+
+Rather unfortunate given that there are various other SHA hashes, from the never quite real SHA-0 to the very real SHA-2 (or SHA-256, -384, -512) ones.
+
+	paul
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Thorsten Behrens
+Sent: Wednesday, October 19, 2011 7:41 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] No SHA1?
+
+It's Crypto.Hash.SHA , no "1" - the "1"s implied? :)
+
+Thorsten
+
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From dmacinskas at geobridge.net  Thu Oct 20 06:16:06 2011
+From: dmacinskas at geobridge.net (Dean Macinskas)
+Date: Thu, 20 Oct 2011 08:16:06 -0400
+Subject: [pycrypto] No SHA1?
+In-Reply-To: <09787EF419216C41A903FD14EE5506DD030CD659B3@AUSX7MCPC103.AMER.DELL.COM>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3C@exch-mail.bridge.net>
+	<4E9EE42C.5050302@gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3E@exch-mail.bridge.net>
+	<4E9EE701.8050901@gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC43@exch-mail.bridge.net>
+	<4E9EE9C0.4010302@co.marshall.ia.us>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC5D@exch-mail.bridge.net>
+	<4E9F6015.7090603@gmx.li>
+	<09787EF419216C41A903FD14EE5506DD030CD659B3@AUSX7MCPC103.AMER.DELL.COM>
+Message-ID: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC78@exch-mail.bridge.net>
+
+Agreed.  I finally figured this out, more by accident than anything else. :)
+
+Thanks for your help.
+dpm
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Paul_Koning at Dell.com
+Sent: Wednesday, October 19, 2011 9:11 PM
+To: pycrypto at lists.dlitz.net
+Subject: Re: [pycrypto] No SHA1?
+
+Rather unfortunate given that there are various other SHA hashes, from the never quite real SHA-0 to the very real SHA-2 (or SHA-256, -384, -512) ones.
+
+	paul
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Thorsten Behrens
+Sent: Wednesday, October 19, 2011 7:41 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] No SHA1?
+
+It's Crypto.Hash.SHA , no "1" - the "1"s implied? :)
+
+Thorsten
+
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From dmacinskas at geobridge.net  Fri Oct 21 07:55:50 2011
+From: dmacinskas at geobridge.net (Dean Macinskas)
+Date: Fri, 21 Oct 2011 09:55:50 -0400
+Subject: [pycrypto] string XOR
+Message-ID: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECCC9@exch-mail.bridge.net>
+
+This isn't a pycrypto question per se, but I thought someone might know the answer: I need to exclusive-OR two strings together.  I tried operator.XOR, but I get a runtime error:
+
+    ke = operator.xor(kbpkb,ve)
+TypeError: unsupported operand type(s) for ^: 'str' and 'str'
+
+Is there a way to do this in native Python (I'm using 2.7.2), or must I use a library of some sort?
+
+Thanks,
+dpm
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111021/99fa5bbc/attachment.htm 
+
+From richmoore44 at gmail.com  Fri Oct 21 08:09:36 2011
+From: richmoore44 at gmail.com (Richard Moore)
+Date: Fri, 21 Oct 2011 15:09:36 +0100
+Subject: [pycrypto] string XOR
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECCC9@exch-mail.bridge.net>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECCC9@exch-mail.bridge.net>
+Message-ID: <CAMp7mVtANYeMjVfxbsJxhv7vKCHOiJuUzynAniP+hD2LGyXFwQ@mail.gmail.com>
+
+On Fri, Oct 21, 2011 at 2:55 PM, Dean Macinskas
+<dmacinskas at geobridge.net> wrote:
+> ??? ke = operator.xor(kbpkb,ve)
+>
+> TypeError: unsupported operand type(s) for ^: 'str' and 'str'
+>
+> Is there a way to do this in native Python (I'm using 2.7.2), or must I use
+> a library of some sort?
+
+Use ord() to convert each character to a number first, then chr() to
+convert the number back to a character.
+
+Rich.
+
+From dmacinskas at geobridge.net  Fri Oct 21 10:01:13 2011
+From: dmacinskas at geobridge.net (Dean Macinskas)
+Date: Fri, 21 Oct 2011 12:01:13 -0400
+Subject: [pycrypto] string XOR
+In-Reply-To: <CAMp7mVtANYeMjVfxbsJxhv7vKCHOiJuUzynAniP+hD2LGyXFwQ@mail.gmail.com>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECCC9@exch-mail.bridge.net>
+	<CAMp7mVtANYeMjVfxbsJxhv7vKCHOiJuUzynAniP+hD2LGyXFwQ@mail.gmail.com>
+Message-ID: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECCD9@exch-mail.bridge.net>
+
+Rich,
+
+Thanks.  That solved the problem.
+
+I do have a pycrypto question: does the DES3 mode support triple-length keys?  I supplied one and got no errors, but I didn't get the results I expected.
+
+Thanks,
+dpm
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Richard Moore
+Sent: Friday, October 21, 2011 10:10 AM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] string XOR
+
+On Fri, Oct 21, 2011 at 2:55 PM, Dean Macinskas
+<dmacinskas at geobridge.net> wrote:
+> ??? ke = operator.xor(kbpkb,ve)
+>
+> TypeError: unsupported operand type(s) for ^: 'str' and 'str'
+>
+> Is there a way to do this in native Python (I'm using 2.7.2), or must I use
+> a library of some sort?
+
+Use ord() to convert each character to a number first, then chr() to
+convert the number back to a character.
+
+Rich.
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From Paul_Koning at Dell.com  Fri Oct 21 10:06:13 2011
+From: Paul_Koning at Dell.com (Paul_Koning at Dell.com)
+Date: Fri, 21 Oct 2011 11:06:13 -0500
+Subject: [pycrypto] string XOR
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECCC9@exch-mail.bridge.net>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECCC9@exch-mail.bridge.net>
+Message-ID: <09787EF419216C41A903FD14EE5506DD030CDE8EBE@AUSX7MCPC103.AMER.DELL.COM>
+
+"".join([chr (ord(a)^ord(b)) for a,b in zip("abc","def")])
+
+                paul
+
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dean Macinskas
+Sent: Friday, October 21, 2011 9:56 AM
+To: pycrypto at lists.dlitz.net
+Subject: [pycrypto] string XOR
+
+This isn't a pycrypto question per se, but I thought someone might know the answer: I need to exclusive-OR two strings together.  I tried operator.XOR, but I get a runtime error:
+
+    ke = operator.xor(kbpkb,ve)
+TypeError: unsupported operand type(s) for ^: 'str' and 'str'
+
+Is there a way to do this in native Python (I'm using 2.7.2), or must I use a library of some sort?
+
+Thanks,
+dpm
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111021/19554354/attachment.htm 
+
+From dlitz at dlitz.net  Sat Oct 22 14:16:49 2011
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sat, 22 Oct 2011 16:16:49 -0400
+Subject: [pycrypto] ANN: PyCrypto 2.4 released
+Message-ID: <20111022201648.GA3625@rivest.dlitz.net>
+
+PyCrypto 2.4 has been released!
+
+You can download this release from http://www.pycrypto.org/.  It has the 
+following SHA256 sums:
+
+f49d8aea2d7d65db9906c7d3b8b3a07fcae8387cf5cb06a7510383e211902d39 *pycrypto-2.4.tar.gz
+94002c7b115d4347f1ad3b92c118ea3cec5961dd35d209decfaf158e8fe43a71 *pycrypto-2.4.tar.gz.asc
+
+The git repository is here: https://github.com/dlitz/pycrypto/
+The v2.4 commit id is: fb29a28275e3a693566c936af6b7fae6e4b253e4
+
+Please test it and post your experiences to the PyCrypto mailing list:
+
+   pycrypto at lists.dlitz.net
+
+and/or file bug reports on Launchpad:
+
+   https://bugs.launchpad.net/pycrypto
+
+Here is the changelog:
+
+   * Python 3 support!  (Thorsten E. Behrens, Anders Sundman)
+     PyCrypto now supports every version of Python from 2.1 through 3.2.
+
+   * Timing-attack countermeasures in _fastmath: When built against
+     libgmp version 5 or later, we use mpz_powm_sec instead of mpz_powm.
+     This should prevent the timing attack described by Geremy Condra at
+     PyCon 2011:
+     http://blip.tv/pycon-us-videos-2009-2010-2011/pycon-2011-through-the-side-channel-timing-and-implementation-attacks-in-python-4897955
+
+   * New hash modules (for Python >= 2.5 only): SHA224, SHA384, and
+     SHA512 (Fr?d?ric Bertolus)
+
+   * Configuration using GNU autoconf.  This should help fix a bunch of
+     build issues.
+
+   * Support using MPIR as an alternative to GMP.
+
+   * Improve the test command in setup.py, by allowing tests to be
+     performed on a single sub-package or module only. (Legrandin)
+
+     You can now do something like this:
+
+       python setup.py test -m Hash.SHA256 --skip-slow-tests
+
+   * Fix double-decref of "counter" when Cipher object initialisation
+     fails (Ryan Kelly)
+
+   * Apply patches from Debian's python-crypto 2.3-3 package (Jan
+     Dittberner, Sebastian Ramacher):
+    - fix-RSA-generate-exception.patch
+    - epydoc-exclude-introspect.patch
+    - no-usr-local.patch
+
+   * Fix launchpad bug #702835: "Import key code is not compatible with
+     GMP library" (Legrandin)
+
+   * More tests, better documentation, various bugfixes.
+
+Thanks to everyone who helped make this release possible!
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 222 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20111022/c6c119ad/attachment.pgp 
+
+From dlitz at dlitz.net  Sat Oct 22 14:19:04 2011
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sat, 22 Oct 2011 16:19:04 -0400
+Subject: [pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+In-Reply-To: <4E94471D.6030601@ramacher.at>
+References: <4E7DD571.2030204@ramacher.at>
+	<CAGfyce1rD9TmQSzt7vfhZvsBQpko_jy3UJ33SN6pDfkHiYbYSw@mail.gmail.com>
+	<4E80F3FE.8000103@ramacher.at>
+	<CAGfyce0z8ZXZ7BiN1c_mAYOBTcQJNAzEAxA=pzPoNi-QC8-qew@mail.gmail.com>
+	<20111011040738.GA30325@rivest.dlitz.net>
+	<4E94471D.6030601@ramacher.at>
+Message-ID: <20111022201904.GB3625@rivest.dlitz.net>
+
+On Tue, Oct 11, 2011 at 03:39:41PM +0200, Sebastian Ramacher wrote:
+>On 10/11/2011 06:07 AM, Dwayne C. Litzenberger wrote:
+>> Ok, this looks a lot like something an autoconf would do.  Rather than
+>> writing our own custom version of autoconf in setup.py, I've just added a
+>> configure script.  Can you try it out?
+>>
+>>      https://github.com/dlitz/pycrypto.git
+>>
+>> It works for me on Debian wheezy amd64 with libgmp-dev installed.
+>
+>I tested it on a bunch of different systems (including systems with and without
+>Multiarch) and GMP has been detected correctly all the time.
+
+Thanks!
+
+>In configure.ac:5: shouldn't FULL-PACKAGE-NAME, VERSION and BUG-REPORT-ADDRESS
+>be replaced with the actual values?
+
+I suppose, but they're not used anywhere, and this way, I don't have to 
+keep them up-to-date.  :)
+
+--
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Sat Oct 22 14:23:50 2011
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sat, 22 Oct 2011 16:23:50 -0400
+Subject: [pycrypto] string XOR
+In-Reply-To: <CAMp7mVtANYeMjVfxbsJxhv7vKCHOiJuUzynAniP+hD2LGyXFwQ@mail.gmail.com>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECCC9@exch-mail.bridge.net>
+	<CAMp7mVtANYeMjVfxbsJxhv7vKCHOiJuUzynAniP+hD2LGyXFwQ@mail.gmail.com>
+Message-ID: <20111022202350.GC3625@rivest.dlitz.net>
+
+On Fri, Oct 21, 2011 at 03:09:36PM +0100, Richard Moore wrote:
+>On Fri, Oct 21, 2011 at 2:55 PM, Dean Macinskas
+><dmacinskas at geobridge.net> wrote:
+>> ??? ke = operator.xor(kbpkb,ve)
+>>
+>> TypeError: unsupported operand type(s) for ^: 'str' and 'str'
+>>
+>> Is there a way to do this in native Python (I'm using 2.7.2), or must I use
+>> a library of some sort?
+>
+>Use ord() to convert each character to a number first, then chr() to
+>convert the number back to a character.
+
+Also, if you're using PyCrypto anyway, you can use its fast C 
+implementation of a byte-wise string XOR:
+
+     from Crypto.Util.strxor import strxor
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From sbehrens at gmx.li  Sat Oct 22 18:06:08 2011
+From: sbehrens at gmx.li (Thorsten Behrens)
+Date: Sat, 22 Oct 2011 20:06:08 -0400
+Subject: [pycrypto] PyCrypto survey is live
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC78@exch-mail.bridge.net>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3C@exch-mail.bridge.net>
+	<4E9EE42C.5050302@gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC3E@exch-mail.bridge.net>
+	<4E9EE701.8050901@gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC43@exch-mail.bridge.net>
+	<4E9EE9C0.4010302@co.marshall.ia.us>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC5D@exch-mail.bridge.net>
+	<4E9F6015.7090603@gmx.li>
+	<09787EF419216C41A903FD14EE5506DD030CD659B3@AUSX7MCPC103.AMER.DELL.COM>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECC78@exch-mail.bridge.net>
+Message-ID: <4EA35A70.5050209@gmx.li>
+
+Hello,
+
+now that Dwayne has released PyCrypto 2.4, it seems like a good time to 
+activate the PyCrypto user survey.
+
+If you use any form of crypto in Python, even if that is NOT pycrypto, 
+I'd like to really encourage you to participate. I'd love to get a sense 
+of who uses crypto and how within the Python community.
+
+You can find it at http://pycrypto-survey.warshaft.com/
+
+It will run until 2011-11-22
+
+No registration required, no captchas, not much security. Gasp. I doubt 
+this topic is very tasty to bots and trolls.
+
+
+All the best
+Thorsten
+
+
+From sweetnivi88 at gmail.com  Sat Oct 22 20:39:36 2011
+From: sweetnivi88 at gmail.com (nivedita datta)
+Date: Sun, 23 Oct 2011 08:09:36 +0530
+Subject: [pycrypto] Reg. current work in pycrypto
+Message-ID: <CA+XLstsJ653p1Y+Zfrh2Akunn01MDDT6tPcGFEHvd1tYda+LTg@mail.gmail.com>
+
+Hi all,
+
+Can anyone tell me about some projects or applications which has been built
+using pycrypto. Also I would like to know about any ongoing project or
+application development in pycrypto.
+
+Along with this, I would also like to know about some interesting facts
+about pycrypto. I actually need to give a talk on pycrypto on 25th Oct 2011.
+So any kind of information on pycrypto would be helpful.
+
+Regards,
+Nivedita Datta
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111023/7eca49ef/attachment.htm 
+
+From sweetnivi88 at gmail.com  Sun Oct 23 21:44:38 2011
+From: sweetnivi88 at gmail.com (nivedita datta)
+Date: Mon, 24 Oct 2011 09:14:38 +0530
+Subject: [pycrypto] Info abt current work in pycrypto..
+Message-ID: <CA+XLsttx7nJV1acLwta5bqckJARpvp_e=iSECUzRrMNC3ih0HA@mail.gmail.com>
+
+Hi all,
+
+Can anyone tell me about some projects or applications which has been built
+using pycrypto. Also I would like to know about any ongoing/past project or
+application development in pycrypto.
+
+I would like to have the following information on pycrypto :
+
+1. some attention grabbing fact/detail related to past progress in the work
+or related to the usability.****
+
+2.  the future work or possible extension.****
+
+3.    some references of some existing paper or book on the same.
+
+Regards,
+Nivedita Datta
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111024/e429a1ba/attachment.htm 
+
+From dmacinskas at geobridge.net  Fri Oct 28 06:57:55 2011
+From: dmacinskas at geobridge.net (Dean Macinskas)
+Date: Fri, 28 Oct 2011 08:57:55 -0400
+Subject: [pycrypto] string XOR
+In-Reply-To: <20111022202350.GC3625@rivest.dlitz.net>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECCC9@exch-mail.bridge.net>
+	<CAMp7mVtANYeMjVfxbsJxhv7vKCHOiJuUzynAniP+hD2LGyXFwQ@mail.gmail.com>
+	<20111022202350.GC3625@rivest.dlitz.net>
+Message-ID: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECE82@exch-mail.bridge.net>
+
+Dwayne,
+
+I've been offline for a few days, so I apologize for the delay.  I'm a new pycrypto user, and missed this - I appreciate the heads-up.
+
+I've got a followup question too: I need to do bit shifts on long (8 or 16 byte) strings.  I can't see any simple way to do this; the built-in Python bit shift functions only work on integers and don't seem to have multi-precision extensions.  Any advice on how to do this?
+
+Thanks again,
+Dean
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dwayne C. Litzenberger
+Sent: Saturday, October 22, 2011 4:24 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] string XOR
+
+On Fri, Oct 21, 2011 at 03:09:36PM +0100, Richard Moore wrote:
+>On Fri, Oct 21, 2011 at 2:55 PM, Dean Macinskas
+><dmacinskas at geobridge.net> wrote:
+>> ??? ke = operator.xor(kbpkb,ve)
+>>
+>> TypeError: unsupported operand type(s) for ^: 'str' and 'str'
+>>
+>> Is there a way to do this in native Python (I'm using 2.7.2), or must I use
+>> a library of some sort?
+>
+>Use ord() to convert each character to a number first, then chr() to
+>convert the number back to a character.
+
+Also, if you're using PyCrypto anyway, you can use its fast C 
+implementation of a byte-wise string XOR:
+
+     from Crypto.Util.strxor import strxor
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From Paul_Koning at Dell.com  Fri Oct 28 07:29:31 2011
+From: Paul_Koning at Dell.com (Paul_Koning at Dell.com)
+Date: Fri, 28 Oct 2011 08:29:31 -0500
+Subject: [pycrypto] string XOR
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECE82@exch-mail.bridge.net>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECCC9@exch-mail.bridge.net>
+	<CAMp7mVtANYeMjVfxbsJxhv7vKCHOiJuUzynAniP+hD2LGyXFwQ@mail.gmail.com>
+	<20111022202350.GC3625@rivest.dlitz.net>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECE82@exch-mail.bridge.net>
+Message-ID: <09787EF419216C41A903FD14EE5506DD030CF16B26@AUSX7MCPC103.AMER.DELL.COM>
+
+Python 2 has "int" and "long" types -- long is what crypto folks call "bignum".  Arithmetic operations work on both.  So if you want to do arithmetic on values too big for an int, put them into a long and do it then.
+
+In Python 3, there is only "int" which is what used to be "long" (the small integer type went away) so the whole issue goes away.
+
+	paul
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dean Macinskas
+Sent: Friday, October 28, 2011 8:58 AM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] string XOR
+
+Dwayne,
+
+I've been offline for a few days, so I apologize for the delay.  I'm a new pycrypto user, and missed this - I appreciate the heads-up.
+
+I've got a followup question too: I need to do bit shifts on long (8 or 16 byte) strings.  I can't see any simple way to do this; the built-in Python bit shift functions only work on integers and don't seem to have multi-precision extensions.  Any advice on how to do this?
+
+Thanks again,
+Dean
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dwayne C. Litzenberger
+Sent: Saturday, October 22, 2011 4:24 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] string XOR
+
+On Fri, Oct 21, 2011 at 03:09:36PM +0100, Richard Moore wrote:
+>On Fri, Oct 21, 2011 at 2:55 PM, Dean Macinskas 
+><dmacinskas at geobridge.net> wrote:
+>> ??? ke = operator.xor(kbpkb,ve)
+>>
+>> TypeError: unsupported operand type(s) for ^: 'str' and 'str'
+>>
+>> Is there a way to do this in native Python (I'm using 2.7.2), or must 
+>> I use a library of some sort?
+>
+>Use ord() to convert each character to a number first, then chr() to 
+>convert the number back to a character.
+
+Also, if you're using PyCrypto anyway, you can use its fast C implementation of a byte-wise string XOR:
+
+     from Crypto.Util.strxor import strxor
+
+--
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7 _______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From dmacinskas at geobridge.net  Fri Oct 28 10:42:17 2011
+From: dmacinskas at geobridge.net (Dean Macinskas)
+Date: Fri, 28 Oct 2011 12:42:17 -0400
+Subject: [pycrypto] string XOR
+In-Reply-To: <09787EF419216C41A903FD14EE5506DD030CF16B26@AUSX7MCPC103.AMER.DELL.COM>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECCC9@exch-mail.bridge.net>
+	<CAMp7mVtANYeMjVfxbsJxhv7vKCHOiJuUzynAniP+hD2LGyXFwQ@mail.gmail.com>
+	<20111022202350.GC3625@rivest.dlitz.net>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECE82@exch-mail.bridge.net>
+	<09787EF419216C41A903FD14EE5506DD030CF16B26@AUSX7MCPC103.AMER.DELL.COM>
+Message-ID: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECEA0@exch-mail.bridge.net>
+
+Paul,
+
+Thanks.  It seems that in 2.7.2 the conversion is automatic: in other words, hex(int("ffffffffffffffff") == "ffffffffffffffff".
+
+Dean
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Paul_Koning at Dell.com
+Sent: Friday, October 28, 2011 9:30 AM
+To: pycrypto at lists.dlitz.net
+Subject: Re: [pycrypto] string XOR
+
+Python 2 has "int" and "long" types -- long is what crypto folks call "bignum".  Arithmetic operations work on both.  So if you want to do arithmetic on values too big for an int, put them into a long and do it then.
+
+In Python 3, there is only "int" which is what used to be "long" (the small integer type went away) so the whole issue goes away.
+
+	paul
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dean Macinskas
+Sent: Friday, October 28, 2011 8:58 AM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] string XOR
+
+Dwayne,
+
+I've been offline for a few days, so I apologize for the delay.  I'm a new pycrypto user, and missed this - I appreciate the heads-up.
+
+I've got a followup question too: I need to do bit shifts on long (8 or 16 byte) strings.  I can't see any simple way to do this; the built-in Python bit shift functions only work on integers and don't seem to have multi-precision extensions.  Any advice on how to do this?
+
+Thanks again,
+Dean
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dwayne C. Litzenberger
+Sent: Saturday, October 22, 2011 4:24 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] string XOR
+
+On Fri, Oct 21, 2011 at 03:09:36PM +0100, Richard Moore wrote:
+>On Fri, Oct 21, 2011 at 2:55 PM, Dean Macinskas 
+><dmacinskas at geobridge.net> wrote:
+>> ??? ke = operator.xor(kbpkb,ve)
+>>
+>> TypeError: unsupported operand type(s) for ^: 'str' and 'str'
+>>
+>> Is there a way to do this in native Python (I'm using 2.7.2), or must 
+>> I use a library of some sort?
+>
+>Use ord() to convert each character to a number first, then chr() to 
+>convert the number back to a character.
+
+Also, if you're using PyCrypto anyway, you can use its fast C implementation of a byte-wise string XOR:
+
+     from Crypto.Util.strxor import strxor
+
+--
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7 _______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From Paul_Koning at Dell.com  Fri Oct 28 10:51:16 2011
+From: Paul_Koning at Dell.com (Paul_Koning at Dell.com)
+Date: Fri, 28 Oct 2011 11:51:16 -0500
+Subject: [pycrypto] string XOR
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECEA0@exch-mail.bridge.net>
+References: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECCC9@exch-mail.bridge.net>
+	<CAMp7mVtANYeMjVfxbsJxhv7vKCHOiJuUzynAniP+hD2LGyXFwQ@mail.gmail.com>
+	<20111022202350.GC3625@rivest.dlitz.net>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECE82@exch-mail.bridge.net>
+	<09787EF419216C41A903FD14EE5506DD030CF16B26@AUSX7MCPC103.AMER.DELL.COM>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9AECEA0@exch-mail.bridge.net>
+Message-ID: <09787EF419216C41A903FD14EE5506DD030CF16E46@AUSX7MCPC103.AMER.DELL.COM>
+
+It sure is.  I didn't remember that.  For that matter, Python 2.4 does this too, so that feature goes back a ways.  It also does that whenever you do arithmetic that exceeds the bounds of an int.  For example, "int("7fffffff",16) produces an "int" type, but do << 1 on it and you get a "long".  (You can tell by the L suffix when it is printed.)
+
+	paul
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dean Macinskas
+Sent: Friday, October 28, 2011 12:42 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] string XOR
+
+Paul,
+
+Thanks.  It seems that in 2.7.2 the conversion is automatic: in other words, hex(int("ffffffffffffffff") == "ffffffffffffffff".
+
+Dean
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Paul_Koning at Dell.com
+Sent: Friday, October 28, 2011 9:30 AM
+To: pycrypto at lists.dlitz.net
+Subject: Re: [pycrypto] string XOR
+
+Python 2 has "int" and "long" types -- long is what crypto folks call "bignum".  Arithmetic operations work on both.  So if you want to do arithmetic on values too big for an int, put them into a long and do it then.
+
+In Python 3, there is only "int" which is what used to be "long" (the small integer type went away) so the whole issue goes away.
+
+	paul
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dean Macinskas
+Sent: Friday, October 28, 2011 8:58 AM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] string XOR
+
+Dwayne,
+
+I've been offline for a few days, so I apologize for the delay.  I'm a new pycrypto user, and missed this - I appreciate the heads-up.
+
+I've got a followup question too: I need to do bit shifts on long (8 or 16 byte) strings.  I can't see any simple way to do this; the built-in Python bit shift functions only work on integers and don't seem to have multi-precision extensions.  Any advice on how to do this?
+
+Thanks again,
+Dean
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dwayne C. Litzenberger
+Sent: Saturday, October 22, 2011 4:24 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] string XOR
+
+On Fri, Oct 21, 2011 at 03:09:36PM +0100, Richard Moore wrote:
+>On Fri, Oct 21, 2011 at 2:55 PM, Dean Macinskas 
+><dmacinskas at geobridge.net> wrote:
+>> ??? ke = operator.xor(kbpkb,ve)
+>>
+>> TypeError: unsupported operand type(s) for ^: 'str' and 'str'
+>>
+>> Is there a way to do this in native Python (I'm using 2.7.2), or must 
+>> I use a library of some sort?
+>
+>Use ord() to convert each character to a number first, then chr() to 
+>convert the number back to a character.
+
+Also, if you're using PyCrypto anyway, you can use its fast C implementation of a byte-wise string XOR:
+
+     from Crypto.Util.strxor import strxor
+
+--
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7 _______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From sebastian+lists at ramacher.at  Sat Oct 29 11:09:20 2011
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Sat, 29 Oct 2011 19:09:20 +0200
+Subject: [pycrypto] Patch for build failures with PyCrypto 2.4 and
+	easy_install
+Message-ID: <4EAC3340.8030108@ramacher.at>
+
+Hi,
+
+attached is a patch that fixes the build issues with the new method to detect
+libgmp and easy_install. The problem is that easy_install builds with bdist_egg
+which manually calls the build_[py|ext] targets but not build itself. Thus
+build_configure will not be called and the build fails.
+
+With the patach build_ext calls build_configure as sub command.
+
+The second patch fixes setup.py sdist. configure, configure.ac and
+src/config.h.in are missing in a tarball created with setup.py sdist with out
+this patch.
+
+Kind regards
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Run-build_configure-from-build_ext.patch
+Type: text/x-diff
+Size: 0 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20111029/96a3772c/attachment.patch 
+
+From s.ramacher at gmx.at  Sat Oct 29 10:20:01 2011
+From: s.ramacher at gmx.at (Sebastian Ramacher)
+Date: Sat, 29 Oct 2011 18:20:01 +0200
+Subject: [PATCH 1/2] Run build_configure from build_ext.
+Message-ID: <mailman.0.1319908910.1079.pycrypto@lists.dlitz.net>
+
+When installing with easy_install build_ext ist called directly. Thus we have to
+ensure that build_configure is run before we're building the extensions in
+build_ext.
+---
+ setup.py |   11 ++++++++---
+ 1 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index 0f1ef01..13dda2d 100644
+--- a/setup.py
++++ b/setup.py
+@@ -287,12 +287,17 @@ class PCTBuildExt (build_ext):
+             f.close()
+         return result
+ 
+-class PCTBuild(build):
++    def run(self):
++        for cmd_name in self.get_sub_commands():
++            self.run_command(cmd_name)
++        
++        build_ext.run(self)
++
+     def has_configure(self):
+         compiler = new_compiler(compiler=self.compiler)
+         return compiler.compiler_type != 'msvc'
+ 
+-    sub_commands = [ ('build_configure', has_configure) ] + build.sub_commands
++    sub_commands = [ ('build_configure', has_configure) ] + build_ext.sub_commands
+ 
+ class PCTBuildConfigure(Command):
+     description = "Generate config.h using ./configure (autoconf)"
+@@ -384,7 +389,7 @@ kw = {'name':"pycrypto",
+       'author_email':"dlitz at dlitz.net",
+       'url':"http://www.pycrypto.org/",
+ 
+-      'cmdclass' : {'build': PCTBuild, 'build_configure': PCTBuildConfigure, 'build_ext':PCTBuildExt, 'build_py': PCTBuildPy, 'test': TestCommand },
++      'cmdclass' : {'build_configure': PCTBuildConfigure, 'build_ext': PCTBuildExt, 'build_py': PCTBuildPy, 'test': TestCommand },
+       'packages' : ["Crypto", "Crypto.Hash", "Crypto.Cipher", "Crypto.Util",
+                   "Crypto.Random",
+                   "Crypto.Random.Fortuna",
+-- 
+1.7.7.1
+
+
+--------------030208040306030506090403
+Content-Type: text/x-diff;
+ name="0002-Also-ship-configure-configure.ac-and-src-config.h.in.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0002-Also-ship-configure-configure.ac-and-src-config.h.in.pa";
+ filename*1="tch"
+
+
+From s.ramacher at gmx.at  Sat Oct 29 10:28:15 2011
+From: s.ramacher at gmx.at (Sebastian Ramacher)
+Date: Sat, 29 Oct 2011 18:28:15 +0200
+Subject: [PATCH 2/2] Also ship configure, configure.ac and src/config.h.in in
+ sdist.
+Message-ID: <mailman.1.1319908910.1079.pycrypto@lists.dlitz.net>
+
+---
+ MANIFEST.in |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/MANIFEST.in b/MANIFEST.in
+index eac077e..4a456fe 100644
+--- a/MANIFEST.in
++++ b/MANIFEST.in
+@@ -2,4 +2,6 @@ include MANIFEST.in
+ include ACKS ChangeLog COPYRIGHT Doc/* TODO
+ graft LEGAL
+ recursive-include src *.h *.c
++include src/config.h.in
+ include *.py
++include configure configure.ac
+-- 
+1.7.7.1
+
+
+--------------030208040306030506090403--
+
+From sweetnivi88 at gmail.com  Sat Oct 29 20:39:15 2011
+From: sweetnivi88 at gmail.com (nivedita datta)
+Date: Sun, 30 Oct 2011 08:09:15 +0530
+Subject: [pycrypto] IMP : reg current work in twisted matrix
+Message-ID: <CA+XLstsFFH0QmMw2ZWK5uX9t-UXdocDkjSbp5yXZR-WsbPBTYQ@mail.gmail.com>
+
+ Hi all,
+
+Can u tell me about some projects or applications which has been built
+using twisted. Also I would like to know about any ongoing/past project or
+application development in twisted.
+
+Along with that, I would also like to have the following information on
+twisted:
+
+1. some attention grabbing fact/detail related to past progress in the work
+or related to the usability.
+
+2. the future work or possible extension.
+
+3. some references of some existing paper or book on the same.
+
+
+Regards,
+Nivedita Datta
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111030/72f47b57/attachment.htm 
+
+From paul.hoffman at gmail.com  Tue Nov  1 14:15:37 2011
+From: paul.hoffman at gmail.com (Paul Hoffman)
+Date: Tue, 1 Nov 2011 13:15:37 -0700
+Subject: [pycrypto] Cannot build 2.4
+Message-ID: <CAPik8yZAsOVZgR7QgXeB2gji8JH3dyBtn9FsH431rms6COr+dw@mail.gmail.com>
+
+Greetings again. Just pulled down 2.4, trying to install it on a
+Ubuntu box with "python setup.py build". However:
+
+. . .
+gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes
+-fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/
+-I/usr/include/python2.6 -c src/MD2.c -o
+build/temp.linux-x86_64-2.6/src/MD2.o
+src/MD2.c:31:20: error: Python.h: No such file or directory
+src/MD2.c:120: error: expected '=', ',', ';', 'asm' or '__attribute__'
+before '*' token
+In file included from src/MD2.c:136:
+src/hash_template.c:48: error: expected specifier-qualifier-list
+before 'PyObject_HEAD'
+src/hash_template.c:59: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before 'PyTypeObject'
+src/hash_template.c: In function 'newALGobject':
+src/hash_template.c:69: warning: implicit declaration of function 'PyObject_New'
+src/hash_template.c:69: error: expected expression before 'ALGobject'
+src/hash_template.c: At top level:
+src/hash_template.c:76: error: expected ')' before '*' token
+src/hash_template.c:91: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before '*' token
+src/hash_template.c:110: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before '*' token
+src/hash_template.c:122: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before '*' token
+src/hash_template.c:162: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before '*' token
+src/hash_template.c:181: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before 'ALG_methods'
+src/hash_template.c:189: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before '*' token
+src/hash_template.c:214: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before 'ALGtype'
+src/hash_template.c:265: error: expected '=', ',', ';', 'asm' or
+'__attribute__' before '*' token
+src/hash_template.c:298: error: array type has incomplete element type
+src/hash_template.c:299: error: 'PyCFunction' undeclared here (not in
+a function)
+src/hash_template.c:299: error: expected '}' before 'ALG_new'
+src/hash_template.c: In function 'initMD2':
+src/hash_template.c:333: error: 'PyObject' undeclared (first use in
+this function)
+src/hash_template.c:333: error: (Each undeclared identifier is
+reported only once
+src/hash_template.c:333: error: for each function it appears in.)
+src/hash_template.c:333: error: 'm' undeclared (first use in this function)
+src/hash_template.c:345: error: 'ALGtype' undeclared (first use in
+this function)
+src/hash_template.c:345: error: 'PyType_Type' undeclared (first use in
+this function)
+src/hash_template.c:346: warning: implicit declaration of function
+'Py_InitModule'
+src/hash_template.c:350: error: 'o' undeclared (first use in this function)
+src/hash_template.c:350: warning: implicit declaration of function
+'PyInt_FromLong'
+src/hash_template.c:350: warning: implicit declaration of function
+'PyDict_SetItemString'
+src/hash_template.c:350: warning: implicit declaration of function
+'PyModule_GetDict'
+src/hash_template.c:350: warning: implicit declaration of function 'Py_DECREF'
+src/hash_template.c:354: warning: implicit declaration of function
+'PyErr_Occurred'
+src/hash_template.c:355: warning: implicit declaration of function
+'Py_FatalError'
+error: command 'gcc' failed with exit status 1
+
+Clues appreciated.
+
+--Paul Hoffman
+
+From oberoc at gmail.com  Tue Nov  1 14:24:42 2011
+From: oberoc at gmail.com (Tino Dai)
+Date: Tue, 1 Nov 2011 16:24:42 -0400
+Subject: [pycrypto] Cannot build 2.4
+In-Reply-To: <CAPik8yZAsOVZgR7QgXeB2gji8JH3dyBtn9FsH431rms6COr+dw@mail.gmail.com>
+References: <CAPik8yZAsOVZgR7QgXeB2gji8JH3dyBtn9FsH431rms6COr+dw@mail.gmail.com>
+Message-ID: <CAOu0yXbfRGQGMNnuuBJ34E=Jm1KLjKbL6CRbFeBT3-G5JdE0GQ@mail.gmail.com>
+
+You m
+On Nov 1, 2011 4:15 PM, "Paul Hoffman" <paul.hoffman at gmail.com> wrote:
+>
+> Greetings again. Just pulled down 2.4, trying to install it on a
+> Ubuntu box with "python setup.py build". However:
+>
+> . . .
+> gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes
+> -fPIC -std=c99 -O3 -fomit-frame-pointer -Isrc/
+> -I/usr/include/python2.6 -c src/MD2.c -o
+> build/temp.linux-x86_64-2.6/src/MD2.o
+> src/MD2.c:31:20: error: Python.h: No such file or directory
+> src/MD2.c:120: error: expected '=', ',', ';', 'asm' or '__attribute__'
+> before '*' token
+> In file included from src/MD2.c:136:
+> src/hash_template.c:48: error: expected specifier-qualifier-list
+> before 'PyObject_HEAD'
+> src/hash_template.c:59: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before 'PyTypeObject'
+> src/hash_template.c: In function 'newALGobject':
+> src/hash_template.c:69: warning: implicit declaration of function
+'PyObject_New'
+> src/hash_template.c:69: error: expected expression before 'ALGobject'
+> src/hash_template.c: At top level:
+> src/hash_template.c:76: error: expected ')' before '*' token
+> src/hash_template.c:91: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before '*' token
+> src/hash_template.c:110: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before '*' token
+> src/hash_template.c:122: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before '*' token
+> src/hash_template.c:162: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before '*' token
+> src/hash_template.c:181: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before 'ALG_methods'
+> src/hash_template.c:189: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before '*' token
+> src/hash_template.c:214: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before 'ALGtype'
+> src/hash_template.c:265: error: expected '=', ',', ';', 'asm' or
+> '__attribute__' before '*' token
+> src/hash_template.c:298: error: array type has incomplete element type
+> src/hash_template.c:299: error: 'PyCFunction' undeclared here (not in
+> a function)
+> src/hash_template.c:299: error: expected '}' before 'ALG_new'
+> src/hash_template.c: In function 'initMD2':
+> src/hash_template.c:333: error: 'PyObject' undeclared (first use in
+> this function)
+> src/hash_template.c:333: error: (Each undeclared identifier is
+> reported only once
+> src/hash_template.c:333: error: for each function it appears in.)
+> src/hash_template.c:333: error: 'm' undeclared (first use in this
+function)
+> src/hash_template.c:345: error: 'ALGtype' undeclared (first use in
+> this function)
+> src/hash_template.c:345: error: 'PyType_Type' undeclared (first use in
+> this function)
+> src/hash_template.c:346: warning: implicit declaration of function
+> 'Py_InitModule'
+> src/hash_template.c:350: error: 'o' undeclared (first use in this
+function)
+> src/hash_template.c:350: warning: implicit declaration of function
+> 'PyInt_FromLong'
+> src/hash_template.c:350: warning: implicit declaration of function
+> 'PyDict_SetItemString'
+> src/hash_template.c:350: warning: implicit declaration of function
+> 'PyModule_GetDict'
+> src/hash_template.c:350: warning: implicit declaration of function
+'Py_DECREF'
+> src/hash_template.c:354: warning: implicit declaration of function
+> 'PyErr_Occurred'
+> src/hash_template.c:355: warning: implicit declaration of function
+> 'Py_FatalError'
+> error: command 'gcc' failed with exit status 1
+>
+> Clues appreciated.
+>
+> --Paul Hoffman
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+You probably have apt-get install python-dev
+
+-T
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111101/5f40e9a7/attachment.htm 
+
+From dlitz at dlitz.net  Fri Nov  4 13:34:14 2011
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 4 Nov 2011 15:34:14 -0400
+Subject: [pycrypto] Patch for build failures with PyCrypto 2.4 and
+ easy_install
+In-Reply-To: <4EAC3340.8030108@ramacher.at>
+References: <4EAC3340.8030108@ramacher.at>
+Message-ID: <20111104193414.GA18659@rivest.dlitz.net>
+
+On Sat, Oct 29, 2011 at 07:09:20PM +0200, Sebastian Ramacher wrote:
+>attached is a patch that fixes the build issues with the new method to 
+>detect
+>libgmp and easy_install. The problem is that easy_install builds with bdist_egg
+>which manually calls the build_[py|ext] targets but not build itself. Thus
+>build_configure will not be called and the build fails.
+>
+>With the patach build_ext calls build_configure as sub command.
+>
+>The second patch fixes setup.py sdist. configure, configure.ac and
+>src/config.h.in are missing in a tarball created with setup.py sdist with out
+>this patch.
+
+Thanks!  I've applied the patch and released PyCrypto 2.4.1.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From dlitz at dlitz.net  Fri Nov  4 13:49:58 2011
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Fri, 4 Nov 2011 15:49:58 -0400
+Subject: [pycrypto] ANN: PyCrypto 2.4.1 released - fixes "config.h not found"
+In-Reply-To: <20111022201648.GA3625@rivest.dlitz.net>
+References: <20111022201648.GA3625@rivest.dlitz.net>
+Message-ID: <20111104194958.GB18659@rivest.dlitz.net>
+
+I've released PyCrypto 2.4.1 today, which is the same as version 2.4, 
+except it includes Sebastian Ramacher's setup.py fixes, which should help 
+users of easy_install who were getting the following error:
+
+   error: Setup script exited with error: src/config.h: No such file or directory
+   -- https://bugs.launchpad.net/pycrypto/+bug/881130
+
+Please also take a few minutes to complete the survey at 
+http://pycrypto-survey.warshaft.com/, which will run until 2011-11-22.
+
+Cheers,
+- Dwayne
+
+RELEASE INFO:
+
+Homepage:       http://www.pycrypto.org/
+Mailing list:   http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+Bug tracker:    https://bugs.launchpad.net/pycrypto
+Source repo:    https://github.com/dlitz/pycrypto/
+Version:        v2.4.1
+Commit id:      62247ca754657b6ee8370d8fd62c58b8b881f396
+SHA256 sums:
+  4ff5f7008869c8509d16a31f285b9f6340c4a9ff703c85298832a2869210b154 *pycrypto-2.4.1.tar.gz
+  63eb81641071a160f3f1f102438e87a156796ccdf36898411ddc93b5e98a2c7e *pycrypto-2.4.1.tar.gz.asc
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 222 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20111104/88a6c687/attachment.pgp 
+
+From john at compunique.com  Tue Nov  8 10:59:12 2011
+From: john at compunique.com (John Matthew)
+Date: Tue, 8 Nov 2011 08:59:12 -0800
+Subject: [pycrypto] Public Key encryption of files
+Message-ID: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+
+First off, pycrypto is awesome!  Thank you for creating it!
+
+I'd like to use Public Keys to encrypt files, is this something that seems
+appropriate for file encryption?
+
+I've noticed that the encrypt method for RSA keys is only 256 bytes, which
+seems rather small.
+
+I know I could wrap that in a generator, but was hoping for some feedback
+on another way or a configuration change to increase that number.
+
+Thanks for your contribution, and help.
+
+J
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111108/ab89035c/attachment.htm 
+
+From dmacinskas at geobridge.net  Thu Nov 10 07:17:43 2011
+From: dmacinskas at geobridge.net (Dean Macinskas)
+Date: Thu, 10 Nov 2011 08:17:43 -0500
+Subject: [pycrypto] Public Key encryption of files
+In-Reply-To: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+References: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+Message-ID: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048@exch-mail.bridge.net>
+
+John,
+
+Unless the file is small, the typical way to encrypt a file is to use a symmetric key, like TDES or AES.  Asymmetric key crypto is usually too slow for bulk encryption; you use a symmetric key for that, and store/export the symmetric key using asymmetric key protection.
+
+The block size of a public key is fixed by the length of the key; in other words, if you generate a 2048 bit key, the block size is 2048 bits (256 bytes).  Symmetric key block length is set by the algorithm: 8 bytes for TDES, 16 for AES.  Any data you encrypt has to be padded to a multiple of the block length.
+
+If you use RSA, there are a couple of rules for encrypting data, one of which is that the data has to be numerically less than the public modulus.  This is usually accomplished by setting the left-most bit (MSB) of the data block to zero; another reason why using a public key directly is not a good choice for bulk encryption.
+
+HTH,
+Dean
+
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of John Matthew
+Sent: Tuesday, November 08, 2011 11:59 AM
+To: pycrypto at lists.dlitz.net
+Subject: [pycrypto] Public Key encryption of files
+
+First off, pycrypto is awesome!  Thank you for creating it!
+
+I'd like to use Public Keys to encrypt files, is this something that seems appropriate for file encryption?
+
+I've noticed that the encrypt method for RSA keys is only 256 bytes, which seems rather small.
+
+I know I could wrap that in a generator, but was hoping for some feedback on another way or a configuration change to increase that number.
+
+Thanks for your contribution, and help.
+
+J
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111110/7641abf0/attachment.htm 
+
+From john at compunique.com  Thu Nov 10 11:10:10 2011
+From: john at compunique.com (John Matthew)
+Date: Thu, 10 Nov 2011 09:10:10 -0800
+Subject: [pycrypto] Public Key encryption of files
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048@exch-mail.bridge.net>
+References: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048@exch-mail.bridge.net>
+Message-ID: <CAO2sgosj6URgFkk=YDBMYU=XVgp2b1zpvZfXxGLP1v23i02MCQ@mail.gmail.com>
+
+Dean, thanks for the reply
+
+
+Ah, I see.  If I want to encrypt a 2mb file with a Symmetric Key, it just
+has to have a "16 byte padding" for AES, or do all the chunks need to be 16
+bytes?
+
+J
+
+On Thu, Nov 10, 2011 at 5:17 AM, Dean Macinskas <dmacinskas at geobridge.net>wrote:
+
+>  John,****
+>
+> ** **
+>
+> Unless the file is small, the typical way to encrypt a file is to use a
+> symmetric key, like TDES or AES.  Asymmetric key crypto is usually too slow
+> for bulk encryption; you use a symmetric key for that, and store/export the
+> symmetric key using asymmetric key protection.****
+>
+> ** **
+>
+> The block size of a public key is fixed by the length of the key; in other
+> words, if you generate a 2048 bit key, the block size is 2048 bits (256
+> bytes).  Symmetric key block length is set by the algorithm: 8 bytes for
+> TDES, 16 for AES.  Any data you encrypt has to be padded to a multiple of
+> the block length.****
+>
+> ** **
+>
+> If you use RSA, there are a couple of rules for encrypting data, one of
+> which is that the data has to be numerically less than the public modulus.
+> This is usually accomplished by setting the left-most bit (MSB) of the data
+> block to zero; another reason why using a public key directly is not a good
+> choice for bulk encryption.****
+>
+> ** **
+>
+> HTH,****
+>
+> Dean****
+>
+> ** **
+>
+> *From:* pycrypto-bounces at lists.dlitz.net [mailto:
+> pycrypto-bounces at lists.dlitz.net] *On Behalf Of *John Matthew
+> *Sent:* Tuesday, November 08, 2011 11:59 AM
+> *To:* pycrypto at lists.dlitz.net
+> *Subject:* [pycrypto] Public Key encryption of files****
+>
+> ** **
+>
+> First off, pycrypto is awesome!  Thank you for creating it!****
+>
+> ** **
+>
+> I'd like to use Public Keys to encrypt files, is this something that seems
+> appropriate for file encryption?****
+>
+> ** **
+>
+> I've noticed that the encrypt method for RSA keys is only 256 bytes, which
+> seems rather small.****
+>
+> ** **
+>
+> I know I could wrap that in a generator, but was hoping for some feedback
+> on another way or a configuration change to increase that number.****
+>
+> ** **
+>
+> Thanks for your contribution, and help.****
+>
+> ** **
+>
+> J****
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111110/fd4ff1f0/attachment.htm 
+
+From dmacinskas at geobridge.net  Thu Nov 10 12:18:53 2011
+From: dmacinskas at geobridge.net (Dean Macinskas)
+Date: Thu, 10 Nov 2011 13:18:53 -0500
+Subject: [pycrypto] Public Key encryption of files
+In-Reply-To: <CAO2sgosj6URgFkk=YDBMYU=XVgp2b1zpvZfXxGLP1v23i02MCQ@mail.gmail.com>
+References: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048@exch-mail.bridge.net>
+	<CAO2sgosj6URgFkk=YDBMYU=XVgp2b1zpvZfXxGLP1v23i02MCQ@mail.gmail.com>
+Message-ID: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF066@exch-mail.bridge.net>
+
+All blocks need to be 16 bytes.  So for example, if the file is 2,000,005 bytes, you'd encrypt 125,000 16-byte blocks; you then have 5 bytes left over, to which you'd add 11 padding bytes, which can be any binary value and then encrypt that last block.
+
+Some schemes add a header to the beginning of the file with the cleartext length, so the decrypter can easily discard the padding.  Also, consider using CBC mode with a non-zero IV, which has some security advantages.
+
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of John Matthew
+Sent: Thursday, November 10, 2011 12:10 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] Public Key encryption of files
+
+Dean, thanks for the reply
+
+
+Ah, I see.  If I want to encrypt a 2mb file with a Symmetric Key, it just has to have a "16 byte padding" for AES, or do all the chunks need to be 16 bytes?
+
+J
+On Thu, Nov 10, 2011 at 5:17 AM, Dean Macinskas <dmacinskas at geobridge.net<mailto:dmacinskas at geobridge.net>> wrote:
+John,
+
+Unless the file is small, the typical way to encrypt a file is to use a symmetric key, like TDES or AES.  Asymmetric key crypto is usually too slow for bulk encryption; you use a symmetric key for that, and store/export the symmetric key using asymmetric key protection.
+
+The block size of a public key is fixed by the length of the key; in other words, if you generate a 2048 bit key, the block size is 2048 bits (256 bytes).  Symmetric key block length is set by the algorithm: 8 bytes for TDES, 16 for AES.  Any data you encrypt has to be padded to a multiple of the block length.
+
+If you use RSA, there are a couple of rules for encrypting data, one of which is that the data has to be numerically less than the public modulus.  This is usually accomplished by setting the left-most bit (MSB) of the data block to zero; another reason why using a public key directly is not a good choice for bulk encryption.
+
+HTH,
+Dean
+
+From: pycrypto-bounces at lists.dlitz.net<mailto:pycrypto-bounces at lists.dlitz.net> [mailto:pycrypto-bounces at lists.dlitz.net<mailto:pycrypto-bounces at lists.dlitz.net>] On Behalf Of John Matthew
+Sent: Tuesday, November 08, 2011 11:59 AM
+To: pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+Subject: [pycrypto] Public Key encryption of files
+
+First off, pycrypto is awesome!  Thank you for creating it!
+
+I'd like to use Public Keys to encrypt files, is this something that seems appropriate for file encryption?
+
+I've noticed that the encrypt method for RSA keys is only 256 bytes, which seems rather small.
+
+I know I could wrap that in a generator, but was hoping for some feedback on another way or a configuration change to increase that number.
+
+Thanks for your contribution, and help.
+
+J
+
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111110/bda53c29/attachment.htm 
+
+From john at compunique.com  Thu Nov 10 12:25:19 2011
+From: john at compunique.com (John Matthew)
+Date: Thu, 10 Nov 2011 10:25:19 -0800
+Subject: [pycrypto] Public Key encryption of files
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF066@exch-mail.bridge.net>
+References: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048@exch-mail.bridge.net>
+	<CAO2sgosj6URgFkk=YDBMYU=XVgp2b1zpvZfXxGLP1v23i02MCQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF066@exch-mail.bridge.net>
+Message-ID: <CAO2sgos9qgCR9-_XDWYRV0EysY1J=0y1Vdy5nkBhYGmgWWWpjQ@mail.gmail.com>
+
+Dean,
+
+After getting info from you, and reading a few blogs that have done this,
+it's becoming clearer, thank you for your feedback.
+
+J
+
+On Thu, Nov 10, 2011 at 10:18 AM, Dean Macinskas
+<dmacinskas at geobridge.net>wrote:
+
+>  All blocks need to be 16 bytes.  So for example, if the file is
+> 2,000,005 bytes, you'd encrypt 125,000 16-byte blocks; you then have 5
+> bytes left over, to which you'd add 11 padding bytes, which can be any
+> binary value and then encrypt that last block.****
+>
+> ** **
+>
+> Some schemes add a header to the beginning of the file with the cleartext
+> length, so the decrypter can easily discard the padding.  Also, consider
+> using CBC mode with a non-zero IV, which has some security advantages.****
+>
+> ** **
+>
+> *From:* pycrypto-bounces at lists.dlitz.net [mailto:
+> pycrypto-bounces at lists.dlitz.net] *On Behalf Of *John Matthew
+> *Sent:* Thursday, November 10, 2011 12:10 PM
+> *To:* PyCrypto discussion list
+> *Subject:* Re: [pycrypto] Public Key encryption of files****
+>
+> ** **
+>
+> Dean, thanks for the reply****
+>
+> ** **
+>
+> ** **
+>
+> Ah, I see.  If I want to encrypt a 2mb file with a Symmetric Key, it just
+> has to have a "16 byte padding" for AES, or do all the chunks need to be 16
+> bytes?****
+>
+> ** **
+>
+> J****
+>
+> On Thu, Nov 10, 2011 at 5:17 AM, Dean Macinskas <dmacinskas at geobridge.net>
+> wrote:****
+>
+> John,****
+>
+>  ****
+>
+> Unless the file is small, the typical way to encrypt a file is to use a
+> symmetric key, like TDES or AES.  Asymmetric key crypto is usually too slow
+> for bulk encryption; you use a symmetric key for that, and store/export the
+> symmetric key using asymmetric key protection.****
+>
+>  ****
+>
+> The block size of a public key is fixed by the length of the key; in other
+> words, if you generate a 2048 bit key, the block size is 2048 bits (256
+> bytes).  Symmetric key block length is set by the algorithm: 8 bytes for
+> TDES, 16 for AES.  Any data you encrypt has to be padded to a multiple of
+> the block length.****
+>
+>  ****
+>
+> If you use RSA, there are a couple of rules for encrypting data, one of
+> which is that the data has to be numerically less than the public modulus.
+> This is usually accomplished by setting the left-most bit (MSB) of the data
+> block to zero; another reason why using a public key directly is not a good
+> choice for bulk encryption.****
+>
+>  ****
+>
+> HTH,****
+>
+> Dean****
+>
+>  ****
+>
+> *From:* pycrypto-bounces at lists.dlitz.net [mailto:
+> pycrypto-bounces at lists.dlitz.net] *On Behalf Of *John Matthew
+> *Sent:* Tuesday, November 08, 2011 11:59 AM
+> *To:* pycrypto at lists.dlitz.net
+> *Subject:* [pycrypto] Public Key encryption of files****
+>
+>  ****
+>
+> First off, pycrypto is awesome!  Thank you for creating it!****
+>
+>  ****
+>
+> I'd like to use Public Keys to encrypt files, is this something that seems
+> appropriate for file encryption?****
+>
+>  ****
+>
+> I've noticed that the encrypt method for RSA keys is only 256 bytes, which
+> seems rather small.****
+>
+>  ****
+>
+> I know I could wrap that in a generator, but was hoping for some feedback
+> on another way or a configuration change to increase that number.****
+>
+>  ****
+>
+> Thanks for your contribution, and help.****
+>
+>  ****
+>
+> J****
+>
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto****
+>
+> ** **
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111110/b7a311fd/attachment-0001.htm 
+
+From dave.pawson at gmail.com  Thu Nov 10 12:26:52 2011
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Thu, 10 Nov 2011 18:26:52 +0000
+Subject: [pycrypto] Public Key encryption of files
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF066@exch-mail.bridge.net>
+References: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048@exch-mail.bridge.net>
+	<CAO2sgosj6URgFkk=YDBMYU=XVgp2b1zpvZfXxGLP1v23i02MCQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF066@exch-mail.bridge.net>
+Message-ID: <CAEncD4e91oCifceev3ZxbSpoYT3P3V6zrzcMgf11ht69TBcmgQ@mail.gmail.com>
+
+On 10 November 2011 18:18, Dean Macinskas <dmacinskas at geobridge.net> wrote:
+> All blocks need to be 16 bytes. ?So for example, if the file is 2,000,005
+> bytes, you'd encrypt 125,000 16-byte blocks; you then have 5 bytes left
+> over, to which you'd add 11 padding bytes, which can be any binary value and
+> then encrypt that last block.
+
+
+def _lazysecret(secret, blocksize=32, padding='}'):
+    """pads secret if not legal AES block size (16, 24, 32)"""
+    if not len(secret) in (16, 24, 32):
+        return secret + (blocksize - len(secret)) * padding
+    return secret
+
+Python makes it quite easy.
+  The reason I started to use it!
+Thanks to
+src http://www.turnkeylinux.org/blog/python-symmetric-encryption
+
+great piece of software.
+
+regards
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From john at compunique.com  Thu Nov 10 12:32:01 2011
+From: john at compunique.com (John Matthew)
+Date: Thu, 10 Nov 2011 10:32:01 -0800
+Subject: [pycrypto] Public Key encryption of files
+In-Reply-To: <CAEncD4e91oCifceev3ZxbSpoYT3P3V6zrzcMgf11ht69TBcmgQ@mail.gmail.com>
+References: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048@exch-mail.bridge.net>
+	<CAO2sgosj6URgFkk=YDBMYU=XVgp2b1zpvZfXxGLP1v23i02MCQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF066@exch-mail.bridge.net>
+	<CAEncD4e91oCifceev3ZxbSpoYT3P3V6zrzcMgf11ht69TBcmgQ@mail.gmail.com>
+Message-ID: <CAO2sgosQRBMNYOXn9s3e2ZqtzsasUtAofnYfMZniDWG5f36h4A@mail.gmail.com>
+
+All good stuff, thanks Dave
+
+On Thu, Nov 10, 2011 at 10:26 AM, Dave Pawson <dave.pawson at gmail.com> wrote:
+
+> On 10 November 2011 18:18, Dean Macinskas <dmacinskas at geobridge.net>
+> wrote:
+> > All blocks need to be 16 bytes.  So for example, if the file is 2,000,005
+> > bytes, you'd encrypt 125,000 16-byte blocks; you then have 5 bytes left
+> > over, to which you'd add 11 padding bytes, which can be any binary value
+> and
+> > then encrypt that last block.
+>
+>
+> def _lazysecret(secret, blocksize=32, padding='}'):
+>    """pads secret if not legal AES block size (16, 24, 32)"""
+>    if not len(secret) in (16, 24, 32):
+>        return secret + (blocksize - len(secret)) * padding
+>    return secret
+>
+> Python makes it quite easy.
+>  The reason I started to use it!
+> Thanks to
+> src http://www.turnkeylinux.org/blog/python-symmetric-encryption
+>
+> great piece of software.
+>
+> regards
+>
+>
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111110/56d31537/attachment.htm 
+
+From dmacinskas at geobridge.net  Thu Nov 10 13:28:54 2011
+From: dmacinskas at geobridge.net (Dean Macinskas)
+Date: Thu, 10 Nov 2011 14:28:54 -0500
+Subject: [pycrypto] Public Key encryption of files
+In-Reply-To: <CAEncD4e91oCifceev3ZxbSpoYT3P3V6zrzcMgf11ht69TBcmgQ@mail.gmail.com>
+References: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048@exch-mail.bridge.net>
+	<CAO2sgosj6URgFkk=YDBMYU=XVgp2b1zpvZfXxGLP1v23i02MCQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF066@exch-mail.bridge.net>
+	<CAEncD4e91oCifceev3ZxbSpoYT3P3V6zrzcMgf11ht69TBcmgQ@mail.gmail.com>
+Message-ID: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF06D@exch-mail.bridge.net>
+
+Dave,
+
+An AES key can be 16, 24 or 32 bytes, but the data block size for AES is 16 bytes, regardless of key length.
+
+Dean
+
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dave Pawson
+Sent: Thursday, November 10, 2011 1:27 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] Public Key encryption of files
+
+On 10 November 2011 18:18, Dean Macinskas <dmacinskas at geobridge.net> wrote:
+> All blocks need to be 16 bytes. ?So for example, if the file is 2,000,005
+> bytes, you'd encrypt 125,000 16-byte blocks; you then have 5 bytes left
+> over, to which you'd add 11 padding bytes, which can be any binary value and
+> then encrypt that last block.
+
+
+def _lazysecret(secret, blocksize=32, padding='}'):
+    """pads secret if not legal AES block size (16, 24, 32)"""
+    if not len(secret) in (16, 24, 32):
+        return secret + (blocksize - len(secret)) * padding
+    return secret
+
+Python makes it quite easy.
+  The reason I started to use it!
+Thanks to
+src http://www.turnkeylinux.org/blog/python-symmetric-encryption
+
+great piece of software.
+
+regards
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From dave.pawson at gmail.com  Thu Nov 10 13:34:05 2011
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Thu, 10 Nov 2011 19:34:05 +0000
+Subject: [pycrypto] Public Key encryption of files
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF06D@exch-mail.bridge.net>
+References: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048@exch-mail.bridge.net>
+	<CAO2sgosj6URgFkk=YDBMYU=XVgp2b1zpvZfXxGLP1v23i02MCQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF066@exch-mail.bridge.net>
+	<CAEncD4e91oCifceev3ZxbSpoYT3P3V6zrzcMgf11ht69TBcmgQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF06D@exch-mail.bridge.net>
+Message-ID: <CAEncD4da+OBdO+ZXnzfX+oM7jMd2HApsWrx+e1UfNvQB9anVsA@mail.gmail.com>
+
+On 10 November 2011 19:28, Dean Macinskas <dmacinskas at geobridge.net> wrote:
+> Dave,
+>
+> An AES key can be 16, 24 or 32 bytes, but the data block size for AES is 16 bytes, regardless of key length.
+>
+> Dean
+
+Sorry, I used the software as is, found it works (still does) and left
+well alone?
+My crypto knowledge is ... minimal!
+
+At the url I included, perhaps that is set at 16 prior to the call?
+
+
+
+regards
+
+
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dmacinskas at geobridge.net  Thu Nov 10 13:48:14 2011
+From: dmacinskas at geobridge.net (Dean Macinskas)
+Date: Thu, 10 Nov 2011 14:48:14 -0500
+Subject: [pycrypto] Public Key encryption of files
+In-Reply-To: <CAEncD4da+OBdO+ZXnzfX+oM7jMd2HApsWrx+e1UfNvQB9anVsA@mail.gmail.com>
+References: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048@exch-mail.bridge.net>
+	<CAO2sgosj6URgFkk=YDBMYU=XVgp2b1zpvZfXxGLP1v23i02MCQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF066@exch-mail.bridge.net>
+	<CAEncD4e91oCifceev3ZxbSpoYT3P3V6zrzcMgf11ht69TBcmgQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF06D@exch-mail.bridge.net>
+	<CAEncD4da+OBdO+ZXnzfX+oM7jMd2HApsWrx+e1UfNvQB9anVsA@mail.gmail.com>
+Message-ID: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF071@exch-mail.bridge.net>
+
+Dave,
+
+I took a closer look - apparently the code accepts a user string for the key, then pads it to the next higher valid length.  So the procedure you referenced is for padding KEYS, not data.  The example also used CFB mode, which is actually a form of stream cipher, and thus encrypts byte-for-byte and requires no data padding.  But it's really inefficient (you only use 1 byte out of 16); for file encryption CBC is still the best option, IMHO.
+
+Dean
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dave Pawson
+Sent: Thursday, November 10, 2011 2:34 PM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] Public Key encryption of files
+
+On 10 November 2011 19:28, Dean Macinskas <dmacinskas at geobridge.net> wrote:
+> Dave,
+>
+> An AES key can be 16, 24 or 32 bytes, but the data block size for AES is 16 bytes, regardless of key length.
+>
+> Dean
+
+Sorry, I used the software as is, found it works (still does) and left
+well alone?
+My crypto knowledge is ... minimal!
+
+At the url I included, perhaps that is set at 16 prior to the call?
+
+
+
+regards
+
+
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From dave.pawson at gmail.com  Fri Nov 11 00:36:01 2011
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 11 Nov 2011 06:36:01 +0000
+Subject: [pycrypto] Public Key encryption of files
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF071@exch-mail.bridge.net>
+References: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048@exch-mail.bridge.net>
+	<CAO2sgosj6URgFkk=YDBMYU=XVgp2b1zpvZfXxGLP1v23i02MCQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF066@exch-mail.bridge.net>
+	<CAEncD4e91oCifceev3ZxbSpoYT3P3V6zrzcMgf11ht69TBcmgQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF06D@exch-mail.bridge.net>
+	<CAEncD4da+OBdO+ZXnzfX+oM7jMd2HApsWrx+e1UfNvQB9anVsA@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF071@exch-mail.bridge.net>
+Message-ID: <CAEncD4ft=Fx04wcxwWxmqDm=Z2mCdH5aQHVqiiw--3BBBgT8Zw@mail.gmail.com>
+
+On 10 November 2011 19:48, Dean Macinskas <dmacinskas at geobridge.net> wrote:
+> Dave,
+>
+> I took a closer look - apparently the code accepts a user string for the key, then pads it to the next higher valid length. ?So the procedure you referenced is for padding KEYS, not data. ?The example also used CFB mode, which is actually a form of stream cipher, and thus encrypts byte-for-byte and requires no data padding. ?But it's really inefficient (you only use 1 byte out of 16); for file encryption CBC is still the best option, IMHO.
+>
+> Dean
+
+Sorry Dean. Straight over my head.
+My data is a ....1K file of password info? It encrypts/decrypts in
+'human' time with no
+proble, i.e. it does the job I want? So (for me) the inefficiency  is
+not an issue?
+ Agreed using '1 byte out of 16' does sound bad.
+If you have the cycles, perhaps you might suggest an improvement to the code?
+I'll pass it back to the author?
+
+regards
+
+
+
+
+>
+> -----Original Message-----
+> From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dave Pawson
+> Sent: Thursday, November 10, 2011 2:34 PM
+> To: PyCrypto discussion list
+> Subject: Re: [pycrypto] Public Key encryption of files
+>
+> On 10 November 2011 19:28, Dean Macinskas <dmacinskas at geobridge.net> wrote:
+>> Dave,
+>>
+>> An AES key can be 16, 24 or 32 bytes, but the data block size for AES is 16 bytes, regardless of key length.
+>>
+>> Dean
+>
+> Sorry, I used the software as is, found it works (still does) and left
+> well alone?
+> My crypto knowledge is ... minimal!
+>
+> At the url I included, perhaps that is set at 16 prior to the call?
+>
+>
+>
+> regards
+>
+>
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dmacinskas at geobridge.net  Fri Nov 11 07:21:05 2011
+From: dmacinskas at geobridge.net (Dean Macinskas)
+Date: Fri, 11 Nov 2011 08:21:05 -0500
+Subject: [pycrypto] Public Key encryption of files
+In-Reply-To: <CAEncD4ft=Fx04wcxwWxmqDm=Z2mCdH5aQHVqiiw--3BBBgT8Zw@mail.gmail.com>
+References: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048@exch-mail.bridge.net>
+	<CAO2sgosj6URgFkk=YDBMYU=XVgp2b1zpvZfXxGLP1v23i02MCQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF066@exch-mail.bridge.net>
+	<CAEncD4e91oCifceev3ZxbSpoYT3P3V6zrzcMgf11ht69TBcmgQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF06D@exch-mail.bridge.net>
+	<CAEncD4da+OBdO+ZXnzfX+oM7jMd2HApsWrx+e1UfNvQB9anVsA@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF071@exch-mail.bridge.net>
+	<CAEncD4ft=Fx04wcxwWxmqDm=Z2mCdH5aQHVqiiw--3BBBgT8Zw@mail.gmail.com>
+Message-ID: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF0A4@exch-mail.bridge.net>
+
+Dave,
+
+For what you're doing the example is fine, but I think you'd be disappointed in the performance if your file was 10mb instead of 1 kb.  Why? Because CFB-8 requires an AES cycle *PER BYTE*.  So encrypting 1024 bytes requires 1024 AES cycles, compared to 64 if you used CBC.
+
+The example was just that: an example.  No need to optimize if the purpose is to demonstrate how to use pycrypto.
+
+Dean
+
+-----Original Message-----
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dave Pawson
+Sent: Friday, November 11, 2011 1:36 AM
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] Public Key encryption of files
+
+On 10 November 2011 19:48, Dean Macinskas <dmacinskas at geobridge.net> wrote:
+> Dave,
+>
+> I took a closer look - apparently the code accepts a user string for the key, then pads it to the next higher valid length. ?So the procedure you referenced is for padding KEYS, not data. ?The example also used CFB mode, which is actually a form of stream cipher, and thus encrypts byte-for-byte and requires no data padding. ?But it's really inefficient (you only use 1 byte out of 16); for file encryption CBC is still the best option, IMHO.
+>
+> Dean
+
+Sorry Dean. Straight over my head.
+My data is a ....1K file of password info? It encrypts/decrypts in
+'human' time with no
+proble, i.e. it does the job I want? So (for me) the inefficiency  is
+not an issue?
+ Agreed using '1 byte out of 16' does sound bad.
+If you have the cycles, perhaps you might suggest an improvement to the code?
+I'll pass it back to the author?
+
+regards
+
+
+
+
+>
+> -----Original Message-----
+> From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of Dave Pawson
+> Sent: Thursday, November 10, 2011 2:34 PM
+> To: PyCrypto discussion list
+> Subject: Re: [pycrypto] Public Key encryption of files
+>
+> On 10 November 2011 19:28, Dean Macinskas <dmacinskas at geobridge.net> wrote:
+>> Dave,
+>>
+>> An AES key can be 16, 24 or 32 bytes, but the data block size for AES is 16 bytes, regardless of key length.
+>>
+>> Dean
+>
+> Sorry, I used the software as is, found it works (still does) and left
+> well alone?
+> My crypto knowledge is ... minimal!
+>
+> At the url I included, perhaps that is set at 16 prior to the call?
+>
+>
+>
+> regards
+>
+>
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+From Imran.Azad at bthft.nhs.uk  Fri Nov 11 07:54:34 2011
+From: Imran.Azad at bthft.nhs.uk (Imran Azad)
+Date: Fri, 11 Nov 2011 13:54:34 +0000
+Subject: [pycrypto] Public Key encryption of files
+In-Reply-To: <20111110183208.267A844A95D@nhs-pd1e-esg008.ad1.nhs.net>
+References: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048@exch-mail.bridge.net>
+	<CAO2sgosj6URgFkk=YDBMYU=XVgp2b1zpvZfXxGLP1v23i02MCQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF066@exch-mail.bridge.net>
+	<CAEncD4e91oCifceev3ZxbSpoYT3P3V6zrzcMgf11ht69TBcmgQ@mail.gmail.com>
+	<20111110183208.267A844A95D@nhs-pd1e-esg008.ad1.nhs.net>
+Message-ID: <20111111135434.A3951448059@nhs-pd1e-esg109.ad1.nhs.net>
+
+Please note my new email address Imran.Azad at bthft.nhs.uk
+
+John,
+
+I don't mean to steal your thunder, I noticed you asked a question about the suitability of public key cryptography for file encryption and the use of padding. Unless one is an expert in cryptography I don't think it's a good idea to encrypt sensitive data using your own scheme as cryptography is very easy to get wrong with catastrophic consequences, even 'experts' make mistakes. Rather it would be safer to use an established scheme, you also need to think about the integrity of what you are encrypting - although you may have taken this into account. I am not an expert in cryptography and I appreciate and admire the work that has gone into PyCrypto. I am speaking from past experiences and I thought I would share these with you.
+
+You may find this link useful: http://security.stackexchange.com/questions/8571/rsa-4096-with-aes-256-encryption-process-using-pycrypto
+
+Kind Regards
+
+
+From: pycrypto-bounces at lists.dlitz.net [mailto:pycrypto-bounces at lists.dlitz.net] On Behalf Of John Matthew
+Sent: 10 November 2011 18:32
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] Public Key encryption of files
+
+All good stuff, thanks Dave
+On Thu, Nov 10, 2011 at 10:26 AM, Dave Pawson <dave.pawson at gmail.com<mailto:dave.pawson at gmail.com>> wrote:
+On 10 November 2011 18:18, Dean Macinskas <dmacinskas at geobridge.net<mailto:dmacinskas at geobridge.net>> wrote:
+> All blocks need to be 16 bytes.  So for example, if the file is 2,000,005
+> bytes, you'd encrypt 125,000 16-byte blocks; you then have 5 bytes left
+> over, to which you'd add 11 padding bytes, which can be any binary value and
+> then encrypt that last block.
+
+def _lazysecret(secret, blocksize=32, padding='}'):
+   """pads secret if not legal AES block size (16, 24, 32)"""
+   if not len(secret) in (16, 24, 32):
+       return secret + (blocksize - len(secret)) * padding
+   return secret
+
+Python makes it quite easy.
+ The reason I started to use it!
+Thanks to
+src http://www.turnkeylinux.org/blog/python-symmetric-encryption
+
+great piece of software.
+
+regards
+
+
+
+--
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+Imran Azad
+Web Content Manager
+Bradford Teaching Hospitals NHS Foundation Trust
+
+Tel: 01274 38 3556
+Mob: 07535660951
+Internet: http://www.bradfordhospitals.nhs.uk
+
+Your Hospital needs YOU! We need you to register as a Public, Patient or Staff member and help shape the future of your healthcare. Call 0800 280 2581 to register by phone or you can email bradfordhospitals at capitaregistrars.com<mailto:bradfordhospitals at capitaregistrars.com> and ask to be registered as a new member. For more information about our hospitals and Foundation Trust Membership please visit www.bradfordhospitals.nhs.uk<http://www.bradfordhospitals.nhs.uk>
+This message is confidential. It may also contain privileged information. The contents of this e-mail and any attachments are intended for the named addressee only. Unless you are the named addressee or authorised to receive the e-mail of the named addressee you may not disclose, use or copy the contents of the e-mail. If you are not the person for whom the message was intended, please notify the sender immediately at Bradford Teaching Hospitals NHS Foundation Trust and delete the material from your computer. You must not use the message for any other purpose, nor disclose its contents to any person other than the intended recipient. Bradford Teaching Hospitals NHS Foundation Trust does not accept responsibility for this message and any views or opinions contained in this e-mail are solely those of the author unless expressly stated otherwise.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111111/d537ca7d/attachment.htm 
+
+From dave.pawson at gmail.com  Fri Nov 11 08:33:56 2011
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 11 Nov 2011 14:33:56 +0000
+Subject: [pycrypto] Public Key encryption of files
+In-Reply-To: <8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF0A4@exch-mail.bridge.net>
+References: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048@exch-mail.bridge.net>
+	<CAO2sgosj6URgFkk=YDBMYU=XVgp2b1zpvZfXxGLP1v23i02MCQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF066@exch-mail.bridge.net>
+	<CAEncD4e91oCifceev3ZxbSpoYT3P3V6zrzcMgf11ht69TBcmgQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF06D@exch-mail.bridge.net>
+	<CAEncD4da+OBdO+ZXnzfX+oM7jMd2HApsWrx+e1UfNvQB9anVsA@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF071@exch-mail.bridge.net>
+	<CAEncD4ft=Fx04wcxwWxmqDm=Z2mCdH5aQHVqiiw--3BBBgT8Zw@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF0A4@exch-mail.bridge.net>
+Message-ID: <CAEncD4cDUVRrPqOeBOHiqHRsLvmKZgxtGL-ZiwFTxCpf4xWLsw@mail.gmail.com>
+
+On 11 November 2011 13:21, Dean Macinskas <dmacinskas at geobridge.net> wrote:
+> Dave,
+>
+> For what you're doing the example is fine, but I think you'd be disappointed in the performance if your file was 10mb instead of 1 kb. ?Why? Because CFB-8 requires an AES cycle *PER BYTE*. ?So encrypting 1024 bytes requires 1024 AES cycles, compared to 64 if you used CBC.
+
+
+Could you tell me how to change the code please, to use the less extravagent ???
+whatever CBC is?
+
+Guessing. In
+def encrypt(plaintext, secret, lazy=True, checksum=True):
+  ....
+ encobj = AES.new(secret, AES.MODE_CFB)
+ plaintext += struct.pack("i", zlib.crc32(plaintext))
+
+Is it the change to the first line above? If so, how to specify CBC please?
+
+
+TIA
+
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From john at compunique.com  Fri Nov 11 14:22:46 2011
+From: john at compunique.com (John Matthew)
+Date: Fri, 11 Nov 2011 12:22:46 -0800
+Subject: [pycrypto] Public Key encryption of files
+In-Reply-To: <20111111135434.A3951448059@nhs-pd1e-esg109.ad1.nhs.net>
+References: <CAO2sgostrJXRgmGLmBo3hiQe501uCE6iq1vaYD7eM4oNyog-Nw@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048@exch-mail.bridge.net>
+	<CAO2sgosj6URgFkk=YDBMYU=XVgp2b1zpvZfXxGLP1v23i02MCQ@mail.gmail.com>
+	<8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF066@exch-mail.bridge.net>
+	<CAEncD4e91oCifceev3ZxbSpoYT3P3V6zrzcMgf11ht69TBcmgQ@mail.gmail.com>
+	<20111110183208.267A844A95D@nhs-pd1e-esg008.ad1.nhs.net>
+	<20111111135434.A3951448059@nhs-pd1e-esg109.ad1.nhs.net>
+Message-ID: <CAO2sgotqWaE_Coc5vfS3YLpZBAy8_potgpP9JDNcXFaeAyuKvA@mail.gmail.com>
+
+Yes, I agree 100%, this is something I'm not taking lightly, that's why I'm
+trying to get it right the first time :).
+
+Ill checkout your link, thank you very much for your input.
+
+J
+
+On Fri, Nov 11, 2011 at 5:54 AM, Imran Azad <Imran.Azad at bthft.nhs.uk> wrote:
+
+>  *Please note my new email address Imran.Azad at bthft.nhs.uk*
+>
+>  John,
+>
+>
+>
+> I don?t mean to steal your thunder, I noticed you asked a question about
+> the suitability of public key cryptography for file encryption and the use
+> of padding. Unless one is an expert in cryptography I don?t think it?s a
+> good idea to encrypt sensitive data using your own scheme as cryptography
+> is very easy to get wrong with catastrophic consequences, even ?experts?
+> make mistakes. Rather it would be safer to use an established scheme, you
+> also need to think about the integrity of what you are encrypting ?
+> although you may have taken this into account. I am not an expert in
+> cryptography and I appreciate and admire the work that has gone into
+> PyCrypto. I am speaking from past experiences and I thought I would share
+> these with you.
+>
+>
+>
+> You may find this link useful:
+> http://security.stackexchange.com/questions/8571/rsa-4096-with-aes-256-encryption-process-using-pycrypto
+>
+>
+>
+> Kind Regards
+>
+>
+>
+>
+>
+> *From:* pycrypto-bounces at lists.dlitz.net [mailto:
+> pycrypto-bounces at lists.dlitz.net] *On Behalf Of *John Matthew
+> *Sent:* 10 November 2011 18:32
+>
+> *To:* PyCrypto discussion list
+> *Subject:* Re: [pycrypto] Public Key encryption of files
+>
+>
+>
+> All good stuff, thanks Dave
+>
+> On Thu, Nov 10, 2011 at 10:26 AM, Dave Pawson <dave.pawson at gmail.com>
+> wrote:
+>
+> On 10 November 2011 18:18, Dean Macinskas <dmacinskas at geobridge.net>
+> wrote:
+> > All blocks need to be 16 bytes.  So for example, if the file is 2,000,005
+> > bytes, you'd encrypt 125,000 16-byte blocks; you then have 5 bytes left
+> > over, to which you'd add 11 padding bytes, which can be any binary value
+> and
+> > then encrypt that last block.
+>
+>  def _lazysecret(secret, blocksize=32, padding='}'):
+>    """pads secret if not legal AES block size (16, 24, 32)"""
+>    if not len(secret) in (16, 24, 32):
+>        return secret + (blocksize - len(secret)) * padding
+>    return secret
+>
+> Python makes it quite easy.
+>  The reason I started to use it!
+> Thanks to
+> src http://www.turnkeylinux.org/blog/python-symmetric-encryption
+>
+> great piece of software.
+>
+> regards
+>
+>
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+>
+> Imran Azad
+> Web Content Manager
+> Bradford Teaching Hospitals NHS Foundation Trust
+>
+> Tel: 01274 38 3556
+> Mob: 07535660951
+> Internet: http://www.bradfordhospitals.nhs.uk
+>
+> *Your Hospital needs YOU!* We need you to register as a Public, Patient
+> or Staff member and help shape the future of your healthcare. Call 0800 280
+> 2581 to register by phone or you can email
+> bradfordhospitals at capitaregistrars.com and ask to be registered as a new
+> member. For more information about our hospitals and Foundation Trust
+> Membership please visit www.bradfordhospitals.nhs.uk
+> This message is confidential. It may also contain privileged information.
+> The contents of this e-mail and any attachments are intended for the named
+> addressee only. Unless you are the named addressee or authorised to receive
+> the e-mail of the named addressee you may not disclose, use or copy the
+> contents of the e-mail. If you are not the person for whom the message was
+> intended, please notify the sender immediately at Bradford Teaching
+> Hospitals NHS Foundation Trust and delete the material from your computer.
+> You must not use the message for any other purpose, nor disclose its
+> contents to any person other than the intended recipient. Bradford Teaching
+> Hospitals NHS Foundation Trust does not accept responsibility for this
+> message and any views or opinions contained in this e-mail are solely those
+> of the author unless expressly stated otherwise.
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111111/d48df023/attachment.htm 
+
+From Imran.Azad at bthft.nhs.uk  Fri Nov 11 14:42:12 2011
+From: Imran.Azad at bthft.nhs.uk (Imran Azad)
+Date: Fri, 11 Nov 2011 20:42:12 +0000
+Subject: [pycrypto] Public Key encryption of files
+In-Reply-To: <20111111202300.4ACBC478230@nhs-pd1e-esg004.ad1.nhs.net>
+Message-ID: <20111111204213.E33B54481CE@nhs-pd1e-esg104.ad1.nhs.net>
+
+Please note my new email address Imran.Azad at bthft.nhs.uk
+
+No problem. You are most welcome! :-)
+
+From: John Matthew [mailto:john at compunique.com]
+Sent: Friday, November 11, 2011 08:22 PM
+To: PyCrypto discussion list <pycrypto at lists.dlitz.net>
+Subject: Re: [pycrypto] Public Key encryption of files
+
+Yes, I agree 100%, this is something I'm not taking lightly, that's why I'm trying to get it right the first time :).
+
+Ill checkout your link, thank you very much for your input.
+
+J
+
+On Fri, Nov 11, 2011 at 5:54 AM, Imran Azad <Imran.Azad at bthft.nhs.uk<mailto:Imran.Azad at bthft.nhs.uk>> wrote:
+Please note my new email address Imran.Azad at bthft.nhs.uk<mailto:Imran.Azad at bthft.nhs.uk>
+
+John,
+
+I don?t mean to steal your thunder, I noticed you asked a question about the suitability of public key cryptography for file encryption and the use of padding. Unless one is an expert in cryptography I don?t think it?s a good idea to encrypt sensitive data using your own scheme as cryptography is very easy to get wrong with catastrophic consequences, even ?experts? make mistakes. Rather it would be safer to use an established scheme, you also need to think about the integrity of what you are encrypting ? although you may have taken this into account. I am not an expert in cryptography and I appreciate and admire the work that has gone into PyCrypto. I am speaking from past experiences and I thought I would share these with you.
+
+You may find this link useful: http://security.stackexchange.com/questions/8571/rsa-4096-with-aes-256-encryption-process-using-pycrypto
+
+Kind Regards
+
+
+From: pycrypto-bounces at lists.dlitz.net<mailto:pycrypto-bounces at lists.dlitz.net> [mailto:pycrypto-bounces at lists.dlitz.net<mailto:pycrypto-bounces at lists.dlitz.net>] On Behalf Of John Matthew
+Sent: 10 November 2011 18:32
+
+To: PyCrypto discussion list
+Subject: Re: [pycrypto] Public Key encryption of files
+
+All good stuff, thanks Dave
+On Thu, Nov 10, 2011 at 10:26 AM, Dave Pawson <dave.pawson at gmail.com<mailto:dave.pawson at gmail.com>> wrote:
+On 10 November 2011 18:18, Dean Macinskas <dmacinskas at geobridge.net<mailto:dmacinskas at geobridge.net>> wrote:
+> All blocks need to be 16 bytes.  So for example, if the file is 2,000,005
+> bytes, you'd encrypt 125,000 16-byte blocks; you then have 5 bytes left
+> over, to which you'd add 11 padding bytes, which can be any binary value and
+> then encrypt that last block.
+
+def _lazysecret(secret, blocksize=32, padding='}'):
+   """pads secret if not legal AES block size (16, 24, 32)"""
+   if not len(secret) in (16, 24, 32):
+       return secret + (blocksize - len(secret)) * padding
+   return secret
+
+Python makes it quite easy.
+ The reason I started to use it!
+Thanks to
+src http://www.turnkeylinux.org/blog/python-symmetric-encryption
+
+great piece of software.
+
+regards
+
+
+
+--
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+Imran Azad
+Web Content Manager
+Bradford Teaching Hospitals NHS Foundation Trust
+
+Tel: 01274 38 3556
+Mob: 07535660951
+Internet: http://www.bradfordhospitals.nhs.uk
+
+Your Hospital needs YOU! We need you to register as a Public, Patient or Staff member and help shape the future of your healthcare. Call 0800 280 2581 to register by phone or you can email bradfordhospitals at capitaregistrars.com<mailto:bradfordhospitals at capitaregistrars.com> and ask to be registered as a new member. For more information about our hospitals and Foundation Trust Membership please visit www.bradfordhospitals.nhs.uk<http://www.bradfordhospitals.nhs.uk>
+This message is confidential. It may also contain privileged information. The contents of this e-mail and any attachments are intended for the named addressee only. Unless you are the named addressee or authorised to receive the e-mail of the named addressee you may not disclose, use or copy the contents of the e-mail. If you are not the person for whom the message was intended, please notify the sender immediately at Bradford Teaching Hospitals NHS Foundation Trust and delete the material from your computer. You must not use the message for any other purpose, nor disclose its contents to any person other than the intended recipient. Bradford Teaching Hospitals NHS Foundation Trust does not accept responsibility for this message and any views or opinions contained in this e-mail are solely those of the author unless expressly stated otherwise.
+
+_______________________________________________
+pycrypto mailing list
+pycrypto at lists.dlitz.net<mailto:pycrypto at lists.dlitz.net>
+http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+
+Imran Azad
+Web Content Manager
+Bradford Teaching Hospitals NHS Foundation Trust
+
+Tel: 01274 38 3556
+Mob: 07535660951
+Internet: http://www.bradfordhospitals.nhs.uk
+
+Your Hospital needs YOU! We need you to register as a Public, Patient or Staff member and help shape the future of your healthcare. Call 0800 280 2581 to register by phone or you can email bradfordhospitals at capitaregistrars.com<mailto:bradfordhospitals at capitaregistrars.com> and ask to be registered as a new member. For more information about our hospitals and Foundation Trust Membership please visit www.bradfordhospitals.nhs.uk<http://www.bradfordhospitals.nhs.uk>
+This message is confidential. It may also contain privileged information. The contents of this e-mail and any attachments are intended for the named addressee only. Unless you are the named addressee or authorised to receive the e-mail of the named addressee you may not disclose, use or copy the contents of the e-mail. If you are not the person for whom the message was intended, please notify the sender immediately at Bradford Teaching Hospitals NHS Foundation Trust and delete the material from your computer. You must not use the message for any other purpose, nor disclose its contents to any person other than the intended recipient. Bradford Teaching Hospitals NHS Foundation Trust does not accept responsibility for this message and any views or opinions contained in this e-mail are solely those of the author unless expressly stated otherwise.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111111/5ced1e6c/attachment-0001.htm 
+
+From sebastian+lists at ramacher.at  Wed Nov 16 10:31:30 2011
+From: sebastian+lists at ramacher.at (Sebastian Ramacher)
+Date: Wed, 16 Nov 2011 17:31:30 +0100
+Subject: [pycrypto] Fix for build issue when built without optimization
+Message-ID: <4EC3E562.4020801@ramacher.at>
+
+The _fastmath extension cannot be used if pycrypto is built without
+optimization. This is due to the call of size not being inlined and this results
+in an undefined reference. The attached patch fixes this issue.
+
+According to the gcc bug at [1] this is the intended behavior and confirms to C99.
+
+Kind regards
+
+[1] http://gcc.gnu.org/bugzilla/show_bug.cgi?id=49653
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fix-building-issue-if-built-without-optimization.patch
+Type: text/x-diff
+Size: 0 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20111116/28b55009/attachment.patch 
+
+From s.ramacher at gmx.at  Wed Nov 16 10:16:21 2011
+From: s.ramacher at gmx.at (Sebastian Ramacher)
+Date: Wed, 16 Nov 2011 17:16:21 +0100
+Subject: [PATCH] Fix building issue if built without optimization.
+Message-ID: <mailman.0.1321461500.1122.pycrypto@lists.dlitz.net>
+
+If gcc decides not to inline the call to size _fastmath can not be used since
+the definition of size only creates an inline definition. Thus no a symbol named
+size does not exist in the _fastmath extension and it fails to be loaded due to
+an unresolved reference. See [1] for details.
+
+[1] http://gcc.gnu.org/bugzilla/show_bug.cgi?id=49653
+---
+ src/_fastmath.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/_fastmath.c b/src/_fastmath.c
+index eff3e29..5882f3d 100644
+--- a/src/_fastmath.c
++++ b/src/_fastmath.c
+@@ -998,7 +998,7 @@ cleanup:
+ 
+ 
+ 
+-INLINE size_t size (mpz_t n)
++static INLINE size_t size (mpz_t n)
+ {
+ 	return mpz_sizeinbase (n, 2);
+ }
+-- 
+1.7.7.2
+
+
+--------------000804040702090103040102--
+
+From sweetnivi88 at gmail.com  Wed Nov 16 21:59:40 2011
+From: sweetnivi88 at gmail.com (nivedita datta)
+Date: Thu, 17 Nov 2011 09:29:40 +0530
+Subject: [pycrypto] Pycrypto help
+Message-ID: <CA+XLstuxk3A6noDRSqF-hhU5e0A9hDJFa26=hWR2qQ9ocM=7dQ@mail.gmail.com>
+
+Hi,
+
+The pycrypto website has been blocked under American Censorship act. [image:
+:(]
+
+Can anyone please send me the syntax of the common public key, private key,
+stream & block ciphers.
+Also kindly send me some alternative link to pycrypto documentation which
+is not blocked if possible.
+
+Thanks.
+
+Regards,
+Nivedita Datta
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111117/eda0daea/attachment.htm 
+
+From debatem1 at gmail.com  Wed Nov 16 22:38:26 2011
+From: debatem1 at gmail.com (geremy condra)
+Date: Wed, 16 Nov 2011 20:38:26 -0800
+Subject: [pycrypto] Pycrypto help
+In-Reply-To: <CA+XLstuxk3A6noDRSqF-hhU5e0A9hDJFa26=hWR2qQ9ocM=7dQ@mail.gmail.com>
+References: <CA+XLstuxk3A6noDRSqF-hhU5e0A9hDJFa26=hWR2qQ9ocM=7dQ@mail.gmail.com>
+Message-ID: <CAJ=m_n7z65vcJfjLivZBnjg=7KysmSKP-XkP_-OV-QeBqS6r_A@mail.gmail.com>
+
+Well played!
+
+Geremy Condra
+On Nov 16, 2011 7:59 PM, "nivedita datta" <sweetnivi88 at gmail.com> wrote:
+
+> Hi,
+>
+> The pycrypto website has been blocked under American Censorship act. [image:
+> :(]
+>
+> Can anyone please send me the syntax of the common public key, private
+> key, stream & block ciphers.
+> Also kindly send me some alternative link to pycrypto documentation which
+> is not blocked if possible.
+>
+> Thanks.
+>
+> Regards,
+> Nivedita Datta
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111116/11f4c3a2/attachment.htm 
+
+From ben at wbpsystems.com  Sat Nov 19 11:21:43 2011
+From: ben at wbpsystems.com (Ben Smith)
+Date: Sat, 19 Nov 2011 09:21:43 -0800
+Subject: [pycrypto] Use of Fortuna Algo / Seeding Randomness
+Message-ID: <0E8B6772F0104133A4A4CF557BF3074C@wbpsystems.com>
+
+Hi Everyone -
+
+I'm new to this package, so I'm sure I'm just dumb and it is obvious how to do this.    I want to use the fortuna algo in a simulation environment (economics if anyone cares), my particular problem I'm trying to solve would be biased using Mersenne twister (which seems to be the default everyone uses), and fortuna seems to be the best option given the aspects of randomness I care about for this problem.
+
+Anyhow, I want to seed fortuna with a file I have of atmospheric noise; I haven't been able to find a doc specifying how to do this.
+
+Thanks!
+
+Ben
+
+From mcneelys at gmail.com  Thu Nov 24 10:38:45 2011
+From: mcneelys at gmail.com (Kristen McNeely-Shaw)
+Date: Thu, 24 Nov 2011 11:38:45 -0500
+Subject: [pycrypto] PublicKey structure documentation
+Message-ID: <CAPESRCsZXx3QtEHC2NaJGrZe9wbm9botGK0Fhm7nUdjhJgrjAg@mail.gmail.com>
+
+Hi,
+
+I'm working on implementing a Paillier module for pycrypto for my Master's
+project (which I would be happy to send upstream when finished, if there is
+interest). I was wondering if there's anything I could read about the
+public key infrastructure.  I was intending to look at RSA.py as a starting
+point but I'm not sure whether I would need to mimic the _RSA.py module,
+and if I'd need to call on _fastmath/_slowmath (I note that ElGamal.py does
+not).
+
+Thanks so much,
+Kristen
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111124/d7f67c13/attachment.html 
+
+From sweetnivi88 at gmail.com  Sun Nov 27 11:25:25 2011
+From: sweetnivi88 at gmail.com (nivedita datta)
+Date: Sun, 27 Nov 2011 22:55:25 +0530
+Subject: [pycrypto] Reg pycrypto 2.4
+Message-ID: <CA+XLstuZnjOnPWEqkqKBxjSd02FGH2xsKoDsCS6JEMqcEoyOSg@mail.gmail.com>
+
+Does PyCrypto 2.4 support Python 3 also..?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111127/234a8181/attachment.htm 
+
+From sweetnivi88 at gmail.com  Sun Nov 27 11:29:29 2011
+From: sweetnivi88 at gmail.com (nivedita datta)
+Date: Sun, 27 Nov 2011 22:59:29 +0530
+Subject: [pycrypto] reg current work in pycrypto
+Message-ID: <CA+XLstsi-2G71nrhY4jo5fEH9j9p-wGGa=vq14m3wDCdC5Ebqw@mail.gmail.com>
+
+Any ongoing project in pycrypto??
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111127/f119f1e9/attachment.htm 
+
+From lware2002 at hotmail.com  Tue Dec 13 13:38:12 2011
+From: lware2002 at hotmail.com (Lance Ware)
+Date: Tue, 13 Dec 2011 19:38:12 +0000
+Subject: [pycrypto] Using Counter for true 64-bit decryption
+Message-ID: <BLU129-W6AF04BF6D210766498095A2BD0@phx.gbl>
+
+
+Hello,
+ 
+I am trying to use pycrypto to decrypt a file using AES in CTR mode.  Currently I have a file with a counter value store in the first 16 bytes of the file.  I see in most of the examples the first 8 bytes are stored in the counter value as part of a prefix with the last section starting with zero and incrementing up.  My question is that if I want to have a truly random counter value. Do I need to create my own count class to handle the increment or can i use Crypto.Util.counter class.
+ 
+I am trying to use the Crypto.Util.counter class but i keep getting errors on CTR: counter returned not 16 bytes.
+ 
+Thanks,
+  		 	   		  
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20111213/4ab0a21d/attachment.html 
+
+From hans at guardianproject.info  Mon Dec 19 16:26:02 2011
+From: hans at guardianproject.info (Hans-Christoph Steiner)
+Date: Mon, 19 Dec 2011 14:26:02 -0800
+Subject: [pycrypto] import/export for DSA keys
+Message-ID: <C39C6C6D-FF52-45CC-88DD-389BBD8A9937@guardianproject.info>
+
+
+hey all,
+
+I'm working on a project to make OTR keys (DSA) easily convertible between formats and also possibly embedding OTR DSA keys as subkeys of a gpg key.  The RSA object has the very lovely importKey and exportKey methods, but the DSA object lacks them.  I've gotten this import and export functionality working using a combination of pycrypto, python-potr, and pyparsing.
+
+https://github.com/guardianproject/otrfileconverter
+
+Would it make sense to cook this into pycrypto's DSA objects?
+
+.hc
+
+----------------------------------------------------------------------------
+
+I hate it when they say, "He gave his life for his country."  Nobody gives their life for anything.  We steal the lives of these kids.  -Admiral Gene LeRocque
+
+
+From gooksankoo at hoiptorrow.mailexpire.com  Tue Dec 20 07:40:55 2011
+From: gooksankoo at hoiptorrow.mailexpire.com (Legrandin)
+Date: Tue, 20 Dec 2011 14:40:55 +0100
+Subject: [pycrypto] import/export for DSA keys
+In-Reply-To: <C39C6C6D-FF52-45CC-88DD-389BBD8A9937@guardianproject.info>
+References: <C39C6C6D-FF52-45CC-88DD-389BBD8A9937@guardianproject.info>
+Message-ID: <CAGfyce0Fed2mO4_exF44qdO2BkcuHXb8nOxKOBL00gft23khvw@mail.gmail.com>
+
+>?I've gotten this import and export functionality working using a combination of pycrypto, python-potr, and pyparsing.
+> https://github.com/guardianproject/otrfileconverter
+>
+> Would it make sense to cook this into pycrypto's DSA objects?
+>
+> .hc
+
+I felt the need for that a few times in the past, and adding it to
+pycrypto was high on my to-do list, so I totally vote for that.
+It should be a standard format though (like PKCS8), otherwise there is
+no benefit over pickle.
+I don't think it should require extra dependencies either.
+
+From hans at guardianproject.info  Tue Dec 20 11:59:30 2011
+From: hans at guardianproject.info (Hans-Christoph Steiner)
+Date: Tue, 20 Dec 2011 09:59:30 -0800
+Subject: [pycrypto] import/export for DSA keys
+Message-ID: <734AF064-0C32-4F69-8DA6-888B4BA3D207@guardianproject.info>
+
+
+On Dec 20, 2011, at 5:40 AM, Legrandin wrote:
+
+>> I've gotten this import and export functionality working using a combination of pycrypto, python-potr, and pyparsing.
+>> https://github.com/guardianproject/otrfileconverter
+>> 
+>> Would it make sense to cook this into pycrypto's DSA objects?
+>> 
+>> .hc
+> 
+> I felt the need for that a few times in the past, and adding it to
+> pycrypto was high on my to-do list, so I totally vote for that.
+> It should be a standard format though (like PKCS8), otherwise there is
+> no benefit over pickle.
+> I don't think it should require extra dependencies either.
+
+My code can currently output PKCS8, I'm not using pickle at all.  As for extra dependencies, I agree it should be minimal.  It should be easy to get rid of the python-potr dependency, but getting rid of pyparsing would mean writing a S-expressions parser from scratch and getting rid of pyasn1 would mean writing a DER format parser from scratch.    I won't have time to write those chunks but would welcome anyone taking that on.  Or the other option is dropping the support of those formats in pycrypto.
+
+.hc
+
+----------------------------------------------------------------------------
+
+As we enjoy great advantages from inventions of others, we should be glad of an opportunity to serve others by any invention of ours; and this we should do freely and generously.        - Benjamin Franklin
+
+

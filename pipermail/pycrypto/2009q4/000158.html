@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Pycrypto, New contributor, TODO &amp; Camellia
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%2C%20New%20contributor%2C%20TODO%20%26%20Camellia&In-Reply-To=2c62b1b80911140139n138e01c7te55c8e1d99c954a4%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000157.html">
+   <LINK REL="Next"  HREF="000159.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Pycrypto, New contributor, TODO &amp; Camellia</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%2C%20New%20contributor%2C%20TODO%20%26%20Camellia&In-Reply-To=2c62b1b80911140139n138e01c7te55c8e1d99c954a4%40mail.gmail.com"
+       TITLE="[pycrypto] Pycrypto, New contributor, TODO &amp; Camellia">dlitz at dlitz.net
+       </A><BR>
+    <I>Sun Nov 15 02:39:47 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000157.html">[pycrypto] Pycrypto, New contributor, TODO &amp; Camellia
+</A></li>
+        <LI>Next message: <A HREF="000159.html">[pycrypto] Pycrypto, New contributor, TODO &amp; Camellia
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#158">[ date ]</a>
+              <a href="thread.html#158">[ thread ]</a>
+              <a href="subject.html#158">[ subject ]</a>
+              <a href="author.html#158">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Nov 14, 2009 at 05:39:40PM +0800, rusydi hasan wrote:
+&gt;<i>Hi Dwayne,
+</I>&gt;<i>
+</I>&gt;<i>First of all, let me introduce myself. Im rusydi, an undergaduate computer
+</I>&gt;<i>science in malaysia.
+</I>
+Hi there!
+
+&gt;<i>I have necessary background in cryptography, specifically block cipher, and
+</I>&gt;<i>C programming. Im interested to become a contributor in the next release of
+</I>&gt;<i>pycrypto (i read that you need the contributor outside US and Canada and not
+</I>&gt;<i>the US/Canada Passport holder), especially in the implementation of some
+</I>&gt;<i>block ciphers. But i have few things that i need to ask to you
+</I>
+That's great!  One correction: I only ask that contributors be non-US 
+citizens/residents.  Canada is fine; I'm Canadian.  :)
+
+&gt;<i>   1. In TODO list i saw that pycrypto is gonna implement Camellia. AFAIK,
+</I>&gt;<i>   camellia is a patented block cipher by Mitsubishi Electric Corporation and
+</I>&gt;<i>   Nippon Telegraph and Telephone Corporation (NTT), Japan. I attached the
+</I>&gt;<i>   intellectual property statement, submitted to NESSIE submission
+</I>
+Yes, but there is also this:
+
+     Announcement of Royalty-free Licenses for Essential Patents
+     of NTT Encryption and Digital Signature Algorithms
+
+     <A HREF="http://www.ntt.co.jp/news/news01e/0104/010417.html">http://www.ntt.co.jp/news/news01e/0104/010417.html</A>
+
+See also the list at:
+
+     <A HREF="http://en.wikipedia.org/wiki/NESSIE">http://en.wikipedia.org/wiki/NESSIE</A>
+
+&gt;<i>   2. Is it necessary to implement some Light-Weight Block Cipher in
+</I>&gt;<i>   pycrypto ? (such as DESL, TEA, KATAN, SEA, etc) because im planning to
+</I>&gt;<i>   submit some of these light-weight block cipher for the pycrypto.
+</I>
+I've never heard of any of these ciphers except for TEA, and TEA is 
+vulnerable to a practical related-key attack.
+
+I am reluctant to add any more 64-bit block ciphers, since you can expect 
+block collisions after only 2**32 blocks (32 GiB of data) in some modes, 
+and they're tricky to use in CTR mode with long-term keys (again, because 
+the collision probability is too high).
+
+I am also very reluctant to add any variants of DES, since pretty much 
+every variant of DES has been weaker than DES itself.
+
+I don't want to maintain additional ciphers in my tree unless they are 
+mature and offer significant advantages over what PyCrypto already has.  
+I'm even hesitant to add Camellia---The only reason I'm considering it is 
+that PyCrypto only has one 128-bit block cipher right now (AES), and 
+because the proposed candidate, Camellia, made it through the NESSIE 
+competition.  Even then, I don't consider it a priority, and PyCrypto 2.1 
+will be released without it.
+
+I'm much more interested in making the crypto we already have less 
+error-prone to use.  For example, we need a PKCS#1 v2.1 implementation, a 
+*complete* DSA implementation, improved RSA key generation, improved 
+primality testing, more test cases, a Diffie-Hellman implementation, a 
+reworking of the Crypto.PublicKey API, and a thorough de-linting of the C 
+code.
+
+That said, some people might find your code to be useful, even if it 
+doesn't get included in PyCrypto, so feel free to post it to the mailing 
+list.  :-)
+
+&gt;<i>   3. How to submit the source code ? since i could not clone the git
+</I>&gt;<i>   repository (the port is blocked from my campus network). And i dont have
+</I>&gt;<i>   adequate background in open-source software development.
+</I>
+&lt;rant&gt;
+Your campus network support people need to stop interfering with the 
+end-to-end operation of the Internet Protocol, and to actually start doing 
+their job, which is to support you, rather than shifting that burden onto 
+me.
+&lt;/rant&gt;
+
+You should be able to clone from
+
+     <A HREF="http://git.pycrypto.org/crypto/pycrypto-2.x.git">http://git.pycrypto.org/crypto/pycrypto-2.x.git</A>
+
+As for submitting source code, you should publish your changes somewhere, 
+such as by doing one of the following things:
+
+- Post your patches to the mailing list using &quot;git send-email&quot;.
+- Generate a series of patches using &quot;git format-patch&quot; and send them to 
+   the mailing list yourself.
+- Create a git repository somewhere and announce it on the mailing list.
+
+Thanks!
+
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000157.html">[pycrypto] Pycrypto, New contributor, TODO &amp; Camellia
+</A></li>
+	<LI>Next message: <A HREF="000159.html">[pycrypto] Pycrypto, New contributor, TODO &amp; Camellia
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#158">[ date ]</a>
+              <a href="thread.html#158">[ thread ]</a>
+              <a href="subject.html#158">[ subject ]</a>
+              <a href="author.html#158">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

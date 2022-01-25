@@ -1,0 +1,35 @@
+<tt>
+&lt;div&nbsp;dir=&quot;ltr&quot;&gt;I&#39;m&nbsp;not&nbsp;the&nbsp;king&nbsp;of&nbsp;crypto,&nbsp;but&nbsp;if&nbsp;I&nbsp;recall&nbsp;correctly,&nbsp;some&nbsp;signature&nbsp;standards&nbsp;(and&nbsp;I&nbsp;think&nbsp;PKCS1&nbsp;is&nbsp;one&nbsp;of&nbsp;them)&nbsp;include&nbsp;a&nbsp;random&nbsp;salt&nbsp;in&nbsp;the&nbsp;signature.&nbsp;This&nbsp;happens&nbsp;automatically,&nbsp;behind&nbsp;the&nbsp;scenes,&nbsp;on&nbsp;your&nbsp;behalf.&nbsp;So&nbsp;two&nbsp;signatures&nbsp;can&nbsp;be&nbsp;of&nbsp;the&nbsp;same&nbsp;content,&nbsp;with&nbsp;the&nbsp;same&nbsp;key,&nbsp;and&nbsp;not&nbsp;be&nbsp;equal&nbsp;-&nbsp;in&nbsp;fact,&nbsp;it&#39;s&nbsp;dramatically&nbsp;more&nbsp;likely&nbsp;than&nbsp;not!&nbsp;So&nbsp;you&nbsp;can&#39;t&nbsp;rely&nbsp;on&nbsp;bit-for-bit&nbsp;equality&nbsp;of&nbsp;signatures.&lt;br&gt;<br>
+&lt;/div&gt;&lt;div&nbsp;class=&quot;gmail_extra&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;Tue,&nbsp;Mar&nbsp;11,&nbsp;2014&nbsp;at&nbsp;8:22&nbsp;PM,&nbsp;wanggang&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&lt;&lt;a&nbsp;href=&quot;mailto:wanggang@goldenapptechnology.com&quot;&nbsp;target=&quot;_blank&quot;&gt;wanggang@goldenapptechnology.com&lt;/a&gt;&gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;Hi&nbsp;pycrypto,&lt;br&gt;<br>
+&lt;br&gt;<br>
+This&nbsp;may&nbsp;be&nbsp;a&nbsp;simple&nbsp;problem&nbsp;since&nbsp;I&nbsp;am&nbsp;a&nbsp;newbiee&nbsp;to&nbsp;crypto.&lt;br&gt;<br>
+I&nbsp;am&nbsp;not&nbsp;sure&nbsp;why&nbsp;I&nbsp;got&nbsp;different&nbsp;result&nbsp;from&nbsp;PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m)))&nbsp;,&lt;br&gt;<br>
+I&nbsp;have&nbsp;mentioned&nbsp;the&nbsp;&#39;stateful&#39;&nbsp;comment&nbsp;in&nbsp;API&nbsp;doc,&nbsp;but&nbsp;still&nbsp;can&#39;t&nbsp;fix&nbsp;the&nbsp;code&nbsp;below.&lt;br&gt;<br>
+besides&nbsp;I&nbsp;have&nbsp;used&nbsp;DES&nbsp;for&nbsp;a&nbsp;lot,&nbsp;&amp;&nbsp;never&nbsp;got&nbsp;stuck&nbsp;in&nbsp;such&nbsp;situation.&lt;br&gt;<br>
+&lt;br&gt;<br>
+if&nbsp;__name__&nbsp;==&nbsp;&quot;__main__&quot;:&lt;br&gt;<br>
+ &nbsp; &nbsp;t&nbsp;=&nbsp;(modulus,&nbsp;publicExponent,&nbsp;privateExponent,&nbsp;prime1,&nbsp;prime2,&nbsp;coefficient)&lt;br&gt;<br>
+ &nbsp; &nbsp;lst&nbsp;=&nbsp;[long(x,16)&nbsp;for&nbsp;x&nbsp;in&nbsp;t]&lt;br&gt;<br>
+&lt;br&gt;<br>
+ &nbsp; &nbsp;k&nbsp;=&nbsp;&#39;1234&#39;&lt;br&gt;<br>
+ &nbsp; &nbsp;e1&nbsp;=&nbsp;RSA.construct(lst).encrypt(m,&nbsp;k)&lt;br&gt;<br>
+ &nbsp; &nbsp;e2&nbsp;=&nbsp;RSA.construct(lst).encrypt(m,&nbsp;k)&lt;br&gt;<br>
+ &nbsp; &nbsp;assert&nbsp;e1&nbsp;==&nbsp;e2&nbsp;#&nbsp;passed&lt;br&gt;<br>
+&lt;br&gt;<br>
+ &nbsp; &nbsp;signature1&nbsp;=&nbsp;PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m)))&lt;br&gt;<br>
+ &nbsp; &nbsp;print&nbsp;binascii.b2a_hex(signature1)&lt;br&gt;<br>
+ &nbsp; &nbsp;signature2&nbsp;=&nbsp;PKCS1_v1_5.new(RSA.construct(lst)).sign(SHA.new(a2b(m)))&lt;br&gt;<br>
+ &nbsp; &nbsp;print&nbsp;binascii.b2a_hex(signature2)&lt;br&gt;<br>
+ &nbsp; &nbsp;assert&nbsp;signature1==signature2&nbsp;#&nbsp;why&nbsp;this&nbsp;assertion&nbsp;failed&nbsp;?&lt;br&gt;<br>
+&lt;br&gt;<br>
+Thank&nbsp;you&nbsp;in&nbsp;advance!&lt;br&gt;<br>
+--------------&lt;br&gt;<br>
+ Wang&nbsp;Gang&lt;br&gt;<br>
+_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;<br>
+
+</tt>

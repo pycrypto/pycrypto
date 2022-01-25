@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] issue with redefine of malloc to rpl_malloc on AIX, also hint re: _LARGE_FILES as a CFLAG define
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20issue%20with%20redefine%20of%20malloc%20to%20rpl_malloc%20on%20AIX%2C%0A%20also%20hint%20re%3A%20_LARGE_FILES%20as%20a%20CFLAG%20define&In-Reply-To=%3C732860a5-7b15-6733-6444-400979ee1fc8%40felt.demon.nl%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <LINK REL="Previous"  HREF="000863.html">
+   <LINK REL="Next"  HREF="000865.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] issue with redefine of malloc to rpl_malloc on AIX, also hint re: _LARGE_FILES as a CFLAG define</H1>
+    <B>Michael Felt</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20issue%20with%20redefine%20of%20malloc%20to%20rpl_malloc%20on%20AIX%2C%0A%20also%20hint%20re%3A%20_LARGE_FILES%20as%20a%20CFLAG%20define&In-Reply-To=%3C732860a5-7b15-6733-6444-400979ee1fc8%40felt.demon.nl%3E"
+       TITLE="[pycrypto] issue with redefine of malloc to rpl_malloc on AIX, also hint re: _LARGE_FILES as a CFLAG define">michael at felt.demon.nl
+       </A><BR>
+    <I>Sat Oct 15 09:48:48 UTC 2016</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000863.html">[pycrypto] (no subject)
+</A></li>
+        <LI>Next message: <A HREF="000865.html">[pycrypto] Build error?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#864">[ date ]</a>
+              <a href="thread.html#864">[ thread ]</a>
+              <a href="subject.html#864">[ subject ]</a>
+              <a href="author.html#864">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi - A couple things.
+Show stopper was this message: ld: 0711-317 ERROR: Undefined symbol: 
+.rpl_malloc
+The fist thing I find via google:&quot;ld: 0711-317 ERROR: Undefined symbol: 
+.rpl_malloc AIX&quot; is: <A HREF="https://bugs.launchpad.net/pycrypto/+bug/1321757">https://bugs.launchpad.net/pycrypto/+bug/1321757</A>
+and the second starts here: 
+<A HREF="https://lists.gnu.org/archive/html/bug-coreutils/2012-11/msg00078.html">https://lists.gnu.org/archive/html/bug-coreutils/2012-11/msg00078.html</A>
+
+* The key message for coreutils being: 
+<A HREF="https://lists.gnu.org/archive/html/bug-coreutils/2012-11/msg00089.html">https://lists.gnu.org/archive/html/bug-coreutils/2012-11/msg00089.html</A> 
+where he suggests to add an #undef malloc
+
+* Back to the first find - more in your domain: the poster suggests 
+effectively the same - except I expect src/config.h is generated so it 
+will never stay.
+
+* re: the command below: -std=c99 is a GCC thing (and every compile has 
+a warning about an incorrect argument for -t being ignored)
+
+xlc_r -D_LARGE_FILES -std=c99 -O3 -fomit-frame-pointer -Isrc/ 
+-I/opt/include/python2.7 -c src/AES.c -o build/temp.aix-5.3-2.7/src/AES.o
+  Adding the -bloadmap:xxx.map gives these key lines in the .map output
+
+ld: 0711-318 ERROR: Undefined symbols were found.
+         The following symbols are in error:
+  Symbol                    Inpndx  TY CL Source-File(Object-File) OR 
+Import-File{Shared-object}
+                               RLD: Address  Section  Rld-type 
+Referencing Symbol
+  ----------------------------------------------------------------------------------------------
+  .rpl_malloc               [114]   ER PR 
+src/AES.c(build/temp.aix-5.3-2.7/src/AES.o)
+                                    00001d88 .text    R_RBR [18]    
+&lt;.ALG_Encrypt&gt;
+                                    00002ae0 .text    R_RBR [20]    
+&lt;.ALG_Decrypt&gt;
+
+Once the #undefine is set one way or another, it builds (outside of pip).
+
+FYI: There are several other errors that occur when _LARGE_FILES is not 
+defined. (export CFLAGS=&quot;-D_LARGE_FILES&quot; takes care of that).
+While someone building on AIX should know this and 'fix' it on the 
+command-line, having it added to the config for AIX would be great.
+
+Info:
+_LARGE_FLAGS is the 'constuct' or 'define' that IBM established for 
+ensuring support for LARGE_FILES regardless of the
+kernel/application ABI size and predates anything GNU came up with by 
+several years. As your module is sensitive for this
+I recommend you have a way to add it to the flags - because to work - 
+this should be defined before any other system include files are
+read (i.e., they all need to know from the start). Behavior is undefined 
+when this advice aka rule is not followed.
+
+Also note: extract from ./configure output:
+checking for stdlib.h... (cached) yes
+checking for GNU libc compatible malloc... no
+checking for memmove... yes
+checking for memset... yes
+configure: creating ./config.status
+config.status: creating src/config.h
+
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">root at x064</A>:[/data/prj/aixtools/saltstack/pycrypto-2.6.1]grep malloc 
+src/config.h
+/* Define to 1 if your system has a GNU libc compatible `malloc' 
+function, and
+/* Define to rpl_malloc if the replacement function should be used. */
+#define malloc rpl_malloc
+
+So, it seems the logic for &quot;GNU compatible&quot; is followed (nothing is defined)
+but the define malloc rpl_malloc occurs regardless.
+
+
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000863.html">[pycrypto] (no subject)
+</A></li>
+	<LI>Next message: <A HREF="000865.html">[pycrypto] Build error?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#864">[ date ]</a>
+              <a href="thread.html#864">[ thread ]</a>
+              <a href="subject.html#864">[ subject ]</a>
+              <a href="author.html#864">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

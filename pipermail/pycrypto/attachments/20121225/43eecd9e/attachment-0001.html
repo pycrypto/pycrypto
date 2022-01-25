@@ -1,0 +1,8 @@
+<tt>
+&lt;div&nbsp;dir=&quot;ltr&quot;&gt;&lt;div&gt;Hi,&lt;br&gt;&lt;br&gt;&lt;/div&gt;Currently&nbsp;pickling&nbsp;cipher&nbsp;objects&nbsp;fail&nbsp;(Pycrypto&nbsp;v2.6):&lt;br&gt;&lt;div&gt;&lt;br&gt;&gt;&gt;&gt;&nbsp;import&nbsp;pickle&lt;br&gt;&gt;&gt;&gt;&nbsp;from&nbsp;Crypto.Cipher&nbsp;import&nbsp;AES&lt;br&gt;&gt;&gt;&gt;&nbsp;cipher&nbsp;=&nbsp;AES.new(&#39;mysecret&#39;*2)&lt;br&gt;<br>
+&gt;&gt;&gt;&nbsp;dump=pickle.dumps(cipher)&lt;br&gt;PicklingError:&nbsp;Can&#39;t&nbsp;pickle&nbsp;&#39;_AES&#39;&nbsp;object:&nbsp;&lt;_AES&nbsp;object&nbsp;at&nbsp;0x1fe0bd0&gt;&lt;br&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I&nbsp;wonder&nbsp;if&nbsp;there&nbsp;are&nbsp;any&nbsp;fundamental&nbsp;reasons&nbsp;why&nbsp;pickling&nbsp;cipher&nbsp;objects&nbsp;cannot&lt;br&gt;<br>
+be&nbsp;pickled?&nbsp;Otherwise&nbsp;I&nbsp;would&nbsp;look&nbsp;into&nbsp;implementing&nbsp;pickling&nbsp;support&nbsp;for&nbsp;cipher&nbsp;objects.&lt;br&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Background:&lt;br&gt;&lt;/div&gt;&lt;div&gt;I&nbsp;am&nbsp;using&nbsp;Pycrypt&nbsp;in&nbsp;web2py&nbsp;and&nbsp;I&nbsp;need&nbsp;to&nbsp;temporarily&nbsp;store&nbsp;cipher&nbsp;information&nbsp;within&nbsp;a&nbsp;session&lt;br&gt;<br>
+without&nbsp;opening&nbsp;any&nbsp;security&nbsp;holes.&nbsp;I&nbsp;would&nbsp;presume&nbsp;that&nbsp;storing&nbsp;cipher&nbsp;object&nbsp;is&nbsp;safer&nbsp;(would&nbsp;it&nbsp;be?)&lt;br&gt;than&nbsp;storing&nbsp;an&nbsp;encryption&nbsp;key&nbsp;used&nbsp;to&nbsp;create&nbsp;the&nbsp;cipher&nbsp;object.&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Thanks,&lt;br&gt;&lt;/div&gt;&lt;div&gt;<br>
+Pearu&lt;br&gt;&lt;/div&gt;&lt;/div&gt;<br>
+
+</tt>

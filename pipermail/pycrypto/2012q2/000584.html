@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Generating a public/private key pair from a	passphrase
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Generating%20a%20public/private%20key%20pair%20from%20a%0A%09passphrase&In-Reply-To=%3CCAGfyce3f1921XD5tV0zTGURXVZDnRf_BjKOfgmHF_EXPE_uezQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000583.html">
+   <LINK REL="Next"  HREF="000585.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Generating a public/private key pair from a	passphrase</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Generating%20a%20public/private%20key%20pair%20from%20a%0A%09passphrase&In-Reply-To=%3CCAGfyce3f1921XD5tV0zTGURXVZDnRf_BjKOfgmHF_EXPE_uezQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Generating a public/private key pair from a	passphrase">gooksankoo at hoiptorrow.mailexpire.com
+       </A><BR>
+    <I>Tue May 22 17:21:15 EDT 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000583.html">[pycrypto] Generating a public/private key pair from a passphrase
+</A></li>
+        <LI>Next message: <A HREF="000585.html">[pycrypto] documentation for PKCS1_PSS.py is incorrect, plus minor issue w/ _slowmath.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#584">[ date ]</a>
+              <a href="thread.html#584">[ thread ]</a>
+              <a href="subject.html#584">[ subject ]</a>
+              <a href="author.html#584">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Rye,
+
+You really want a cryptographically strong PRNG for that.
+I don't think Python's random module is good enough.
+
+One option is to use the Fortuna PRNG in PyCrypto.
+Another is to use a NIST approved PRNG, like HMAC-DRBG, shown below.
+
+===
+from Crypto.PublicKey import RSA
+from Crypto.Hash import HMAC
+
+class PRNG():
+    def __init__(self, passphrase):
+        self.K = passphrase
+        self.V = b'\x00'*16
+        self.pool = b''
+
+    def __call__(self, n):
+        while len(self.pool)&lt;n:
+            self.pool += HMAC.new(self.K,self.V).digest()
+            self.V = self.pool[HMAC.digest_size:]
+        res = self.pool[:n]
+        self.pool = self.pool[n:]
+        return res
+
+key = RSA.generate(2048, PRNG(b'pass phrase'))
+===
+
+Mind that - if possible - you should couple the pass phrase to a salt number.
+
+&gt;<i> I'd like to be able to repeatably generate a public/private key pair from a
+</I>&gt;<i> user-supplied passphrase. I could use Python's built in random function
+</I>&gt;<i> seeded with the passphrase, or numpy's, but is there a better way of going
+</I>&gt;<i> about doing this via pycrypto?
+</I></PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000583.html">[pycrypto] Generating a public/private key pair from a passphrase
+</A></li>
+	<LI>Next message: <A HREF="000585.html">[pycrypto] documentation for PKCS1_PSS.py is incorrect, plus minor issue w/ _slowmath.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#584">[ date ]</a>
+              <a href="thread.html#584">[ thread ]</a>
+              <a href="subject.html#584">[ subject ]</a>
+              <a href="author.html#584">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

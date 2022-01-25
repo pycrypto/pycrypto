@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Run test suite with /dev/random
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To=%3C4F2C0CC8.9080402%40ramacher.at%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000553.html">
+   <LINK REL="Next"  HREF="000527.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Run test suite with /dev/random</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To=%3C4F2C0CC8.9080402%40ramacher.at%3E"
+       TITLE="[pycrypto] Run test suite with /dev/random">sebastian+lists at ramacher.at
+       </A><BR>
+    <I>Fri Feb  3 11:35:20 EST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000553.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+        <LI>Next message: <A HREF="000527.html">[pycrypto] amazing!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#554">[ date ]</a>
+              <a href="thread.html#554">[ thread ]</a>
+              <a href="subject.html#554">[ subject ]</a>
+              <a href="author.html#554">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 01/31/2012 05:45 AM, Dwayne C. Litzenberger wrote:
+&gt;<i> Ok, I'm willing to accept a patch that implements your workaround, if you can
+</I>&gt;<i> address a few remaining issues:
+</I>
+Please have a look at the attached patch. It should fix all the remaining
+issues. Just let me know if there is something left that I've missed.
+
+&gt;<i> 1. BlockingIOError needs to be handled.  If the signal occurs immediately   
+</I>&gt;<i> after the read(2) syscall is invoked, it will set errno=EAGAIN and    Python
+</I>&gt;<i> will raise BlockingIOError.  (At least, that's what the    documentation says.)
+</I>
+I think you meant IOError and errno=EINTR. FileIO won't throw a BlockingIOError
+in any case. That's BufferedReader. If FileIO.read fails and errno=EAGAIN then
+it returns None and otherwise it throws an IOError. At least that's how I
+understand the code and the documentation.
+
+&gt;<i> P.S.  Thank you for tracking this down.
+</I>
+You're welcome.
+
+Kind regards
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fix-DevURandomRNG-to-work-with-Python3-s-new-I-O-sta.patch
+Type: text/x-diff
+Size: 2102 bytes
+Desc: not available
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20120203/0576251d/attachment.patch">http://lists.dlitz.net/pipermail/pycrypto/attachments/20120203/0576251d/attachment.patch</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000553.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+	<LI>Next message: <A HREF="000527.html">[pycrypto] amazing!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#554">[ date ]</a>
+              <a href="thread.html#554">[ thread ]</a>
+              <a href="subject.html#554">[ subject ]</a>
+              <a href="author.html#554">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

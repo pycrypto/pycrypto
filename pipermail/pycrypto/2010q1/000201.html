@@ -1,0 +1,256 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] python crypto with python 3.0 or 3.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20python%20crypto%20with%20python%203.0%20or%203.1&In-Reply-To=879b416252d43d563b9525f9f5b49c67%40localhost">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000200.html">
+   <LINK REL="Next"  HREF="000182.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] python crypto with python 3.0 or 3.1</H1>
+    <B>don at amberfisharts.com</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20python%20crypto%20with%20python%203.0%20or%203.1&In-Reply-To=879b416252d43d563b9525f9f5b49c67%40localhost"
+       TITLE="[pycrypto] python crypto with python 3.0 or 3.1">don at amberfisharts.com
+       </A><BR>
+    <I>Wed Mar 10 06:58:39 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000200.html">[pycrypto] python crypto with python 3.0 or 3.1
+</A></li>
+        <LI>Next message: <A HREF="000182.html">[pycrypto] FW:  python crypto with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#201">[ date ]</a>
+              <a href="thread.html#201">[ thread ]</a>
+              <a href="subject.html#201">[ subject ]</a>
+              <a href="author.html#201">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I just realized, that it seems that I just received your mail from January
+for some odd reason.
+And back then I already replied with almost the same points so feel free
+to ignore my last message.
+Though I'm not sure I noticed the thing with the exception back then.
+
+So again. sorry for the noise.
+
+yours
+//Lorenz
+ 
+
+On Wed, 10 Mar 2010 13:40:12 +0100, &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">don at amberfisharts.com</A>&gt; wrote:
+&gt;<i> Hi Grail,
+</I>&gt;<i> 
+</I>&gt;<i> I just looked at your patch and have some comments.
+</I>&gt;<i> I haven't tested the patch. I only read it.
+</I>&gt;<i> 
+</I>&gt;<i> 1) In AllOrNothing.py you replace:
+</I>&gt;<i> -    except getopt.error, msg:
+</I>&gt;<i> +    except getopt.error:
+</I>&gt;<i> At first glance that looks wrong. If msg is used in the exception block
+</I>&gt;<i> with your patch it would be undefined.
+</I>&gt;<i> What you probably want to do is:
+</I>&gt;<i> -    except getopt.error, msg:
+</I>&gt;<i> +    except getopt.error as msg:
+</I>&gt;<i> 
+</I>&gt;<i> 2) Is there a reason why you don't use the Py_SIZE and Py_TYPE macros in
+</I>&gt;<i> the C extension modules?
+</I>&gt;<i> In various places you do something like this:
+</I>&gt;<i> -       ALGtype.ob_type = &amp;PyType_Type;
+</I>&gt;<i> +       ALGtype.ob_base.ob_base.ob_type = &amp;PyType_Type;
+</I>&gt;<i> I would try:
+</I>&gt;<i> -       ALGtype.ob_type = &amp;PyType_Type;
+</I>&gt;<i> +       Py_TYPE(ALGtype) = &amp;PyType_Type;
+</I>&gt;<i> and similarly instead of 
+</I>&gt;<i> -               size = -p-&gt;ob_size;
+</I>&gt;<i> +               size = -p-&gt;ob_base.ob_size;
+</I>&gt;<i> I would try
+</I>&gt;<i> -               size = -p-&gt;ob_size;
+</I>&gt;<i> +               size = -Py_SIZE(p);
+</I>&gt;<i> These Macros are defined in pythons source Include/object.h
+</I>&gt;<i> 
+</I>&gt;<i> Note that I didn't try any of this. So you should try this out before
+</I>you
+&gt;<i> change anything.
+</I>&gt;<i> 
+</I>&gt;<i> sincerely yours
+</I>&gt;<i> //Lorenz
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> On Fri, 15 Jan 2010 09:19:14 +0000, Grail Dane &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">grail69 at hotmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;&gt;<i> Hi All
+</I>&gt;&gt;<i> So I am going to go on a limb a little and say I have successfully
+</I>&gt;&gt;<i> compiled pycrypto with python 3.1.1
+</I>&gt;&gt;<i> The attached patch makes the necessary changes to remove any errors
+</I>&gt;<i> during
+</I>&gt;&gt;<i> install.If someone would like to give me a small test script, I am
+</I>happy
+&gt;<i> to
+</I>&gt;&gt;<i> see if my tinkering actually worksor is just allowing it to install??
+</I>&gt;&gt;<i> I am also aware that some of the changes are probably not the best way
+</I>&gt;<i> to
+</I>&gt;&gt;<i> do it, but I am happy to investigatefurther once I have it working :)
+</I>&gt;&gt;<i> CheersGrail
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">grail69 at hotmail.com</A>
+</I>&gt;&gt;<i> To: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> Date: Fri, 15 Jan 2010 00:32:04 +0000
+</I>&gt;&gt;<i> Subject: Re: [pycrypto] python crypto with python 3.0 or 3.1
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Hi
+</I>&gt;&gt;<i> Thanks for the speedy reply :)
+</I>&gt;&gt;<i> I am a little confused though as the doco for 3.1 says:
+</I>&gt;&gt;<i> PyVarObjectThis is an extension of PyObject that adds the ob_size
+</I>field.
+&gt;&gt;<i> This is only used for objects that have some notion of length. This
+</I>type
+&gt;&gt;<i> does not often appear in the Python/C API. It corresponds to the fields
+</I>&gt;&gt;<i> defined by the expansion of the PyObject_VAR_HEAD macro.This appears to
+</I>&gt;<i> be
+</I>&gt;&gt;<i> the same as what is written in the doco for 2.6.4 as well, which
+</I>&gt;<i> pycrypto
+</I>&gt;&gt;<i> seems to work with.
+</I>&gt;&gt;<i> Well i will keep looking to see what i can find out.
+</I>&gt;&gt;<i> CheersGrail
+</I>&gt;&gt;&gt;<i> Date: Thu, 14 Jan 2010 10:07:36 +0100
+</I>&gt;&gt;&gt;<i> From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">don at amberfisharts.com</A>
+</I>&gt;&gt;&gt;<i> To: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;<i> Subject: Re: [pycrypto] python crypto with python 3.0 or 3.1
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> as far as I know there hasn't been a move to port pyCrypto to python
+</I>&gt;<i> 3.x
+</I>&gt;&gt;&gt;<i> so simply compiling against python 3.x is bound to fail!
+</I>&gt;&gt;&gt;<i> If you try to port yourself and during that effort ran into this
+</I>&gt;&gt;&gt;<i> compiler
+</I>&gt;&gt;&gt;<i> error then if you look at the documentation [1] or this blog post [2]
+</I>&gt;&gt;&gt;<i> (it's
+</I>&gt;&gt;&gt;<i> a bit outdated since the docs have been fixed in the meantime) you
+</I>will
+&gt;&gt;&gt;<i> see
+</I>&gt;&gt;&gt;<i> that the first few lines (besides other things) of a python extension
+</I>&gt;&gt;&gt;<i> type
+</I>&gt;&gt;&gt;<i> have
+</I>&gt;&gt;&gt;<i> changed from 
+</I>&gt;&gt;&gt;<i>  
+</I>&gt;&gt;&gt;<i>   PyObject_HEAD_INIT(NULL)
+</I>&gt;&gt;&gt;<i>   0,                   /* ob_size */
+</I>&gt;&gt;&gt;<i>   &quot;myTypeName&quot;,        /* tp_name */
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> to
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i>   PyVarObject_HEAD_INIT(NULL, 0)
+</I>&gt;&gt;&gt;<i>   &quot;myTypeName&quot;,        /* tp_name */
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> If I recall correctly, the ob_size has be moved to a different
+</I>&gt;<i> structure
+</I>&gt;&gt;&gt;<i> and no longer
+</I>&gt;&gt;&gt;<i> is a member of PyTypeObject.
+</I>&gt;&gt;&gt;<i> So to sum it up:
+</I>&gt;&gt;&gt;<i>  * no porting effort exist so far, AFAIK
+</I>&gt;&gt;&gt;<i>  * no, the error is not bogus
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> sincerely yours
+</I>&gt;&gt;&gt;<i> //Lorenz
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> [1] <A HREF="http://docs.python.org/dev/py3k/extending/newtypes.html">http://docs.python.org/dev/py3k/extending/newtypes.html</A>
+</I>&gt;&gt;&gt;<i> [2]
+</I>&gt;&gt;&gt;<i>
+</I>&gt;<i>
+</I><A HREF="http://rhodesmill.org/brandon/2008/porting-a-c-extension-module-to-python-30/">http://rhodesmill.org/brandon/2008/porting-a-c-extension-module-to-python-30/</A>
+&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> On Thu, 14 Jan 2010 07:52:59 +0000, Grail Dane &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">grail69 at hotmail.com</A>&gt;
+</I>&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;<i> &gt; Hi GuysI am new to the list but have recently run into this
+</I>issue.Has
+&gt;&gt;&gt;<i> &gt; there been any movement?Personally I am stuck when gcc tries to
+</I>&gt;<i> compile
+</I>&gt;&gt;&gt;<i> &gt; src/_fastmath.cwhich seems to die with an error about 'ob_size'
+</I>&gt;<i> member
+</I>&gt;&gt;&gt;<i> not
+</I>&gt;&gt;&gt;<i> &gt; existing :(This seems to be bogus as I traced back the struct's to
+</I>&gt;&gt;&gt;<i> include
+</I>&gt;&gt;&gt;<i> &gt; PyObject_VAR_HEADwhich does have this as member.Any further help on
+</I>&gt;&gt;&gt;<i> &gt; this
+</I>&gt;&gt;&gt;<i> &gt; would be appreciated ;)Cheers Grail&gt;On Fri, Dec 04, 2009 at
+</I>&gt;<i> 11:44:00AM
+</I>&gt;&gt;&gt;<i> &gt; +0100, Tobias Koeck wrote:&gt;&gt;Is it possible to run python crypto with
+</I>&gt;&gt;&gt;<i> python
+</I>&gt;&gt;&gt;<i> &gt; 3.0 or 3.1. If not is 
+</I>&gt;&gt;&gt;<i> &gt;&gt;&gt;it planed to adjust?
+</I>&gt;&gt;&gt;<i> &gt; 
+</I>&gt;&gt;&gt;<i> &gt;&gt;Sure, and it'll happen sooner if somebody volunteers to do it. :-)
+</I>&gt;&gt;&gt;<i> &gt; 
+</I>&gt;&gt;&gt;<i> &gt;&gt;There will need to be be some strategy for Python 2.x compatibility,
+</I>&gt;&gt;&gt;<i> &gt;&gt;and
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> &gt;&gt;the contributor(s) need to to meet the PyCrypto Code Submission 
+</I>&gt;&gt;&gt;<i> &gt;&gt;Requirements:
+</I>&gt;&gt;&gt;<i> &gt; 
+</I>&gt;&gt;&gt;<i> &gt;&gt;<A HREF="http://www.dlitz.net/software/pycrypto/submission-requirements/">http://www.dlitz.net/software/pycrypto/submission-requirements/</A>
+</I>&gt;&gt;&gt;<i> &gt; 
+</I>&gt;&gt;&gt;<i> &gt;&gt;-- 
+</I>&gt;&gt;&gt;<i> &gt;&gt;Dwayne C. Litzenberger &lt;dlitz at dlitz.net&gt;
+</I>&gt;&gt;&gt;<i> &gt;&gt;  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2
+</I>&gt;&gt;&gt;<i> &gt;&gt;  5CF7
+</I>&gt;&gt;&gt;<i> &gt;&gt;  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2
+</I>&gt;&gt;&gt;<i> &gt;&gt;  582E
+</I>&gt;&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;&gt;<i> &gt; _________________________________________________________________
+</I>&gt;&gt;&gt;<i> &gt; View photos of singles in your area! Browse profiles for FREE
+</I>&gt;&gt;&gt;<i> &gt; <A HREF="http://clk.atdmt.com/NMN/go/150855801/direct/01/">http://clk.atdmt.com/NMN/go/150855801/direct/01/</A>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;<i>  		 	   		  
+</I>&gt;&gt;<i> If It Exists, You'll Find it on SEEK Shopping Trolley Mechanic 		 	   
+</I>&gt;<i> 
+</I>&gt;&gt;<i> _________________________________________________________________
+</I>&gt;&gt;<i> Time for a new car? Sell your old one fast!
+</I>&gt;&gt;<i> <A HREF="http://clk.atdmt.com/NMN/go/157637060/direct/01/">http://clk.atdmt.com/NMN/go/157637060/direct/01/</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I></PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000200.html">[pycrypto] python crypto with python 3.0 or 3.1
+</A></li>
+	<LI>Next message: <A HREF="000182.html">[pycrypto] FW:  python crypto with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#201">[ date ]</a>
+              <a href="thread.html#201">[ thread ]</a>
+              <a href="subject.html#201">[ subject ]</a>
+              <a href="author.html#201">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,804 @@
+diff -ruN pycrypto-2.1.0/lib/Crypto/Hash/RIPEMD160.py pycrypto-2.1.0.new/lib/Crypto/Hash/RIPEMD160.py
+--- pycrypto-2.1.0/lib/Crypto/Hash/RIPEMD160.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/Hash/RIPEMD160.py	2010-01-15 18:24:34.000000000 +0000
+@@ -158,7 +158,7 @@
+     return u32((n << s) | (n >> (32-s)))
+ 
+ # Initial value
+-initial_h = tuple(struct.unpack("<5L", "0123456789ABCDEFFEDCBA9876543210F0E1D2C3".decode('hex')))
++initial_h = tuple(struct.unpack("<5", "0123456789ABCDEFFEDCBA9876543210F0E1D2C3".decode('hex')))
+ 
+ def box(h, f, k, x, r, s):
+     assert len(s) == 16
+@@ -195,7 +195,7 @@
+     assert len(s) % 64 == 0
+     p = 0
+     while p < len(s):
+-        h = _compress(h, struct.unpack("<16L", s[p:p+64]))
++        h = _compress(h, struct.unpack("<16", s[p:p+64]))
+         p += 64
+     assert p == len(s)
+     return h
+@@ -239,7 +239,7 @@
+             data = struct.pack("<120sQ", data, length)
+ 
+         h = compress(self.h, data)
+-        return struct.pack("<5L", *h)
++        return struct.pack("<5", *h)
+ 
+     def hexdigest(self):
+         return self.digest().encode('hex')
+diff -ruN pycrypto-2.1.0/lib/Crypto/Protocol/AllOrNothing.py pycrypto-2.1.0.new/lib/Crypto/Protocol/AllOrNothing.py
+--- pycrypto-2.1.0/lib/Crypto/Protocol/AllOrNothing.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/Protocol/AllOrNothing.py	2010-01-15 18:34:23.000000000 +0000
+@@ -179,7 +179,7 @@
+         # better have at least 2 blocks, for the padbytes package and the hash
+         # block accumulator
+         if len(blocks) < 2:
+-            raise ValueError, "List must be at least length 2."
++            raise ValueError("List must be at least length 2.")
+ 
+         # blocks is a list of strings.  We need to deal with them as long
+         # integers
+@@ -264,15 +264,15 @@
+ 
+     def usage(code, msg=None):
+         if msg:
+-            print msg
+-        print usagemsg % {'program': sys.argv[0],
+-                          'ciphermodule': ciphermodule}
++            print(msg)
++        print(usagemsg % {'program': sys.argv[0],
++                          'ciphermodule': ciphermodule})
+         sys.exit(code)
+ 
+     try:
+         opts, args = getopt.getopt(sys.argv[1:],
+                                    'c:l', ['cipher=', 'aslong'])
+-    except getopt.error, msg:
++    except getopt.error:
+         usage(1, msg)
+ 
+     if args:
+@@ -290,23 +290,23 @@
+     module = __import__('Crypto.Cipher.'+ciphermodule, None, None, ['new'])
+ 
+     a = AllOrNothing(module)
+-    print 'Original text:\n=========='
+-    print __doc__
+-    print '=========='
++    print('Original text:\n==========')
++    print(__doc__)
++    print('==========')
+     msgblocks = a.digest(__doc__)
+-    print 'message blocks:'
++    print('message blocks:')
+     for i, blk in map(None, range(len(msgblocks)), msgblocks):
+         # base64 adds a trailing newline
+-        print '    %3d' % i,
++        print('    %3d' % i,)
+         if aslong:
+-            print bytes_to_long(blk)
++            print(bytes_to_long(blk))
+         else:
+-            print base64.encodestring(blk)[:-1]
++            print(base64.encodestring(blk)[:-1])
+     #
+     # get a new undigest-only object so there's no leakage
+     b = AllOrNothing(module)
+     text = b.undigest(msgblocks)
+     if text == __doc__:
+-        print 'They match!'
++        print('They match!')
+     else:
+-        print 'They differ!'
++        print('They differ!')
+diff -ruN pycrypto-2.1.0/lib/Crypto/Protocol/Chaffing.py pycrypto-2.1.0.new/lib/Crypto/Protocol/Chaffing.py
+--- pycrypto-2.1.0/lib/Crypto/Protocol/Chaffing.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/Protocol/Chaffing.py	2010-01-15 18:16:48.000000000 +0000
+@@ -106,9 +106,9 @@
+         """
+ 
+         if not (0.0<=factor<=1.0):
+-            raise ValueError, "'factor' must be between 0.0 and 1.0"
++            raise ValueError("'factor' must be between 0.0 and 1.0")
+         if blocksper < 0:
+-            raise ValueError, "'blocksper' must be zero or more"
++            raise ValueError("'blocksper' must be zero or more")
+ 
+         self.__factor = factor
+         self.__blocksper = blocksper
+@@ -185,9 +185,9 @@
+ principles and organizing its powers in such form, as to them shall seem most
+ likely to effect their Safety and Happiness.
+ """
+-    print 'Original text:\n=========='
+-    print text
+-    print '=========='
++    print('Original text:\n==========')
++    print(text)
++    print('==========')
+ 
+     # first transform the text into packets
+     blocks = [] ; size = 40
+@@ -195,7 +195,7 @@
+         blocks.append( text[i:i+size] )
+ 
+     # now get MACs for all the text blocks.  The key is obvious...
+-    print 'Calculating MACs...'
++    print('Calculating MACs...')
+     from Crypto.Hash import HMAC, SHA
+     key = 'Jefferson'
+     macs = [HMAC.new(key, block, digestmod=SHA).digest()
+@@ -206,12 +206,12 @@
+     # put these into a form acceptable as input to the chaffing procedure
+     source = []
+     m = map(None, range(len(blocks)), blocks, macs)
+-    print m
++    print(m)
+     for i, data, mac in m:
+         source.append((i, data, mac))
+ 
+     # now chaff these
+-    print 'Adding chaff...'
++    print('Adding chaff...')
+     c = Chaff(factor=0.5, blocksper=2)
+     chaffed = c.chaff(source)
+ 
+@@ -221,7 +221,7 @@
+     # the chaff
+ 
+     wheat = []
+-    print 'chaffed message blocks:'
++    print('chaffed message blocks:')
+     for i, data, mac in chaffed:
+         # do the authentication
+         h = HMAC.new(key, data, digestmod=SHA)
+@@ -232,13 +232,13 @@
+         else:
+             tag = '   '
+         # base64 adds a trailing newline
+-        print tag, '%3d' % i, \
+-              repr(data), encodestring(mac)[:-1]
++        print(tag, '%3d' % i, \
++              repr(data), encodestring(mac)[:-1])
+ 
+     # now decode the message packets and check it against the original text
+-    print 'Undigesting wheat...'
++    print('Undigesting wheat...')
+     newtext = "".join(wheat)
+     if newtext == text:
+-        print 'They match!'
++        print('They match!')
+     else:
+-        print 'They differ!'
++        print('They differ!')
+diff -ruN pycrypto-2.1.0/lib/Crypto/PublicKey/_DSA.py pycrypto-2.1.0.new/lib/Crypto/PublicKey/_DSA.py
+--- pycrypto-2.1.0/lib/Crypto/PublicKey/_DSA.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/PublicKey/_DSA.py	2010-01-15 18:24:34.000000000 +0000
+@@ -49,7 +49,7 @@
+         q=q*256+c
+     while (not isPrime(q)):
+         q=q+2
+-    if pow(2,159L) < q < pow(2,160L):
++    if pow(2,159) < q < pow(2,160):
+         return S, q
+     raise RuntimeError('Bad q value generated')
+ 
+@@ -79,7 +79,7 @@
+                 V[k]=bytes_to_long(SHA.new(S+str(N)+str(k)).digest())
+             W=V[n] % powb
+             for k in range(n-1, -1, -1):
+-                W=(W<<160L)+V[k]
++                W=(W<<160)+V[k]
+             X=W+powL1
+             p=X-(X%(2*obj.q)-1)
+             if powL1<=p and isPrime(p):
+diff -ruN pycrypto-2.1.0/lib/Crypto/PublicKey/_RSA.py pycrypto-2.1.0.new/lib/Crypto/PublicKey/_RSA.py
+--- pycrypto-2.1.0/lib/Crypto/PublicKey/_RSA.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/PublicKey/_RSA.py	2010-01-15 18:24:34.000000000 +0000
+@@ -37,12 +37,12 @@
+     the progress of the key generation.
+     """
+     obj=RSAobj()
+-    obj.e = 65537L
++    obj.e = 65537
+ 
+     # Generate the prime factors of n
+     if progress_func:
+         progress_func('p,q\n')
+-    p = q = 1L
++    p = q = 1
+     while number.size(p*q) < bits:
+         # Note that q might be one bit longer than p if somebody specifies an odd
+         # number of bits for the key. (Why would anyone do that?  You don't get
+@@ -55,12 +55,12 @@
+         #   http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.17.2713&rep=rep1&type=pdf
+         # Since e=65537 is prime, it is sufficient to check that e divides
+         # neither (p-1) nor (q-1).
+-        p = 1L
++        p = 1
+         while (p - 1) % obj.e == 0:
+             if progress_func:
+                 progress_func('p\n')
+             p = pubkey.getPrime(bits/2, randfunc)
+-        q = 1L
++        q = 1
+         while (q - 1) % obj.e == 0:
+             if progress_func:
+                 progress_func('q\n')
+diff -ruN pycrypto-2.1.0/lib/Crypto/PublicKey/_slowmath.py pycrypto-2.1.0.new/lib/Crypto/PublicKey/_slowmath.py
+--- pycrypto-2.1.0/lib/Crypto/PublicKey/_slowmath.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/PublicKey/_slowmath.py	2010-01-15 18:24:34.000000000 +0000
+@@ -98,7 +98,7 @@
+         # SECURITY TODO - We _should_ be computing SHA1(m), but we don't because that's the API.
+         if not self.has_private():
+             raise TypeError("No private key")
+-        if not (1L < k < self.q):
++        if not (1 < k < self.q):
+             raise ValueError("k is not between 2 and q-1")
+         inv_k = inverse(k, self.q)   # Compute k**-1 mod q
+         r = pow(self.g, k, self.p) % self.q  # r = (g**k mod p) mod q
+diff -ruN pycrypto-2.1.0/lib/Crypto/PublicKey/qNEW.py pycrypto-2.1.0.new/lib/Crypto/PublicKey/qNEW.py
+--- pycrypto-2.1.0/lib/Crypto/PublicKey/qNEW.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/PublicKey/qNEW.py	2010-01-15 18:24:34.000000000 +0000
+@@ -58,12 +58,12 @@
+         progress_func('p,q\n')
+     while (1):
+         obj.q = getPrime(160, randfunc)
+-        #           assert pow(2, 159L)<obj.q<pow(2, 160L)
++        #           assert pow(2, 159)<obj.q<pow(2, 160)
+         obj.seed = S = long_to_bytes(obj.q)
+         C, N, V = 0, 2, {}
+         # Compute b and n such that bits-1 = b + n*HASHBITS
+         n= (bits-1) / HASHBITS
+-        b= (bits-1) % HASHBITS ; powb=2L << b
++        b= (bits-1) % HASHBITS ; powb=2 << b
+         powL1=pow(long(2), bits-1)
+         while C<4096:
+             # The V array will contain (bits-1) bits of random
+@@ -124,7 +124,7 @@
+     """
+     obj=qNEWobj()
+     if len(tuple) not in [4,5]:
+-        raise error, 'argument for construct() wrong length'
++        raise error('argument for construct() wrong length')
+     for i in range(len(tuple)):
+         field = obj.keydata[i]
+         setattr(obj, field, tuple[i])
+@@ -135,11 +135,11 @@
+ 
+     def _sign(self, M, K=''):
+         if (self.q<=K):
+-            raise error, 'K is greater than q'
++            raise error('K is greater than q')
+         if M<0:
+-            raise error, 'Illegal value of M (<0)'
+-        if M>=pow(2,161L):
+-            raise error, 'Illegal value of M (too large)'
++            raise error('Illegal value of M (<0)')
++        if M>=pow(2,161):
++            raise error('Illegal value of M (too large)')
+         r=pow(self.g, K, self.p) % self.q
+         s=(K- (r*M*self.x % self.q)) % self.q
+         return (r,s)
+@@ -148,8 +148,8 @@
+         if r<=0 or r>=self.q or s<=0 or s>=self.q:
+             return 0
+         if M<0:
+-            raise error, 'Illegal value of M (<0)'
+-        if M<=0 or M>=pow(2,161L):
++            raise error('Illegal value of M (<0)')
++        if M<=0 or M>=pow(2,161):
+             return 0
+         v1 = pow(self.g, s, self.p)
+         v2 = pow(self.y, M*r, self.p)
+diff -ruN pycrypto-2.1.0/lib/Crypto/Random/Fortuna/FortunaAccumulator.py pycrypto-2.1.0.new/lib/Crypto/Random/Fortuna/FortunaAccumulator.py
+--- pycrypto-2.1.0/lib/Crypto/Random/Fortuna/FortunaAccumulator.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/Random/Fortuna/FortunaAccumulator.py	2010-01-15 18:24:34.000000000 +0000
+@@ -83,7 +83,7 @@
+             retval.append(i)
+         else:
+             break   # optimization.  once this fails, it always fails
+-        mask = (mask << 1) | 1L
++        mask = (mask << 1) | 1
+     return retval
+ 
+ class FortunaAccumulator(object):
+diff -ruN pycrypto-2.1.0/lib/Crypto/Random/random.py pycrypto-2.1.0.new/lib/Crypto/Random/random.py
+--- pycrypto-2.1.0/lib/Crypto/Random/random.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/Random/random.py	2010-01-15 18:24:34.000000000 +0000
+@@ -46,7 +46,7 @@
+         """Return a python long integer with k random bits."""
+         if self._randfunc is None:
+             self._randfunc = Random.new().read
+-        mask = (1L << k) - 1
++        mask = (1 << k) - 1
+         return mask & bytes_to_long(self._randfunc(ceil_div(k, 8)))
+ 
+     def randrange(self, *args):
+diff -ruN pycrypto-2.1.0/lib/Crypto/SelfTest/Cipher/common.py pycrypto-2.1.0.new/lib/Crypto/SelfTest/Cipher/common.py
+--- pycrypto-2.1.0/lib/Crypto/SelfTest/Cipher/common.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/SelfTest/Cipher/common.py	2010-01-15 18:24:34.000000000 +0000
+@@ -180,7 +180,7 @@
+ 
+         for disable_shortcut in (0, 1): # (False, True) Test CTR-mode shortcut and PyObject_CallObject code paths
+             for little_endian in (0, 1): # (False, True) Test both endiannesses
+-                ctr = Counter.new(8*self.module.block_size, initial_value=2L**(8*self.module.block_size)-1, little_endian=little_endian, disable_shortcut=disable_shortcut)
++                ctr = Counter.new(8*self.module.block_size, initial_value=2**(8*self.module.block_size)-1, little_endian=little_endian, disable_shortcut=disable_shortcut)
+                 cipher = self.module.new(a2b_hex(self.key), self.module.MODE_CTR, counter=ctr)
+                 block = "\x00" * self.module.block_size
+                 cipher.encrypt(block)
+diff -ruN pycrypto-2.1.0/lib/Crypto/SelfTest/PublicKey/test_RSA.py pycrypto-2.1.0.new/lib/Crypto/SelfTest/PublicKey/test_RSA.py
+--- pycrypto-2.1.0/lib/Crypto/SelfTest/PublicKey/test_RSA.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/SelfTest/PublicKey/test_RSA.py	2010-01-15 18:24:34.000000000 +0000
+@@ -74,7 +74,7 @@
+         e2 53 72 98 ca 2a 8f 59 46 f8 e5 fd 09 1d bd cb
+     """
+ 
+-    e = 0x11L    # public exponent
++    e = 0x11    # public exponent
+ 
+     prime_factor = """
+         c9 7f b1 f0 27 f4 53 f6 34 12 33 ea aa d1 d9 35
+diff -ruN pycrypto-2.1.0/lib/Crypto/SelfTest/Random/Fortuna/test_FortunaAccumulator.py pycrypto-2.1.0.new/lib/Crypto/SelfTest/Random/Fortuna/test_FortunaAccumulator.py
+--- pycrypto-2.1.0/lib/Crypto/SelfTest/Random/Fortuna/test_FortunaAccumulator.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/SelfTest/Random/Fortuna/test_FortunaAccumulator.py	2010-01-15 18:24:34.000000000 +0000
+@@ -76,17 +76,17 @@
+         self.assertEqual(FortunaAccumulator.which_pools(7), [0])
+         self.assertEqual(FortunaAccumulator.which_pools(8), [0, 1, 2, 3])
+         for i in range(1, 32):
+-            self.assertEqual(FortunaAccumulator.which_pools(2L**i-1), [0])
+-            self.assertEqual(FortunaAccumulator.which_pools(2L**i), range(i+1))
+-            self.assertEqual(FortunaAccumulator.which_pools(2L**i+1), [0])
+-        self.assertEqual(FortunaAccumulator.which_pools(2L**31), range(32))
+-        self.assertEqual(FortunaAccumulator.which_pools(2L**32), range(32))
+-        self.assertEqual(FortunaAccumulator.which_pools(2L**33), range(32))
+-        self.assertEqual(FortunaAccumulator.which_pools(2L**34), range(32))
+-        self.assertEqual(FortunaAccumulator.which_pools(2L**35), range(32))
+-        self.assertEqual(FortunaAccumulator.which_pools(2L**36), range(32))
+-        self.assertEqual(FortunaAccumulator.which_pools(2L**64), range(32))
+-        self.assertEqual(FortunaAccumulator.which_pools(2L**128), range(32))
++            self.assertEqual(FortunaAccumulator.which_pools(2**i-1), [0])
++            self.assertEqual(FortunaAccumulator.which_pools(2**i), range(i+1))
++            self.assertEqual(FortunaAccumulator.which_pools(2**i+1), [0])
++        self.assertEqual(FortunaAccumulator.which_pools(2**31), range(32))
++        self.assertEqual(FortunaAccumulator.which_pools(2**32), range(32))
++        self.assertEqual(FortunaAccumulator.which_pools(2**33), range(32))
++        self.assertEqual(FortunaAccumulator.which_pools(2**34), range(32))
++        self.assertEqual(FortunaAccumulator.which_pools(2**35), range(32))
++        self.assertEqual(FortunaAccumulator.which_pools(2**36), range(32))
++        self.assertEqual(FortunaAccumulator.which_pools(2**64), range(32))
++        self.assertEqual(FortunaAccumulator.which_pools(2**128), range(32))
+ 
+     def test_accumulator(self):
+         """FortunaAccumulator.FortunaAccumulator"""
+diff -ruN pycrypto-2.1.0/lib/Crypto/SelfTest/Util/test_number.py pycrypto-2.1.0.new/lib/Crypto/SelfTest/Util/test_number.py
+--- pycrypto-2.1.0/lib/Crypto/SelfTest/Util/test_number.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/SelfTest/Util/test_number.py	2010-01-15 18:24:34.000000000 +0000
+@@ -71,19 +71,19 @@
+         for b in range(3, 1+129, 3):    # 3, 6, ... , 129
+             self.assertEqual(0, number.ceil_shift(0, b))
+ 
+-            n = 1L
+-            while n <= 2L**(b+2):
+-                (q, r) = divmod(n-1, 2L**b)
++            n = 1
++            while n <= 2**(b+2):
++                (q, r) = divmod(n-1, 2**b)
+                 expected = q + int(not not r)
+                 self.assertEqual((n-1, b, expected),
+                                  (n-1, b, number.ceil_shift(n-1, b)))
+ 
+-                (q, r) = divmod(n, 2L**b)
++                (q, r) = divmod(n, 2**b)
+                 expected = q + int(not not r)
+                 self.assertEqual((n, b, expected),
+                                  (n, b, number.ceil_shift(n, b)))
+ 
+-                (q, r) = divmod(n+1, 2L**b)
++                (q, r) = divmod(n+1, 2**b)
+                 expected = q + int(not not r)
+                 self.assertEqual((n+1, b, expected),
+                                  (n+1, b, number.ceil_shift(n+1, b)))
+@@ -182,9 +182,9 @@
+             n += 1
+ 
+         for e in range(16, 1+64, 2):
+-            self.assertRaises(ValueError, number.exact_log2, 2L**e-1)
+-            self.assertEqual(e, number.exact_log2(2L**e))
+-            self.assertRaises(ValueError, number.exact_log2, 2L**e+1)
++            self.assertRaises(ValueError, number.exact_log2, 2**e-1)
++            self.assertEqual(e, number.exact_log2(2**e))
++            self.assertRaises(ValueError, number.exact_log2, 2**e+1)
+ 
+     def test_exact_div(self):
+         """Util.number.exact_div"""
+diff -ruN pycrypto-2.1.0/lib/Crypto/Util/RFC1751.py pycrypto-2.1.0.new/lib/Crypto/Util/RFC1751.py
+--- pycrypto-2.1.0/lib/Crypto/Util/RFC1751.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/Util/RFC1751.py	2010-01-15 18:17:15.000000000 +0000
+@@ -95,7 +95,7 @@
+         p=0
+         for i in range(0, 64, 2): p=p+_extract(skbin, i, 2)
+         if (p&3) != _extract(skbin, 64, 2):
+-            raise ValueError, "Parity error in resulting key"
++            raise ValueError("Parity error in resulting key")
+         key=key+subkey[0:8]
+     return key
+ 
+@@ -352,13 +352,13 @@
+            ]
+ 
+     for key, words in data:
+-        print 'Trying key', key
++        print('Trying key', key)
+         key=binascii.a2b_hex(key)
+         w2=key_to_english(key)
+         if w2!=words:
+-            print 'key_to_english fails on key', repr(key), ', producing', str(w2)
++            print('key_to_english fails on key', repr(key), ', producing', str(w2))
+         k2=english_to_key(words)
+         if k2!=key:
+-            print 'english_to_key fails on key', repr(key), ', producing', repr(k2)
++            print('english_to_key fails on key', repr(key), ', producing', repr(k2))
+ 
+ 
+diff -ruN pycrypto-2.1.0/lib/Crypto/Util/_number_new.py pycrypto-2.1.0.new/lib/Crypto/Util/_number_new.py
+--- pycrypto-2.1.0/lib/Crypto/Util/_number_new.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/Util/_number_new.py	2010-01-15 18:24:34.000000000 +0000
+@@ -39,7 +39,7 @@
+         raise TypeError("unsupported operand type(s): %r and %r" % (type(n).__name__, type(b).__name__))
+ 
+     assert n >= 0 and b >= 0    # I haven't tested or even thought about negative values
+-    mask = (1L << b) - 1
++    mask = (1 << b) - 1
+     if n & mask:
+         return (n >> b) + 1
+     else:
+@@ -85,7 +85,7 @@
+         n >>= 1
+     i -= 1
+ 
+-    assert num == (1L << i)
++    assert num == (1 << i)
+     return i
+ 
+ def exact_div(p, d, allow_divzero=False):
+diff -ruN pycrypto-2.1.0/lib/Crypto/Util/number.py pycrypto-2.1.0.new/lib/Crypto/Util/number.py
+--- pycrypto-2.1.0/lib/Crypto/Util/number.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/Util/number.py	2010-01-15 18:27:27.000000000 +0000
+@@ -46,13 +46,13 @@
+ ## import types
+ ## def str2long(s):
+ ##     if type(s)!=types.StringType: return s   # Integers will be left alone
+-##     return reduce(lambda x,y : x*256+ord(y), s, 0L)
++##     return reduce(lambda x,y : x*256+ord(y), s, 0)
+ 
+ def size (N):
+     """size(N:long) : int
+     Returns the size of the number N in bits.
+     """
+-    bits, power = 0,1L
++    bits, power = 0,1
+     while N >= power:
+         bits += 1
+         power = power << 1
+@@ -80,7 +80,7 @@
+         char = ord(randfunc(1)) >> (8-odd_bits)
+         S = chr(char) + S
+     value = bytes_to_long(S)
+-    value |= 2L ** (N-1)                # Ensure high bit is set
++    value |= 2 ** (N-1)                # Ensure high bit is set
+     assert size(value) >= N
+     return value
+ 
+@@ -98,7 +98,7 @@
+     Return the inverse of u mod v.
+     """
+     u3, v3 = long(u), long(v)
+-    u1, v1 = 1L, 0L
++    u1, v1 = 1, 0
+     while v3 > 0:
+         q=u3 / v3
+         u1, v1 = v1, u1 - v1*q
+@@ -150,25 +150,25 @@
+         return _fastmath.isPrime(N)
+ 
+     # Compute the highest bit that's set in N
+-    N1 = N - 1L
+-    n = 1L
++    N1 = N - 1
++    n = 1
+     while (n<N):
+-        n=n<<1L
+-    n = n >> 1L
++        n=n<<1
++    n = n >> 1
+ 
+     # Rabin-Miller test
+     for c in sieve[:7]:
+-        a=long(c) ; d=1L ; t=n
++        a=long(c) ; d=1 ; t=n
+         while (t):  # Iterate over the bits in N1
+             x=(d*d) % N
+-            if x==1L and d!=1L and d!=N1:
++            if x==1 and d!=1 and d!=N1:
+                 return 0  # Square root of 1 found
+             if N1 & t:
+                 d=(x*a) % N
+             else:
+                 d=x
+-            t = t >> 1L
+-        if d!=1L:
++            t = t >> 1
++        if d!=1:
+             return 0
+     return 1
+ 
+@@ -199,7 +199,7 @@
+     n = long(n)
+     pack = struct.pack
+     while n > 0:
+-        s = pack('>I', n & 0xffffffffL) + s
++        s = pack('>I', n & 0xffffffff) + s
+         n = n >> 32
+     # strip off leading zeros
+     for i in range(len(s)):
+@@ -222,7 +222,7 @@
+ 
+     This is (essentially) the inverse of long_to_bytes().
+     """
+-    acc = 0L
++    acc = 0
+     unpack = struct.unpack
+     length = len(s)
+     if length % 4:
+diff -ruN pycrypto-2.1.0/lib/Crypto/Util/python_compat.py pycrypto-2.1.0.new/lib/Crypto/Util/python_compat.py
+--- pycrypto-2.1.0/lib/Crypto/Util/python_compat.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/lib/Crypto/Util/python_compat.py	2010-01-15 18:37:30.000000000 +0000
+@@ -37,11 +37,11 @@
+ import __builtin__
+ 
+ # 'True' and 'False' aren't defined in Python 2.1.  Define them.
+-try:
+-    True, False
+-except NameError:
+-    (True, False) = (1, 0)
+-    __all__ += ['True', 'False']
++#try:
++#    True, False
++#except NameError:
++#    (True, False) = (1, 0)
++#    __all__ += ['True', 'False']
+ 
+ # New-style classes were introduced in Python 2.2.  Defining "object" in Python
+ # 2.1 lets us use new-style classes in versions of Python that support them,
+@@ -66,9 +66,9 @@
+         tuple: type(()),
+         list: type([]),
+         str: type(""),
+-        unicode: type(u""),
++        str: type(""),
+         int: type(0),
+-        long: type(0L),
++        long: type(0),
+     }
+     def isinstance(obj, t):
+         if not __builtin__.isinstance(t, type(())):
+diff -ruN pycrypto-2.1.0/setup.py pycrypto-2.1.0.new/setup.py
+--- pycrypto-2.1.0/setup.py	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/setup.py	2010-01-15 17:51:40.000000000 +0000
+@@ -43,7 +43,7 @@
+ import struct
+ 
+ if sys.version[0:1] == '1':
+-    raise RuntimeError, ("The Python Cryptography Toolkit requires "
++    raise RuntimeError("The Python Cryptography Toolkit requires "
+                          "Python 2.x to build.")
+ 
+ if sys.platform == 'win32':
+@@ -108,9 +108,9 @@
+ 
+ def endianness_macro():
+     s = struct.pack("@I", 0x33221100)
+-    if s == "\x00\x11\x22\x33":     # little endian
++    if s == "\x00\x11\x22\x33".encode():     # little endian
+         return ('PCT_LITTLE_ENDIAN', 1)
+-    elif s == "\x33\x22\x11\x00":   # big endian
++    elif s == "\x33\x22\x11\x00".encode():   # big endian
+         return ('PCT_BIG_ENDIAN', 1)
+     raise AssertionError("Machine is neither little-endian nor big-endian")
+ 
+diff -ruN pycrypto-2.1.0/src/_counter.c pycrypto-2.1.0.new/src/_counter.c
+--- pycrypto-2.1.0/src/_counter.c	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/src/_counter.c	2010-01-15 18:06:57.000000000 +0000
+@@ -34,7 +34,7 @@
+ static int
+ CounterObject_init(PCT_CounterObject *self, PyObject *args, PyObject *kwargs)
+ {
+-    PyStringObject *prefix=NULL, *suffix=NULL, *initval=NULL;
++    PyBytesObject *prefix=NULL, *suffix=NULL, *initval=NULL;
+     int allow_wraparound = 0;
+     int disable_shortcut = 0;
+     Py_ssize_t size;
+@@ -457,8 +457,8 @@
+     if (m == NULL)
+         return;
+ 
+-    my_CounterLEType.ob_type = &PyType_Type;
+-    my_CounterBEType.ob_type = &PyType_Type;
++    my_CounterLEType.ob_base.ob_base.ob_type = &PyType_Type;
++    my_CounterBEType.ob_base.ob_base.ob_type = &PyType_Type;
+ }
+ 
+ /* vim:set ts=4 sw=4 sts=4 expandtab: */
+diff -ruN pycrypto-2.1.0/src/_counter.h pycrypto-2.1.0.new/src/_counter.h
+--- pycrypto-2.1.0/src/_counter.h	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/src/_counter.h	2010-01-15 18:06:57.000000000 +0000
+@@ -29,8 +29,8 @@
+ 
+ typedef struct {
+     PyObject_HEAD
+-    PyStringObject *prefix;     /* Prefix (useful for a nonce) */
+-    PyStringObject *suffix;     /* Suffix (useful for a nonce) */
++    PyBytesObject *prefix;     /* Prefix (useful for a nonce) */
++    PyBytesObject *suffix;     /* Suffix (useful for a nonce) */
+     uint8_t *val;       /* Buffer for our output string */
+     uint32_t buf_size;  /* Size of the buffer */
+     uint8_t *p;         /* Pointer to the part of the buffer that we're allowed to update */
+diff -ruN pycrypto-2.1.0/src/_fastmath.c pycrypto-2.1.0.new/src/_fastmath.c
+--- pycrypto-2.1.0/src/_fastmath.c	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/src/_fastmath.c	2010-01-15 17:58:41.000000000 +0000
+@@ -40,15 +40,15 @@
+ 	mpz_t temp, temp2;
+ 	mpz_init (temp);
+ 	mpz_init (temp2);
+-	if (p->ob_size > 0)
+-		size = p->ob_size;
++	if (p->ob_base.ob_size > 0)
++		size = p->ob_base.ob_size;
+ 	else
+-		size = -p->ob_size;
++		size = -p->ob_base.ob_size;
+ 	mpz_set_ui (m, 0);
+ 	for (i = 0; i < size; i++)
+ 	{
+ 		mpz_set_ui (temp, p->ob_digit[i]);
+-		mpz_mul_2exp (temp2, temp, SHIFT * i);
++		mpz_mul_2exp (temp2, temp, PyLong_SHIFT * i);
+ 		mpz_add (m, m, temp2);
+ 	}
+ 	mpz_clear (temp);
+@@ -59,7 +59,7 @@
+ mpzToLongObj (mpz_t m)
+ {
+ 	/* borrowed from gmpy */
+-	int size = (mpz_sizeinbase (m, 2) + SHIFT - 1) / SHIFT;
++	int size = (mpz_sizeinbase (m, 2) + PyLong_SHIFT - 1) / PyLong_SHIFT;
+ 	int i;
+ 	mpz_t temp;
+ 	PyLongObject *l = _PyLong_New (size);
+@@ -68,13 +68,13 @@
+ 	mpz_init_set (temp, m);
+ 	for (i = 0; i < size; i++)
+ 	{
+-		l->ob_digit[i] = (digit) (mpz_get_ui (temp) & MASK);
+-		mpz_fdiv_q_2exp (temp, temp, SHIFT);
++		l->ob_digit[i] = (digit) (mpz_get_ui (temp) & PyLong_MASK);
++		mpz_fdiv_q_2exp (temp, temp, PyLong_SHIFT);
+ 	}
+ 	i = size;
+ 	while ((i > 0) && (l->ob_digit[i - 1] == 0))
+ 		i--;
+-	l->ob_size = i;
++	l->ob_base.ob_size = i;
+ 	mpz_clear (temp);
+ 	return (PyObject *) l;
+ }
+@@ -814,8 +814,8 @@
+         PyObject *_fastmath_module;
+         PyObject *_fastmath_dict;
+ 
+-	rsaKeyType.ob_type = &PyType_Type;
+-	dsaKeyType.ob_type = &PyType_Type;
++	rsaKeyType.ob_base.ob_base.ob_type = &PyType_Type;
++	dsaKeyType.ob_base.ob_base.ob_type = &PyType_Type;
+ 	_fastmath_module = Py_InitModule ("_fastmath", _fastmath__methods__);
+ 	_fastmath_dict = PyModule_GetDict (_fastmath_module);
+ 	fastmathError = PyErr_NewException ("_fastmath.error", NULL, NULL);
+diff -ruN pycrypto-2.1.0/src/block_template.c pycrypto-2.1.0.new/src/block_template.c
+--- pycrypto-2.1.0/src/block_template.c	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/src/block_template.c	2010-01-15 18:00:19.000000000 +0000
+@@ -64,9 +64,9 @@
+ 	block_state st;
+ } ALGobject;
+ 
+-staticforward PyTypeObject ALGtype;
++static PyTypeObject ALGtype;
+ 
+-#define is_ALGobject(v)		((v)->ob_type == &ALGtype)
++#define is_ALGobject(v)		((v)->ob_base.ob_base.ob_type == &ALGtype)
+ 
+ static ALGobject *
+ newALGobject(void)
+@@ -800,7 +800,7 @@
+ {
+ 	PyObject *m;
+ 
+-	ALGtype.ob_type = &PyType_Type;
++	ALGtype.ob_base.ob_base.ob_type = &PyType_Type;
+ 
+ 	/* Create the module and add the functions */
+ 	m = Py_InitModule("Crypto.Cipher." _MODULE_STRING, modulemethods);
+diff -ruN pycrypto-2.1.0/src/hash_template.c pycrypto-2.1.0.new/src/hash_template.c
+--- pycrypto-2.1.0/src/hash_template.c	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/src/hash_template.c	2010-01-15 18:00:19.000000000 +0000
+@@ -43,9 +43,9 @@
+ 	hash_state st;
+ } ALGobject;
+ 
+-staticforward PyTypeObject ALGtype;
++static PyTypeObject ALGtype;
+ 
+-#define is_ALGobject(v) ((v)->ob_type == &ALGtype)
++#define is_ALGobject(v) ((v)->ob_base.ob_base.ob_type == &ALGtype)
+ 
+ static ALGobject *
+ newALGobject(void)
+@@ -253,7 +253,7 @@
+ {
+ 	PyObject *m;
+ 
+-	ALGtype.ob_type = &PyType_Type;
++	ALGtype.ob_base.ob_base.ob_type = &PyType_Type;
+ 	m = Py_InitModule("Crypto.Hash." _MODULE_STRING, ALG_functions);
+ 
+ 	/* Add some symbolic constants to the module */
+diff -ruN pycrypto-2.1.0/src/stream_template.c pycrypto-2.1.0.new/src/stream_template.c
+--- pycrypto-2.1.0/src/stream_template.c	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/src/stream_template.c	2010-01-15 18:00:19.000000000 +0000
+@@ -55,9 +55,9 @@
+ 	stream_state st;
+ } ALGobject;
+ 
+-staticforward PyTypeObject ALGtype;
++static PyTypeObject ALGtype;
+ 
+-#define is_ALGobject(v)		((v)->ob_type == &ALGtype)
++#define is_ALGobject(v)		((v)->ob_base.ob_base.ob_type == &ALGtype)
+ 
+ static ALGobject *
+ newALGobject(void)
+@@ -247,7 +247,7 @@
+ {
+ 	PyObject *m, *d, *x;
+ 
+-	ALGtype.ob_type = &PyType_Type;
++	ALGtype.ob_base.ob_base.ob_type = &PyType_Type;
+ 	/* Create the module and add the functions */
+ 	m = Py_InitModule("Crypto.Cipher." _MODULE_STRING, modulemethods);
+ 
+diff -ruN pycrypto-2.1.0/src/winrand.c pycrypto-2.1.0.new/src/winrand.c
+--- pycrypto-2.1.0/src/winrand.c	2009-12-13 20:39:29.000000000 +0000
++++ pycrypto-2.1.0.new/src/winrand.c	2010-01-15 18:00:19.000000000 +0000
+@@ -54,9 +54,9 @@
+     HCRYPTPROV hcp;
+ } WRobject;
+ 
+-staticforward PyTypeObject WRtype;
++static PyTypeObject WRtype;
+ 
+-#define is_WRobject(v) ((v)->ob_type == &WRtype)
++#define is_WRobject(v) ((v)->ob_base.ob_base.ob_type == &WRtype)
+ 
+ static void
+ WRdealloc(PyObject *ptr)
+@@ -217,7 +217,7 @@
+ initwinrandom()
+ {
+ 	PyObject *m;
+-	WRtype.ob_type = &PyType_Type;
++	WRtype.ob_base.ob_base.ob_type = &PyType_Type;
+ 	m = Py_InitModule("winrandom", WR_mod_methods);
+ 
+ 	/* define Windows CSP Provider Types */

@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Public Key encryption of files
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20Key%20encryption%20of%20files&In-Reply-To=8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048%40exch-mail.bridge.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000499.html">
+   <LINK REL="Next"  HREF="000501.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Public Key encryption of files</H1>
+    <B>John Matthew</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Public%20Key%20encryption%20of%20files&In-Reply-To=8129C8D99AA86D4A9A8BEA3E7DCC806A36B9BBF048%40exch-mail.bridge.net"
+       TITLE="[pycrypto] Public Key encryption of files">john at compunique.com
+       </A><BR>
+    <I>Thu Nov 10 11:10:10 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000499.html">[pycrypto] Public Key encryption of files
+</A></li>
+        <LI>Next message: <A HREF="000501.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#500">[ date ]</a>
+              <a href="thread.html#500">[ thread ]</a>
+              <a href="subject.html#500">[ subject ]</a>
+              <a href="author.html#500">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dean, thanks for the reply
+
+
+Ah, I see.  If I want to encrypt a 2mb file with a Symmetric Key, it just
+has to have a &quot;16 byte padding&quot; for AES, or do all the chunks need to be 16
+bytes?
+
+J
+
+On Thu, Nov 10, 2011 at 5:17 AM, Dean Macinskas &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dmacinskas at geobridge.net</A>&gt;wrote:
+
+&gt;<i>  John,****
+</I>&gt;<i>
+</I>&gt;<i> ** **
+</I>&gt;<i>
+</I>&gt;<i> Unless the file is small, the typical way to encrypt a file is to use a
+</I>&gt;<i> symmetric key, like TDES or AES.  Asymmetric key crypto is usually too slow
+</I>&gt;<i> for bulk encryption; you use a symmetric key for that, and store/export the
+</I>&gt;<i> symmetric key using asymmetric key protection.****
+</I>&gt;<i>
+</I>&gt;<i> ** **
+</I>&gt;<i>
+</I>&gt;<i> The block size of a public key is fixed by the length of the key; in other
+</I>&gt;<i> words, if you generate a 2048 bit key, the block size is 2048 bits (256
+</I>&gt;<i> bytes).  Symmetric key block length is set by the algorithm: 8 bytes for
+</I>&gt;<i> TDES, 16 for AES.  Any data you encrypt has to be padded to a multiple of
+</I>&gt;<i> the block length.****
+</I>&gt;<i>
+</I>&gt;<i> ** **
+</I>&gt;<i>
+</I>&gt;<i> If you use RSA, there are a couple of rules for encrypting data, one of
+</I>&gt;<i> which is that the data has to be numerically less than the public modulus.
+</I>&gt;<i> This is usually accomplished by setting the left-most bit (MSB) of the data
+</I>&gt;<i> block to zero; another reason why using a public key directly is not a good
+</I>&gt;<i> choice for bulk encryption.****
+</I>&gt;<i>
+</I>&gt;<i> ** **
+</I>&gt;<i>
+</I>&gt;<i> HTH,****
+</I>&gt;<i>
+</I>&gt;<i> Dean****
+</I>&gt;<i>
+</I>&gt;<i> ** **
+</I>&gt;<i>
+</I>&gt;<i> *From:* <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A> [mailto:
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto-bounces at lists.dlitz.net</A>] *On Behalf Of *John Matthew
+</I>&gt;<i> *Sent:* Tuesday, November 08, 2011 11:59 AM
+</I>&gt;<i> *To:* <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> *Subject:* [pycrypto] Public Key encryption of files****
+</I>&gt;<i>
+</I>&gt;<i> ** **
+</I>&gt;<i>
+</I>&gt;<i> First off, pycrypto is awesome!  Thank you for creating it!****
+</I>&gt;<i>
+</I>&gt;<i> ** **
+</I>&gt;<i>
+</I>&gt;<i> I'd like to use Public Keys to encrypt files, is this something that seems
+</I>&gt;<i> appropriate for file encryption?****
+</I>&gt;<i>
+</I>&gt;<i> ** **
+</I>&gt;<i>
+</I>&gt;<i> I've noticed that the encrypt method for RSA keys is only 256 bytes, which
+</I>&gt;<i> seems rather small.****
+</I>&gt;<i>
+</I>&gt;<i> ** **
+</I>&gt;<i>
+</I>&gt;<i> I know I could wrap that in a generator, but was hoping for some feedback
+</I>&gt;<i> on another way or a configuration change to increase that number.****
+</I>&gt;<i>
+</I>&gt;<i> ** **
+</I>&gt;<i>
+</I>&gt;<i> Thanks for your contribution, and help.****
+</I>&gt;<i>
+</I>&gt;<i> ** **
+</I>&gt;<i>
+</I>&gt;<i> J****
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20111110/fd4ff1f0/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20111110/fd4ff1f0/attachment.htm</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000499.html">[pycrypto] Public Key encryption of files
+</A></li>
+	<LI>Next message: <A HREF="000501.html">[pycrypto] Public Key encryption of files
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#500">[ date ]</a>
+              <a href="thread.html#500">[ thread ]</a>
+              <a href="subject.html#500">[ subject ]</a>
+              <a href="author.html#500">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] adding ssh keys support in distutils2
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20adding%20ssh%20keys%20support%20in%20distutils2&In-Reply-To=AANLkTim-zQu59ZcktBQ-mVOaVzLfbvi0F8RpaVsxzdKx%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000428.html">
+   <LINK REL="Next"  HREF="000435.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] adding ssh keys support in distutils2</H1>
+    <B>Aljo&#353;a Mohorovi&#263;</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20adding%20ssh%20keys%20support%20in%20distutils2&In-Reply-To=AANLkTim-zQu59ZcktBQ-mVOaVzLfbvi0F8RpaVsxzdKx%40mail.gmail.com"
+       TITLE="[pycrypto] adding ssh keys support in distutils2">aljosa.mohorovic at gmail.com
+       </A><BR>
+    <I>Tue Feb 22 16:42:46 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000428.html">[pycrypto] adding ssh keys support in distutils2
+</A></li>
+        <LI>Next message: <A HREF="000435.html">[pycrypto] PyCrypto &amp; OpenSSL
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#429">[ date ]</a>
+              <a href="thread.html#429">[ thread ]</a>
+              <a href="subject.html#429">[ subject ]</a>
+              <a href="author.html#429">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Feb 22, 2011 at 9:23 PM, Legrandin
+&lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">gooksankoo at hoiptorrow.mailexpire.com</A>&gt; wrote:
+&gt;<i> Right now ssh keys cannot be imported in pycrypto (although I have
+</I>&gt;<i> been planning for a while to add that).
+</I>&gt;<i> Is that important to you?
+</I>
+it is, i need access to identities available to the authentication agent.
+basically i need anything added with &quot;ssh-add &lt;key&gt;&quot; although i can
+get everything with something like:
+&gt;&gt;&gt;<i> os.system(&quot;ssh-add -L&quot;)
+</I>
+&gt;<i> Once the keys are in python at the sender, you can concatenate and
+</I>&gt;<i> pass the file and the request headers through a hash function (like
+</I>&gt;<i> SHA), and then sign the resulting hash using RSA.sign.
+</I>&gt;<i>
+</I>&gt;<i> At the other end, you do the same hash and pass it to RSA.verify
+</I>&gt;<i> (where RSA is the public half only) together with the signature you
+</I>&gt;<i> received from the sender.
+</I>
+thanks for info.
+
+Aljosa
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000428.html">[pycrypto] adding ssh keys support in distutils2
+</A></li>
+	<LI>Next message: <A HREF="000435.html">[pycrypto] PyCrypto &amp; OpenSSL
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#429">[ date ]</a>
+              <a href="thread.html#429">[ thread ]</a>
+              <a href="subject.html#429">[ subject ]</a>
+              <a href="author.html#429">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

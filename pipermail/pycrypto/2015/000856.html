@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] RIPEMD-160 self-test failure
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RIPEMD-160%20self-test%20failure&In-Reply-To=%3CCAJXyS%3Dj2mZff6zrpftDHVD5Q-f1fYaLsR1UgeXQhg5tmontJpw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000855.html">
+   <LINK REL="Next"  HREF="000857.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] RIPEMD-160 self-test failure</H1>
+    <B>Jeffery To</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20RIPEMD-160%20self-test%20failure&In-Reply-To=%3CCAJXyS%3Dj2mZff6zrpftDHVD5Q-f1fYaLsR1UgeXQhg5tmontJpw%40mail.gmail.com%3E"
+       TITLE="[pycrypto] RIPEMD-160 self-test failure">jeffery.to at gmail.com
+       </A><BR>
+    <I>Wed Oct 28 04:03:12 PDT 2015</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000855.html">[pycrypto] Security of public_key.encrypt() and private_key.decrypt()
+</A></li>
+        <LI>Next message: <A HREF="000857.html">[pycrypto] RIPEMD-160 self-test failure
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#856">[ date ]</a>
+              <a href="thread.html#856">[ thread ]</a>
+              <a href="subject.html#856">[ subject ]</a>
+              <a href="author.html#856">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I'm trying to cross-compile PyCrypto 2.6.1 for OpenWrt (Chaos Calmer 15.05,
+targeting ar71xx). The library compiled without any fatal errors and I'm
+able to package and install on my router (TP-Link TL-MR3020).
+
+To be sure it's working correctly, I transferred setup.py to my router and
+ran the self-test. All the tests passed except for the 9 RIPEMD-160 hash
+tests. The library function(s) seem to return normally, but the returned
+hash is incorrect, e.g.:
+
+FAIL: runTest (Crypto.SelfTest.Hash.common.HashSelfTest)
+RIPEMD #1: '' (empty string)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File &quot;/usr/lib/python2.7/site-packages/Crypto/SelfTest/Hash/common.py&quot;,
+line 88, in runTest
+    self.assertEqual(self.expected, out1)   # h = .new(); h.update(data);
+h.digest()
+AssertionError: '9c1185a5c5e9fc54612808977ee8f548b2258d31' !=
+'7c7c0f550ddb9e5ebf157869ea147e65cb89bb0e'
+
+I'm unsure how to proceed at this point; my searches on Google haven't
+returned any relevant results. What area/library/etc should I
+investigate/debug to fix this? Any help would be appreciated.
+
+Thanks!
+Jeff
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20151028/6e4b4623/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20151028/6e4b4623/attachment.html</A>&gt;
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000855.html">[pycrypto] Security of public_key.encrypt() and private_key.decrypt()
+</A></li>
+	<LI>Next message: <A HREF="000857.html">[pycrypto] RIPEMD-160 self-test failure
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#856">[ date ]</a>
+              <a href="thread.html#856">[ thread ]</a>
+              <a href="subject.html#856">[ subject ]</a>
+              <a href="author.html#856">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

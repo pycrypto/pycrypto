@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20setup.py%20fails%20to%20find%20gmp%20on%20Debian/Ubuntu&In-Reply-To=CAGfyce0z8ZXZ7BiN1c_mAYOBTcQJNAzEAxA%3DpzPoNi-QC8-qew%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000462.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] setup.py fails to find gmp on Debian/Ubuntu</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20setup.py%20fails%20to%20find%20gmp%20on%20Debian/Ubuntu&In-Reply-To=CAGfyce0z8ZXZ7BiN1c_mAYOBTcQJNAzEAxA%3DpzPoNi-QC8-qew%40mail.gmail.com"
+       TITLE="[pycrypto] setup.py fails to find gmp on Debian/Ubuntu">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Oct 10 22:07:38 CST 2011</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000462.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#461">[ date ]</a>
+              <a href="thread.html#461">[ thread ]</a>
+              <a href="subject.html#461">[ subject ]</a>
+              <a href="author.html#461">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Sep 24, 2011 at 03:04:49PM +0200, Sebastian Ramacher wrote:
+&gt;<i>Hi,
+</I>&gt;<i>
+</I>&gt;<i>Debian and Ubuntu recently started to implement Multiarch [1]. Because of this, 
+</I>&gt;<i>libgmp.so has been moved from /usr/lib/ to /usr/lib/&lt;host-triplet&gt;/ and setup.py 
+</I>&gt;<i>cannot find it anymore.
+</I>[snip]
+&gt;<i>
+</I>&gt;<i>[1] <A HREF="https://wiki.ubuntu.com/MultiarchSpec">https://wiki.ubuntu.com/MultiarchSpec</A>
+</I>
+Oh, neat!  I'm still running Ubuntu 11.04 (natty) and Debian squeeze, so I 
+never noticed.
+
+On Tue, Sep 27, 2011 at 07:02:44PM +0200, Legrandin wrote:
+&gt;<i>+def libgmp_exists():
+</I>&gt;<i>+    '''Verify that the compiler and the linker can reach libgmp'''
+</I>&gt;<i>+
+</I>&gt;<i>+    fname = tempfile.mktemp(&quot;.c&quot;)
+</I>&gt;<i>+    oname = tempfile.mktemp(&quot;.out&quot;)
+</I>&gt;<i>+    f = open(fname, 'w')
+</I>&gt;<i>+    f.write(&quot;&quot;&quot;
+</I>&gt;<i>+    #include &lt;gmp.h&gt;
+</I>&gt;<i>+
+</I>&gt;<i>+    int main(void)
+</I>&gt;<i>+    {
+</I>&gt;<i>+        mpz_init((void*)0);
+</I>&gt;<i>+        return 0;
+</I>&gt;<i>+    }
+</I>&gt;<i>+    &quot;&quot;&quot;)
+</I>&gt;<i>+    f.close()
+</I>
+Ok, this looks a lot like something an autoconf would do.  Rather than 
+writing our own custom version of autoconf in setup.py, I've just added a 
+configure script.  Can you try it out?
+
+     <A HREF="https://github.com/dlitz/pycrypto.git">https://github.com/dlitz/pycrypto.git</A>
+
+It works for me on Debian wheezy amd64 with libgmp-dev installed.
+
+Note that it should also work with python3 now.
+
+If it's good, I'll make a release this week.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000462.html">[pycrypto] setup.py fails to find gmp on Debian/Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#461">[ date ]</a>
+              <a href="thread.html#461">[ thread ]</a>
+              <a href="subject.html#461">[ subject ]</a>
+              <a href="author.html#461">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

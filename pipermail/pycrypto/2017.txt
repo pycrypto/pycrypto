@@ -1,0 +1,1488 @@
+From hpj at urpla.net  Thu Mar  9 16:56:11 2017
+From: hpj at urpla.net (Hans-Peter Jansen)
+Date: Thu, 09 Mar 2017 17:56:11 +0100
+Subject: [pycrypto] keyrings.cryptfile released on github
+Message-ID: <9488704.4nHWsKhNEW@xrated>
+
+Hi,
+
+I've released a keyring companion package moments ago:
+
+	https://github.com/frispete/keyrings.cryptfile
+
+Its primary purpose is a decent encrypted file backend for python keyrings.
+As such, it uses a manually parameterized argon2 hash as KDF, and AES in OCB 
+mode as stream cipher (well, it just encrypts the password for a given 
+service and user name. Granted, the advantages of OCB are not /that/ crucial 
+here, but apart from the technical factors, the exclusion of military uses by 
+its license is rather attractive from my POV(!). But I'm open for discussions.
+
+Interested? Here we go:
+
+To get you started, I expect you to have a python3 environment available. 
+You might want to provide the packages argon2-cffi, keyring, pycryptodome and 
+their dependencies (most notably secretstorage and cryptography, or use a 
+local venv.
+
+$ git clone https://github.com/frispete/keyrings.cryptfile
+$ cd keyrings.cryptfile
+$ pyvenv env
+$ . env/bin/activate
+(env) $ pip install -e .
+[...] # should succeed, some development packages might be missing otherwise
+(env) $ python3
+Python 3.4.5 (default, Jul 03 2016, 12:57:15) [GCC] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from keyrings.cryptfile.cryptfile import CryptFileKeyring
+>>> kr = CryptFileKeyring()
+>>> kr.set_password("service", "user", "secret")
+Please set a password for your new keyring: 
+Please confirm the password: 
+>>> 
+(env) $ python3
+Python 3.4.5 (default, Jul 03 2016, 12:57:15) [GCC] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from keyrings.cryptfile.cryptfile import CryptFileKeyring
+>>> kr = CryptFileKeyring()
+>>> kr.get_password("service", "user")
+Please enter password for encrypted keyring: 
+'secret'
+>>> 
+
+Note, that the KDF might delay the {set,get}_password() operations for a 
+few seconds (~1 sec. on a capable system).
+
+The resulting file is located here and might look like:
+(env) $ cat .local/share/python_keyring/cryptfile.cfg
+[keyring_2Dsetting]
+password_20reference = eyJub25jZSI6ICJQdVdWVUIwUHNYbEFqYUUxZ2l2RlxuIiwgIm1hYyI6ICIvVTFIVDBWTnRheTFl
+        TjA5TVlHb0dRPT1cbiIsICJzYWx0IjogIklMdDNBU1hMUENrbWZ2NzFudmtBSUE9PVxuIiwgImRh
+        dGEiOiAidW1EQkNvQ2dRUTk5WEVaNkZ4NWt3NXRkSUZDOHFIUE5ZOHhWXG4ifQ==
+scheme = Cryptodome [Argon2] AES OCB
+version = 1.0
+
+[service]
+user = eyJub25jZSI6ICI5SUU3UGp2eDU2SXNQdHlLUGRtaFxuIiwgIm1hYyI6ICJKcFR1NXMxaDd0UGlW
+        OW9XL3d5cFdBPT1cbiIsICJzYWx0IjogIlpBeEhJdXlqYnRuTkgzb3BMNTFvdkE9PVxuIiwgImRh
+        dGEiOiAiT2I3Z1JJbXR5aVJLXG4ifQ==
+
+
+The value can be decoded like this:
+
+(env) $ python3
+>>> import base64
+>>> base64.decodebytes(b"""
+... eyJub25jZSI6ICI5SUU3UGp2eDU2SXNQdHlLUGRtaFxuIiwgIm1hYyI6ICJKcFR1NXMxaDd0UGlW
+... OW9XL3d5cFdBPT1cbiIsICJzYWx0IjogIlpBeEhJdXlqYnRuTkgzb3BMNTFvdkE9PVxuIiwgImRh
+... dGEiOiAiT2I3Z1JJbXR5aVJLXG4ifQ==""")
+b'{"nonce": "9IE7Pjvx56IsPtyKPdmh\\n", "mac": "JpTu5s1h7tPiV9oW/wypWA==\\n", 
+   "salt": "ZAxHIuyjbtnNH3opL51ovA==\\n", "data": "Ob7gRImtyiRK\\n"}'
+
+
+What do you think? The class hierarchy is inherited from keyrings.alt, and 
+not exactly easy to follow, but the interesting parts are all in cryptfile,
+which is quite brief.
+
+I would be very glad to hear something from you about my handling of 
+cryptography. Is it ready for the public in that form or should I better 
+locked away? :wink:
+
+TIA,
+Pete
+
+From hpj at urpla.net  Fri Mar 10 10:49:24 2017
+From: hpj at urpla.net (Hans-Peter Jansen)
+Date: Fri, 10 Mar 2017 11:49:24 +0100
+Subject: [pycrypto] keyrings.cryptfile released on github
+In-Reply-To: <20170309230909.hl3zg2llxazwiypu@abyayala>
+References: <2356566.kSNyJECJKv@xrated>
+ <20170309230909.hl3zg2llxazwiypu@abyayala>
+Message-ID: <4839007.k4Tbcrq13J@xrated>
+
+On Donnerstag, 9. März 2017 23:09:09 ng0 wrote:
+> Hans-Peter Jansen transcribed 3.8K bytes:
+> > Hi,
+> > 
+> > since the PyCrypto ML is dead, I'm looking for advise/feedback from some
+> > cryptography aware people.
+> > 
+> > I've released a keyring companion package today:
+> > 	https://github.com/frispete/keyrings.cryptfile
+> > 
+> > Its primary purpose is a decent encrypted file backend for python
+> > keyrings.
+> > As such, it uses manually parameterized argon2 hashes as KDF, and AES in
+> > OCB mode as stream cipher (well, it just encrypts the password for a
+> > given service/user name). Granted, the advantages of OCB are not /that/
+> > crucial here :wink:, but apart from technical factors, the exclusion of
+> > military uses
+> I was looking for some proprietary EULA or something else locked down
+> license and instead just saw the Expat license.
+
+Don't get you here. Yes, the package contains just a MIT license file for now. 
+
+> I assume that you are
+> aware that no anti-mil clause exists in co-existence with free software
+> licenses
+> and your sentence was just written in an
+> odd way?
+
+First, bear with me, as I'm not a native speaker. Sometimes, my expressions 
+tend to confuse people. I'm sorry about that. Second, I'm not a lawyer.
+
+As long as I use OCB in OSS and does not sue somebody else about it, License 1 
+is granted, if I read the OCB license options correctly [1]. Anyway, I will 
+add the OCB license to the package and add a note in the initial password 
+retrieval dialog about it..
+
+In this projects state, I would like to discuss the technical issues first.
+<OT> As said, I sympathize with the idea of the license, since I personally 
+believe, that military conflicts doesn't solve any problems, but many todays 
+problems originate from them.</OT>
+
+[1] http://web.cs.ucdavis.edu/~rogaway/ocb/license.htm
+
+> > by its license is rather *attractive* from my POV(!). But I'm open for
+> > discussions of course.
+
+Cheers,
+Pete
+
+From dave.pawson at gmail.com  Fri Jul 21 14:16:20 2017
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 21 Jul 2017 15:16:20 +0100
+Subject: [pycrypto] Build error, 2.6.1
+Message-ID: <CAEncD4e0VSm6JUOr--CroaSnKdRONE0s4aQ-K9wO=8f4ncgeKA@mail.gmail.com>
+
+Installing on a new system, Fedora 26, 64 bit.
+Builds OK using setup.py for python 2.7
+
+Fails on python 3.x?
+
+Should this be built in a different way please?
+
+TiA
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Fri Jul 21 14:46:26 2017
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 21 Jul 2017 15:46:26 +0100
+Subject: [pycrypto] Build error, 2.6.1
+In-Reply-To: <CAEncD4e0VSm6JUOr--CroaSnKdRONE0s4aQ-K9wO=8f4ncgeKA@mail.gmail.com>
+References: <CAEncD4e0VSm6JUOr--CroaSnKdRONE0s4aQ-K9wO=8f4ncgeKA@mail.gmail.com>
+Message-ID: <CAEncD4eeTyw6KwrsW47JKvox49zcUFwNQ9am21As6MvTcXQa1Q@mail.gmail.com>
+
+(long) output is
+
+[root at localhost pycrypto-2.6.1]# python3 setup.py build
+running build
+running build_py
+running build_ext
+running build_configure
+warning: GMP or MPIR library not found; Not building Crypto.PublicKey._fastmath.
+building 'Crypto.Hash._MD2' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/MD2.c -o
+build/temp.linux-x86_64-3.6/src/MD2.o
+src/MD2.c: In function ‘hash_update’:
+src/MD2.c:101:22: warning: comparison between signed and unsigned
+integer expressions [-Wsign-compare]
+   L=(16-self->count) < len ? (16-self->count) : len;
+                      ^
+src/MD2.c:101:47: warning: signed and unsigned type in conditional
+expression [-Wsign-compare]
+   L=(16-self->count) < len ? (16-self->count) : len;
+                                               ^
+src/MD2.c: In function ‘hash_digest’:
+src/MD2.c:141:12: warning: comparison between signed and unsigned
+integer expressions [-Wsign-compare]
+  for(i=0; i<padlen; i++) padding[i]=padlen;
+            ^
+At top level:
+src/MD2.c:44:19: warning: ‘md2_oid’ defined but not used
+[-Wunused-const-variable=]
+ static const char md2_oid[] = { 0x06, 0x08, 0x2a, 0x86, 0x48, 0x86,
+0xf7, 0x0d, 0x02, 0x02 };
+                   ^~~~~~~
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/MD2.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Hash/_MD2.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Hash._MD4' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/MD4.c -o
+build/temp.linux-x86_64-3.6/src/MD4.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/MD4.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Hash/_MD4.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Hash._SHA256' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/SHA256.c -o
+build/temp.linux-x86_64-3.6/src/SHA256.o
+In file included from src/SHA256.c:72:0:
+src/hash_SHA2_template.c: In function ‘add_length’:
+src/hash_SHA2_template.c:97:30: warning: self-comparison always
+evaluates to false [-Wtautological-compare]
+         if (hs->length_upper > hs->length_upper)
+                              ^
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/SHA256.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Hash/_SHA256.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Hash._SHA224' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/SHA224.c -o
+build/temp.linux-x86_64-3.6/src/SHA224.o
+In file included from src/SHA224.c:73:0:
+src/hash_SHA2_template.c: In function ‘add_length’:
+src/hash_SHA2_template.c:97:30: warning: self-comparison always
+evaluates to false [-Wtautological-compare]
+         if (hs->length_upper > hs->length_upper)
+                              ^
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/SHA224.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Hash/_SHA224.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Hash._SHA384' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/SHA384.c -o
+build/temp.linux-x86_64-3.6/src/SHA384.o
+In file included from src/SHA384.c:80:0:
+src/hash_SHA2_template.c: In function ‘add_length’:
+src/hash_SHA2_template.c:97:30: warning: self-comparison always
+evaluates to false [-Wtautological-compare]
+         if (hs->length_upper > hs->length_upper)
+                              ^
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/SHA384.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Hash/_SHA384.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Hash._SHA512' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/SHA512.c -o
+build/temp.linux-x86_64-3.6/src/SHA512.o
+In file included from src/SHA512.c:80:0:
+src/hash_SHA2_template.c: In function ‘add_length’:
+src/hash_SHA2_template.c:97:30: warning: self-comparison always
+evaluates to false [-Wtautological-compare]
+         if (hs->length_upper > hs->length_upper)
+                              ^
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/SHA512.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Hash/_SHA512.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Hash._RIPEMD160' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-DPCT_LITTLE_ENDIAN=1 -Isrc/ -I/usr/include/python3.6m -c
+src/RIPEMD160.c -o build/temp.linux-x86_64-3.6/src/RIPEMD160.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/RIPEMD160.o -L/usr/lib64 -lpython3.6m
+-o build/lib.linux-x86_64-3.6/Crypto/Hash/_RIPEMD160.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._AES' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/AES.c -o
+build/temp.linux-x86_64-3.6/src/AES.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/AES.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Cipher/_AES.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._ARC2' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/ARC2.c -o
+build/temp.linux-x86_64-3.6/src/ARC2.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/ARC2.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Cipher/_ARC2.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._Blowfish' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/Blowfish.c -o
+build/temp.linux-x86_64-3.6/src/Blowfish.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/Blowfish.o -L/usr/lib64 -lpython3.6m
+-o build/lib.linux-x86_64-3.6/Crypto/Cipher/_Blowfish.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._CAST' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/CAST.c -o
+build/temp.linux-x86_64-3.6/src/CAST.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/CAST.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Cipher/_CAST.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._DES' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -Isrc/libtom/ -I/usr/include/python3.6m -c src/DES.c -o
+build/temp.linux-x86_64-3.6/src/DES.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/DES.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Cipher/_DES.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._DES3' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -Isrc/libtom/ -I/usr/include/python3.6m -c src/DES3.c -o
+build/temp.linux-x86_64-3.6/src/DES3.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/DES3.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Cipher/_DES3.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._ARC4' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/ARC4.c -o
+build/temp.linux-x86_64-3.6/src/ARC4.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/ARC4.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Cipher/_ARC4.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Cipher._XOR' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/XOR.c -o
+build/temp.linux-x86_64-3.6/src/XOR.o
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/XOR.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Cipher/_XOR.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Util.strxor' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/strxor.c -o
+build/temp.linux-x86_64-3.6/src/strxor.o
+src/strxor.c:31:19: warning: ‘rcsid’ defined but not used
+[-Wunused-const-variable=]
+ static const char rcsid[] = "$Id$";
+                   ^~~~~
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/strxor.o -L/usr/lib64 -lpython3.6m -o
+build/lib.linux-x86_64-3.6/Crypto/Util/strxor.cpython-36m-x86_64-linux-gnu.so
+building 'Crypto.Util._counter' extension
+gcc -pthread -Wno-unused-result -Wsign-compare
+-DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe -Wall -Werror=format-security
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong
+--param=ssp-buffer-size=4 -grecord-gcc-switches
+-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic
+-D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+-Isrc/ -I/usr/include/python3.6m -c src/_counter.c -o
+build/temp.linux-x86_64-3.6/src/_counter.o
+src/_counter.c: In function ‘PyInit__counter’:
+src/_counter.c:570:5: warning: this ‘if’ clause does not guard...
+[-Wmisleading-indentation]
+     if (m == NULL)
+     ^~
+src/_counter.c:573:2: note: ...this statement, but the latter is
+misleadingly indented as if it were guarded by the ‘if’
+  return m;
+  ^~~~~~
+gcc -pthread -shared -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-z,relro
+-specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto
+-fuse-linker-plugin -ffat-lto-objects -flto-partition=none
+build/temp.linux-x86_64-3.6/src/_counter.o -L/usr/lib64 -lpython3.6m
+-o build/lib.linux-x86_64-3.6/Crypto/Util/_counter.cpython-36m-x86_64-linux-gnu.so
+
+
+On 21 July 2017 at 15:16, Dave Pawson <dave.pawson at gmail.com> wrote:
+> Installing on a new system, Fedora 26, 64 bit.
+> Builds OK using setup.py for python 2.7
+>
+> Fails on python 3.x?
+>
+> Should this be built in a different way please?
+>
+> TiA
+>
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From martin at falatic.com  Fri Jul 21 19:21:01 2017
+From: martin at falatic.com (Martin Falatic)
+Date: Fri, 21 Jul 2017 12:21:01 -0700
+Subject: [pycrypto] Build error, 2.6.1
+In-Reply-To: <CAEncD4e0VSm6JUOr--CroaSnKdRONE0s4aQ-K9wO=8f4ncgeKA@mail.gmail.com>
+References: <CAEncD4e0VSm6JUOr--CroaSnKdRONE0s4aQ-K9wO=8f4ncgeKA@mail.gmail.com>
+Message-ID: <1d0068ed26b85bff8ca7def99fdb69df@falatic.com>
+
+As this project hasn't seen commits on master (or perhaps any branch) in 
+over three years, it appears to be dead.
+
+However, pycryptodome is alive and well! It's a fork off the latest 
+pycrypto and contains many bugfixes, enhancements. Most importantly, 
+it's an ongoing project.
+
+https://github.com/Legrandin/pycryptodome
+
+https://www.pycryptodome.org/
+
+There are two ways to install it: for a seamless experience I recommend 
+uninstalling pycrypto (if present) and installing pycryptodome.
+
+(pycryptodomex has its uses for some, but would mean editing your 
+imports, whereas pycryptodome is a drop-in replacement for pycrypto.)
+
+If you have issues with installing or using pycryptodome, there are 
+resources there to guide you and an active issue tracker as well.
+
+Good luck!
+
+  - Marty
+    www.falatic.com
+
+On 2017-07-21 07:16, Dave Pawson wrote:
+> Installing on a new system, Fedora 26, 64 bit.
+> Builds OK using setup.py for python 2.7
+> 
+> Fails on python 3.x?
+> 
+> Should this be built in a different way please?
+> 
+> TiA
+
+From dave.pawson at gmail.com  Fri Jul 21 20:32:42 2017
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 21 Jul 2017 21:32:42 +0100
+Subject: [pycrypto] Build error, 2.6.1
+In-Reply-To: <1d0068ed26b85bff8ca7def99fdb69df@falatic.com>
+References: <CAEncD4e0VSm6JUOr--CroaSnKdRONE0s4aQ-K9wO=8f4ncgeKA@mail.gmail.com>
+ <1d0068ed26b85bff8ca7def99fdb69df@falatic.com>
+Message-ID: <CAEncD4fOGpUrRAr5W=Vw1LBvFnpOshw43BTXN+8RK0=HqjJB5w@mail.gmail.com>
+
+Thanks Marty, I'll give it a try.
+Dave
+
+On 21 July 2017 at 20:21, Martin Falatic <martin at falatic.com> wrote:
+> As this project hasn't seen commits on master (or perhaps any branch) in
+> over three years, it appears to be dead.
+>
+> However, pycryptodome is alive and well! It's a fork off the latest pycrypto
+> and contains many bugfixes, enhancements. Most importantly, it's an ongoing
+> project.
+>
+> https://github.com/Legrandin/pycryptodome
+>
+> https://www.pycryptodome.org/
+>
+> There are two ways to install it: for a seamless experience I recommend
+> uninstalling pycrypto (if present) and installing pycryptodome.
+>
+> (pycryptodomex has its uses for some, but would mean editing your imports,
+> whereas pycryptodome is a drop-in replacement for pycrypto.)
+>
+> If you have issues with installing or using pycryptodome, there are
+> resources there to guide you and an active issue tracker as well.
+>
+> Good luck!
+>
+>  - Marty
+>    www.falatic.com
+>
+>
+> On 2017-07-21 07:16, Dave Pawson wrote:
+>>
+>> Installing on a new system, Fedora 26, 64 bit.
+>> Builds OK using setup.py for python 2.7
+>>
+>> Fails on python 3.x?
+>>
+>> Should this be built in a different way please?
+>>
+>> TiA
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Sat Jul 22 07:34:45 2017
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sat, 22 Jul 2017 08:34:45 +0100
+Subject: [pycrypto] Build error, 2.6.1
+In-Reply-To: <1d0068ed26b85bff8ca7def99fdb69df@falatic.com>
+References: <CAEncD4e0VSm6JUOr--CroaSnKdRONE0s4aQ-K9wO=8f4ncgeKA@mail.gmail.com>
+ <1d0068ed26b85bff8ca7def99fdb69df@falatic.com>
+Message-ID: <CAEncD4dA55K9Orvyj=Q01=goj8OGJMv3w2BD=Lv0OzRhS_VwWQ@mail.gmail.com>
+
+Having installed pycrypto, is the only way to remove it to find the
+files and remove manually?
+
+(groan) - or will pycryptodome run alongside pycrypto please?
+
+Tia
+
+On 21 July 2017 at 20:21, Martin Falatic <martin at falatic.com> wrote:
+> As this project hasn't seen commits on master (or perhaps any branch) in
+> over three years, it appears to be dead.
+>
+> However, pycryptodome is alive and well! It's a fork off the latest pycrypto
+> and contains many bugfixes, enhancements. Most importantly, it's an ongoing
+> project.
+>
+> https://github.com/Legrandin/pycryptodome
+>
+> https://www.pycryptodome.org/
+>
+> There are two ways to install it: for a seamless experience I recommend
+> uninstalling pycrypto (if present) and installing pycryptodome.
+>
+> (pycryptodomex has its uses for some, but would mean editing your imports,
+> whereas pycryptodome is a drop-in replacement for pycrypto.)
+>
+> If you have issues with installing or using pycryptodome, there are
+> resources there to guide you and an active issue tracker as well.
+>
+> Good luck!
+>
+>  - Marty
+>    www.falatic.com
+>
+>
+> On 2017-07-21 07:16, Dave Pawson wrote:
+>>
+>> Installing on a new system, Fedora 26, 64 bit.
+>> Builds OK using setup.py for python 2.7
+>>
+>> Fails on python 3.x?
+>>
+>> Should this be built in a different way please?
+>>
+>> TiA
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Sat Jul 22 07:44:41 2017
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sat, 22 Jul 2017 08:44:41 +0100
+Subject: [pycrypto] Build error, 2.6.1
+In-Reply-To: <CAEncD4dA55K9Orvyj=Q01=goj8OGJMv3w2BD=Lv0OzRhS_VwWQ@mail.gmail.com>
+References: <CAEncD4e0VSm6JUOr--CroaSnKdRONE0s4aQ-K9wO=8f4ncgeKA@mail.gmail.com>
+ <1d0068ed26b85bff8ca7def99fdb69df@falatic.com>
+ <CAEncD4dA55K9Orvyj=Q01=goj8OGJMv3w2BD=Lv0OzRhS_VwWQ@mail.gmail.com>
+Message-ID: <CAEncD4fYgO74C6+8vy_4Xf7ZFAaA5GpzcEFuKZmerj_Enst7vg@mail.gmail.com>
+
+pip uninstalled pycrypto!
+
+Re install instructions. Fedora 26, requires root for installation?
+
+running install_lib
+    copying build/lib.linux-x86_64-3.6/Cryptodome/__init__.py ->
+/usr/lib64/python3.6/site-packages/Cryptodome
+    error: could not delete
+'/usr/lib64/python3.6/site-packages/Cryptodome/__init__.py':
+Permission denied
+
+Not mentioned on https://www.pycryptodome.org/en/latest/src/installation.html
+
+>  python3 -m Cryptodome.SelfTest
+...
+Ran 22656 tests in 37.023s
+
+Tks
+
+On 22 July 2017 at 08:34, Dave Pawson <dave.pawson at gmail.com> wrote:
+> Having installed pycrypto, is the only way to remove it to find the
+> files and remove manually?
+>
+> (groan) - or will pycryptodome run alongside pycrypto please?
+>
+> Tia
+>
+> On 21 July 2017 at 20:21, Martin Falatic <martin at falatic.com> wrote:
+>> As this project hasn't seen commits on master (or perhaps any branch) in
+>> over three years, it appears to be dead.
+>>
+>> However, pycryptodome is alive and well! It's a fork off the latest pycrypto
+>> and contains many bugfixes, enhancements. Most importantly, it's an ongoing
+>> project.
+>>
+>> https://github.com/Legrandin/pycryptodome
+>>
+>> https://www.pycryptodome.org/
+>>
+>> There are two ways to install it: for a seamless experience I recommend
+>> uninstalling pycrypto (if present) and installing pycryptodome.
+>>
+>> (pycryptodomex has its uses for some, but would mean editing your imports,
+>> whereas pycryptodome is a drop-in replacement for pycrypto.)
+>>
+>> If you have issues with installing or using pycryptodome, there are
+>> resources there to guide you and an active issue tracker as well.
+>>
+>> Good luck!
+>>
+>>  - Marty
+>>    www.falatic.com
+>>
+>>
+>> On 2017-07-21 07:16, Dave Pawson wrote:
+>>>
+>>> Installing on a new system, Fedora 26, 64 bit.
+>>> Builds OK using setup.py for python 2.7
+>>>
+>>> Fails on python 3.x?
+>>>
+>>> Should this be built in a different way please?
+>>>
+>>> TiA
+>
+>
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From martin at falatic.com  Sat Jul 22 08:38:27 2017
+From: martin at falatic.com (Martin Falatic)
+Date: Sat, 22 Jul 2017 01:38:27 -0700
+Subject: [pycrypto] Build error, 2.6.1
+In-Reply-To: <CAEncD4fYgO74C6+8vy_4Xf7ZFAaA5GpzcEFuKZmerj_Enst7vg@mail.gmail.com>
+References: <CAEncD4e0VSm6JUOr--CroaSnKdRONE0s4aQ-K9wO=8f4ncgeKA@mail.gmail.com>
+ <1d0068ed26b85bff8ca7def99fdb69df@falatic.com>
+ <CAEncD4dA55K9Orvyj=Q01=goj8OGJMv3w2BD=Lv0OzRhS_VwWQ@mail.gmail.com>
+ <CAEncD4fYgO74C6+8vy_4Xf7ZFAaA5GpzcEFuKZmerj_Enst7vg@mail.gmail.com>
+Message-ID: <9ee53d58325a7d39e247e77ed60aaff9@falatic.com>
+
+Not sure about the error you got, but generally if you are installing 
+things directly into Linux system library areas you'll need root / sudo 
+to do it. I'm surprised that didn't come up with pycrypto, but it might 
+be an artifact of other install attempts.
+
+If in doubt, that sounds like good info for an issue on the github issue 
+tracker for pycryptodome.
+
+
+On 2017-07-22 00:44, Dave Pawson wrote:
+> pip uninstalled pycrypto!
+> 
+> Re install instructions. Fedora 26, requires root for installation?
+> 
+> running install_lib
+>     copying build/lib.linux-x86_64-3.6/Cryptodome/__init__.py ->
+> /usr/lib64/python3.6/site-packages/Cryptodome
+>     error: could not delete
+> '/usr/lib64/python3.6/site-packages/Cryptodome/__init__.py':
+> Permission denied
+> 
+> Not mentioned on 
+> https://www.pycryptodome.org/en/latest/src/installation.html
+> 
+>>  python3 -m Cryptodome.SelfTest
+> ...
+> Ran 22656 tests in 37.023s
+> 
+> Tks
+> 
+> On 22 July 2017 at 08:34, Dave Pawson <dave.pawson at gmail.com> wrote:
+>> Having installed pycrypto, is the only way to remove it to find the
+>> files and remove manually?
+>> 
+>> (groan) - or will pycryptodome run alongside pycrypto please?
+>> 
+>> Tia
+>> 
+>> On 21 July 2017 at 20:21, Martin Falatic <martin at falatic.com> wrote:
+>>> As this project hasn't seen commits on master (or perhaps any branch) 
+>>> in
+>>> over three years, it appears to be dead.
+>>> 
+>>> However, pycryptodome is alive and well! It's a fork off the latest 
+>>> pycrypto
+>>> and contains many bugfixes, enhancements. Most importantly, it's an 
+>>> ongoing
+>>> project.
+>>> 
+>>> https://github.com/Legrandin/pycryptodome
+>>> 
+>>> https://www.pycryptodome.org/
+>>> 
+>>> There are two ways to install it: for a seamless experience I 
+>>> recommend
+>>> uninstalling pycrypto (if present) and installing pycryptodome.
+>>> 
+>>> (pycryptodomex has its uses for some, but would mean editing your 
+>>> imports,
+>>> whereas pycryptodome is a drop-in replacement for pycrypto.)
+>>> 
+>>> If you have issues with installing or using pycryptodome, there are
+>>> resources there to guide you and an active issue tracker as well.
+>>> 
+>>> Good luck!
+>>> 
+>>>  - Marty
+>>>    www.falatic.com
+>>> 
+>>> 
+>>> On 2017-07-21 07:16, Dave Pawson wrote:
+>>>> 
+>>>> Installing on a new system, Fedora 26, 64 bit.
+>>>> Builds OK using setup.py for python 2.7
+>>>> 
+>>>> Fails on python 3.x?
+>>>> 
+>>>> Should this be built in a different way please?
+>>>> 
+>>>> TiA
+>> 
+>> 
+>> 
+>> --
+>> Dave Pawson
+>> XSLT XSL-FO FAQ.
+>> Docbook FAQ.
+>> http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Sat Jul 22 09:02:48 2017
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sat, 22 Jul 2017 10:02:48 +0100
+Subject: [pycrypto] Build error, 2.6.1
+In-Reply-To: <9ee53d58325a7d39e247e77ed60aaff9@falatic.com>
+References: <CAEncD4e0VSm6JUOr--CroaSnKdRONE0s4aQ-K9wO=8f4ncgeKA@mail.gmail.com>
+ <1d0068ed26b85bff8ca7def99fdb69df@falatic.com>
+ <CAEncD4dA55K9Orvyj=Q01=goj8OGJMv3w2BD=Lv0OzRhS_VwWQ@mail.gmail.com>
+ <CAEncD4fYgO74C6+8vy_4Xf7ZFAaA5GpzcEFuKZmerj_Enst7vg@mail.gmail.com>
+ <9ee53d58325a7d39e247e77ed60aaff9@falatic.com>
+Message-ID: <CAEncD4c69FGor5hqH0--K4e+VhSdFBg4FkE8QOob1Wnz64fYEw@mail.gmail.com>
+
+Will do. Now all working as previously.
+Thanks for the reminder.
+
+regards
+
+On 22 July 2017 at 09:38, Martin Falatic <martin at falatic.com> wrote:
+> Not sure about the error you got, but generally if you are installing things
+> directly into Linux system library areas you'll need root / sudo to do it.
+> I'm surprised that didn't come up with pycrypto, but it might be an artifact
+> of other install attempts.
+>
+> If in doubt, that sounds like good info for an issue on the github issue
+> tracker for pycryptodome.
+>
+>
+>
+> On 2017-07-22 00:44, Dave Pawson wrote:
+>>
+>> pip uninstalled pycrypto!
+>>
+>> Re install instructions. Fedora 26, requires root for installation?
+>>
+>> running install_lib
+>>     copying build/lib.linux-x86_64-3.6/Cryptodome/__init__.py ->
+>> /usr/lib64/python3.6/site-packages/Cryptodome
+>>     error: could not delete
+>> '/usr/lib64/python3.6/site-packages/Cryptodome/__init__.py':
+>> Permission denied
+>>
+>> Not mentioned on
+>> https://www.pycryptodome.org/en/latest/src/installation.html
+>>
+>>>  python3 -m Cryptodome.SelfTest
+>>
+>> ...
+>> Ran 22656 tests in 37.023s
+>>
+>> Tks
+>>
+>> On 22 July 2017 at 08:34, Dave Pawson <dave.pawson at gmail.com> wrote:
+>>>
+>>> Having installed pycrypto, is the only way to remove it to find the
+>>> files and remove manually?
+>>>
+>>> (groan) - or will pycryptodome run alongside pycrypto please?
+>>>
+>>> Tia
+>>>
+>>> On 21 July 2017 at 20:21, Martin Falatic <martin at falatic.com> wrote:
+>>>>
+>>>> As this project hasn't seen commits on master (or perhaps any branch) in
+>>>> over three years, it appears to be dead.
+>>>>
+>>>> However, pycryptodome is alive and well! It's a fork off the latest
+>>>> pycrypto
+>>>> and contains many bugfixes, enhancements. Most importantly, it's an
+>>>> ongoing
+>>>> project.
+>>>>
+>>>> https://github.com/Legrandin/pycryptodome
+>>>>
+>>>> https://www.pycryptodome.org/
+>>>>
+>>>> There are two ways to install it: for a seamless experience I recommend
+>>>> uninstalling pycrypto (if present) and installing pycryptodome.
+>>>>
+>>>> (pycryptodomex has its uses for some, but would mean editing your
+>>>> imports,
+>>>> whereas pycryptodome is a drop-in replacement for pycrypto.)
+>>>>
+>>>> If you have issues with installing or using pycryptodome, there are
+>>>> resources there to guide you and an active issue tracker as well.
+>>>>
+>>>> Good luck!
+>>>>
+>>>>  - Marty
+>>>>    www.falatic.com
+>>>>
+>>>>
+>>>> On 2017-07-21 07:16, Dave Pawson wrote:
+>>>>>
+>>>>>
+>>>>> Installing on a new system, Fedora 26, 64 bit.
+>>>>> Builds OK using setup.py for python 2.7
+>>>>>
+>>>>> Fails on python 3.x?
+>>>>>
+>>>>> Should this be built in a different way please?
+>>>>>
+>>>>> TiA
+>>>
+>>>
+>>>
+>>>
+>>> --
+>>> Dave Pawson
+>>> XSLT XSL-FO FAQ.
+>>> Docbook FAQ.
+>>> http://www.dpawson.co.uk
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Fri Sep 15 18:21:32 2017
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Fri, 15 Sep 2017 19:21:32 +0100
+Subject: [pycrypto] Build error, 2.6.1
+In-Reply-To: <9ee53d58325a7d39e247e77ed60aaff9@falatic.com>
+References: <CAEncD4e0VSm6JUOr--CroaSnKdRONE0s4aQ-K9wO=8f4ncgeKA@mail.gmail.com>
+ <1d0068ed26b85bff8ca7def99fdb69df@falatic.com>
+ <CAEncD4dA55K9Orvyj=Q01=goj8OGJMv3w2BD=Lv0OzRhS_VwWQ@mail.gmail.com>
+ <CAEncD4fYgO74C6+8vy_4Xf7ZFAaA5GpzcEFuKZmerj_Enst7vg@mail.gmail.com>
+ <9ee53d58325a7d39e247e77ed60aaff9@falatic.com>
+Message-ID: <CAEncD4cSKKmSn5cJVHQP2TNW4O++K=nKS=OFcAjjUdTSxA=4YA@mail.gmail.com>
+
+New (Windows 10) machine.
+installed python  3.6.2
+pip install pycryptodomex
+SelfTest ran fine.
+
+Tried the examples at https://www.pycryptodome.org/en/latest/src/examples.html
+
+
+C:\Users\Dave Pawson>python
+Python 3.6.2 (v3.6.2:5fd33b5, Jul  8 2017, 04:57:36) [MSC v.1900 64
+bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from Crypto.Cipher import AES
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ModuleNotFoundError: No module named 'Crypto'
+>>> from Crypto.Random import get_random_bytes
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ModuleNotFoundError: No module named 'Crypto'
+
+
+
+Are they out of date please Martin?
+
+regards
+
+
+
+On 22 July 2017 at 09:38, Martin Falatic <martin at falatic.com> wrote:
+> Not sure about the error you got, but generally if you are installing things
+> directly into Linux system library areas you'll need root / sudo to do it.
+> I'm surprised that didn't come up with pycrypto, but it might be an artifact
+> of other install attempts.
+>
+> If in doubt, that sounds like good info for an issue on the github issue
+> tracker for pycryptodome.
+>
+>
+>
+> On 2017-07-22 00:44, Dave Pawson wrote:
+>>
+>> pip uninstalled pycrypto!
+>>
+>> Re install instructions. Fedora 26, requires root for installation?
+>>
+>> running install_lib
+>>     copying build/lib.linux-x86_64-3.6/Cryptodome/__init__.py ->
+>> /usr/lib64/python3.6/site-packages/Cryptodome
+>>     error: could not delete
+>> '/usr/lib64/python3.6/site-packages/Cryptodome/__init__.py':
+>> Permission denied
+>>
+>> Not mentioned on
+>> https://www.pycryptodome.org/en/latest/src/installation.html
+>>
+>>>  python3 -m Cryptodome.SelfTest
+>>
+>> ...
+>> Ran 22656 tests in 37.023s
+>>
+>> Tks
+>>
+>> On 22 July 2017 at 08:34, Dave Pawson <dave.pawson at gmail.com> wrote:
+>>>
+>>> Having installed pycrypto, is the only way to remove it to find the
+>>> files and remove manually?
+>>>
+>>> (groan) - or will pycryptodome run alongside pycrypto please?
+>>>
+>>> Tia
+>>>
+>>> On 21 July 2017 at 20:21, Martin Falatic <martin at falatic.com> wrote:
+>>>>
+>>>> As this project hasn't seen commits on master (or perhaps any branch) in
+>>>> over three years, it appears to be dead.
+>>>>
+>>>> However, pycryptodome is alive and well! It's a fork off the latest
+>>>> pycrypto
+>>>> and contains many bugfixes, enhancements. Most importantly, it's an
+>>>> ongoing
+>>>> project.
+>>>>
+>>>> https://github.com/Legrandin/pycryptodome
+>>>>
+>>>> https://www.pycryptodome.org/
+>>>>
+>>>> There are two ways to install it: for a seamless experience I recommend
+>>>> uninstalling pycrypto (if present) and installing pycryptodome.
+>>>>
+>>>> (pycryptodomex has its uses for some, but would mean editing your
+>>>> imports,
+>>>> whereas pycryptodome is a drop-in replacement for pycrypto.)
+>>>>
+>>>> If you have issues with installing or using pycryptodome, there are
+>>>> resources there to guide you and an active issue tracker as well.
+>>>>
+>>>> Good luck!
+>>>>
+>>>>  - Marty
+>>>>    www.falatic.com
+>>>>
+>>>>
+>>>> On 2017-07-21 07:16, Dave Pawson wrote:
+>>>>>
+>>>>>
+>>>>> Installing on a new system, Fedora 26, 64 bit.
+>>>>> Builds OK using setup.py for python 2.7
+>>>>>
+>>>>> Fails on python 3.x?
+>>>>>
+>>>>> Should this be built in a different way please?
+>>>>>
+>>>>> TiA
+>>>
+>>>
+>>>
+>>>
+>>> --
+>>> Dave Pawson
+>>> XSLT XSL-FO FAQ.
+>>> Docbook FAQ.
+>>> http://www.dpawson.co.uk
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From dave.pawson at gmail.com  Sat Sep 16 07:35:26 2017
+From: dave.pawson at gmail.com (Dave Pawson)
+Date: Sat, 16 Sep 2017 08:35:26 +0100
+Subject: [pycrypto] Build error, 2.6.1
+In-Reply-To: <CAEncD4cSKKmSn5cJVHQP2TNW4O++K=nKS=OFcAjjUdTSxA=4YA@mail.gmail.com>
+References: <CAEncD4e0VSm6JUOr--CroaSnKdRONE0s4aQ-K9wO=8f4ncgeKA@mail.gmail.com>
+ <1d0068ed26b85bff8ca7def99fdb69df@falatic.com>
+ <CAEncD4dA55K9Orvyj=Q01=goj8OGJMv3w2BD=Lv0OzRhS_VwWQ@mail.gmail.com>
+ <CAEncD4fYgO74C6+8vy_4Xf7ZFAaA5GpzcEFuKZmerj_Enst7vg@mail.gmail.com>
+ <9ee53d58325a7d39e247e77ed60aaff9@falatic.com>
+ <CAEncD4cSKKmSn5cJVHQP2TNW4O++K=nKS=OFcAjjUdTSxA=4YA@mail.gmail.com>
+Message-ID: <CAEncD4c2E1s99RnHcp2D7ZxePJuauFi6M6iE-XTswi+M-mJ_gA@mail.gmail.com>
+
+Now resolved (again?).
+The similarity of names and what needs to be changed seems to be the
+source of my problems?
+
+Sorry to waste bandwidth.
+
+On 15 September 2017 at 19:21, Dave Pawson <dave.pawson at gmail.com> wrote:
+> New (Windows 10) machine.
+> installed python  3.6.2
+> pip install pycryptodomex
+> SelfTest ran fine.
+>
+> Tried the examples at https://www.pycryptodome.org/en/latest/src/examples.html
+>
+>
+> C:\Users\Dave Pawson>python
+> Python 3.6.2 (v3.6.2:5fd33b5, Jul  8 2017, 04:57:36) [MSC v.1900 64
+> bit (AMD64)] on win32
+> Type "help", "copyright", "credits" or "license" for more information.
+>>>> from Crypto.Cipher import AES
+> Traceback (most recent call last):
+>   File "<stdin>", line 1, in <module>
+> ModuleNotFoundError: No module named 'Crypto'
+>>>> from Crypto.Random import get_random_bytes
+> Traceback (most recent call last):
+>   File "<stdin>", line 1, in <module>
+> ModuleNotFoundError: No module named 'Crypto'
+>
+>
+>
+> Are they out of date please Martin?
+>
+> regards
+>
+>
+>
+> On 22 July 2017 at 09:38, Martin Falatic <martin at falatic.com> wrote:
+>> Not sure about the error you got, but generally if you are installing things
+>> directly into Linux system library areas you'll need root / sudo to do it.
+>> I'm surprised that didn't come up with pycrypto, but it might be an artifact
+>> of other install attempts.
+>>
+>> If in doubt, that sounds like good info for an issue on the github issue
+>> tracker for pycryptodome.
+>>
+>>
+>>
+>> On 2017-07-22 00:44, Dave Pawson wrote:
+>>>
+>>> pip uninstalled pycrypto!
+>>>
+>>> Re install instructions. Fedora 26, requires root for installation?
+>>>
+>>> running install_lib
+>>>     copying build/lib.linux-x86_64-3.6/Cryptodome/__init__.py ->
+>>> /usr/lib64/python3.6/site-packages/Cryptodome
+>>>     error: could not delete
+>>> '/usr/lib64/python3.6/site-packages/Cryptodome/__init__.py':
+>>> Permission denied
+>>>
+>>> Not mentioned on
+>>> https://www.pycryptodome.org/en/latest/src/installation.html
+>>>
+>>>>  python3 -m Cryptodome.SelfTest
+>>>
+>>> ...
+>>> Ran 22656 tests in 37.023s
+>>>
+>>> Tks
+>>>
+>>> On 22 July 2017 at 08:34, Dave Pawson <dave.pawson at gmail.com> wrote:
+>>>>
+>>>> Having installed pycrypto, is the only way to remove it to find the
+>>>> files and remove manually?
+>>>>
+>>>> (groan) - or will pycryptodome run alongside pycrypto please?
+>>>>
+>>>> Tia
+>>>>
+>>>> On 21 July 2017 at 20:21, Martin Falatic <martin at falatic.com> wrote:
+>>>>>
+>>>>> As this project hasn't seen commits on master (or perhaps any branch) in
+>>>>> over three years, it appears to be dead.
+>>>>>
+>>>>> However, pycryptodome is alive and well! It's a fork off the latest
+>>>>> pycrypto
+>>>>> and contains many bugfixes, enhancements. Most importantly, it's an
+>>>>> ongoing
+>>>>> project.
+>>>>>
+>>>>> https://github.com/Legrandin/pycryptodome
+>>>>>
+>>>>> https://www.pycryptodome.org/
+>>>>>
+>>>>> There are two ways to install it: for a seamless experience I recommend
+>>>>> uninstalling pycrypto (if present) and installing pycryptodome.
+>>>>>
+>>>>> (pycryptodomex has its uses for some, but would mean editing your
+>>>>> imports,
+>>>>> whereas pycryptodome is a drop-in replacement for pycrypto.)
+>>>>>
+>>>>> If you have issues with installing or using pycryptodome, there are
+>>>>> resources there to guide you and an active issue tracker as well.
+>>>>>
+>>>>> Good luck!
+>>>>>
+>>>>>  - Marty
+>>>>>    www.falatic.com
+>>>>>
+>>>>>
+>>>>> On 2017-07-21 07:16, Dave Pawson wrote:
+>>>>>>
+>>>>>>
+>>>>>> Installing on a new system, Fedora 26, 64 bit.
+>>>>>> Builds OK using setup.py for python 2.7
+>>>>>>
+>>>>>> Fails on python 3.x?
+>>>>>>
+>>>>>> Should this be built in a different way please?
+>>>>>>
+>>>>>> TiA
+>>>>
+>>>>
+>>>>
+>>>>
+>>>> --
+>>>> Dave Pawson
+>>>> XSLT XSL-FO FAQ.
+>>>> Docbook FAQ.
+>>>> http://www.dpawson.co.uk
+>
+>
+>
+> --
+> Dave Pawson
+> XSLT XSL-FO FAQ.
+> Docbook FAQ.
+> http://www.dpawson.co.uk
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+http://www.dpawson.co.uk
+
+From martin at falatic.com  Sat Sep 16 10:35:34 2017
+From: martin at falatic.com (Martin Falatic)
+Date: Sat, 16 Sep 2017 03:35:34 -0700
+Subject: [pycrypto] Build error, 2.6.1
+In-Reply-To: <CAEncD4c2E1s99RnHcp2D7ZxePJuauFi6M6iE-XTswi+M-mJ_gA@mail.gmail.com>
+References: <CAEncD4e0VSm6JUOr--CroaSnKdRONE0s4aQ-K9wO=8f4ncgeKA@mail.gmail.com>
+ <1d0068ed26b85bff8ca7def99fdb69df@falatic.com>
+ <CAEncD4dA55K9Orvyj=Q01=goj8OGJMv3w2BD=Lv0OzRhS_VwWQ@mail.gmail.com>
+ <CAEncD4fYgO74C6+8vy_4Xf7ZFAaA5GpzcEFuKZmerj_Enst7vg@mail.gmail.com>
+ <9ee53d58325a7d39e247e77ed60aaff9@falatic.com>
+ <CAEncD4cSKKmSn5cJVHQP2TNW4O++K=nKS=OFcAjjUdTSxA=4YA@mail.gmail.com>
+ <CAEncD4c2E1s99RnHcp2D7ZxePJuauFi6M6iE-XTswi+M-mJ_gA@mail.gmail.com>
+Message-ID: <B709C2FF-568A-46C2-B4FB-2D85563B0673@falatic.com>
+
+No problem... I just started looking at this but it sounds like you already got it sorted. Sounds like either a missing dependency or install conflict was to blame there.
+
+
+On September 16, 2017 12:35:26 AM PDT, Dave Pawson <dave.pawson at gmail.com> wrote:
+>Now resolved (again?).
+>The similarity of names and what needs to be changed seems to be the
+>source of my problems?
+>
+>Sorry to waste bandwidth.
+>
+>On 15 September 2017 at 19:21, Dave Pawson <dave.pawson at gmail.com>
+>wrote:
+>> New (Windows 10) machine.
+>> installed python  3.6.2
+>> pip install pycryptodomex
+>> SelfTest ran fine.
+>>
+>> Tried the examples at
+>https://www.pycryptodome.org/en/latest/src/examples.html
+>>
+>>
+>> C:\Users\Dave Pawson>python
+>> Python 3.6.2 (v3.6.2:5fd33b5, Jul  8 2017, 04:57:36) [MSC v.1900 64
+>> bit (AMD64)] on win32
+>> Type "help", "copyright", "credits" or "license" for more
+>information.
+>>>>> from Crypto.Cipher import AES
+>> Traceback (most recent call last):
+>>   File "<stdin>", line 1, in <module>
+>> ModuleNotFoundError: No module named 'Crypto'
+>>>>> from Crypto.Random import get_random_bytes
+>> Traceback (most recent call last):
+>>   File "<stdin>", line 1, in <module>
+>> ModuleNotFoundError: No module named 'Crypto'
+>>
+>>
+>>
+>> Are they out of date please Martin?
+>>
+>> regards
+>>
+>>
+>>
+>> On 22 July 2017 at 09:38, Martin Falatic <martin at falatic.com> wrote:
+>>> Not sure about the error you got, but generally if you are
+>installing things
+>>> directly into Linux system library areas you'll need root / sudo to
+>do it.
+>>> I'm surprised that didn't come up with pycrypto, but it might be an
+>artifact
+>>> of other install attempts.
+>>>
+>>> If in doubt, that sounds like good info for an issue on the github
+>issue
+>>> tracker for pycryptodome.
+>>>
+>>>
+>>>
+>>> On 2017-07-22 00:44, Dave Pawson wrote:
+>>>>
+>>>> pip uninstalled pycrypto!
+>>>>
+>>>> Re install instructions. Fedora 26, requires root for installation?
+>>>>
+>>>> running install_lib
+>>>>     copying build/lib.linux-x86_64-3.6/Cryptodome/__init__.py ->
+>>>> /usr/lib64/python3.6/site-packages/Cryptodome
+>>>>     error: could not delete
+>>>> '/usr/lib64/python3.6/site-packages/Cryptodome/__init__.py':
+>>>> Permission denied
+>>>>
+>>>> Not mentioned on
+>>>> https://www.pycryptodome.org/en/latest/src/installation.html
+>>>>
+>>>>>  python3 -m Cryptodome.SelfTest
+>>>>
+>>>> ...
+>>>> Ran 22656 tests in 37.023s
+>>>>
+>>>> Tks
+>>>>
+>>>> On 22 July 2017 at 08:34, Dave Pawson <dave.pawson at gmail.com>
+>wrote:
+>>>>>
+>>>>> Having installed pycrypto, is the only way to remove it to find
+>the
+>>>>> files and remove manually?
+>>>>>
+>>>>> (groan) - or will pycryptodome run alongside pycrypto please?
+>>>>>
+>>>>> Tia
+>>>>>
+>>>>> On 21 July 2017 at 20:21, Martin Falatic <martin at falatic.com>
+>wrote:
+>>>>>>
+>>>>>> As this project hasn't seen commits on master (or perhaps any
+>branch) in
+>>>>>> over three years, it appears to be dead.
+>>>>>>
+>>>>>> However, pycryptodome is alive and well! It's a fork off the
+>latest
+>>>>>> pycrypto
+>>>>>> and contains many bugfixes, enhancements. Most importantly, it's
+>an
+>>>>>> ongoing
+>>>>>> project.
+>>>>>>
+>>>>>> https://github.com/Legrandin/pycryptodome
+>>>>>>
+>>>>>> https://www.pycryptodome.org/
+>>>>>>
+>>>>>> There are two ways to install it: for a seamless experience I
+>recommend
+>>>>>> uninstalling pycrypto (if present) and installing pycryptodome.
+>>>>>>
+>>>>>> (pycryptodomex has its uses for some, but would mean editing your
+>>>>>> imports,
+>>>>>> whereas pycryptodome is a drop-in replacement for pycrypto.)
+>>>>>>
+>>>>>> If you have issues with installing or using pycryptodome, there
+>are
+>>>>>> resources there to guide you and an active issue tracker as well.
+>>>>>>
+>>>>>> Good luck!
+>>>>>>
+>>>>>>  - Marty
+>>>>>>    www.falatic.com
+>>>>>>
+>>>>>>
+>>>>>> On 2017-07-21 07:16, Dave Pawson wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> Installing on a new system, Fedora 26, 64 bit.
+>>>>>>> Builds OK using setup.py for python 2.7
+>>>>>>>
+>>>>>>> Fails on python 3.x?
+>>>>>>>
+>>>>>>> Should this be built in a different way please?
+>>>>>>>
+>>>>>>> TiA
+>>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>>> --
+>>>>> Dave Pawson
+>>>>> XSLT XSL-FO FAQ.
+>>>>> Docbook FAQ.
+>>>>> http://www.dpawson.co.uk
+>>
+>>
+>>
+>> --
+>> Dave Pawson
+>> XSLT XSL-FO FAQ.
+>> Docbook FAQ.
+>> http://www.dpawson.co.uk
+>
+>
+>
+>-- 
+>Dave Pawson
+>XSLT XSL-FO FAQ.
+>Docbook FAQ.
+>http://www.dpawson.co.uk
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.dlitz.net/pipermail/pycrypto/attachments/20170916/9e0c7f3d/attachment.html>
+

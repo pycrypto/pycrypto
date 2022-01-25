@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Inovking Depreciation warnings in Python
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Inovking%20Depreciation%20warnings%20in%20Python&In-Reply-To=%3CCADKMUwn9G9VdNSCcjV7dSmVaPccR4dyBEsQ0EReiDt6d%3Daqd7Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000648.html">
+   <LINK REL="Next"  HREF="000646.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Inovking Depreciation warnings in Python</H1>
+    <B>Oz Nahum Tiram</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Inovking%20Depreciation%20warnings%20in%20Python&In-Reply-To=%3CCADKMUwn9G9VdNSCcjV7dSmVaPccR4dyBEsQ0EReiDt6d%3Daqd7Q%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Inovking Depreciation warnings in Python">nahumoz at gmail.com
+       </A><BR>
+    <I>Wed Dec  5 22:49:04 PST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000648.html">[pycrypto] jython and pycrpto installation on windows
+</A></li>
+        <LI>Next message: <A HREF="000646.html">[pycrypto] Inovking Depreciation warnings in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#637">[ date ]</a>
+              <a href="thread.html#637">[ thread ]</a>
+              <a href="subject.html#637">[ subject ]</a>
+              <a href="author.html#637">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I am writing a software that uses Pycrypto. The library's ebsite it says that:
+
+&gt;<i> RandomPool is now deprecated
+</I>
+Older version would issue a depreciation warning. Now the code simply says:
+
+    class RandomPool:
+        &quot;&quot;&quot;Deprecated.  Use Random.new() instead.
+
+        See <A HREF="http://www.pycrypto.org/randpool-broken">http://www.pycrypto.org/randpool-broken</A>
+        &quot;&quot;&quot;
+        def __init__(self, numbytes = 160, cipher=None, hash=None, file=None):
+            warnings.warn(&quot;This application uses RandomPool, which is
+BROKEN in older releases.  See
+<A HREF="http://www.pycrypto.org/randpool-broken">http://www.pycrypto.org/randpool-broken</A>&quot;,
+RandomPool_DeprecationWarning)
+
+When I  instantiate  RandomPool I don't see any waring ...
+
+    &gt;&gt;&gt; RandomPool()
+    &lt;Crypto.Util.randpool.RandomPool instance at 0x7f498dac80e0&gt;
+
+If I create a Class with `RandomPool_DeprecationWarning` I also don't
+see a warning:
+
+    &gt;&gt;&gt; class Test():
+    ...    def __init__(self):
+    ...        warnings.warn(&quot;This tests
+RandomPool_DeprecationWarning&quot;, RandomPool_DeprecationWarning)
+    ...
+    &gt;&gt;&gt; Test
+    &lt;class __main__.Test at 0x7f498daecdb8&gt;
+
+Compare to:
+
+    &gt;&gt;&gt; class Test2():
+    ...    def __init__(self):
+    ...        warnings.warn(&quot;This application uses RandomPool, which
+is BROKEN in older releases.  See
+<A HREF="http://www.pycrypto.org/randpool-broken">http://www.pycrypto.org/randpool-broken</A>&quot;, DeprecationWarning)
+    ...
+    &gt;&gt;&gt; Test2()
+    &lt;__main__.Test2 instance at 0x7f498dac8098&gt;
+
+The code to `RandomPool_DeprecationWarning`
+
+    class CryptoWarning(Warning):
+        &quot;&quot;&quot;Base class for PyCrypto warnings&quot;&quot;&quot;
+
+    class CryptoDeprecationWarning(DeprecationWarning, CryptoWarning):
+        &quot;&quot;&quot;Base PyCrypto DeprecationWarning class&quot;&quot;&quot;
+
+    class CryptoRuntimeWarning(RuntimeWarning, CryptoWarning):
+        &quot;&quot;&quot;Base PyCrypto RuntimeWarning class&quot;&quot;&quot;
+
+    #
+    # Warnings that we might actually use
+    #
+
+    class RandomPool_DeprecationWarning(CryptoDeprecationWarning):
+        &quot;&quot;&quot;Issued when Crypto.Util.randpool.RandomPool is instantiated.&quot;&quot;&quot;
+
+So my question is:
+Why is `RandomPool_DeprecationWarning` quietly passing while
+`DeprecationWarning` is not?
+
+(I am using Debian  Wheezy, and Python 2.7.3)
+
+
+Thanks,
+Oz
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000648.html">[pycrypto] jython and pycrpto installation on windows
+</A></li>
+	<LI>Next message: <A HREF="000646.html">[pycrypto] Inovking Depreciation warnings in Python
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#637">[ date ]</a>
+              <a href="thread.html#637">[ thread ]</a>
+              <a href="subject.html#637">[ subject ]</a>
+              <a href="author.html#637">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] getStrongPrime() implementation
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20getStrongPrime%28%29%20implementation&In-Reply-To=20091026025252.GA28890%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000140.html">
+   <LINK REL="Next"  HREF="000146.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] getStrongPrime() implementation</H1>
+    <B>don at amberfisharts.com</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20getStrongPrime%28%29%20implementation&In-Reply-To=20091026025252.GA28890%40rivest.dlitz.net"
+       TITLE="[pycrypto] getStrongPrime() implementation">don at amberfisharts.com
+       </A><BR>
+    <I>Mon Oct 26 03:21:36 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000140.html">[pycrypto] getStrongPrime() implementation
+</A></li>
+        <LI>Next message: <A HREF="000146.html">[pycrypto] getStrongPrime() implementation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#144">[ date ]</a>
+              <a href="thread.html#144">[ thread ]</a>
+              <a href="subject.html#144">[ subject ]</a>
+              <a href="author.html#144">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+
+Hi Dwayne,
+
+On Sun, 25 Oct 2009 22:52:52 -0400, &quot;Dwayne C. Litzenberger&quot; &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt; wrote:
+&gt;<i> - PyCrypto needs to work with *and* without _fastmath, since the GNU MP
+</I>&gt;<i>    library is an *optional* dependency.  We'll need a Python
+</I>&gt;<i> implementation
+</I>&gt;<i>    for _slowmath.py before I can apply this patch.
+</I>
+Yes, I understand and agree. I think I could do this. I just wanted to wait for some feedback to see if I'm going in the right direction before I invest more time. 
+
+&gt;<i> - It looks like you're generating your random numbers using GMP's
+</I>&gt;<i>    implementation of the Mersenne Twister algorithm, seeded by rand().
+</I>Yes that is true
+
+&gt;<i>    If I applied the patch as it stands, it would introduce a security hole
+</I>&gt;<i>    similar to CVE-2008-0166 (the Debian-specific openssl PRNG bug).
+</I>OK, I'm not sure I see the problem. Is it that one can guess a timerange in which the program has been started and thus determine a small set of possible seeds which then can be brute-forced? Or is it something else?
+
+&gt;<i>    To fix this, we're going to need Python and C implementations  of the
+</I>&gt;<i>    Miller-Rabin probabilistic primality test.  These implementations will
+</I>&gt;<i>    need to accept a callable Python &quot;randfunc&quot; parameter (like
+</I>&gt;<i>    Crypto.Util.number.getRandomNumber does) so they can get random numbers
+</I>&gt;<i>    from a cryptographically strong PRNG (i.e. Crypto.Random).
+</I>I'm confused. It sounds like this paragraph is in part referring to the next point.
+I don't see what the primality testing has to do with the PRNG problem.
+The second point (supporting a &quot;randfunc&quot; parameter) however I could implement. 
+
+&gt;<i> - PyCrypto's *current* isPrime() function needs improvement.  It uses
+</I>&gt;<i>    mpz_probab_prime_p, which is a *deterministic* variant of Miller-Rabin
+</I>&gt;<i>    (see <A HREF="http://www.trnicely.net/misc/mpzspsp.html">http://www.trnicely.net/misc/mpzspsp.html</A>).  That's fine for RSA
+</I>&gt;<i> key
+</I>&gt;<i>    generation, but totally insecure if you want to validate negotiated
+</I>&gt;<i>    Diffie-Hellman parameters, for example.  Do you think you could make
+</I>&gt;<i>    isPrime() take advantage of getStrongPrime()'s primality testing code?
+</I>That won't do any good. The primality testing in getStrongPrime is also deterministic. It uses a sieve (the base is the first 10000 primes) and then some rounds (currently 25 as suggested in the paper) of mpz_probab_prime_p(). 
+So I guess what you are suggesting is that we implement our own non-deterministic Rabin-Miller test (again we would need a C and python version). That might not be a bad idea because right now we have some redundancy in that mpz_probab_prime_p also uses a sieve (with a smaller base) before doing the Rabin-Miller tests. We could then avoid that overhead. 
+Maybe one could then later replace/extend it to a Baillie&#8211;PSW primality test which has no pseudo-prime numbers up to at least 10^15.
+
+&gt;<i> - We'll need some unit tests to do some basic sanity checks on the output
+</I>&gt;<i>    of this new function?
+</I>I agree. but what do you have in mind exactly? do you want to do an *exact* primality test? 
+
+&gt;<i> How much of the above are you comfortable with?  I can probably pick up a
+</I>&gt;<i> lot of it if necessary, though in that case it's going to have to wait
+</I>&gt;<i> until after PyCrypto 2.1.0 is released.
+</I>
+The python implementation of getStrongPrime() should be straight forward so I can do that. 
+Also taking the additional randfunc parameter shouldn't be to hard.
+I'm not so sure about implementing a Rabin-Miller test. I don't know exactly how it works and would need to make some research first. but from what I read so far it shouldn't be to hard to implement. But you said that for RSA the current deterministic approach is fine so this is for a future version which includes a Diffie-Hellman keyexchange.
+Concerning the Unittests. I guess I could moc up some initial tests but I don't know what exactly you have in mind. 
+
+further more I would like a comment on whether I got the thing with the public exponent e right.
+
+sincerely yours
+//Lorenz
+
+
+P.S.: I'm not a national, citizen nor a resident of the USA. I gladly put my current, past and future contributions to PyCrypto into the public domain and I agree to the terms listed under the &quot;PyCrypto Code Submission Requirements - Rev. C&quot;.  The code I write is not of USA origin.
+I think the paper the code was based on might be of USA origin but I don't think that is a legal problem.
+I hope that takes care of the legal stuff.
+
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000140.html">[pycrypto] getStrongPrime() implementation
+</A></li>
+	<LI>Next message: <A HREF="000146.html">[pycrypto] getStrongPrime() implementation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#144">[ date ]</a>
+              <a href="thread.html#144">[ thread ]</a>
+              <a href="subject.html#144">[ subject ]</a>
+              <a href="author.html#144">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Once again: Python3 with PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000438.html">
+   <LINK REL="Next"  HREF="000288.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Once again: Python3 with PyCrypto</H1>
+    <B>Johannes Bauer</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To="
+       TITLE="[pycrypto] Once again: Python3 with PyCrypto">JB.Imm at gmx.de
+       </A><BR>
+    <I>Tue Nov 23 07:23:16 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000438.html">[pycrypto] AMD64 binaries for Python 2.7
+</A></li>
+        <LI>Next message: <A HREF="000288.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#285">[ date ]</a>
+              <a href="thread.html#285">[ thread ]</a>
+              <a href="subject.html#285">[ subject ]</a>
+              <a href="author.html#285">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi there,
+
+I wanted to ask what the current status of PyCrypto together with
+Python3 is.
+
+I found three patches on the mailing list, all of which are against
+2.1.0 and none of which work.
+
+Two were in a ZIP archive, I found them in pycrypto-patches.zip
+<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100228/349e8dc6/attachment-0001.obj">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100228/349e8dc6/attachment-0001.obj</A>
+
+They both patch fine against 2.1.0, but when running, they tell me both
+the same error message:
+
+Python 3.1.2 (r312:79147, Apr 15 2010, 15:35:48)
+[GCC 4.4.3] on linux2
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;<i> from Crypto.Cipher import AES
+</I>Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+SystemError: NULL result without error in PyObject_Call
+&gt;&gt;&gt;<i>
+</I>
+The third I found here (pycrypto-2.1.0-python3-1.patch.bz2).
+<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100115/0432fbaf/attachment-0001.bin">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100115/0432fbaf/attachment-0001.bin</A>
+
+
+It also compiles, but when trying to access the library, it yields
+
+Python 3.1.2 (r312:79147, Apr 15 2010, 15:35:48)
+[GCC 4.4.3] on linux2
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;<i> from Crypto.Cipher import AES
+</I>Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+ImportError: Crypto/Cipher/AES.so: undefined symbol: PyString_AsString
+&gt;&gt;&gt;<i>
+</I>
+I also tried the GIT version, which also doesn't work (cannot even run
+setup.py with Python3).
+
+Is any Python3 support planned at all? Are there any working patches (or
+even a GIT branch)?
+
+Regards,
+Johannes
+</PRE>
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000438.html">[pycrypto] AMD64 binaries for Python 2.7
+</A></li>
+	<LI>Next message: <A HREF="000288.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#285">[ date ]</a>
+              <a href="thread.html#285">[ thread ]</a>
+              <a href="subject.html#285">[ subject ]</a>
+              <a href="author.html#285">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

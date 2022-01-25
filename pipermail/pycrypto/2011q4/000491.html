@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [PATCH 1/2] Run build_configure from build_ext.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5BPATCH%201/2%5D%20Run%20build_configure%20from%20build_ext.&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000485.html">
+   <LINK REL="Next"  HREF="000492.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[PATCH 1/2] Run build_configure from build_ext.</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5BPATCH%201/2%5D%20Run%20build_configure%20from%20build_ext.&In-Reply-To="
+       TITLE="[PATCH 1/2] Run build_configure from build_ext.">s.ramacher at gmx.at
+       </A><BR>
+    <I>Sat Oct 29 10:20:01 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000485.html">[pycrypto] Info abt current work in pycrypto..
+</A></li>
+        <LI>Next message: <A HREF="000492.html">[PATCH 2/2] Also ship configure, configure.ac and src/config.h.in in sdist.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#491">[ date ]</a>
+              <a href="thread.html#491">[ thread ]</a>
+              <a href="subject.html#491">[ subject ]</a>
+              <a href="author.html#491">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>When installing with easy_install build_ext ist called directly. Thus we have to
+ensure that build_configure is run before we're building the extensions in
+build_ext.
+---
+ setup.py |   11 ++++++++---
+ 1 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index 0f1ef01..13dda2d 100644
+--- a/setup.py
++++ b/setup.py
+@@ -287,12 +287,17 @@ class PCTBuildExt (build_ext):
+             f.close()
+         return result
+ 
+-class PCTBuild(build):
++    def run(self):
++        for cmd_name in self.get_sub_commands():
++            self.run_command(cmd_name)
++        
++        build_ext.run(self)
++
+     def has_configure(self):
+         compiler = new_compiler(compiler=self.compiler)
+         return compiler.compiler_type != 'msvc'
+ 
+-    sub_commands = [ ('build_configure', has_configure) ] + build.sub_commands
++    sub_commands = [ ('build_configure', has_configure) ] + build_ext.sub_commands
+ 
+ class PCTBuildConfigure(Command):
+     description = &quot;Generate config.h using ./configure (autoconf)&quot;
+@@ -384,7 +389,7 @@ kw = {'name':&quot;pycrypto&quot;,
+       'author_email':&quot;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&quot;,
+       'url':&quot;<A HREF="http://www.pycrypto.org/&quot;,">http://www.pycrypto.org/&quot;,</A>
+ 
+-      'cmdclass' : {'build': PCTBuild, 'build_configure': PCTBuildConfigure, 'build_ext':PCTBuildExt, 'build_py': PCTBuildPy, 'test': TestCommand },
++      'cmdclass' : {'build_configure': PCTBuildConfigure, 'build_ext': PCTBuildExt, 'build_py': PCTBuildPy, 'test': TestCommand },
+       'packages' : [&quot;Crypto&quot;, &quot;Crypto.Hash&quot;, &quot;Crypto.Cipher&quot;, &quot;Crypto.Util&quot;,
+                   &quot;Crypto.Random&quot;,
+                   &quot;Crypto.Random.Fortuna&quot;,
+-- 
+1.7.7.1
+
+
+--------------030208040306030506090403
+Content-Type: text/x-diff;
+ name=&quot;0002-Also-ship-configure-configure.ac-and-src-config.h.in.patch&quot;
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0=&quot;0002-Also-ship-configure-configure.ac-and-src-config.h.in.pa&quot;;
+ filename*1=&quot;tch&quot;
+
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000485.html">[pycrypto] Info abt current work in pycrypto..
+</A></li>
+	<LI>Next message: <A HREF="000492.html">[PATCH 2/2] Also ship configure, configure.ac and src/config.h.in in sdist.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#491">[ date ]</a>
+              <a href="thread.html#491">[ thread ]</a>
+              <a href="subject.html#491">[ subject ]</a>
+              <a href="author.html#491">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

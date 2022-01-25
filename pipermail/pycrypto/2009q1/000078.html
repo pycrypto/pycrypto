@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Crypto.PublicKey.RSA and number.py
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Crypto.PublicKey.RSA%20and%20number.py&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000076.html">
+   <LINK REL="Next"  HREF="000079.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Crypto.PublicKey.RSA and number.py</H1>
+    <B>Anthony Honstain</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Crypto.PublicKey.RSA%20and%20number.py&In-Reply-To="
+       TITLE="[pycrypto] Crypto.PublicKey.RSA and number.py">honstain at gmail.com
+       </A><BR>
+    <I>Wed Mar 11 23:47:03 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000076.html">[pycrypto] building pycrypto on AIX fails
+</A></li>
+        <LI>Next message: <A HREF="000079.html">[pycrypto] Crypto.PublicKey.RSA and number.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#78">[ date ]</a>
+              <a href="thread.html#78">[ thread ]</a>
+              <a href="subject.html#78">[ subject ]</a>
+              <a href="author.html#78">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I am working towards using the Crypto.PublicKey.RSA encryption and
+eventually padding like PKCS#1. I have observed that the leading
+'\000' are removed. Is this the desired behavior of bytes_to_long and
+long_to_bytes? Or is this not an issue once a good padding scheme is
+implemented?
+
+For example: from lib/Crypto/Util/number.py module, using
+bytes_to_long and long_to_bytes.
+&gt;&gt;&gt;<i> teststring
+</I>'\x00\x00test\x00\x00'
+&gt;&gt;&gt;<i> result = bytes_to_long(teststring)
+</I>&gt;&gt;&gt;<i> result
+</I>127979077500928L
+&gt;&gt;&gt;<i> long_to_bytes(result)
+</I>'test\x00\x00'
+
+Thanks,
+Anthony Honstain
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000076.html">[pycrypto] building pycrypto on AIX fails
+</A></li>
+	<LI>Next message: <A HREF="000079.html">[pycrypto] Crypto.PublicKey.RSA and number.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#78">[ date ]</a>
+              <a href="thread.html#78">[ thread ]</a>
+              <a href="subject.html#78">[ subject ]</a>
+              <a href="author.html#78">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] PyCrypto &amp; OpenSSL
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%20%26%20OpenSSL&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000429.html">
+   <LINK REL="Next"  HREF="000430.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] PyCrypto &amp; OpenSSL</H1>
+    <B>David Arena</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20PyCrypto%20%26%20OpenSSL&In-Reply-To="
+       TITLE="[pycrypto] PyCrypto &amp; OpenSSL">arenstar at gmail.com
+       </A><BR>
+    <I>Sat Mar 19 14:38:57 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000429.html">[pycrypto] adding ssh keys support in distutils2
+</A></li>
+        <LI>Next message: <A HREF="000430.html">[pycrypto] Installation terminated with an error &quot;Unable to find	vcvarsall.bat&quot;
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#435">[ date ]</a>
+              <a href="thread.html#435">[ thread ]</a>
+              <a href="subject.html#435">[ subject ]</a>
+              <a href="author.html#435">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I am having trouble decrypting in OpenSSL from a ciphertext encrypted in PyCrypto..
+
+Let me explain what im doing first..
+using Aes-128-cbc..
+
+key          = '0123456789abcdef'             eg. 30313233343536373839414243444546 ( represented here in hex )
+plaintext = uuid ( 128bit without the &quot;-&quot;) eg. ffc60acb3cf14fd999cb3dff91a62091
+iv		= urandom(16)			      eg. c4b366c68cd086b4197dc1f6bd3f95f4 (represented here in hex for clarity)
+
+on Encryption in pycrypto
+
+i encrypt in pycrypto.. and append the plaintext iv to the ciphertext
+ciphertext will now equal plaintextIV+ciphertext
+
+on Decryption in pycrypto
+iv = zeros
+
+and everything works as i assumed..
+
+This follows what i understood the pgp approach using CBF..
+
+HOWEVER..
+
+If i try to decrypt in Openssl using this type statement.
+
+echo $ciphertext | openssl aes-128-cbc -K 30313233343536373839414243444546 -iv 30303030303030303030303030303030 -p -nosalt -nopad
+
+it is not functioning, or returning my uuid :(
+
+Can anyone help me?
+Or even tell me how stupid i am :D
+
+Cheers
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000429.html">[pycrypto] adding ssh keys support in distutils2
+</A></li>
+	<LI>Next message: <A HREF="000430.html">[pycrypto] Installation terminated with an error &quot;Unable to find	vcvarsall.bat&quot;
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#435">[ date ]</a>
+              <a href="thread.html#435">[ thread ]</a>
+              <a href="subject.html#435">[ subject ]</a>
+              <a href="author.html#435">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Elliptic curve cryptography and group signature
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Elliptic%20curve%20cryptography%20and%20group%20signature&In-Reply-To=eddb24f00909071101m20eb044aw9df6e5e895fe35cf%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000145.html">
+   <LINK REL="Next"  HREF="000150.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Elliptic curve cryptography and group signature</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Elliptic%20curve%20cryptography%20and%20group%20signature&In-Reply-To=eddb24f00909071101m20eb044aw9df6e5e895fe35cf%40mail.gmail.com"
+       TITLE="[pycrypto] Elliptic curve cryptography and group signature">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Oct 26 21:05:20 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000145.html">[pycrypto] Distribution of prime numbers?
+</A></li>
+        <LI>Next message: <A HREF="000150.html">[pycrypto] Freezing pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#147">[ date ]</a>
+              <a href="thread.html#147">[ thread ]</a>
+              <a href="subject.html#147">[ subject ]</a>
+              <a href="author.html#147">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Sep 07, 2009 at 08:01:01PM +0200, Peter Zavadsky wrote:
+&gt;<i>Hi everyone!
+</I>&gt;<i>
+</I>&gt;<i>I'm new here and this is my first post...
+</I>&gt;<i>
+</I>&gt;<i>I'd like to ask:
+</I>&gt;<i>
+</I>&gt;<i>Is there any implementation of elliptic curve cryptography in
+</I>&gt;<i>development or planned? I'm interested in (implementation of) group
+</I>&gt;<i>signature by means of bilinear maps(such as Weil or Tate pairing).
+</I>&gt;<i>
+</I>&gt;<i>There is also PyECC module, but I thought about to include some ecc
+</I>&gt;<i>stuff to PyCrypto, what do you think? Is someone also interested in
+</I>&gt;<i>this area and can help with this?
+</I>
+I haven't thought much about elliptic curve crypto, partly because I don't 
+know very much about it, except that it's faster than RSA and that it's a 
+bit of a patent minefield (though apparently the people responsible for 
+seccure are taking care to avoid the patented stuff).
+
+Since seccure is licensed under the (L?)GPL (and most of PyCrypto is either 
+public domain or permissively licensed), I would probably not include it 
+directly in PyCrypto, but make it a separate plug-in extension library.
+
+I'm mostly focusing on strengthening the stuff that PyCrypto already has 
+right now.
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000145.html">[pycrypto] Distribution of prime numbers?
+</A></li>
+	<LI>Next message: <A HREF="000150.html">[pycrypto] Freezing pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#147">[ date ]</a>
+              <a href="thread.html#147">[ thread ]</a>
+              <a href="subject.html#147">[ subject ]</a>
+              <a href="author.html#147">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

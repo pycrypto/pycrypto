@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Possible problem in src/_fastmath.c
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Possible%20problem%20in%20src/_fastmath.c&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000023.html">
+   <LINK REL="Next"  HREF="000025.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Possible problem in src/_fastmath.c</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Possible%20problem%20in%20src/_fastmath.c&In-Reply-To="
+       TITLE="[pycrypto] Possible problem in src/_fastmath.c">dlitz at dlitz.net
+       </A><BR>
+    <I>Thu Oct 16 06:08:32 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000023.html">[pycrypto] Possible problem in src/_fastmath.c
+</A></li>
+        <LI>Next message: <A HREF="000025.html">[pycrypto] Possible problem in src/_fastmath.c
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#24">[ date ]</a>
+              <a href="thread.html#24">[ thread ]</a>
+              <a href="subject.html#24">[ subject ]</a>
+              <a href="author.html#24">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Oct 16, 2008 at 03:39:29AM +0400, Sergey Chernov wrote:
+&gt;<i>See patch:
+</I>&gt;<i>----------------------------------------------------------------------------
+</I>&gt;<i>diff --git a/src/_fastmath.c b/src/_fastmath.c
+</I>&gt;<i>index d06d697..a0aa181 100755
+</I>&gt;<i>--- a/src/_fastmath.c
+</I>&gt;<i>+++ b/src/_fastmath.c
+</I>&gt;<i>@@ -28,6 +28,7 @@ longObjToMPZ (mpz_t m, PyLongObject * p)
+</I>&gt;<i> 		size = p-&gt;ob_size;
+</I>&gt;<i> 	else
+</I>&gt;<i> 		size = -p-&gt;ob_size;
+</I>&gt;<i>+	mpz_clear( m );
+</I>&gt;<i> 	for (i = 0; i &lt; size; i++)
+</I>&gt;<i> 	{
+</I>&gt;<i> 		mpz_set_ui (temp, p-&gt;ob_digit[i]);
+</I>&gt;<i>----------------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i>Current usage do not discover the bug as 'm' is always just-initialized.
+</I>&gt;<i>Still it, as I think, may cause trouble later.
+</I>
+Sergey,
+
+What is the purpose of your patch?  What bug are you referring to?
+
+Are you trying to set m to zero at the top of the loop?  Looking at the GMP 
+documentation (<A HREF="http://gmplib.org/manual/Initializing-Integers.html">http://gmplib.org/manual/Initializing-Integers.html</A>), I see 
+that mpz_init() and mpz_clear() have similar usages as malloc() and free(), 
+so I'm pretty sure that I do not want to apply your patch as-is.
+
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2008) - 4B2A FD82 FC7D 9E38 38D9  179F 1C11 B877 E780 4B45
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20081016/7e4197a5/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20081016/7e4197a5/attachment.pgp</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000023.html">[pycrypto] Possible problem in src/_fastmath.c
+</A></li>
+	<LI>Next message: <A HREF="000025.html">[pycrypto] Possible problem in src/_fastmath.c
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#24">[ date ]</a>
+              <a href="thread.html#24">[ thread ]</a>
+              <a href="subject.html#24">[ subject ]</a>
+              <a href="author.html#24">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

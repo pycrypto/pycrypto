@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Public Key (X.509) in Modulus/Exponent Format
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Public%20Key%20%28X.509%29%20in%20Modulus/Exponent%20Format&In-Reply-To=%3CCAGfyce0JvX1PRSVeobsxrqM8X%2BF-pv2tWzy0g%3D0grCDS45K3ew%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000773.html">
+   <LINK REL="Next"  HREF="000784.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Public Key (X.509) in Modulus/Exponent Format</H1>
+    <B>Legrandin</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Public%20Key%20%28X.509%29%20in%20Modulus/Exponent%20Format&In-Reply-To=%3CCAGfyce0JvX1PRSVeobsxrqM8X%2BF-pv2tWzy0g%3D0grCDS45K3ew%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Public Key (X.509) in Modulus/Exponent Format">helderijs at gmail.com
+       </A><BR>
+    <I>Fri Feb  7 02:52:49 PST 2014</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000773.html">[pycrypto] Public Key (X.509) in Modulus/Exponent Format
+</A></li>
+        <LI>Next message: <A HREF="000784.html">[pycrypto] Got different PKCS1_v1_5 signature result on the same	message &amp; same rsa key pair
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#775">[ date ]</a>
+              <a href="thread.html#775">[ thread ]</a>
+              <a href="subject.html#775">[ subject ]</a>
+              <a href="author.html#775">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+This answer on stackoverflow shows how you can read the RSA public key
+embedded in a PEM X.509 certificate:
+
+<A HREF="http://stackoverflow.com/questions/12911373/how-do-i-use-a-x509-certificate-with-pycrypto">http://stackoverflow.com/questions/12911373/how-do-i-use-a-x509-certificate-with-pycrypto</A>
+
+Once you have loaded the RSA public key, you can get modulus and
+exponent in the way you need with something like this:
+
+from Crypto.Util.number import long_to_bytes
+import base64
+
+for part in rsa_key.n, rsa_key.e:
+    print base64.b64encode(long_to_bytes(part))
+
+2014-02-07 5:10 GMT+01:00 Anurag Chourasia &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">anurag.chourasia at gmail.com</A>&gt;:
+&gt;<i> Hi All,
+</I>&gt;<i>
+</I>&gt;<i> Is it possible to get a Modulus Exponent representation of the public key
+</I>&gt;<i> (X.509) using PyCrypto?
+</I>&gt;<i>
+</I>&gt;<i> For example, the X.509 is
+</I>&gt;<i>
+</I>&gt;<i> -----BEGIN CERTIFICATE-----
+</I>&gt;<i> MIICLDCCAZWgAwIBAgIQRjRrx4AAVrwR024uxBCzsDANBgkqhkiG9w0BAQUFADAS
+</I>&gt;<i> MRAwDgYDVQQDEwdDYXJsUlNBMB4XDTk5MDkxOTAxMDg0N1oXDTM5MTIzMTIzNTk1
+</I>&gt;<i> OVowEzERMA8GA1UEAxMIQWxpY2VSU0EwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJ
+</I>&gt;<i> AoGBAOCJczmN2PX16Id2OX9OsAW7U4PeD7er3H3HdSkNBS5tEt+mhibU0m+qWCn8
+</I>&gt;<i> l+z6glEPMIC+sVCeRkTxLLvYMs/GaG8H2bBgrL7uNAlqE/X3BQWT3166NVbZYf8Z
+</I>&gt;<i> f8mB5vhs6odAcO+sbSx0ny36VTq5mXcCpkhSjE7zVzhXdFdfAgMBAAGjgYEwfzAM
+</I>&gt;<i> BgNVHRMBAf8EAjAAMA4GA1UdDwEB/wQEAwIGwDAfBgNVHSMEGDAWgBTp4JAnrHgg
+</I>&gt;<i> eprTTPJCN04irp44uzAdBgNVHQ4EFgQUd9K00bdMioqjzkWdzuw8oDrj/1AwHwYD
+</I>&gt;<i> VR0RBBgwFoEUQWxpY2VSU0FAZXhhbXBsZS5jb20wDQYJKoZIhvcNAQEFBQADgYEA
+</I>&gt;<i> PnBHqEjME1iPylFxa042GF0EfoCxjU3MyqOPzH1WyLzPbrMcWakgqgWBqE4lradw
+</I>&gt;<i> FHUv9ceb0Q7pY9Jkt8ZmbnMhVN/0uiVdfUnTlGsiNnRzuErsL2Tt0z3Sp0LF6DeK
+</I>&gt;<i> tNufZ+S9n/n+dO/q+e5jatg/SyUJtdgadq7rm9tJsCI=
+</I>&gt;<i> -----END CERTIFICATE-----
+</I>&gt;<i>
+</I>&gt;<i> And i need to get to the following representation
+</I>&gt;<i>
+</I>&gt;<i> &lt;RSAKeyValue&gt;
+</I>&gt;<i>   &lt;Modulus&gt;
+</I>&gt;<i>
+</I>&gt;<i> 4IlzOY3Y9fXoh3Y5f06wBbtTg94Pt6vcfcd1KQ0FLm0S36aGJtTSb6pYKfyX7PqCUQ8wgL6xUJ5GRPEsu9gyz8
+</I>&gt;<i>
+</I>&gt;<i> ZobwfZsGCsvu40CWoT9fcFBZPfXro1Vtlh/xl/yYHm+Gzqh0Bw76xtLHSfLfpVOrmZdwKmSFKMTvNXOFd0V18=
+</I>&gt;<i>   &lt;/Modulus&gt;
+</I>&gt;<i>   &lt;Exponent&gt;AQAB&lt;/Exponent&gt;
+</I>&gt;<i> &lt;/RSAKeyValue&gt;
+</I>&gt;<i>
+</I>&gt;<i> Please guide.
+</I>&gt;<i>
+</I>&gt;<i> Regards,
+</I>&gt;<i> Anurag
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I></PRE>
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000773.html">[pycrypto] Public Key (X.509) in Modulus/Exponent Format
+</A></li>
+	<LI>Next message: <A HREF="000784.html">[pycrypto] Got different PKCS1_v1_5 signature result on the same	message &amp; same rsa key pair
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#775">[ date ]</a>
+              <a href="thread.html#775">[ thread ]</a>
+              <a href="subject.html#775">[ subject ]</a>
+              <a href="author.html#775">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

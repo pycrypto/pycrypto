@@ -1,0 +1,382 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] pycryptodome
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20pycryptodome&In-Reply-To=%3CCAEncD4de8BZ1C44CoPzhgxc2HWyRcE%2B7mObDhVqxxWB3PS5y3Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <LINK REL="Previous"  HREF="000889.html">
+   <LINK REL="Next"  HREF="000891.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] pycryptodome</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20pycryptodome&In-Reply-To=%3CCAEncD4de8BZ1C44CoPzhgxc2HWyRcE%2B7mObDhVqxxWB3PS5y3Q%40mail.gmail.com%3E"
+       TITLE="[pycrypto] pycryptodome">dave.pawson at gmail.com
+       </A><BR>
+    <I>Fri Dec  9 11:47:29 UTC 2016</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000889.html">[pycrypto] pycryptodome
+</A></li>
+        <LI>Next message: <A HREF="000891.html">[pycrypto] pycryptodome
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#890">[ date ]</a>
+              <a href="thread.html#890">[ thread ]</a>
+              <a href="subject.html#890">[ subject ]</a>
+              <a href="author.html#890">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 9 December 2016 at 10:57, Martin Falatic &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">martin at falatic.com</A>&gt; wrote:
+&gt;<i> You had pip 9.0.1 installed previously -  from your earlier email:
+</I>&gt;&gt;<i> # pip -V
+</I>&gt;&gt;<i> pip 9.0.1 from /usr/lib/python2.7/site-packages (python 2.7)
+</I>&gt;<i>
+</I>&gt;<i> This suggests at some point you ran the &quot;pip install --upgrade pip&quot; bit
+</I>&gt;<i> you see appearing when you install things with pip at this point. Clearly
+</I>&gt;<i> that's problematic so don't do that (problematic because the version dnf
+</I>&gt;<i> installs is older and doesn't break things by virtue of how it gets
+</I>&gt;<i> installed via that mechanism).
+</I>
+I honestly don't think dnf is installing pip? It's a Python environment issue?
+Post your scripts, which versions are you suggesting I use?
+8.1 or the more recent 9.0.1 please?
+
+Yes, I have 'upgraded' pip (again this morning). Do you think this is a problem?
+
+
+&gt;<i>
+</I>&gt;<i> Whether pycrypto is truly uninstalled can obviously be hard to tell....
+</I>&gt;<i> but there are lots of ways to work it out (even if it means re-installing
+</I>&gt;<i> it via setup.py and then using the info from that install to remove it
+</I>&gt;<i> thoroughly). See this link for more info on the general problem of
+</I>&gt;<i> uninstalling such things:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://stackoverflow.com/questions/1550226/python-setup-py-uninstall">http://stackoverflow.com/questions/1550226/python-setup-py-uninstall</A>
+</I>&gt;<i>
+</I>&gt;<i> And yet, the module's dictionary you listed tells us that there's version
+</I>&gt;<i> info to be had so that will probably suffice:
+</I>&gt;<i>
+</I>&gt;<i>   import Crypto
+</I>&gt;<i>   print(Crypto.version_info)
+</I>&gt;<i>
+</I>&gt;<i> I see (3,4,3)... how about you? Try this for both python 2.7 and 3.5.
+</I>
+Odd (wrong?)
+
+&gt;<i>python3
+</I>Python 3.5.2 (default, Sep 14 2016, 11:28:32)
+[GCC 6.2.1 20160901 (Red Hat 6.2.1-1)] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;<i> import Crypto
+</I>&gt;&gt;&gt;<i> print(Crypto.version_info)
+</I>(2, 6, 1, 'final', 0)
+
+and
+
+&gt;<i>python
+</I>Python 2.7.12 (default, Sep 29 2016, 12:52:02)
+[GCC 6.2.1 20160916 (Red Hat 6.2.1-2)] on linux2
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;<i> import Crypto
+</I>Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+ImportError: No module named Crypto
+
+
+which is weird!
+
+So python3 is ... finding 2.6.1
+
+yet
+
+as root
+
+# pip uninstall pycrypto
+Cannot uninstall requirement pycrypto, not installed
+[<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">root at localhost</A> ~]# pip3.5 uninstall pycrypto
+Cannot uninstall requirement pycrypto, not installed
+
+which implies neither is installed by pip?
+
+
+&gt;<i>
+</I>&gt;<i> The fact that the tests all worked is the second indication of health.
+</I>&gt;<i> Between the two, you can tell whether the install is sane and correct.
+</I>
+s/you/I/  &lt;grin/&gt;
+
+
+
+
+
+&gt;<i>
+</I>&gt;<i> Finally, I suggested you pip install both pycryptodome and pycryptodomex
+</I>&gt;<i> to prove that a) both are working properly using the tests as described,
+</I>&gt;<i> and b) that they can co-exist. As long as you don't have pycrypto
+</I>&gt;<i> installed, pycryptodome will do. Otherwise, you use pycryptodomex instead.
+</I>&gt;<i> Uninstall whichever you don't need - pycryptodome and pycryptodomex don't
+</I>&gt;<i> share the same namespace.
+</I>
+I'm wondering about Python and its search path?
+
+
+I can only assume (somehow) Crypto is installed as part of Python install
+or it is my installation using the source.
+
+Yet using Linux 'locate', the only ones (other than source)
+are:
+/usr/lib/python3.5/site-packages/beaker/crypto/pycrypto.py  ??
+a group at
+/usr/lib64/python2.7/site-packages/pycryptodomex-3.4.3-py2.7.egg-info
+/usr/lib64/python2.7/site-packages/pycryptodomex-3.4.3-py2.7.egg-info/PKG-INFO
+/usr/lib64/python2.7/site-packages/pycryptodomex-3.4.3-py2.7.egg-info/SOURCES.txt
+/usr/lib64/python2.7/site-packages/pycryptodomex-3.4.3-py2.7.egg-info/dependency_links.txt
+/usr/lib64/python2.7/site-packages/pycryptodomex-3.4.3-py2.7.egg-info/installed-files.txt
+/usr/lib64/python2.7/site-packages/pycryptodomex-3.4.3-py2.7.egg-info/top_level.txt
+
+
+I'm thinking that a total environment
+<A HREF="https://packaging.python.org/key_projects/#virtualenv">https://packaging.python.org/key_projects/#virtualenv</A>
+might be a way to do this.
+
+Most confusing is where Python 3.5 is finding pycrypto!
+
+regards
+
+
+
+&gt;<i>
+</I>&gt;<i>  - Marty
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Fri, December 9, 2016 02:34, Dave Pawson wrote:
+</I>&gt;&gt;<i> This is getting messy!
+</I>&gt;&gt;<i> Comments inline
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 8 December 2016 at 20:29, Martin Falatic &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">martin at falatic.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> This is beyond the scope of pycrypto for the moment - you have system
+</I>&gt;&gt;&gt;<i> problems because you've upgraded pip yourself.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> This looks familiar because I did the same exact thing myself in the
+</I>&gt;&gt;&gt;<i> process of testing this (and it didn't go smoothly - same problem you're
+</I>&gt;&gt;&gt;<i>  having - so I rolled that back to get pip2 and pip3 working properly).
+</I>&gt;&gt;&gt;<i>  Let's get you back on track.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> # At this point let's get back to the system default pips and go from
+</I>&gt;&gt;&gt;<i> there. IF you upgraded the system pip to 9.0.1 as it appears, here's how
+</I>&gt;&gt;&gt;<i>  to fix them:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> sudo dnf reinstall python-pip python3-pip
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> OK
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> # Now, with that done, run these:
+</I>&gt;&gt;&gt;<i> sudo pip3.5 uninstall pycrypto
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> produces # pip3.5 uninstall pycrypto
+</I>&gt;&gt;<i> DEPRECATION: Uninstalling a distutils installed project (pycrypto) has
+</I>&gt;&gt;<i> been deprecated and will be removed in a future version. This is due to the
+</I>&gt;&gt;<i> fact that uninstalling a distutils project will only partially uninstall
+</I>&gt;&gt;<i> the project. Uninstalling pycrypto-2.6.1:
+</I>&gt;&gt;<i> /usr/lib64/python3.5/site-packages/pycrypto-2.6.1-py3.5.egg-info
+</I>&gt;&gt;<i> Proceed (y/n)?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &quot;distutils installed project&quot; - will only partially uninstall the
+</I>&gt;&gt;<i> project? Unclear just what that means.
+</I>&gt;&gt;<i> Accept y and get a pip warning!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Proceed (y/n)? y
+</I>&gt;&gt;<i> Successfully uninstalled pycrypto-2.6.1
+</I>&gt;&gt;<i> You are using pip version 8.1.2, however version 9.0.1 is available.
+</I>&gt;&gt;<i> You should consider upgrading via the 'pip install --upgrade pip' command.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Ignored the message
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> sudo pip2.7 uninstall pycrypto
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Ah! A difference.
+</I>&gt;&gt;<i> #pip2.7 uninstall pycrypto
+</I>&gt;&gt;<i> Cannot uninstall requirement pycrypto, not installed
+</I>&gt;&gt;<i> You are using pip version 8.1.2, however version 9.0.1 is available.
+</I>&gt;&gt;<i> You should consider upgrading via the 'pip install --upgrade pip' command.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It would seem that pycrypto (installed using python setup.py install) is
+</I>&gt;&gt;<i> &quot;associated&quot; with python 2.7 (guess)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Either way it is uninstalled.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="https://ofswiki.org/wiki/Uninstalling_setup.py_install">https://ofswiki.org/wiki/Uninstalling_setup.py_install</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> # Once that's done, list them as per my earlier email:
+</I>&gt;&gt;&gt;<i> pip3.5 list | grep pycrypt pip2.7 list | grep pycrypt
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Nothing from pip3.5
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> however
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> # pip2.7 list | grep pycrypt
+</I>&gt;&gt;<i> pycryptodomex (3.4.3)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> so that is there.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Shouldn't see `pycrypto` there now. If you do... you installed it some
+</I>&gt;&gt;&gt;<i> other way (perhaps as a dnf package?) Uninstall it via the same
+</I>&gt;&gt;&gt;<i> mechanism you installed it and try again.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Which I did yesterday, using the suggestion from a link
+</I>&gt;&gt;<i> <A HREF="https://ofswiki.org/wiki/Uninstalling_setup.py_install">https://ofswiki.org/wiki/Uninstalling_setup.py_install</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Now go through the steps in my previous email to install pycryptodome
+</I>&gt;&gt;&gt;<i> and pycryptodomex for the purpose of this test, and report the results.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Both? IFAICT the suggestion is one or the other, both not needed?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Aside, I am not 'out of date' with pip
+</I>&gt;&gt;<i> # pip3.5 -V
+</I>&gt;&gt;<i> pip 8.1.2 from /usr/lib/python3.5/site-packages (python 3.5)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> # pip2.7 -V
+</I>&gt;&gt;<i> pip 8.1.2 from /usr/lib/python2.7/site-packages (python 2.7)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> OK, to repeat the tests from the pycryptodome pages.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> # python3 -m Cryptodome.SelfTest
+</I>&gt;&gt;<i> /usr/bin/python3: Error while finding spec for 'Cryptodome.SelfTest'
+</I>&gt;&gt;<i> (ImportError: No module named 'Cryptodome')
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Yet...
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> # python -m Cryptodome.SelfTest
+</I>&gt;&gt;<i> and off it goes! Ran 22656 tests in 48.420s
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Implication that Cryptodome is in the 2.7 library?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> More testing.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> import Crypto.Cipher.AES
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> mods=sys.modules if &quot;Crypto&quot; in mods: print(&quot;Found Crypto&quot;)
+</I>&gt;&gt;<i> print(mods[&quot;Crypto&quot;]) print(dir(Crypto)) print(dir(Crypto.Cipher))
+</I>&gt;&gt;<i> print(&quot;\nCrypto.Cipher.AES: &quot;,dir(Crypto.Cipher.AES))
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> shows
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &lt;module 'Crypto' from
+</I>&gt;&gt;<i> '/usr/lib64/python3.5/site-packages/Crypto/__init__.py'&gt;
+</I>&gt;&gt;<i> ['Cipher', 'Util', '__all__', '__builtins__', '__cached__', '__doc__',
+</I>&gt;&gt;<i> '__file__', '__loader__', '__name__', '__package__', '__path__',
+</I>&gt;&gt;<i> '__revision__', '__spec__', '__version__', 'version_info']
+</I>&gt;&gt;<i> ['AES', '_AES', '__all__', '__builtins__', '__cached__', '__doc__',
+</I>&gt;&gt;<i> '__file__', '__loader__', '__name__', '__package__', '__path__',
+</I>&gt;&gt;<i> '__revision__', '__spec__', 'blockalgo']
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Crypto.Cipher.AES:  ['AESCipher', 'MODE_CBC', 'MODE_CFB', 'MODE_CTR',
+</I>&gt;&gt;<i> 'MODE_ECB', 'MODE_OFB', 'MODE_OPENPGP', 'MODE_PGP', '_AES',
+</I>&gt;&gt;<i> '__builtins__', '__cached__', '__doc__', '__file__', '__loader__',
+</I>&gt;&gt;<i> '__name__', '__package__', '__revision__', '__spec__', 'block_size',
+</I>&gt;&gt;<i> 'blockalgo', 'key_size', 'new']
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> So how to tell whether I have crypto (??) or pycryptodome[x] ?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Signed, confused.com &lt;grin/&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Dave Pawson
+</I>&gt;&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;&gt;<i> Docbook FAQ.
+</I>&gt;&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000889.html">[pycrypto] pycryptodome
+</A></li>
+	<LI>Next message: <A HREF="000891.html">[pycrypto] pycryptodome
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#890">[ date ]</a>
+              <a href="thread.html#890">[ thread ]</a>
+              <a href="subject.html#890">[ subject ]</a>
+              <a href="author.html#890">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

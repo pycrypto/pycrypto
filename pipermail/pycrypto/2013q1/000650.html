@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Remove DSA because 1024bit is not safe
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Remove%20DSA%20because%201024bit%20is%20not%20safe&In-Reply-To=%3C5106B53E.7030308%40dlitz.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000649.html">
+   <LINK REL="Next"  HREF="000652.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Remove DSA because 1024bit is not safe</H1>
+    <B>Dwayne Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Remove%20DSA%20because%201024bit%20is%20not%20safe&In-Reply-To=%3C5106B53E.7030308%40dlitz.net%3E"
+       TITLE="[pycrypto] Remove DSA because 1024bit is not safe">dlitz at dlitz.net
+       </A><BR>
+    <I>Mon Jan 28 09:28:30 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000649.html">[pycrypto] Remove DSA because 1024bit is not safe
+</A></li>
+        <LI>Next message: <A HREF="000652.html">[pycrypto] Hash: Remove &quot;oid&quot; attributes; add &quot;name&quot; attribute
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#650">[ date ]</a>
+              <a href="thread.html#650">[ thread ]</a>
+              <a href="subject.html#650">[ subject ]</a>
+              <a href="author.html#650">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>That said, we should probably support the newer spec:
+
+     &gt;&gt;&gt; from Crypto.PublicKey import DSA
+     &gt;&gt;&gt; DSA.generate(3072)
+    Traceback (most recent call last):
+       File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+       File &quot;/usr/lib/python2.7/dist-packages/Crypto/PublicKey/DSA.py&quot;,
+    line 337, in generate
+         raise ValueError(&quot;Number of bits in p must be a multiple of 64
+    between 512 and 1024, not %d bits&quot; % (bits,))
+    ValueError: Number of bits in p must be a multiple of 64 between 512
+    and 1024, not 3072 bits
+
+
+On 01/28/2013 02:21 AM, Legrandin wrote:
+&gt;<i> I think you are looking at an older FIPS 186 spec.
+</I>&gt;<i> The current one allows 3072 bits for DSA.
+</I>&gt;<i>
+</I>&gt;<i> Besides that, DSA is based on a different hard problem than RSA.
+</I>&gt;<i> A 1024 bit DSA signature is somewhat more secure than a 1024 bit RSA 
+</I>&gt;<i> signature.
+</I>&gt;<i>
+</I>&gt;<i> 2012/12/12 . &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dcMhOYBdpZkH at web.de</A> &lt;mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dcMhOYBdpZkH at web.de</A>&gt;&gt;
+</I>&gt;<i>
+</I>&gt;<i>     It is important to consider 1024bit DSA - NIST says this too - not
+</I>&gt;<i>     secure anymore, or do you want your messages to be readable within
+</I>&gt;<i>     your lifetime?.
+</I>&gt;<i>     Since DSA max. key size is 1024bit it's time to think
+</I>&gt;<i>     about removing it completely from pycrypto and use RSA or ECC
+</I>&gt;<i>     (with your
+</I>&gt;<i>     own curves, not NIST's untrustable ones).
+</I>&gt;<i>
+</I>&gt;<i>     _______________________________________________
+</I>&gt;<i>     pycrypto mailing list
+</I>&gt;<i>     <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A> &lt;mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>&gt;
+</I>&gt;<i>     <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20130128/fb41841c/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20130128/fb41841c/attachment.html</A>&gt;
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000649.html">[pycrypto] Remove DSA because 1024bit is not safe
+</A></li>
+	<LI>Next message: <A HREF="000652.html">[pycrypto] Hash: Remove &quot;oid&quot; attributes; add &quot;name&quot; attribute
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#650">[ date ]</a>
+              <a href="thread.html#650">[ thread ]</a>
+              <a href="subject.html#650">[ subject ]</a>
+              <a href="author.html#650">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

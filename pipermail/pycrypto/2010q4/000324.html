@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Once again: Python3 with PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=4D1539CB.6000600%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000323.html">
+   <LINK REL="Next"  HREF="000325.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Once again: Python3 with PyCrypto</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=4D1539CB.6000600%40gmx.li"
+       TITLE="[pycrypto] Once again: Python3 with PyCrypto">dlitz at dlitz.net
+       </A><BR>
+    <I>Sat Dec 25 10:36:27 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000323.html">[pycrypto] _fastmath.c on 64-bit, compile-time warnings
+</A></li>
+        <LI>Next message: <A HREF="000325.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#324">[ date ]</a>
+              <a href="thread.html#324">[ thread ]</a>
+              <a href="subject.html#324">[ subject ]</a>
+              <a href="author.html#324">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm on vacation, so I won't be able to look at this until early January, but off the top of my head... does .encode() work in Python 2.1?
+
+&quot;Thorsten Behrens&quot; &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">sbehrens at gmx.li</A>&gt; wrote:
+
+&gt;<i>Still crashing, just not on importing winrandom any more. I found the 
+</I>&gt;<i>typo there. More errors remain, clearly.
+</I>&gt;<i>
+</I>&gt;<i>I have a question regarding the str/bytes situation in Python 3. Take 
+</I>&gt;<i>this example from Counter.py:
+</I>&gt;<i>
+</I>&gt;<i>     if sys.version_info[0] is 2:
+</I>&gt;<i>         if little_endian:
+</I>&gt;<i>             return _counter._newLE(str(prefix), str(suffix), initval, 
+</I>&gt;<i>allow_wraparound=allow_wraparound, disable_shortcut=disable_shortcut)
+</I>&gt;<i>         else:
+</I>&gt;<i>             return _counter._newBE(str(prefix), str(suffix), initval, 
+</I>&gt;<i>allow_wraparound=allow_wraparound, disable_shortcut=disable_shortcut)
+</I>&gt;<i>     else:
+</I>&gt;<i>         if little_endian:
+</I>&gt;<i>             return _counter._newLE(prefix.encode(), suffix.encode(), 
+</I>&gt;<i>initval.encode(), allow_wraparound=allow_wraparound, 
+</I>&gt;<i>disable_shortcut=disable_shortcut)
+</I>&gt;<i>         else:
+</I>&gt;<i>             return _counter._newBE(prefix.encode(), suffix.encode(), 
+</I>&gt;<i>initval.encode(), allow_wraparound=allow_wraparound, 
+</I>&gt;<i>disable_shortcut=disable_shortcut)
+</I>&gt;<i>
+</I>&gt;<i>Not having had that much exposure to this code, my question is: Would
+</I>&gt;<i>it 
+</I>&gt;<i>be safe to just use .encode() throughout, without the check for Python 
+</I>&gt;<i>version? From all I can tell, it'll work as desired - but there may be
+</I>&gt;<i>a 
+</I>&gt;<i>corner case I haven't considered. Essentially, can I collapse the above
+</I>&gt;<i>
+</I>&gt;<i>again to:
+</I>&gt;<i>
+</I>&gt;<i>     if little_endian:
+</I>&gt;<i>         return _counter._newLE(prefix.encode(), suffix.encode(), 
+</I>&gt;<i>initval.encode(), allow_wraparound=allow_wraparound, 
+</I>&gt;<i>disable_shortcut=disable_shortcut)
+</I>&gt;<i>     else:
+</I>&gt;<i>         return _counter._newBE(prefix.encode(), suffix.encode(), 
+</I>&gt;<i>initval.encode(), allow_wraparound=allow_wraparound, 
+</I>&gt;<i>disable_shortcut=disable_shortcut)
+</I>&gt;<i>
+</I>&gt;<i>for all versions of Python, 2.x and 3.x.
+</I>&gt;<i>
+</I>&gt;<i>Dwayne, can you shed some light?
+</I>&gt;<i>
+</I>&gt;<i>Thorsten
+</I>&gt;<i>
+</I>&gt;<i>_______________________________________________
+</I>&gt;<i>pycrypto mailing list
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i><A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+-- 
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
+</PRE>
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000323.html">[pycrypto] _fastmath.c on 64-bit, compile-time warnings
+</A></li>
+	<LI>Next message: <A HREF="000325.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#324">[ date ]</a>
+              <a href="thread.html#324">[ thread ]</a>
+              <a href="subject.html#324">[ subject ]</a>
+              <a href="author.html#324">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

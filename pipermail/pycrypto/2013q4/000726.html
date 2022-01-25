@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Installation on python3
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Installation%20on%20python3&In-Reply-To=%3CCAEncD4eUrf1gtuXfwxpadrB%3DZ6xn%2BC-TRoxC%2BYzepQ_2oKgTfw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000725.html">
+   <LINK REL="Next"  HREF="000727.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Installation on python3</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Installation%20on%20python3&In-Reply-To=%3CCAEncD4eUrf1gtuXfwxpadrB%3DZ6xn%2BC-TRoxC%2BYzepQ_2oKgTfw%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Installation on python3">dave.pawson at gmail.com
+       </A><BR>
+    <I>Sat Nov 16 02:09:26 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000725.html">[pycrypto] Installation on python3
+</A></li>
+        <LI>Next message: <A HREF="000727.html">[pycrypto] ARC4 examples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#726">[ date ]</a>
+              <a href="thread.html#726">[ thread ]</a>
+              <a href="subject.html#726">[ subject ]</a>
+              <a href="author.html#726">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks.
+
+# yum info python3-dev
+Loaded plugins: langpacks, refresh-packagekit
+Error: No matching Packages to list
+[<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">root at homer</A> ~]# yum info python3-devel
+Loaded plugins: langpacks, refresh-packagekit
+Available Packages
+Name        : python3-devel
+Arch        : i686
+Version     : 3.3.2
+Release     : 7.fc19
+Size        : 171 k
+Repo        : updates/19/x86_64
+Summary     : Libraries and header files needed for Python 3 development
+URL         : <A HREF="http://www.python.org/">http://www.python.org/</A>
+Licence     : Python
+Description : This package contains libraries and header files used to build
+            : applications with and native libraries for Python 3
+
+Name        : python3-devel
+Arch        : x86_64
+Version     : 3.3.2
+Release     : 7.fc19
+Size        : 171 k
+Repo        : updates/19/x86_64
+Summary     : Libraries and header files needed for Python 3 development
+URL         : <A HREF="http://www.python.org/">http://www.python.org/</A>
+Licence     : Python
+Description : This package contains libraries and header files used to build
+            : applications with and native libraries for Python 3
+
+
+now runs
+  warning: GMP or MPIR library not found; Not building
+Crypto.PublicKey._fastmath.
+
+Successfully installed pycrypto
+Cleaning up...
+
+Seems fine. Thanks, DaveP
+
+
+On 15 November 2013 16:05, Philip Horger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">campadrenalin at gmail.com</A>&gt; wrote:
+&gt;<i> Hi Dave,
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> You are missing the python3-dev package, or whatever it's called in
+</I>&gt;<i> Fedora-Land. That contains the headers that the compiler needs to compile C
+</I>&gt;<i> extensions for Python (specifically, Python.h). Without that header
+</I>&gt;<i> information, you can't compile the C extensions that are part of PyCrypto
+</I>&gt;<i> (or any other Python module that makes use of compiled extensions).
+</I>&gt;<i>
+</I>&gt;<i> Basically, you just need to find and install that package from the Fedora
+</I>&gt;<i> repos.
+</I>&gt;<i>
+</I>&gt;<i> Hope that helps,
+</I>&gt;<i> Philip Horger
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Fri, Nov 15, 2013 at 12:10 AM, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> setup is Fedora 19, 64 bit.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> cmd was pip-python3 install pycrypto
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> result
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ...
+</I>&gt;&gt;<i> creating build/temp.linux-x86_64-3.3
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> creating build/temp.linux-x86_64-3.3/src
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> gcc -pthread -Wno-unused-result -DDYNAMIC_ANNOTATIONS_ENABLED=1 -pipe
+</I>&gt;&gt;<i> -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector
+</I>&gt;&gt;<i> --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic
+</I>&gt;&gt;<i> -D_GNU_SOURCE -fPIC -fwrapv -fPIC -std=c99 -O3 -fomit-frame-pointer
+</I>&gt;&gt;<i> -Isrc/ -I/usr/include/python3.3m -c src/MD2.c -o
+</I>&gt;&gt;<i> build/temp.linux-x86_64-3.3/src/MD2.o
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> src/MD2.c:31:20: fatal error: Python.h: No such file or directory
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>  #include &quot;Python.h&quot;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>                     ^
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> compilation terminated.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> warning: GMP or MPIR library not found; Not building
+</I>&gt;&gt;<i> Crypto.PublicKey._fastmath.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> error: command 'gcc' failed with exit status 1
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Any suggestions please?
+</I>&gt;&gt;<i> pycrypto installed fine on python 2.7
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> regards
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Dave Pawson
+</I>&gt;&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;&gt;<i> Docbook FAQ.
+</I>&gt;&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> pycrypto mailing list
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000725.html">[pycrypto] Installation on python3
+</A></li>
+	<LI>Next message: <A HREF="000727.html">[pycrypto] ARC4 examples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#726">[ date ]</a>
+              <a href="thread.html#726">[ thread ]</a>
+              <a href="subject.html#726">[ subject ]</a>
+              <a href="author.html#726">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

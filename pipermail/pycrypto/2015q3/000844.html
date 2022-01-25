@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] pycrypto Digest, Vol 75, Issue 2
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20pycrypto%20Digest%2C%20Vol%2075%2C%20Issue%202&In-Reply-To=%3CCAEncD4fauY0KLvF9hqH0ZHgeA9JEsuPeDkCNsCcoB503UmQ4CA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000845.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] pycrypto Digest, Vol 75, Issue 2</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20pycrypto%20Digest%2C%20Vol%2075%2C%20Issue%202&In-Reply-To=%3CCAEncD4fauY0KLvF9hqH0ZHgeA9JEsuPeDkCNsCcoB503UmQ4CA%40mail.gmail.com%3E"
+       TITLE="[pycrypto] pycrypto Digest, Vol 75, Issue 2">dave.pawson at gmail.com
+       </A><BR>
+    <I>Thu Jul  9 01:25:17 PDT 2015</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000845.html">[pycrypto] python 3, crypto installation issue?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#844">[ date ]</a>
+              <a href="thread.html#844">[ thread ]</a>
+              <a href="subject.html#844">[ subject ]</a>
+              <a href="author.html#844">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Windows 64 bit, Visual studio installed.
+Followed Max instructions.
+Build error on installing pycrypto
+
+.....
+
+   copying lib\Crypto\Signature\PKCS1_v1_5.py -&gt;
+build\lib.win32-3.4\Crypto\Signature
+   copying lib\Crypto\Signature\__init__.py -&gt;
+build\lib.win32-3.4\Crypto\Signature
+   Skipping implicit fixer: buffer
+   Skipping implicit fixer: idioms
+   Skipping implicit fixer: set_literal
+   Skipping implicit fixer: ws_comma
+   running build_ext
+   building 'Crypto.Random.OSRNG.winrandom' extension
+   warning: GMP or MPIR library not found; Not building
+Crypto.PublicKey._fastmath.
+   error: \java\jre7\bin&quot;;\sgml\bin;\python34\scripts;C:\apps\gpg\pub;C:\Program
+Files (x86)\Skype\Phone\;C:\Progr
+es (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program
+Files\Microsoft SQL Server\110\Tools\Binn\;C:\Pr
+Files (x86)\Microsoft SDKs\TypeScript\1.0\;C:\Program Files\Microsoft
+SQL Server\120\Tools\Binn\&quot; was unexpected a
+ time.
+
+
+   ----------------------------------------
+
+   Command &quot;C:\Python34\python.exe -c &quot;import setuptools,
+tokenize;__file__='C:\\Users\\dpawson\\AppData\\Local\\Temp\\pip-
+   build-j_c5vchi\\pycrypto\\setup.py';exec(compile(getattr(tokenize,
+'open', open)(__file__).read().replace('\r\n', '\n'),
+    __file__, 'exec'))&quot; install --record
+C:\Users\dpawson\AppData\Local\Temp\pip-upj7zjho-record\install-record.txt
+--singl
+   e-version-externally-managed --compile&quot; failed with error code 1 in
+C:\Users\dpawson\AppData\Local\Temp\pip-build-j_c5vc
+   hi\pycrypto
+
+Any suggestions what's going wrong please?
+
+Dave
+
+On 28 June 2015 at 22:58, Max Polk &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">maxpolk at gmail.com</A>&gt; wrote:
+&gt;<i> From: Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks Max.
+</I>&gt;&gt;<i> simple question, which of the n variants of Vis Studio should we install
+</I>&gt;&gt;<i> please?
+</I>&gt;<i>
+</I>&gt;<i> Successfully tested this just now using pip to install pycrypto in Python 2
+</I>&gt;<i> and 3.
+</I>&gt;<i>
+</I>&gt;<i> Install Microsoft Visual Studio Community 2013.
+</I>&gt;<i>
+</I>&gt;<i> :: Run the batch file to set things
+</I>&gt;<i> C:\whatever\VisualStudio\Common7\Tools\vsvars32.bat
+</I>&gt;<i>
+</I>&gt;<i> :: Python 2 expects Microsoft Visual C++ 9.0
+</I>&gt;<i> set VS90COMNTOOLS=%VS120COMNTOOLS%
+</I>&gt;<i> C:\whatever\Python2\Scripts\pip2 install pycrypto
+</I>&gt;<i>
+</I>&gt;<i> :: Python 3 expects Microsoft Visual C++ 10.0
+</I>&gt;<i> set VS100COMNTOOLS=%VS120COMNTOOLS%
+</I>&gt;<i> C:\whatever\Python3\Scripts\pip3 install pycrypto
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000845.html">[pycrypto] python 3, crypto installation issue?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#844">[ date ]</a>
+              <a href="thread.html#844">[ thread ]</a>
+              <a href="subject.html#844">[ subject ]</a>
+              <a href="author.html#844">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

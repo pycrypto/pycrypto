@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Pickling AES cipher objects - any reasons not to support	this?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Pickling%20AES%20cipher%20objects%20-%20any%20reasons%20not%20to%20support%0A%09this%3F&In-Reply-To=%3CCAPpwKcwtgkjU-ap1x7H%2B4a1fd9Tabbhph2Wb84%2BBMh4j7wdmQQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000647.html">
+   <LINK REL="Next"  HREF="000643.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Pickling AES cipher objects - any reasons not to support	this?</H1>
+    <B>Pearu Peterson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Pickling%20AES%20cipher%20objects%20-%20any%20reasons%20not%20to%20support%0A%09this%3F&In-Reply-To=%3CCAPpwKcwtgkjU-ap1x7H%2B4a1fd9Tabbhph2Wb84%2BBMh4j7wdmQQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Pickling AES cipher objects - any reasons not to support	this?">pearu.peterson at gmail.com
+       </A><BR>
+    <I>Tue Dec 25 03:48:05 PST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000647.html">[pycrypto] Remove DSA because 1024bit is not safe
+</A></li>
+        <LI>Next message: <A HREF="000643.html">[pycrypto] Ask help for java2python rewrite for AES decrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#642">[ date ]</a>
+              <a href="thread.html#642">[ thread ]</a>
+              <a href="subject.html#642">[ subject ]</a>
+              <a href="author.html#642">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+Currently pickling cipher objects fail (Pycrypto v2.6):
+
+&gt;&gt;&gt;<i> import pickle
+</I>&gt;&gt;&gt;<i> from Crypto.Cipher import AES
+</I>&gt;&gt;&gt;<i> cipher = AES.new('mysecret'*2)
+</I>&gt;&gt;&gt;<i> dump=pickle.dumps(cipher)
+</I>PicklingError: Can't pickle '_AES' object: &lt;_AES object at 0x1fe0bd0&gt;
+
+I wonder if there are any fundamental reasons why pickling cipher objects
+cannot
+be pickled? Otherwise I would look into implementing pickling support for
+cipher objects.
+
+Background:
+I am using Pycrypt in web2py and I need to temporarily store cipher
+information within a session
+without opening any security holes. I would presume that storing cipher
+object is safer (would it be?)
+than storing an encryption key used to create the cipher object.
+
+Thanks,
+Pearu
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20121225/43eecd9e/attachment.html">http://lists.dlitz.net/pipermail/pycrypto/attachments/20121225/43eecd9e/attachment.html</A>&gt;
+</PRE>
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000647.html">[pycrypto] Remove DSA because 1024bit is not safe
+</A></li>
+	<LI>Next message: <A HREF="000643.html">[pycrypto] Ask help for java2python rewrite for AES decrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#642">[ date ]</a>
+              <a href="thread.html#642">[ thread ]</a>
+              <a href="subject.html#642">[ subject ]</a>
+              <a href="author.html#642">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Base64 encoded output differs from pycrypto and	as3crypto libraries.
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Base64%20encoded%20output%20differs%20from%20pycrypto%0A%20and%09as3crypto%20libraries.&In-Reply-To=4D2E04BC.2070809%40amberfisharts.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000402.html">
+   <LINK REL="Next"  HREF="000401.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Base64 encoded output differs from pycrypto and	as3crypto libraries.</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Base64%20encoded%20output%20differs%20from%20pycrypto%0A%20and%09as3crypto%20libraries.&In-Reply-To=4D2E04BC.2070809%40amberfisharts.com"
+       TITLE="[pycrypto] Base64 encoded output differs from pycrypto and	as3crypto libraries.">sbehrens at gmx.li
+       </A><BR>
+    <I>Wed Jan 12 14:32:44 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000402.html">[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+</A></li>
+        <LI>Next message: <A HREF="000401.html">[pycrypto] Base64 encoded output differs from pycrypto and	as3crypto libraries.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#400">[ date ]</a>
+              <a href="thread.html#400">[ thread ]</a>
+              <a href="subject.html#400">[ subject ]</a>
+              <a href="author.html#400">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hey Lorenz,
+
+I notice that we don't use Schneier's CBC test vector. All we use is ECB.
+I tried adding CBC, and got errors. Running it manually, I get errors. 
+Can you sanity-check that I'm not doing something stupid. If I'm 
+invoking it right and it's failing, we need to review the CBC code.
+
+ &gt;&gt;&gt; B = 
+Blowfish.new(binascii.a2b_hex('0123456789ABCDEFF0E1D2C3B4A59687'),Blowfish.MODE_CBC,binascii.a2b_hex('FEDCBA9876543210'))
+ &gt;&gt;&gt; S = 
+binascii.a2b_hex('37363534333231204E6F77206973207468652074696D6520666F722000')
+ &gt;&gt;&gt; X = B.encrypt(S)
+Traceback (most recent call last):
+   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+ValueError: Input strings must be a multiple of 8 in length
+
+Thorsten
+
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000402.html">[pycrypto] Base64 encoded output differs from pycrypto and as3crypto libraries.
+</A></li>
+	<LI>Next message: <A HREF="000401.html">[pycrypto] Base64 encoded output differs from pycrypto and	as3crypto libraries.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#400">[ date ]</a>
+              <a href="thread.html#400">[ thread ]</a>
+              <a href="subject.html#400">[ subject ]</a>
+              <a href="author.html#400">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

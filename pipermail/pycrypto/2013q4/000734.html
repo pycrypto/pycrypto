@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ARC4 examples
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20ARC4%20examples&In-Reply-To=%3CCAEncD4d51YANzLJVu84PYX4RDkUm-Ozq3KMXAQqFy_%3D5t3_sLQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000731.html">
+   <LINK REL="Next"  HREF="000728.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ARC4 examples</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20ARC4%20examples&In-Reply-To=%3CCAEncD4d51YANzLJVu84PYX4RDkUm-Ozq3KMXAQqFy_%3D5t3_sLQ%40mail.gmail.com%3E"
+       TITLE="[pycrypto] ARC4 examples">dave.pawson at gmail.com
+       </A><BR>
+    <I>Sat Nov 23 03:28:29 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000731.html">[pycrypto] ARC4 examples
+</A></li>
+        <LI>Next message: <A HREF="000728.html">[pycrypto] ARC4 problems?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#734">[ date ]</a>
+              <a href="thread.html#734">[ thread ]</a>
+              <a href="subject.html#734">[ subject ]</a>
+              <a href="author.html#734">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks for that Legrandin,
+Once I got my head round it...
+
+For compleness
+
+        #
+        # Test again, bearing in mind warning at
+        # <A HREF="https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.ARC4-module.html">https://www.dlitz.net/software/pycrypto/api/current/Crypto.Cipher.ARC4-module.html</A>
+        # Need to deal in byte strings
+    def test_ARC4_2(self):
+        key = b'Very long and confidential key'
+        nonce = Random.new().read(16)
+        tempkey = SHA.new(key+nonce).digest()
+
+        cipher = ARC4.new(tempkey)
+        ciphertext = nonce + cipher.encrypt(b'Open the pod bay doors, HAL')
+
+        # decrypt with new cipher
+        nonce = ciphertext[:16] # strip off nonce
+        tempkey = SHA.new(key+nonce).digest()
+
+        cipher = ARC4.new(tempkey)
+        plaintext = cipher.decrypt(ciphertext[16:]) # Only decrypt the
+msg after nonce.
+        print(plaintext)
+        self.assertEqual(b'Open the pod bay doors,
+HAL',plaintext,'arc4,2 failed')
+
+regard DaveP
+
+
+
+On 20 November 2013 21:19, Legrandin &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">helderijs at gmail.com</A>&gt; wrote:
+&gt;&gt;&gt;&gt;&gt;<i> from Crypto.Cipher import ARC4
+</I>&gt;&gt;&gt;&gt;&gt;<i> from Crypto.Hash import SHA
+</I>&gt;&gt;&gt;&gt;&gt;<i> from Crypto import Random
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> key = b'Very long and confidential key'
+</I>&gt;&gt;&gt;&gt;&gt;<i> nonce = Random.new().read(16)
+</I>&gt;&gt;&gt;&gt;&gt;<i> tempkey = SHA.new(key+nonce).digest()
+</I>&gt;&gt;&gt;&gt;&gt;<i> cipher = ARC4.new(tempkey)
+</I>&gt;&gt;&gt;&gt;&gt;<i> msg = nonce + cipher.encrypt(b'Open the pod bay doors, HAL')
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I cannot get that to decrypt to the plaintext.
+</I>&gt;&gt;<i> What is the point of adding the nonce to the ciphertext please, and
+</I>&gt;&gt;<i> how to decrypt?
+</I>&gt;<i>
+</I>&gt;<i> It is just one of the many possible ways for delivering the nonce (or
+</I>&gt;<i> IV) to the receiver.
+</I>&gt;<i>
+</I>&gt;<i> If you receive msg, and you have the key, you can decrypt using these steps:
+</I>&gt;<i>
+</I>&gt;<i> from Crypto.Cipher import ARC4
+</I>&gt;<i> from Crypto.Hash import SHA
+</I>&gt;<i>
+</I>&gt;<i> nonce = msg[:16]
+</I>&gt;<i> tempkey = SHA.new(key+nonce).digest()
+</I>&gt;<i> cipher = ARC4.new(tempkey)
+</I>&gt;<i> plaintext = cipher.decrypt(msg[16:])
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000731.html">[pycrypto] ARC4 examples
+</A></li>
+	<LI>Next message: <A HREF="000728.html">[pycrypto] ARC4 problems?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#734">[ date ]</a>
+              <a href="thread.html#734">[ thread ]</a>
+              <a href="subject.html#734">[ subject ]</a>
+              <a href="author.html#734">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

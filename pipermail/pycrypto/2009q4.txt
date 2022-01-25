@@ -1,0 +1,2864 @@
+From mdriscoll at co.marshall.ia.us  Wed Oct  7 10:06:46 2009
+From: mdriscoll at co.marshall.ia.us (Mike Driscoll)
+Date: Wed, 07 Oct 2009 11:06:46 -0500
+Subject: [pycrypto] AES decrypting issues
+Message-ID: <4ACCBC96.2000607@co.marshall.ia.us>
+
+Hi,
+
+I am working on a project where I need to decrypt some data that has
+been encrypted with AES. Our webmaster gave me a PHP example that he 
+uses, but I'm supposed to use Python. Here's the PHP code:
+
+$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key,
+$data,MCRYPT_MODE_ECB, $iv),"\0");
+
+I've been told on c.l.py that the iv in this case should be 16 bytes.
+
+I tried following the example on this blog by modifying it as needed:
+
+http://www.codekoala.com/blog/2009/aes-encryption-python-using-pycrypto/
+
+But no matter which base64 decode method I use, I get some kind of 
+error: b32decode, b64decode and decodestring all return a padding error 
+whereas b16decode claims that I don't have only 16-bit characters in my 
+data string.
+
+I've never done this before, so I'm not sure where I'm going wrong. Any 
+advice would be appreciated. I'm on Windows XP with Python 2.5.
+
+Thanks,
+
+Mike
+
+
+From luke at cryptography.com  Wed Oct  7 11:09:12 2009
+From: luke at cryptography.com (Luke Teyssier)
+Date: Wed, 07 Oct 2009 10:09:12 -0700
+Subject: [pycrypto] AES decrypting issues
+In-Reply-To: <4ACCBC96.2000607@co.marshall.ia.us>
+References: <4ACCBC96.2000607@co.marshall.ia.us>
+Message-ID: <4ACCCB38.9040601@cryptography.com>
+
+Does it decrypt with the PHP example?
+
+You might try encrypting/decrypting an example with Python, then
+decrypting the encrypted example with PHP to make sure you have the
+right configuration settings.
+
+It's also possible that the data was corrupted. Is there any kind of
+integrity check for the file?
+
+Luke
+
+Mike Driscoll wrote:
+> Hi,
+>
+> I am working on a project where I need to decrypt some data that has
+> been encrypted with AES. Our webmaster gave me a PHP example that he 
+> uses, but I'm supposed to use Python. Here's the PHP code:
+>
+> $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+> $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+> return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key,
+> $data,MCRYPT_MODE_ECB, $iv),"\0");
+>
+> I've been told on c.l.py that the iv in this case should be 16 bytes.
+>
+> I tried following the example on this blog by modifying it as needed:
+>
+> http://www.codekoala.com/blog/2009/aes-encryption-python-using-pycrypto/
+>
+> But no matter which base64 decode method I use, I get some kind of 
+> error: b32decode, b64decode and decodestring all return a padding error 
+> whereas b16decode claims that I don't have only 16-bit characters in my 
+> data string.
+>
+> I've never done this before, so I'm not sure where I'm going wrong. Any 
+> advice would be appreciated. I'm on Windows XP with Python 2.5.
+>
+> Thanks,
+>
+> Mike
+>
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+>   
+
+-- 
+Luke Teyssier
+Senior Staff Engineer
+Cryptography Research, Inc.
+575 Market St., 11th Floor
+San Francisco, CA 94105
+(415) 397-0123 x330 Direct
+http://www.cryptography.com
+
+
+From mdriscoll at co.marshall.ia.us  Wed Oct  7 12:54:58 2009
+From: mdriscoll at co.marshall.ia.us (Mike Driscoll)
+Date: Wed, 07 Oct 2009 13:54:58 -0500
+Subject: [pycrypto] AES decrypting issues
+In-Reply-To: <4ACCCB38.9040601@cryptography.com>
+References: <4ACCBC96.2000607@co.marshall.ia.us>
+	<4ACCCB38.9040601@cryptography.com>
+Message-ID: <4ACCE402.4010805@co.marshall.ia.us>
+
+Hi Luke,
+> Does it decrypt with the PHP example?
+>   
+
+I asked my colleague and he doesn't use that decrypt method...he just 
+uses the encrypt one.
+
+> You might try encrypting/decrypting an example with Python, then
+> decrypting the encrypted example with PHP to make sure you have the
+> right configuration settings.
+>
+> It's also possible that the data was corrupted. Is there any kind of
+> integrity check for the file?
+>   
+
+I don't think so.
+
+> Luke
+>   
+
+My guess is that either I'm doing something stupid or the encryption is 
+screwed up.
+
+- Mike
+
+> Mike Driscoll wrote:
+>   
+>> Hi,
+>>
+>> I am working on a project where I need to decrypt some data that has
+>> been encrypted with AES. Our webmaster gave me a PHP example that he 
+>> uses, but I'm supposed to use Python. Here's the PHP code:
+>>
+>> $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+>> $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+>> return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key,
+>> $data,MCRYPT_MODE_ECB, $iv),"\0");
+>>
+>> I've been told on c.l.py that the iv in this case should be 16 bytes.
+>>
+>> I tried following the example on this blog by modifying it as needed:
+>>
+>> http://www.codekoala.com/blog/2009/aes-encryption-python-using-pycrypto/
+>>
+>> But no matter which base64 decode method I use, I get some kind of 
+>> error: b32decode, b64decode and decodestring all return a padding error 
+>> whereas b16decode claims that I don't have only 16-bit characters in my 
+>> data string.
+>>
+>> I've never done this before, so I'm not sure where I'm going wrong. Any 
+>> advice would be appreciated. I'm on Windows XP with Python 2.5.
+>>
+>> Thanks,
+>>
+>> Mike
+>>
+>> _______________________________________________
+>> pycrypto mailing list
+>> pycrypto at lists.dlitz.net
+>> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>>
+>>   
+>>     
+>
+>   
+
+
+From dlitz at dlitz.net  Wed Oct  7 21:52:53 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Wed, 7 Oct 2009 23:52:53 -0400
+Subject: [pycrypto] AES decrypting issues
+In-Reply-To: <4ACCBC96.2000607@co.marshall.ia.us>
+References: <4ACCBC96.2000607@co.marshall.ia.us>
+Message-ID: <20091008035253.GA8387@rivest.dlitz.net>
+
+On Wed, Oct 07, 2009 at 11:06:46AM -0500, Mike Driscoll wrote:
+>Hi,
+>
+>I am working on a project where I need to decrypt some data that has
+>been encrypted with AES. Our webmaster gave me a PHP example that he 
+>uses, but I'm supposed to use Python. Here's the PHP code:
+>
+>$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+>$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+>return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key,
+>$data,MCRYPT_MODE_ECB, $iv),"\0");
+
+ECB is insecure.  See the example at:
+http://en.wikipedia.org/w/index.php?title=Block_cipher_modes_of_operation&oldid=312409841#Electronic_codebook_.28ECB.29
+
+To decrypt using ECB mode, you define a function like this:
+
+     from Crypto.Cipher import AES
+
+     def decrypt_my_data(key, data):
+         if len(key) not in (16, 24, 32):
+             raise ValueError("Key must be 16, 24, or 32 bytes")
+         if (len(data) % 16) != 0:
+             raise ValueError("Message must be a multiple of 16 bytes")
+         cipher = AES.new(key, AES.MODE_ECB)
+         return cipher.decrypt(data)
+
+To decrypt using CBC mode (which is better than using ECB mode, but of 
+course the sender also has to use CBC mode):
+
+     from Crypto.Cipher import AES
+
+     def decrypt_my_data(key, data, iv):
+         if len(key) not in (16, 24, 32):
+             raise ValueError("Key must be 16, 24, or 32 bytes")
+         if (len(data) % 16) != 0:
+             raise ValueError("Message must be a multiple of 16 bytes")
+         if len(iv) != 16:
+             raise ValueError("IV must be 16 bytes")
+         cipher = AES.new(key, AES.MODE_ECB, iv)
+         return cipher.decrypt(data)
+
+>I've been told on c.l.py that the iv in this case should be 16 bytes.
+>
+>I tried following the example on this blog by modifying it as needed:
+>
+>http://www.codekoala.com/blog/2009/aes-encryption-python-using-pycrypto/
+
+Beware: Whoever wrote that doesn't know the difference between the cipher 
+block size and the size of the key, and he uses ECB mode.
+
+>But no matter which base64 decode method I use, I get some kind of 
+>error: b32decode, b64decode and decodestring all return a padding error 
+>whereas b16decode claims that I don't have only 16-bit characters in my 
+>data string.
+
+Base64 has nothing to do cryptography.  It just turns binary to printable 
+ASCII and back:
+
+     >>> import base64
+     >>> x = base64.encodestring("This string contains the unprintable \x00 byte")
+     >>> print x
+     VGhpcyBzdHJpbmcgY29udGFpbnMgdGhlIHVucHJpbnRhYmxlIAAgYnl0ZQ==
+
+     >>> base64.decodestring(x)
+     'This string contains the unprintable \x00 byte'
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+
+From mdriscoll at co.marshall.ia.us  Thu Oct  8 09:27:23 2009
+From: mdriscoll at co.marshall.ia.us (Mike Driscoll)
+Date: Thu, 08 Oct 2009 10:27:23 -0500
+Subject: [pycrypto] AES decrypting issues
+In-Reply-To: <20091008035253.GA8387@rivest.dlitz.net>
+References: <4ACCBC96.2000607@co.marshall.ia.us>
+	<20091008035253.GA8387@rivest.dlitz.net>
+Message-ID: <4ACE04DB.70904@co.marshall.ia.us>
+
+Dwayne C. Litzenberger wrote:
+> On Wed, Oct 07, 2009 at 11:06:46AM -0500, Mike Driscoll wrote:
+>   
+>> Hi,
+>>
+>> I am working on a project where I need to decrypt some data that has
+>> been encrypted with AES. Our webmaster gave me a PHP example that he 
+>> uses, but I'm supposed to use Python. Here's the PHP code:
+>>
+>> $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+>> $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+>> return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key,
+>> $data,MCRYPT_MODE_ECB, $iv),"\0");
+>>     
+>
+> ECB is insecure.  See the example at:
+> http://en.wikipedia.org/w/index.php?title=Block_cipher_modes_of_operation&oldid=312409841#Electronic_codebook_.28ECB.29
+>   
+
+I actually found that article soon after sending my email. I'll 
+recommend using CBC or something else.
+
+> To decrypt using ECB mode, you define a function like this:
+>
+>      from Crypto.Cipher import AES
+>
+>      def decrypt_my_data(key, data):
+>          if len(key) not in (16, 24, 32):
+>              raise ValueError("Key must be 16, 24, or 32 bytes")
+>          if (len(data) % 16) != 0:
+>              raise ValueError("Message must be a multiple of 16 bytes")
+>          cipher = AES.new(key, AES.MODE_ECB)
+>          return cipher.decrypt(data)
+>   
+
+
+I ran my data through this script and got zero errors, but the output 
+was still junk. I'm beginning to think that  I've been given bad 
+information.
+
+> To decrypt using CBC mode (which is better than using ECB mode, but of 
+> course the sender also has to use CBC mode):
+>
+>      from Crypto.Cipher import AES
+>
+>      def decrypt_my_data(key, data, iv):
+>          if len(key) not in (16, 24, 32):
+>              raise ValueError("Key must be 16, 24, or 32 bytes")
+>          if (len(data) % 16) != 0:
+>              raise ValueError("Message must be a multiple of 16 bytes")
+>          if len(iv) != 16:
+>              raise ValueError("IV must be 16 bytes")
+>          cipher = AES.new(key, AES.MODE_ECB, iv)
+>          return cipher.decrypt(data)
+>
+>   
+>> I've been told on c.l.py that the iv in this case should be 16 bytes.
+>>
+>> I tried following the example on this blog by modifying it as needed:
+>>
+>> http://www.codekoala.com/blog/2009/aes-encryption-python-using-pycrypto/
+>>     
+>
+> Beware: Whoever wrote that doesn't know the difference between the cipher 
+> block size and the size of the key, and he uses ECB mode.
+>
+>   
+
+Thanks for the warning!
+
+>> But no matter which base64 decode method I use, I get some kind of 
+>> error: b32decode, b64decode and decodestring all return a padding error 
+>> whereas b16decode claims that I don't have only 16-bit characters in my 
+>> data string.
+>>     
+>
+> Base64 has nothing to do cryptography.  It just turns binary to printable 
+> ASCII and back:
+>
+>      >>> import base64
+>      >>> x = base64.encodestring("This string contains the unprintable \x00 byte")
+>      >>> print x
+>      VGhpcyBzdHJpbmcgY29udGFpbnMgdGhlIHVucHJpbnRhYmxlIAAgYnl0ZQ==
+>
+>      >>> base64.decodestring(x)
+>      'This string contains the unprintable \x00 byte'
+>
+> Cheers,
+> - Dwayne
+>
+>   
+
+This made me think that maybe the junk I was getting when I decrypted it 
+might have just been the binary representation, so I tried using the 
+decodestring method as above. That shortened the printed string up a 
+lot, but it was still unreadable.
+
+I'll ask my colleague what the deal is and maybe just see if I can use 
+https or something.
+
+Thank you for taking the time to explain all this to me.
+
+- Mike Driscoll
+
+
+From dlitz at dlitz.net  Sun Oct 18 23:32:22 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 19 Oct 2009 01:32:22 -0400
+Subject: [pycrypto] ANN: PyCrypto 2.1.0 alpha 2 released
+Message-ID: <20091019053222.GA4083@rivest.dlitz.net>
+
+PyCrypto 2.1.0alpha2 has been released.  I'm going to push through a stable 
+release as soon as I can, since at this point I think all the major issues 
+have been resolved[*], and it's getting a bit ridiculous that it's taking 
+me longer to release a stable PyCrypto than it takes to release a stable 
+Debian.
+
+You can get this alpha release via HTTP at:
+
+   http://ftp.dlitz.net/pub/dlitz/crypto/pycrypto/pycrypto-2.1.0a2.tar.gz
+   http://ftp.dlitz.net/pub/dlitz/crypto/pycrypto/pycrypto-2.1.0a2.tar.gz.asc
+
+You can also get it from the git repository:
+
+   $ git clone git://git.pycrypto.org:9419/crypto/pycrypto-2.x.git
+   $ cd pycrypto-2.x
+   $ git checkout v2.1.0alpha2
+
+The ChangeLog is available online at:
+
+   http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git;a=blob;f=ChangeLog;h=94731b70962732ea718e63bfdf21c3722ee94af4;hb=a7748d0e65fe17fbcb20f7b086536c3ccf68de43
+
+Please test it and post your experiences to the PyCrypto mailing list:
+
+   pycrypto at lists.dlitz.net
+
+and/or file bug reports on Launchpad:
+
+   https://bugs.launchpad.net/pycrypto
+
+There has been a huge number of changes since the last stable release[**], 
+and not a lot of feedback so far, so I would really appreciate any feedback 
+even if it's just a simple oneliner like, "built on <OS> <ARCHITECTURE>; 
+used with <PROGRAM>; works fine."
+
+The files for this release have the following SHA256 sums:
+
+bc42f57eae5bf1ef4319e6e99cd45281b096d0de9ae4f00a0b6fa7ffa359b349 *pycrypto-2.1.0a2.tar.gz
+f2c821e10d5d473af153fb82fd87101772aaf5583aea40e0bac0cb6b586d2c7c *pycrypto-2.1.0a2.tar.gz.asc
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+[*] ... with the possible exception of RSA key generation, which some 
+people have suggested might be inadequate.  I could use some help with 
+this.  See https://bugs.launchpad.net/pycrypto/+bug/408660
+
+[**] "git diff -C --shortstat v2.0.1 v2.1.0alpha2" shows:
+ 178 files changed, 20306 insertions(+), 7336 deletions(-)
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 221 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20091019/6cc3e327/attachment.pgp 
+
+From don at amberfisharts.com  Tue Oct 20 05:03:23 2009
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Tue, 20 Oct 2009 13:03:23 +0200
+Subject: [pycrypto] ANN: PyCrypto 2.1.0 alpha 2 released and Bug #408660
+Message-ID: <1f6f6d5af4d2a851559064187efe6632@localhost>
+
+
+Hi Dwayne,
+
+thanks for the work you put into pycrypto. I appreciate it.
+You asked for some feedback. So here it goes:
+ * I don't use to many features. Just RSA (sign, verify, en-/decrypt) 
+   and AES (en-/decrypt in CBC mode)
+ * Those features seem to work.
+ * No build problems
+ * My system is a Intel Core2 Duo with Gentoo (~amd64) installed
+ * If anything I would ask for better documentation.
+Not much else I can say right now.
+
+You also asked for help with bug #408660 [1]. Well, I read through the paper 
+you recommended there [2] but I don't get a crucial point.
+I have to admit that I am no cryptographer by any meens. But still here goes 
+my question.
+The criterion that the bug says is missing from the current implementation 
+is ?1 (1): 
+"If e, the public exponent is odd, then e shall be relatively prime 
+to p-1 and q-1."
+Then the critical part in the paper is in ?2.3 the last sentence.
+"One also sieves the public exponent e at this time, so that candidates p 
+with e|p-1 are also removed."
+Does this mean that by sieving out multiples of e one eliminates candidates p 
+with e|p-1? I don't see how this is possible so either
+   a) that's not what the auther is saying,
+   b) the auther is mistaken
+or c) I don't get it.
+I would think that one would have to remove all candidates p with p mod e = 1
+Because p mod e = 1 means p = x*e + 1 and then p-1 = x*e so e|p-1, right?
+What do you (or anybody else) think?
+
+Beside this crucial question (which after all was all the initial bug report 
+was about) I have gone ahead and implemented a C-function getStrongPrime() 
+which implements the method described in that paper [2].
+I will clean up the code later today and send it in for review.
+
+
+sincerely yours,
+Lorenz
+
+
+[1] https://bugs.launchpad.net/pycrypto/+bug/408660
+[2] http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.17.2713&rep=rep1&type=pdf
+
+
+
+From don at amberfisharts.com  Tue Oct 20 16:48:01 2009
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Wed, 21 Oct 2009 00:48:01 +0200
+Subject: [pycrypto] getStrongPrime() implementation
+Message-ID: <4ADE3E21.6020601@amberfisharts.com>
+
+Hi,
+
+as promised here is the implementation of a getStrongPrime() function which generates strong primes as described in
+the paper [1].
+Let me know if such a thing is of interest and if so what could be improved.
+Really any comments are welcome.
+I didn't benchmark or use this in any meaningful way, yet.
+But it is expected to be quite a bit slower than the implementation used so far for at least two reasons:
+  1) the base for the sieve is much larger (here 10000 in contrast to 54)
+  2) a lot more calls to mpz_probab_prime_p (Rabin-Miller-Tests) are used (75 per strong prime vs 5)
+I chose those numbers in accordance with the paper [1] but there is probably room for a security/performance trade-off.
+
+
+yours,
+
+Lorenz
+
+________________________________________________________________________________________________
+
+[1] http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.17.2713&rep=rep1&type=pdf
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: getStrongPrime.patch
+Url: http://lists.dlitz.net/pipermail/pycrypto/attachments/20091021/5de74650/attachment-0001.txt 
+
+From dlitz at dlitz.net  Sun Oct 25 21:00:54 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 25 Oct 2009 23:00:54 -0400
+Subject: [pycrypto] Distribution of prime numbers?
+Message-ID: <20091026030054.GA29493@rivest.dlitz.net>
+
+Can anyone point me to a resource that would help me answer the following 
+question?
+
+     Given a b-bit positive integer N, what is the probability that N is 
+     prime?
+
+     In other words: What is the a-priori probability of a number being 
+     prime *before* we conduct any primality test?
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+From dlitz at dlitz.net  Sun Oct 25 20:52:52 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 25 Oct 2009 22:52:52 -0400
+Subject: [pycrypto] getStrongPrime() implementation
+In-Reply-To: <4ADE3E21.6020601@amberfisharts.com>
+References: <4ADE3E21.6020601@amberfisharts.com>
+Message-ID: <20091026025252.GA28890@rivest.dlitz.net>
+
+On Wed, Oct 21, 2009 at 12:48:01AM +0200, Lorenz Quack wrote:
+> Hi,
+>
+> as promised here is the implementation of a getStrongPrime() function which 
+> generates strong primes as described in
+> the paper [1].
+> Let me know if such a thing is of interest and if so what could be 
+> improved.
+> Really any comments are welcome.
+
+Hi Lorenz,
+
+This looks like a great start.  Basing the implementation on the published 
+work of academic cryptologists is exactly the right approach.
+
+I do have some comments:
+
+- PyCrypto needs to work with *and* without _fastmath, since the GNU MP 
+   library is an *optional* dependency.  We'll need a Python implementation 
+   for _slowmath.py before I can apply this patch.
+
+- It looks like you're generating your random numbers using GMP's 
+   implementation of the Mersenne Twister algorithm, seeded by rand().  If I 
+   applied the patch as it stands, it would introduce a security hole 
+   similar to CVE-2008-0166 (the Debian-specific openssl PRNG bug).
+
+   To fix this, we're going to need Python and C implementations  of the 
+   Miller-Rabin probabilistic primality test.  These implementations will 
+   need to accept a callable Python "randfunc" parameter (like 
+   Crypto.Util.number.getRandomNumber does) so they can get random numbers 
+   from a cryptographically strong PRNG (i.e. Crypto.Random).
+
+- PyCrypto's *current* isPrime() function needs improvement.  It uses 
+   mpz_probab_prime_p, which is a *deterministic* variant of Miller-Rabin 
+   (see http://www.trnicely.net/misc/mpzspsp.html).  That's fine for RSA key 
+   generation, but totally insecure if you want to validate negotiated 
+   Diffie-Hellman parameters, for example.  Do you think you could make 
+   isPrime() take advantage of getStrongPrime()'s primality testing code?
+
+- We'll need some unit tests to do some basic sanity checks on the output 
+   of this new function?
+
+How much of the above are you comfortable with?  I can probably pick up a 
+lot of it if necessary, though in that case it's going to have to wait 
+until after PyCrypto 2.1.0 is released.
+
+Cheers,
+- Dwayne
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+From dlitz at dlitz.net  Sun Oct 25 21:40:11 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 25 Oct 2009 23:40:11 -0400
+Subject: [pycrypto] Distribution of prime numbers?
+In-Reply-To: <20091026030054.GA29493@rivest.dlitz.net>
+References: <20091026030054.GA29493@rivest.dlitz.net>
+Message-ID: <20091026034011.GA29917@rivest.dlitz.net>
+
+On Sun, Oct 25, 2009 at 11:00:54PM -0400, Dwayne C. Litzenberger wrote:
+>     In other words: What is the a-priori probability of a number being 
+>     prime *before* we conduct any primality test?
+
+Approximations, lower, or upper bounds are all useful.
+
+I'm under the impression that the number of Rabin-Miller iterations needed  
+to establish that a certain number is probably prime depends on the answer 
+to this question.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+From xl269 at cam.ac.uk  Mon Oct 26 02:17:33 2009
+From: xl269 at cam.ac.uk (Ximin Luo)
+Date: Mon, 26 Oct 2009 08:17:33 +0000
+Subject: [pycrypto] Distribution of prime numbers?
+In-Reply-To: <20091026034011.GA29917@rivest.dlitz.net>
+References: <20091026030054.GA29493@rivest.dlitz.net>
+	<20091026034011.GA29917@rivest.dlitz.net>
+Message-ID: <4AE55B1D.5000007@cam.ac.uk>
+
+Dwayne C. Litzenberger wrote:
+> On Sun, Oct 25, 2009 at 11:00:54PM -0400, Dwayne C. Litzenberger wrote:
+>>     In other words: What is the a-priori probability of a number being 
+>>     prime *before* we conduct any primality test?
+> 
+> Approximations, lower, or upper bounds are all useful.
+> 
+> I'm under the impression that the number of Rabin-Miller iterations needed  
+> to establish that a certain number is probably prime depends on the answer 
+> to this question.
+> 
+
+The precise formula is a millenium prize problem; see
+
+http://en.wikipedia.org/wiki/Riemann_Hypothesis#Distribution_of_prime_numbers
+
+You could probably get away with using some variant of
+
+http://en.wikipedia.org/wiki/Prime_number_theorem#Statement_of_the_theorem
+
+or
+
+http://en.wikipedia.org/wiki/Prime_number_theorem#The_prime-counting_function_in_terms_of_the_logarithmic_integral
+
+which is more accurate but more expensive to calculate (or so I'd imagine).
+
+Both formulas gives the total number of primes smaller than a given number, so
+you'd have to do some further tweaks to get the "a-priori probability of a
+number being prime *before* we conduct any primality test?", such as dividing
+by x or something.
+
+X
+
+From xl269 at cam.ac.uk  Mon Oct 26 02:21:03 2009
+From: xl269 at cam.ac.uk (Ximin Luo)
+Date: Mon, 26 Oct 2009 08:21:03 +0000
+Subject: [pycrypto] Distribution of prime numbers?
+In-Reply-To: <4AE55B1D.5000007@cam.ac.uk>
+References: <20091026030054.GA29493@rivest.dlitz.net>	<20091026034011.GA29917@rivest.dlitz.net>
+	<4AE55B1D.5000007@cam.ac.uk>
+Message-ID: <4AE55BEF.5040603@cam.ac.uk>
+
+Ximin Luo wrote:
+> You could probably get away with using some variant of
+> 
+> http://en.wikipedia.org/wiki/Prime_number_theorem#Statement_of_the_theorem
+
+> you'd have to do some further tweaks to get the "a-priori probability of a
+> number being prime *before* we conduct any primality test?", such as dividing
+> by x or something.
+
+In other words, using the first estimate, a quick-and-dirty formula for the
+probablity of x being prime is just 1/ln(x)
+
+X
+
+
+From don at amberfisharts.com  Mon Oct 26 03:21:36 2009
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Mon, 26 Oct 2009 10:21:36 +0100
+Subject: [pycrypto] getStrongPrime() implementation
+In-Reply-To: <20091026025252.GA28890@rivest.dlitz.net>
+References: <20091026025252.GA28890@rivest.dlitz.net>
+Message-ID: <52220e37ce0ac221cc93ca0579a55502@localhost>
+
+
+
+Hi Dwayne,
+
+On Sun, 25 Oct 2009 22:52:52 -0400, "Dwayne C. Litzenberger" <dlitz at dlitz.net> wrote:
+> - PyCrypto needs to work with *and* without _fastmath, since the GNU MP
+>    library is an *optional* dependency.  We'll need a Python
+> implementation
+>    for _slowmath.py before I can apply this patch.
+
+Yes, I understand and agree. I think I could do this. I just wanted to wait for some feedback to see if I'm going in the right direction before I invest more time. 
+
+> - It looks like you're generating your random numbers using GMP's
+>    implementation of the Mersenne Twister algorithm, seeded by rand().
+Yes that is true
+
+>    If I applied the patch as it stands, it would introduce a security hole
+>    similar to CVE-2008-0166 (the Debian-specific openssl PRNG bug).
+OK, I'm not sure I see the problem. Is it that one can guess a timerange in which the program has been started and thus determine a small set of possible seeds which then can be brute-forced? Or is it something else?
+
+>    To fix this, we're going to need Python and C implementations  of the
+>    Miller-Rabin probabilistic primality test.  These implementations will
+>    need to accept a callable Python "randfunc" parameter (like
+>    Crypto.Util.number.getRandomNumber does) so they can get random numbers
+>    from a cryptographically strong PRNG (i.e. Crypto.Random).
+I'm confused. It sounds like this paragraph is in part referring to the next point.
+I don't see what the primality testing has to do with the PRNG problem.
+The second point (supporting a "randfunc" parameter) however I could implement. 
+
+> - PyCrypto's *current* isPrime() function needs improvement.  It uses
+>    mpz_probab_prime_p, which is a *deterministic* variant of Miller-Rabin
+>    (see http://www.trnicely.net/misc/mpzspsp.html).  That's fine for RSA
+> key
+>    generation, but totally insecure if you want to validate negotiated
+>    Diffie-Hellman parameters, for example.  Do you think you could make
+>    isPrime() take advantage of getStrongPrime()'s primality testing code?
+That won't do any good. The primality testing in getStrongPrime is also deterministic. It uses a sieve (the base is the first 10000 primes) and then some rounds (currently 25 as suggested in the paper) of mpz_probab_prime_p(). 
+So I guess what you are suggesting is that we implement our own non-deterministic Rabin-Miller test (again we would need a C and python version). That might not be a bad idea because right now we have some redundancy in that mpz_probab_prime_p also uses a sieve (with a smaller base) before doing the Rabin-Miller tests. We could then avoid that overhead. 
+Maybe one could then later replace/extend it to a Baillie?PSW primality test which has no pseudo-prime numbers up to at least 10^15.
+
+> - We'll need some unit tests to do some basic sanity checks on the output
+>    of this new function?
+I agree. but what do you have in mind exactly? do you want to do an *exact* primality test? 
+
+> How much of the above are you comfortable with?  I can probably pick up a
+> lot of it if necessary, though in that case it's going to have to wait
+> until after PyCrypto 2.1.0 is released.
+
+The python implementation of getStrongPrime() should be straight forward so I can do that. 
+Also taking the additional randfunc parameter shouldn't be to hard.
+I'm not so sure about implementing a Rabin-Miller test. I don't know exactly how it works and would need to make some research first. but from what I read so far it shouldn't be to hard to implement. But you said that for RSA the current deterministic approach is fine so this is for a future version which includes a Diffie-Hellman keyexchange.
+Concerning the Unittests. I guess I could moc up some initial tests but I don't know what exactly you have in mind. 
+
+further more I would like a comment on whether I got the thing with the public exponent e right.
+
+sincerely yours
+//Lorenz
+
+
+P.S.: I'm not a national, citizen nor a resident of the USA. I gladly put my current, past and future contributions to PyCrypto into the public domain and I agree to the terms listed under the "PyCrypto Code Submission Requirements - Rev. C".  The code I write is not of USA origin.
+I think the paper the code was based on might be of USA origin but I don't think that is a legal problem.
+I hope that takes care of the legal stuff.
+
+
+
+From don at amberfisharts.com  Mon Oct 26 03:37:32 2009
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Mon, 26 Oct 2009 10:37:32 +0100
+Subject: [pycrypto] =?utf-8?q?Distribution_of_prime_numbers=3F?=
+In-Reply-To: <20091026034011.GA29917@rivest.dlitz.net>
+References: <20091026034011.GA29917@rivest.dlitz.net>
+Message-ID: <69e54b741b4f307499790502f202bb57@localhost>
+
+
+Hi,
+
+On Sun, 25 Oct 2009 23:40:11 -0400, "Dwayne C. Litzenberger" <dlitz at dlitz.net> wrote:
+> On Sun, Oct 25, 2009 at 11:00:54PM -0400, Dwayne C. Litzenberger wrote:
+>>     In other words: What is the a-priori probability of a number being
+>>     prime *before* we conduct any primality test?
+> 
+> Approximations, lower, or upper bounds are all useful.
+> 
+> I'm under the impression that the number of Rabin-Miller iterations needed
+> to establish that a certain number is probably prime depends on the answer
+> to this question.
+
+I don't think so. IIRC the probability of a number n being prime after k Rabin-Miller tests is 4^-k (or 2^{-2*k} for our base2 friends) independent of the size of n. And if you trust wikipedia that is an upper bound:
+http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test#Accuracy_of_the_test
+
+yours
+//Lorenz
+
+
+
+
+From dlitz at dlitz.net  Mon Oct 26 20:56:21 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 26 Oct 2009 22:56:21 -0400
+Subject: [pycrypto] getStrongPrime() implementation
+In-Reply-To: <52220e37ce0ac221cc93ca0579a55502@localhost>
+References: <20091026025252.GA28890@rivest.dlitz.net>
+	<52220e37ce0ac221cc93ca0579a55502@localhost>
+Message-ID: <20091027025621.GA10725@rivest.dlitz.net>
+
+On Mon, Oct 26, 2009 at 10:21:36AM +0100, don at amberfisharts.com wrote:
+>On Sun, 25 Oct 2009 22:52:52 -0400, "Dwayne C. Litzenberger" <dlitz at dlitz.net> wrote:
+>> - PyCrypto needs to work with *and* without _fastmath, since the GNU MP
+>>    library is an *optional* dependency.  We'll need a Python
+>> implementation
+>>    for _slowmath.py before I can apply this patch.
+>
+>Yes, I understand and agree. I think I could do this. I just wanted to 
+>wait for some feedback to see if I'm going in the right direction before I 
+>invest more time. 
+
+Yes, that makes sense.
+
+>>    If I applied the patch as it stands, it would introduce a security 
+>>    hole
+>>    similar to CVE-2008-0166 (the Debian-specific openssl PRNG bug).
+>OK, I'm not sure I see the problem. Is it that one can guess a timerange 
+>in which the program has been started and thus determine a small set of 
+>possible seeds which then can be brute-forced?
+
+Yes, exactly.
+
+>>    To fix this, we're going to need Python and C implementations  of the
+>>    Miller-Rabin probabilistic primality test.  These implementations will
+>>    need to accept a callable Python "randfunc" parameter (like
+>>    Crypto.Util.number.getRandomNumber does) so they can get random numbers
+>>    from a cryptographically strong PRNG (i.e. Crypto.Random).
+>I'm confused. It sounds like this paragraph is in part referring to the next point.
+>I don't see what the primality testing has to do with the PRNG problem.
+>The second point (supporting a "randfunc" parameter) however I could 
+>implement.
+
+Ok, ignore what I wrote there.  I can't think of a good way of explaining 
+what I mean right now.  There are a few concepts that are intertwined.
+
+>> - PyCrypto's *current* isPrime() function needs improvement.  It uses
+>>    mpz_probab_prime_p, which is a *deterministic* variant of Miller-Rabin
+>>    (see http://www.trnicely.net/misc/mpzspsp.html).  That's fine for RSA
+>> key
+>>    generation, but totally insecure if you want to validate negotiated
+>>    Diffie-Hellman parameters, for example.  Do you think you could make
+>>    isPrime() take advantage of getStrongPrime()'s primality testing code?
+>
+>That won't do any good. The primality testing in getStrongPrime is also 
+>deterministic. It uses a sieve (the base is the first 10000 primes) and 
+>then some rounds (currently 25 as suggested in the paper) of 
+>mpz_probab_prime_p(). 
+
+Yes, I agree.  This would only be useful once getStrongPrime() is modified 
+to use a proper random number source.
+
+[I should correct the terminology I used in my previous email: 
+mpz_probab_prime_p doesn't implement a deterministic test (as I suggested); 
+it implements the probabilistic Rabin-Miller test deterministically.  As a 
+result, the theoretical guarantee normally provided by the Rabin-Miller 
+probabilistic test (at most a 25% false positive probability per iteration) 
+is void.]
+
+>So I guess what you are suggesting is that we implement our own 
+>non-deterministic Rabin-Miller test (again we would need a C and python 
+>version). That might not be a bad idea because right now we have some 
+>redundancy in that mpz_probab_prime_p also uses a sieve (with a smaller 
+>base) before doing the Rabin-Miller tests. We could then avoid that 
+>overhead.
+
+Yes, exactly.
+
+>Maybe one could then later replace/extend it to a Baillie?PSW primality 
+>test which has no pseudo-prime numbers up to at least 10^15.
+
+Yes.  Of course, for crypto, we really only need to worry about primes 
+larger than 2^2047 (10^616).   Does Baillie-PSW offer a theoretical maximum 
+probability of error like Rabin-Miller does?
+
+>> - We'll need some unit tests to do some basic sanity checks on the output
+>>    of this new function?
+>I agree. but what do you have in mind exactly? do you want to do an 
+>*exact* primality test? 
+
+No. :)
+
+Basically, I just want to test for obvious coding errors.  For example, we 
+could check for "primes" that are even, or wrong sized primes (e.g if you 
+ask for a 2048-bit prime and get a 2047-bit number instead).  We could also 
+test a new isPrime() by including some pseudoprimes that currently fool 
+isPrime (Thomas R. Nicely has generated some).
+
+>> How much of the above are you comfortable with?  I can probably pick up a
+>> lot of it if necessary, though in that case it's going to have to wait
+>> until after PyCrypto 2.1.0 is released.
+>
+>The python implementation of getStrongPrime() should be straight forward 
+>so I can do that.
+>
+>Also taking the additional randfunc parameter shouldn't be to hard.
+>I'm not so sure about implementing a Rabin-Miller test. I don't know 
+>exactly how it works and would need to make some research first. but from 
+>what I read so far it shouldn't be to hard to implement. But you said that 
+>for RSA the current deterministic approach is fine so this is for a future 
+>version which includes a Diffie-Hellman keyexchange.
+
+Yes, that sounds good.
+
+>Concerning the Unittests. I guess I could moc up some initial tests but I 
+>don't know what exactly you have in mind.
+
+Again, I'm not looking for a lot here.  Just something that exercises all 
+of the code and does some basic checks.
+
+>further more I would like a comment on whether I got the thing with the 
+>public exponent e right.
+
+That's the part I don't understand, and why I asked for help with this in 
+the first place.  I unfortunately don't know very much about the math 
+behind RSA. :-/
+
+I'll look at it again this weekend if I have time and I remember.
+
+Also, thanks for posting your earlier test results.
+
+>P.S.: I'm not a national, citizen nor a resident of the USA. I gladly put 
+>my current, past and future contributions to PyCrypto into the public 
+>domain and I agree to the terms listed under the "PyCrypto Code Submission 
+>Requirements - Rev. C".  The code I write is not of USA origin.
+>
+>I think the paper the code was based on might be of USA origin but I don't 
+>think that is a legal problem.
+>
+>I hope that takes care of the legal stuff.
+
+Thanks for mentioning that.  It helps me keep things straight.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+From dlitz at dlitz.net  Mon Oct 26 21:05:20 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 26 Oct 2009 23:05:20 -0400
+Subject: [pycrypto] Elliptic curve cryptography and group signature
+In-Reply-To: <eddb24f00909071101m20eb044aw9df6e5e895fe35cf@mail.gmail.com>
+References: <eddb24f00909071101m20eb044aw9df6e5e895fe35cf@mail.gmail.com>
+Message-ID: <20091027030520.GB10725@rivest.dlitz.net>
+
+On Mon, Sep 07, 2009 at 08:01:01PM +0200, Peter Zavadsky wrote:
+>Hi everyone!
+>
+>I'm new here and this is my first post...
+>
+>I'd like to ask:
+>
+>Is there any implementation of elliptic curve cryptography in
+>development or planned? I'm interested in (implementation of) group
+>signature by means of bilinear maps(such as Weil or Tate pairing).
+>
+>There is also PyECC module, but I thought about to include some ecc
+>stuff to PyCrypto, what do you think? Is someone also interested in
+>this area and can help with this?
+
+I haven't thought much about elliptic curve crypto, partly because I don't 
+know very much about it, except that it's faster than RSA and that it's a 
+bit of a patent minefield (though apparently the people responsible for 
+seccure are taking care to avoid the patented stuff).
+
+Since seccure is licensed under the (L?)GPL (and most of PyCrypto is either 
+public domain or permissively licensed), I would probably not include it 
+directly in PyCrypto, but make it a separate plug-in extension library.
+
+I'm mostly focusing on strengthening the stuff that PyCrypto already has 
+right now.
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+From don at amberfisharts.com  Tue Oct 27 05:28:11 2009
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Tue, 27 Oct 2009 12:28:11 +0100
+Subject: [pycrypto] getStrongPrime() implementation
+In-Reply-To: <20091027025621.GA10725@rivest.dlitz.net>
+References: <20091027025621.GA10725@rivest.dlitz.net>
+Message-ID: <8b611e60124ed95e60671ec30e04028c@localhost>
+
+
+Hi,
+
+> [I should correct the terminology I used in my previous email: 
+> mpz_probab_prime_p doesn't implement a deterministic test (as I suggested); 
+> it implements the probabilistic Rabin-Miller test deterministically.  As a
+> result, the theoretical guarantee normally provided by the Rabin-Miller 
+> probabilistic test (at most a 25% false positive probability per
+> iteration) is void.]
+
+Yes. I realized this yesturday when I looked at the gmp code. Do you have any idea why they did go for the non-deterministic version (and not seed the PRNG)? 
+I think the PRNG bug you mentioned earlier can't have anything to do with it because a potential attacker would have no influence on when the test is performed and thus when (and with what seed) the PRNG is seeded.
+
+>>Maybe one could then later replace/extend it to a Baillie?PSW primality
+>>test which has no pseudo-prime numbers up to at least 10^15.
+> 
+> Yes.  Of course, for crypto, we really only need to worry about primes 
+> larger than 2^2047 (10^616).   Does Baillie-PSW offer a theoretical
+> maximum probability of error like Rabin-Miller does?
+
+Baillie-PSW is just a combination of (as I understand it) a single Rabin-Miller-Tests followed by a strong Lucas-Selfridge test.
+There seems to be no pseudoprimes below 2^64 (not yet confirmed) [1] and others seem to estimate that there are non below 10000 [2].
+As that may be I couldn't find a mathamatical proof of any boundary so if we are worried about that we could still do n Rabin-Miller test to get the mathamaticly proven probability of 4^{-n} and then do a Lucas test for better *assumed* probability.
+There are some concerns that the Lucas test might not be computationally feasable for large numbers [1]. 
+So for now this is just an option one can take a look at once the other parts are in place because it wouldn't replace anything but rather extend it.
+
+>>> - We'll need some unit tests to do some basic sanity checks on the output
+>>>    of this new function?
+>>I agree. but what do you have in mind exactly? do you want to do an 
+>>*exact* primality test? 
+> 
+> No. :)
+> 
+> Basically, I just want to test for obvious coding errors.  For example, we
+> could check for "primes" that are even, or wrong sized primes (e.g if you 
+> ask for a 2048-bit prime and get a 2047-bit number instead).  We could also 
+> test a new isPrime() by including some pseudoprimes that currently fool 
+> isPrime (Thomas R. Nicely has generated some).
+
+I see. This sounds reasonable.
+
+
+BTW, is there a certain Python version you want to support?
+I ask because yesturday I caught myself writing "x = x if y else z". I'll replace that particular line with the equivalent "if ... else ..." construct, but it made me wonder if there are any further constraints.
+
+
+OK, so I'll work on these (supporting randfunc, probabilistic Rabin-Miller-Test, python versions and unit tests) and send in a patch when I think it's review worthy.
+I might even get it done until the weekend. let's see about that.
+
+
+sincerely yours
+//Lorenz
+
+
+[1] http://www.trnicely.net/misc/bpsw.html
+[2] http://en.wikipedia.org/wiki/Baillie%E2%80%93PSW_primality_test
+
+
+
+
+From dlitz at dlitz.net  Tue Oct 27 20:34:42 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Tue, 27 Oct 2009 22:34:42 -0400
+Subject: [pycrypto] getStrongPrime() implementation
+In-Reply-To: <8b611e60124ed95e60671ec30e04028c@localhost>
+References: <20091027025621.GA10725@rivest.dlitz.net>
+	<8b611e60124ed95e60671ec30e04028c@localhost>
+Message-ID: <20091028023442.GA24039@rivest.dlitz.net>
+
+On Tue, Oct 27, 2009 at 12:28:11PM +0100, don at amberfisharts.com wrote:
+>Yes. I realized this yesturday when I looked at the gmp code. Do you have 
+>any idea why they did go for the non-deterministic version (and not seed 
+>the PRNG)?  I think the PRNG bug you mentioned earlier can't have anything 
+>to do with it because a potential attacker would have no influence on when 
+>the test is performed and thus when (and with what seed) the PRNG is 
+>seeded.
+
+In the getStrongPrime() case, there are two steps that cound use a CSPRNG:
+
+     1. Generate a candidate number
+
+     2. Test if the number is composite using Rabin-Miller.  If so, go to 
+        step 1.
+
+In the Diffie-Hellman parameter negotiation case, there are similar steps:
+
+     1. Alice: Generate a candidate number
+
+     2a. Alice: Test if the number is composite using Rabin-Miller. If so, 
+     go to step 1.
+
+     2b. Bob: Test if the numeber is composite using Rabin-Miller.  If so, 
+     abort the protocol.
+
+You lose security if an attacker can guess the random numbers used in steps 
+1 or 2b.  As you pointed out, guessing does not help the attacker in steps 
+2 or 2a.
+
+Given the difficulty we're having in communicating exactly what we're 
+talking about, we can't expect *users* of PyCrypto to get this right.  
+Thus, we will simplify things immensely if all steps use an unpredictable 
+random source, i.e. Crypto.Random.
+
+>Baillie-PSW is just a combination of (as I understand it) a single 
+>Rabin-Miller-Tests followed by a strong Lucas-Selfridge test.
+>
+>There seems to be no pseudoprimes below 2^64 (not yet confirmed) [1] and 
+>others seem to estimate that there are non below 10000 [2].
+>
+>As that may be I couldn't find a mathamatical proof of any boundary so if 
+>we are worried about that we could still do n Rabin-Miller test to get the 
+>mathamaticly proven probability of 4^{-n} and then do a Lucas test for 
+>better *assumed* probability.
+>
+>There are some concerns that the Lucas test might not be computationally 
+>feasable for large numbers [1].
+>
+>So for now this is just an option one can take a look at once the other 
+>parts are in place because it wouldn't replace anything but rather extend 
+>it.
+
+Ok, sounds good.
+
+>BTW, is there a certain Python version you want to support?
+>I ask because yesturday I caught myself writing "x = x if y else z". I'll 
+>replace that particular line with the equivalent "if ... else ..." 
+>construct, but it made me wonder if there are any further constraints.
+
+Yes.  Right now, PyCrypto supports Python 2.1 through 2.6.
+
+>OK, so I'll work on these (supporting randfunc, probabilistic 
+>Rabin-Miller-Test, python versions and unit tests) and send in a patch 
+>when I think it's review worthy.
+>I might even get it done until the weekend. let's see about that.
+
+Awesome.  Thank you very much for this.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+From mrkafk at gmail.com  Wed Oct 28 06:02:40 2009
+From: mrkafk at gmail.com (Marcin Krol)
+Date: Wed, 28 Oct 2009 13:02:40 +0100
+Subject: [pycrypto] Freezing pycrypto
+Message-ID: <4AE832E0.904@gmail.com>
+
+Hello everyone,
+
+I'm trying to freeze PyCrypto on Linux (using freeze.py) and having 
+trouble with it, can you help me? PyCrypto is used by paramiko (ssh 
+client module).
+
+I have added following in the Modules/Setup while building Python (This 
+has to be done because freeze.py requires that all compiled extension 
+modules are compiled statically into Python, otherwise it can't import 
+them into frozen binary):
+
+*static*
+# ... lots of other modules
+Crypto.Cipher.DES3 DES3.c
+
+But this produces:
+
+[root at localhost Python-2.6.2]# make
+/bin/sh ./Modules/makesetup -c ./Modules/config.c.in \
+                                 -s Modules \
+                                 Modules/Setup.config \
+                                 Modules/Setup.local \
+                                 Modules/Setup
+bad word Crypto.Cipher.DES3 in Crypto.Cipher.DES3 DES3.c
+make: *** [Makefile] Error 1
+
+If I change that to:
+
+DES3 DES3.c
+
+Python compiles, but then I can't import this module and neither can 
+PyCrypto in a frozen binary:
+
+[root at localhost tmp2]# ./cssh
+<frozen>:6: DeprecationWarning: the sha module is deprecated; use the 
+hashlib module instead
+<frozen>:6: DeprecationWarning: the md5 module is deprecated; use 
+hashlib instead
+Traceback (most recent call last):
+   File "cssh.py", line 7, in <module>
+     import paramiko
+   File "/usr/local/lib/python2.6/site-packages/paramiko/__init__.py", 
+line 69, in <module>
+     from transport import randpool, SecurityOptions, Transport
+   File "/usr/local/lib/python2.6/site-packages/paramiko/transport.py", 
+line 37, in <module>
+     from paramiko.dsskey import DSSKey
+   File "/usr/local/lib/python2.6/site-packages/paramiko/dsskey.py", 
+line 31, in <module>
+     from paramiko.pkey import PKey
+   File "/usr/local/lib/python2.6/site-packages/paramiko/pkey.py", line 
+28, in <module>
+     from Crypto.Cipher import DES3
+ImportError: cannot import name DES3
+
+
+
+
+Regards,
+mk
+
+
+
+From dlitz at dlitz.net  Wed Oct 28 21:41:11 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Wed, 28 Oct 2009 23:41:11 -0400
+Subject: [pycrypto] Freezing pycrypto
+In-Reply-To: <4AE832E0.904@gmail.com>
+References: <4AE832E0.904@gmail.com>
+Message-ID: <20091029034111.GA5469@rivest.dlitz.net>
+
+On Wed, Oct 28, 2009 at 01:02:40PM +0100, Marcin Krol wrote:
+>Hello everyone,
+>
+>I'm trying to freeze PyCrypto on Linux (using freeze.py) and having 
+>trouble with it, can you help me? PyCrypto is used by paramiko (ssh 
+>client module).
+>
+>I have added following in the Modules/Setup while building Python (This 
+>has to be done because freeze.py requires that all compiled extension 
+>modules are compiled statically into Python, otherwise it can't import 
+>them into frozen binary):
+[snip]
+
+I have a few questions:
+
+- Did this work before?
+- Does it work with PyCrypto 2.0.1 (Andrew Kuchling's release)?
+- Does it work with PyCrypto 2.1.0alpha2? (My latest release)?
+
+I don't know anything about freeze.py...
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+From mrkafk at gmail.com  Thu Oct 29 03:03:51 2009
+From: mrkafk at gmail.com (m r)
+Date: Thu, 29 Oct 2009 10:03:51 +0100
+Subject: [pycrypto] Freezing pycrypto
+In-Reply-To: <20091029034111.GA5469@rivest.dlitz.net>
+References: <4AE832E0.904@gmail.com> <20091029034111.GA5469@rivest.dlitz.net>
+Message-ID: <dbbecdb10910290203y7238d05aq953f9eb217b46970@mail.gmail.com>
+
+Hello Dwayne,
+
+
+>I'm trying to freeze PyCrypto on Linux (using freeze.py) and having
+> >trouble with it, can you help me? PyCrypto is used by paramiko (ssh
+> >client module).
+>
+> [snip]
+>
+> I have a few questions:
+>
+> - Did this work before?
+>
+
+I don't know really, most times I was freezing utilities they were not using
+compiled modules.
+
+
+> - Does it work with PyCrypto 2.0.1 (Andrew Kuchling's release)?
+>
+
+No, at least I can't make it work.
+
+
+> - Does it work with PyCrypto 2.1.0alpha2? (My latest release)?
+>
+
+I haven't tried that. I will try it and get back to you.
+
+Thanks for answer,
+mk
+
+
+
+>
+> I don't know anything about freeze.py...
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+>  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20091029/26b9041f/attachment.htm 
+
+From hpj at urpla.net  Fri Oct 30 13:01:23 2009
+From: hpj at urpla.net (Hans-Peter Jansen)
+Date: Fri, 30 Oct 2009 21:01:23 +0200
+Subject: [pycrypto] Freezing pycrypto
+In-Reply-To: <dbbecdb10910290203y7238d05aq953f9eb217b46970@mail.gmail.com>
+References: <4AE832E0.904@gmail.com> <20091029034111.GA5469@rivest.dlitz.net>
+	<dbbecdb10910290203y7238d05aq953f9eb217b46970@mail.gmail.com>
+Message-ID: <200910302001.27906.hpj@urpla.net>
+
+On Thursday 29 October 2009, 10:03:51 m r wrote:
+> Hello Dwayne,
+>
+> >I'm trying to freeze PyCrypto on Linux (using freeze.py) and having
+> >
+> > >trouble with it, can you help me? PyCrypto is used by paramiko (ssh
+> > >client module).
+> >
+> > [snip]
+> >
+> > I have a few questions:
+> >
+> > - Did this work before?
+>
+> I don't know really, most times I was freezing utilities they were not
+> using compiled modules.
+
+You might want to try pyinstaller trunk, which I use successfully with 
+PyCrypto, keyczar and gmp (and a bunch of other compiled libs including 
+PyQt) in the less mature Mac OS X environment.
+
+Pete
+
+
+From dlitz at dlitz.net  Sun Nov  1 19:04:55 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 1 Nov 2009 20:04:55 -0500
+Subject: [pycrypto] _RSA.py and generate_py
+In-Reply-To: <20090804014150.GA26759@rivest.dlitz.net>
+References: <b2a653cf0905272150p302de21esccb9950b249e372f@mail.gmail.com>
+	<20090804014150.GA26759@rivest.dlitz.net>
+Message-ID: <20091102010455.GA19192@rivest.dlitz.net>
+
+On Mon, Aug 03, 2009 at 09:41:50PM -0400, Dwayne C. Litzenberger wrote:
+>On Wed, May 27, 2009 at 09:50:07PM -0700, Anthony Honstain wrote:
+>>In the generate_py function of lib/Crypto/PublicKey/_RSA.py , it would
+>>appear to be possible that the the primes p and q can be generated such that
+>>the GCD( 65537, (p-1)(q-1)) != 1 which would result in a unusable key. If
+>>anyone can clarify this it would be greatly appreciated.
+>
+>I haven't looked into this claim yet, but I've filed a bug report:
+>
+>     https://bugs.launchpad.net/pycrypto/+bug/408660
+
+Lorenz Quack has posted a patch that he says will solve this problem.  It 
+checks that e does not divide p-1 or q-1.
+
+That should fix this bug, right?
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+From dlitz at dlitz.net  Sun Nov  1 20:38:31 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 1 Nov 2009 21:38:31 -0500
+Subject: [pycrypto] ANN: PyCrypto 2.1.0 beta 1 released
+Message-ID: <20091102023831.GA20051@rivest.dlitz.net>
+
+PyCrypto 2.1.0b1 has been released.  This is the first beta release since I
+took over as maintainer of PyCrypto.
+
+You can download this release from http://www.pycrypto.org/
+
+It has the following SHA256 sums:
+
+7be4be8262ed8443700eed71e498e9b8d8a5ac17f3a00abc112c81753ffec9ba *pycrypto-2.1.0b1.tar.gz
+d4f628937c04faa5daaf4bd99e7c7ecbcd90e43f9291bcbc5a428ceacdd80f21 *pycrypto-2.1.0b1.tar.gz.asc
+
+Please test it and post your experiences to the PyCrypto mailing list:
+
+    pycrypto at lists.dlitz.net
+
+and/or file bug reports on Launchpad:
+
+    https://bugs.launchpad.net/pycrypto
+
+Here is a (non-exhaustive) list of changes between 2.0.1 and 2.1.0beta1:
+
+2.1.0beta1
+==========
+
+         * Modified RSA.generate() to ensure that e is coprime to p-1 and q-1.
+           Apparently, RSA.generate was capable of generating unusable keys.
+
+
+2.1.0alpha2
+===========
+
+         * Modified isPrime() to release the global interpreter lock while
+           performing computations. (patch from Lorenz Quack)
+
+         * Release the GIL while encrypting, decrypting, and hashing (but not
+           during initialization or finalization).
+
+         * API changes:
+
+           - Removed RandomPoolCompat and made Crypto.Util.randpool.RandomPool
+             a wrapper around Crypto.Random that emits a DeprecationWarning.
+             This is to discourage developers from attempting to provide
+             backwards compatibility for systems where there are NO strong
+             entropy sources available.
+
+           - Added Crypto.Random.get_random_bytes().  This should allow people
+             to use something like this if they want backwards-compatibility:
+
+                 try:
+                      from Crypto.Random import get_random_bytes
+                 except ImportError:
+                      try:
+                          from os import urandom as get_random_bytes
+                      except ImportError:
+                          get_random_bytes = open("/dev/urandom", "rb").read
+
+           - Implemented __ne__() on pubkey, which fixes the following broken
+             behaviour:
+                 >>> pk.publickey() == pk.publickey()
+                 True
+                 >>> pk.publickey() != pk.publickey()
+                 True
+             (patch from Lorenz Quack)
+
+           - Block ciphers created with MODE_CTR can now operate on strings of
+             any size, rather than just multiples of the underlying cipher's
+             block size.
+
+           - Crypto.Util.Counter objects now raise OverflowError when they wrap
+             around to zero.  You can override this new behaviour by passing
+             allow_wraparound=True to Counter.new()
+
+
+2.1.0alpha1
+===========
+
+    * This version supports Python versions 2.1 through 2.6.
+
+    * Clarified copyright status of much of the existing code by tracking
+      down Andrew M. Kuchling, Barry A. Warsaw, Jeethu Rao, Joris Bontje,
+      Mark Moraes, Paul Swartz, Robey Pointer, and Wim Lewis and getting
+      their permission to clarify the license/public-domain status of their
+      contributions.  Many thanks to all involved!
+
+    * Replaced the test suite with a new, comprehensive package
+      (Crypto.SelfTest) that includes documentation about where its test
+      vectors came from, or how they were derived.
+
+      Use "python setup.py test" to run the tests after building.
+
+    * API changes:
+
+      - Added Crypto.version_info, which from now on will contain version
+        information in a format similar to Python's sys.version_info.
+
+      - Added a new random numbers API (Crypto.Random), and deprecated the
+        old one (Crypto.Util.randpool.RandomPool), which was misused more
+        often than not.
+
+        The new API is used by invoking Crypto.Random.new() and then just
+        reading from the file-like object that is returned.
+
+        CAVEAT: To maintain the security of the PRNG, you must call
+        Crypto.Random.atfork() in both the parent and the child processes
+        whenever you use os.fork().  Otherwise, the parent and child will
+        share copies of the same entropy pool, causing them to return the
+        same results!  This is a limitation of Python, which does not
+        provide readily-accessible hooks to os.fork().  It's also a
+        limitation caused by the failure of operating systems to provide
+        sufficiently fast, trustworthy sources of cryptographically-strong
+        random numbers.
+
+      - Crypto.PublicKey now raises ValueError/TypeError/RuntimeError
+        instead of the various custom "error" exceptions
+
+      - Removed the IDEA and RC5 modules due to software patents.  Debian
+        has been doing this for a while
+
+      - Added Crypto.Random.random, a strong version of the standard Python
+       'random' module.
+
+      - Added Crypto.Util.Counter, providing fast counter implementations
+        for use with CTR-mode ciphers.
+
+    * Bug fixes:
+
+      - Fixed padding bug in SHA256; this resulted in bad digests whenever
+        (the number of bytes hashed) mod 64 == 55.
+
+      - Fixed a 32-bit limitation on the length of messages the SHA256 module
+        could hash.
+
+      - AllOrNothing: Fixed padding bug in digest()
+
+      - Fixed a bad behaviour of the XOR cipher module: It would silently
+        truncate all keys to 32 bytes.  Now it raises ValueError when the
+        key is too long.
+
+      - DSA: Added code to enforce FIPS 186-2 requirements on the size of
+        the prime p
+
+      - Fixed the winrandom module, which had been omitted from the build
+        process, causing security problems for programs that misuse RandomPool.
+
+      - Fixed infinite loop when attempting to generate RSA keys with an
+        odd number of bits in the modulus.  (Not that you should do that.)
+
+    * Clarified the documentation for Crypto.Util.number.getRandomNumber.
+
+      Confusingly, this function does NOT return N random bits; It returns
+      a random N-bit number, i.e. a random number between 2**(N-1) and
+      (2**N)-1.
+
+      Note that getRandomNumber is for internal use only and may be
+      renamed or removed in future releases.
+
+    * Replaced RIPEMD.c with a new implementation (RIPEMD160.c) to
+      alleviate copyright concerns.
+
+    * Replaced the DES/DES3 modules with ones based on libtomcrypt-1.16 to
+      alleviate copyright concerns.
+
+    * Replaced Blowfish.c with a new implementation to alleviate copyright
+      concerns.
+
+    * Added a string-XOR implementation written in C (Crypto.Util.strxor)
+      and used it to speed up Crypto.Hash.HMAC
+
+    * Converted documentation to reStructured Text.
+
+    * Added epydoc configuration Doc/epydoc-config
+
+    * setup.py now emits a warning when building without GMP.
+
+    * Added pct-speedtest.py to the source tree for doing performance
+      testing on the new code.
+
+    * Cleaned up the code in several places.
+
+Cheers!
+   - Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 221 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20091101/b6c5ce3e/attachment.pgp 
+
+From mrkafk at gmail.com  Tue Nov  3 08:00:57 2009
+From: mrkafk at gmail.com (Marcin Krol)
+Date: Tue, 03 Nov 2009 15:00:57 +0100
+Subject: [pycrypto] Freezing pycrypto
+In-Reply-To: <200910302001.27906.hpj@urpla.net>
+References: <4AE832E0.904@gmail.com>
+	<20091029034111.GA5469@rivest.dlitz.net>	<dbbecdb10910290203y7238d05aq953f9eb217b46970@mail.gmail.com>
+	<200910302001.27906.hpj@urpla.net>
+Message-ID: <4AF03799.9080709@gmail.com>
+
+Hello Pete,
+
+I'm trying to use pyinstaller (from svn) and I get this now:
+
+[root at localhost pyinstaller]# python Build.py cssh/cssh.spec
+checking Analysis
+building Analysis because outAnalysis0.toc non existent
+running Analysis outAnalysis0.toc
+Analyzing: support/_mountzlib.py
+Analyzing: support/useUnicode.py
+Analyzing: ../cssh.py
+ldd: warning: you do not have execution permission for 
+`/usr/lib/sse2/libgmp.so.3'
+Traceback (most recent call last):
+   File "Build.py", line 1158, in <module>
+     main(args[0], configfilename=opts.configfile)
+   File "Build.py", line 1146, in main
+     build(specfile)
+   File "Build.py", line 1109, in build
+     execfile(spec)
+   File "cssh/cssh.spec", line 3, in <module>
+     pathex=['/root/pyinstaller'])
+   File "Build.py", line 245, in __init__
+     self.__postinit__()
+   File "Build.py", line 196, in __postinit__
+     self.assemble()
+   File "Build.py", line 348, in assemble
+     self.fixMissingPythonLib(binaries)
+   File "Build.py", line 394, in fixMissingPythonLib
+     raise IOError("Python library not found!")
+IOError: Python library not found!
+
+Err.. which library is not found?
+
+I have checked in "cssh" dir and there is no txt warnings file in this 
+spec directory at all. So which library is missing?
+
+Commands I ran (after 'make'ing pyinstaller of course):
+
+# python Makespec.py --onefile ../cssh.py
+# python Build.py cssh/cssh.spec
+
+Regards,
+mk
+
+
+
+From rusydi.hasan at gmail.com  Sat Nov 14 03:39:40 2009
+From: rusydi.hasan at gmail.com (rusydi hasan)
+Date: Sat, 14 Nov 2009 17:39:40 +0800
+Subject: [pycrypto] Pycrypto, New contributor, TODO & Camellia
+Message-ID: <2c62b1b80911140139n138e01c7te55c8e1d99c954a4@mail.gmail.com>
+
+Hi Dwayne,
+
+First of all, let me introduce myself. Im rusydi, an undergaduate computer
+science in malaysia.
+
+I have necessary background in cryptography, specifically block cipher, and
+C programming. Im interested to become a contributor in the next release of
+pycrypto (i read that you need the contributor outside US and Canada and not
+the US/Canada Passport holder), especially in the implementation of some
+block ciphers. But i have few things that i need to ask to you
+
+   1. In TODO list i saw that pycrypto is gonna implement Camellia. AFAIK,
+   camellia is a patented block cipher by Mitsubishi Electric Corporation and
+   Nippon Telegraph and Telephone Corporation (NTT), Japan. I attached the
+   intellectual property statement, submitted to NESSIE submission
+   2. Is it necessary to implement some Light-Weight Block Cipher in
+   pycrypto ? (such as DESL, TEA, KATAN, SEA, etc) because im planning to
+   submit some of these light-weight block cipher for the pycrypto.
+   3. How to submit the source code ? since i could not clone the git
+   repository (the port is blocked from my campus network). And i dont have
+   adequate background in open-source software development.
+
+
+Thanks,
+-- 
+Rusydi Hasan Makarim (0721051)
+Department of Computer Science
+International Islamic University Malaysia
+Gombak, Selangor
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+mQINBErBZN4BEACvgIdUtxW8aUHS5ewdWI1QO++Jsfdy3mj2BLMUIo7M0anCbMFU
+WyJ8SRlF3I4+Zw0+pUYFn7WArNtEYNTNmna8xoEkGucm+hd77GtKsM6GgGYbEPXO
+MVeKI3m9ZMCh/218Vg3ttb4X5KrD43LYJ1doC+i7MU3m8uRlSYuDSqnUjpLBoBci
+oX3uZ8XN6MnF65CtR3XdO310efrp69PYI08VMcGs+NNchzuATnvGkLGjga2qNJcO
+H8suVzr34rjFKfhD44S56QTMvepuVhd0AVcSPv5s2+qMjkKShVjbkqztv++PIeOG
+7RP0wIGHK1NdAbcGiqqR+YLjcULFrx9sQap0HoAXnpK+UxfgsoAUm3Lk62+qkXhS
+XCj9JFCKyCOTV7YXonPZPJDNxXuxtX7F2T+UcKZAgtrqPf1e5Y+WmR8W58rKJ0qV
+zAKw9gtx6d5rYN5P3q+enxC+ESbbGebKVX2KnBz+yfu2LOoF46S/fpaAqKVh5IKW
+J9SRupeqFPM57t2k+bkr6QOJ6BETcod679ji1L3ldUbK9iQXcvPBcE4dImC8yLWa
+gbrEa3p1WPMi0S2DG0Ttd0TgVf0+utXFBOwPDyx16lRKTnMGS0d3qx61Q+FJ3yEY
+phjXigob6Ja6D8XRGzTvGXM3zSUmbGat/RTNO2q4tkvMp/imz+93lmBOMwARAQAB
+tDpydXN5ZGkgaGFzYW4gbWFrYXJpbSAobm8gY29tbWVudCkgPHJ1c3lkaS5oYXNh
+bkBnbWFpbC5jb20+iQI2BBMBAgAgBQJKwWTeAhsvBgsJCAcDAgQVAggDBBYCAwEC
+HgECF4AACgkQ3NRtupwtCoktAg//ZcorashLeAd21+5xqHLZH+Oz1nMleF8KnqYs
+ja5lEuLA9Ri3MpszJkq46iH4hx88LIdPSDQrvof5NfCbMwFntiVrRAbKc/3tyxGA
+YhcOiFpnazI3DttmtXPR7fmL2CAJOKtBLaY/rUiISYoPxQSYn1g/3N/icydYHqjP
+r+RVEnFVdnLpokyICHTaNXXEvsKESYEFEKWxbtL7f8Ve6tHi8HfyeuGNUOWVmJOk
+cqj3RWG1q7JB6g2vJVs/axqh3GMjQMiUKadtbgqWTXVbhLvfDCbbA0ielCPRMshv
+oIn6+K+yqGuVqRvx2OcQApmNNK1ns3/NKMVEbKerp2UbzyuixfStIOLjFa5plXy8
+I8wNjRUjtW6hzo9RwdlaBEWELpYn3EEV2exmQNc/GPeFa+rVlBGwKUQprkPiap0X
+Fa8c5yHnClhFDKq6Ka4ulvyGMLthFcTWpK1enPTugC18aFfoLZjxkkML3dhMl8MB
+R4arHT3MutZovUSWMVgGJIjz7vhzUE4Qt1QoKThtq4BsfqdbVNqWksyeVCElhB9I
+xTjge2Ve6mhwvk5pRHdAzZL5iQfCM9cTSgLyPbYINxWvUWjaOAjZk2Q8iJoPxggR
+AoCWdB7RYtPqNBvVW1wAzaUxGUNUjW68aWrUSqXfm2/P6rtupGY88qccubYVo9sT
+H+hPQds=
+=su3x
+-----END PGP PUBLIC KEY BLOCK-----
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20091114/1e4fa398/attachment.htm 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: ip.pdf
+Type: application/pdf
+Size: 13066 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20091114/1e4fa398/attachment.pdf 
+
+From dlitz at dlitz.net  Sun Nov 15 02:39:47 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 15 Nov 2009 03:39:47 -0500
+Subject: [pycrypto] Pycrypto, New contributor, TODO & Camellia
+In-Reply-To: <2c62b1b80911140139n138e01c7te55c8e1d99c954a4@mail.gmail.com>
+References: <2c62b1b80911140139n138e01c7te55c8e1d99c954a4@mail.gmail.com>
+Message-ID: <20091115083947.GA7038@rivest.dlitz.net>
+
+On Sat, Nov 14, 2009 at 05:39:40PM +0800, rusydi hasan wrote:
+>Hi Dwayne,
+>
+>First of all, let me introduce myself. Im rusydi, an undergaduate computer
+>science in malaysia.
+
+Hi there!
+
+>I have necessary background in cryptography, specifically block cipher, and
+>C programming. Im interested to become a contributor in the next release of
+>pycrypto (i read that you need the contributor outside US and Canada and not
+>the US/Canada Passport holder), especially in the implementation of some
+>block ciphers. But i have few things that i need to ask to you
+
+That's great!  One correction: I only ask that contributors be non-US 
+citizens/residents.  Canada is fine; I'm Canadian.  :)
+
+>   1. In TODO list i saw that pycrypto is gonna implement Camellia. AFAIK,
+>   camellia is a patented block cipher by Mitsubishi Electric Corporation and
+>   Nippon Telegraph and Telephone Corporation (NTT), Japan. I attached the
+>   intellectual property statement, submitted to NESSIE submission
+
+Yes, but there is also this:
+
+     Announcement of Royalty-free Licenses for Essential Patents
+     of NTT Encryption and Digital Signature Algorithms
+
+     http://www.ntt.co.jp/news/news01e/0104/010417.html
+
+See also the list at:
+
+     http://en.wikipedia.org/wiki/NESSIE
+
+>   2. Is it necessary to implement some Light-Weight Block Cipher in
+>   pycrypto ? (such as DESL, TEA, KATAN, SEA, etc) because im planning to
+>   submit some of these light-weight block cipher for the pycrypto.
+
+I've never heard of any of these ciphers except for TEA, and TEA is 
+vulnerable to a practical related-key attack.
+
+I am reluctant to add any more 64-bit block ciphers, since you can expect 
+block collisions after only 2**32 blocks (32 GiB of data) in some modes, 
+and they're tricky to use in CTR mode with long-term keys (again, because 
+the collision probability is too high).
+
+I am also very reluctant to add any variants of DES, since pretty much 
+every variant of DES has been weaker than DES itself.
+
+I don't want to maintain additional ciphers in my tree unless they are 
+mature and offer significant advantages over what PyCrypto already has.  
+I'm even hesitant to add Camellia---The only reason I'm considering it is 
+that PyCrypto only has one 128-bit block cipher right now (AES), and 
+because the proposed candidate, Camellia, made it through the NESSIE 
+competition.  Even then, I don't consider it a priority, and PyCrypto 2.1 
+will be released without it.
+
+I'm much more interested in making the crypto we already have less 
+error-prone to use.  For example, we need a PKCS#1 v2.1 implementation, a 
+*complete* DSA implementation, improved RSA key generation, improved 
+primality testing, more test cases, a Diffie-Hellman implementation, a 
+reworking of the Crypto.PublicKey API, and a thorough de-linting of the C 
+code.
+
+That said, some people might find your code to be useful, even if it 
+doesn't get included in PyCrypto, so feel free to post it to the mailing 
+list.  :-)
+
+>   3. How to submit the source code ? since i could not clone the git
+>   repository (the port is blocked from my campus network). And i dont have
+>   adequate background in open-source software development.
+
+<rant>
+Your campus network support people need to stop interfering with the 
+end-to-end operation of the Internet Protocol, and to actually start doing 
+their job, which is to support you, rather than shifting that burden onto 
+me.
+</rant>
+
+You should be able to clone from
+
+     http://git.pycrypto.org/crypto/pycrypto-2.x.git
+
+As for submitting source code, you should publish your changes somewhere, 
+such as by doing one of the following things:
+
+- Post your patches to the mailing list using "git send-email".
+- Generate a series of patches using "git format-patch" and send them to 
+   the mailing list yourself.
+- Create a git repository somewhere and announce it on the mailing list.
+
+Thanks!
+
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+From rusydi.hasan at gmail.com  Sun Nov 15 03:09:20 2009
+From: rusydi.hasan at gmail.com (rusydi hasan)
+Date: Sun, 15 Nov 2009 17:09:20 +0800
+Subject: [pycrypto] Pycrypto, New contributor, TODO & Camellia
+In-Reply-To: <20091115083947.GA7038@rivest.dlitz.net>
+References: <2c62b1b80911140139n138e01c7te55c8e1d99c954a4@mail.gmail.com>
+	<20091115083947.GA7038@rivest.dlitz.net>
+Message-ID: <2c62b1b80911150109t55e1e0aag3c5f08576da1d22e@mail.gmail.com>
+
+On Sun, Nov 15, 2009 at 4:39 PM, Dwayne C. Litzenberger <dlitz at dlitz.net>wrote:
+
+> On Sat, Nov 14, 2009 at 05:39:40PM +0800, rusydi hasan wrote:
+> >Hi Dwayne,
+> >
+> >First of all, let me introduce myself. Im rusydi, an undergaduate computer
+> >science in malaysia.
+>
+> Hi there!
+>
+> >I have necessary background in cryptography, specifically block cipher,
+> and
+> >C programming. Im interested to become a contributor in the next release
+> of
+> >pycrypto (i read that you need the contributor outside US and Canada and
+> not
+> >the US/Canada Passport holder), especially in the implementation of some
+> >block ciphers. But i have few things that i need to ask to you
+>
+> That's great!  One correction: I only ask that contributors be non-US
+> citizens/residents.  Canada is fine; I'm Canadian.  :)
+>
+
+Got it :) !
+
+
+>
+> >   1. In TODO list i saw that pycrypto is gonna implement Camellia. AFAIK,
+> >   camellia is a patented block cipher by Mitsubishi Electric Corporation
+> and
+> >   Nippon Telegraph and Telephone Corporation (NTT), Japan. I attached the
+> >   intellectual property statement, submitted to NESSIE submission
+>
+> Yes, but there is also this:
+>
+>     Announcement of Royalty-free Licenses for Essential Patents
+>     of NTT Encryption and Digital Signature Algorithms
+>
+>     http://www.ntt.co.jp/news/news01e/0104/010417.html
+>
+> See also the list at:
+>
+>     http://en.wikipedia.org/wiki/NESSIE
+>
+
+Thanks for the link.
+
+>
+> >   2. Is it necessary to implement some Light-Weight Block Cipher in
+> >   pycrypto ? (such as DESL, TEA, KATAN, SEA, etc) because im planning to
+> >   submit some of these light-weight block cipher for the pycrypto.
+>
+> I've never heard of any of these ciphers except for TEA, and TEA is
+> vulnerable to a practical related-key attack.
+>
+
+Its the family of lightweight block cipher, designed for small-scaled system
+and ubiquitous devices (RFID, etc) .
+You can check this link :
+
+http://www.ecrypt.eu.org/lightweight/index.php/Block_ciphers
+
+
+> I am reluctant to add any more 64-bit block ciphers, since you can expect
+> block collisions after only 2**32 blocks (32 GiB of data) in some modes,
+> and they're tricky to use in CTR mode with long-term keys (again, because
+> the collision probability is too high).
+>
+> I am also very reluctant to add any variants of DES, since pretty much
+> every variant of DES has been weaker than DES itself.
+>
+> I don't want to maintain additional ciphers in my tree unless they are
+> mature and offer significant advantages over what PyCrypto already has.
+> I'm even hesitant to add Camellia---The only reason I'm considering it is
+> that PyCrypto only has one 128-bit block cipher right now (AES), and
+> because the proposed candidate, Camellia, made it through the NESSIE
+> competition.  Even then, I don't consider it a priority, and PyCrypto 2.1
+> will be released without it.
+>
+
+Well, i ll still try to work on Camellia.
+
+
+>
+> I'm much more interested in making the crypto we already have less
+> error-prone to use.  For example, we need a PKCS#1 v2.1 implementation, a
+> *complete* DSA implementation, improved RSA key generation, improved
+> primality testing, more test cases, a Diffie-Hellman implementation, a
+> reworking of the Crypto.PublicKey API, and a thorough de-linting of the C
+> code.
+>
+> That said, some people might find your code to be useful, even if it
+> doesn't get included in PyCrypto, so feel free to post it to the mailing
+> list.  :-)
+>
+> >   3. How to submit the source code ? since i could not clone the git
+> >   repository (the port is blocked from my campus network). And i dont
+> have
+> >   adequate background in open-source software development.
+>
+> <rant>
+> Your campus network support people need to stop interfering with the
+> end-to-end operation of the Internet Protocol, and to actually start doing
+> their job, which is to support you, rather than shifting that burden onto
+> me.
+> </rant>
+>
+> You should be able to clone from
+>
+>     http://git.pycrypto.org/crypto/pycrypto-2.x.git
+>
+> As for submitting source code, you should publish your changes somewhere,
+> such as by doing one of the following things:
+>
+> - Post your patches to the mailing list using "git send-email".
+> - Generate a series of patches using "git format-patch" and send them to
+>   the mailing list yourself.
+> - Create a git repository somewhere and announce it on the mailing list.
+>
+> Thanks!
+>
+> - Dwayne
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+>  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+
+
+Thanks alot !
+
+-- 
+Rusydi Hasan Makarim (0721051)
+Department of Computer Science
+International Islamic University Malaysia
+Gombak, Selangor
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20091115/e844b8de/attachment.htm 
+
+From spiky.kiwi at gmail.com  Mon Nov 16 08:07:49 2009
+From: spiky.kiwi at gmail.com (Kiwi)
+Date: Mon, 16 Nov 2009 15:07:49 +0100
+Subject: [pycrypto] Public key algos usage
+Message-ID: <bc7b5ef50911160607l37f73f6bsae0a000cdca6ead3@mail.gmail.com>
+
+I cannot find documentation on using PyCrypto's public keys algorithms.
+The main problem is that while I can easily create a private/public
+keypair and use it, I don't understand how to create an object given
+only a public key (encryption/verify only).
+The only documentation says to "look at the source code".
+What is the best thing to do at this time?
+Wait for a definitive API? Use a development version? Use the old
+undocumented API?
+Is there a code snipplet somewhere on using RSA or ElGamal with the current API?
+By the way I already use PyCrypto symmetric encryption in the
+application I'm writing and it works well and fast.
+
+Thank you for your time,
+Stefano Cavallari
+
+From don at amberfisharts.com  Mon Nov 16 11:26:06 2009
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Mon, 16 Nov 2009 18:26:06 +0100
+Subject: [pycrypto] Public key algos usage
+In-Reply-To: <bc7b5ef50911160607l37f73f6bsae0a000cdca6ead3@mail.gmail.com>
+References: <bc7b5ef50911160607l37f73f6bsae0a000cdca6ead3@mail.gmail.com>
+Message-ID: <4B018B2E.2020203@amberfisharts.com>
+
+Hi Stefano,
+
+As far as I know the API remains the same whether the key is a private/public key pair
+or only the public key. So this should work (However, I didn't test this code):
+
+ >>> message = "this is a secret"
+ >>> pub_key = key_pair.publickey()
+ >>> cipher_text = pub_key.encrypt(message, "")
+
+I also think that the API-Reference [1] is fairly accurate.
+
+I hope that helps. If not, maybe you show some code how you try to use it.
+
+yours
+//Lorenz
+
+[1] http://www.dlitz.net/software/pycrypto/apidoc/
+
+
+Kiwi wrote:
+> I cannot find documentation on using PyCrypto's public keys algorithms.
+> The main problem is that while I can easily create a private/public
+> keypair and use it, I don't understand how to create an object given
+> only a public key (encryption/verify only).
+> The only documentation says to "look at the source code".
+> What is the best thing to do at this time?
+> Wait for a definitive API? Use a development version? Use the old
+> undocumented API?
+> Is there a code snipplet somewhere on using RSA or ElGamal with the current API?
+> By the way I already use PyCrypto symmetric encryption in the
+> application I'm writing and it works well and fast.
+> 
+> Thank you for your time,
+> Stefano Cavallari
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+
+
+From spiky.kiwi at gmail.com  Mon Nov 16 17:42:23 2009
+From: spiky.kiwi at gmail.com (Kiwi)
+Date: Tue, 17 Nov 2009 00:42:23 +0100
+Subject: [pycrypto] Public key algos usage
+In-Reply-To: <4B018B2E.2020203@amberfisharts.com>
+References: <bc7b5ef50911160607l37f73f6bsae0a000cdca6ead3@mail.gmail.com> 
+	<4B018B2E.2020203@amberfisharts.com>
+Message-ID: <bc7b5ef50911161542w25d3a35cp9af43c141dd047ac@mail.gmail.com>
+
+On Mon, Nov 16, 2009 at 6:26 PM, Lorenz Quack <don at amberfisharts.com> wrote:
+> Hi Stefano,
+>
+> As far as I know the API remains the same whether the key is a private/public key pair
+> or only the public key. So this should work (However, I didn't test this code):
+>
+> ?>>> message = "this is a secret"
+> ?>>> pub_key = key_pair.publickey()
+> ?>>> cipher_text = pub_key.encrypt(message, "")
+>
+> I also think that the API-Reference [1] is fairly accurate.
+>
+> I hope that helps. If not, maybe you show some code how you try to use it.
+>
+
+Thank you for the fast answer.
+I understand the code above.
+Still something is not clear to me.
+And how do I export the public key (or a keypair) to a string? How do
+I import it back?
+I want just the key so it can be reused by other libraries and future
+versions of this one, so I cannot just serialize the object.
+
+From don at amberfisharts.com  Tue Nov 17 03:49:02 2009
+From: don at amberfisharts.com (don at amberfisharts.com)
+Date: Tue, 17 Nov 2009 10:49:02 +0100
+Subject: [pycrypto] Public key algos usage
+In-Reply-To: <bc7b5ef50911161542w25d3a35cp9af43c141dd047ac@mail.gmail.com>
+References: <bc7b5ef50911161542w25d3a35cp9af43c141dd047ac@mail.gmail.com>
+Message-ID: <94d9a0c7379244ffc8368a76877d3a1a@localhost>
+
+
+
+On Tue, 17 Nov 2009 00:42:23 +0100, Kiwi <spiky.kiwi at gmail.com> wrote:
+> On Mon, Nov 16, 2009 at 6:26 PM, Lorenz Quack <don at amberfisharts.com>
+> wrote:
+>> Hi Stefano,
+>>
+>> As far as I know the API remains the same whether the key is a
+> private/public key pair
+>> or only the public key. So this should work (However, I didn't test this
+> code):
+>>
+>>  >>> message = "this is a secret"
+>>  >>> pub_key = key_pair.publickey()
+>>  >>> cipher_text = pub_key.encrypt(message, "")
+>>
+>> I also think that the API-Reference [1] is fairly accurate.
+>>
+>> I hope that helps. If not, maybe you show some code how you try to use
+> it.
+>>
+> 
+> Thank you for the fast answer.
+> I understand the code above.
+> Still something is not clear to me.
+> And how do I export the public key (or a keypair) to a string? 
+
+Again, I didn't test any of this because I don't have pycrypto installed 
+on this machine. So take it with a grain of salt.
+
+You can access the different components of a key object via normal attribute
+access. For example you can get the RSA Modulus n from an RSA key object k 
+like this:
+
+>>> rsa_modulus = k.n
+
+this way you should be able to access all necessary attributes. If for example
+you try to access the private exponent of a public key it will fail (probably 
+with an AttributeError I would assume) because public keys obviously don't 
+have a private exponent.
+The different names of the attributes can be looked up in the API reference.
+The names correspond to the canonical ones virtually everybody uses.
+However, this returns the values as python longs but it should be trivial to 
+convert these into strings.
+
+> How do I import it back?
+
+You should look at the "construct" method.
+If however you only want to export/import from/to pycrypto you could use the
+python pickle mechanism. The keys all implement __getstate__ and __setstate__
+
+> I want just the key so it can be reused by other libraries and future
+> versions of this one, so I cannot just serialize the object.
+
+I don't 100% get what you are saying here. You know that at least in RSA there
+isn't "just the key". A key is a tuple of at least 2 numbers. If you did *not*
+know this, you probably should do some reading of the basics before proceeding.
+If on the other hand you did know that and meant the tuple than I think I 
+provided the answer above.
+
+
+cheers
+//Lorenz
+
+
+
+From yanagisawa at csg.is.titech.ac.jp  Wed Nov 18 09:33:24 2009
+From: yanagisawa at csg.is.titech.ac.jp (Yoshisato YANAGISAWA)
+Date: Thu, 19 Nov 2009 00:33:24 +0900
+Subject: [pycrypto] Pycrypto, New contributor, TODO & Camellia
+In-Reply-To: <2c62b1b80911150109t55e1e0aag3c5f08576da1d22e@mail.gmail.com>
+References: <2c62b1b80911140139n138e01c7te55c8e1d99c954a4@mail.gmail.com>	<20091115083947.GA7038@rivest.dlitz.net>
+	<2c62b1b80911150109t55e1e0aag3c5f08576da1d22e@mail.gmail.com>
+Message-ID: <4B0413C4.3010702@csg.is.titech.ac.jp>
+
+
+Hi Rusydi,
+
+2009/11/15 18:09, rusydi hasan wrote:
+>     I don't want to maintain additional ciphers in my tree unless they are
+>     mature and offer significant advantages over what PyCrypto already has.
+>     I'm even hesitant to add Camellia---The only reason I'm considering
+>     it is
+>     that PyCrypto only has one 128-bit block cipher right now (AES), and
+>     because the proposed candidate, Camellia, made it through the NESSIE
+>     competition.  Even then, I don't consider it a priority, and
+>     PyCrypto 2.1
+>     will be released without it.
+> 
+> 
+> Well, i ll still try to work on Camellia.
+
+FYI, I used to write a patch to add support for camellia block cipher 
+for pycrypto 2.0.1:
+https://bugs.launchpad.net/pycrypto/+bug/258561
+I do not have much time to maintain it, though.
+It includes new BSD-licensed source code of camellia block cipher 
+distributed by NTT at:
+http://info.isl.ntt.co.jp/crypt/eng/camellia/engine.html
+The same codes are in Linux, FreeBSD, OpenSSL, GnuTLS, NSS (Firefox), 
+and so on.
+
+I hope this patch will help you write your new patch.
+
+Thank you,
+
+----
+Yoshisato YANAGISAWA.
+
+From dlitz at dlitz.net  Thu Nov 19 01:34:58 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Thu, 19 Nov 2009 02:34:58 -0500
+Subject: [pycrypto] Public key algos usage
+In-Reply-To: <bc7b5ef50911160607l37f73f6bsae0a000cdca6ead3@mail.gmail.com>
+References: <bc7b5ef50911160607l37f73f6bsae0a000cdca6ead3@mail.gmail.com>
+Message-ID: <20091119073458.GA28971@rivest.dlitz.net>
+
+On Mon, Nov 16, 2009 at 03:07:49PM +0100, Kiwi wrote:
+>I cannot find documentation on using PyCrypto's public keys algorithms.
+>The main problem is that while I can easily create a private/public
+>keypair and use it, I don't understand how to create an object given
+>only a public key (encryption/verify only).
+>The only documentation says to "look at the source code".
+>What is the best thing to do at this time?
+>Wait for a definitive API? Use a development version? Use the old
+>undocumented API?
+
+PyCrypto's current public key API is half-baked.  It's experimental and was 
+never really finished.  For example, the RSA module doesn't do any 
+PKCS#1/OAEP padding, and the DSA module doesn't do the necessary hashing 
+step.
+
+The only way you'll achieve any security out of it is to read the source 
+code while simultaneously reading the appropriate standards documents 
+(PKCS#1 or FIPS 186-3).  It's far from where I would like it to be, but as 
+it stands, if you can't figure out the API, you probably shouldn't be using 
+it.
+
+If you want to do real public-key crypto in Python today, you probably want 
+to use a higher-level library like Keyczar or maybe ezPyCrypto (I haven't 
+evaluated either of these, so I make no promises about their security.).
+
+Or just invoke GnuPG. :-/
+
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+From tobias.koeck at gmail.com  Fri Dec  4 04:44:00 2009
+From: tobias.koeck at gmail.com (Tobias Koeck)
+Date: Fri, 04 Dec 2009 11:44:00 +0100
+Subject: [pycrypto] python crypto with python 3.0 or 3.1
+Message-ID: <4B18E7F0.7020607@gmail.com>
+
+Is it possible to run python crypto with python 3.0 or 3.1. If not is 
+it planed to adjust?
+
+Greetings
+tobias
+
+From don at amberfisharts.com  Fri Oct 30 10:43:58 2009
+From: don at amberfisharts.com (Lorenz Quack)
+Date: Fri, 30 Oct 2009 16:43:58 -0000
+Subject: [pycrypto] getStrongPrime() implementation
+In-Reply-To: <20091028023442.GA24039@rivest.dlitz.net>
+References: <20091027025621.GA10725@rivest.dlitz.net>	<8b611e60124ed95e60671ec30e04028c@localhost>
+	<20091028023442.GA24039@rivest.dlitz.net>
+Message-ID: <4AEB1B24.4040302@amberfisharts.com>
+
+Hi there!
+
+Here comes my monster patch.
+It includes a python and C version of getStrongPrime, rabinMillerTest and isPrime.
+there are also two small unit tests and some helper functions.
+They all take a randfunc and propagate them (or so I hope).
+The Rabin-Miller-Test uses random bases (non-deterministic).
+getStrongPrime and isPrime take an optional parameter "false_positive_prob"
+where one can specify the maximum probability that the prime is actually
+composite. Internally the functions calculate the Rabin-Miller rounds from
+this. It defaults to 1e-6 (1:1000000) which results in 10 rounds of Rabin-Miller
+testing.
+
+Please review this carefully. Even though I tried hard to get things right some
+bugs always slip through.
+maybe you could also review the way I acquire and release the GIL. It felt kind
+of ugly the way I did it but I don't see a better way just now.
+
+Concerning the public exponent e:
+I now know why it needs to be coprime to p-1 and q-1. The private exponent d is
+the inverse of e mod ((p-1)(q-1)).
+If e is not coprime to ((p-1)(q-1)) then the inverse does not exist [1].
+
+The getStrongPrime take an optional argument e. if provided the function will
+make sure p-1 and e are coprime. if e is even (p-1)/2 will be coprime.
+if e is even then there is a additional constraint: p =/= q mod 8.
+I can't check for that in getStrongPrime of course but since we hardcoded e to
+be odd in _RSA.py this should pose no problem.
+
+The Baillie-PSW-Test is not included.
+
+I tried hard not to use any functionality new than 2.1 but if you find anything
+feel free to criticize. Also if I didn't get the coding style right either tell
+me or feel free to correct it yourself.
+
+
+have fun.
+//Lorenz
+
+
+[1] http://mathworld.wolfram.com/ModularInverse.html
+
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: getStrongPrime.patch
+Url: http://lists.dlitz.net/pipermail/pycrypto/attachments/20091030/ca085bc9/attachment-0001.ksh 
+
+From honstain at gmail.com  Mon Nov  2 00:03:30 2009
+From: honstain at gmail.com (Anthony Honstain)
+Date: Mon, 02 Nov 2009 06:03:30 -0000
+Subject: [pycrypto] _RSA.py and generate_py
+In-Reply-To: <20091102010455.GA19192@rivest.dlitz.net>
+References: <b2a653cf0905272150p302de21esccb9950b249e372f@mail.gmail.com>
+	<20090804014150.GA26759@rivest.dlitz.net>
+	<20091102010455.GA19192@rivest.dlitz.net>
+Message-ID: <b2a653cf0911012203k447ac57bg82674cc1750631b1@mail.gmail.com>
+
+It is essentially the same as the patch I implemented, I have attached an
+attempt to prove (the best I can do quickly) that this check is sufficient
+to guarantee that GCD(e, (p-1)(q-1))=1. It did not seem
+immediately intuitive to me so I tried to prove it.
+
+Thanks!
+Anthony Honstain
+
+On Sun, Nov 1, 2009 at 5:04 PM, Dwayne C. Litzenberger <dlitz at dlitz.net>wrote:
+
+> On Mon, Aug 03, 2009 at 09:41:50PM -0400, Dwayne C. Litzenberger wrote:
+>
+>> On Wed, May 27, 2009 at 09:50:07PM -0700, Anthony Honstain wrote:
+>>
+>>> In the generate_py function of lib/Crypto/PublicKey/_RSA.py , it would
+>>> appear to be possible that the the primes p and q can be generated such
+>>> that
+>>> the GCD( 65537, (p-1)(q-1)) != 1 which would result in a unusable key. If
+>>> anyone can clarify this it would be greatly appreciated.
+>>>
+>>
+>> I haven't looked into this claim yet, but I've filed a bug report:
+>>
+>>    https://bugs.launchpad.net/pycrypto/+bug/408660
+>>
+>
+> Lorenz Quack has posted a patch that he says will solve this problem.  It
+> checks that e does not divide p-1 or q-1.
+>
+> That should fix this bug, right?
+>
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+>  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20091102/d52ebd8e/attachment.htm 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: GCDproof.pdf
+Type: application/pdf
+Size: 183722 bytes
+Desc: not available
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20091102/d52ebd8e/attachment.pdf 
+
+From dlitz at dlitz.net  Sun Dec 13 14:59:34 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Sun, 13 Dec 2009 15:59:34 -0500
+Subject: [pycrypto] ANN: PyCrypto 2.1.0 released!
+Message-ID: <20091213205934.GA11878@rivest.dlitz.net>
+
+PyCrypto 2.1.0 has been released.  This is the first stable release since I
+took over as maintainer of PyCrypto.  It is compatible with Python 2.1 
+through 2.6.  (Python 3.x is not yet supported.)
+
+You can download this release from http://www.pycrypto.org/
+
+It has the following SHA256 sums:
+
+253e1c22ea0249f0429df4f7e2eb973b119c83b146c0f421298f5e8e6822d8a2 *pycrypto-2.1.0.tar.gz
+ed296d283e367a47b5fb8ed17309bd3e67a1e712caae519fb0bbff5ad0723eda *pycrypto-2.1.0.tar.gz.asc
+
+Please test it and post your experiences to the PyCrypto mailing list:
+
+     pycrypto at lists.dlitz.net
+
+and/or file bug reports on Launchpad:
+
+     https://bugs.launchpad.net/pycrypto
+
+Here is a (non-exhaustive) list of changes between 2.0.1 and 2.1.0:
+
+2.1.0
+=====
+
+	* Fix building PyCrypto on Win64 using MS Visual Studio 9.
+	  (Thanks: Nevins Bartolomeo.)
+
+
+2.1.0beta1
+==========
+
+	* Modified RSA.generate() to ensure that e is coprime to p-1 and q-1.
+	  Apparently, RSA.generate was capable of generating unusable keys.
+
+
+2.1.0alpha2
+===========
+
+	* Modified isPrime() to release the global interpreter lock while
+	  performing computations. (patch from Lorenz Quack)
+
+	* Release the GIL while encrypting, decrypting, and hashing (but not
+	  during initialization or finalization).
+
+	* API changes:
+
+	  - Removed RandomPoolCompat and made Crypto.Util.randpool.RandomPool
+	    a wrapper around Crypto.Random that emits a DeprecationWarning.
+	    This is to discourage developers from attempting to provide
+	    backwards compatibility for systems where there are NO strong
+	    entropy sources available.
+
+	  - Added Crypto.Random.get_random_bytes().  This should allow people
+	    to use something like this if they want backwards-compatibility:
+
+	        try:
+	             from Crypto.Random import get_random_bytes
+	        except ImportError:
+	             try:
+	                 from os import urandom as get_random_bytes
+	             except ImportError:
+	                 get_random_bytes = open("/dev/urandom", "rb").read
+
+	  - Implemented __ne__() on pubkey, which fixes the following broken
+	    behaviour:
+	        >>> pk.publickey() == pk.publickey()
+	        True
+	        >>> pk.publickey() != pk.publickey()
+	        True
+	    (patch from Lorenz Quack)
+
+	  - Block ciphers created with MODE_CTR can now operate on strings of
+	    any size, rather than just multiples of the underlying cipher's
+	    block size.
+
+	  - Crypto.Util.Counter objects now raise OverflowError when they wrap
+	    around to zero.  You can override this new behaviour by passing
+	    allow_wraparound=True to Counter.new()
+
+
+2.1.0alpha1
+===========
+
+	* This version supports Python versions 2.1 through 2.6.
+
+	* Clarified copyright status of much of the existing code by tracking
+	  down Andrew M. Kuchling, Barry A. Warsaw, Jeethu Rao, Joris Bontje,
+	  Mark Moraes, Paul Swartz, Robey Pointer, and Wim Lewis and getting
+	  their permission to clarify the license/public-domain status of their
+	  contributions.  Many thanks to all involved!
+
+	* Replaced the test suite with a new, comprehensive package
+	  (Crypto.SelfTest) that includes documentation about where its test
+	  vectors came from, or how they were derived.
+
+	  Use "python setup.py test" to run the tests after building.
+
+	* API changes:
+
+	  - Added Crypto.version_info, which from now on will contain version
+	    information in a format similar to Python's sys.version_info.
+
+	  - Added a new random numbers API (Crypto.Random), and deprecated the
+	    old one (Crypto.Util.randpool.RandomPool), which was misused more
+	    often than not.
+
+	    The new API is used by invoking Crypto.Random.new() and then just
+	    reading from the file-like object that is returned.
+
+	    CAVEAT: To maintain the security of the PRNG, you must call
+	    Crypto.Random.atfork() in both the parent and the child processes
+	    whenever you use os.fork().  Otherwise, the parent and child will
+	    share copies of the same entropy pool, causing them to return the
+	    same results!  This is a limitation of Python, which does not
+	    provide readily-accessible hooks to os.fork().  It's also a
+	    limitation caused by the failure of operating systems to provide
+	    sufficiently fast, trustworthy sources of cryptographically-strong
+	    random numbers.
+
+	  - Crypto.PublicKey now raises ValueError/TypeError/RuntimeError
+	    instead of the various custom "error" exceptions
+
+	  - Removed the IDEA and RC5 modules due to software patents.  Debian
+	    has been doing this for a while
+
+	  - Added Crypto.Random.random, a strong version of the standard Python
+	   'random' module.
+
+	  - Added Crypto.Util.Counter, providing fast counter implementations
+	    for use with CTR-mode ciphers.
+
+	* Bug fixes:
+
+	  - Fixed padding bug in SHA256; this resulted in bad digests whenever
+	    (the number of bytes hashed) mod 64 == 55.
+
+	  - Fixed a 32-bit limitation on the length of messages the SHA256 module
+	    could hash.
+
+	  - AllOrNothing: Fixed padding bug in digest()
+
+	  - Fixed a bad behaviour of the XOR cipher module: It would silently
+	    truncate all keys to 32 bytes.  Now it raises ValueError when the
+	    key is too long.
+
+	  - DSA: Added code to enforce FIPS 186-2 requirements on the size of
+	    the prime p
+
+	  - Fixed the winrandom module, which had been omitted from the build
+	    process, causing security problems for programs that misuse RandomPool.
+
+	  - Fixed infinite loop when attempting to generate RSA keys with an
+	    odd number of bits in the modulus.  (Not that you should do that.)
+
+	* Clarified the documentation for Crypto.Util.number.getRandomNumber.
+
+	  Confusingly, this function does NOT return N random bits; It returns
+	  a random N-bit number, i.e. a random number between 2**(N-1) and (2**N)-1.
+
+	  Note that getRandomNumber is for internal use only and may be
+	  renamed or removed in future releases.
+
+	* Replaced RIPEMD.c with a new implementation (RIPEMD160.c) to
+	  alleviate copyright concerns.
+
+	* Replaced the DES/DES3 modules with ones based on libtomcrypt-1.16 to
+	  alleviate copyright concerns.
+
+	* Replaced Blowfish.c with a new implementation to alleviate copyright
+	  concerns.
+
+	* Added a string-XOR implementation written in C (Crypto.Util.strxor)
+	  and used it to speed up Crypto.Hash.HMAC
+
+	* Converted documentation to reStructured Text.
+
+	* Added epydoc configuration Doc/epydoc-config
+
+	* setup.py now emits a warning when building without GMP.
+
+	* Added pct-speedtest.py to the source tree for doing performance
+	  testing on the new code.
+
+	* Cleaned up the code in several places.
+
+
+Thanks to everyone who helped make this release possible!
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 221 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20091213/e89a4031/attachment.pgp 
+
+From dlitz at dlitz.net  Mon Dec 14 23:47:35 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Tue, 15 Dec 2009 00:47:35 -0500
+Subject: [pycrypto] Wanted: PyCrypto security advisories
+In-Reply-To: <20091213205934.GA11878@rivest.dlitz.net>
+References: <20091213205934.GA11878@rivest.dlitz.net>
+Message-ID: <20091215054735.GA32625@rivest.dlitz.net>
+
+On Sun, Dec 13, 2009 at 03:59:34PM -0500, Dwayne C. Litzenberger wrote:
+> PyCrypto 2.1.0 has been released.
+
+This release of PyCrypto fixes a number of issues, but the previous 
+release, version 2.0.1 is still widely deployed.
+
+I'm a terrible maintainer with too many half-baked projects on the go.  It 
+would be great if someone familiar with making security advisories went 
+through this release, acquired CVE numbers where appropriate, and issued 
+security advisories for bugs in PyCrypto 2.0.1 and in software that uses it 
+incorrectly.
+
+I'm an advocate of full disclosure, so if you find any additional problems 
+that haven't been fixed yet, please just file a bug on Launchpad and make 
+whatever other announcements you deem necessary.  I don't think I have some 
+inherent right to know about exploitable vulnerabilities in other people's 
+computers before they do, just because I happen to be (badly) maintaining 
+some software they use.  (Please also consider supporting 
+http://wikileaks.org/.)
+
+Here are some highlights from the changelog, with my comments:
+
+> 	  - Implemented __ne__() on pubkey, which fixes the following 
+> 	  broken behaviour:
+> 	        >>> pk.publickey() == pk.publickey()
+> 	        True
+> 	        >>> pk.publickey() != pk.publickey()
+> 	        True
+> 	    (patch from Lorenz Quack)
+
+This isn't a security hole in PyCrypto, but I wonder if other software 
+breaks, due to PyCrypto violating the expectations of application 
+developers.
+
+> 	  - Fixed padding bug in SHA256; this resulted in bad digests 
+> 	  whenever (the number of bytes hashed) mod 64 == 55.
+
+I think some distros (e.g. Debian) had this fixed already.  At minimum, 
+this is a compatibility problem.  Maybe it's also a security hole; I'm not 
+a cryptanalyst, so I don't know.
+
+> 	  - Fixed a bad behaviour of the XOR cipher module: It would 
+> 	  silently truncate all keys to 32 bytes.  Now it raises ValueError 
+> 	  when the key is too long.
+
+Code that used Crypto.Cipher.XOR to XOR two long strings together would 
+fail silently.  If your code raises a ValueError here after upgrading to 
+PyCrypto 2.1.0, then you have a security hole.
+
+> 	  - Fixed the winrandom module, which had been omitted from the 
+> 	  build process, causing security problems for programs that misuse 
+> 	  RandomPool.
+
+In the code I've seen, misusing RandomPool is almost universal.  Someone 
+can probably generate a bunch of advisories just by searching Google Code 
+Search for "RandomPool".
+
+See https://bugs.launchpad.net/pycrypto/+bug/249765, and follow the links.
+
+> 	* Modified RSA.generate() to ensure that e is coprime to p-1 and 
+> 	q-1. Apparently, RSA.generate was capable of generating unusable 
+> 	keys.
+
+I don't quite understand the security impact of this (if any), but it was 
+reported here:
+
+     https://bugs.launchpad.net/pycrypto/+bug/408660
+
+= = = = = = = = = = = = = =
+
+Here are some quick links:
+
+PyCrypto 2.1.0 release announcement:
+     http://lists.dlitz.net/pipermail/pycrypto/2009q4/000169.html
+Bug tracker:
+     https://bugs.launchpad.net/pycrypto
+Website:
+     http://www.pycrypto.org/
+git repo:
+     git://git.pycrypto.org:9419/crypto/pycrypto-2.x.git
+gitweb:
+     http://gitweb.pycrypto.org/?p=crypto/pycrypto-2.x.git
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 221 bytes
+Desc: Digital signature
+Url : http://lists.dlitz.net/pipermail/pycrypto/attachments/20091215/65d1618a/attachment.pgp 
+
+From jonathan.livni at gmail.com  Thu Dec 17 12:57:18 2009
+From: jonathan.livni at gmail.com (Jonathan Livni)
+Date: Thu, 17 Dec 2009 20:57:18 +0200
+Subject: [pycrypto] Installation terminated with an error "Unable to find
+	vcvarsall.bat"
+Message-ID: <dcdf2e700912171057m76cea7uf3d8cf94c23b79c6@mail.gmail.com>
+
+Hi,
+I have a problem installing PyCrypto.
+I tried to install it on my Win7 machine using "setup.py install". I have
+Python 2.6.4 installed.
+It created folders under lib\Crypto and copied files, but when it reached
+the build part I receive:
+
+running build_ext
+warning: GMP library not found; Not building Crypto.PublicKey._fastmath.
+building 'Crypto.Random.OSRNG.winrandom' extension
+error: Unable to find vcvarsall.bat
+
+What should I do?
+What and where is this vcvarsall.bat?
+Thanks
+  Jonathan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20091217/ec91239d/attachment.htm 
+
+From myspeme at gmail.com  Mon Dec 28 00:19:06 2009
+From: myspeme at gmail.com (ten speme)
+Date: Mon, 28 Dec 2009 14:19:06 +0800
+Subject: [pycrypto] [problem]There's difference between pycrypto to crypt a
+	string and cryptoPP to crypt a string with AES by CFB mode.
+Message-ID: <fca484050912272219y55b9bb0eyab0e089f7f0101a9@mail.gmail.com>
+
+I using cryptoPP to crypt a string with key:"aaaaaaaaaaaaaaa"
+,iv:"bbbbbbbbbbbbbbbb",data"abcdefghijklmnopqrstuvwxyz", and its encrypted
+string is [hex]"9FE673D419DD3256B6A206FE7004660F11BAFCE5B2106E2BA39A"
+
+by pycrypto , I also using the same key, vi, and data. but get difference
+result:[hex]"78bf5fc7d6a87dd6533d028725cb206cf54dbca6e5ea9a852885".
+
+All these using AES with CFB mode.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20091228/25a4cecb/attachment.htm 
+
+From dlitz at dlitz.net  Mon Dec 28 02:32:23 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 28 Dec 2009 03:32:23 -0500
+Subject: [pycrypto] [problem]There's difference between pycrypto
+	to	crypt a string and cryptoPP to crypt a string with AES by
+	CFB mode.
+In-Reply-To: <fca484050912272219y55b9bb0eyab0e089f7f0101a9@mail.gmail.com>
+References: <fca484050912272219y55b9bb0eyab0e089f7f0101a9@mail.gmail.com>
+Message-ID: <20091228083223.GA347@rivest.dlitz.net>
+
+On Mon, Dec 28, 2009 at 02:19:06PM +0800, ten speme wrote:
+>I using cryptoPP to crypt a string with key:"aaaaaaaaaaaaaaa"
+>,iv:"bbbbbbbbbbbbbbbb",data"abcdefghijklmnopqrstuvwxyz", and its encrypted
+>string is [hex]"9FE673D419DD3256B6A206FE7004660F11BAFCE5B2106E2BA39A"
+
+Please be careful when posting troubleshooting requests.  "aaaaaaaaaaaaaaa" 
+is 15 bytes long, so it's impossible as an AES key.  Can you post example 
+code that builds against cryptoPP (or uses pycryptopp) and produces this 
+result?
+
+>by pycrypto , I also using the same key, vi, and data. but get difference
+>result:[hex]"78bf5fc7d6a87dd6533d028725cb206cf54dbca6e5ea9a852885".
+>
+>All these using AES with CFB mode.
+
+Which CFB mode are you talking about?  CFB is a family of modes.  You can 
+have e.g. 1-bit CFB, 8-bit CFB, 64-bit CFB, 128-bit CFB, etc.  PyCrypto 
+defaults to 8-bit CFB, I believe, but will accept any multiple of 8 bits.  
+(It's set by the segment_size keyword argument to AES.new.)
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+From dlitz at dlitz.net  Mon Dec 28 02:39:57 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 28 Dec 2009 03:39:57 -0500
+Subject: [pycrypto] Installation terminated with an error "Unable
+	to	find vcvarsall.bat"
+In-Reply-To: <dcdf2e700912171057m76cea7uf3d8cf94c23b79c6@mail.gmail.com>
+References: <dcdf2e700912171057m76cea7uf3d8cf94c23b79c6@mail.gmail.com>
+Message-ID: <20091228083957.GB347@rivest.dlitz.net>
+
+On Thu, Dec 17, 2009 at 08:57:18PM +0200, Jonathan Livni wrote:
+>What and where is this vcvarsall.bat?
+
+vcvarsall.bat is part of Microsoft's compiler, which I'm told you can 
+download at no cost.
+
+Python modules are supposed to be built using the same compiler and stdlib 
+as was used to build Python itself.  However, you should be able to use 
+mingw32 (which is a Windows port of gcc) for PyCrypto.  That's all I've 
+ever tested PyCrypto with on Windows, anyway. :)
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+From dlitz at dlitz.net  Mon Dec 28 02:43:38 2009
+From: dlitz at dlitz.net (Dwayne C. Litzenberger)
+Date: Mon, 28 Dec 2009 03:43:38 -0500
+Subject: [pycrypto] python crypto with python 3.0 or 3.1
+In-Reply-To: <4B18E7F0.7020607@gmail.com>
+References: <4B18E7F0.7020607@gmail.com>
+Message-ID: <20091228084338.GC347@rivest.dlitz.net>
+
+On Fri, Dec 04, 2009 at 11:44:00AM +0100, Tobias Koeck wrote:
+>Is it possible to run python crypto with python 3.0 or 3.1. If not is 
+>it planed to adjust?
+
+Sure, and it'll happen sooner if somebody volunteers to do it. :-)
+
+There will need to be be some strategy for Python 2.x compatibility, and 
+the contributor(s) need to to meet the PyCrypto Code Submission 
+Requirements:
+
+http://www.dlitz.net/software/pycrypto/submission-requirements/
+
+-- 
+Dwayne C. Litzenberger <dlitz at dlitz.net>
+  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+
+From mlabriol at gdeb.com  Mon Dec 28 08:26:55 2009
+From: mlabriol at gdeb.com (Michael D Labriola)
+Date: Mon, 28 Dec 2009 09:26:55 -0500
+Subject: [pycrypto] python crypto with python 3.0 or 3.1
+In-Reply-To: <20091228084338.GC347@rivest.dlitz.net>
+Message-ID: <OFD19778C5.67DC7A81-ON8525769A.004F07BF-8525769A.004F5EB4@gdeb.com>
+
+> There will need to be be some strategy for Python 2.x compatibility, and 
+
+> the contributor(s) need to to meet the PyCrypto Code Submission 
+> Requirements:
+> 
+> http://www.dlitz.net/software/pycrypto/submission-requirements/
+
+Woah... wasn't expecting the ban on U.S. contributors.  Why is that?  Are 
+you paranoid of the U.S. export restrictions?  Or are they really still 
+that bad?  Just curious.  I feel left out now.
+
+-Mike
+
+PS - I guess that means I won't go back and clean up my AES Keywrap module 
+for submission...  :-(
+
+From myspeme at gmail.com  Mon Dec 28 18:46:20 2009
+From: myspeme at gmail.com (ten speme)
+Date: Tue, 29 Dec 2009 08:46:20 +0800
+Subject: [pycrypto] [problem]There's difference between pycrypto to
+	crypt a string and cryptoPP to crypt a string with AES by CFB mode.
+In-Reply-To: <20091228083223.GA347@rivest.dlitz.net>
+References: <fca484050912272219y55b9bb0eyab0e089f7f0101a9@mail.gmail.com>
+	<20091228083223.GA347@rivest.dlitz.net>
+Message-ID: <fca484050912281646q62a3b86ag6423e22bde8c3705@mail.gmail.com>
+
+Thank you, I get the right answer. CryptoPP is default to 128 bit mode. and
+I set it to be 8 bit mode and solved.
+
+On Mon, Dec 28, 2009 at 4:32 PM, Dwayne C. Litzenberger <dlitz at dlitz.net>wrote:
+
+> On Mon, Dec 28, 2009 at 02:19:06PM +0800, ten speme wrote:
+> >I using cryptoPP to crypt a string with key:"aaaaaaaaaaaaaaa"
+> >,iv:"bbbbbbbbbbbbbbbb",data"abcdefghijklmnopqrstuvwxyz", and its encrypted
+> >string is [hex]"9FE673D419DD3256B6A206FE7004660F11BAFCE5B2106E2BA39A"
+>
+> Please be careful when posting troubleshooting requests.  "aaaaaaaaaaaaaaa"
+> is 15 bytes long, so it's impossible as an AES key.  Can you post example
+> code that builds against cryptoPP (or uses pycryptopp) and produces this
+> result?
+>
+> >by pycrypto , I also using the same key, vi, and data. but get difference
+> >result:[hex]"78bf5fc7d6a87dd6533d028725cb206cf54dbca6e5ea9a852885".
+> >
+> >All these using AES with CFB mode.
+>
+> Which CFB mode are you talking about?  CFB is a family of modes.  You can
+> have e.g. 1-bit CFB, 8-bit CFB, 64-bit CFB, 128-bit CFB, etc.  PyCrypto
+> defaults to 8-bit CFB, I believe, but will accept any multiple of 8 bits.
+> (It's set by the segment_size keyword argument to AES.new.)
+>
+> --
+> Dwayne C. Litzenberger <dlitz at dlitz.net>
+>  Key-signing key   - 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+>  Annual key (2009) - C805 1746 397B 0202 2758  2821 58E0 894B 81D2 582E
+> _______________________________________________
+> pycrypto mailing list
+> pycrypto at lists.dlitz.net
+> http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://lists.dlitz.net/pipermail/pycrypto/attachments/20091229/17371e60/attachment.htm 
+

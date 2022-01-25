@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] pycryptopp alternative Re:  Comments on Elgamal, and a broader question: Whither pycrypto?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20pycryptopp%20alternative%20Re%3A%20%20Comments%20on%20Elgamal%2C%0A%20and%20a%20broader%20question%3A%20Whither%20pycrypto%3F&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000367.html">
+   <LINK REL="Next"  HREF="000372.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] pycryptopp alternative Re:  Comments on Elgamal, and a broader question: Whither pycrypto?</H1>
+    <B>Zooko O'Whielacronx</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20pycryptopp%20alternative%20Re%3A%20%20Comments%20on%20Elgamal%2C%0A%20and%20a%20broader%20question%3A%20Whither%20pycrypto%3F&In-Reply-To="
+       TITLE="[pycrypto] pycryptopp alternative Re:  Comments on Elgamal, and a broader question: Whither pycrypto?">zooko at zooko.com
+       </A><BR>
+    <I>Mon Jan  3 09:09:11 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000367.html">[pycrypto] Comments on Elgamal,	and a broader question: Whither pycrypto?
+</A></li>
+        <LI>Next message: <A HREF="000372.html">[pycrypto] pycryptopp alternative
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#368">[ date ]</a>
+              <a href="thread.html#368">[ thread ]</a>
+              <a href="subject.html#368">[ subject ]</a>
+              <a href="author.html#368">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>pycryptopp is a good alternative if you can do without algorithms that
+it doesn't support. It supports only a few at the moment -- AES,
+RSA-PSS-SHA256 signatures (but not encryption), SHA-256. We'll slowly
+add support for a few more in the future. We're adding ECDSA
+signatures (but not encryption) right now, and a Google Summer of Code
+student, Yu Xue, added support for XSalsa20, HMAC, and HKDF...
+
+At least pycryptopp is developed with careful testing which catches
+some bugs, and it is based on Crypto++ which itself gets developed by
+Wei Dai and others.
+
+Here is our buildbot showing tests being run on various platforms:
+
+<A HREF="http://tahoe-lafs.org/buildbot-pycryptopp/waterfall">http://tahoe-lafs.org/buildbot-pycryptopp/waterfall</A>
+
+Here is the trac:
+
+<A HREF="http://tahoe-lafs.org/trac/pycryptopp/wiki">http://tahoe-lafs.org/trac/pycryptopp/wiki</A>
+
+Regards,
+
+Zooko
+
+[1] <A HREF="http://tahoe-lafs.org/trac/pycryptopp/browser/trunk/pycryptopp/publickey/rsamodule.cpp?annotate=blame&amp;rev=756">http://tahoe-lafs.org/trac/pycryptopp/browser/trunk/pycryptopp/publickey/rsamodule.cpp?annotate=blame&amp;rev=756</A>
+</PRE>
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000367.html">[pycrypto] Comments on Elgamal,	and a broader question: Whither pycrypto?
+</A></li>
+	<LI>Next message: <A HREF="000372.html">[pycrypto] pycryptopp alternative
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#368">[ date ]</a>
+              <a href="thread.html#368">[ thread ]</a>
+              <a href="subject.html#368">[ subject ]</a>
+              <a href="author.html#368">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

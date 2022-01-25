@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Release the GIL
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Release%20the%20GIL&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000129.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Release the GIL</H1>
+    <B>don at amberfisharts.com</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Release%20the%20GIL&In-Reply-To="
+       TITLE="[pycrypto] Release the GIL">don at amberfisharts.com
+       </A><BR>
+    <I>Tue Sep 29 17:13:52 CST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000129.html">[pycrypto] Elliptic curve cryptography and group signature
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#130">[ date ]</a>
+              <a href="thread.html#130">[ thread ]</a>
+              <a href="subject.html#130">[ subject ]</a>
+              <a href="author.html#130">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi,
+
+I noticed that generating RSA keys takes quite some time (~10s on my Netbook) so I
+wanted to load it of into a separate thread. This didn't help at all.
+
+After investigating I found that releasing the GIL in isPrime() in _fastmath.c using the Py_BEGIN/END_ALLOW_THREADS macros solved my problem.
+
+So I'm wondering is there a reason NOT to release the GIL that I am not aware of?
+If not could this be included in the upcoming 2.1 release?
+
+Maybe there are some other long running C-level calls where releasing the GIL would make sense but so far I only had problems with isPrime (mpz_probab_prime_p).
+
+
+sincerely yours
+//Lorenz
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000129.html">[pycrypto] Elliptic curve cryptography and group signature
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#130">[ date ]</a>
+              <a href="thread.html#130">[ thread ]</a>
+              <a href="subject.html#130">[ subject ]</a>
+              <a href="author.html#130">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

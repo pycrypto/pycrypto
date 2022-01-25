@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Initial review of Thorsten's Py3k changes
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Initial%20review%20of%20Thorsten%27s%20Py3k%20changes&In-Reply-To=4D44C917.4070003%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000415.html">
+   <LINK REL="Next"  HREF="000417.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Initial review of Thorsten's Py3k changes</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Initial%20review%20of%20Thorsten%27s%20Py3k%20changes&In-Reply-To=4D44C917.4070003%40gmx.li"
+       TITLE="[pycrypto] Initial review of Thorsten's Py3k changes">dlitz at dlitz.net
+       </A><BR>
+    <I>Sat Jan 29 20:31:27 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000415.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+        <LI>Next message: <A HREF="000417.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#416">[ date ]</a>
+              <a href="thread.html#416">[ thread ]</a>
+              <a href="subject.html#416">[ subject ]</a>
+              <a href="author.html#416">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Jan 29, 2011 at 09:12:39PM -0500, Thorsten Behrens wrote:
+&gt;<i>Okay, I got marching orders. Let me see that I have this right:
+</I>&gt;<i>
+</I>&gt;<i>- All test vectors back to 'something' instead of b('something'), and 
+</I>&gt;<i>change the routines that read the vectors to wrap the b() around it.
+</I>
+Yes, if that makes the most sense.
+
+&gt;<i>- Take files and create one humongous new commit that has all changes.
+</I>
+No, each commit should be a distinct change (and each distinct change 
+should have its own commit).  Having separate commits for the following 
+makes sense:
+
+     - Replace tabs with spaces
+     - Py3K _fastmath.c support
+     - Change _fastmath.c to compile with VC++
+     - add MPIR support
+     - Add Ron Rivest Test
+     - Add unit tests for Crypto.Random.random
+     - Update documentation with current state of security of hash and 
+       cipher functions.
+     - Update documentation with Python 3.x notes.
+     - Add unit test for AllOrNothing
+     - Fix AllOrNothing and random.sample()
+
+But the following sorts of commits should be squashed into related commits:
+
+     - Removed erroneous print statement from setup.py - it had snuck in 
+       from the released 2.3 source
+     - Now really staging the allornothing test. oops.
+
+Does that make sense?
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000415.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+	<LI>Next message: <A HREF="000417.html">[pycrypto] Initial review of Thorsten's Py3k changes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#416">[ date ]</a>
+              <a href="thread.html#416">[ thread ]</a>
+              <a href="subject.html#416">[ subject ]</a>
+              <a href="author.html#416">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

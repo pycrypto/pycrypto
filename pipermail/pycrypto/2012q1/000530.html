@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Run test suite with /dev/random
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To=4F012DC0.3020106%40ramacher.at">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000526.html">
+   <LINK REL="Next"  HREF="000536.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Run test suite with /dev/random</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Run%20test%20suite%20with%20/dev/random&In-Reply-To=4F012DC0.3020106%40ramacher.at"
+       TITLE="[pycrypto] Run test suite with /dev/random">dlitz at dlitz.net
+       </A><BR>
+    <I>Fri Jan 13 10:07:51 CST 2012</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000526.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+        <LI>Next message: <A HREF="000536.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#530">[ date ]</a>
+              <a href="thread.html#530">[ thread ]</a>
+              <a href="subject.html#530">[ subject ]</a>
+              <a href="author.html#530">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Jan 02, 2012 at 05:08:32AM +0100, Sebastian Ramacher wrote:
+&gt;<i>I'm facing the following issue: in the Debian package of pycrypto we build
+</I>&gt;<i>pycrypto for Python 2.6, 2.7 and 3.1 and the debug variants. For all these
+</I>&gt;<i>versions and variants the test suite is run during the build. This works fine
+</I>&gt;<i>except on the GNU/Hurd build system [1]. There the test suite succeeds for Py
+</I>&gt;<i>2.6, 2.7 but fails for Py 3.2 because the system runs out of entropy.
+</I>&gt;<i>
+</I>&gt;<i>I see two options to fix the issue on the Debian side:
+</I>&gt;<i>
+</I>&gt;<i> * Disable the test suite on GNU/Hurd.
+</I>&gt;<i> * Replace every occurrence of /dev/urandom with /dev/random and run the 
+</I>&gt;<i> test suite with /dev/random.
+</I>&gt;<i>
+</I>&gt;<i>I don't like either of these two options. I'd rather prefer an option to 
+</I>&gt;<i>specify the random number generator that should be used for the test 
+</I>&gt;<i>suite.  But before implementing such an option I'd like to know if this 
+</I>&gt;<i>has any chance to be accepted into pycrypto.
+</I>
+Not likely.  This looks like a HURD bug that should be fixed in HURD.
+
+Historically, /dev/random and /dev/urandom were OS-specific, but as far as 
+I'm aware, all of the other modern Unix-like systems have converged on one 
+de-facto standard:
+
+- /dev/urandom always returns as many cryptographically-secure random bytes 
+   as you request
+
+- /dev/random either behaves exactly like /dev/urandom, or it does &quot;entropy 
+   estimation&quot; (which is silly, IMHO) and blocks whenever the estimate 
+   reaches zero.
+
+Notably, /dev/urandom behaves exactly the same on every system where it 
+exists---except, apparently, on HURD.  What good reason could there 
+possibly be for HURD to be incompatible here?  Why should all *nix 
+developers have to write a HURD-specific protocol switch in their 
+applications?
+
+I'm not interested in patches that encourage such madness.  It would better 
+for you to spend your effort fixing HURD's /dev/urandom implementation.
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000526.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+	<LI>Next message: <A HREF="000536.html">[pycrypto] Run test suite with /dev/random
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#530">[ date ]</a>
+              <a href="thread.html#530">[ thread ]</a>
+              <a href="subject.html#530">[ subject ]</a>
+              <a href="author.html#530">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

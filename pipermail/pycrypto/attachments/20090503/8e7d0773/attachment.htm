@@ -1,0 +1,44 @@
+<tt>
+&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;2009/5/3&nbsp;Dwayne&nbsp;C.&nbsp;Litzenberger&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&amp;lt;&lt;a&nbsp;href=&quot;mailto:dlitz@dlitz.net&quot;&gt;dlitz@dlitz.net&lt;/a&gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;border-left:&nbsp;1px&nbsp;solid&nbsp;rgb(204,&nbsp;204,&nbsp;204);&nbsp;margin:&nbsp;0pt&nbsp;0pt&nbsp;0pt&nbsp;0.8ex;&nbsp;padding-left:&nbsp;1ex;&quot;&gt;<br>
+&lt;div&nbsp;class=&quot;im&quot;&gt;On&nbsp;Sat,&nbsp;May&nbsp;02,&nbsp;2009&nbsp;at&nbsp;03:15:42PM&nbsp;+0200,&nbsp;Mads&nbsp;Kiilerich&nbsp;wrote:&lt;br&gt;<br>
+&amp;gt;&nbsp;&lt;a&nbsp;href=&quot;http://code.google.com/appengine/docs/python/tools/libraries.html#PyCrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://code.google.com/appengine/docs/python/tools/libraries.html#PyCrypto&lt;/a&gt;&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;App&nbsp;Engine&nbsp;includes&nbsp;a&nbsp;custom&nbsp;version&nbsp;of&nbsp;the&nbsp;Python&nbsp;Cryptography&nbsp;Toolkit&lt;br&gt;<br>
+&amp;gt;&nbsp;&amp;lt;&lt;a&nbsp;href=&quot;http://www.amk.ca/python/code/crypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://www.amk.ca/python/code/crypto&lt;/a&gt;&amp;gt;,&nbsp;also&nbsp;known&nbsp;as&nbsp;PyCrypto.&nbsp;The&nbsp;version&lt;br&gt;<br>
+&amp;gt;&nbsp;included&nbsp;with&nbsp;App&nbsp;Engine&nbsp;is&nbsp;based&nbsp;on&nbsp;pycrypto&nbsp;2.0.1.&nbsp;This&nbsp;is&nbsp;not&nbsp;the&nbsp;latest&lt;br&gt;<br>
+&amp;gt;&nbsp;version&nbsp;&amp;lt;&lt;a&nbsp;href=&quot;http://pycrypto.org&quot;&nbsp;target=&quot;_blank&quot;&gt;http://pycrypto.org&lt;/a&gt;&amp;gt;,&nbsp;but&nbsp;should&nbsp;be&nbsp;largely&nbsp;compatible&nbsp;with&nbsp;more&lt;br&gt;<br>
+&amp;gt;&nbsp;recent&nbsp;versions.&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;Neat.&nbsp; Thanks&nbsp;for&nbsp;pointing&nbsp;this&nbsp;out.&lt;br&gt;<br>
+&lt;div&nbsp;class=&quot;im&quot;&gt;&lt;br&gt;<br>
+&amp;gt;&nbsp;For&nbsp;reasons&nbsp;both&nbsp;technical&nbsp;and&nbsp;legal,&nbsp;the&nbsp;App&nbsp;Engine&nbsp;version&nbsp;of&nbsp;PyCrypto&lt;br&gt;<br>
+&amp;gt;&nbsp;has&nbsp;the&nbsp;following&nbsp;differences&nbsp;from&nbsp;the&nbsp;original&nbsp;PyCrypto&nbsp;2.0.1:&lt;br&gt;<br>
+&amp;gt;&lt;br&gt;<br>
+&amp;gt;&nbsp; &nbsp; *&nbsp;The&nbsp;RC5&nbsp;and&nbsp;IDEA&nbsp;ciphers&nbsp;have&nbsp;been&nbsp;removed.&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;Makes&nbsp;sense.&nbsp; RC5&nbsp;and&nbsp;IDEA&nbsp;are&nbsp;patent-encumbered.&lt;br&gt;<br>
+&lt;br&gt;<br>
+&amp;gt;&nbsp; &nbsp; *&nbsp;The&nbsp;MODE_PGP&nbsp;encryption&nbsp;mode&nbsp;has&nbsp;been&nbsp;removed.&lt;br&gt;<br>
+&lt;br&gt;<br>
+Hmm.&nbsp; Does&nbsp;anybody&nbsp;know&nbsp;why&nbsp;MODE_PGP&nbsp;would&nbsp;have&nbsp;been&nbsp;removed?&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;PGP&nbsp;is&nbsp;a&nbsp;registered&nbsp;company,&nbsp;there&nbsp;may&nbsp;be&nbsp;some&nbsp;trademark/copyright&nbsp;issues&nbsp;there.&lt;br&gt; &lt;/div&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;border-left:&nbsp;1px&nbsp;solid&nbsp;rgb(204,&nbsp;204,&nbsp;204);&nbsp;margin:&nbsp;0pt&nbsp;0pt&nbsp;0pt&nbsp;0.8ex;&nbsp;padding-left:&nbsp;1ex;&quot;&gt;<br>
+&lt;br&gt;<br>
+&lt;div&nbsp;class=&quot;im&quot;&gt;&lt;br&gt;<br>
+&amp;gt;&nbsp; &nbsp; *&nbsp;All&nbsp;public&nbsp;key&nbsp;cryptography&nbsp;routines&nbsp;are&nbsp;implemented&nbsp;in&nbsp;pure&lt;br&gt;<br>
+&amp;gt;&nbsp; &nbsp; &nbsp; Python&nbsp;code.&nbsp;They&nbsp;do&nbsp;not&nbsp;use&nbsp;any&nbsp;native&nbsp;acceleration&nbsp;(C&nbsp;code).&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;/div&gt;In&nbsp;other&nbsp;words,&nbsp;they&nbsp;built&nbsp;PyCrypto&nbsp;without&nbsp;the&nbsp;optional&nbsp;support&nbsp;for&nbsp;libgmp&lt;br&gt;<br>
+(_fastmath.c).&lt;br&gt;<br>
+&lt;font&nbsp;color=&quot;#888888&quot;&gt;&lt;br&gt;<br>
+&lt;br&gt;<br>
+--&lt;br&gt;<br>
+Dwayne&nbsp;C.&nbsp;Litzenberger&nbsp;&amp;lt;&lt;a&nbsp;href=&quot;mailto:dlitz@dlitz.net&quot;&gt;dlitz@dlitz.net&lt;/a&gt;&amp;gt;&lt;br&gt;<br>
+&nbsp; Key-signing&nbsp;key&nbsp; &nbsp;-&nbsp;19E1&nbsp;1FE8&nbsp;B3CF&nbsp;F273&nbsp;ED17&nbsp; 4A24&nbsp;928C&nbsp;EC13&nbsp;39C2&nbsp;5CF7&lt;br&gt;<br>
+&nbsp; Annual&nbsp;key&nbsp;(2008)&nbsp;-&nbsp;4B2A&nbsp;FD82&nbsp;FC7D&nbsp;9E38&nbsp;38D9&nbsp; 179F&nbsp;1C11&nbsp;B877&nbsp;E780&nbsp;4B45&lt;br&gt;<br>
+_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;/font&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;br&nbsp;clear=&quot;all&quot;&gt;&lt;br&gt;--&nbsp;&lt;br&gt;Sam&nbsp;Phippen&lt;br&gt;&lt;br&gt;Please&nbsp;avoid&nbsp;sending&nbsp;me&nbsp;Word&nbsp;or&nbsp;PowerPoint&nbsp;attachments.&lt;br&gt;See&nbsp;&lt;a&nbsp;href=&quot;http://www.gnu.org/philosophy/no-word-attachments.html&quot;&gt;http://www.gnu.org/philosophy/no-word-attachments.html&lt;/a&gt;&lt;br&gt;<br>
+<br>
+
+</tt>

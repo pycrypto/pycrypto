@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Once again: Python3 with PyCrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=4D13F55C.8020800%40gmx.li">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000308.html">
+   <LINK REL="Next"  HREF="000316.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Once again: Python3 with PyCrypto</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Once%20again%3A%20Python3%20with%20PyCrypto&In-Reply-To=4D13F55C.8020800%40gmx.li"
+       TITLE="[pycrypto] Once again: Python3 with PyCrypto">dlitz at dlitz.net
+       </A><BR>
+    <I>Thu Dec 23 20:16:08 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000308.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+        <LI>Next message: <A HREF="000316.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#313">[ date ]</a>
+              <a href="thread.html#313">[ thread ]</a>
+              <a href="subject.html#313">[ subject ]</a>
+              <a href="author.html#313">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Thu, Dec 23, 2010 at 08:20:28PM -0500, Thorsten Behrens wrote:
+&gt;<i>Dwayne,
+</I>&gt;<i>
+</I>&gt;<i>I've looked into this some more. There are two basic approaches:
+</I>&gt;<i>
+</I>&gt;<i>a) Create .py code that will work in Python 2.x and 3.x. Code will 
+</I>&gt;<i>become uglier; for example try except blocks have to be used for 
+</I>&gt;<i>imports. One can catch a glimpse here: 
+</I>&gt;<i><A HREF="http://pydev.blogspot.com/2008/11/making-code-work-in-python-2-and-3.html">http://pydev.blogspot.com/2008/11/making-code-work-in-python-2-and-3.html</A>
+</I>&gt;<i>
+</I>&gt;<i>b) Leave .py code to be written for Python 2.x, with some cleanup 
+</I>&gt;<i>applied to redo constructs that cannot be converted by 2to3. When ready 
+</I>&gt;<i>to release, run 2to3 on the source tree, and release two versions: One 
+</I>&gt;<i>for Python 2.x, one for Python 3.x.
+</I>&gt;<i>
+</I>&gt;<i>b) is how the authors of Python intend things to be, and is likely the 
+</I>&gt;<i>cleanest way of operation. I don't relish the idea of following a) and 
+</I>&gt;<i>butchering the 2.x code so it will run in both 2.x and 3.x without change.
+</I>&gt;<i>
+</I>&gt;<i>The C code will require some #defines and some #ifdefs in places, to 
+</I>&gt;<i>deal with int/long, the fact that bytes are a type now and shouldn't be 
+</I>&gt;<i>strings (can be done with defines), and the module initialization code.
+</I>&gt;<i>
+</I>&gt;<i>Are you comfortable with b)? Objections? Reservations?
+</I>
+That sounds good to me, as long as it's not error-prone.  I don't have a 
+problem with limiting myself to certain constructs, since I've been doing 
+that for Python 2.1 support anyway.
+
+&gt;<i>If you are good to give it a go, I'd need to know from you how you like 
+</I>&gt;<i>to handle branches in git. I'd assume that this work should be carried 
+</I>&gt;<i>out in a separate branch, not the trunk. This is going to touch a lot of 
+</I>&gt;<i>files.
+</I>
+Yes, it'll be in a separate branch for now.  As for the specifics, I don't   
+know.  Try something and we'll see how it goes.  At some point, I might 
+want to refactor it, but we'll deal with that when we have something more 
+concrete.
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000308.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+	<LI>Next message: <A HREF="000316.html">[pycrypto] Once again: Python3 with PyCrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#313">[ date ]</a>
+              <a href="thread.html#313">[ thread ]</a>
+              <a href="subject.html#313">[ subject ]</a>
+              <a href="author.html#313">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

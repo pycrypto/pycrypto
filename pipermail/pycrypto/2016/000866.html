@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Build error?
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Build%20error%3F&In-Reply-To=%3CCAEncD4dgPyXMennQpzE_uXHDjsKX6_rVfdM0kHxmTVg7SKh5Sg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <LINK REL="Previous"  HREF="000865.html">
+   <LINK REL="Next"  HREF="000867.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Build error?</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20Build%20error%3F&In-Reply-To=%3CCAEncD4dgPyXMennQpzE_uXHDjsKX6_rVfdM0kHxmTVg7SKh5Sg%40mail.gmail.com%3E"
+       TITLE="[pycrypto] Build error?">dave.pawson at gmail.com
+       </A><BR>
+    <I>Fri Dec  2 09:38:04 UTC 2016</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000865.html">[pycrypto] Build error?
+</A></li>
+        <LI>Next message: <A HREF="000867.html">[pycrypto] Build error?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#866">[ date ]</a>
+              <a href="thread.html#866">[ thread ]</a>
+              <a href="subject.html#866">[ subject ]</a>
+              <a href="author.html#866">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>further investigations show:
+
+# pip show pycrypto
+Name: pycrypto
+Version: 2.6.1
+Summary: Cryptographic modules for Python.
+Home-page: <A HREF="http://www.pycrypto.org/">http://www.pycrypto.org/</A>
+Author: Dwayne C. Litzenberger
+Author-email: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>
+License: UNKNOWN
+Location: /usr/lib64/python2.7/site-packages
+
+
+All my code is (now) Python 3.5.
+Question if 3.5 code accesses 2.7 site-packages?
+
+Is there a way round this please?
+
+regards
+
+
+
+On 2 December 2016 at 08:28, Dave Pawson &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dave.pawson at gmail.com</A>&gt; wrote:
+&gt;<i> Fedora 25, installing pycrypto 2.6.1
+</I>&gt;<i>
+</I>&gt;<i> full build at <A HREF="http://pastebin.com/acC5r1YY">http://pastebin.com/acC5r1YY</A>
+</I>&gt;<i>
+</I>&gt;<i> error reported
+</I>&gt;<i>
+</I>&gt;<i> gcc: error: /usr/lib/rpm/redhat/redhat-hardened-cc1: No such file or
+</I>&gt;<i> directory error: command 'gcc' failed with exit status 1
+</I>&gt;<i>
+</I>&gt;<i> Searching for the error I found
+</I>&gt;<i> <A HREF="https://bugs.launchpad.net/openstack-gate/+bug/1424582">https://bugs.launchpad.net/openstack-gate/+bug/1424582</A>
+</I>&gt;<i>
+</I>&gt;<i> # dnf install redhat-rpm-config
+</I>&gt;<i>
+</I>&gt;<i> which then brought
+</I>&gt;<i>
+</I>&gt;<i> src/MD2.c:31:20: fatal error: Python.h: No such file or directory
+</I>&gt;<i>  #include &quot;Python.h&quot;
+</I>&gt;<i>                     ^
+</I>&gt;<i> compilation terminated.
+</I>&gt;<i> error: command 'gcc' failed with exit status 1
+</I>&gt;<i>
+</I>&gt;<i> dnf install python3-devel
+</I>&gt;<i> resolved that.
+</I>&gt;<i>
+</I>&gt;<i> I'm lost now with
+</I>&gt;<i>
+</I>&gt;<i>  from Crypto.Cipher import AES
+</I>&gt;<i> ImportError: No module named 'Crypto'
+</I>&gt;<i>
+</I>&gt;<i> Google has lots of varying suggestions, none of which
+</I>&gt;<i> seem to work.
+</I>&gt;<i>
+</I>&gt;<i> Any help please.
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dave Pawson
+</I>&gt;<i> XSLT XSL-FO FAQ.
+</I>&gt;<i> Docbook FAQ.
+</I>&gt;<i> <A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</I>
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000865.html">[pycrypto] Build error?
+</A></li>
+	<LI>Next message: <A HREF="000867.html">[pycrypto] Build error?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#866">[ date ]</a>
+              <a href="thread.html#866">[ thread ]</a>
+              <a href="subject.html#866">[ subject ]</a>
+              <a href="author.html#866">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,228 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Pycrypto working with python 3.0 or 3.1
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20working%20with%20python%203.0%20or%203.1&In-Reply-To=4BA12F21.20100%40gmx.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000208.html">
+   <LINK REL="Next"  HREF="000206.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Pycrypto working with python 3.0 or 3.1</H1>
+    <B>Grail Dane</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Pycrypto%20working%20with%20python%203.0%20or%203.1&In-Reply-To=4BA12F21.20100%40gmx.net"
+       TITLE="[pycrypto] Pycrypto working with python 3.0 or 3.1">grail69 at hotmail.com
+       </A><BR>
+    <I>Wed Mar 17 19:57:14 CST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000208.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+        <LI>Next message: <A HREF="000206.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#209">[ date ]</a>
+              <a href="thread.html#209">[ thread ]</a>
+              <a href="subject.html#209">[ subject ]</a>
+              <a href="author.html#209">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi Christoph
+So I tried the suggestion below but still received the error about import from non-package :(
+I changed it to read:
+from Crypto.SelfTest.Cipher import commonreturn common.make_block_tests(AES, &quot;AES&quot;, test_data)
+and it does not error on that but now presents me with a segfault :(
+So I seem to have gone from bad to worse. So I am hoping someone on thislist might be able to suggest how I can track the fault to find out what is wrong now??
+CheersGrail
+
+&gt;<i> Date: Wed, 17 Mar 2010 20:36:01 +0100
+</I>&gt;<i> From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">christoph.tapler at gmx.net</A>
+</I>&gt;<i> To: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+</I>&gt;<i> 
+</I>&gt;<i> Hi Grail,
+</I>&gt;<i> 
+</I>&gt;<i> Following replacement - I have used AES as an example - seems to work
+</I>&gt;<i> fine:
+</I>&gt;<i> 
+</I>&gt;<i> From:
+</I>&gt;<i>      from common import make_block_tests
+</I>&gt;<i>      return make_block_tests(AES, &quot;AES&quot;, test_data)
+</I>&gt;<i> 
+</I>&gt;<i> To:
+</I>&gt;<i>      from . import common
+</I>&gt;<i>      return common.make_block_tests(AES, &quot;AES&quot;, test_data)
+</I>&gt;<i> 
+</I>&gt;<i> In some files, you also need to remove the &quot;import common import dict&quot; 
+</I>&gt;<i> at the beginning of the files. According to the comment, this was only
+</I>&gt;<i> needed for Python 2.1 / 2.2. Hence that removal should not negatively 
+</I>&gt;<i> affect functionality.
+</I>&gt;<i> 
+</I>&gt;<i> Unfortunately I don't have enough time to do all the replacements in
+</I>&gt;<i> the next days. I could send you a patch on weekend earliest.
+</I>&gt;<i> 
+</I>&gt;<i> Cheers,
+</I>&gt;<i> Christoph
+</I>&gt;<i> 
+</I>&gt;<i> On 15.03.2010 21:41, Christoph Tapler wrote:
+</I>&gt;<i> &gt; Hi,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I could find the relevant change documented in
+</I>&gt;<i> &gt; <A HREF="http://docs.python.org/py3k/whatsnew/3.0.html">http://docs.python.org/py3k/whatsnew/3.0.html</A> , &quot;Removed Syntax&quot; section.
+</I>&gt;<i> &gt; Using &quot;from . import X&quot; instead of &quot;import X&quot; should fix the issue.
+</I>&gt;<i> &gt; I will try to adapt the Test Suite asap.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Cheers,
+</I>&gt;<i> &gt; Christoph
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On 15.03.2010 02:10, Dwayne C. Litzenberger wrote:
+</I>&gt;<i> &gt;&gt; Are absolute imports standard in Python 3?
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; <A HREF="http://www.python.org/dev/peps/pep-0328/">http://www.python.org/dev/peps/pep-0328/</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; On Sun, Mar 14, 2010 at 04:11:58PM +0100, Christoph Tapler wrote:
+</I>&gt;<i> &gt;&gt;&gt; Hi Grail,
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; I have tried to fix the test suite, but I came across a problem,
+</I>&gt;<i> &gt;&gt;&gt; which seems to be specific to Python 3. It seems to me that Python 3
+</I>&gt;<i> &gt;&gt;&gt; behaves differently in terms of hierarchical imports.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; To demonstrate this difference, I have attached a small example (just
+</I>&gt;<i> &gt;&gt;&gt; start level_test.py in Python 2 / 3). If you execute this example in
+</I>&gt;<i> &gt;&gt;&gt; Python 2, everything works fine. However, in Python 3, the second
+</I>&gt;<i> &gt;&gt;&gt; (nested) import fails. I don't understand why.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Do you (or anybody else of course ;-) ) have an idea how this issue
+</I>&gt;<i> &gt;&gt;&gt; could be resolved? Btw, this pattern appears several times in the test
+</I>&gt;<i> &gt;&gt;&gt; suite.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Kind Regards,
+</I>&gt;<i> &gt;&gt;&gt; Christoph
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; On 04.03.2010 03:37, Grail Dane wrote:
+</I>&gt;<i> &gt;&gt;&gt;&gt; Hi Christoph
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Good to see this is coming together for you, and as one of the users
+</I>&gt;<i> &gt;&gt;&gt;&gt; mentions,
+</I>&gt;<i> &gt;&gt;&gt;&gt; using the unified option is a general rule of thumb for patches /
+</I>&gt;<i> &gt;&gt;&gt;&gt; diffs.
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; You are correct about the test suite as I have not had a chance to
+</I>&gt;<i> &gt;&gt;&gt;&gt; alter
+</I>&gt;<i> &gt;&gt;&gt;&gt; the tests to Python 3 context.
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Cheers
+</I>&gt;<i> &gt;&gt;&gt;&gt; Grail
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; ------------------------------------------------------------------------
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Date: Wed, 3 Mar 2010 21:58:09 +0100
+</I>&gt;<i> &gt;&gt;&gt;&gt; From: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">christoph.tapler at gmx.net</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt; To: <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt; Subject: Re: [pycrypto] Pycrypto working with python 3.0 or 3.1
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Hi Grail,
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; I have applied your patch on my Windows machine. Your AES encryption /
+</I>&gt;<i> &gt;&gt;&gt;&gt; decryption seems to work well - In case
+</I>&gt;<i> &gt;&gt;&gt;&gt; AZCkZ1wU5d0psrwlaoS5R4tz1dRL6rBBNzjIvK9NHSo= is the result ;-)
+</I>&gt;<i> &gt;&gt;&gt;&gt; Moreover, I have tried the diff tool. Not sure if the output is usable
+</I>&gt;<i> &gt;&gt;&gt;&gt; for you. Just
+</I>&gt;<i> &gt;&gt;&gt;&gt; let me know if this format is okay or not. The patch contains a few
+</I>&gt;<i> &gt;&gt;&gt;&gt; rather trivial
+</I>&gt;<i> &gt;&gt;&gt;&gt; fixes for the Windows environment. With those fixes the build is
+</I>&gt;<i> &gt;&gt;&gt;&gt; successful.
+</I>&gt;<i> &gt;&gt;&gt;&gt; However, the test suite doesn't build, needs adaptions as well (but I
+</I>&gt;<i> &gt;&gt;&gt;&gt; think only
+</I>&gt;<i> &gt;&gt;&gt;&gt; in Python).
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Cheers,
+</I>&gt;<i> &gt;&gt;&gt;&gt; Christoph
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; On 03.03.2010 03:48, Grail Dane wrote:
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; OK ... OK ... OK - stop the presses
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Well, maybe not just yet, anyhoo, the attached patch allows the
+</I>&gt;<i> &gt;&gt;&gt;&gt; source to compile
+</I>&gt;<i> &gt;&gt;&gt;&gt; and run the attached script&lt;woohoo&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Cheers
+</I>&gt;<i> &gt;&gt;&gt;&gt; Grail
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; ------------------------------------------------------------------------
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Meet local singles online. Browse profiles for FREE!
+</I>&gt;<i> &gt;&gt;&gt;&gt; &lt;<A HREF="http://clk.atdmt.com/NMN/go/150855801/direct/01/">http://clk.atdmt.com/NMN/go/150855801/direct/01/</A>&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt;&gt; pycrypto mailing list
+</I>&gt;<i> &gt;&gt;&gt;&gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>&lt;mailto:<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; ------------------------------------------------------------------------
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Find out now. Link all your email accounts and social updates with
+</I>&gt;<i> &gt;&gt;&gt;&gt; Hotmail.&lt;<A HREF="http://windowslive.ninemsn.com.au/oneinbox?ocid=T162MSN05A0710G">http://windowslive.ninemsn.com.au/oneinbox?ocid=T162MSN05A0710G</A>&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt;&gt; pycrypto mailing list
+</I>&gt;<i> &gt;&gt;&gt;&gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt; pycrypto mailing list
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> pycrypto mailing list
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+</I>&gt;<i> <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto</A>
+</I> 		 	   		  
+_________________________________________________________________
+Browse profiles for FREE! Meet local singles online.
+<A HREF="http://clk.atdmt.com/NMN/go/150855801/direct/01/">http://clk.atdmt.com/NMN/go/150855801/direct/01/</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20100318/e855e2e2/attachment.htm">http://lists.dlitz.net/pipermail/pycrypto/attachments/20100318/e855e2e2/attachment.htm</A> 
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000208.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+	<LI>Next message: <A HREF="000206.html">[pycrypto] Pycrypto working with python 3.0 or 3.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#209">[ date ]</a>
+              <a href="thread.html#209">[ thread ]</a>
+              <a href="subject.html#209">[ subject ]</a>
+              <a href="author.html#209">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

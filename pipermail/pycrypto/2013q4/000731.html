@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ARC4 examples
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20ARC4%20examples&In-Reply-To=%3CCAEncD4d%3DNVHZQgUGcnMn3svRNThv3bn%3DfhQhfU-T%2B5JM%2BZ8O_Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000729.html">
+   <LINK REL="Next"  HREF="000734.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ARC4 examples</H1>
+    <B>Dave Pawson</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=Re%3A%20%5Bpycrypto%5D%20ARC4%20examples&In-Reply-To=%3CCAEncD4d%3DNVHZQgUGcnMn3svRNThv3bn%3DfhQhfU-T%2B5JM%2BZ8O_Q%40mail.gmail.com%3E"
+       TITLE="[pycrypto] ARC4 examples">dave.pawson at gmail.com
+       </A><BR>
+    <I>Sat Nov 23 01:40:12 PST 2013</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000729.html">[pycrypto] ARC4 examples
+</A></li>
+        <LI>Next message: <A HREF="000734.html">[pycrypto] ARC4 examples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#731">[ date ]</a>
+              <a href="thread.html#731">[ thread ]</a>
+              <a href="subject.html#731">[ subject ]</a>
+              <a href="author.html#731">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 20 November 2013 21:19, Legrandin &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">helderijs at gmail.com</A>&gt; wrote:
+&gt;&gt;&gt;&gt;&gt;<i> from Crypto.Cipher import ARC4
+</I>&gt;&gt;&gt;&gt;&gt;<i> from Crypto.Hash import SHA
+</I>&gt;&gt;&gt;&gt;&gt;<i> from Crypto import Random
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> key = b'Very long and confidential key'
+</I>&gt;&gt;&gt;&gt;&gt;<i> nonce = Random.new().read(16)
+</I>&gt;&gt;&gt;&gt;&gt;<i> tempkey = SHA.new(key+nonce).digest()
+</I>&gt;&gt;&gt;&gt;&gt;<i> cipher = ARC4.new(tempkey)
+</I>&gt;&gt;&gt;&gt;&gt;<i> msg = nonce + cipher.encrypt(b'Open the pod bay doors, HAL')
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I cannot get that to decrypt to the plaintext.
+</I>&gt;&gt;<i> What is the point of adding the nonce to the ciphertext please, and
+</I>&gt;&gt;<i> how to decrypt?
+</I>&gt;<i>
+</I>&gt;<i> It is just one of the many possible ways for delivering the nonce (or
+</I>&gt;<i> IV) to the receiver.
+</I>
+But what is it please - what purpose does it serve?
+
+
+
+&gt;<i>
+</I>&gt;<i> If you receive msg, and you have the key, you can decrypt using these steps:
+</I>&gt;<i>
+</I>&gt;<i> from Crypto.Cipher import ARC4
+</I>&gt;<i> from Crypto.Hash import SHA
+</I>&gt;<i>
+</I>&gt;<i> nonce = msg[:16]
+</I>&gt;<i> tempkey = SHA.new(key+nonce).digest()
+</I>&gt;<i> cipher = ARC4.new(tempkey)
+</I>&gt;<i> plaintext = cipher.decrypt(msg[16:])
+</I>
+Since I input text, I'm hoping to get text out?
+
+Using this code I'm seeing
+plaintext = str(cipher.decrypt(msg[:16]),'utf-8')
+which gives
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd7 in position
+1: invalid continuation byte
+
+under python 3.
+
+regards
+
+
+
+
+-- 
+Dave Pawson
+XSLT XSL-FO FAQ.
+Docbook FAQ.
+<A HREF="http://www.dpawson.co.uk">http://www.dpawson.co.uk</A>
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000729.html">[pycrypto] ARC4 examples
+</A></li>
+	<LI>Next message: <A HREF="000734.html">[pycrypto] ARC4 examples
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#731">[ date ]</a>
+              <a href="thread.html#731">[ thread ]</a>
+              <a href="subject.html#731">[ subject ]</a>
+              <a href="author.html#731">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

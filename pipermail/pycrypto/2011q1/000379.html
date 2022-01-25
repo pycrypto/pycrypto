@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Issue with the new random.choice() unit test
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Issue%20with%20the%20new%20random.choice%28%29%20unit%20test&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000376.html">
+   <LINK REL="Next"  HREF="000380.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Issue with the new random.choice() unit test</H1>
+    <B>Thorsten Behrens</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Issue%20with%20the%20new%20random.choice%28%29%20unit%20test&In-Reply-To="
+       TITLE="[pycrypto] Issue with the new random.choice() unit test">sbehrens at gmx.li
+       </A><BR>
+    <I>Tue Jan  4 14:40:18 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000376.html">[pycrypto] some readability patches
+</A></li>
+        <LI>Next message: <A HREF="000380.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#379">[ date ]</a>
+              <a href="thread.html#379">[ thread ]</a>
+              <a href="subject.html#379">[ subject ]</a>
+              <a href="author.html#379">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I have introduced a unit test in test_random.py that has too high a rate 
+of failure. Specifically, this:
+
+         # Test choice
+         seq = []
+         for i in range(500): # seed the sequence
+             seq[i:] = [random.getrandbits(32)]
+         x = random.choice(seq)
+         y = random.choice(seq)
+         self.assertNotEqual(x, y)
+
+just produced a FAIL:
+
+FAIL: runTest (Crypto.SelfTest.Random.test_random.SimpleTest)
+Crypto.Random.new()
+----------------------------------------------------------------------
+Traceback (most recent call last):
+   File &quot;build\lib.win-amd64-2.7\Crypto\SelfTest\Random\test_random.py&quot;, 
+line 103, in runTest
+     self.assertNotEqual(x, y)
+AssertionError: 1793595220L == 1793595220L
+
+
+Well darn. I guess saying &quot;hey it's a 1 in 500 chance, it'll never 
+fail!&quot; is indeed naive. What would be a less naive test, then? I am 
+thinking seeding a much smaller seq, and then running choice many times, 
+counting collisions each time, and getting some form of expected value 
+with an expected precision from that. It's been very long since I've 
+done stochastic stuff, however. Before I screw this up further: Concrete 
+suggestions on how to fix this unit test?
+
+Thanks!
+Thorsten
+
+</PRE>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000376.html">[pycrypto] some readability patches
+</A></li>
+	<LI>Next message: <A HREF="000380.html">[pycrypto] Issue with the new random.choice() unit test
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#379">[ date ]</a>
+              <a href="thread.html#379">[ thread ]</a>
+              <a href="subject.html#379">[ subject ]</a>
+              <a href="author.html#379">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

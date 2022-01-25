@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] the sad state of pycrypto
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=20081109153410.GB24879%40rivest.dlitz.net">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000053.html">
+   <LINK REL="Next"  HREF="000047.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] the sad state of pycrypto</H1>
+    <B>Sergey Chernov</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20the%20sad%20state%20of%20pycrypto&In-Reply-To=20081109153410.GB24879%40rivest.dlitz.net"
+       TITLE="[pycrypto] the sad state of pycrypto">sergey.chernov at thrift.ru
+       </A><BR>
+    <I>Tue Nov 11 05:27:40 CST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000053.html">[pycrypto] the sad state of pycrypto
+</A></li>
+        <LI>Next message: <A HREF="000047.html">[pycrypto] Why I would be glad to find a plenty of algorithms in	pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#52">[ date ]</a>
+              <a href="thread.html#52">[ thread ]</a>
+              <a href="subject.html#52">[ subject ]</a>
+              <a href="author.html#52">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>If the problem is to avoid buffer overrun in C code and it worth  
+thinking of other languages, try C++. For example, pycrypto C++  
+extension interface may provide safe (handcoded) buffer and vector  
+classes (templates) which could be as safe against overruns as  
+language-backed arrays as in higher level languages. Requirement to  
+use these vector/buffer implementations for future implementation may  
+be better solution than adding another language to C/Python. As C++ is  
+integrated with C compiler on absolutely most platforms and is  
+supported by setuptools be default, we can assume that C++ is already  
+supported in any python C extension.
+
+Moreover, proper C++ infrastructure could make extension writing  
+process quite streamlined and easy and force developers to use safe  
+and wise techniques.
+
+Sergey Chernov
+<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">sergey.chernov at thrift.ru</A>
+
+
+
+09.11.2008, &#1074; 18:34, Dwayne C. Litzenberger &#1085;&#1072;&#1087;&#1080;&#1089;&#1072;&#1083;(&#1072;):
+
+&gt;<i> Cryptography is a waste of time if an attacker can make your program  
+</I>&gt;<i> run arbitrary code, thanks to a buffer overflow or other subtle bug.  
+</I>&gt;<i> I am hesitant to add new algorithms to PyCrypto until they can be  
+</I>&gt;<i> developed in a more trustworthy fashion.
+</I>&gt;<i>
+</I>&gt;<i> (I'm toying with the idea of a restricted subset of C that requires  
+</I>&gt;<i> all arrays to be of size 2**n, and requires the appropriate bit-wise  
+</I>&gt;<i> AND whenever indexing the array.  However, an implementation is a  
+</I>&gt;<i> long way off.  I'm also interested in languages like D and BitC, but  
+</I>&gt;<i> I'm not sure about the maturity of their compilers.  I could use  
+</I>&gt;<i> help here.)
+</I>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: smime.p7s
+Type: application/pkcs7-signature
+Size: 2193 bytes
+Desc: not available
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20081111/823c8342/attachment.bin">http://lists.dlitz.net/pipermail/pycrypto/attachments/20081111/823c8342/attachment.bin</A> 
+</PRE>
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000053.html">[pycrypto] the sad state of pycrypto
+</A></li>
+	<LI>Next message: <A HREF="000047.html">[pycrypto] Why I would be glad to find a plenty of algorithms in	pycrypto
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#52">[ date ]</a>
+              <a href="thread.html#52">[ thread ]</a>
+              <a href="subject.html#52">[ subject ]</a>
+              <a href="author.html#52">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,142 @@
+<tt>
+&lt;div&nbsp;dir=&quot;ltr&quot;&gt;&lt;div&nbsp;class=&quot;gmail_extra&quot;&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;&lt;br&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0px&nbsp;0px&nbsp;0px&nbsp;0.8ex;border-left-width:1px;border-left-color:rgb(204,204,204);border-left-style:solid;padding-left:1ex&quot;&gt;<br>
+&lt;grin/&gt;&lt;br&gt;<br>
+Not&nbsp;sure&nbsp;Jeremy!&nbsp;I&#39;d&nbsp;never&nbsp;heard&nbsp;of&nbsp;it.&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Actually,&nbsp;it&nbsp;looks&nbsp;like&nbsp;&#39;rU&#39;&nbsp;might&nbsp;be&nbsp;the&nbsp;way&nbsp;to&nbsp;go,&nbsp;not&nbsp;&#39;Urb&#39;.&nbsp;I&#39;ve&nbsp;never&nbsp;used&nbsp;it&nbsp;but&nbsp;probably&nbsp;should.&nbsp;:-) &lt;/div&gt;&lt;div&gt; &lt;/div&gt;<br>
+&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0px&nbsp;0px&nbsp;0px&nbsp;0.8ex;border-left-width:1px;border-left-color:rgb(204,204,204);border-left-style:solid;padding-left:1ex&quot;&gt;<br>
+I&#39;ll&nbsp;let&nbsp;you&nbsp;know....&nbsp;I&#39;m&nbsp;assuming&nbsp;it&nbsp;is&nbsp;2.x&nbsp;compatible?&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;yes&nbsp;2.7,&nbsp;not&nbsp;sure&nbsp;about&nbsp;earlier&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;--Jeremy&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt; &lt;/div&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0px&nbsp;0px&nbsp;0px&nbsp;0.8ex;border-left-width:1px;border-left-color:rgb(204,204,204);border-left-style:solid;padding-left:1ex&quot;&gt;<br>
+<br>
+<br>
+&lt;br&gt;<br>
+regards&lt;br&gt;<br>
+&lt;div&gt;&lt;div&gt;&lt;br&gt;<br>
+On&nbsp;3&nbsp;February&nbsp;2014&nbsp;12:40,&nbsp;Jeremy&nbsp;Gray&nbsp;&lt;&lt;a&nbsp;href=&quot;mailto:jrgray@gmail.com&quot;&nbsp;target=&quot;_blank&quot;&gt;jrgray@gmail.com&lt;/a&gt;&gt;&nbsp;wrote:&lt;br&gt;<br>
+&gt;&nbsp;I&nbsp;may&nbsp;not&nbsp;understand&nbsp;the&nbsp;constraints&nbsp;of&nbsp;your&nbsp;situation,&nbsp;but&nbsp;wouldn&#39;t&lt;br&gt;<br>
+&gt;&nbsp;python&#39;s&nbsp;&quot;universal&nbsp;newlines&quot;&nbsp;file-open&nbsp;mode&nbsp;achieve&nbsp;what&nbsp;you&nbsp;want?&nbsp; infile&lt;br&gt;<br>
+&gt;&nbsp;=&nbsp;open(filename,&nbsp;&#39;Urb&#39;)&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;--Jeremy&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;On&nbsp;Mon,&nbsp;Feb&nbsp;3,&nbsp;2014&nbsp;at&nbsp;5:35&nbsp;AM,&nbsp;Dave&nbsp;Pawson&nbsp;&lt;&lt;a&nbsp;href=&quot;mailto:dave.pawson@gmail.com&quot;&nbsp;target=&quot;_blank&quot;&gt;dave.pawson@gmail.com&lt;/a&gt;&gt;&nbsp;wrote:&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;Now&nbsp;resolved.&lt;br&gt;<br>
+&gt;&gt;&nbsp;Source&nbsp;plain&nbsp;text&nbsp;is&nbsp;created&nbsp;/&nbsp;modified&nbsp;in&nbsp;either&nbsp;DOS&nbsp;or&nbsp;Linux&nbsp;(np&nbsp;to&nbsp;add&lt;br&gt;<br>
+&gt;&gt;&nbsp;Mac)&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;read&nbsp;using&lt;br&gt;<br>
+&gt;&gt;&nbsp;chunk&nbsp;=&nbsp;unicode(infile.read(chunksize))&lt;br&gt;<br>
+&gt;&gt;&nbsp;#&nbsp;replace&nbsp;newline&nbsp;as&nbsp;appropriate&lt;br&gt;<br>
+&gt;&gt;&nbsp;chunk=replaceNL(chunk)&lt;br&gt;<br>
+&gt;&gt;&nbsp;#&nbsp;Convert&nbsp;to&nbsp;byte&nbsp;string&lt;br&gt;<br>
+&gt;&gt;&nbsp;chunk=safe_str(chunk)&lt;br&gt;<br>
+&gt;&gt;&nbsp;encrypt&nbsp;and&nbsp;write&nbsp;to&nbsp;disk&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;#&nbsp;for&nbsp;decrypt&lt;br&gt;<br>
+&gt;&gt;&nbsp;#Iterate&nbsp;over&nbsp;file&nbsp;to&nbsp;read&nbsp;into&nbsp;string&lt;br&gt;<br>
+&gt;&gt;&nbsp;#&nbsp;replace&nbsp;the&nbsp;individual&nbsp;bytes&nbsp;of&nbsp;the&nbsp;Unicode&nbsp;character&nbsp;(u2022&nbsp;in&nbsp;my&nbsp;case)&lt;br&gt;<br>
+&gt;&gt;&nbsp;#&nbsp;with&nbsp;\n&nbsp;for&nbsp;the&nbsp;local&nbsp;machine&lt;br&gt;<br>
+&gt;&gt;&nbsp;retval&nbsp;=&nbsp;replaceBullet(retval)&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;code&nbsp;below&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;#&lt;br&gt;<br>
+&gt;&gt;&nbsp;#Swap&nbsp;\n&nbsp;for&nbsp;\u2022&lt;br&gt;<br>
+&gt;&gt;&nbsp;#&lt;br&gt;<br>
+&gt;&gt;&nbsp;def&nbsp;replaceNL(str):&lt;br&gt;<br>
+&gt;&gt;&nbsp; &nbsp; &nbsp;#&nbsp;If&nbsp;DOS,&nbsp;replace&nbsp;\r\x0A&lt;br&gt;<br>
+&gt;&gt;&nbsp; &nbsp; &nbsp;#&nbsp;If&nbsp;Unix,&nbsp;replace&nbsp;\n&lt;br&gt;<br>
+&gt;&gt;&nbsp; &nbsp; &nbsp;lineEnd=u&#39;\n&#39;&lt;br&gt;<br>
+&gt;&gt;&nbsp; &nbsp; &nbsp;if&nbsp;string.find(str,&#39;\r\x0a&#39;):&lt;br&gt;<br>
+&gt;&gt;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;lineEnd=u&#39;\r\x0A&#39;&lt;br&gt;<br>
+&gt;&gt;&nbsp; &nbsp; &nbsp;return&nbsp;string.replace(str,lineEnd,u&#39;\u2022&#39;)&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;#&lt;br&gt;<br>
+&gt;&gt;&nbsp;#&nbsp;Replace&nbsp;bullet&nbsp;by&nbsp;\n&lt;br&gt;<br>
+&gt;&gt;&nbsp;#&lt;br&gt;<br>
+&gt;&gt;&nbsp;def&nbsp;replaceBullet(bstr):&lt;br&gt;<br>
+&gt;&gt;&nbsp; &nbsp; &nbsp;return&nbsp;string.replace(bstr,u&#39;\\u2022&#39;,u&#39;\n&#39;)&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;def&nbsp;safe_str(obj):&lt;br&gt;<br>
+&gt;&gt;&nbsp; &nbsp; &nbsp;&quot;&quot;&quot;&nbsp;return&nbsp;the&nbsp;byte&nbsp;string&nbsp;representation&nbsp;of&nbsp;obj&nbsp;&quot;&quot;&quot;&lt;br&gt;<br>
+&gt;&gt;&nbsp; &nbsp; &nbsp;try:&lt;br&gt;<br>
+&gt;&gt;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return&nbsp;str(obj)&lt;br&gt;<br>
+&gt;&gt;&nbsp; &nbsp; &nbsp;except&nbsp;UnicodeEncodeError:&lt;br&gt;<br>
+&gt;&gt;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;#&nbsp;obj&nbsp;is&nbsp;unicode&lt;br&gt;<br>
+&gt;&gt;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return&nbsp;unicode(obj).encode(&#39;unicode_escape&#39;)&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;HTH&nbsp;others,&nbsp;though&nbsp;it&nbsp;seems&nbsp;messy,&nbsp;it&nbsp;works.&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;Dave&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;On&nbsp;3&nbsp;February&nbsp;2014&nbsp;09:39,&nbsp;Dave&nbsp;Pawson&nbsp;&lt;&lt;a&nbsp;href=&quot;mailto:dave.pawson@gmail.com&quot;&nbsp;target=&quot;_blank&quot;&gt;dave.pawson@gmail.com&lt;/a&gt;&gt;&nbsp;wrote:&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;I&#39;m&nbsp;having&nbsp;a&nbsp;problem&nbsp;&#39;sharing&#39;&nbsp;an&nbsp;encrypted&nbsp;file&nbsp;between&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;MSDOS&nbsp;and&nbsp;Linux.&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;so&nbsp;I&nbsp;thought&nbsp;I&#39;d&nbsp;replace&nbsp;\nl&nbsp;in&nbsp;the&nbsp;plain&nbsp;text&nbsp;with&nbsp;a&nbsp;non&nbsp;ASCII&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;character&nbsp;prior&nbsp;to&nbsp;encryption.&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;encryptor&nbsp;=&nbsp;AES.new(key,&nbsp;AES.MODE_CBC,&nbsp;iv)&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;outfile.write(encryptor.encrypt(chunk))&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;gives&nbsp;me&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp; File&nbsp;&quot;/usr/lib64/python2.7/site-packages/Crypto/Cipher/blockalgo.py&quot;,&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;line&nbsp;244,&nbsp;in&nbsp;encrypt&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp; &nbsp; &nbsp;return&nbsp;self._cipher.encrypt(plaintext)&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;UnicodeEncodeError:&nbsp;&#39;ascii&#39;&nbsp;codec&nbsp;can&#39;t&nbsp;encode&nbsp;character&nbsp;u&#39;\u2022&#39;&nbsp;in&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;position&nbsp;34:&nbsp;ordinal&nbsp;not&nbsp;in&nbsp;range(128)&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;It&nbsp;would&nbsp;seem&nbsp;I&nbsp;can&#39;t&nbsp;use&nbsp;non-ASCII&nbsp;characters,&nbsp;at&nbsp;least&nbsp;with&nbsp;AES,&nbsp;is&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;this&nbsp;right&nbsp;?&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;If&nbsp;not,&nbsp;how&nbsp;to&nbsp;address&nbsp;it&nbsp;please?&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;regards&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;--&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;Dave&nbsp;Pawson&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;XSLT&nbsp;XSL-FO&nbsp;FAQ.&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;Docbook&nbsp;FAQ.&lt;br&gt;<br>
+&gt;&gt;&nbsp;&gt;&nbsp;&lt;a&nbsp;href=&quot;http://www.dpawson.co.uk&quot;&nbsp;target=&quot;_blank&quot;&gt;http://www.dpawson.co.uk&lt;/a&gt;&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;--&lt;br&gt;<br>
+&gt;&gt;&nbsp;Dave&nbsp;Pawson&lt;br&gt;<br>
+&gt;&gt;&nbsp;XSLT&nbsp;XSL-FO&nbsp;FAQ.&lt;br&gt;<br>
+&gt;&gt;&nbsp;Docbook&nbsp;FAQ.&lt;br&gt;<br>
+&gt;&gt;&nbsp;&lt;a&nbsp;href=&quot;http://www.dpawson.co.uk&quot;&nbsp;target=&quot;_blank&quot;&gt;http://www.dpawson.co.uk&lt;/a&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;_______________________________________________&lt;br&gt;<br>
+&gt;&gt;&nbsp;pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&gt;&gt;&nbsp;&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&nbsp;target=&quot;_blank&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&gt;&gt;&nbsp;&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&gt;&nbsp;_______________________________________________&lt;br&gt;<br>
+&gt;&nbsp;pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&gt;&nbsp;&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&nbsp;target=&quot;_blank&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&gt;&nbsp;&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&gt;&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;br&gt;<br>
+&lt;br&gt;<br>
+--&lt;br&gt;<br>
+Dave&nbsp;Pawson&lt;br&gt;<br>
+XSLT&nbsp;XSL-FO&nbsp;FAQ.&lt;br&gt;<br>
+Docbook&nbsp;FAQ.&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://www.dpawson.co.uk&quot;&nbsp;target=&quot;_blank&quot;&gt;http://www.dpawson.co.uk&lt;/a&gt;&lt;br&gt;<br>
+_______________________________________________&lt;br&gt;<br>
+pycrypto&nbsp;mailing&nbsp;list&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;mailto:pycrypto@lists.dlitz.net&quot;&nbsp;target=&quot;_blank&quot;&gt;pycrypto@lists.dlitz.net&lt;/a&gt;&lt;br&gt;<br>
+&lt;a&nbsp;href=&quot;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&quot;&nbsp;target=&quot;_blank&quot;&gt;http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto&lt;/a&gt;&lt;br&gt;<br>
+&lt;/div&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;<br>
+
+</tt>

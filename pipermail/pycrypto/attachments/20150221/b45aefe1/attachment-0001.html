@@ -1,0 +1,32 @@
+<tt>
+&lt;div&nbsp;dir=&quot;ltr&quot;&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_extra&quot;&gt;&lt;br&gt;&lt;div&nbsp;class=&quot;gmail_quote&quot;&gt;On&nbsp;21&nbsp;February&nbsp;2015&nbsp;at&nbsp;15:08,&nbsp;James&nbsp;McMurray&nbsp;&lt;span&nbsp;dir=&quot;ltr&quot;&gt;&lt;&lt;a&nbsp;href=&quot;mailto:jamesmcm03@gmail.com&quot;&nbsp;target=&quot;_blank&quot;&gt;jamesmcm03@gmail.com&lt;/a&gt;&gt;&lt;/span&gt;&nbsp;wrote:&lt;br&gt;&lt;blockquote&nbsp;class=&quot;gmail_quote&quot;&nbsp;style=&quot;margin:0&nbsp;0&nbsp;0&nbsp;.8ex;border-left:1px&nbsp;#ccc&nbsp;solid;padding-left:1ex&quot;&gt;Hi,&lt;br&gt;<br>
+&lt;br&gt;<br>
+If&nbsp;I&nbsp;run&nbsp;the&nbsp;following,&nbsp;for&nbsp;openSSL:&lt;br&gt;<br>
+&lt;br&gt;<br>
+echo&nbsp;-n&nbsp;&quot;0123456789abcdef0123456789abcdef&quot;&nbsp;|&nbsp;openssl&nbsp;aes-128-ecb&lt;br&gt;<br>
+-nosalt&nbsp;-nopad&nbsp;|&nbsp;xxd&lt;br&gt;<br>
+&lt;br&gt;<br>
+and&nbsp;enter&nbsp;the&nbsp;key&nbsp;&quot;YELLOW&nbsp;SUBMARINE&quot;,&nbsp;I&nbsp;get&nbsp;the&nbsp;following&nbsp;ciphertext:&lt;br&gt;<br>
+&lt;br&gt;<br>
+a2a5&nbsp;8316&nbsp;129f&nbsp;c596&nbsp;8341&nbsp;c78a&nbsp;0c36&nbsp;5d20&lt;br&gt;<br>
+a2a5&nbsp;8316&nbsp;129f&nbsp;c596&nbsp;8341&nbsp;c78a&nbsp;0c36&nbsp;5d20&lt;br&gt;<br>
+&lt;br&gt;<br>
+Yet&nbsp;in&nbsp;PyCrypto,&nbsp;the&nbsp;following&nbsp;code:&lt;br&gt;<br>
+&lt;br&gt;<br>
+from&nbsp;Crypto.Cipher&nbsp;import&nbsp;AES&lt;br&gt;<br>
+key&nbsp;=&nbsp;b&#39;YELLOW&nbsp;SUBMARINE&#39;&lt;br&gt;<br>
+cipher&nbsp;=&nbsp;AES.new(key,&nbsp;AES.MODE_ECB,&nbsp;&quot;&quot;)&lt;br&gt;<br>
+msg&nbsp;= &nbsp;cipher.encrypt(b&#39;0123456789abcdef0123456789abcdef&#39;)&lt;br&gt;<br>
+&lt;br&gt;<br>
+Outputs:&lt;br&gt;<br>
+&lt;br&gt;<br>
+20&nbsp;1e&nbsp;80&nbsp;2f&nbsp;7b&nbsp;6a&nbsp;ce&nbsp;6f&nbsp;6c&nbsp;d0&nbsp;a7&nbsp;43&nbsp;ba&nbsp;78&nbsp;ae&nbsp;ad&lt;br&gt;<br>
+20&nbsp;1e&nbsp;80&nbsp;2f&nbsp;7b&nbsp;6a&nbsp;ce&nbsp;6f&nbsp;6c&nbsp;d0&nbsp;a7&nbsp;43&nbsp;ba&nbsp;78&nbsp;ae&nbsp;ad&lt;br&gt;<br>
+&lt;br&gt;<br>
+(line&nbsp;breaks&nbsp;added&nbsp;for&nbsp;clarity)&lt;br&gt;<br>
+&lt;br&gt;<br>
+What&nbsp;is&nbsp;the&nbsp;cause&nbsp;of&nbsp;this&nbsp;discrepancy?&nbsp;Both&nbsp;are&nbsp;128-bit&nbsp;AES&nbsp;in&nbsp;ECB&lt;br&gt;<br>
+mode.&nbsp;PyCrypto&nbsp;doesn&#39;t&nbsp;appear&nbsp;to&nbsp;be&nbsp;salting,&nbsp;and&nbsp;padding&nbsp;should&nbsp;be&lt;br&gt;<br>
+unnecessary&nbsp;in&nbsp;any&nbsp;case&nbsp;with&nbsp;this&nbsp;plaintext.&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;OpenSSL&nbsp;doesn&#39;t&nbsp;use&nbsp;the&nbsp;passphrase&nbsp;directly,&nbsp;it&nbsp;applies&nbsp;a&nbsp;key&nbsp;derivation&nbsp;function&nbsp;to&nbsp;it.&nbsp;Use&nbsp;-K&nbsp;to&nbsp;specify&nbsp;a&nbsp;key&nbsp;explicitly&nbsp;(as&nbsp;a&nbsp;string&nbsp;of&nbsp;hex).&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Cheers&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Rich. &lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;<br>
+
+</tt>

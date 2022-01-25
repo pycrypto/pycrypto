@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] ANN: PyCrypto 2.4 released
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ANN%3A%20PyCrypto%202.4%20released&In-Reply-To=">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000479.html">
+   <LINK REL="Next"  HREF="000497.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] ANN: PyCrypto 2.4 released</H1>
+    <B>Dwayne C. Litzenberger</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20ANN%3A%20PyCrypto%202.4%20released&In-Reply-To="
+       TITLE="[pycrypto] ANN: PyCrypto 2.4 released">dlitz at dlitz.net
+       </A><BR>
+    <I>Sat Oct 22 14:16:49 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000479.html">[pycrypto] string XOR
+</A></li>
+        <LI>Next message: <A HREF="000497.html">[pycrypto] ANN: PyCrypto 2.4.1 released - fixes &quot;config.h not found&quot;
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#480">[ date ]</a>
+              <a href="thread.html#480">[ thread ]</a>
+              <a href="subject.html#480">[ subject ]</a>
+              <a href="author.html#480">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>PyCrypto 2.4 has been released!
+
+You can download this release from <A HREF="http://www.pycrypto.org/.">http://www.pycrypto.org/.</A>  It has the 
+following SHA256 sums:
+
+f49d8aea2d7d65db9906c7d3b8b3a07fcae8387cf5cb06a7510383e211902d39 *pycrypto-2.4.tar.gz
+94002c7b115d4347f1ad3b92c118ea3cec5961dd35d209decfaf158e8fe43a71 *pycrypto-2.4.tar.gz.asc
+
+The git repository is here: <A HREF="https://github.com/dlitz/pycrypto/">https://github.com/dlitz/pycrypto/</A>
+The v2.4 commit id is: fb29a28275e3a693566c936af6b7fae6e4b253e4
+
+Please test it and post your experiences to the PyCrypto mailing list:
+
+   <A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">pycrypto at lists.dlitz.net</A>
+
+and/or file bug reports on Launchpad:
+
+   <A HREF="https://bugs.launchpad.net/pycrypto">https://bugs.launchpad.net/pycrypto</A>
+
+Here is the changelog:
+
+   * Python 3 support!  (Thorsten E. Behrens, Anders Sundman)
+     PyCrypto now supports every version of Python from 2.1 through 3.2.
+
+   * Timing-attack countermeasures in _fastmath: When built against
+     libgmp version 5 or later, we use mpz_powm_sec instead of mpz_powm.
+     This should prevent the timing attack described by Geremy Condra at
+     PyCon 2011:
+     <A HREF="http://blip.tv/pycon-us-videos-2009-2010-2011/pycon-2011-through-the-side-channel-timing-and-implementation-attacks-in-python-4897955">http://blip.tv/pycon-us-videos-2009-2010-2011/pycon-2011-through-the-side-channel-timing-and-implementation-attacks-in-python-4897955</A>
+
+   * New hash modules (for Python &gt;= 2.5 only): SHA224, SHA384, and
+     SHA512 (Fr&#233;d&#233;ric Bertolus)
+
+   * Configuration using GNU autoconf.  This should help fix a bunch of
+     build issues.
+
+   * Support using MPIR as an alternative to GMP.
+
+   * Improve the test command in setup.py, by allowing tests to be
+     performed on a single sub-package or module only. (Legrandin)
+
+     You can now do something like this:
+
+       python setup.py test -m Hash.SHA256 --skip-slow-tests
+
+   * Fix double-decref of &quot;counter&quot; when Cipher object initialisation
+     fails (Ryan Kelly)
+
+   * Apply patches from Debian's python-crypto 2.3-3 package (Jan
+     Dittberner, Sebastian Ramacher):
+    - fix-RSA-generate-exception.patch
+    - epydoc-exclude-introspect.patch
+    - no-usr-local.patch
+
+   * Fix launchpad bug #702835: &quot;Import key code is not compatible with
+     GMP library&quot; (Legrandin)
+
+   * More tests, better documentation, various bugfixes.
+
+Thanks to everyone who helped make this release possible!
+
+Cheers,
+- Dwayne
+
+-- 
+Dwayne C. Litzenberger &lt;<A HREF="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">dlitz at dlitz.net</A>&gt;
+  OpenPGP: 19E1 1FE8 B3CF F273 ED17  4A24 928C EC13 39C2 5CF7
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 222 bytes
+Desc: Digital signature
+Url : <A HREF="http://lists.dlitz.net/pipermail/pycrypto/attachments/20111022/c6c119ad/attachment.pgp">http://lists.dlitz.net/pipermail/pycrypto/attachments/20111022/c6c119ad/attachment.pgp</A> 
+</PRE>
+
+
+
+
+
+
+
+
+
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000479.html">[pycrypto] string XOR
+</A></li>
+	<LI>Next message: <A HREF="000497.html">[pycrypto] ANN: PyCrypto 2.4.1 released - fixes &quot;config.h not found&quot;
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#480">[ date ]</a>
+              <a href="thread.html#480">[ thread ]</a>
+              <a href="subject.html#480">[ subject ]</a>
+              <a href="author.html#480">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>

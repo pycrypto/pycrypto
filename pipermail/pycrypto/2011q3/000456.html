@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [pycrypto] Fail to build pycrypto 2.3 on Ubuntu
+   </TITLE>
+   <LINK REL="Index" HREF="index.html" >
+   <LINK REL="made" HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Fail%20to%20build%20pycrypto%202.3%20on%20Ubuntu&In-Reply-To=CAMEe%2BrT7nj%2B6H8D-crzGd0mYQYLqcmNTcNyY08QBLWmcRHoucQ%40mail.gmail.com">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000455.html">
+   <LINK REL="Next"  HREF="000454.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[pycrypto] Fail to build pycrypto 2.3 on Ubuntu</H1>
+    <B>Sebastian Ramacher</B> 
+    <A HREF="mailto:pycrypto%40lists.dlitz.net?Subject=%5Bpycrypto%5D%20Fail%20to%20build%20pycrypto%202.3%20on%20Ubuntu&In-Reply-To=CAMEe%2BrT7nj%2B6H8D-crzGd0mYQYLqcmNTcNyY08QBLWmcRHoucQ%40mail.gmail.com"
+       TITLE="[pycrypto] Fail to build pycrypto 2.3 on Ubuntu">sebastian+lists at ramacher.at
+       </A><BR>
+    <I>Thu Sep 22 04:16:53 CST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000455.html">[pycrypto] Fail to build pycrypto 2.3 on Ubuntu
+</A></li>
+        <LI>Next message: <A HREF="000454.html">[pycrypto] extract RSA public from X509 certificate file
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#456">[ date ]</a>
+              <a href="thread.html#456">[ thread ]</a>
+              <a href="subject.html#456">[ subject ]</a>
+              <a href="author.html#456">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 09/19/2011 02:50 PM, rusydi hasan wrote:
+&gt;<i> I tried to install pycrypto 2.3 on my machine (Ubuntu 11.04, kernel 2.6.38).
+</I>&gt;<i> But the installation error says :
+</I>&gt;<i> 
+</I>&gt;<i> building 'Crypto.Hash.MD2' extension
+</I>&gt;&gt;<i> gcc -pthread -fno-strict-aliasing -fwrapv -Wall -Wstrict-prototypes -fPIC
+</I>&gt;&gt;<i> -std=c99 -O3 -fomit-frame-pointer -Isrc/ -I/usr/include/python2.7 -c
+</I>&gt;&gt;<i> src/MD2.c -o build/temp.linux-i686-2.7/src/MD2.o
+</I>&gt;&gt;<i> src/MD2.c:31:20: fatal error: Python.h: No such file or directory
+</I>&gt;&gt;<i> compilation terminated.
+</I>&gt;&gt;<i> error: command 'gcc' failed with exit status 1
+</I>&gt;&gt;<i>
+</I>&gt;<i> 
+</I>&gt;<i> It seems that *Python.h* is missing from src/ directory. Or am i missing
+</I>&gt;<i> something here ?
+</I>
+Python.h is included in python-dev. Do you have python-dev installed?
+
+Regards
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000455.html">[pycrypto] Fail to build pycrypto 2.3 on Ubuntu
+</A></li>
+	<LI>Next message: <A HREF="000454.html">[pycrypto] extract RSA public from X509 certificate file
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#456">[ date ]</a>
+              <a href="thread.html#456">[ thread ]</a>
+              <a href="subject.html#456">[ subject ]</a>
+              <a href="author.html#456">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="http://lists.dlitz.net/cgi-bin/mailman/listinfo/pycrypto">More information about the pycrypto
+mailing list</a><br>
+</body></html>
