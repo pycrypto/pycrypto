@@ -182,7 +182,7 @@ Python 3.x: The passed argument must be an object interpretable as
 a buffer of bytes
 
 
-Here's an example, using the SHA-256 algorithm::
+Here's an example, using the SHA-256 algorithm:
 
     >>> from Crypto.Hash import SHA256
     >>> m = SHA256.new()
@@ -192,7 +192,7 @@ Here's an example, using the SHA-256 algorithm::
     >>> m.hexdigest()
     'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad'
 
-Here's an example of using HMAC::
+Here's an example of using HMAC:
 
 	>>> from Crypto.Hash import HMAC, SHA256
 	>>> m = HMAC.new('Please do not use this key in your code, with sugar on top',
@@ -347,7 +347,7 @@ damaging class of weak RC4 keys; this module won't warn you about such keys.
 
 A similar anonymous posting was made for Alleged RC2 in January, 1996.
 
-An example usage of the DES module::
+An example usage of the DES module:
 
     >>> from Crypto.Cipher import DES
     >>> obj=DES.new('abcdefgh', DES.MODE_ECB)
@@ -372,7 +372,7 @@ available.
 Returns a ciphering object, using ``key`` and feedback mode
 ``mode``. 
 If ``mode`` is ``MODE_CBC`` or ``MODE_CFB``, ``IV`` must be provided,
- and must be a string of the same length as the block size.
+and must be a string of the same length as the block size.
 Some algorithms support additional keyword arguments to this function; see
 the "Algorithm-specific Notes for Encryption Algorithms" section below for the details.
 Python 3.x: ```mode`` is a string object; ```key``` and ```IV``` must be
@@ -683,7 +683,7 @@ Many of these algorithms are patented.  Before using any of them in a
 commercial product, consult a patent attorney; you may have to arrange
 a license with the patent holder.
 
-An example of using the RSA module to sign a message::
+An example of using the RSA module to sign a message:
 
     >>> from Crypto.Hash import MD5
     >>> from Crypto.PublicKey import RSA
