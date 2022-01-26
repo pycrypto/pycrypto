@@ -68,14 +68,17 @@ class _EntropyCollector(object):
     def collect(self):
         # Collect 64 bits of entropy from the operating system and feed it to Fortuna.
         self._osrng_es.feed(self._osrng.read(8))
+        
+        try:
+            # Add the fractional part of time.clock()
+            t = time.clock()
+            self._clock_es.feed(struct.pack("@I", int(2**30 * (t - floor(t)))))
+        except:
+            # Add the fractional part of time.time()
+            t = time.time()
+            self._time_es.feed(struct.pack("@I", int(2**30 * (t - floor(t)))))
 
-        # Add the fractional part of time.time()
-        t = time.time()
-        self._time_es.feed(struct.pack("@I", int(2**30 * (t - floor(t)))))
-
-        # Add the fractional part of time.clock()
-        t = time.clock()
-        self._clock_es.feed(struct.pack("@I", int(2**30 * (t - floor(t)))))
+       
 
 
 class _UserFriendlyRNG(object):
