@@ -73,8 +73,8 @@ class _EntropyCollector(object):
         t = time.time()
         self._time_es.feed(struct.pack("@I", int(2**30 * (t - floor(t)))))
 
-        # Add the fractional part of time.clock()
-        t = time.clock()
+        # Add the fractional part of time.perf_counter()
+        t = time.perf_counter()
         self._clock_es.feed(struct.pack("@I", int(2**30 * (t - floor(t)))))
 
 
