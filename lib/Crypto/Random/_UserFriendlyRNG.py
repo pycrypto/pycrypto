@@ -187,7 +187,9 @@ class RNGFile(object):
     # PEP 343: Support for the "with" statement
     def __enter__(self):
         """PEP 343 support"""
-    def __exit__(self):
+        return self
+        
+    def __exit__(self, exc_type, exc_value, traceback):
         """PEP 343 support"""
         self.close()
 
