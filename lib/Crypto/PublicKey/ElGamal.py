@@ -149,7 +149,7 @@ def generate(bits, randfunc, progress_func=None):
     if progress_func:
         progress_func('p\n')
     while 1:
-        q = bignum(getPrime(bits-1, randfunc))
+        q = int(number.getPrime(bits-1, randfunc))
         obj.p = 2*q+1
         if number.isPrime(obj.p, randfunc=randfunc):
             break
@@ -340,7 +340,7 @@ class ElGamalobj(pubkey):
         r = number.getRandomRange(2, self.p-1, self._randfunc)
         a_blind = (M[0] * pow(self.g, r, self.p)) % self.p
         ax=pow(a_blind, self.x, self.p)
-        plaintext_blind = (M[1] * inverse(ax, self.p ) ) % self.p
+        plaintext_blind = (M[1] * number.inverse(ax, self.p ) ) % self.p
         plaintext = (plaintext_blind * pow(self.y, r, self.p)) % self.p
         return plaintext
 
@@ -348,12 +348,12 @@ class ElGamalobj(pubkey):
         if (not hasattr(self, 'x')):
             raise TypeError('Private key not available in this object')
         p1=self.p-1
-        if (GCD(K, p1)!=1):
+        if (number.GCD(K, p1)!=1):
             raise ValueError('Bad K value: GCD(K,p-1)!=1')
         a=pow(self.g, K, self.p)
         t=(M-self.x*a) % p1
         while t<0: t=t+p1
-        b=(t*inverse(K, p1)) % p1
+        b=(t*number.inverse(K, p1)) % p1
         return (a, b)
 
     def _verify(self, M, sig):
