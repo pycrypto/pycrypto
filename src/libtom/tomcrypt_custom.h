@@ -1,6 +1,10 @@
 #ifndef TOMCRYPT_CUSTOM_H_
 #define TOMCRYPT_CUSTOM_H_
 
+#ifdef _WIN32
+#define LTC_NO_PROTOTYPES
+#endif
+
 /* macros for various libc functions you can change for embedded targets */
 #ifndef XMALLOC
    #ifdef malloc 

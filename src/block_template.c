@@ -269,14 +269,14 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 			     BLOCK_SIZE);
 		return NULL;
 	}
-	if (self->mode == MODE_CFB && 
-	    (len % (self->segment_size/8) !=0)) {
-		PyErr_Format(PyExc_ValueError, 
-			     "Input strings must be a multiple of "
-			     "the segment size %i in length",
-			     self->segment_size/8);
-		return NULL;
-	}
+//	if (self->mode == MODE_CFB &&
+//	    (len % (self->segment_size/8) !=0)) {
+//		PyErr_Format(PyExc_ValueError,
+//			     "Input strings must be a multiple of "
+//			     "the segment size %i in length",
+//			     self->segment_size/8);
+//		return NULL;
+//	}
 
 	buffer=malloc(len);
 	if (buffer==NULL) 
@@ -308,30 +308,17 @@ ALG_Encrypt(ALGobject *self, PyObject *args)
 		}
 		break;
 
-	case(MODE_CFB):      
-		for(i=0; i<len; i+=self->segment_size/8) 
-		{
-			block_encrypt(&(self->st), self->IV, temp);
-			for (j=0; j<self->segment_size/8; j++) {
-				buffer[i+j] = str[i+j] ^ temp[j];
-			}
-			if (self->segment_size == BLOCK_SIZE * 8) {
-				/* s == b: segment size is identical to 
-				   the algorithm block size */
-				memcpy(self->IV, buffer + i, BLOCK_SIZE);
-			}
-			else if ((self->segment_size % 8) == 0) {
-				int sz = self->segment_size/8;
-				memmove(self->IV, self->IV + sz, 
-					BLOCK_SIZE-sz);
-				memcpy(self->IV + BLOCK_SIZE - sz, buffer + i,
-				       sz);
-			}
-			else {
-				/* segment_size is not a multiple of 8; 
-				   currently this can't happen */
-			}
-		}
+	case(MODE_CFB):
+	    j = 0;
+	    for(i=0; i<len; i++)
+	    {
+            if (j == 0) {
+                block_encrypt(&(self->st), self->IV, temp);
+            }
+
+            self->IV[j] = buffer[i] = (unsigned char)( temp[j] ^ str[i] );
+            j = ( j + 1 ) & (BLOCK_SIZE - 1);
+	    }
 		break;
 
 	case(MODE_OFB):
@@ -507,7 +494,7 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 {
 	unsigned char *buffer, *str;
 	unsigned char temp[BLOCK_SIZE];
-	int i, j, len;
+	int i, j, len, c;
 	PyObject *result;
 
 	/* CTR and OFB mode decryption is identical to encryption */
@@ -528,14 +515,14 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 			     BLOCK_SIZE);
 		return NULL;
 	}
-	if (self->mode == MODE_CFB && 
-	    (len % (self->segment_size/8) !=0)) {
-		PyErr_Format(PyExc_ValueError, 
-			     "Input strings must be a multiple of "
-			     "the segment size %i in length",
-			     self->segment_size/8);
-		return NULL;
-	}
+	//if (self->mode == MODE_CFB &&
+	//   (len % (self->segment_size/8) !=0)) {
+	//	PyErr_Format(PyExc_ValueError,
+	//		     "Input strings must be a multiple of "
+	//		     "the segment size %i in length",
+	//		     self->segment_size/8);
+	//	return NULL;
+	//}
 	buffer=malloc(len);
 	if (buffer==NULL) 
 	{
@@ -567,30 +554,19 @@ ALG_Decrypt(ALGobject *self, PyObject *args)
 		}
 		break;
 
-	case(MODE_CFB):      
-		for(i=0; i<len; i+=self->segment_size/8) 
-		{
-			block_encrypt(&(self->st), self->IV, temp);
-			for (j=0; j<self->segment_size/8; j++) {
-				buffer[i+j] = str[i+j]^temp[j];
-			}
-			if (self->segment_size == BLOCK_SIZE * 8) {
-				/* s == b: segment size is identical to 
-				   the algorithm block size */
-				memcpy(self->IV, str + i, BLOCK_SIZE);
-			}
-			else if ((self->segment_size % 8) == 0) {
-				int sz = self->segment_size/8;
-				memmove(self->IV, self->IV + sz, 
-					BLOCK_SIZE-sz);
-				memcpy(self->IV + BLOCK_SIZE - sz, str + i, 
-				       sz);
-			}
-			else {
-				/* segment_size is not a multiple of 8; 
-				   currently this can't happen */
-			}
-		}
+	case(MODE_CFB):
+	    j = 0;
+	    for(i=0; i<len; i++)
+	    {
+	        if (j==0) {
+	            block_encrypt(&(self->st), self->IV, temp);
+	        }
+            c = str[i];
+            buffer[i] = (unsigned char)(c ^ temp[j]);
+            self->IV[j] = (unsigned char)c;
+
+	        j = (j+1)&(BLOCK_SIZE-1);
+	    }
 		break;
 
 	default:
