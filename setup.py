@@ -36,11 +36,32 @@
 
 __revision__ = "$Id$"
 
-from distutils import core
+try:
+    import setuptools
+    from setuptools import Extension, Command, setup
+    from setuptools.command.build_py import build_py
+    from setuptools.command.build_ext import build_ext
+except ImportError:
+    setuptools = None
+    from distutils.core import setup
+    from distutils.command.build_ext import build_ext
+    from distutils.core import Extension, Command
+
+    try:
+        from distutils.core import setup_keywords
+    except ImportError:
+        setup_keywords = None
+
+    try:
+        # Python 3
+        from distutils.command.build_py import build_py_2to3 as build_py
+    except ImportError:
+        # Python 2
+        from distutils.command.build_py import build_py
+
+
 from distutils.ccompiler import new_compiler
-from distutils.core import Extension, Command
-from distutils.command.build import build
-from distutils.command.build_ext import build_ext
+
 import distutils.sysconfig
 import os, sys, re
 import struct
@@ -67,12 +88,6 @@ else:
 USE_GCOV = 0
 
 
-try:
-    # Python 3
-    from distutils.command.build_py import build_py_2to3 as build_py
-except ImportError:
-    # Python 2
-    from distutils.command.build_py import build_py
 
 # List of pure Python modules that will be excluded from the binary packages.
 # The list consists of (package, module_name) tuples
@@ -492,22 +507,28 @@ kw = {'name':"pycrypto",
     ]
 }
 
-# If we're running Python 2.3, add extra information
-if hasattr(core, 'setup_keywords'):
-    if 'classifiers' in core.setup_keywords:
-        kw['classifiers'] = [
-          'Development Status :: 5 - Production/Stable',
-          'License :: Public Domain',
-          'Intended Audience :: Developers',
-          'Operating System :: Unix',
-          'Operating System :: Microsoft :: Windows',
-          'Operating System :: MacOS :: MacOS X',
-          'Topic :: Security :: Cryptography',
-          'Programming Language :: Python :: 2',
-          'Programming Language :: Python :: 3',
-          ]
 
-core.setup(**kw)
+# If we can, add the trove classifiers for PyPi.  In most situations
+# this is no longer necessary, but check to be sure so we don't
+# make assumptions about someone's build environment.
+if (setuptools is not None or
+        setup_keywords is not None and 'classifiers' in setup_keywords):
+    kw['classifiers'] = [
+        'Development Status :: 5 - Production/Stable',
+        'License :: Public Domain',
+        'Intended Audience :: Developers',
+        'Operating System :: Unix',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: MacOS :: MacOS X',
+        'Topic :: Security :: Cryptography',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3'
+    ]
+
+if setuptools is not None:
+    kw["use_2to3"] = True
+
+setup(**kw)
 
 def touch(path):
     import os, time
@@ -524,4 +545,4 @@ if (sys.platform == 'win32' and sys.version_info[0] == 3 and
     'build' in sys.argv[1:]):
     PrintErr("\nSecond pass to allow 2to3 to fix nt.py. No cause for alarm.\n")
     touch("./lib/Crypto/Random/OSRNG/nt.py")
-    core.setup(**kw)
+    setup(**kw)
