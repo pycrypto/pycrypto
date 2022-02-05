@@ -93,7 +93,7 @@ static int add_length(hash_state *hs, sha2_word_t inc) {
     if (overflow_detector > hs->length_lower) {
         overflow_detector = hs->length_upper;
         hs->length_upper++;
-        if (hs->length_upper > hs->length_upper)
+        if (overflow_detector > hs->length_upper)
             return 0;
     }
     return 1;
