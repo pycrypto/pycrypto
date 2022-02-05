@@ -376,6 +376,27 @@ Lr7UkvEtFrRhDDKMtuIIq19FrL4pUIMymPMSLBn3hJLe30Dw48GQM4UCAwEAAQ==
         key = self.rsa.construct([self.n, self.e, self.d, self.p, self.q, self.pInv])
         self.assertRaises(ValueError, key.exportKey, 'DER', 'test', 1)
 
+    def testExportKey16(self):
+        # Export and re-import the encrypted key. It must match.
+        # PEM envelope, PKCS#8, PKCS#8 encryption
+        key = self.rsa.construct([self.n, self.e, self.d, self.p, self.q, self.pInv])
+        # with kwargs export can have optional iter cnt and salt size like this: 
+        key.exportKey('PEM', 'test', pkcs=8,
+            protection='PBKDF2WithHMAC-SHA1AndAES256-CBC', 
+                **{'iteration_count': 9999, 'salt_size': 16})
+        # or:
+        outkey = key.exportKey('PEM', 'test', pkcs=8,
+            protection='PBKDF2WithHMAC-SHA1AndAES256-CBC', 
+                iteration_count=9999, salt_size=16)
+        self.failUnless(tostr(outkey).find('4,ENCRYPTED') == -1)
+        self.failUnless(tostr(outkey).find('BEGIN ENCRYPTED PRIVATE KEY') != -1)
+        self.assertRaises(ValueError, RSA.importKey, outkey, 'boo')
+        inkey = RSA.importKey(outkey, 'test')
+        self.assertEqual(key.n, inkey.n)
+        self.assertEqual(key.e, inkey.e)
+        self.assertEqual(key.d, inkey.d)
+
+
 class ImportKeyTestsSlow(ImportKeyTests):
     def setUp(self):
         self.rsa = RSA.RSAImplementation(use_fast_math=0)

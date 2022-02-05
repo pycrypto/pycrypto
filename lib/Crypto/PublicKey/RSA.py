@@ -66,20 +66,21 @@ it is recommended to use one of the standardized schemes instead (like
 __revision__ = "$Id$"
 
 __all__ = ['generate', 'construct', 'error', 'importKey', 'RSAImplementation',
-    '_RSAobj', 'oid' , 'algorithmIdentifier' ]
+    '_RSAobj', 'oid', 'algorithmIdentifier']
 
 import sys
 if sys.version_info[0] == 2 and sys.version_info[1] == 1:
     from Crypto.Util.py21compat import *
-from Crypto.Util.py3compat import *
 
+from Crypto.Util.py3compat import tobytes, bchr, b, bord, tostr
 from Crypto.Util.number import getRandomRange, bytes_to_long, long_to_bytes
 
 from Crypto.PublicKey import _RSA, _slowmath, pubkey
 from Crypto.IO import PKCS8, PEM
 from Crypto import Random
 
-from Crypto.Util.asn1 import *
+from Crypto.Util.asn1 import newDerSequence, newDerBitString, \
+    DerSequence, DerObjectId, DerNull, DerBitString
 
 import binascii
 import struct
@@ -91,12 +92,14 @@ try:
 except ImportError:
     _fastmath = None
 
+
 def decode_der(obj_class, binstr):
     """Instantiate a DER object class, decode a DER binary string in it, and
     return the object."""
     der = obj_class()
     der.decode(binstr)
     return der
+
 
 class _RSAobj(pubkey.pubkey):
     """Class defining an actual RSA key.
@@ -131,7 +134,8 @@ class _RSAobj(pubkey.pubkey):
             # RSA key parameters directly from this object.
             return getattr(self.key, attrname)
         else:
-            raise AttributeError("%s object has no %r attribute" % (self.__class__.__name__, attrname,))
+            raise AttributeError("%s object has no %r attribute" % 
+                                    (self.__class__.__name__, attrname,))
 
     def encrypt(self, plaintext, K):
         """Encrypt a piece of data with RSA.
@@ -156,7 +160,7 @@ class _RSAobj(pubkey.pubkey):
          is always None.
         """
         return pubkey.pubkey.encrypt(self, plaintext, K)
- 
+
     def decrypt(self, ciphertext):
         """Decrypt a piece of data with RSA.
 
@@ -215,7 +219,7 @@ class _RSAobj(pubkey.pubkey):
          this method. Failure to do so may lead to security vulnerabilities.
          It is recommended to use modules
          `Crypto.Signature.PKCS1_PSS` or `Crypto.Signature.PKCS1_v1_5` instead.
- 
+
         :Parameter M: The expected message.
         :Type M: byte string or long
 
@@ -235,17 +239,17 @@ class _RSAobj(pubkey.pubkey):
 
     def _decrypt(self, c):
         #(ciphertext,) = c
-        (ciphertext,) = c[:1]  # HACK - We should use the previous line
-                               # instead, but this is more compatible and we're
-                               # going to replace the Crypto.PublicKey API soon
-                               # anyway.
+        (ciphertext,) = c[:1]   # HACK - We should use the previous line
+                                # instead, but this is more compatible and we're
+                                # going to replace the Crypto.PublicKey API soon
+                                # anyway.
 
         if not 0 < ciphertext < self.n:
             raise ValueError("Ciphertext too large")
 
         # Blinded RSA decryption (to prevent timing attacks):
         # Step 1: Generate random secret blinding factor r, such that 0 < r < n-1
-        r = getRandomRange(1, self.key.n-1, randfunc=self._randfunc)
+        r = getRandomRange(1, self.key.n - 1, randfunc=self._randfunc)
         # Step 2: Compute c' = c * r**e mod n
         cp = self.key._blind(ciphertext, r)
         # Step 3: Compute m' = c'**d mod n       (ordinary RSA decryption)
@@ -312,7 +316,7 @@ class _RSAobj(pubkey.pubkey):
         attrs = []
         for k in self.keydata:
             if k == 'n':
-                attrs.append("n(%d)" % (self.size()+1,))
+                attrs.append("n(%d)" % (self.size() + 1,))
             elif hasattr(self.key, k):
                 attrs.append(k)
         if self.has_private():
@@ -320,7 +324,7 @@ class _RSAobj(pubkey.pubkey):
         # PY3K: This is meant to be text, do not change to bytes (data)
         return "<%s @0x%x %s>" % (self.__class__.__name__, id(self), ",".join(attrs))
 
-    def exportKey(self, format='PEM', passphrase=None, pkcs=1, protection=None):
+    def exportKey(self, format='PEM', passphrase=None, pkcs=1, protection=None, **kwargs):
         """Export this RSA key.
 
         :Parameters:
@@ -372,6 +376,8 @@ class _RSAobj(pubkey.pubkey):
             The supported schemes for PKCS#8 are listed in the
             `Crypto.IO.PKCS8` module (see ``wrap_algo`` parameter).
 
+          **kwargs : additional key word arguments passed to PKCS8.wrap
+
         :Return: A byte string with the encoded public or private half
           of the key.
         :Raise ValueError:
@@ -388,14 +394,14 @@ class _RSAobj(pubkey.pubkey):
         """
         if passphrase is not None:
             passphrase = tobytes(passphrase)
-        if format=='OpenSSH':
-               eb = long_to_bytes(self.e)
-               nb = long_to_bytes(self.n)
-               if bord(eb[0]) & 0x80: eb=bchr(0x00)+eb
-               if bord(nb[0]) & 0x80: nb=bchr(0x00)+nb
-               keyparts = [ b('ssh-rsa'), eb, nb ]
-               keystring = b('').join([ struct.pack(">I",len(kp))+kp for kp in keyparts])
-               return b('ssh-rsa ')+binascii.b2a_base64(keystring)[:-1]
+        if format == 'OpenSSH':
+            eb = long_to_bytes(self.e)
+            nb = long_to_bytes(self.n)
+            if bord(eb[0]) & 0x80: eb = bchr(0x00) + eb
+            if bord(nb[0]) & 0x80: nb = bchr(0x00) + nb
+            keyparts = [b('ssh-rsa'), eb, nb]
+            keystring = b('').join([struct.pack(">I", len(kp)) + kp for kp in keyparts])
+            return b('ssh-rsa ') + binascii.b2a_base64(keystring)[:-1]
 
         # DER format is always used, even in case of PEM, which simply
         # encodes it into BASE64.
@@ -407,38 +413,40 @@ class _RSAobj(pubkey.pubkey):
                         self.d,
                         self.p,
                         self.q,
-                        self.d % (self.p-1),
-                        self.d % (self.q-1),
+                        self.d % (self.p - 1),
+                        self.d % (self.q - 1),
                         inverse(self.q, self.p)
                     ).encode()
-                if pkcs==1:
+                if pkcs == 1:
                     keyType = 'RSA PRIVATE'
-                    if format=='DER' and passphrase:
+                    if format == 'DER' and passphrase:
                         raise ValueError("PKCS#1 private key cannot be encrypted")
-                else: # PKCS#8
-                    if format=='PEM' and protection is None:
+                else:  # PKCS#8
+                    if format == 'PEM' and protection is None:
                         keyType = 'PRIVATE'
-                        binary_key = PKCS8.wrap(binary_key, oid, None)
+                        binary_key = PKCS8.wrap(binary_key, oid, None, kwargs)
                     else:
                         keyType = 'ENCRYPTED PRIVATE'
                         if not protection:
                             protection = 'PBKDF2WithHMAC-SHA1AndDES-EDE3-CBC'
-                        binary_key = PKCS8.wrap(binary_key, oid, passphrase, protection)
+                        binary_key = PKCS8.wrap(binary_key, oid, passphrase, 
+                                                protection, kwargs)
                         passphrase = None
         else:
                 keyType = "RSA PUBLIC"
                 binary_key = newDerSequence(
                     algorithmIdentifier,
                     newDerBitString(
-                        newDerSequence( self.n, self.e )
+                        newDerSequence(self.n, self.e)
                         )
                     ).encode()
-        if format=='DER':
+        if format == 'DER':
             return binary_key
-        if format=='PEM':
-            pem_str = PEM.encode(binary_key, keyType+" KEY", passphrase, self._randfunc)
+        if format == 'PEM':
+            pem_str = PEM.encode(binary_key, keyType + " KEY", passphrase, self._randfunc)
             return tobytes(pem_str)
         raise ValueError("Unknown key format '%s'. Cannot export the RSA key." % format)
+
 
 class RSAImplementation(object):
     """
@@ -540,7 +548,7 @@ class RSAImplementation(object):
         if bits < 1024 or (bits & 0xff) != 0:
             # pubkey.getStrongPrime doesn't like anything that's not a multiple of 256 and >= 1024
             raise ValueError("RSA modulus length must be a multiple of 256 and >= 1024")
-        if e%2==0 or e<3:
+        if e % 2 == 0 or e < 3:
             raise ValueError("RSA public exponent must be a positive, odd integer larger than 2.")
         rf = self._get_randfunc(randfunc)
         obj = _RSA.generate_py(bits, rf, progress_func, e)    # TODO: Don't use legacy _RSA module
@@ -571,7 +579,7 @@ class RSAImplementation(object):
                     4. First factor of n (p). Optional.
                     5. Second factor of n (q). Optional.
                     6. CRT coefficient, (1/p) mod q (u). Optional.
-        
+
         :Return: An RSA key object (`_RSAobj`).
         """
         key = self._math.rsa_construct(*tup)
@@ -711,7 +719,7 @@ algorithmIdentifier = DerSequence(
   [DerObjectId(oid).encode(),      # algorithm field
   DerNull().encode()]              # parameters field
   ).encode()
- 
+
 _impl = RSAImplementation()
 #:
 #: Randomly generate a fresh, new RSA key object.
