@@ -63,7 +63,7 @@ class DevURandomRNG(BaseRNG):
         while len(data) < N:
             try:
                 d = self.__file.read(N - len(data))
-            except IOError, e:
+            except IOError as e:
                 # read(2) has been interrupted by a signal; redo the read
                 if e.errno == errno.EINTR:
                     continue
