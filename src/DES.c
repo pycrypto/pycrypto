@@ -30,6 +30,9 @@
  * assert-like LTC_ARGCHK macro fails. */
 #define ARGTYPE 4
 
+// used in block_template.c
+#define SUPPORTS_SERIALIZATION 0
+
 /* Include the actial DES implementation */
 #include "libtom/tomcrypt_des.c"
 
@@ -119,6 +122,17 @@ static void block_decrypt(block_state *self, unsigned char *in, unsigned char *o
 #endif
     assert(rc == CRYPT_OK);
 }
+
+/* If implemented change SUPPORTS_SERIALIZATION define at top of file to 1 */
+/*
+static char* serialize_state(block_state *state, int *out_length)
+{
+}
+
+static void deserialize_state(block_state *state, char *in, int bslen)
+{
+}
+*/
 
 #ifdef PCT_DES3_MODULE
 # define MODULE_NAME _DES3   /* triple DES */

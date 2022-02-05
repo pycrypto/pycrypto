@@ -35,6 +35,9 @@
 #define BLOCK_SIZE 8    /* 64-bit block size */
 #define KEY_SIZE 0      /* variable key size */
 
+// used in block_template.c
+#define SUPPORTS_SERIALIZATION 0
+
 #define BLOWFISH_MAGIC 0xf9d565deu
 typedef struct {
     uint32_t magic;
@@ -234,6 +237,17 @@ static void Blowfish_init(Blowfish_state *self, const unsigned char *key, int ke
 static void block_finalize(block_state *self)
 {
 }
+
+/* If implemented change SUPPORTS_SERIALIZATION define at top of file to 1 */
+/*
+static char* serialize_state(block_state *state, int *out_length)
+{
+}
+
+static void deserialize_state(block_state *state, char *in, int bslen)
+{
+}
+*/
 
 #include "block_template.c"
 

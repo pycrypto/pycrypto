@@ -37,6 +37,9 @@
 #define MAXKB (256/8)
 #define MAXNR 14
 
+// used in block_template.c
+#define SUPPORTS_SERIALIZATION 1
+
 typedef unsigned char u8;
 
 typedef struct {
@@ -278,6 +281,92 @@ static void block_decrypt(block_state* self, const u8* in, u8* out)
     }
     m = _mm_aesdeclast_si128(m, self->dk[self->rounds]);
     _mm_storeu_si128((__m128i*) out, m);
+}
+
+// caller frees this
+static char* serialize_state(block_state *state, int *out_length)
+{
+    // number of bytes in EACH key
+    int keylen = (state->rounds + 1) * sizeof(__m128i);
+
+    // total number of bytes in the buffer.
+    *out_length = keylen * 2 + sizeof(state->rounds);
+
+    char* ret = aligned_malloc_wrapper(16, *out_length);
+    char* out = ret;
+
+    // copy rounds
+    *(int*)out = state->rounds;
+    out += sizeof(state->rounds);
+
+    // copy ek
+    for (int i = 0; i < state->rounds + 1; i++) {
+        memcpy(out, (char *)(&state->ek[i]), sizeof(__m128i));
+        out += sizeof(__m128i);
+    }
+
+    // copy dk
+    for (int i = 0; i < state->rounds + 1; i++) {
+        memcpy(out, (char *)(&state->dk[i]), sizeof(__m128i));
+        out += sizeof(__m128i);
+    }
+
+    return ret;
+}
+
+static void deserialize_state(block_state *state, char *in, int bslen)
+{
+    // unpack rounds first because we need it to know the keysize
+    state->rounds = *(int*)in;
+    in += sizeof(state->rounds);
+
+    // sanity check for number of rounds
+    if (state->rounds != 10 && state->rounds != 12 && state->rounds != 14) {
+        state->rounds = -1; // prevents a segfault when we decrement the refcount for this state
+        PyErr_Format(PyExc_ValueError, "Expected a round count of 10, 12, or 14, got %i. Invalid or corrupt serialize dump?", state->rounds);
+        return;
+    }
+
+    // number of bytes in EACH key
+    int keylen =  (state->rounds + 1) * sizeof(__m128i);
+
+    // total number of bytes in the buffer.
+    int expected = keylen * 2 + sizeof(state->rounds);
+
+    // sanity check this is the right size of a dump for this algorithm
+    if(bslen != expected) {
+        state->rounds = -1;
+        PyErr_Format(PyExc_ValueError, "Expected %i bytes, got %i. Invalid or corrupt serialize dump?", expected, bslen);
+        return;
+    }
+
+    // allocate memory for keys
+    void* tek = aligned_malloc_wrapper(16, keylen);
+    void* tdk = aligned_malloc_wrapper(16, keylen);
+
+    if (!tek || !tdk) {
+        state->rounds = -1;
+        aligned_free_wrapper(tek);
+        aligned_free_wrapper(tdk);
+        PyErr_SetString(PyExc_MemoryError,
+                "failed to allocate memory for keys");
+        return;
+    }
+
+    state->ek = tek;
+    state->dk = tdk;
+
+    // unpack ek
+    for(int i = 0; i < state->rounds + 1; i++) {
+        memcpy((char *)&state->ek[i], in, sizeof(__m128i));
+        in += sizeof(__m128i);
+    }
+
+    // unpack dk
+    for(int i = 0; i < state->rounds + 1; i++) {
+        memcpy((char *)&state->dk[i], in, sizeof(__m128i));
+        in += sizeof(__m128i);
+    }
 }
 
 #include "block_template.c"
