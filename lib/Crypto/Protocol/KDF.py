@@ -43,7 +43,7 @@ if sys.version_info[0] == 2 and sys.version_info[1] == 1:
     from Crypto.Util.py21compat import *
 from Crypto.Util.py3compat import *
 
-from Crypto.Hash import SHA1, HMAC, CMAC
+from Crypto.Hash import SHA1, SHA256, HMAC, CMAC
 from Crypto.Util.strxor import strxor
 from Crypto.Util.number import long_to_bytes, bytes_to_long
 
@@ -207,3 +207,67 @@ class _S2V(object):
             final = strxor(padded, self._double(self._cache))
         mac = CMAC.new(self._key, msg=final, ciphermod=self._ciphermod)
         return mac.digest()
+
+
+def HKDF(ikm, salt="", dkLen=16, hashAlgo=None, info=""):
+    """Derive a key from from a shared secret
+
+    This performs key derivation according to RFC 5869 (HMAC-based
+    Extract-and-Expand Key Derivation Function).
+
+    :Parameters:
+     ikm : string
+        The "Input Keying Material", i.e. the shared secret to generate the key from.
+     salt : string
+        A string to use for better protection from dictionary attacks.
+        This value does not need to be kept secret, but it should be randomly
+        chosen for each derivation. It is recommended to be at least 8 bytes long.
+     dkLen : integer
+        The cumulative length of the desired keys. Default is 16 bytes, suitable for instance for `Crypto.Cipher.AES`.
+     hashAlgo : module
+        The hash algorithm to use, as a module or an object from the `Crypto.Hash` package.
+        The default algorithm is `SHA256`.
+    info: string
+        Optional context and application specific information.
+    """
+    ikm = tobytes(ikm)
+    salt = tobytes(salt)
+    info = tobytes(info)
+    if not hashAlgo:
+        hashAlgo = SHA256
+
+    # Variable names are mostly identical to RFC 5869:
+    # ikm: input keying material
+    # prk: pseudorandom key (length depends on hash function)
+    # okm: output keying material
+    # dkLen: How many bytes of okm we need, called "L" in the RFC.
+    # num_rounds: How many T(x) values we need, called "N" in the RFC.
+
+    # Step 1: Extract
+    prk = HMAC.new(salt, msg=ikm, digestmod=hashAlgo).digest()
+
+    # Step 2: Expand
+    # Expand/shrink the $hashlen octets of prk into the number of octets we
+    # need for the block cipher.
+
+    # Imitate the
+    #     N = ceil(L/HashLen)
+    # from RFC 5869 section 2.3.
+    hash_len = len(prk)
+    num_rounds = divmod(dkLen, hash_len)[0]
+    if dkLen % hash_len != 0:
+        # ceil() is equivalent to just adding 1.
+        num_rounds += 1
+
+    # Perform the
+    #   T = T(1) | T(2) | T(3) | ... | T(N)
+    # calculation.
+    okm = b("")
+    last_t = b("")
+    for count in range(1, num_rounds + 1):
+        message = last_t + info + bchr(count)
+        last_t = HMAC.new(prk, msg=message, digestmod=hashAlgo).digest()
+        okm += last_t
+
+    return okm[:dkLen]
+
