@@ -43,9 +43,13 @@ from Crypto.Hash import SHA256
 assert SHA256.digest_size == 32
 
 class _SHAd256(object):
-    """SHA-256, doubled.
+    """Doubled SHA-256 of input prepended with an all zero block.
 
-    Returns SHA-256(SHA-256(data)).
+    Returns SHA-256(SHA-256(0^512 + data)).
+
+    For precise definition see part II, chapter 5, paragraph 5.4.2 of the
+    "Cryptography Engineering. Design Principles and Practical Applications"
+    by Niels Ferguson, Bruce Schneier, Tadayoshi Kohno.
     """
 
     digest_size = SHA256.digest_size
@@ -91,7 +95,7 @@ def new(data=None):
     """Return a new SHAd256 hashing object"""
     if not data:
         data=b("")
-    sha = _SHAd256(_SHAd256._internal, SHA256.new(data))
+    sha = _SHAd256(_SHAd256._internal, SHA256.new(b("\x00" * 64) + data))
     sha.new = globals()['new']
     return sha
 

@@ -49,23 +49,23 @@ class FortunaGeneratorTests(unittest.TestCase):
 
         # Seed the generator, which should set the key and increment the counter.
         fg.reseed(b("Hello"))
-        self.assertEqual(b("0ea6919d4361551364242a4ba890f8f073676e82cf1a52bb880f7e496648b565"), b2a_hex(fg.key))
+        self.assertEqual(b("eab9b62d526cd5a7336143d04515662d3fa401b17c0cf9f32445e3599a9df943"), b2a_hex(fg.key))
         self.assertEqual(1, fg.counter.next_value())
 
         # Read 2 full blocks from the generator
-        self.assertEqual(b("7cbe2c17684ac223d08969ee8b565616") +       # counter=1
-                         b("717661c0d2f4758bd6ba140bf3791abd"),        # counter=2
+        self.assertEqual(b("5f63ebcfc920694f9684a545c6d5b975") +       # counter=1
+                         b("7b77a2afc2431559d5d07c1e94b50d92"),        # counter=2
             b2a_hex(fg.pseudo_random_data(32)))
 
         # Meanwhile, the generator will have re-keyed itself and incremented its counter
-        self.assertEqual(b("33a1bb21987859caf2bbfc5615bef56d") +       # counter=3
-                         b("e6b71ff9f37112d0c193a135160862b7"),        # counter=4
+        self.assertEqual(b("02d692cf000eba90ffbec7852d0d3406") +       # counter=3
+                         b("edf9497965bc64a55414370502bd4136"),        # counter=4
             b2a_hex(fg.key))
         self.assertEqual(5, fg.counter.next_value())
 
         # Read another 2 blocks from the generator
-        self.assertEqual(b("fd6648ba3086e919cee34904ef09a7ff") +       # counter=5
-                         b("021f77580558b8c3e9248275f23042bf"),        # counter=6
+        self.assertEqual(b("83876a74542bc86ee486ea1e86af9b6c") +       # counter=5
+                         b("5106d63a651164767571d7e746b45b68"),        # counter=6
             b2a_hex(fg.pseudo_random_data(32)))
 
 
