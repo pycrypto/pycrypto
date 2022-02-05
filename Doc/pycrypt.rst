@@ -664,7 +664,7 @@ small enough to be applied fairly quickly.
 
 Many public-key algorithms can also be used to sign messages; simply
 run the message to be signed through a decryption with your private
-key key.  Anyone receiving the message can encrypt it with your
+key.  Anyone receiving the message can encrypt it with your
 publicly available key and read the message.  Some algorithms do only
 one thing, others can both encrypt and authenticate.
 
@@ -748,7 +748,7 @@ old Privacy Enhanced Mail services (PEM, see RFC1421).
 The RSA module makes the following function available for importing keys:
 
 **importKey(externKey)**:
-Import an RSA key (pubic or private) encoded as a string ``externKey``.
+Import an RSA key (public or private) encoded as a string ``externKey``.
 The key can follow either the PKCS#1/DER format (binary) or the PEM format
 (7-bit ASCII).
 
@@ -1042,7 +1042,7 @@ Builds a file-like object that outputs cryptographically random bytes.
 This methods has to be called whenever os.fork() is invoked. Forking
 undermines the security of any random generator based on the operating
 system, as it duplicates all structures a program has. In order to
-thwart possible attacks, this method shoud be called soon after forking,
+thwart possible attacks, this method should be called soon after forking,
 and before any cryptographic operation.
 
 **get_random_bytes(num)**:

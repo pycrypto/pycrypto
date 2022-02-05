@@ -203,7 +203,7 @@ Depending on the mode, the associated data AD can be defined as:
 For modes of the 1st type (e.g. CCM), the API allows the AD to be split
 in any number of segments, and fed to update() in multiple calls.
 The resulting AD does not depend on how splitting is performed.
-It is responsability of the caller to ensure that concatenation of strings
+It is responsibility of the caller to ensure that concatenation of strings
 is secure. For instance, there is no difference between:
 
    c.update(b"builtin")
