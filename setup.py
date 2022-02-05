@@ -308,7 +308,7 @@ class PCTBuildConfigure(Command):
                 os.chmod("configure", stat.S_IRUSR | stat.S_IWUSR |
                          stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP |
                          stat.S_IROTH | stat.S_IXOTH)
-            cmd = "sh configure"    # we use "sh" here so that it'll work on mingw32 with standard python.org binaries
+            cmd = "sh ./configure"    # we use "sh" here so that it'll work on mingw32 with standard python.org binaries
             if self.verbose < 1:
                 cmd += " -q"
             if os.system(cmd) != 0:
