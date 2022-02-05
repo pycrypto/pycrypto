@@ -225,7 +225,7 @@ class AllOrNothing:
         # of the cipher's block_size.  This number should be small enough that
         # the conversion from long integer to integer should never overflow
         padbytes = int(parts[-1])
-        text = b('').join(map(long_to_bytes, parts[:-1]))
+        text = b('').join(map(lambda part: long_to_bytes(part, block_size), parts[:-1]))
         return text[:-padbytes]
 
     def _inventkey(self, key_size):
