@@ -239,7 +239,7 @@ static void ripemd160_compress(ripemd160_state *self)
     }
 
     /* Byte-swap the buffer if we're on a big-endian machine */
-#ifdef PCT_BIG_ENDIAN
+#ifdef WORDS_BIGENDIAN
     byteswap_digest(self->buf.w);
 #endif
 
@@ -390,7 +390,7 @@ static int ripemd160_digest(const ripemd160_state *self, unsigned char *out)
     /* Append the length */
     tmp.buf.w[14] = (uint32_t) (tmp.length & 0xFFFFffffu);
     tmp.buf.w[15] = (uint32_t) ((tmp.length >> 32) & 0xFFFFffffu);
-#ifdef PCT_BIG_ENDIAN
+#ifdef WORDS_BIGENDIAN
     byteswap32(&tmp.buf.w[14]);
     byteswap32(&tmp.buf.w[15]);
 #endif
@@ -398,7 +398,7 @@ static int ripemd160_digest(const ripemd160_state *self, unsigned char *out)
     ripemd160_compress(&tmp);
 
     /* Copy the final state into the output buffer */
-#ifdef PCT_BIG_ENDIAN
+#ifdef WORDS_BIGENDIAN
     byteswap_digest(tmp.h);
 #endif
     memcpy(out, &tmp.h, RIPEMD160_DIGEST_SIZE);
