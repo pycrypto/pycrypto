@@ -43,7 +43,6 @@ from distutils.command.build import build
 from distutils.command.build_ext import build_ext
 import distutils.sysconfig
 import os, sys, re
-import struct
 
 if sys.version[0:1] == '1':
     raise RuntimeError ("The Python Cryptography Toolkit requires "
@@ -66,6 +65,7 @@ else:
 # .gcov files
 USE_GCOV = 0
 
+CONFIGURE_OPTS = os.environ.get('CONFIGURE_OPTS')
 
 try:
     # Python 3
@@ -99,14 +99,6 @@ def PrintErr(*args, **kwd):
             w(sep)
             w(str(a))
         w(kwd.get("end", "\n"))
-
-def endianness_macro():
-    s = struct.pack("@I", 0x33221100)
-    if s == "\x00\x11\x22\x33".encode():     # little endian
-        return ('PCT_LITTLE_ENDIAN', 1)
-    elif s == "\x33\x22\x11\x00".encode():   # big endian
-        return ('PCT_BIG_ENDIAN', 1)
-    raise AssertionError("Machine is neither little-endian nor big-endian")
 
 class PCTBuildExt (build_ext):
     def build_extensions(self):
@@ -311,6 +303,8 @@ class PCTBuildConfigure(Command):
             cmd = "sh configure"    # we use "sh" here so that it'll work on mingw32 with standard python.org binaries
             if self.verbose < 1:
                 cmd += " -q"
+            if CONFIGURE_OPTS:
+                cmd += ' ' + CONFIGURE_OPTS
             if os.system(cmd) != 0:
                 raise RuntimeError("autoconf error")
 
@@ -440,8 +434,7 @@ kw = {'name':"pycrypto",
                       sources=["src/SHA512.c"]),
             Extension("Crypto.Hash.RIPEMD160",
                       include_dirs=['src/'],
-                      sources=["src/RIPEMD160.c"],
-                      define_macros=[endianness_macro()]),
+                      sources=["src/RIPEMD160.c"]),
 
             # Block encryption algorithms
             Extension("Crypto.Cipher._AES",

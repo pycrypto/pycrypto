@@ -31,6 +31,9 @@ AM_INIT_AUTOMAKE([foreign no-define no-dist])
 # Checks for programs.
 AC_PROG_CC_C99
 
+# Check for endianness
+AC_C_BIGENDIAN
+
 AC_CANONICAL_HOST()
 case "$host_os" in  # XXX - Does this break cross-compiling?
 openbsd*)
