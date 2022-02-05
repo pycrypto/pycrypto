@@ -40,7 +40,7 @@ At the receiver side, decryption can be done using the private part of
 the RSA key:
 
         >>> key = RSA.importKey(open('privkey.der').read())
-        >>> cipher = PKCS1_OAP.new(key)
+        >>> cipher = PKCS1_OAEP.new(key)
         >>> message = cipher.decrypt(ciphertext)
 
 :undocumented: __revision__, __package__
